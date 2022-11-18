@@ -1,7 +1,9 @@
 import gym
 from termcolor import colored
-from OC_Atari.extract_ram_info import augment_info
-from OC_Atari.extract_ram_info import getDifference
+from extract_ram_info import augment_info
+from extract_ram_info import getDifference
+
+#Hello
 
 AVAILABLE_GAMES = ["Breakout", "Skiing"]
 
