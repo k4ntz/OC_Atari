@@ -3,8 +3,6 @@ from termcolor import colored
 from extract_ram_info import augment_info
 from extract_ram_info import getDifference
 
-#Hello
-
 AVAILABLE_GAMES = ["Breakout", "Skiing"]
 
 class OCAtari():
