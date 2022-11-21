@@ -29,7 +29,7 @@ def _augment_info_skiing(info, ram_state):
     # player start bei x = 76
     info["player_x"] = ram_state[25]
     info["score"] = _convert_number(ram_state[107])
-    #info["time"] = _time_skiing(ram_state)
+    info["time"] = _time_skiing(ram_state)
     print(ram_state)
 
 
