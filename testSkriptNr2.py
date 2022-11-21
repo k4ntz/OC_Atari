@@ -21,7 +21,7 @@ for _ in range(1000):
         new_ram_value = 0
     env.unwrapped.ale.setRAM(target_ram_position, new_ram_value)
     #-------------------------------------------------------------------
-
+#kommentar
     terminated, truncated = False, False
     observation, reward, terminated, truncated, info = env.step(1)
     #env.render()
