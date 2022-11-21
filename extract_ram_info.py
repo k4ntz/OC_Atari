@@ -29,6 +29,7 @@ def _augment_info_skiing(info, ram_state):
     #map von 44 bis 101
     # player start bei x = 76
     info["player_x"] = ram_state[25]
+    info["score"] = _convert_number(ram_state[107])
     info["time"] = _time_skiing(ram_state)
     print(ram_state)
 
@@ -74,25 +75,25 @@ def getDifference(ram_state, prev_Ram):
 def _time_skiing(ram_state):
     time = []
     # minutes
-    time["minutes"] = _convert_time(ram_state[104]) #Würde sinn ergeben, ist aber noch nicht getestet :D 
+    time["minutes"] = _convert_number(ram_state[104]) #Würde sinn ergeben, ist aber noch nicht getestet :D 
     # seconds
-    time["seconds"] = _convert_time(ram_state[105])
+    time["seconds"] = _convert_number(ram_state[105])
     # milliseconds
-    time["milli_seconds"] = _convert_time(ram_state[106])
+    time["milli_seconds"] = _convert_number(ram_state[106])
 
-def _convert_time(time):
+def _convert_number(number):
     """
-    The game displays the time in hexadecimal numbers, while the ram extraction displays it as an integer. This results in a 
+    The game displays the time/time in hexadecimal numbers, while the ram extraction displays it as an integer. This results in a 
     required conversion from the extractet ram number (in dec) to a hex number, which we then display as a dec number.
 
-    eg.: game shows 10 seconds, but in the ram display saves it as 16
+    eg.: game shows 10 seconds, but the ram display saves it as 16
     """
-    time_str = str(hex(time))
-    time_list = [*time_str]
-    time_str = ""
+    number_str = str(hex(number))
+    number_list = [*number_str]
+    number_str = ""
     count = 0
-    for x in time_list:
+    for x in number_list:
         if count > 1:
-            time_str += x
+            number_str += x
         count += 1
-    return int(time_str)
+    return int(number_str)
