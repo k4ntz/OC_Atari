@@ -1,9 +1,7 @@
 import gym
 from termcolor import colored
 from extract_ram_info import augment_info
-from extract_ram_info import getDifference
 
-#Hello
 
 AVAILABLE_GAMES = ["Breakout", "Skiing"]
 
@@ -15,7 +13,6 @@ class OCAtari():
             exit(1)
         self._env = gym.make(env_name, render_mode="human")
         self.game_name = env_name.split("-")[0].split("No")[0].split("Deterministic")[0]
-        self.prev_Ram = []
 
     def step(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
@@ -27,9 +24,3 @@ class OCAtari():
 
     def render(self, *args, **kwargs):
         return self._env.render(*args, **kwargs)
-
-    def printDiff(self):
-        self.prev_Ram = getDifference(self._env.env.unwrapped.ale.getRAM(), self.prev_Ram)
-
-
-
