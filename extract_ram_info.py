@@ -29,6 +29,7 @@ def _augment_info_skiing(info, ram_state):
     #map von 44 bis 101
     # player start bei x = 76
     info["player_x"] = ram_state[25]
+    info["time"] = _time_skiing(ram_state)
     print(ram_state)
 
 
