@@ -26,7 +26,6 @@ def _augment_info_breakout(info, ram_state):
     print(ram_state)
 
 def _augment_info_skiing(info, ram_state):
-    #map von 44 bis 101
     # player start bei x = 76
     info["player_x"] = ram_state[25]
     info["score"] = _convert_number(ram_state[107])
@@ -62,11 +61,16 @@ def _make_block_bitmap(ram_state):
     # previous_array_str = str(blocks_int)
     return blocks_int
 
+def _score_skiing(ram_state):
+    # the starting score is 20 thus the offset 12
+    if ram_state[107] == 32:
+        return ram_state[107] - 12
 
-def getDifference(ram_state, prev_Ram):
-    if len(prev_Ram) == 0:
-        print("First episode frame. No previous Ram state available.")
-        return ram_state
+    # the score of 10 to 19 is equivalent to the value 25 to 16 of position 107 thus a offset of 6 is needed
+    elif ram_state[107] >= 16:
+        return ram_state[107] - 6
+
+    # the score of 0 to 9 is equivalent to the value 0 to 9 of position 107 thus no offset is needed
     else:
         return ram_state[107]
 
