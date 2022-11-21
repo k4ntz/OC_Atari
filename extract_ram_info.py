@@ -70,6 +70,7 @@ def _time_skiing(ram_state):
     time["seconds"] = _convert_number(ram_state[105])
     # milliseconds
     time["milli_seconds"] = _convert_number(ram_state[106])
+    return time
 
 def _convert_number(number):
     """
