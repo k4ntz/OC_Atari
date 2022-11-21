@@ -66,6 +66,32 @@ def getDifference(ram_state, prev_Ram):
         print("First episode frame. No previous Ram state available.")
         return ram_state
     else:
-        diff = prev_Ram - ram_state
-        print(diff)
-        return ram_state
+        return ram_state[107]
+
+    # the other values interpret symbols which are not representative for the score
+
+def _time_skiing(ram_state):
+    time = []
+    # minutes
+    time["minutes"] = _convert_time(ram_state[104]) #Würde sinn ergeben, ist aber noch nicht getestet :D 
+    # seconds
+    time["seconds"] = _convert_time(ram_state[105])
+    # milliseconds
+    time["milli_seconds"] = _convert_time(ram_state[106])
+
+def _convert_time(time):
+    """
+    The game displays the time in hexadecimal numbers, while the ram extraction displays it as an integer. This results in a 
+    required conversion from the extractet ram number (in dec) to a hex number, which we then display as a dec number.
+
+    eg.: game shows 10 seconds, but in the ram display saves it as 16
+    """
+    time_str = str(hex(time))
+    time_list = [*time_str]
+    time_str = ""
+    count = 0
+    for x in time_list:
+        if count > 1:
+            time_str += x
+        count += 1
+    return int(time_str)
