@@ -83,7 +83,7 @@ def _time_skiing(ram_state):
 
 def _convert_number(number):
     """
-    The game displays the time/time in hexadecimal numbers, while the ram extraction displays it as an integer. This results in a 
+    The game displays the time/score in hexadecimal numbers, while the ram extraction displays it as an integer. This results in a 
     required conversion from the extractet ram number (in dec) to a hex number, which we then display as a dec number.
 
     eg.: game shows 10 seconds, but the ram display saves it as 16
