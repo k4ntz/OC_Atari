@@ -28,7 +28,8 @@ def _augment_info_breakout(info, ram_state):
 def _augment_info_skiing(info, ram_state):
     # player start bei x = 76
     info["player_x"] = ram_state[25]
-    info["score"] = _score_skiing(ram_state)
+    info["score"] = _convert_number(ram_state[107])
+    info["time"] = _time_skiing(ram_state)
     print(ram_state)
 
 
@@ -74,3 +75,29 @@ def _score_skiing(ram_state):
         return ram_state[107]
 
     # the other values interpret symbols which are not representative for the score
+
+def _time_skiing(ram_state):
+    time = []
+    # minutes
+    time["minutes"] = _convert_number(ram_state[104]) #Würde sinn ergeben, ist aber noch nicht getestet :D 
+    # seconds
+    time["seconds"] = _convert_number(ram_state[105])
+    # milliseconds
+    time["milli_seconds"] = _convert_number(ram_state[106])
+
+def _convert_number(number):
+    """
+    The game displays the time/score in hexadecimal numbers, while the ram extraction displays it as an integer. This results in a 
+    required conversion from the extractet ram number (in dec) to a hex number, which we then display as a dec number.
+
+    eg.: game shows 10 seconds, but the ram display saves it as 16
+    """
+    number_str = str(hex(number))
+    number_list = [*number_str]
+    number_str = ""
+    count = 0
+    for x in number_list:
+        if count > 1:
+            number_str += x
+        count += 1
+    return int(number_str)
