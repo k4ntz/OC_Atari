@@ -27,8 +27,9 @@ def _augment_info_breakout(info, ram_state):
 
 def _augment_info_skiing(info, ram_state):
     # player start bei x = 76
-    info["player_x"] = ram_state[25]
+    info["player_x"] = ram_state[25]        #can go up to 150 (170 and you are back to the left side)
     info["score"] = _convert_number(ram_state[107])
+    info["speed"] = ram_state[14]
     info["time"] = _time_skiing(ram_state)
     print(ram_state)
 
