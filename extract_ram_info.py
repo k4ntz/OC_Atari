@@ -63,7 +63,7 @@ def _make_block_bitmap(ram_state):
 
 
 def _time_skiing(ram_state):
-    time = []
+    time = {}
     # minutes
     time["minutes"] = _convert_number(ram_state[104]) #Würde sinn ergeben, ist aber noch nicht getestet :D 
     # seconds
