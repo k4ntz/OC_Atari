@@ -9,8 +9,10 @@ def augment_info(info, ram_state, game_name):
         _augment_info_breakout(info, ram_state)
     if game_name == "Skiing":
         _augment_info_skiing(info, ram_state)
+    if game_name == "Seaquest":
+        _augment_info_seaquest(info, ram_state)
 
-# Breakout
+# Pong
 def _augment_info_pong(info, ram_state):
     print("FIND OFFSET")
     info["ball"] = ram_state[99], ram_state[101]
@@ -25,12 +27,20 @@ def _augment_info_breakout(info, ram_state):
     info["player"] = ram_state[72] - 47, 189
     print(ram_state)
 
+#Skiing
 def _augment_info_skiing(info, ram_state):
     # player start bei x = 76
     info["player_x"] = ram_state[25]        #can go up to 150 (170 and you are back to the left side)
+    info["player_y"] = ram_state[26]        #constant 120
     info["score"] = _convert_number(ram_state[107])
     info["speed"] = ram_state[14]
     info["time"] = _time_skiing(ram_state)
+    info["object_y"] = {87: ram_state[87], 88: ram_state[88]}
+    print(ram_state)
+
+#Seaquest
+def _augment_info_seaquest(info, ram_state):
+    info["player_y"] = ram_state[97] #starts at y = 13 the lowest it can go is 108
     print(ram_state)
 
 

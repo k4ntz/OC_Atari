@@ -2,7 +2,7 @@ import gym
 from termcolor import colored
 from extract_ram_info import augment_info
 
-AVAILABLE_GAMES = ["Breakout", "Skiing"]
+AVAILABLE_GAMES = ["Breakout", "Skiing", "Seaquest"]
 
 class OCAtari():
     def __init__(self, env_name):
