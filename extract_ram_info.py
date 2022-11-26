@@ -35,12 +35,12 @@ def _augment_info_skiing(info, ram_state):
     info["score"] = _convert_number(ram_state[107])
     info["speed"] = ram_state[14]
     info["time"] = _time_skiing(ram_state)
-    info["object_y"] = {87: ram_state[87], 88: ram_state[88]}
     print(ram_state)
 
 #Seaquest
 def _augment_info_seaquest(info, ram_state):
-    info["player_y"] = ram_state[97] #starts at y = 13 the lowest it can go is 108
+    info["player_x"] = ram_state[70] #starts at x = 76, rightmost position is x = 134 and leftmost position is x = 21
+    info["player_y"] = ram_state[97] #starts at y = 13 the lowest it can go is y = 108
     print(ram_state)
 
 
@@ -76,7 +76,7 @@ def _make_block_bitmap(ram_state):
 def _time_skiing(ram_state):
     time = {}
     # minutes
-    time["minutes"] = _convert_number(ram_state[104]) #Würde sinn ergeben, ist aber noch nicht getestet :D 
+    time["minutes"] = _convert_number(ram_state[104])
     # seconds
     time["seconds"] = _convert_number(ram_state[105])
     # milliseconds
