@@ -9,10 +9,8 @@ def augment_info(info, ram_state, game_name):
         _augment_info_breakout(info, ram_state)
     if game_name == "Skiing":
         _augment_info_skiing(info, ram_state)
-    if game_name == "Seaquest":
-        _augment_info_seaquest(info, ram_state)
 
-# Pong
+# Breakout
 def _augment_info_pong(info, ram_state):
     print("FIND OFFSET")
     info["ball"] = ram_state[99], ram_state[101]
@@ -27,21 +25,12 @@ def _augment_info_breakout(info, ram_state):
     info["player"] = ram_state[72] - 47, 189
     print(ram_state)
 
-#Skiing
 def _augment_info_skiing(info, ram_state):
     # player start bei x = 76
     info["player_x"] = ram_state[25]        #can go up to 150 (170 and you are back to the left side)
-    info["player_y"] = ram_state[26]        #constant 120
     info["score"] = _convert_number(ram_state[107])
     info["speed"] = ram_state[14]
     info["time"] = _time_skiing(ram_state)
-    info["objects_y"] = ram_state[86:93]    #you cannot assign to specific objects. they are random
-    print(ram_state)
-
-#Seaquest
-def _augment_info_seaquest(info, ram_state):
-    info["player_x"] = ram_state[70] #starts at x = 76, rightmost position is x = 134 and leftmost position is x = 21
-    info["player_y"] = ram_state[97] #starts at y = 13 the lowest it can go is y = 108
     print(ram_state)
 
 
@@ -77,7 +66,7 @@ def _make_block_bitmap(ram_state):
 def _time_skiing(ram_state):
     time = {}
     # minutes
-    time["minutes"] = _convert_number(ram_state[104])
+    time["minutes"] = _convert_number(ram_state[104]) #Würde sinn ergeben, ist aber noch nicht getestet :D 
     # seconds
     time["seconds"] = _convert_number(ram_state[105])
     # milliseconds
