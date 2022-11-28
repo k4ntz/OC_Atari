@@ -42,6 +42,8 @@ def _augment_info_skiing(info, ram_state):
 def _augment_info_seaquest(info, ram_state):
     info["player_x"] = ram_state[70] #starts at x = 76, rightmost position is x = 134 and leftmost position is x = 21
     info["player_y"] = ram_state[97] #starts at y = 13 the lowest it can go is y = 108
+    info["oxygen"] = ram_state[102] #0-64: 64 is full oxygen
+    info["Enemy_x"] = ram_state[30-33] #probably bigger but first level only has max 4 enemies
     print(ram_state)
 
 
