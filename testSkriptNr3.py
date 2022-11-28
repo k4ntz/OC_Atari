@@ -5,19 +5,20 @@ import ipdb
 
 # test with the ipdb debugger
 
-env = OCAtari("Skiing")
+env = OCAtari("Seaquest")
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
 for i in range(1000):
     #n: next line, c: resume execution
-    ipdb.set_trace()
+    if info.get('frame_number') > 400:
+        ipdb.set_trace()
    #action = self._action_set[1]
 
    #done split into 2 parts:
    # terminated = True if env terminates (completion or failure), truncated = True if episodes truncates due to a time limit or a reason that is not defined of the task
 
-    obs, reward, terminated, truncated, info = env.step(random.randint(0, 0))
+    obs, reward, terminated, truncated, info = env.step(random.randint(4, 5))
 
     ram = env._env.unwrapped.ale.getRAM()
     if prevRam is not None:
@@ -25,7 +26,7 @@ for i in range(1000):
             if ram[i] != prevRam[i] and i not in already_figured_out:
                 pad = "           "
                 for u in range(4 - len(str(i))):
-                    pad += " "  # so unnötig xD
+                    pad += " "
                 print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prevRam[i]))
     print("------------------------------------------")
     prevRam = ram
