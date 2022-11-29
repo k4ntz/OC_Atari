@@ -4,6 +4,7 @@ from extract_ram_info import augment_info
 
 AVAILABLE_GAMES = ["Breakout", "Skiing", "Seaquest"]
 
+
 class OCAtari():
     def __init__(self, env_name):
         if env_name[:4] not in [gn[:4] for gn in AVAILABLE_GAMES]:
