@@ -45,7 +45,10 @@ def _augment_info_seaquest(info, ram_state):
     info["oxygen"] = ram_state[102] #0-64: 64 is full oxygen
     info["Enemy_x"] = ram_state[30-33] #probably bigger but first level only has max 4 enemies
     info["divers_x"] = {73 : ram_state[73], 74 : ram_state[74]} #probably also bigger in later levels
-    info["divers_collected"] = ram_state[62]
+    info["divers_collected"] = ram_state[62] #renders correctly up till 6 divers collected
+    info["lives"] = ram_state[59] #renders correctly up till 6 lives
+    info["score"] = ram_state[57:58] #we may need a helper method that calculates the actual number (uses a 16 bit number i think
+    #1 has something to do with seed or level (changes the spawns but doesnt really make it more difficult) at 253-255 it goes crazy
     print(ram_state)
 
 
