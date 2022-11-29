@@ -3,7 +3,7 @@ import numpy as np
 
 def augment_info(info, ram_state, game_name):
     """
-    Augment the info dictionary with object centric informations
+    Augment the info dictionary with object centric information
     """
     if game_name == "Breakout":
         _augment_info_breakout(info, ram_state)
@@ -12,13 +12,15 @@ def augment_info(info, ram_state, game_name):
     if game_name == "Seaquest":
         _augment_info_seaquest(info, ram_state)
 
+
 # Pong
 def _augment_info_pong(info, ram_state):
     print("FIND OFFSET")
     info["ball"] = ram_state[99], ram_state[101]
     info["player"] = ram_state[72], ram_state[51]
-    #TODO
-    #info["enemy"] = ram_state[2]
+    # TODO
+    # info["enemy"] = ram_state[2]
+
 
 # Breakout
 def _augment_info_breakout(info, ram_state):
@@ -27,18 +29,20 @@ def _augment_info_breakout(info, ram_state):
     info["player"] = ram_state[72] - 47, 189
     print(ram_state)
 
-#Skiing
+
+# Skiing
 def _augment_info_skiing(info, ram_state):
     # player start bei x = 76
-    info["player_x"] = ram_state[25]        #can go up to 150 (170 and you are back to the left side)
-    info["player_y"] = ram_state[26]        #constant 120
+    info["player_x"] = ram_state[25]        # can go up to 150 (170 and you are back to the left side)
+    info["player_y"] = ram_state[26]        # constant 120
     info["score"] = _convert_number(ram_state[107])
     info["speed"] = ram_state[14]
     info["time"] = _time_skiing(ram_state)
-    info["objects_y"] = ram_state[86:93]    #you cannot assign to specific objects. they are random
+    info["objects_y"] = ram_state[86:93]    # you cannot assign to specific objects. they are random
     print(ram_state)
 
-#Seaquest
+
+# Seaquest
 def _augment_info_seaquest(info, ram_state):
     info["player_x"] = ram_state[70] #starts at x = 76, rightmost position is x = 134 and leftmost position is x = 21
     info["player_y"] = ram_state[97] #starts at y = 13 the lowest it can go is y = 108
@@ -49,6 +53,7 @@ def _augment_info_seaquest(info, ram_state):
     info["lives"] = ram_state[59] #renders correctly up till 6 lives
     info["score"] = ram_state[57:58] #we may need a helper method that calculates the actual number (uses a 16 bit number i think
     #1 has something to do with seed or level (changes the spawns but doesnt really make it more difficult) at 253-255 it goes crazy
+
     print(ram_state)
 
 
@@ -91,12 +96,14 @@ def _time_skiing(ram_state):
     time["milli_seconds"] = _convert_number(ram_state[106])
     return time
 
+
 def _convert_number(number):
     """
-    The game SKIING displays the time/score in hexadecimal numbers, while the ram extraction displays it as an integer. This results in a
-    required conversion from the extractet ram number (in dec) to a hex number, which we then display as a dec number.
+    The game SKIING displays the time/score in hexadecimal numbers, while the ram extraction displays it as an integer.
+    This results in a required conversion from the extracted ram number (in dec) to a hex number, which we then display
+    as a dec number.
 
-    eg.: game shows 10 seconds, but the ram display saves it as 16
+    e.g.: game shows 10 seconds, but the ram display saves it as 16
     """
     number_str = str(hex(number))
     number_list = [*number_str]
