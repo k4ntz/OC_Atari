@@ -51,7 +51,7 @@ def _augment_info_seaquest(info, ram_state):
     info["divers_x"] = {73 : ram_state[73], 74 : ram_state[74]} #probably also bigger in later levels
     info["divers_collected"] = ram_state[62] #renders correctly up till 6 divers collected
     info["lives"] = ram_state[59] #renders correctly up till 6 lives
-    info["score"] = _convert_number(ram_state[57]) , _convert_number(ram_state[58]) #the game saves these numbers in 4 bit intervals (hexadecimal) but only displays the decimal numbers
+    info["score"] = (_convert_number(ram_state[57])*100) + _convert_number(ram_state[58]) #the game saves these numbers in 4 bit intervals (hexadecimal) but only displays the decimal numbers
     #1 has something to do with seed or level (changes the spawns but doesnt really make it more difficult) at 253-255 it goes crazy
 
     print(ram_state)
