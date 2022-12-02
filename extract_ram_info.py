@@ -44,15 +44,17 @@ def _augment_info_skiing(info, ram_state):
 
 # Seaquest
 def _augment_info_seaquest(info, ram_state):
-    info["player_x"] = ram_state[70] #starts at x = 76, rightmost position is x = 134 and leftmost position is x = 21
-    info["player_y"] = ram_state[97] #starts at y = 13 the lowest it can go is y = 108
-    info["oxygen"] = ram_state[102] #0-64: 64 is full oxygen
-    info["Enemy_x"] = ram_state[30-33] #probably bigger but first level only has max 4 enemies
-    info["divers_x"] = {73 : ram_state[73], 74 : ram_state[74]} #probably also bigger in later levels
-    info["divers_collected"] = ram_state[62] #renders correctly up till 6 divers collected
-    info["lives"] = ram_state[59] #renders correctly up till 6 lives
-    info["score"] = (_convert_number(ram_state[57])*100) + _convert_number(ram_state[58]) #the game saves these numbers in 4 bit intervals (hexadecimal) but only displays the decimal numbers
-    #1 has something to do with seed or level (changes the spawns but doesnt really make it more difficult) at 253-255 it goes crazy
+    info["player_x"] = ram_state[70]   # starts at x = 76, rightmost position is x = 134and leftmost position is x = 21
+    info["player_y"] = ram_state[97]    # starts at y = 13 the lowest it can go is y = 108
+    info["oxygen"] = ram_state[102]     # 0-64: 64 is full oxygen
+    info["Enemy_x"] = ram_state[30-33]  # probably bigger but first level only has max 4 enemies
+    info["divers_x_or_enemy_missiles"] = ram_state[71:75]   # probably also bigger in later levels
+    info["divers_collected"] = ram_state[62]    # renders correctly up until 6 divers collected
+    info["lives"] = ram_state[59]   # renders correctly up until 6 lives
+    info["score"] = (_convert_number(ram_state[57])*100) + _convert_number(ram_state[58])   # the game saves these
+    # numbers in 4 bit intervals (hexadecimal) but only displays the decimal numbers 1 has something to do with seed or
+    # level (changes the spawns but doesnt really make it more difficult) at 253-255 it goes crazy
+    info["player_missiles_x"] = ram_state[103]
 
     print(ram_state)
 
