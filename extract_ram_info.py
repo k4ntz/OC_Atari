@@ -60,7 +60,6 @@ def _augment_info_seaquest(info, ram_state):
     info["player_missiles_x"] = ram_state[103]
     # TODO
     # y-position for lanes
-    # 
     print(ram_state)
 
 
