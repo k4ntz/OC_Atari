@@ -49,8 +49,8 @@ def _augment_info_seaquest(info, ram_state):
     info["player_y"] = ram_state[97]  # starts at y = 13 the lowest it can go is y = 108
     info["oxygen"] = ram_state[102]  # 0-64: 64 is full oxygen
     info["enemy_x"] = {"first lane (lowest)": ram_state[30], "second lane": _saturation_addition(ram_state[31], 31),
-                       "third lane": _saturation_addition(ram_state[31], 31),
-                       "fourth lane": _saturation_addition(ram_state[31], 31)}
+                       "third lane": _saturation_addition(ram_state[32], 31),
+                       "fourth lane": _saturation_addition(ram_state[33], 31)}
     info["divers_x_or_enemy_missiles"] = ram_state[71:75]  # probably also bigger in later levels
     info["divers_collected"] = ram_state[62]  # renders correctly up until 6 divers collected
     info["lives"] = ram_state[59]  # renders correctly up until 6 lives
