@@ -33,29 +33,34 @@ def _augment_info_breakout(info, ram_state):
 # Skiing
 def _augment_info_skiing(info, ram_state):
     # player start bei x = 76
-    info["player_x"] = ram_state[25]        # can go up to 150 (170 and you are back to the left side)
-    info["player_y"] = ram_state[26]        # constant 120
+    info["player_x"] = ram_state[25]  # can go up to 150 (170 and you are back to the left side)
+    info["player_y"] = ram_state[26]  # constant 120
     info["score"] = _convert_number(ram_state[107])
     info["speed"] = ram_state[14]
     info["time"] = _time_skiing(ram_state)
-    info["objects_y"] = ram_state[86:93]    # you cannot assign to specific objects. they are random
+    info["objects_y"] = ram_state[86:93]  # you cannot assign to specific objects. they are random
     print(ram_state)
 
 
 # Seaquest
 def _augment_info_seaquest(info, ram_state):
-    info["player_x"] = ram_state[70]   # starts at x = 76, rightmost position is x = 134and leftmost position is x = 21
-    info["player_y"] = ram_state[97]    # starts at y = 13 the lowest it can go is y = 108
-    info["oxygen"] = ram_state[102]     # 0-64: 64 is full oxygen
-    info["Enemy_x"] = ram_state[30-33]  # probably bigger but first level only has max 4 enemies
-    info["divers_x_or_enemy_missiles"] = ram_state[71:75]   # probably also bigger in later levels
-    info["divers_collected"] = ram_state[62]    # renders correctly up until 6 divers collected
-    info["lives"] = ram_state[59]   # renders correctly up until 6 lives
-    info["score"] = (_convert_number(ram_state[57])*100) + _convert_number(ram_state[58])   # the game saves these
+    info["player_x"] = ram_state[70]  # starts at x = 76, rightmost reachable position is x = 134 and
+    # leftmost reachable position is x = 21
+    info["player_y"] = ram_state[97]  # starts at y = 13 the lowest it can go is y = 108
+    info["oxygen"] = ram_state[102]  # 0-64: 64 is full oxygen
+    info["enemy_x"] = {"first lane (lowest)": ram_state[30], "second lane": _saturation_addition(ram_state[31], 31),
+                       "third lane": _saturation_addition(ram_state[31], 31),
+                       "fourth lane": _saturation_addition(ram_state[31], 31)}
+    info["divers_x_or_enemy_missiles"] = ram_state[71:75]  # probably also bigger in later levels
+    info["divers_collected"] = ram_state[62]  # renders correctly up until 6 divers collected
+    info["lives"] = ram_state[59]  # renders correctly up until 6 lives
+    info["score"] = (_convert_number(ram_state[57]) * 100) + _convert_number(ram_state[58])  # the game saves these
     # numbers in 4 bit intervals (hexadecimal) but only displays the decimal numbers 1 has something to do with seed or
     # level (changes the spawns but doesnt really make it more difficult) at 253-255 it goes crazy
     info["player_missiles_x"] = ram_state[103]
-
+    # TODO
+    # y-position for lanes
+    # 
     print(ram_state)
 
 
@@ -116,3 +121,18 @@ def _convert_number(number):
             number_str += x
         count += 1
     return int(number_str)
+
+
+def _saturation_addition(x, summand):
+    """
+    The game SEAQUEST displays all enemies from x=0 (left side of the screen) up to x=158 (right side of the screen).
+    These coordinates correspond to the player x-position and enemy x-position of the lowest lane extracted from the
+    RAM. However the extracted value 0 for the other enemy lanes do not correspond to the left hand side of the screen.
+    Thus they have to be manipulated by adding an offset, if the sum is over 255 the next value should be 0 because
+    only values up to 255 are shown in the RAM.
+    """
+    if x + summand > 255:
+        dif = summand - (255 - x) - 1
+        return dif
+    else:
+        return x + summand
