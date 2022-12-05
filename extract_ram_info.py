@@ -48,16 +48,21 @@ def _augment_info_seaquest(info, ram_state):
     # leftmost reachable position is x = 21
     info["player_y"] = ram_state[97]  # starts at y = 13 the lowest it can go is y = 108
     info["oxygen"] = ram_state[102]  # 0-64: 64 is full oxygen
-    info["enemy_x"] = {"first lane (lowest)": ram_state[30], "second lane": _saturation_addition(ram_state[31], 31),
+    info["enemy_x"] = {"first lane (lowest)": ram_state[30],
+                       "second lane": _saturation_addition(ram_state[31], 31),
                        "third lane": _saturation_addition(ram_state[32], 31),
-                       "fourth lane": _saturation_addition(ram_state[33], 31)}
+                       "fourth lane": _saturation_addition(ram_state[33], 31),
+                       "fifth lane (highest)": ram_state[118]#only moves if top_enemy_enabled is 2 or higher
+                        }
     info["divers_x_or_enemy_missiles"] = ram_state[71:75]  # probably also bigger in later levels
     info["divers_collected"] = ram_state[62]  # renders correctly up until 6 divers collected
     info["lives"] = ram_state[59]  # renders correctly up until 6 lives
     info["score"] = (_convert_number(ram_state[57]) * 100) + _convert_number(ram_state[58])  # the game saves these
     # numbers in 4 bit intervals (hexadecimal) but only displays the decimal numbers 1 has something to do with seed or
-    # level (changes the spawns but doesnt really make it more difficult) at 253-255 it goes crazy
     info["player_missiles_x"] = ram_state[103]
+    info["level"] = ram_state[61] #changes enemy types, speed, number... the higher the value the harder the game currently is
+
+    info["top_enemy_enabled"] = ram_state[60] #enables the top ship if higher/equal than 2
     # TODO
     # y-position for lanes
     print(ram_state)
