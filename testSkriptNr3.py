@@ -11,7 +11,7 @@ prevRam = None
 already_figured_out = []
 for i in range(1000):
     # n: next line, c: resume execution
-    if info.get('frame_number') > 252:
+    if info.get('frame_number') > 250:
         ipdb.set_trace()
     # action = self._action_set[1]
 
@@ -19,7 +19,7 @@ for i in range(1000):
     # terminated = True if env terminates (completion or failure),
     # truncated = True if episodes truncates due to a time limit or a reason that is not defined of the task
 
-    obs, reward, terminated, truncated, info = env.step(random.randint(3, 4))
+    obs, reward, terminated, truncated, info = env.step(random.randint(0, 0))
 
     ram = env._env.unwrapped.ale.getRAM()
     if prevRam is not None:

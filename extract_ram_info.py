@@ -44,6 +44,24 @@ def _augment_info_skiing(info, ram_state):
 
 # Seaquest
 def _augment_info_seaquest(info, ram_state):
+    """
+    The game SEAQUEST displays the enemies and divers at specific lanes they move on. Thus there y-Position is fixed.
+    Illustration:
+
+    x=0                             x=158
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (Surface, Lane 5)
+
+    -------------------------------- (Lane 4)
+
+    -------------------------------- (Lane 3)
+
+    -------------------------------- (Lane 2)
+
+    -------------------------------- (Lane 1)
+
+    _________________________________ (Underground)
+
+    """
     info["player_x"] = ram_state[70]  # starts at x = 76, rightmost reachable position is x = 134 and
     # leftmost reachable position is x = 21
     info["player_y"] = ram_state[97]  # starts at y = 13 the lowest it can go is y = 108
@@ -52,17 +70,20 @@ def _augment_info_seaquest(info, ram_state):
                        "second lane": _saturation_addition(ram_state[31], 31),
                        "third lane": _saturation_addition(ram_state[32], 31),
                        "fourth lane": _saturation_addition(ram_state[33], 31),
-                       "fifth lane (highest)": ram_state[118]#only moves if top_enemy_enabled is 2 or higher
-                        }
-    info["divers_x_or_enemy_missiles"] = ram_state[71:75]  # probably also bigger in later levels
+                       "fifth lane (highest)": ram_state[118]  # only moves if top_enemy_enabled is 2 or higher
+                       }
+    info["divers_x_or_enemy_missiles"] = {"first lane (lowest)": ram_state[71],
+                                          "second lane": ram_state[72],
+                                          "third lane": ram_state[73],
+                                          "fourth lane": ram_state[74]}     # probably also bigger in later levels
     info["divers_collected"] = ram_state[62]  # renders correctly up until 6 divers collected
     info["lives"] = ram_state[59]  # renders correctly up until 6 lives
     info["score"] = (_convert_number(ram_state[57]) * 100) + _convert_number(ram_state[58])  # the game saves these
     # numbers in 4 bit intervals (hexadecimal) but only displays the decimal numbers 1 has something to do with seed or
     info["player_missiles_x"] = ram_state[103]
-    info["level"] = ram_state[61] #changes enemy types, speed, number... the higher the value the harder the game currently is
-
-    info["top_enemy_enabled"] = ram_state[60] #enables the top ship if higher/equal than 2
+    info["level"] = ram_state[61]  # changes enemy types, speed, number... the higher the value the harder
+    # the game currently is
+    info["top_enemy_enabled"] = ram_state[60]  # enables the top ship if higher/equal than 2
     # TODO
     # y-position for lanes
     print(ram_state)
@@ -127,7 +148,7 @@ def _convert_number(number):
     return int(number_str)
 
 
-def _saturation_addition(x, summand):
+def _saturation_addition(x, offset):
     """
     The game SEAQUEST displays all enemies from x=0 (left side of the screen) up to x=158 (right side of the screen).
     These coordinates correspond to the player x-position and enemy x-position of the lowest lane extracted from the
@@ -135,8 +156,5 @@ def _saturation_addition(x, summand):
     Thus they have to be manipulated by adding an offset, if the sum is over 255 the next value should be 0 because
     only values up to 255 are shown in the RAM.
     """
-    if x + summand > 255:
-        dif = summand - (255 - x) - 1
-        return dif
-    else:
-        return x + summand
+
+    return (x + offset) % 256
