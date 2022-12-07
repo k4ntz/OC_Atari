@@ -72,24 +72,23 @@ def _augment_info_seaquest(info, ram_state):
                        "fourth lane": _saturation_addition(ram_state[33], 31),
                        "fifth lane (highest)": ram_state[118]  # only moves if top_enemy_enabled is 2 or higher
                        }
-    info["divers_x_or_enemy_missiles"] = {"first lane (lowest)": ram_state[71],
+    info["divers_x_or_enemy_missiles"] = {"first lane (lowest)": ram_state[71], 
                                           "second lane": ram_state[72],
                                           "third lane": ram_state[73],
-                                          "fourth lane": ram_state[74]}     # probably also bigger in later levels
+                                          "fourth lane": ram_state[74]
+                                          } # probably also bigger in later levels    
     info["divers_collected"] = ram_state[62]  # renders correctly up until 6 divers collected
     info["lives"] = ram_state[59]  # renders correctly up until 6 lives
-    info["score"] = (_convert_number(ram_state[57]) * 100) + _convert_number(ram_state[58])  # the game saves these
-    # numbers in 4 bit intervals (hexadecimal) but only displays the decimal numbers
+    info["score"] = (_convert_number(ram_state[57]) * 100) + _convert_number(ram_state[58])  # the game saves these numbers in 4 bit intervals (hexadecimal) but only displays the decimal numbers
     info["player_missiles_x"] = ram_state[103]
-    info["level"] = ram_state[61]  # changes enemy types, speed, number... the higher the value the harder
-    # the game currently is
+    info["level"] = ram_state[61]  # changes enemy types, speed, number... the higher the value the harder the game currently is
     info["top_enemy_enabled"] = ram_state[60]  # enables the top ship if higher/equal than 2
-    info["lane_y_position"] =  {"first lane (lowest)": 100, #the lanes actual y-positions are not saved within the RAM, therefor these are educated guesses
+    info["lane_y_position"] =  {"first lane (lowest)": 100, 
                                 "second lane": 75,
                                 "third lane": 50,
                                 "fourth lane": 25,
                                 "water surface": 13
-                                } 
+                                } #the lanes actual y-positions are not saved within the RAM, therefore these are educated guesses
     print(ram_state)
 
 
