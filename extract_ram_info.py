@@ -84,11 +84,12 @@ def _augment_info_seaquest(info, ram_state):
     info["level"] = ram_state[61]  # changes enemy types, speed, number... the higher the value the harder
     # the game currently is
     info["top_enemy_enabled"] = ram_state[60]  # enables the top ship if higher/equal than 2
-    info["lane_y_position"] =  {"first lane (lowest)": 100,
+    info["lane_y_position"] =  {"first lane (lowest)": 100, #the lanes actual y-positions are not saved within the RAM, therefor these are educated guesses
                                 "second lane": 75,
                                 "third lane": 50,
                                 "fourth lane": 25,
-                                "water surface": 13} #the lanes actual y-positions are not saved within the RAM, therefor these are educated guesses
+                                "water surface": 13
+                                } 
     print(ram_state)
 
 
