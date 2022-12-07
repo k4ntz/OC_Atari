@@ -79,13 +79,16 @@ def _augment_info_seaquest(info, ram_state):
     info["divers_collected"] = ram_state[62]  # renders correctly up until 6 divers collected
     info["lives"] = ram_state[59]  # renders correctly up until 6 lives
     info["score"] = (_convert_number(ram_state[57]) * 100) + _convert_number(ram_state[58])  # the game saves these
-    # numbers in 4 bit intervals (hexadecimal) but only displays the decimal numbers 1 has something to do with seed or
+    # numbers in 4 bit intervals (hexadecimal) but only displays the decimal numbers
     info["player_missiles_x"] = ram_state[103]
     info["level"] = ram_state[61]  # changes enemy types, speed, number... the higher the value the harder
     # the game currently is
     info["top_enemy_enabled"] = ram_state[60]  # enables the top ship if higher/equal than 2
-    # TODO
-    # y-position for lanes
+    info["lane_y_position"] =  {"first lane (lowest)": 100,
+                                "second lane": 75,
+                                "third lane": 50,
+                                "fourth lane": 25,
+                                "water surface": 13} #the lanes actual y-positions are not saved within the RAM, therefor these are educated guesses
     print(ram_state)
 
 
