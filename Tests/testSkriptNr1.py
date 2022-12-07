@@ -1,8 +1,5 @@
 import gym
-from ocatari import OCAtari
 import time
-import matplotlib.pyplot as plt
-import ipdb
 
 # created by timo to print out the ram changes and general testing
 
@@ -42,7 +39,7 @@ already_figured_out = [25, 107, 104, 105, 106, 14]  # all the ram positions you 
 filter = [0, 29, 98, 101] + already_figured_out  # additional filter
 for _ in range(1000):
     # ipdb.set_trace()
-    # action = policy(observation)  # User-defined policy function
+    # action = policy(observation)   User-defined policy function
     observation, reward, terminated, truncated, info = env.step(0)
 
     ram = env.unwrapped.ale.getRAM()

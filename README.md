@@ -5,7 +5,7 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 
 ##
 ```py
-from OC_Atari.ocatari import OCAtari
+from ocatari import OCAtari
 import time
 import random
 env = OCAtari("Skiing")
@@ -14,7 +14,8 @@ for i in range(1000):
    #action = self._action_set[1]
 
    #done split into 2 parts: 
-   #terminated = True if env terminates (completion or failure), truncated = True if episodes truncates due to a time limit or a reason that is not defined of the task
+   #terminated = True if env terminates (completion or failure), 
+   # truncated = True if episodes truncates due to a time limit or a reason that is not defined of the task
     obs, reward, terminated, truncated, info = env.step(random.randint(0, 2))
     if terminated or truncated:
         observation, info = env.reset()
