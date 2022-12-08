@@ -5,7 +5,7 @@ import ipdb
 
 # test with the ipdb debugger
 
-env = OCAtari("Seaquest")
+env = OCAtari("Breakout")
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
