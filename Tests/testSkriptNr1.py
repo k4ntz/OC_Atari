@@ -22,7 +22,7 @@ observation, info = env.reset(seed=42)
 for i in range(1000):
     actionSpace = env._env.action_space
     action = actionSpace.sample()
-    obs, reward,terminated, done, info = env.step(1)
+    obs, reward, terminated, done, info = env.step(1)
     if terminated or done:
         observation, info = env.reset()
     #print(info)
