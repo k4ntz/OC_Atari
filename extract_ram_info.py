@@ -44,9 +44,10 @@ def _augment_info_skiing(info, ram_state):
     info["object_colour"] = ram_state[78:85]  # 85 is the newest object, 78 is the oldest  |probably not important
     print(ram_state)
 
-
+# TODO
+# Same function but as a human representation
 # Seaquest
-def _augment_info_seaquest(info, ram_state):
+def _augment_info_seaquest_raw(info, ram_state):
     """
     The game SEAQUEST displays the enemies and divers at specific lanes, where they move from the right side to the left
     or from the left side to the right. Thus there y-Position is fixed.
