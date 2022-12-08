@@ -59,7 +59,8 @@ def _augment_info_skiing_raw(info, ram_state):
     info["object_colour"] = ram_state[78:85]  # 85 is the newest object, 78 is the oldest  |probably not important
     print(ram_state)
 
-
+# TODO
+# Same function but as a human representation
 # Seaquest
 def _augment_info_seaquest_raw(info, ram_state):
     """
