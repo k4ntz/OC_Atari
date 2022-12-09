@@ -1,6 +1,5 @@
 import gym
 import time
-import random
 # created by timo to set the ram and see whats changed
 
 env = gym.make("Seaquest", render_mode="human")
@@ -15,7 +14,7 @@ for _ in range(1000):
     ram = env.unwrapped.ale.getRAM()
     target_ram_position = 33
     previos_ram_at_position = ram[target_ram_position]
-    new_ram_value = 225 # previos_ram_at_position+50#random.randint(0, 255)
+    new_ram_value = 225     # previos_ram_at_position+50#random.randint(0, 255)
     # print(new_ram_value)
     print(ram)
     if new_ram_value > 255 or new_ram_value < 0:
