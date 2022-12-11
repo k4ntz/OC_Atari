@@ -17,6 +17,8 @@ def augment_info_raw(info, ram_state, game_name):
         _augment_info_seaquest_raw(info, ram_state)
     elif game_name.lower() == "pong":
         _augment_info_pong_raw(info, ram_state)
+    elif game_name.lower() == "tennis":
+        _augment_info_tennis_raw(info, ram_state)
     else:
         print(colored("Uncovered game", "red"))
         exit(1)
@@ -36,6 +38,8 @@ def augment_info_revised(info, ram_state, game_name):
         _augment_info_seaquest_revised(info, ram_state)
     elif game_name.lower() == "pong":
         _augment_info_pong_revised(info, ram_state)
+    elif game_name.lower() == "tennis":
+        _augment_info_tennis_revised(info, ram_state)
     else:
         print(colored("Uncovered game", "red"))
         exit(1)

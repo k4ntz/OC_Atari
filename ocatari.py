@@ -5,7 +5,7 @@ from extract_vision_info import augment_info_vision
 from termcolor import colored
 
 
-AVAILABLE_GAMES = ["Boxing", "Breakout", "Skiing", "Pong", "Seaquest"]
+AVAILABLE_GAMES = ["Boxing", "Breakout", "Skiing", "Pong", "Seaquest", "Tennis"]
 
 
 class OCAtari():

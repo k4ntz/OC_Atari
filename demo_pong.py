@@ -8,13 +8,14 @@ from vision.pong import objects_colors
 
 game_name = "Boxing"
 # game_name = "Pong"
+game_name = "Tennis"
 env = OCAtari(game_name, mode="revised", render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
 for i in range(1000):
-    obs, reward, terminated, truncated, info = env.step(random.randint(0, 0))
-    if info.get('frame_number') > 100 and i % 10 == 0:
+    obs, reward, terminated, truncated, info = env.step(random.randint(0, 5))
+    if info.get('frame_number') > 100 and i % 2 == 0:
         for obj_name, oinfo in info["objects"].items():
             opos = oinfo[:4]
             ocol = oinfo[4:]
