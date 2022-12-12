@@ -1,5 +1,4 @@
 import gym
-from termcolor import colored
 from extract_ram_info import augment_info_raw, augment_info_revised
 from extract_vision_info import augment_info_vision
 from termcolor import colored

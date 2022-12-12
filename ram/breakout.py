@@ -36,5 +36,6 @@ def _augment_info_breakout_raw(info, ram_state):
     info["player"] = ram_state[72] - 47, 189
     print(ram_state)
 
+
 def _augment_info_breakout_revised(info, ram_state):
     pass

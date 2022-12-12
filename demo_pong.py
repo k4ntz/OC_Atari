@@ -1,7 +1,5 @@
 from ocatari import OCAtari
-import time
 import random
-import ipdb
 import matplotlib.pyplot as plt
 from vision.utils import mark_point, mark_bb, make_darker
 from vision.tennis import objects_colors
