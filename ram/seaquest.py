@@ -1,4 +1,4 @@
-from skiing import _convert_number
+from ._helper_methods import _convert_number
 
 
 def _augment_info_seaquest_raw(info, ram_state):
