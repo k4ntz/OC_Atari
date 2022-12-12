@@ -1,4 +1,4 @@
-from termcolor.termcolor import colored
+from termcolor import colored
 from vision.pong import _detect_objects_pong
 from vision.tennis import _detect_objects_tennis
 
