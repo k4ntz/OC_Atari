@@ -22,4 +22,8 @@ def _detect_objects_pong(info, obs):
     for obj in detected["bbs"]:
         y, x, h, w, type, name = obj
         objects[name] = (x, y, w, h)
+    # if "ball" not in objects:
+    #     objects["ball"] = (0, 0, 2, 2)
+    # if "enemy" not in objects:
+    #     objects["enemy"] = (0, 0, 2, 2)
     info["objects"] = objects

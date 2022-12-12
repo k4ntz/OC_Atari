@@ -4,25 +4,29 @@ import random
 import ipdb
 import matplotlib.pyplot as plt
 from vision.utils import mark_point, mark_bb, make_darker
-from vision.pong import objects_colors
+from vision.tennis import objects_colors
 
 
-env = OCAtari("Pong", mode="vision", render_mode='rgb_array')
-# env = OCAtari("Pong", mode="revised", render_mode='rgb_array')
+game_name = "Boxing"
+# game_name = "Pong"
+game_name = "Tennis"
+MODE = "vision"
+MODE = "revised"
+env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
 for i in range(1000):
-    # done split into 2 parts:
-    # terminated = True if env terminates (completion or failure),
-    # truncated = True if episodes truncates due to a time limit or a reason that is not defined of the task
-
-    obs, reward, terminated, truncated, info = env.step(random.randint(0, 0))
+    obs, reward, terminated, truncated, info = env.step(random.randint(0, 5))
     if info.get('frame_number') > 100 and i % 10 == 0:
-        for obj_name, pos in info["objects"].items():
-            sur_col = make_darker(objects_colors[obj_name])
-            mark_bb(obs, pos, color=sur_col)
-            mark_point(obs, *pos[:2], color=(255, 255, 0))
+        for obj_name, oinfo in info["objects"].items():
+            opos = oinfo[:4]
+            ocol = oinfo[4:]
+            if MODE == "vision":
+                ocol = objects_colors[obj_name]
+            sur_col = make_darker(ocol)
+            mark_bb(obs, opos, color=sur_col)
+            # mark_point(obs, *opos[:2], color=(255, 255, 0))
         plt.imshow(obs)
         plt.show()
 

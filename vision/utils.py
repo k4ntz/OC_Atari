@@ -123,4 +123,7 @@ def make_darker(color, col_precent=0.8):
     """
     return a darker color
     """
+    if not color:
+        print("No color passed, using default black")
+        return [0, 0, 0]
     return [int(col*col_precent) for col in color]
