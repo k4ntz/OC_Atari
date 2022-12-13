@@ -90,15 +90,16 @@ plt.xticks(list(np.arange(0.5, len(xlabs)+.5, 1)), xlabs)
 plt.title(game_name)
 plt.show()
 
-import ipdb; ipdb.set_trace()
 corrT = corr.T
 for el in corrT:
     maxval = corrT[el].abs().max()
     idx = corrT[el].abs().idxmax()
-    print(corrT)
-    print(el, idx)
     if maxval > 0.9:
-        plt.scatter(df[idx], df[el])
+        x, y = df[idx], df[el]
+        a, b = np.polyfit(x, y, deg=1)
+        plt.scatter(x, y, marker="x")
+        plt.plot(x, a * x + b, color="k", lw=2.5)
+        print(f"{el} = {a} x ram[{idx}] + {b} ")
         plt.xlabel(idx)
         plt.ylabel(el)
         plt.show()

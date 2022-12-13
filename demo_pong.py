@@ -16,7 +16,7 @@ prevRam = None
 already_figured_out = []
 for i in range(1000):
     obs, reward, terminated, truncated, info = env.step(random.randint(0, 5))
-    if info.get('frame_number') > 100 and i % 10 == 0:
+    if info.get('frame_number') > 100 and i % 100 == 0:
         for obj_name, oinfo in info["objects"].items():
             opos = oinfo[:4]
             ocol = oinfo[4:]
