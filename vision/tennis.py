@@ -1,5 +1,4 @@
-from .utils import bb_by_color, plot_bounding_boxes
-
+from .utils import bb_by_color
 
 objects_colors = {
         "enemy": [117, 128, 240], "player": [240, 128, 128],

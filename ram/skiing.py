@@ -1,5 +1,6 @@
 from ._helper_methods import _convert_number
 
+
 def _augment_info_skiing_raw(info, ram_state):
     # player starts at x = 76
     info["player_x"] = ram_state[25]  # can go up to 150 (170 and you are back to the left side)
@@ -27,4 +28,3 @@ def _time_skiing(ram_state):
     # milliseconds
     time["milli_seconds"] = _convert_number(ram_state[106])
     return time
-

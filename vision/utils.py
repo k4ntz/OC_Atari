@@ -37,11 +37,11 @@ def mark_point(image_array, x, y, color=(255, 0, 0), size=1, show=False, cross=T
     """
     marks a point on the image at the (x,y) position and displays it
     """
-    for i in range(-size, size+1):
-        for j in range(-size, size+1):
-            if (not cross or i == j or i == -j) and x+i >= 0 and x+j >= 0 \
-                    and x+i < 160 and y+j < 210:
-                image_array[y+j, x+i] = color
+    for i in range(-size, size + 1):
+        for j in range(-size, size + 1):
+            if (not cross or i == j or i == -j) and x + i >= 0 and x + j >= 0 \
+                    and x + i < 160 and y + j < 210:
+                image_array[y + j, x + i] = color
     if show:
         plt.imshow(image_array)
         plt.show()
@@ -63,11 +63,10 @@ def mark_bb(image_array, bb, color=(255, 0, 0), surround=True):
             y, h = bb[1], bb[3]
     bottom = min(209, y + h)
     right = min(159, x + w)
-    image_array[y:bottom+1, x] = color
-    image_array[y:bottom+1, right] = color
-    image_array[y, x:right+1] = color
-    image_array[bottom, x:right+1] = color
-
+    image_array[y:bottom + 1, x] = color
+    image_array[y:bottom + 1, right] = color
+    image_array[y, x:right + 1] = color
+    image_array[bottom, x:right + 1] = color
 
 
 def plot_bounding_boxes(obs, bbs, objects_colors):
@@ -77,7 +76,6 @@ def plot_bounding_boxes(obs, bbs, objects_colors):
         except KeyError as err:
             print(err)
             mark_bb(obs, bb, np.array([255, 255, 255]))
-
 
 
 def find_objects(image, color, closing_active=True, size=None, tol_s=10,
@@ -126,4 +124,4 @@ def make_darker(color, col_precent=0.8):
     if not color:
         print("No color passed, using default black")
         return [0, 0, 0]
-    return [int(col*col_precent) for col in color]
+    return [int(col * col_precent) for col in color]
