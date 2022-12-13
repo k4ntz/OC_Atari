@@ -1,6 +1,6 @@
-from .pong import _detect_objects_pong
+from .extract_vision_info import augment_info_vision
 
 
 __all__ = [
-    "_detect_objects_pong"
+    "augment_info_vision",
 ]

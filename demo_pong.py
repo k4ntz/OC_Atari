@@ -1,27 +1,30 @@
 from ocatari import OCAtari
-import time
 import random
-import ipdb
 import matplotlib.pyplot as plt
-from vision.utils import mark_point, mark_bb, make_darker
-from vision.pong import objects_colors
+from vision.utils import mark_bb, make_darker
+from vision.tennis import objects_colors
+
 
 game_name = "Boxing"
 # game_name = "Pong"
 game_name = "Tennis"
-env = OCAtari(game_name, mode="revised", render_mode='rgb_array')
+MODE = "vision"
+MODE = "revised"
+env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
 for i in range(1000):
     obs, reward, terminated, truncated, info = env.step(random.randint(0, 5))
-    if info.get('frame_number') > 100 and i % 2 == 0:
+    if info.get('frame_number') > 100 and i % 100 == 0:
         for obj_name, oinfo in info["objects"].items():
             opos = oinfo[:4]
             ocol = oinfo[4:]
+            if MODE == "vision":
+                ocol = objects_colors[obj_name]
             sur_col = make_darker(ocol)
             mark_bb(obs, opos, color=sur_col)
-            mark_point(obs, *opos[:2], color=(255, 255, 0))
+            # mark_point(obs, *opos[:2], color=(255, 255, 0))
         plt.imshow(obs)
         plt.show()
 
