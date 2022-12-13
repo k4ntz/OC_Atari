@@ -1,9 +1,6 @@
 from ocatari import OCAtari
-import time
 import random
 import matplotlib.pyplot as plt
-from vision.pong import objects_colors
-from vision.tennis import objects_colors
 from copy import deepcopy
 from tqdm import tqdm
 import numpy as np

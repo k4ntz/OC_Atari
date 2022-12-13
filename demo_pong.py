@@ -1,7 +1,7 @@
 from ocatari import OCAtari
 import random
 import matplotlib.pyplot as plt
-from vision.utils import mark_point, mark_bb, make_darker
+from vision.utils import mark_bb, make_darker
 from vision.tennis import objects_colors
 
 
