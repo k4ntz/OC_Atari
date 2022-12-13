@@ -1,3 +1,7 @@
+"""
+Demo script that allows me to find the correlation between ram states and
+detected objects through vision in Tennis
+"""
 from ocatari import OCAtari
 import random
 import matplotlib.pyplot as plt
@@ -6,7 +10,17 @@ from tqdm import tqdm
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import ipdb
+from sklearn.linear_model import RANSACRegressor, LinearRegression
+
+
+def ransac_regression(x, y):
+    ransac = RANSACRegressor(estimator=LinearRegression(),
+                             min_samples=50, max_trials=100,
+                             loss='absolute_error', random_state=42,
+                             residual_threshold=10)
+    ransac.fit(np.array(x).reshape(-1, 1), y)
+    return ransac.estimator_.coef_.item(), ransac.estimator_.intercept_.item()
+
 
 DROP_LOW = True
 MIN_CORRELATION = 0.8
@@ -15,7 +29,7 @@ game_name = "TennisDeterministic-v0"
 # game_name = "PongDeterministic-v0"
 MODE = "vision"
 RENDER_MODE = "human"
-# RENDER_MODE = "rgb_array"
+RENDER_MODE = "rgb_array"
 env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
@@ -90,10 +104,11 @@ for el in corrT:
     idx = corrT[el].abs().idxmax()
     if maxval > 0.9:
         x, y = df[idx], df[el]
-        a, b = np.polyfit(x, y, deg=1)
+        # a, b = np.polyfit(x, y, deg=1)
+        a, b = ransac_regression(x, y)
         plt.scatter(x, y, marker="x")
         plt.plot(x, a * x + b, color="k", lw=2.5)
-        print(f"{el} = {a} x ram[{idx}] + {b} ")
+        print(f"{el} = {a:.2f} x ram[{idx}] + {b:.2f} ")
         plt.xlabel(idx)
         plt.ylabel(el)
         plt.show()
