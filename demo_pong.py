@@ -6,7 +6,7 @@ from vision.tennis import objects_colors
 
 
 game_name = "Boxing"
-# game_name = "Pong"
+game_name = "Pong"
 game_name = "Tennis"
 MODE = "vision"
 MODE = "revised"
