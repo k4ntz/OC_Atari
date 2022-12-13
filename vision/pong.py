@@ -11,9 +11,11 @@ def _detect_objects_pong(info, obs):
     detected["bbs"] = []
     # detection and filtering
     bb_by_color(detected, obs, objects_colors['player'], "player")
-    detected['bbs'] = [bb if bb[5] != "player" or bb[0] > 30 else (*bb[:4], "S", "player_score") for bb in detected['bbs']]
+    detected['bbs'] = [bb if bb[5] != "player" or bb[0] > 30 else (*bb[:4], "S", "player_score")
+                       for bb in detected['bbs']]
     bb_by_color(detected, obs, objects_colors['enemy'], "enemy")
-    detected['bbs'] = [bb if bb[5] != "enemy" or bb[0] > 30 else (*bb[:4], "S", "enemy_score") for bb in detected['bbs']]
+    detected['bbs'] = [bb if bb[5] != "enemy" or bb[0] > 30 else (*bb[:4], "S", "enemy_score")
+                       for bb in detected['bbs']]
     bb_by_color(detected, obs, objects_colors['ball'], "ball")
     detected['bbs'] = [bb for bb in detected['bbs'] if bb[5] != "ball" or bb[3] < 20]
     if False:

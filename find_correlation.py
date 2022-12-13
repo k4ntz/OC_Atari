@@ -9,11 +9,10 @@ from tqdm import tqdm
 import numpy as np
 import pandas as pd
 import seaborn as sns
-
+import ipdb
 
 DROP_LOW = True
 MIN_CORRELATION = 0.8
-
 
 game_name = "TennisDeterministic-v0"
 # game_name = "PongDeterministic-v0"
@@ -22,7 +21,6 @@ RENDER_MODE = "human"
 # RENDER_MODE = "rgb_array"
 env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
-
 
 observation, info = env.reset()
 object_list = ["ball", "enemy", "player", "ball_shadow"]
@@ -50,7 +48,6 @@ for i in tqdm(range(200)):
         ram = env._env.unwrapped.ale.getRAM()
         ram_saves.append(deepcopy(ram))
         # env.render()
-
 
     # modify and display render
 env.close()
@@ -86,11 +83,11 @@ for tick in ax.get_yticklabels():
     tick.set_rotation(0)
 
 xlabs = corr.columns.to_list()
-plt.xticks(list(np.arange(0.5, len(xlabs)+.5, 1)), xlabs)
+plt.xticks(list(np.arange(0.5, len(xlabs) + .5, 1)), xlabs)
 plt.title(game_name)
 plt.show()
 
-import ipdb; ipdb.set_trace()
+ipdb.set_trace()
 corrT = corr.T
 for el in corrT:
     maxval = corrT[el].abs().max()

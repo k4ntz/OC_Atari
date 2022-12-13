@@ -24,7 +24,7 @@ def _augment_info_seaquest_raw(info, ram_state):
     info["player_x"] = ram_state[70]  # start x = 76, rightmost pos. x = 134 and leftmost reachable pos. x = 21
     info["player_y"] = ram_state[97]  # starts at y = 13, underground at y = 108
     info["oxygen"] = ram_state[102]  # 0-64: 64 is full oxygen
-    info["lives"] = ram_state[59]  # renders correctly up until 6 lives
+    info["lives"] = ram_state[59]  # correct until 6 lives
     info["score"] = (_convert_number(ram_state[57]) * 100) + _convert_number(ram_state[58])  # the game saves these
     # numbers in 4 bit intervals (hexadecimal) but only displays the decimal numbers
     info["level"] = ram_state[61]  # changes enemies, speed, ... the higher the value the harder the game currently is
@@ -59,6 +59,7 @@ def _augment_info_seaquest_raw(info, ram_state):
     # 8: same as 0; 9: same as 1 -> modulo 8
     print(ram_state)
 
+
 def _augment_info_seaquest_human(info, ram_state):
     """
     The game SEAQUEST displays the enemies and divers at specific lanes, where they move from the right side to the left
@@ -81,8 +82,8 @@ def _augment_info_seaquest_human(info, ram_state):
     """
     info["player_x"] = ram_state[70] - 21  # start x = 76, rightmost pos. x = 134 and leftmost reachable pos. x = 21
     info["player_y"] = ram_state[97] - 13  # starts at y = 13, underground at y = 108
-    info["oxygen"] = (ram_state[102]/64) * 100 # oxygen in percent
-    info["lives"] = ram_state[59]   # renders correctly up until 6 lives
+    info["oxygen"] = (ram_state[102] / 64) * 100  # oxygen in percent
+    info["lives"] = ram_state[59]  # renders correctly up until 6 lives
     info["score"] = (_convert_number(ram_state[57]) * 100) + _convert_number(ram_state[58])  # the game saves these
     # numbers in 4 bit intervals (hexadecimal) but only displays the decimal numbers
     info["level"] = ram_state[61]  # changes enemies, speed, ... the higher the value the harder the game currently is
@@ -93,7 +94,7 @@ def _augment_info_seaquest_human(info, ram_state):
         info["player_direction"] = "rechts"
     else:
         info["player_direction"] = "links"
-    
+
     info["enemy_x"] = {"first lane (lowest)": ram_state[30] - 21,  # the x-position of the left most enemy in that lane
                        "second lane": ram_state[31] - 21,  # even when that enemy is not displayed
                        "third lane": ram_state[32] - 21,
@@ -116,29 +117,30 @@ def _augment_info_seaquest_human(info, ram_state):
 
     enemy_list = []
     for i in range(4):
-        if ram_state[36+ i] % 8 == 0:
+        if ram_state[36 + i] % 8 == 0:
             enemy_list.append("no enemy")
-        elif ram_state[36+ i] % 8 == 1:
+        elif ram_state[36 + i] % 8 == 1:
             enemy_list.append("right enemy")
-        elif ram_state[36+ i] % 8 == 2:
+        elif ram_state[36 + i] % 8 == 2:
             enemy_list.append("middle enemy")
-        elif ram_state[36+ i] % 8 == 3:
+        elif ram_state[36 + i] % 8 == 3:
             enemy_list.append("right and middle enemy")
-        elif ram_state[36+ i] % 8 == 4:
+        elif ram_state[36 + i] % 8 == 4:
             enemy_list.append("left enemy")
-        elif ram_state[36+ i] % 8 == 5:
+        elif ram_state[36 + i] % 8 == 5:
             enemy_list.append("right and left enemy")
-        elif ram_state[36+ i] % 8 == 6:
+        elif ram_state[36 + i] % 8 == 6:
             enemy_list.append("middle and left enemy")
-        elif ram_state[36+ i] % 8 == 7:
+        elif ram_state[36 + i] % 8 == 7:
             enemy_list.append("right, middle and left enemy")
 
     info["enemy_variations"] = {"first lane (lowest)": enemy_list[1],
                                 "second lane": enemy_list[2],
                                 "third lane": enemy_list[3],
                                 "fourth lane": enemy_list[4]}
-    
+
     print(ram_state)
+
 
 def _augment_info_seaquest_revised(info, ram_state):
     pass
