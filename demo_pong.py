@@ -3,7 +3,7 @@ import random
 import matplotlib.pyplot as plt
 from vision.utils import mark_bb, make_darker
 from vision.tennis import objects_colors
-
+from utils import load_agent, parser
 
 game_name = "Boxing"
 # game_name = "Pong"
@@ -14,9 +14,18 @@ env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
+
+opts = parser.parse_args()
+
+agent = load_agent(opts, env.action_space.n)
+
 for i in range(1000):
-    obs, reward, terminated, truncated, info = env.step(random.randint(0, 5))
-    if info.get('frame_number') > 100 and i % 100 == 0:
+    if opts.path is not None:
+        action = agent.draw_action(env.dqn_obs)
+    else:
+        action = random.randint(0, 5)
+    obs, reward, terminated, truncated, info = env.step(action)
+    if info.get('frame_number') > 0 and i % 100 == 0:
         for obj_name, oinfo in info["objects"].items():
             opos = oinfo[:4]
             ocol = oinfo[4:]
