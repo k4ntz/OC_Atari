@@ -42,7 +42,7 @@ for obj in object_list:
     objects_infos[f"{obj}_x"] = []
     objects_infos[f"{obj}_y"] = []
 ram_saves = []
-for i in tqdm(range(200)):
+for i in tqdm(range(600)):
     obs, reward, terminated, truncated, info = env.step(random.randint(0, 5))
     if info.get('frame_number') > 10 and i % 3 == 0:
         SKIP = False
@@ -62,6 +62,8 @@ for i in tqdm(range(200)):
 
     # modify and display render
 env.close()
+
+import ipdb; ipdb.set_trace()
 
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}

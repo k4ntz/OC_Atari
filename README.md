@@ -33,3 +33,10 @@ for i in range(1000):
     time.sleep(0.01)
 env.close()
 ```
+
+## Downloading trained atari agents
+For trained agents, I use agents of [this repo](https://github.com/floringogianu/atari-agents)
+
+### Use these trained agents:
+Here is an example:
+`python3.8 demo_pong.py -p models/Tennis/1/model_50000000.gz`
