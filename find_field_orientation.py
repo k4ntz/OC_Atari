@@ -35,7 +35,7 @@ objects_infos = {}
 # for i in tqdm(range(800)):
 #     obs, reward, terminated, truncated, info = env.step(random.randint(0, 5))
 #     if info.get('frame_number') > 300 * 4 and i % 3 == 0 and not MODE_CHANGED:
-#         mode = int(input("Enter actual game mode (0 default)"))
+#         mode = int(input("Enter actual field orientation (0 default)"))
 #         if mode == 1:
 #             MODE_CHANGED = True
 #     ram = env._env.unwrapped.ale.getRAM()
