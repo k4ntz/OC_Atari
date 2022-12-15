@@ -5,12 +5,11 @@ field) in Tennis
 from ocatari import OCAtari
 import random
 import matplotlib.pyplot as plt
-from copy import deepcopy
-from tqdm import tqdm
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import pickle
+import ipdb
 
 DROP_LOW = True
 MIN_CORRELATION = 0.5
@@ -73,7 +72,7 @@ corr.drop(subset, axis=1, inplace=True)
 
 ax = sns.heatmap(corr, vmin=-1, vmax=1, annot=True, cmap=sns.diverging_palette(20, 220, n=200))
 
-import ipdb; ipdb.set_trace()
+ipdb.set_trace()
 
 for tick in ax.get_yticklabels():
     tick.set_rotation(0)
