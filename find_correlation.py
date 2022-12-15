@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
+import ipdb
 
 
 def ransac_regression(x, y):
@@ -63,7 +64,7 @@ for i in tqdm(range(600)):
     # modify and display render
 env.close()
 
-import ipdb; ipdb.set_trace()
+ipdb.set_trace()
 
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}

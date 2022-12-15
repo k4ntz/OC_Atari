@@ -63,8 +63,6 @@ for i in tqdm(range(200)):
     # modify and display render
 env.close()
 
-
-
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
 objects_infos.update(from_rams)
