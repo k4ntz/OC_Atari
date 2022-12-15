@@ -5,6 +5,8 @@ field) in Tennis
 from ocatari import OCAtari
 import random
 import matplotlib.pyplot as plt
+# from copy import deepcopy
+# from tqdm import tqdm
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -45,7 +47,6 @@ MODE_CHANGED = False
 # pickle.dump(modes, open('dumps/scores.pkl', 'wb'))
 
 
-
 ram_saves = pickle.load(open('dumps/ram_saves_sc.pkl', 'rb'))
 modes = pickle.load(open('dumps/scores.pkl', 'rb'))
 
@@ -81,7 +82,6 @@ xlabs = corr.columns.to_list()
 plt.xticks(list(np.arange(0.5, len(xlabs) + .5, 1)), xlabs)
 plt.title(game_name)
 plt.show()
-
 
 corrT = corr
 for el in ["6", "72", "70"]:
