@@ -27,5 +27,6 @@ def _detect_objects_tennis(info, obs):
     objects = {}
     for obj in detected["bbs"]:
         y, x, h, w, type, name = obj
-        objects[name] = (x, y, w, h)
+        r,g,b = objects_colors[name]
+        objects[name] = (x, y, w, h, r, g, b)
     info["objects"] = objects
