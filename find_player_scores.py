@@ -5,8 +5,8 @@ field) in Tennis
 from ocatari import OCAtari
 import random
 import matplotlib.pyplot as plt
-from copy import deepcopy
-from tqdm import tqdm
+# from copy import deepcopy
+# from tqdm import tqdm
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -60,7 +60,6 @@ agent = load_agent(opts, env.action_space.n)
 # env.close()
 # pickle.dump(np.array(ram_saves), open('dumps/ram_saves_psc.pkl', 'wb'))
 # pickle.dump(modes, open('dumps/scoresp.pkl', 'wb'))
-
 
 
 ram_saves = pickle.load(open('dumps/ram_saves_psc.pkl', 'rb'))

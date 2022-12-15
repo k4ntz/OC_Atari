@@ -5,8 +5,8 @@ field) in Tennis
 from ocatari import OCAtari
 import random
 import matplotlib.pyplot as plt
-from copy import deepcopy
-from tqdm import tqdm
+# from copy import deepcopy
+# from tqdm import tqdm
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -27,7 +27,7 @@ observation, info = env.reset()
 # create dict of list
 objects_infos = {}
 
-## UNCOMMENT BELLOW TO CREATE THE DATA
+# UNCOMMENT BELLOW TO CREATE THE DATA
 # ram_saves = []
 # mode = 0
 # modes = []
