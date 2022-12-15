@@ -22,7 +22,7 @@ class OCAtari():
             if mode == "raw":
                 print(colored("render_mode_with_bbs only works with revised or vision mode", "red"))
             render_mode = 'rgb_array'
-        self._env = gym.make(env_name,render_mode = render_mode, *args, **kwargs)
+        self._env = gym.make(env_name, render_mode=render_mode, *args, **kwargs)
         self.game_name = env_name.split("-")[0].split("No")[0].split("Deterministic")[0]
         self.mode = mode
         if mode == "vision":
@@ -42,7 +42,7 @@ class OCAtari():
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
         self.augment_info(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
         if self.mode == "revised" and self.render_mode == 'rgb_array_with_bbs':
-            self.info = info            #for render()
+            self.info = info# for render()
             obs = self._add_bbs(obs, info)
         return obs, reward, truncated, terminated, info
 
@@ -68,10 +68,10 @@ class OCAtari():
 
     def render(self, *args, **kwargs):
         obs = self._env.render(*args, **kwargs)
-        if (self.mode == "revised" or self.mode == "vision") and self.render_mode == 'rgb_array_with_bbs' and self.info is not None:
+        if (self.mode == "revised" or self.mode == "vision") and \
+                self.render_mode == 'rgb_array_with_bbs' and self.info is not None:
             obs = self._add_bbs(obs, self.info)
         return obs
 
     def close(self, *args, **kwargs):
         return self._env.close(*args, **kwargs)
-
