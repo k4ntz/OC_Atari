@@ -113,7 +113,10 @@ def do_analysis(env, object_list, dump_path=None, new_dump=False, min_correlatio
     # ---------------------------test-data-dump-------------------------------
     game_name = env.game_name
     if dump_path is None:
-        dump_path = str(pathlib.Path().resolve()) + "/dumps/automated_analysis_dump/" + game_name
+        dump_path = str(pathlib.Path().resolve()) + "/dumps/automated_analysis_dump/"
+    if not os.path.exists(dump_path):
+        os.mkdir(dump_path)
+    dump_path = dump_path +game_name
     if not os.path.exists(dump_path):
         os.mkdir(dump_path)
 
