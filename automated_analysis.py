@@ -27,7 +27,7 @@ def ransac_regression(x, y):
     return ransac.estimator_.coef_.item(), ransac.estimator_.intercept_.item()
 
 
-def generate_dataset(env, object_list, frames=600, skip_frames=3, manipulated_ram=None):
+def generate_dataset(env, object_list,drop_constants, frames=200, skip_frames=3, manipulated_ram=None,):
     """
     generates test Data in the given environment(env) for the given objects(object_list)
     """
@@ -72,7 +72,10 @@ def generate_dataset(env, object_list, frames=600, skip_frames=3, manipulated_ra
         return object_infos
 
     ram_saves = np.array(ram_saves).T
-    from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
+    if drop_constants:
+        from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
+    else:
+        from_rams = {str(i): ram_saves[i] for i in range(128)}
 
     object_infos.update(from_rams)
 
@@ -109,7 +112,29 @@ def dump_heatmap(correlation, filename, game_name):
     plt.savefig(filename)
 
 
-def do_analysis(env, object_list, dump_path=None, new_dump=False, min_correlation=0.7):
+def calculate_offset(vision, ram, corr, pos, maximum = 160):
+    """
+    calculates possible offsets between what is displayed and what is stored in the ram
+    """
+    offset_list = []
+    for i in range(len(vision)):
+        diff = vision[i] - ram[i]
+        if corr < 0:
+            offset_list.append(maximum - diff)
+        else:
+            offset_list.append(diff)
+
+    offset_list = list( dict.fromkeys(offset_list))  # remove duplicates
+    offset_string = ""
+    for offset in offset_list:
+        c = " + "
+        if corr < 0:
+            c = " - "
+        offset_string = offset_string + str(offset) + c +"ram["+pos+"], "
+    return offset_string
+
+
+def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum, drop_constants):
     # ---------------------------test-data-dump-------------------------------
     game_name = env.game_name
     if dump_path is None:
@@ -122,7 +147,7 @@ def do_analysis(env, object_list, dump_path=None, new_dump=False, min_correlatio
 
     oinfo_file = dump_path + "/object_infos"
     if (not os.path.exists(oinfo_file)) or new_dump:
-        dataset = generate_dataset(env, object_list)
+        dataset = generate_dataset(env, object_list, drop_constants)
         with open(oinfo_file, 'wb+') as f:
             pickle.dump(dataset, f)
     else:
@@ -131,27 +156,26 @@ def do_analysis(env, object_list, dump_path=None, new_dump=False, min_correlatio
 
     # -------------------------------------------------------------------------
     corr = get_correlation(dataset, min_correlation=min_correlation)
-    print(corr)
     dump_heatmap(corr, dump_path+"/correlation_heatmap", game_name)
     candidates = corr.T.to_dict()
     approved_candidates = {}
     for obj in object_list:
         for xy in ["_x", "_y"]:
             c = obj + xy
-            candidates[c] = {k: v for k, v in candidates[c].items() if v > min_correlation}
+            candidates[c] = {k: v for k, v in candidates[c].items() if abs(v) > min_correlation}
             approved_candidates[c] = []
 
             if len(candidates[c]) > 1:
                 for ram_pos in candidates[c]:
                     env.reset()
-                    dataset = generate_dataset(env, [obj], frames=100, manipulated_ram=int(ram_pos))
-                    dataset[c] = np.array(dataset[c])
+                    dataset2 = generate_dataset(env, [obj],drop_constants, frames=100, manipulated_ram=int(ram_pos))
+                    dataset2[c] = np.array(dataset2[c])
 
-                    if not (np.all(dataset[ram_pos] == dataset[ram_pos][0]) or
-                            np.all(dataset[c] == dataset[c][0])):
-                        corr = np.corrcoef(dataset[c], dataset[ram_pos])[1][0]
+                    if not (np.all(dataset2[ram_pos] == dataset2[ram_pos][0]) or
+                            np.all(dataset2[c] == dataset2[c][0])):
+                        corr2 = np.corrcoef(dataset2[c], dataset2[ram_pos])[1][0]
                         approved_candidates[c].append({"pos": int(ram_pos), "corr": candidates[c][ram_pos],
-                                                       "manipulated_corr": corr})
+                                                       "manipulated_corr": corr2})
 
                 def s(d):
                     return abs(d["manipulated_corr"])
@@ -164,15 +188,25 @@ def do_analysis(env, object_list, dump_path=None, new_dump=False, min_correlatio
                         {"pos": int(k), "corr": candidates[c][k], "manipulated_corr": None})
 
     # ---------print out candidates---------
+    best_candidates = {}
     print(candidates)
+    print("\n----------------------------------------------------------------\n")
     print("best candidates:")
     for cand, arr in approved_candidates.items():
-        canditateString = ""
+        best_candidates.update({cand: []})
         for dictionary in arr:
-            canditateString = canditateString + str(dictionary["pos"])
-        print(str(cand)+": "+canditateString)
+            best_candidates[cand].append(dictionary["pos"])
 
+    print(best_candidates)
     # ---------------------------------------
+    print("\n----------------------------------------------------------------\n")
+    print("possible offsets: ")
+    for cand, arr in best_candidates.items():
+        for pos in arr:
+            offset_string = calculate_offset(dataset[cand], dataset[str(pos)],
+                                             candidates[cand][str(pos)], str(pos), maximum=maximum)
+            print(cand +"("+ str(pos)+"): "+ offset_string)
+        print("------------------------------------")
 
 
 if __name__ == "__main__":
@@ -180,13 +214,18 @@ if __name__ == "__main__":
     MODE = "vision"
     # RENDER_MODE = "human"
     RENDER_MODE = "rgb_array"
+    MAXIMUM = 160  # right side of screen in rgb_array
+    DUMP_PATH = None    # path to dump
+    NEW_DUMP = True    # if True creates a new ocjects_info
+    MIN_CORRELATION = 0.7
+    DROP_CONSTANTS = True  #if True does not consider not changing variables for objects
 
     env = OCAtari(GAME_NAME, mode=MODE, render_mode=RENDER_MODE)
     random.seed(0)
     observation, info = env.reset()
 
-    object_list = ["ball", "enemy", "player", "ball_shadow"]
+    object_list = ["ball", "enemy", "player"]#"ball_shadow"
 
-    do_analysis(env, object_list)
+    do_analysis(env, object_list,drop_constants=DROP_CONSTANTS, dump_path=DUMP_PATH, new_dump=NEW_DUMP, min_correlation=MIN_CORRELATION, maximum=MAXIMUM)
 
     env.close()
