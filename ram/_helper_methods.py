@@ -1,3 +1,8 @@
+"""
+Set of helper methods that are used in multiple Atari games
+"""
+
+
 def _convert_number(number):
     """
     The game SKIING displays the time/score in hexadecimal numbers, while the ram extraction displays it as an integer.

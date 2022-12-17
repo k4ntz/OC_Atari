@@ -11,7 +11,6 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
-import ipdb
 
 
 def ransac_regression(x, y):
@@ -30,26 +29,26 @@ game_name = "TennisDeterministic-v0"
 # game_name = "PongDeterministic-v0"
 MODE = "vision"
 RENDER_MODE = "human"
-RENDER_MODE = "rgb_array"
+# RENDER_MODE = "rgb_array"
 env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
 observation, info = env.reset()
-object_list = ["ball", "enemy", "player", "ball_shadow"]
-# object_list = ["ball", "enemy", "player"]
+object_list = ["ball", "ball_shadow"]
 # create dict of list
 objects_infos = {}
 for obj in object_list:
     objects_infos[f"{obj}_x"] = []
     objects_infos[f"{obj}_y"] = []
 ram_saves = []
-for i in tqdm(range(600)):
+for i in tqdm(range(200)):
     obs, reward, terminated, truncated, info = env.step(random.randint(0, 5))
-    if info.get('frame_number') > 10 and i % 3 == 0:
+    if i > 10 and i % 3 == 0:
         SKIP = False
         for obj_name in object_list:  # avoid state without the tracked objects
             if obj_name not in info["objects"]:
                 SKIP = True
+                print(f"SKIPPING THIS FRAME CAUSE NO {obj_name}")
                 break
         if SKIP:
             continue
@@ -64,20 +63,20 @@ for i in tqdm(range(600)):
     # modify and display render
 env.close()
 
-ipdb.set_trace()
-
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
 objects_infos.update(from_rams)
 df = pd.DataFrame(objects_infos)
+df["ball_height"] = df["ball_y"] - df["ball_shadow_y"]
+df["ball_offset_x"] = df["ball_x"] - df["ball_shadow_x"]
 
 # find correlation
 METHOD = "spearman"
 # METHOD = "kendall"
-METHOD = "pearson"
+# METHOD = "pearson"
 corr = df.corr(method=METHOD)
 # Reduce the correlation matrix
-subset = [f"{obj}_x" for obj in object_list] + [f"{obj}_y" for obj in object_list]
+subset = [f"{obj}_x" for obj in object_list] + [f"{obj}_y" for obj in object_list] + ["ball_height"] + ["ball_offset_x"]
 
 # Use submatrice
 corr = corr[subset].T
@@ -100,12 +99,11 @@ xlabs = corr.columns.to_list()
 plt.xticks(list(np.arange(0.5, len(xlabs) + .5, 1)), xlabs)
 plt.title(game_name)
 plt.show()
-
 corrT = corr.T
 for el in corrT:
     maxval = corrT[el].abs().max()
     idx = corrT[el].abs().idxmax()
-    if maxval > 0.9:
+    if maxval > 0.5:
         x, y = df[idx], df[el]
         # a, b = np.polyfit(x, y, deg=1)
         a, b = ransac_regression(x, y)
