@@ -42,7 +42,7 @@ class OCAtari():
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
         self.augment_info(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
         if self.mode == "revised" and self.render_mode == 'rgb_array_with_bbs':
-            self.info = info# for render()
+            self.info = info  # for render()
             obs = self._add_bbs(obs, info)
         return obs, reward, truncated, terminated, info
 
@@ -50,7 +50,7 @@ class OCAtari():
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
         self.augment_info(info, obs, self.game_name)
         if self.render_mode == 'rgb_array_with_bbs':
-            self.info = info# for render()
+            self.info = info  # for render()
             obs = self._add_bbs(obs, info)
         return obs, reward, truncated, terminated, info
 
@@ -75,4 +75,3 @@ class OCAtari():
 
     def close(self, *args, **kwargs):
         return self._env.close(*args, **kwargs)
-    
