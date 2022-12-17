@@ -84,7 +84,7 @@ corr = corr[subset].T
 corr.drop(subset, axis=1, inplace=True)
 
 if DROP_LOW:
-    corr = corr[corr.columns[[corr.abs().max() > MIN_CORRELATION]]]
+    corr = corr[corr.columns[corr.abs().max() > MIN_CORRELATION]]
 
 # if METHOD == "pearson":
 ax = sns.heatmap(corr, vmin=-1, vmax=1, annot=True, cmap=sns.diverging_palette(20, 220, n=200))
