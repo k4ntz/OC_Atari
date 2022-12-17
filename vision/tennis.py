@@ -30,7 +30,7 @@ def _detect_objects_tennis(info, obs):
         objects[name] = (x, y, w, h)
     bshadow = find_objects(obs, objects_colors["ball_shadow"])
     if bshadow:
-        assert len(bshadow) == 1
+        #assert len(bshadow) == 1
         y, x, h, w = bshadow[0]
         r, g, b = objects_colors["ball_shadow"]
         objects['ball_shadow'] = (x, y, w, h, r, g, b)

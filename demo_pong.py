@@ -19,7 +19,7 @@ already_figured_out = []
 
 opts = parser.parse_args()
 
-if(opts.path == None):
+if opts.path is None:
     opts.path = str(pathlib.Path().resolve()) + "/models/Tennis/1/model_50000000.gz"
 
 agent = load_agent(opts, env.action_space.n)
