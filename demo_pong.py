@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from vision.utils import mark_bb, make_darker
 from vision.tennis import objects_colors
 from utils import load_agent, parser
+import pathlib
+
 
 game_name = "Boxing"
 # game_name = "Pong"
@@ -16,6 +18,9 @@ prevRam = None
 already_figured_out = []
 
 opts = parser.parse_args()
+
+if(opts.path == None):
+    opts.path = str(pathlib.Path().resolve()) + "/models/Tennis/1/model_50000000.gz"
 
 agent = load_agent(opts, env.action_space.n)
 
