@@ -118,10 +118,11 @@ def calculate_offset(vision, ram, corr, pos, maximum = 160):
     """
     offset_list = []
     for i in range(len(vision)):
-        diff = vision[i] - ram[i]
         if corr < 0:
-            offset_list.append(maximum - diff)
+            diff = vision[i] - (maximum - ram[i])
+            offset_list.append(maximum + diff)
         else:
+            diff = vision[i] - ram[i]
             offset_list.append(diff)
 
     offset_list = list( dict.fromkeys(offset_list))  # remove duplicates
@@ -134,7 +135,8 @@ def calculate_offset(vision, ram, corr, pos, maximum = 160):
     return offset_string
 
 
-def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum, drop_constants):
+def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum_x,
+                maximum_y, drop_constants):
     # ---------------------------test-data-dump-------------------------------
     game_name = env.game_name
     if dump_path is None:
@@ -202,6 +204,9 @@ def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum,
     print("\n----------------------------------------------------------------\n")
     print("possible offsets: ")
     for cand, arr in best_candidates.items():
+        maximum = maximum_x
+        if cand[len(cand)-1] == 'y':
+            maximum = maximum_y
         for pos in arr:
             offset_string = calculate_offset(dataset[cand], dataset[str(pos)],
                                              candidates[cand][str(pos)], str(pos), maximum=maximum)
@@ -214,8 +219,9 @@ if __name__ == "__main__":
     MODE = "vision"
     # RENDER_MODE = "human"
     RENDER_MODE = "rgb_array"
-    MAXIMUM = 160  # right side of screen in rgb_array
-    DUMP_PATH = None    # path to dump
+    MAXIMUM_X = 160  # right side of screen in rgb_array
+    MAXIMUM_Y = 210  # bottom of screen in rgb_array
+    DUMP_PATH = None    # path to dump otherwise takes standard
     NEW_DUMP = True    # if True creates a new ocjects_info
     MIN_CORRELATION = 0.7
     DROP_CONSTANTS = True  #if True does not consider not changing variables for objects
@@ -226,6 +232,8 @@ if __name__ == "__main__":
 
     object_list = ["ball", "enemy", "player"]#"ball_shadow"
 
-    do_analysis(env, object_list,drop_constants=DROP_CONSTANTS, dump_path=DUMP_PATH, new_dump=NEW_DUMP, min_correlation=MIN_CORRELATION, maximum=MAXIMUM)
+    do_analysis(env, object_list,drop_constants=DROP_CONSTANTS, dump_path=DUMP_PATH,
+                new_dump=NEW_DUMP, min_correlation=MIN_CORRELATION,
+                maximum_x=MAXIMUM_X, maximum_y=MAXIMUM_Y)
 
     env.close()
