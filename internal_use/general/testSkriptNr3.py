@@ -8,12 +8,13 @@ import pathlib
 try:
     from ocatari import OCAtari
 except:
-    sys.path.append(pathlib.Path().resolve() / "../..")
+    # sys.path.append(pathlib.Path().resolve() / "../..")
+    sys.path.append("../..")
     from ocatari import OCAtari
 
 # test with the ipdb debugger
 
-env = OCAtari("Tennis",mode="vision", render_mode= 'rgb_array_with_bbs')
+env = OCAtari("Tennis", mode="vision", render_mode='rgb_array_with_bbs')
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
@@ -43,7 +44,7 @@ for i in range(1000):
         observation, info = env.reset()
     print(info)
     rgb_array = env.render()
-    plt.imshow(rgb_array)   #rgb_array stuff for fun
+    plt.imshow(rgb_array)  # rgb_array stuff for fun
     plt.show()
     print(rgb_array)
     time.sleep(0.01)

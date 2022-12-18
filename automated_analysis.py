@@ -27,7 +27,7 @@ def ransac_regression(x, y):
     return ransac.estimator_.coef_.item(), ransac.estimator_.intercept_.item()
 
 
-def generate_dataset(env, object_list,drop_constants, frames=200, skip_frames=3, manipulated_ram=None,):
+def generate_dataset(env, object_list, drop_constants, frames=200, skip_frames=3, manipulated_ram=None, ):
     """
     generates test Data in the given environment(env) for the given objects(object_list)
     """
@@ -112,7 +112,7 @@ def dump_heatmap(correlation, filename, game_name):
     plt.savefig(filename)
 
 
-def calculate_offset(vision, ram, corr, pos, maximum = 160):
+def calculate_offset(vision, ram, corr, pos, maximum=160):
     """
     calculates possible offsets between what is displayed and what is stored in the ram
     """
@@ -125,13 +125,13 @@ def calculate_offset(vision, ram, corr, pos, maximum = 160):
             diff = vision[i] - ram[i]
             offset_list.append(diff)
 
-    offset_list = list( dict.fromkeys(offset_list))  # remove duplicates
+    offset_list = list(dict.fromkeys(offset_list))  # remove duplicates
     offset_string = ""
     for offset in offset_list:
         c = " + "
         if corr < 0:
             c = " - "
-        offset_string = offset_string + str(offset) + c +"ram["+pos+"], "
+        offset_string = offset_string + str(offset) + c + "ram[" + pos + "], "
     return offset_string
 
 
@@ -143,7 +143,7 @@ def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum_
         dump_path = str(pathlib.Path().resolve()) + "/dumps/automated_analysis_dump/"
     if not os.path.exists(dump_path):
         os.mkdir(dump_path)
-    dump_path = dump_path +game_name
+    dump_path = dump_path + game_name
     if not os.path.exists(dump_path):
         os.mkdir(dump_path)
 
@@ -158,7 +158,7 @@ def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum_
 
     # -------------------------------------------------------------------------
     corr = get_correlation(dataset, min_correlation=min_correlation)
-    dump_heatmap(corr, dump_path+"/correlation_heatmap", game_name)
+    dump_heatmap(corr, dump_path + "/correlation_heatmap", game_name)
     candidates = corr.T.to_dict()
     approved_candidates = {}
     for obj in object_list:
@@ -170,7 +170,7 @@ def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum_
             if len(candidates[c]) > 1:
                 for ram_pos in candidates[c]:
                     env.reset()
-                    dataset2 = generate_dataset(env, [obj],drop_constants, frames=100, manipulated_ram=int(ram_pos))
+                    dataset2 = generate_dataset(env, [obj], drop_constants, frames=100, manipulated_ram=int(ram_pos))
                     dataset2[c] = np.array(dataset2[c])
 
                     if not (np.all(dataset2[ram_pos] == dataset2[ram_pos][0]) or
@@ -185,7 +185,7 @@ def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum_
                 approved_candidates[c].sort(key=s, reverse=True)
 
             else:
-                for k in candidates[c]:   # is there a way to extract key value with unknown key without iterating?
+                for k in candidates[c]:  # is there a way to extract key value with unknown key without iterating?
                     approved_candidates[c].append(
                         {"pos": int(k), "corr": candidates[c][k], "manipulated_corr": None})
 
@@ -205,12 +205,12 @@ def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum_
     print("possible offsets: ")
     for cand, arr in best_candidates.items():
         maximum = maximum_x
-        if cand[len(cand)-1] == 'y':
+        if cand[len(cand) - 1] == 'y':
             maximum = maximum_y
         for pos in arr:
             offset_string = calculate_offset(dataset[cand], dataset[str(pos)],
                                              candidates[cand][str(pos)], str(pos), maximum=maximum)
-            print(cand +"("+ str(pos)+"): "+ offset_string)
+            print(cand + "(" + str(pos) + "): " + offset_string)
         print("------------------------------------")
 
 
@@ -221,18 +221,18 @@ if __name__ == "__main__":
     RENDER_MODE = "rgb_array"
     MAXIMUM_X = 160  # right side of screen in rgb_array
     MAXIMUM_Y = 210  # bottom of screen in rgb_array
-    DUMP_PATH = None    # path to dump otherwise takes standard
-    NEW_DUMP = True    # if True creates a new ocjects_info
+    DUMP_PATH = None  # path to dump otherwise takes standard
+    NEW_DUMP = True  # if True creates a new ocjects_info
     MIN_CORRELATION = 0.7
-    DROP_CONSTANTS = True  #if True does not consider not changing variables for objects
+    DROP_CONSTANTS = True  # if True does not consider not changing variables for objects
 
     env = OCAtari(GAME_NAME, mode=MODE, render_mode=RENDER_MODE)
     random.seed(0)
     observation, info = env.reset()
 
-    object_list = ["ball", "enemy", "player"]#"ball_shadow"
+    object_list = ["ball", "enemy", "player"]  # "ball_shadow"
 
-    do_analysis(env, object_list,drop_constants=DROP_CONSTANTS, dump_path=DUMP_PATH,
+    do_analysis(env, object_list, drop_constants=DROP_CONSTANTS, dump_path=DUMP_PATH,
                 new_dump=NEW_DUMP, min_correlation=MIN_CORRELATION,
                 maximum_x=MAXIMUM_X, maximum_y=MAXIMUM_Y)
 

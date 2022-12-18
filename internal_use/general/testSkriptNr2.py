@@ -1,7 +1,7 @@
 import gym
 import time
 import random
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 """
 created by timo to set the ram and see whats changed
 """
