@@ -16,7 +16,7 @@ import pathlib
 try:
     from ocatari import OCAtari
 except:
-    sys.path.append(pathlib.Path().resolve() / "../..")
+    sys.path.append("../..")
     from ocatari import OCAtari
 
 DROP_LOW = True
