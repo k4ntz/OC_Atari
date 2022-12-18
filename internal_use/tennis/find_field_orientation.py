@@ -2,7 +2,6 @@
 Demo script that allows me to find the game mode (the orientation of the
 field) in Tennis
 """
-from ocatari import OCAtari
 import random
 import matplotlib.pyplot as plt
 # from copy import deepcopy
@@ -11,10 +10,16 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import pickle
-import ipdb
+import sys
+import pathlib
+try:
+    from ocatari import OCAtari
+except:
+    sys.path.append(pathlib.Path().resolve() / "../..")
+    from ocatari import OCAtari
 
 DROP_LOW = True
-MIN_CORRELATION = 0.5
+MIN_CORRELATION = 0.8
 
 game_name = "TennisDeterministic-v0"
 MODE = "vision"
@@ -28,29 +33,31 @@ observation, info = env.reset()
 # create dict of list
 objects_infos = {}
 
-#  ### UNCOMMENT BELLOW TO CREATE THE DATA
-ram_saves = []
-mode = 0
-modes = []
-MODE_CHANGED = False
-# for i in tqdm(range(600)):
+# UNCOMMENT BELLOW TO CREATE THE DATA
+# ram_saves = []
+# mode = 0
+# modes = []
+# MODE_CHANGED = False
+# for i in tqdm(range(800)):
 #     obs, reward, terminated, truncated, info = env.step(random.randint(0, 5))
-#     if i > 0 and i % 40 == 0:
-#         mode = int(input("Enter actual enemy score"))
-#         ram = env._env.unwrapped.ale.getRAM()
-#         ram_saves.append(deepcopy(ram))
-#         modes.append(mode)
+#     if info.get('frame_number') > 300 * 4 and i % 3 == 0 and not MODE_CHANGED:
+#         mode = int(input("Enter actual field orientation (0 default)"))
+#         if mode == 1:
+#             MODE_CHANGED = True
+#     ram = env._env.unwrapped.ale.getRAM()
+#     ram_saves.append(deepcopy(ram))
+#     modes.append(mode)
+#         # env.render()
 #
 #     # modify and display render
 # env.close()
-# pickle.dump(np.array(ram_saves), open('dumps/ram_saves_sc.pkl', 'wb'))
-# pickle.dump(modes, open('dumps/scores.pkl', 'wb'))
+# pickle.dump(np.array(ram_saves), open('dumps/ram_saves.pkl', 'wb'))
+# pickle.dump(modes, open('dumps/modes.pkl', 'wb'))
 
+ram_saves = pickle.load(open('../../dumps/ram_saves.pkl', 'rb'))
+modes = pickle.load(open('../../dumps/modes.pkl', 'rb'))
 
-ram_saves = pickle.load(open('dumps/ram_saves_sc.pkl', 'rb'))
-modes = pickle.load(open('dumps/scores.pkl', 'rb'))
-
-objects_infos["scores"] = modes
+objects_infos["mode"] = modes
 
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
@@ -59,21 +66,20 @@ df = pd.DataFrame(objects_infos)
 
 # find correlation
 METHOD = "spearman"
-# METHOD = "pearson"
+METHOD = "pearson"
 corr = df.corr(method=METHOD)
 # Reduce the correlation matrix
-subset = ["scores"]
+subset = ["mode"]
 
 # Use submatrice
 corr = corr[subset].T
 corr.drop(subset, axis=1, inplace=True)
 
-# if DROP_LOW:
-#     corr = corr[corr.columns[[corr.abs().max() > MIN_CORRELATION]]]
+if DROP_LOW:
+    corr = corr[corr.columns[[corr.abs().max() > MIN_CORRELATION]]]
 
 ax = sns.heatmap(corr, vmin=-1, vmax=1, annot=True, cmap=sns.diverging_palette(20, 220, n=200))
 
-ipdb.set_trace()
 
 for tick in ax.get_yticklabels():
     tick.set_rotation(0)
@@ -83,11 +89,11 @@ plt.xticks(list(np.arange(0.5, len(xlabs) + .5, 1)), xlabs)
 plt.title(game_name)
 plt.show()
 
-corrT = corr
-for el in ["6", "72", "70"]:
+corrT = corr.T
+for el in corrT:
     maxval = corrT[el].abs().max()
     idx = corrT[el].abs().idxmax()
-    if True:
+    if maxval > 0.9:
         x, y = df[idx], df[el]
         plt.scatter(x, y, marker="x")
         plt.xlabel(idx)

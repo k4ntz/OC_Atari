@@ -2,7 +2,6 @@
 Demo script that allows me to find the game mode (the orientation of the
 field) in Tennis
 """
-from ocatari import OCAtari
 import random
 import matplotlib.pyplot as plt
 # from copy import deepcopy
@@ -11,6 +10,15 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import pickle
+from utils import load_agent, parser
+import sys
+import pathlib
+try:
+    from ocatari import OCAtari
+except:
+    sys.path.append(pathlib.Path().resolve() / "../..")
+    from ocatari import OCAtari
+
 
 DROP_LOW = True
 MIN_CORRELATION = 0.8
@@ -27,31 +35,43 @@ observation, info = env.reset()
 # create dict of list
 objects_infos = {}
 
-# UNCOMMENT BELLOW TO CREATE THE DATA
+opts = parser.parse_args()
+
+agent = load_agent(opts, env.action_space.n)
+
+
+#  ### UNCOMMENT BELLOW TO CREATE THE DATA
 # ram_saves = []
 # mode = 0
 # modes = []
-# MODE_CHANGED = False
-# for i in tqdm(range(800)):
-#     obs, reward, terminated, truncated, info = env.step(random.randint(0, 5))
-#     if info.get('frame_number') > 300 * 4 and i % 3 == 0 and not MODE_CHANGED:
-#         mode = int(input("Enter actual field orientation (0 default)"))
-#         if mode == 1:
-#             MODE_CHANGED = True
-#     ram = env._env.unwrapped.ale.getRAM()
-#     ram_saves.append(deepcopy(ram))
-#     modes.append(mode)
-#         # env.render()
-#
-#     # modify and display render
+# last_sc = 0
+# for i in tqdm(range(600)):
+#     if opts.path is not None:
+#         action = agent.draw_action(env.dqn_obs)
+#     else:
+#         action = random.randint(0, 5)
+#     obs, reward, terminated, truncated, info = env.step(action)
+#     if i > 0 and i % 20 == 0:
+#         inp = input("Please provide current player score: ")
+#         if len(inp) == 0:
+#             sc = last_sc
+#             print(f"Using last score {last_sc} as current score")
+#         else:
+#             sc = int(inp)
+#             last_sc = sc
+#         ram = env._env.unwrapped.ale.getRAM()
+#         ram_saves.append(deepcopy(ram))
+#         modes.append(sc)
+# #   #### modify and display render
 # env.close()
-# pickle.dump(np.array(ram_saves), open('dumps/ram_saves.pkl', 'wb'))
-# pickle.dump(modes, open('dumps/modes.pkl', 'wb'))
+# pickle.dump(np.array(ram_saves), open('dumps/ram_saves_psc.pkl', 'wb'))
+# pickle.dump(modes, open('dumps/scoresp.pkl', 'wb'))
 
-ram_saves = pickle.load(open('dumps/ram_saves.pkl', 'rb'))
-modes = pickle.load(open('dumps/modes.pkl', 'rb'))
 
-objects_infos["mode"] = modes
+ram_saves = pickle.load(open('dumps/ram_saves_psc.pkl', 'rb'))
+modes = pickle.load(open('dumps/scoresp.pkl', 'rb'))
+
+objects_infos["scores"] = modes
 
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
@@ -60,10 +80,10 @@ df = pd.DataFrame(objects_infos)
 
 # find correlation
 METHOD = "spearman"
-METHOD = "pearson"
+# METHOD = "pearson"
 corr = df.corr(method=METHOD)
 # Reduce the correlation matrix
-subset = ["mode"]
+subset = ["scores"]
 
 # Use submatrice
 corr = corr[subset].T
@@ -83,11 +103,12 @@ plt.xticks(list(np.arange(0.5, len(xlabs) + .5, 1)), xlabs)
 plt.title(game_name)
 plt.show()
 
-corrT = corr.T
-for el in corrT:
+
+corrT = corr
+for el in ["69"]:
     maxval = corrT[el].abs().max()
     idx = corrT[el].abs().idxmax()
-    if maxval > 0.9:
+    if True:
         x, y = df[idx], df[el]
         plt.scatter(x, y, marker="x")
         plt.xlabel(idx)
