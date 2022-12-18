@@ -4,10 +4,7 @@ import time
 import matplotlib.pyplot as plt
 import ipdb
 
-#created by timo to print out a ram that always has values within range
-
-
-
+# created by timo to print out a ram that always has values within range
 
 
 env = gym.make("Seaquest", render_mode="human")
@@ -18,16 +15,15 @@ max = 2
 candidates = []
 counterMax = 100
 counter = 0
-already_figured_out = [70,97,102,30,31,32,33,62,59,57,58,103,102]+list(range(71,75))
+already_figured_out = [70, 97, 102, 30, 31, 32, 33, 62, 59, 57, 58, 103, 102] + list(range(71, 75))
 for _ in range(1000):
-    #ipdb.set_trace()
-    #action = policy(observation)  # User-defined policy function
+    # ipdb.set_trace()
+    # action = policy(observation)  # User-defined policy function
     observation, reward, terminated, truncated, info = env.step(0)
-
 
     ram = env.unwrapped.ale.getRAM()
 
-    #------------------------------------manage candidates-------------------
+    # ------------------------------------manage candidates-------------------
     if counter <= 0:
         counter = counterMax
         print("-----added new candidates-----")
@@ -37,7 +33,7 @@ for _ in range(1000):
                     candidates.append(i)
     else:
         throwaways = []
-        if max > 255:#range not specified so throw out evrything that changes
+        if max > 255:  # range not specified so throw out evrything that changes
             for i in candidates:
                 if prevRam[i] != ram[i]:
                     throwaways.append(i)
@@ -45,17 +41,16 @@ for _ in range(1000):
             for i in candidates:
                 if ram[i] > max or ram[i] < min:
                     throwaways.append(i)
-        #remove all throwaways
+        # remove all throwaways
         for t in throwaways:
             candidates.remove(t)
 
-    #-------------------------print out candidates-------------------------------
+    # -------------------------print out candidates-------------------------------
     for i in candidates:
-        print(str(i) +":   " +str(ram[i]))
+        print(str(i) + ":   " + str(ram[i]))
     print("------------------------------------------")
 
     prevRam = ram
-
 
     if terminated or truncated:
         observation, info = env.reset()
