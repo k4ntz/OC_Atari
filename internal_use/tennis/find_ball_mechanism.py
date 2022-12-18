@@ -2,7 +2,6 @@
 Demo script that allows me to find the correlation between ram states and
 detected objects through vision in Tennis
 """
-from ocatari import OCAtari
 import random
 import matplotlib.pyplot as plt
 from copy import deepcopy
@@ -11,6 +10,13 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
+import sys
+import pathlib
+try:
+    from ocatari import OCAtari
+except:
+    sys.path.append(pathlib.Path().resolve() / "../..")
+    from ocatari import OCAtari
 
 
 def ransac_regression(x, y):
