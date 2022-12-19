@@ -1,10 +1,16 @@
-from ocatari import OCAtari
+# appends parent path to syspath to make ocatari importable
+# like it would have been installed as a package
+import sys
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+
+from ocatari.core import OCAtari
 import time
 import random
 import ipdb
 
-# test with the ipdb debugger
 
+# test with the ipdb debugger
 env = OCAtari("Breakout")
 observation, info = env.reset()
 prevRam = None
