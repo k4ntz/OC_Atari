@@ -3,6 +3,11 @@
 
 Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://github.com/mila-iqia/atari-representation-learning) that uses the state of the ram and reverse engineering to provide object centric representation of the screen.
 
+## Install via pip
+Clone this repository to `REPO_DIR` folder
+`pip install REPO_DIR_PATH`
+
+
 ## Install
 `python setup.py install` or `python setup.py develop`
 

@@ -2,7 +2,14 @@
 Demo script that allows me to find the game mode (the orientation of the
 field) in Tennis
 """
-from ocatari import OCAtari
+
+# appends parent path to syspath to make ocatari importable
+# like it would have been installed as a package
+import sys
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+
+from ocatari.core import OCAtari
 import random
 import matplotlib.pyplot as plt
 from copy import deepcopy
@@ -11,11 +18,9 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import pickle
-from utils import load_agent, parser
-
 
 DROP_LOW = True
-MIN_CORRELATION = 0.8
+MIN_CORRELATION = 0.5
 
 game_name = "TennisDeterministic-v0"
 MODE = "vision"
@@ -29,42 +34,28 @@ observation, info = env.reset()
 # create dict of list
 objects_infos = {}
 
-opts = parser.parse_args()
-
-agent = load_agent(opts, env.action_space.n)
-
-
 #  ### UNCOMMENT BELLOW TO CREATE THE DATA
-# ram_saves = []
-# mode = 0
-# modes = []
-# last_sc = 0
+ram_saves = []
+mode = 0
+modes = []
+MODE_CHANGED = False
 # for i in tqdm(range(600)):
-#     if opts.path is not None:
-#         action = agent.draw_action(env.dqn_obs)
-#     else:
-#         action = random.randint(0, 5)
-#     obs, reward, terminated, truncated, info = env.step(action)
-#     if i > 0 and i % 20 == 0:
-#         inp = input("Please provide current player score: ")
-#         if len(inp) == 0:
-#             sc = last_sc
-#             print(f"Using last score {last_sc} as current score")
-#         else:
-#             sc = int(inp)
-#             last_sc = sc
+#     obs, reward, terminated, truncated, info = env.step(random.randint(0, 5))
+#     if i > 0 and i % 40 == 0:
+#         mode = int(input("Enter actual enemy score"))
 #         ram = env._env.unwrapped.ale.getRAM()
 #         ram_saves.append(deepcopy(ram))
-#         modes.append(sc)
-# #   #### modify and display render
+#         modes.append(mode)
+#
+#     # modify and display render
 # env.close()
-# pickle.dump(np.array(ram_saves), open('dumps/ram_saves_psc.pkl', 'wb'))
-# pickle.dump(modes, open('dumps/scoresp.pkl', 'wb'))
+# pickle.dump(np.array(ram_saves), open('dumps/ram_saves_sc.pkl', 'wb'))
+# pickle.dump(modes, open('dumps/scores.pkl', 'wb'))
 
 
 
-ram_saves = pickle.load(open('dumps/ram_saves_psc.pkl', 'rb'))
-modes = pickle.load(open('dumps/scoresp.pkl', 'rb'))
+ram_saves = pickle.load(open('dumps/ram_saves_sc.pkl', 'rb'))
+modes = pickle.load(open('dumps/scores.pkl', 'rb'))
 
 objects_infos["scores"] = modes
 
@@ -84,11 +75,12 @@ subset = ["scores"]
 corr = corr[subset].T
 corr.drop(subset, axis=1, inplace=True)
 
-if DROP_LOW:
-    corr = corr[corr.columns[[corr.abs().max() > MIN_CORRELATION]]]
+# if DROP_LOW:
+#     corr = corr[corr.columns[[corr.abs().max() > MIN_CORRELATION]]]
 
 ax = sns.heatmap(corr, vmin=-1, vmax=1, annot=True, cmap=sns.diverging_palette(20, 220, n=200))
 
+import ipdb; ipdb.set_trace()
 
 for tick in ax.get_yticklabels():
     tick.set_rotation(0)
@@ -100,7 +92,7 @@ plt.show()
 
 
 corrT = corr
-for el in ["69"]:
+for el in ["6", "72", "70"]:
     maxval = corrT[el].abs().max()
     idx = corrT[el].abs().idxmax()
     if True:
