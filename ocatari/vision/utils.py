@@ -113,7 +113,7 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
         if min_distance is not None:
             too_close = False
             for det in detected:
-                if iou(det, (y, x, h, w)) > 0.05:
+                if iou(det, (x, y, w, h)) > 0.05:
                     too_close = True
                     break
             if too_close:

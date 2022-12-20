@@ -44,19 +44,7 @@ for i in range(1000):
         plt.imshow(obs)
         plt.show()
 
-    ram = env._env.unwrapped.ale.getRAM()
-    if prevRam is not None:
-        for i in range(len(ram)):
-            if ram[i] != prevRam[i] and i not in already_figured_out:
-                pad = "           "
-                for u in range(4 - len(str(i))):
-                    pad += " "
-                print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prevRam[i]))
-    print("------------------------------------------")
-    prevRam = ram
-
     if terminated or truncated:
         observation, info = env.reset()
-    print(info)
     # modify and display render
 env.close()
