@@ -9,11 +9,12 @@ import matplotlib.pyplot as plt
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.tennis import objects_colors
+from ocatari.vision.pong import objects_colors
 from ocatari.utils import load_agent, parser
 
 game_name = "Boxing"
-# game_name = "Pong"
-game_name = "Tennis"
+game_name = "Pong"
+# game_name = "Tennis"
 MODE = "vision"
 # MODE = "revised"
 env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
