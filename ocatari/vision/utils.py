@@ -11,20 +11,6 @@ def assert_in(observed, target, tol):
     return np.all([target[i] + tol[i] > observed[i] > target[i] - tol[i] for i in range(2)])
 
 
-def bbs_extend(labels, key: str, stationary=False):
-    labels['bbs'].extend([(*bb, "S" if stationary else "M", key) for bb in labels[key]])
-
-
-def bb_by_color(labels, obs, color, key, closing_active=True):
-    deordered = find_objects(obs, color, closing_active)
-    reordered = []
-    for el in deordered:
-        x, y, w, h = el
-        reordered.append((y, x, h, w))
-    labels[key] = reordered
-    bbs_extend(labels, key)
-
-
 def iou(bb, gt_bb):
     """
     Intersection over Union
