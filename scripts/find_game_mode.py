@@ -2,7 +2,14 @@
 Demo script that allows me to find the game mode (the orientation of the
 field) in Tennis
 """
-from ocatari import OCAtari
+
+# appends parent path to syspath to make ocatari importable
+# like it would have been installed as a package
+import sys
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+
+from ocatari.core import OCAtari
 import random
 import matplotlib.pyplot as plt
 from copy import deepcopy

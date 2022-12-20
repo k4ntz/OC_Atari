@@ -5,3 +5,5 @@ GitLab_README.md
 # folers
 build/
 dist/
+.venv
+dumps/
