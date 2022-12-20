@@ -1,9 +1,7 @@
 import time
 import random
 import ipdb
-from matplotlib import pyplot as plt
 import sys
-# import pathlib
 
 try:
     from ocatari import OCAtari
@@ -12,17 +10,17 @@ except:
     from ocatari import OCAtari
 
 """
-Test vision mode with rgb_array_with_bbs as render_mode
+Test raw/revised mode with a human render_mode
 """
 
-env = OCAtari("Skiing", mode="vision", render_mode='rgb_array_with_bbs')
+env = OCAtari("Skiing", mode="raw", render_mode='human')
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
 for i in range(1000):
     # n: next line, c: resume execution
-    if info.get('frame_number') > 400:
-        ipdb.set_trace()
+    # if info.get('frame_number') > 400:
+    ipdb.set_trace()
     # action = self._action_set[1]
 
     # done split into 2 parts:
@@ -44,10 +42,6 @@ for i in range(1000):
     if terminated or truncated:
         observation, info = env.reset()
     print(info)
-    if info.get("frame_number") % 20 == 0:
-        rgb_array = env.render()
-        plt.imshow(rgb_array)  # rgb_array stuff for fun
-        plt.show()
-        print(rgb_array)
+    env.render()
     time.sleep(0.01)
 env.close()

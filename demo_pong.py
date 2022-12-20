@@ -10,8 +10,9 @@ import pathlib
 game_name = "Boxing"
 # game_name = "Pong"
 game_name = "Tennis"
+game_name = "Seaquest"
 MODE = "vision"
-MODE = "revised"
+# MODE = "revised"
 env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
