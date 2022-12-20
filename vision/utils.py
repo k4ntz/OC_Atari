@@ -16,7 +16,12 @@ def bbs_extend(labels, key: str, stationary=False):
 
 
 def bb_by_color(labels, obs, color, key, closing_active=True):
-    labels[key] = find_objects(obs, color, closing_active)
+    deordered = find_objects(obs, color, closing_active)
+    reordered = []
+    for el in deordered:
+        x, y, w, h = el
+        reordered.append((y, x, h, w))
+    labels[key] = reordered
     bbs_extend(labels, key)
 
 
@@ -113,7 +118,8 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
                     break
             if too_close:
                 continue
-        detected.append((y, x, h, w))
+        # detected.append((y, x, h, w))
+        detected.append((x, y, w, h))
     return detected
 
 
