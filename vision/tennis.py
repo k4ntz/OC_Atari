@@ -9,14 +9,21 @@ objects_colors = {
 
 
 detected = {}
-detected['bbs'] = [
-    (4, 39, 8, 16, "S", "enemy_score"),
-    (4, 104, 8, 16, "S", "player_score"),
-    (193, 39, 7, 33, "S", "logo")
-]
+detected['bbs'] = []
+# detected['bbs'] = [
+#     (4, 39, 8, 16, "S", "enemy_score"),
+#     (4, 104, 8, 16, "S", "player_score"),
+#     (193, 39, 7, 33, "S", "logo")
+# ]
 
 
-def _detect_objects_tennis(info, obs):
+fixed_objects_pos = {
+    "player_score" : [39, 4, 16, 8],
+    "enemy_score": [104, 4, 16, 8],
+    "logo": [39, 193, 33, 7]
+}
+
+def _detect_objects_tennis(info, obs, fixed_objects=True):
     bb_by_color(detected, obs, objects_colors['enemy'], "enemy", closing_active=False)
     detected['bbs'] = [bb for bb in detected['bbs'] if bb[5] != "enemy" or 5 < bb[0] < 189 and bb[3] > 10 and bb[2] < 28]
     bb_by_color(detected, obs, objects_colors['player'], "player", closing_active=False)
@@ -29,6 +36,10 @@ def _detect_objects_tennis(info, obs):
     bshadow = find_objects(obs, objects_colors["ball_shadow"])
     if bshadow:
         assert len(bshadow) == 1
-        y, x, h, w = bshadow[0]
-        objects['ball_shadow'] = (x, y, w, h)
+        objects['ball_shadow'] = bshadow[0]
+    if fixed_objects:
+        fixed_objects_complete = {}
+        for objn in fixed_objects_pos.keys():
+            fixed_objects_complete[objn] = fixed_objects_pos[objn] + objects_colors[objn]
+        objects.update(fixed_objects_complete)
     info["objects"] = objects

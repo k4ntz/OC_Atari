@@ -9,7 +9,7 @@ game_name = "Boxing"
 # game_name = "Pong"
 game_name = "Tennis"
 MODE = "vision"
-MODE = "revised"
+# MODE = "revised"
 env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
@@ -17,7 +17,8 @@ already_figured_out = []
 
 opts = parser.parse_args()
 
-agent = load_agent(opts, env.action_space.n)
+if opts.path:
+    agent = load_agent(opts, env.action_space.n)
 
 for i in range(1000):
     if opts.path is not None:
