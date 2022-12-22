@@ -3,6 +3,7 @@ from .pong import _detect_objects_pong
 from .tennis import _detect_objects_tennis
 from .seaquest import _detect_objects_seaquest
 from .skiing import _detect_objects_skiing
+from .freeway import _detect_objects_freeway
 
 
 def augment_info_vision(info, obs, game_name):
@@ -14,5 +15,7 @@ def augment_info_vision(info, obs, game_name):
         return _detect_objects_seaquest(info, obs)
     elif game_name.lower() == "skiing":
         return _detect_objects_skiing(info, obs)
+    elif game_name.lower() == "freeway":
+        return _detect_objects_freeway(info, obs)
     else:
         print(colored("Uncovered game", "red"))
