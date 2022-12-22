@@ -1,5 +1,55 @@
-# OC_Atari
+# List of games
 
+### Priority 1:
+- [ ]  Breakout
+- [ ]  Freeway
+- [ ]  Bowling
+- [ ]  Ms.  Pacman
+- [ ]  Pong
+- [ ]  Seaquest
+- [ ]  Skiing
+- [ ]  Space Invaders
+- [ ]  Asterix
+- [ ]  Asteroids
+- [ ]  Demon Attack
+- [ ]  Tennis
+- [ ]  Kangaroo
+
+### Priority 2:
+- [ ]  Berzerk
+- [ ]  Secret Quest
+- [ ]  River Raid
+- [ ]  Atlantis
+- [ ]  Star Raiders
+- [ ]  Choppper Command
+- [ ]  Q*bert
+- [ ]  Assault
+- [ ]  Beam Rider
+- [ ]  Boxing
+- [ ]  Carnival
+- [ ]  Centipede
+
+### Priority 3:
+- [ ]  Montezumas Revenge
+- [ ]  Private Eye
+- [ ]  Fishing Derby
+- [ ]  Zaxxon
+- [ ]  Wizard of Wor
+
+### Priority 4:
+- [ ]  Crazy Climber
+- [ ]  Video Pinball
+- [ ]  Alien
+
+```
+cd existing_repo
+git remote add origin https://git.rwth-aachen.de/christopher.schubert/bachelor-praktikum.git
+git branch -M main
+git push -uf origin main
+```
+
+
+# OC_Atari
 
 Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://github.com/mila-iqia/atari-representation-learning) that uses the state of the ram and reverse engineering to provide object centric representation of the screen.
 
