@@ -12,6 +12,8 @@ from .skiing import _augment_info_skiing_revised
 from .tennis import _augment_info_tennis_raw
 from .tennis import _augment_info_tennis_revised
 from .freeway import _augment_info_freeway_raw, _augment_info_freeway_revised
+from .space_invaders import _augment_info_space_invaders_raw
+from .space_invaders import _augment_info_space_invaders_revised
 
 
 def augment_info_raw(info, ram_state, game_name):
@@ -32,6 +34,8 @@ def augment_info_raw(info, ram_state, game_name):
         _augment_info_tennis_raw(info, ram_state)
     elif game_name.lower() == "freeway":
         _augment_info_freeway_raw(info, ram_state)
+    elif game_name.lower() == "spaceInvaders-v4":
+        _augment_info_space_invaders_raw(info, ram_state)
     else:
         print(colored("Uncovered game", "red"))
         exit(1)
@@ -55,6 +59,8 @@ def augment_info_revised(info, ram_state, game_name):
         _augment_info_tennis_revised(info, ram_state)
     elif game_name.lower() == "freeway":
         _augment_info_freeway_revised(info, ram_state)
+    elif game_name.lower() == "spaceInvaders-v4":
+        _augment_info_space_invaders_revised(info, ram_state)
     else:
         print(colored("Uncovered game", "red"))
         exit(1)
