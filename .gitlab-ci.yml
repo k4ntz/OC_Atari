@@ -30,13 +30,13 @@ flake8:
   script:
   - flake8 --max-line-length=120 ./*.py
 
-pylint:
-  stage: Static Analysis
-  before_script:
-    - pip install pylint
-  allow_failure: true
-  script:
-  - pylint -d C0301 ./*.py
+#pylint:
+ # stage: Static Analysis
+ # before_script:
+  #  - pip install pylint
+  #allow_failure: true
+  #script:
+ # - pylint -d C0301 ./*.py
 
   #unit-test-job:   # This job runs in the test stage.
  # stage: test    # It only starts when the job in the build stage completes successfully.
