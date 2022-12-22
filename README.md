@@ -41,13 +41,6 @@
 - [ ]  Video Pinball
 - [ ]  Alien
 
-```
-cd existing_repo
-git remote add origin https://git.rwth-aachen.de/christopher.schubert/bachelor-praktikum.git
-git branch -M main
-git push -uf origin main
-```
-
 
 # OC_Atari
 
