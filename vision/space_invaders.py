@@ -13,23 +13,39 @@ def _detect_objects_skiing(info, obs):
     # detection and filtering
     for k, v in objects_colors.items():
         bb_by_color(detected, obs, v, k)
-        # special case!
-        if k == "walls":
+
+        if k == "player_green":
+            detected['bbs'] = [bb for bb in detected['bbs'] if
+                               bb[0] > 140]
+
+        elif k == "score_green":
+            detected['bbs'] = [bb for bb in detected['bbs'] if
+                               bb[0] < 140]
+
+        elif k == "player_yellow":
+            detected['bbs'] = [bb for bb in detected['bbs'] if
+                               bb[0] > 140]
+
+        elif k == "player_yellow":
+            detected['bbs'] = [bb for bb in detected['bbs'] if
+                               bb[0] < 140]
+
+        # aliens -_-
+
+        # special case! not finished or correct
+        elif k == "walls":
             detected['bbs'] = [bb for bb in detected['bbs'] if
                                bb[5] == "wall_1" and 0 < bb[1] < 60]
             detected['bbs'] = [bb for bb in detected['bbs'] if
                                bb[5] == "wall_2" and 60 < bb[1] < 95]
             detected['bbs'] = [bb for bb in detected['bbs'] if
                                bb[5] == "wall_3" and 95 < bb[1] < 150]
-            
-        elif k == "player_green":
-            detected['bbs'] = [bb for bb in detected['bbs'] if
-                               bb[0] > 140]
+
     # detection and filtering
     # if y < 70 then yellow is score
     # lives could have the very similar x and y at same time
 
-    bb_by_color(detected, obs, objects_colors['player_green'], "player_green")
+    '''bb_by_color(detected, obs, objects_colors['player_green'], "player_green")
     detected['bbs'] = [bb for bb in detected['bbs']]
     bb_by_color(detected, obs, objects_colors['score_green'], "score_green")
     detected['bbs'] = [bb for bb in detected['bbs']]
@@ -49,7 +65,7 @@ def _detect_objects_skiing(info, obs):
     # bb_by_color(detected, obs, objects_colors['bullets'], "bullets")
     # detected['bbs'] = [bb for bb in detected['bbs']] # bullets have same color!
     bb_by_color(detected, obs, objects_colors['number_lives'], "number_lives")
-    detected['bbs'] = [bb for bb in detected['bbs']]
+    detected['bbs'] = [bb for bb in detected['bbs']]'''
 
     if False:
         plot_bounding_boxes(obs, detected["bbs"], objects_colors)
