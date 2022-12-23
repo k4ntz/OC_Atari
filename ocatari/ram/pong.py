@@ -12,9 +12,15 @@ def _augment_info_pong_revised(info, ram_state):
     (x, y, w, h, r, g, b)
     """
     objects = {}
+    # set defauld coord if object does not exist
     if ram_state[54] != 0:  # otherwise no ball
         objects["ball"] = ram_state[49]-49, ram_state[54]-14, 2, 3, 236, 236, 236
+    else:
+        objects["ball"] = (0, 0, 0, 0, 0, 0, 0)
+    # same for enemy
     if ram_state[50] != 0:  # otherwise no enemy
         objects["enemy"] = 16, ram_state[50]-15, 4, 15, 213, 130, 74
+    else:
+        objects["enemy"] = (0, 0, 0, 0, 0, 0, 0)
     objects["player"] = 140, ram_state[51]-13, 4, 15, 92, 186, 92
     info["objects"] = objects

@@ -25,7 +25,6 @@ def _augment_info_tennis_revised(info, ram_state):
     enemy_score = min(15 * ram_state[70], 40)
     player_score = min(15 * ram_state[69], 40)
     # enemy_sets = ram_state[72]
-    print(player_score)
     if enemy_score == 0:
         objects["enemy_scores"] = 113, 5, 6, 7, 117, 128, 240
     elif enemy_score == 15:

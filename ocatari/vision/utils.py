@@ -11,15 +11,6 @@ def assert_in(observed, target, tol):
     return np.all([target[i] + tol[i] > observed[i] > target[i] - tol[i] for i in range(2)])
 
 
-def bbs_extend(labels, key: str, stationary=False):
-    labels['bbs'].extend([(*bb, "S" if stationary else "M", key) for bb in labels[key]])
-
-
-def bb_by_color(labels, obs, color, key, closing_active=True):
-    labels[key] = find_objects(obs, color, closing_active)
-    bbs_extend(labels, key)
-
-
 def iou(bb, gt_bb):
     """
     Intersection over Union
@@ -108,12 +99,13 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
         if min_distance is not None:
             too_close = False
             for det in detected:
-                if iou(det, (y, x, h, w)) > 0.05:
+                if iou(det, (x, y, w, h)) > 0.05:
                     too_close = True
                     break
             if too_close:
                 continue
-        detected.append((y, x, h, w))
+        # detected.append((y, x, h, w))
+        detected.append((x, y, w, h))
     return detected
 
 

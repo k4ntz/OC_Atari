@@ -20,5 +20,12 @@ setup(
         "setuptools",
         "torch",
         "tqdm",
-    ],
+        "gym",
+        "opencv_python",
+        "scikit_image",
+        "termcolor",
+        "pandas",
+        "scikit-learn",
+        "ipdb"
+    ]
 )

@@ -1,18 +1,22 @@
-from ocatari import OCAtari
+# appends parent path to syspath to make ocatari importable
+# like it would have been installed as a package
+import sys
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+
 import random
 import matplotlib.pyplot as plt
-from vision.utils import mark_bb, make_darker
-from vision.tennis import objects_colors
-from utils import load_agent, parser
-import pathlib
+from ocatari.core import OCAtari
+from ocatari.vision.utils import mark_bb, make_darker
+from ocatari.vision.tennis import objects_colors
+# from ocatari.vision.pong import objects_colors
+from ocatari.utils import load_agent, parser
 
-
-game_name = "Boxing"
+game_name = "SpaceInvaders"
 # game_name = "Pong"
-game_name = "Tennis"
-game_name = "Seaquest"
+# game_name = "Tennis"
 MODE = "vision"
-# MODE = "revised"
+MODE = "revised"
 env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
@@ -20,10 +24,8 @@ already_figured_out = []
 
 opts = parser.parse_args()
 
-if opts.path is None:
-    opts.path = str(pathlib.Path().resolve()) + "/models/Tennis/1/model_50000000.gz"
-
-agent = load_agent(opts, env.action_space.n)
+if opts.path:
+    agent = load_agent(opts, env.action_space.n)
 
 for i in range(1000):
     if opts.path is not None:
@@ -43,19 +45,7 @@ for i in range(1000):
         plt.imshow(obs)
         plt.show()
 
-    ram = env._env.unwrapped.ale.getRAM()
-    if prevRam is not None:
-        for i in range(len(ram)):
-            if ram[i] != prevRam[i] and i not in already_figured_out:
-                pad = "           "
-                for u in range(4 - len(str(i))):
-                    pad += " "
-                print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prevRam[i]))
-    print("------------------------------------------")
-    prevRam = ram
-
     if terminated or truncated:
         observation, info = env.reset()
-    print(info)
     # modify and display render
 env.close()
