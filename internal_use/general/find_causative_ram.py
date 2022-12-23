@@ -4,6 +4,7 @@ import random
 import numpy as np
 from matplotlib import pyplot as plt
 from tqdm import tqdm
+
 """
 this skript can be used to find score like objects in RAM
 given bb should countain the score like object
@@ -18,9 +19,10 @@ def crop_rgb_array(rgb_array, x, y, width, height):
 
     for i in range(height):
         index = i + y
-        ret[i] = rgb_array[index][x:x+width]
+        ret[i] = rgb_array[index][x:x + width]
 
     return ret
+
 
 def find_causative_ram(game, x, y, width, height, show_plot=False):
     """
@@ -40,7 +42,7 @@ def find_causative_ram(game, x, y, width, height, show_plot=False):
     for i in tqdm(range(len(ram))):
         env.reset(seed=42)
         observation, reward, terminated, truncated, info = env.step(0)
-        env.unwrapped.ale.setRAM(i, 2)
+        env.unwrapped.ale.setRAM(i, -ram[i])
         observation, reward, terminated, truncated, info = env.step(0)
         obs = crop_rgb_array(observation, x, y, width, height)
         if not np.all(obs0 == obs):
@@ -51,6 +53,7 @@ def find_causative_ram(game, x, y, width, height, show_plot=False):
 
     env.close()
     return candidates
+
 
 if __name__ == "__main__":
     X = 110
