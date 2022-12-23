@@ -1,18 +1,18 @@
 # List of games
 
 ### Priority 1:
-- [ ]  Breakout
-- [ ]  Freeway
-- [ ]  Bowling
-- [ ]  Ms.  Pacman
-- [ ]  Pong
-- [ ]  Seaquest
-- [ ]  Skiing
-- [ ]  Space Invaders
+- [ ]  Breakout (missing revised, vision)
+- [x]  Freeway
+- [ ]  Bowling (worked on by Chris)
+- [ ]  Ms.  Pacman (worked on by Bjarne)
+- [x]  Pong
+- [ ]  Seaquest (rework revised, vision)
+- [ ]  Skiing (rework revised, vision)
+- [ ]  Space Invaders (worked on by Belal/Sebastian)
 - [ ]  Asterix
 - [ ]  Asteroids
 - [ ]  Demon Attack
-- [ ]  Tennis
+- [x]  Tennis
 - [ ]  Kangaroo
 
 ### Priority 2:
