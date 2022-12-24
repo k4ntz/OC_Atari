@@ -1,3 +1,8 @@
 *__pycache__*
 *.egg-info
 dumps/*
+scripts/general/testSkriptNr1.py
+scripts/general/testSkriptNr2.py
+scripts/general/testSkriptNr3.py
+scripts/general/testSkriptNr4.py
+scripts/general/testSkriptNr5.py
