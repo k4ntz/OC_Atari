@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from functools import partial
+from functools import partial # noqa
 from gzip import GzipFile
 from pathlib import Path
 
@@ -72,7 +72,7 @@ def _epsilon_greedy(obs, model, eps=0.001):
 
 
 def load_agent(opt, nb_actions=None):
-    ckpt_path = Path(opt.path)
+    ckpt_path = Path(opt.path) # noqa
     agent = AtariNet(nb_actions, distributional="C51_" in opt.path)
     ckpt = _load_checkpoint(opt.path)
     agent.load_state_dict(ckpt["estimator_state"])
