@@ -27,7 +27,7 @@ def augment_info_raw(info, ram_state, game_name):
     elif game_name.lower() == "seaquest":
         _augment_info_seaquest_raw(info, ram_state)
     elif game_name.lower() == "spaceinvaders":
-        _augment_info_space_invaders_revised(info, ram_state)
+        _augment_info_space_invaders_raw(info, ram_state)
     elif game_name.lower() == "tennis":
         _augment_info_tennis_raw(info, ram_state)
     else:
