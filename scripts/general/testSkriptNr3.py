@@ -4,12 +4,8 @@ import ipdb
 from matplotlib import pyplot as plt
 import sys
 # import pathlib
-
-try:
-    from ocatari import OCAtari
-except:
-    sys.path.append("../..")
-    from ocatari import OCAtari
+sys.path.insert(0, '../../ocatari') # noqa
+from core import OCAtari
 
 """
 Test vision mode with rgb_array_with_bbs as render_mode

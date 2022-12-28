@@ -1,11 +1,11 @@
 import gym
-from ocatari import OCAtari
 import time
-import matplotlib.pyplot as plt
-import ipdb
+# import matplotlib.pyplot as plt
+# import ipdb
 
-# created by timo to print out a ram that always has values within range
-
+"""
+created by timo to print out a ram that always has values within range
+"""
 
 env = gym.make("Seaquest", render_mode="human")
 observation, info = env.reset(seed=42)

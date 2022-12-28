@@ -1,4 +1,4 @@
-from .utils import bb_by_color, plot_bounding_boxes
+# from .utils import bb_by_color, plot_bounding_boxes
 
 
 objects_colors = {"car1": [167, 26, 26], "car2": [180, 231, 117], "car3": [105, 105, 15],
@@ -10,6 +10,8 @@ objects_colors = {"car1": [167, 26, 26], "car2": [180, 231, 117], "car3": [105, 
 
 
 def _detect_objects_freeway(info, obs):
+    pass
+    """
     detected = {}
     detected["bbs"] = []
     # detection and filtering
@@ -40,3 +42,4 @@ def _detect_objects_freeway(info, obs):
         r, g, b = objects_colors[name]
         objects[name] = (x, y, w, h, r, g, b)
     info["objects"] = objects
+    """
