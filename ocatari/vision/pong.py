@@ -41,6 +41,6 @@ def _detect_objects_pong(info, obs):
     #                    for bb in detected['bbs']]
     # bb_by_color(detected, obs, objects_colors['ball'], "ball")
     # detected['bbs'] = [bb for bb in detected['bbs'] if bb[5] != "ball" or bb[3] < 20]
-    if False:
-        plot_bounding_boxes(obs, detected["bbs"], objects_colors)
+    # if False:
+    #    plot_bounding_boxes(obs, detected["bbs"], objects_colors)
     info["objects"] = objects

@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
-from skimage.morphology import (disk, square)
-from skimage.morphology import (erosion, dilation, opening, closing, white_tophat, skeletonize)
+from skimage.morphology import (disk, square) # noqa
+from skimage.morphology import (erosion, dilation, opening, closing, white_tophat, skeletonize) # noqa
 import matplotlib.pyplot as plt
 
 

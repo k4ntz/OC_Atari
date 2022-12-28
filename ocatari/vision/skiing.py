@@ -12,6 +12,7 @@ fixed_objects_pos = {
     "logo": [65, 187, 32, 7]
 }
 
+
 def _detect_objects_skiing(info, obs, fixed_objects=True):
     objects = {}
     for object in objects_colors:
