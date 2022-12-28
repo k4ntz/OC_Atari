@@ -6,18 +6,16 @@ field) in Tennis
 # appends parent path to syspath to make ocatari importable
 # like it would have been installed as a package
 import sys
-from os import path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-
-from ocatari.core import OCAtari
 import random
 import matplotlib.pyplot as plt
-from copy import deepcopy
-from tqdm import tqdm
+# from copy import deepcopy
+# from tqdm import tqdm
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import pickle
+sys.path.insert(0, '../../ocatari') # noqa
+from core import OCAtari
 
 DROP_LOW = True
 MIN_CORRELATION = 0.8
@@ -55,8 +53,8 @@ objects_infos = {}
 # pickle.dump(np.array(ram_saves), open('dumps/ram_saves.pkl', 'wb'))
 # pickle.dump(modes, open('dumps/modes.pkl', 'wb'))
 
-ram_saves = pickle.load(open('dumps/ram_saves.pkl', 'rb'))
-modes = pickle.load(open('dumps/modes.pkl', 'rb'))
+ram_saves = pickle.load(open('../../dumps/ram_saves.pkl', 'rb'))
+modes = pickle.load(open('../../dumps/modes.pkl', 'rb'))
 
 objects_infos["mode"] = modes
 

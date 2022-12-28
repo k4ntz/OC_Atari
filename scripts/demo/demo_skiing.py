@@ -1,15 +1,13 @@
 # appends parent path to syspath to make ocatari importable
 # like it would have been installed as a package
 import sys
-from os import path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-
 import random
 import matplotlib.pyplot as plt
-from ocatari.core import OCAtari
-from ocatari.vision.utils import mark_bb, make_darker
-from ocatari.vision.skiing import objects_colors
-from ocatari.utils import load_agent, parser
+sys.path.insert(0, '../../ocatari') # noqa
+from core import OCAtari
+from vision.utils import mark_bb, make_darker
+from vision.skiing import objects_colors
+from utils import load_agent, parser
 
 game_name = "Skiing"
 MODE = "vision"

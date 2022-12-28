@@ -1,3 +1,4 @@
+"""
 from .utils import bb_by_color, plot_bounding_boxes
 
 objects_colors = {"player_green": [50, 132, 50], "score_green": [50, 132, 50], "player_yellow": [162, 134, 56],
@@ -75,3 +76,4 @@ def _detect_objects_skiing(info, obs):
         r, g, b = objects_colors[name]
         objects[name] = (x, y, w, h, r, g, b)
     info["objects"] = objects
+    """

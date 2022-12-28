@@ -1,9 +1,9 @@
 """
 An attempt to change quentins code (find_correlation) to require minimal human interaction
 """
+import sys
 import os
 
-from ocatari import OCAtari
 import random
 import matplotlib.pyplot as plt
 from copy import deepcopy
@@ -16,6 +16,8 @@ from sklearn.linear_model import RANSACRegressor, LinearRegression
 import pathlib
 from termcolor import colored
 import pickle
+sys.path.insert(0, '../ocatari') # noqa
+from core import OCAtari
 from vision.freeway import objects_colors
 
 

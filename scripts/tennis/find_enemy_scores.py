@@ -12,12 +12,9 @@ import seaborn as sns
 import pickle
 import ipdb
 import sys
-import pathlib
-try:
-    from ocatari import OCAtari
-except:
-    sys.path.append("../..")
-    from ocatari import OCAtari
+# import pathlib
+sys.path.insert(0, '../../ocatari') # noqa
+from core import OCAtari
 
 DROP_LOW = True
 MIN_CORRELATION = 0.5
@@ -53,8 +50,8 @@ MODE_CHANGED = False
 # pickle.dump(modes, open('dumps/scores.pkl', 'wb'))
 
 
-ram_saves = pickle.load(open('dumps/ram_saves_sc.pkl', 'rb'))
-modes = pickle.load(open('dumps/scores.pkl', 'rb'))
+ram_saves = pickle.load(open('../../dumps/ram_saves_sc.pkl', 'rb'))
+modes = pickle.load(open('../../dumps/scores.pkl', 'rb'))
 
 objects_infos["scores"] = modes
 

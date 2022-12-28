@@ -31,6 +31,7 @@ def _augment_info_skiing_revised(info, ram_state):
     # info["object_colour"] = ram_state[78:85]  # 85 is the newest object, 78 is the oldest  |probably not important
     info["objects"] = objects
 
+
 def _time_skiing(ram_state):
     time = {}
     # minutes

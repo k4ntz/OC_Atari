@@ -2,15 +2,11 @@ import time
 import random
 import ipdb
 import sys
-
-try:
-    from ocatari import OCAtari
-except:
-    sys.path.append("../..")
-    from ocatari import OCAtari
+sys.path.insert(0, '../../ocatari') # noqa
+from core import OCAtari
 
 """
-Test raw/revised mode with a human render_mode
+Test raw/revised mode with a human render_mode and ipdb debugger
 """
 
 env = OCAtari("Skiing", mode="raw", render_mode='human')
