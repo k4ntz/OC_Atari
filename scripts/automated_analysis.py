@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
-# import ipdb
+import ipdb # noqa
 import pathlib
 from termcolor import colored
 import pickle

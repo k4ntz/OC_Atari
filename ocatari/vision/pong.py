@@ -1,4 +1,4 @@
-from .utils import find_objects, plot_bounding_boxes
+from .utils import find_objects, plot_bounding_boxes # noqa
 
 
 objects_colors = {"enemy": [213, 130, 74], "player": [92, 186, 92],
