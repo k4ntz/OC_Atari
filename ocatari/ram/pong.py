@@ -13,14 +13,26 @@ def _augment_info_pong_revised(info, ram_state):
     """
     objects = {}
     # set defauld coord if object does not exist
-    x, y = 0, 0
     if ram_state[54] != 0:  # otherwise no ball
-        x, y = ram_state[49]-49, ram_state[54]-14
-    objects["ball"] = x, y, 2, 3, 236, 236, 236
+        objects["ball"] = ram_state[49]-49, ram_state[54]-14, 2, 3, 236, 236, 236
+    else:
+        objects["ball"] = (0, 0, 0, 0, 0, 0, 0)
     # same for enemy
-    x, y = 0, 0
-    if ram_state[50] != 0:  # otherwise no enemy
-        x, y = 16, ram_state[50]-15
-    objects["enemy"] = x, y, 4, 15, 213, 130, 74
+    if ram_state[50] > 18:  # otherwise no enemy
+        objects["enemy"] = 16, ram_state[50]-15, 4, 15, 213, 130, 74
+    else:
+        objects["enemy"] = (0, 0, 0, 0, 0, 0, 0)
     objects["player"] = 140, ram_state[51]-13, 4, 15, 92, 186, 92
+    # scores
+    if ram_state[13] < 10: # enemy score
+        objects["enemy_score"] = 0, 0, 0, 0, 0, 0, 0
+    else:
+        objects["enemy_score"] = 20, 1, 12, 20, 213, 130, 74
+    objects["enemy_score_2"] = 36, 1, 12, 20, 213, 130, 74
+    if ram_state[14] < 10: # player score
+        objects["player_score"] = (0, 0, 0, 0, 0, 0, 0)
+    else:
+        objects["player_score"] = 100, 1, 12, 20, 92, 186, 92
+    objects["player_score_2"] = 116, 1, 12, 20, 92, 186, 92
+    player_score = ram_state[14]
     info["objects"] = objects
