@@ -36,7 +36,6 @@ for i in range(1000):
                 print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prevRam[i]))
     print("------------------------------------------")
     prevRam = ram
-
     if terminated or truncated:
         observation, info = env.reset()
     print(info)
