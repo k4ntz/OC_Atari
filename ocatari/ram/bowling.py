@@ -33,21 +33,39 @@ def _augment_info_bowling_raw(info, ram_state):
     # 4: the character throws the ball
     # 5: the ball rolls, the player can give the ball an upper or lower direction once
     # 6: the ball returns to the player
-    print(ram_state)
 
 
 def _augment_info_bowling_revised(info, ram_state):
     """
-        For all 3 objects:
-        (x, y, w, h, r, g, b)
-        """
+    For all 3 objects:
+    (x, y, w, h, r, g, b)
+     """
     objects = {}
-    info["player"] = ram_state[29] + 10, 170 - ram_state[40], 4, 15, 0, 0, 0
-    info["ball"] = ram_state[30] + 7, 151 - ram_state[41], 4, 10, 45, 50, 184
+    objects["player"] = ram_state[29] + 8, y_pos_for_vision(ram_state[40]), 10, 10, 0, 0, 0
+    # not a perfect shape around the ball because the ram y-value and the rendered image y-position are
+    # in no correlation and the ram position encodes the lowest position of the ball and not the middle of the ball
+    # thus a rectangle will not perfectly fit the ball
+    objects["ball"] = ram_state[30] + 7, y_pos_for_vision(ram_state[41]), 4, 12, 45, 50, 184
     if ram_state[57] != 255:    # else pin knocked down
-        objects["pin1"] = 1, 1, 1, 1, 45, 50, 184
-    # objects["ball"] =
-
+        objects["pin1"] = pin_location(ram_state[57]) + 9, y_pos_for_vision(ram_state[47]), 2, 3, 45, 50, 184
+    if ram_state[58] != 255:    # else pin knocked down
+        objects["pin2"] = pin_location(ram_state[58]) + 9, y_pos_for_vision(ram_state[48]), 2, 3, 45, 50, 184
+    if ram_state[59] != 255:    # else pin knocked down
+        objects["pin3"] = pin_location(ram_state[59]) + 9, y_pos_for_vision(ram_state[49]), 2, 3, 45, 50, 184
+    if ram_state[60] != 255:    # else pin knocked down
+        objects["pin4"] = pin_location(ram_state[60]) + 9, y_pos_for_vision(ram_state[50]), 2, 3, 45, 50, 184
+    if ram_state[61] != 255:    # else pin knocked down
+        objects["pin5"] = pin_location(ram_state[61]) + 9, y_pos_for_vision(ram_state[51]), 2, 3, 45, 50, 184
+    if ram_state[62] != 255:    # else pin knocked down
+        objects["pin6"] = pin_location(ram_state[62]) + 9, y_pos_for_vision(ram_state[52]), 2, 3, 45, 50, 184
+    if ram_state[63] != 255:    # else pin knocked down
+        objects["pin7"] = pin_location(ram_state[63]) + 9, y_pos_for_vision(ram_state[53]), 2, 3, 45, 50, 184
+    if ram_state[64] != 255:    # else pin knocked down
+        objects["pin8"] = pin_location(ram_state[64]) + 9, y_pos_for_vision(ram_state[54]), 2, 3, 45, 50, 184
+    if ram_state[65] != 255:    # else pin knocked down
+        objects["pin9"] = pin_location(ram_state[65]) + 9, y_pos_for_vision(ram_state[55]), 2, 3, 45, 50, 184
+    if ram_state[66] != 255:    # else pin knocked down
+        objects["pin10"] = pin_location(ram_state[66]) + 9, y_pos_for_vision(ram_state[56]), 2, 3, 45, 50, 184
     info["score"] = _convert_number(ram_state[33])
     info["round"] = _convert_number(ram_state[36])
     info["pins_standing_count"] = pins_standing_count(ram_state[57:66])
@@ -66,8 +84,73 @@ def pin_location(ram_state):
 
 
 def pins_standing_count(ram_state):
+    """
+    Calculate the number of pins that are still standing
+    """
     count = 10
     for x in ram_state:
         if x == 255:
             count = count - 1
     return count
+
+
+def y_pos_for_vision(ram_state):
+    """
+    Get an estimated y-position for the rendered image based on the ram value for the objects y-posiition
+    """
+    if ram_state == 1:
+        return 161
+    if ram_state == 2:
+        return 160
+    if ram_state == 3:
+        return 159
+    if ram_state == 4:
+        return 158
+    if ram_state == 5:
+        return 157
+    if ram_state == 6:
+        return 156
+    if ram_state == 7:
+        return 155
+    if ram_state == 8:
+        return 153
+    if ram_state == 9:
+        return 151
+    if ram_state == 10:
+        return 150
+    if ram_state == 11:
+        return 148
+    if ram_state == 12:
+        return 144
+    if ram_state == 13:
+        return 144
+    if ram_state == 14:
+        return 142
+    if ram_state == 15:
+        return 140
+    if ram_state == 16:
+        return 138
+    if ram_state == 17:
+        return 136
+    if ram_state == 18:
+        return 134
+    if ram_state == 19:
+        return 132
+    if ram_state == 20:
+        return 130
+    if ram_state == 21:
+        return 127
+    if ram_state == 22:
+        return 125
+    if ram_state == 23:
+        return 123
+    if ram_state == 24:
+        return 122
+    if ram_state == 25:
+        return 120
+    if ram_state == 26:
+        return 116
+    if ram_state == 27:
+        return 114
+    if ram_state == 28:
+        return 110

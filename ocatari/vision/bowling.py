@@ -4,17 +4,13 @@ objects_colors = {"player_head": [198, 89, 179], "player_shoes": [0, 0, 0], "bal
                   "background": [180, 122, 48], "player_score": [84, 92, 214], "round_player_1": [45, 50, 184],
                   "round_player_2": [45, 50, 184], "pins": [45, 50, 184]}
 
-fixed_objects_pos = {
-
-}
-
 
 def _detect_objects_bowling(info, obs):
     objects = {}
     ball = [bb for bb in find_objects(obs, objects_colors["ball"], min_distance=None)
             if bb[2] < 160 and 100 < bb[1] < 175 and bb[3] < 20]
     if ball:
-        objects["ball"] = ball
+        objects["ball"] = ball[0]
 
     pins = [bb for bb in find_objects(obs, objects_colors["pins"], min_distance=None)
             if bb[2] < 160 and 100 < bb[1] < 175 and bb[3] > 10]
