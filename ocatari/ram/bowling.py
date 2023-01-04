@@ -46,25 +46,25 @@ def _augment_info_bowling_revised(info, ram_state):
     # in no correlation and the ram position encodes the lowest position of the ball and not the middle of the ball
     # thus a rectangle will not perfectly fit the ball
     objects["ball"] = ram_state[30] + 7, y_pos_for_vision(ram_state[41]), 4, 12, 45, 50, 184
-    if ram_state[57] != 255:    # else pin knocked down
+    if ram_state[57] <= 120:    # else pin knocked down
         objects["pin1"] = pin_location(ram_state[57]) + 9, y_pos_for_vision(ram_state[47]), 2, 3, 45, 50, 184
-    if ram_state[58] != 255:    # else pin knocked down
+    if ram_state[58] <= 120:    # else pin knocked down
         objects["pin2"] = pin_location(ram_state[58]) + 9, y_pos_for_vision(ram_state[48]), 2, 3, 45, 50, 184
-    if ram_state[59] != 255:    # else pin knocked down
+    if ram_state[59] <= 120:    # else pin knocked down
         objects["pin3"] = pin_location(ram_state[59]) + 9, y_pos_for_vision(ram_state[49]), 2, 3, 45, 50, 184
-    if ram_state[60] != 255:    # else pin knocked down
+    if ram_state[60] <= 120:    # else pin knocked down
         objects["pin4"] = pin_location(ram_state[60]) + 9, y_pos_for_vision(ram_state[50]), 2, 3, 45, 50, 184
-    if ram_state[61] != 255:    # else pin knocked down
+    if ram_state[61] <= 120:    # else pin knocked down
         objects["pin5"] = pin_location(ram_state[61]) + 9, y_pos_for_vision(ram_state[51]), 2, 3, 45, 50, 184
-    if ram_state[62] != 255:    # else pin knocked down
+    if ram_state[62] <= 120:    # else pin knocked down
         objects["pin6"] = pin_location(ram_state[62]) + 9, y_pos_for_vision(ram_state[52]), 2, 3, 45, 50, 184
-    if ram_state[63] != 255:    # else pin knocked down
+    if ram_state[63] <= 120:    # else pin knocked down
         objects["pin7"] = pin_location(ram_state[63]) + 9, y_pos_for_vision(ram_state[53]), 2, 3, 45, 50, 184
-    if ram_state[64] != 255:    # else pin knocked down
+    if ram_state[64] <= 120:    # else pin knocked down
         objects["pin8"] = pin_location(ram_state[64]) + 9, y_pos_for_vision(ram_state[54]), 2, 3, 45, 50, 184
-    if ram_state[65] != 255:    # else pin knocked down
+    if ram_state[65] <= 120:    # else pin knocked down
         objects["pin9"] = pin_location(ram_state[65]) + 9, y_pos_for_vision(ram_state[55]), 2, 3, 45, 50, 184
-    if ram_state[66] != 255:    # else pin knocked down
+    if ram_state[66] <= 120:    # else pin knocked down
         objects["pin10"] = pin_location(ram_state[66]) + 9, y_pos_for_vision(ram_state[56]), 2, 3, 45, 50, 184
     info["score"] = _convert_number(ram_state[33])
     info["round"] = _convert_number(ram_state[36])
@@ -77,7 +77,7 @@ def pin_location(ram_state):
     """
     Method to get the x-position for each pin.
     """
-    if ram_state != 255:
+    if ram_state <= 120:
         return 126 - 2 * ram_state
     else:
         return 255
@@ -96,61 +96,89 @@ def pins_standing_count(ram_state):
 
 def y_pos_for_vision(ram_state):
     """
-    Get an estimated y-position for the rendered image based on the ram value for the objects y-posiition
+    Get an estimated y-position for the rendered image based on the ram value for the objects y-posiition.
+    Hard coded because no correlation was found.
     """
-    if ram_state == 1:
-        return 161
-    if ram_state == 2:
-        return 160
-    if ram_state == 3:
-        return 159
-    if ram_state == 4:
-        return 158
-    if ram_state == 5:
-        return 157
-    if ram_state == 6:
-        return 156
-    if ram_state == 7:
-        return 155
-    if ram_state == 8:
-        return 153
-    if ram_state == 9:
-        return 151
-    if ram_state == 10:
-        return 150
-    if ram_state == 11:
-        return 148
-    if ram_state == 12:
-        return 144
-    if ram_state == 13:
-        return 144
-    if ram_state == 14:
-        return 142
-    if ram_state == 15:
-        return 140
-    if ram_state == 16:
-        return 138
-    if ram_state == 17:
-        return 136
-    if ram_state == 18:
-        return 134
-    if ram_state == 19:
-        return 132
-    if ram_state == 20:
-        return 130
-    if ram_state == 21:
-        return 127
-    if ram_state == 22:
-        return 125
-    if ram_state == 23:
-        return 123
-    if ram_state == 24:
-        return 122
-    if ram_state == 25:
-        return 120
-    if ram_state == 26:
-        return 116
-    if ram_state == 27:
-        return 114
-    if ram_state == 28:
-        return 110
+    match ram_state:
+        case 1:
+            return 161
+        case 2:
+            return 160
+        case 3:
+            return 159
+        case 4:
+            return 158
+        case 5:
+            return 157
+        case 6:
+            return 156
+        case 7:
+            return 155
+        case 8:
+            return 153
+        case 9:
+            return 151
+        case 10:
+            return 150
+        case 11:
+            return 148
+        case 12:
+            return 144
+        case 13:
+            return 144
+        case 14:
+            return 142
+        case 15:
+            return 140
+        case 16:
+            return 138
+        case 17:
+            return 136
+        case 18:
+            return 134
+        case 19:
+            return 132
+        case 20:
+            return 130
+        case 21:
+            return 127
+        case 22:
+            return 125
+        case 23:
+            return 123
+        case 24:
+            return 122
+        case 25:
+            return 120
+        case 26:
+            return 116
+        case 27:
+            return 114
+        case 28:
+            return 112
+        case 29:
+            return 110
+        case 30:
+            return 106
+        case 31:
+            return 104
+        case 32:
+            return 102
+        case 33:
+            return 98
+        case 34:
+            return 95
+        case 35:
+            return 92
+        case 36:
+            return 88
+        case 37:
+            return 85
+        case 38:
+            return 83
+        case 39:
+            return 82
+        case 40:
+            return 80
+        case _:
+            raise IndexError("Not a valid y-position")
