@@ -22,7 +22,7 @@ for i in range(1000):
     # done split into 2 parts:
     # terminated = True if env terminates (completion or failure),
     # truncated = True if episodes truncates due to a time limit or a reason that is not defined of the task
-    obs, reward, terminated, truncated, info = env.step(random.randint(0, 0))
+    obs, reward, terminated, truncated, info = env.step(random.randint(0, 4))
 
     ram = env._env.unwrapped.ale.getRAM()
     if prevRam is not None:
