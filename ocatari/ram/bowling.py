@@ -181,4 +181,4 @@ def y_pos_for_vision(ram_state):
         case 40:
             return 80
         case _:
-            raise IndexError("Not a valid y-position")
+            print("Not a valid y-position")
