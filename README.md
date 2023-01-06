@@ -11,11 +11,11 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [ ]  Bowling (worked on by Chris)
 - [ ]  Ms.  Pacman (worked on by Bjarne)
 - [x]  Pong
-- [ ]  Seaquest (rework revised, vision)
+- [ ]  Seaquest (rework revised, vision -> worked on by Chris)
 - [ ]  Skiing (rework revised, vision)
 - [ ]  Space Invaders (worked on by Belal/Sebastian)
 - [ ]  Asterix
-- [ ]  Asteroids
+- [ ]  Asteroids (worked on by Chris)
 - [ ]  Demon Attack
 - [x]  Tennis
 - [ ]  Kangaroo
