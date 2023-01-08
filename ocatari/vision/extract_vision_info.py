@@ -4,6 +4,7 @@ from .skiing import _detect_objects_skiing
 from .tennis import _detect_objects_tennis
 from .freeway import _detect_objects_freeway
 from .seaquest import _detect_objects_seaquest
+from .mspacman import _detect_objects_ms_pacman
 
 
 def augment_info_vision(info, obs, game_name):
@@ -16,6 +17,8 @@ def augment_info_vision(info, obs, game_name):
     elif game_name.lower() == "skiing":
         return _detect_objects_skiing(info, obs)
     elif game_name.lower() == "tennis":
+        return _detect_objects_tennis(info, obs)
+    elif  game_name.lower() == "mspacman":
         return _detect_objects_tennis(info, obs)
     else:
         print(colored("Uncovered game in vision mode", "red"))
