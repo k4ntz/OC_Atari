@@ -1,6 +1,6 @@
 from ._helper_methods import _convert_number
 
-def _augment_info_ms_pacman_raw(info, ram_state):
+def _augment_info_mspacman_raw(info, ram_state):
     """
     returns unprocessed list with
     player_x, player_y, ghosts_position_x, enemy_position_y, fruit_x, fruit_y
@@ -23,7 +23,7 @@ def _augment_info_ms_pacman_raw(info, ram_state):
     objects["fruit_y"] = ram_state[17] 
     info["object-list"] = objects
 
-def _augment_info_ms_pacman_revised(info, ram_state):
+def _augment_info_mspacman_revised(info, ram_state):
 
     """
     ================================================.

@@ -1,6 +1,6 @@
 import gym
-from ram.extract_ram_info import augment_info_raw, augment_info_revised
-from vision.extract_vision_info import augment_info_vision
+from .ram.extract_ram_info import augment_info_raw, augment_info_revised
+from .vision.extract_vision_info import augment_info_vision
 from termcolor import colored
 from collections import deque
 try:
@@ -15,7 +15,7 @@ import torch
 DEVICE = "cpu"
 
 AVAILABLE_GAMES = ["Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
-                   "Skiing", "SpaceInvaders", "Tennis", "Freeway"]
+                   "Skiing", "SpaceInvaders", "Tennis", "Freeway", "MsPacman"]
 
 
 class OCAtari():
