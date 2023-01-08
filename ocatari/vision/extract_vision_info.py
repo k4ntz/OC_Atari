@@ -18,7 +18,7 @@ def augment_info_vision(info, obs, game_name):
         return _detect_objects_skiing(info, obs)
     elif game_name.lower() == "tennis":
         return _detect_objects_tennis(info, obs)
-    elif  game_name.lower() == "mspacman":
+    elif game_name.lower() == "mspacman":
         return _detect_objects_mspacman(info, obs)
     else:
         print(colored("Uncovered game in vision mode", "red"))
