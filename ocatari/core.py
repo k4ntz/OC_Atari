@@ -1,4 +1,4 @@
-import gym
+import gymnasium as gym
 from ocatari.ram.extract_ram_info import augment_info_raw, augment_info_revised
 from ocatari.vision.extract_vision_info import augment_info_vision
 from termcolor import colored
