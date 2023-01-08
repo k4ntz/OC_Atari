@@ -7,7 +7,8 @@ objects_colors = {"player": [210, 164, 74], "ghost_orange": [180, 122, 48], "gho
                   "cherry/strawberry/Apple": [184, 50, 50], "orange/banana": [198, 108, 58],
                   "pretzel": [162, 162, 42], "pear": [110, 156, 66], "cherry/strawberry/Applein_in_play": [184, 50, 50],
                   "orange/bananain_in_play": [198, 108, 58], "pretzel_in_play": [162, 162, 42],
-                  "pear_in_play": [110, 156, 66], "eatable_ghosts_1": [66, 114, 194], "eatable_ghosts_2": [66, 114, 194],
+                  "pear_in_play": [110, 156, 66], "eatable_ghosts_1": [66, 114, 194],
+                  "eatable_ghosts_2": [66, 114, 194],
                   "eatable_ghosts_3": [66, 114, 194], "eatable_ghosts_4": [66, 114, 194],
                   "player_score": [195, 144, 61]}
 
