@@ -55,58 +55,58 @@ def _detect_objects_mspacman(info, obs):
     if ghost_red:
         objects["ghost_red"] = ghost_red[0]
 
-    life_1 = [bb for bb in find_objects['bbs']
-              if bb[5] != "life_1" or bb[1] < 25]
+    life_1 = [bb for bb in find_objects(obs, objects_colors["life_1"], min_distance=None)
+              if bb[1] < 25]
     if life_1:
         objects["life_1"] = life_1[0]
 
-    life_2 = [bb for bb in find_objects['bbs']
-              if bb[5] != "life_2" or 25 < bb[1] < 35]
+    life_2 = [bb for bb in find_objects(obs, objects_colors["life_2"], min_distance=None)
+              if 25 < bb[1] < 35]
     if life_2:
         objects["life_2"] = life_2[0]
 
-    life_3 = [bb for bb in find_objects['bbs']
-              if bb[5] != "life_3" or 35 < bb[1]]
+    life_3 = [bb for bb in find_objects(obs, objects_colors["life_3"], min_distance=None)
+              if 35 < bb[1]]
     if life_3:
         objects["life_3"] = life_3[0]
 
-    red_fruit = [bb for bb in find_objects['bbs']
-                 if bb[5] != "cherry/strawberry/Apple" or 170 < bb[0]]
+    red_fruit = [bb for bb in find_objects(obs, objects_colors["cherry/strawberry/Apple"], min_distance=None)
+                 if 170 < bb[0]]
     if red_fruit:
         objects["cherry/strawberry/Apple"] = red_fruit[0]
 
-    orange_fruit = [bb for bb in find_objects['bbs']
-                    if bb[5] != "orange/banana" or 170 < bb[0]]
+    orange_fruit = [bb for bb in find_objects(obs, objects_colors["orange/banana"], min_distance=None)
+                    if 170 < bb[0]]
     if orange_fruit:
         objects["orange/banana"] = orange_fruit[0]
 
-    pretzel = [bb for bb in find_objects['bbs']
-               if bb[5] != "pretzel" or 170 < bb[0]]
+    pretzel = [bb for bb in find_objects(obs, objects_colors["pretzel"], min_distance=None)
+               if 170 < bb[0]]
     if pretzel:
         objects["pretzel"] = pretzel[0]
 
-    pear = [bb for bb in find_objects['bbs']
-            if bb[5] != "pear" or 170 < bb[0]]
+    pear = [bb for bb in find_objects(obs, objects_colors["pear"], min_distance=None)
+            if 170 < bb[0]]
     if pear:
         objects["pear"] = pear[0]
 
-    red_fruit_in_play = [bb for bb in find_objects['bbs']
-                         if bb[5] != "cherry/strawberry/Applein_in_play" or 170 > bb[0]]
+    red_fruit_in_play = [bb for bb in find_objects(obs, objects_colors["cherry/strawberry/Applein_in_play"], min_distance=None)
+                         if 170 > bb[0]]
     if red_fruit_in_play:
         objects["cherry/strawberry/Applein_in_play"] = red_fruit_in_play[0]
 
-    orange_fruit_in_play = [bb for bb in find_objects['bbs']
-                            if bb[5] != "orange/bananain_in_play" or 170 > bb[0]]
+    orange_fruit_in_play = [bb for bb in find_objects(obs, objects_colors["orange/bananain_in_play"], min_distance=None)
+                            if 170 > bb[0]]
     if orange_fruit_in_play:
         objects["orange/bananain_in_play"] = orange_fruit_in_play[0]
 
-    pretzel_in_play = [bb for bb in find_objects['bbs']
-                       if bb[5] != "pretzel_in_play" or 170 > bb[0]]
+    pretzel_in_play = [bb for bb in find_objects(obs, objects_colors["pretzel_in_play"], min_distance=None)
+                       if 170 > bb[0]]
     if pretzel_in_play:
         objects["pretzel_in_play"] = pretzel_in_play[0]
 
-    pear_in_play = [bb for bb in find_objects['bbs']
-                    if bb[5] != "pear_in_play" or 170 > bb[0]]
+    pear_in_play = [bb for bb in find_objects(obs, objects_colors["pear_in_play"], min_distance=None)
+                    if 170 > bb[0]]
     if pear_in_play:
         objects["pear_in_play"] = pear_in_play[0]
 
