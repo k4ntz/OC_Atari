@@ -1,4 +1,4 @@
-gym
+gymnasium
 matplotlib
 numpy
 opencv_python
