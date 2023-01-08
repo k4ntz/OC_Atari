@@ -90,7 +90,8 @@ def _detect_objects_mspacman(info, obs):
     if pear:
         objects["pear"] = pear[0]
 
-    red_fruit_in_play = [bb for bb in find_objects(obs, objects_colors["cherry/strawberry/Applein_in_play"], min_distance=None)
+    red_fruit_in_play = [bb for bb in find_objects(obs, objects_colors["cherry/strawberry/Applein_in_play"],
+    min_distance=None)
                          if 170 > bb[0]]
     if red_fruit_in_play:
         objects["cherry/strawberry/Applein_in_play"] = red_fruit_in_play[0]
