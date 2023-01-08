@@ -11,38 +11,25 @@ def _augment_info_mspacman_raw(info, ram_state):
     objects["player_y"] = ram_state[16]
     objects["enemy_amount"] = ram_state[19]
     objects["ghosts_position_x"] = {"orange": ram_state[6],
-                                 "cyan": ram_state[7],
-                                 "pink": ram_state[8],
-                                 "red": ram_state[9]
-                                }
+                                    "cyan": ram_state[7],
+                                    "pink": ram_state[8],
+                                    "red": ram_state[9]
+                                    }
     objects["enemy_position_y"] = {"orange": ram_state[12],
-                                "cyan": ram_state[13],
-                                "pink": ram_state[14],
-                                "red": ram_state[15]
-                                }
+                                   "cyan": ram_state[13],
+                                   "pink": ram_state[14],
+                                   "red": ram_state[15]
+                                    }
     objects["fruit_x"] = ram_state[11]
     objects["fruit_y"] = ram_state[17]
     info["object-list"] = objects
 
+
 def _augment_info_mspacman_revised(info, ram_state):
 
     """
-    ================================================.
-         .-.   .-.     .--.                         |
-        | OO| | OO|   / _.-' .-.   .-.  .-.   |``|  |
-        |   | |   |   \  '-. '-'   '-'  '-'   |__|  |
-        '^^^' '^^^'    '--'                         |
-    ===============.       .================.  .-.  |
-                   |       |                |  '-'  |
-                   |       |                |       |
-                   |       |                |  .-.  |
-                   |       |                |  '-'  |
-    ==============='       '================'       |
-    scr: https://www.asciiart.eu/video-games/pacman
-
     There is a total of 4 levels
     If no more lives are displayed you will lose the game upon the next hit 
-    
     """
     objects = {}
     
