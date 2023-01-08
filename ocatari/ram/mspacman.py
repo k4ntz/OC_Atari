@@ -14,12 +14,12 @@ def _augment_info_mspacman_raw(info, ram_state):
                                     "cyan": ram_state[7],
                                     "pink": ram_state[8],
                                     "red": ram_state[9]
-                                   }
+                                    }
     objects["enemy_position_y"] = {"orange": ram_state[12],
                                    "cyan": ram_state[13],
                                    "pink": ram_state[14],
                                    "red": ram_state[15]
-                                  }
+                                   }
     objects["fruit_x"] = ram_state[11]
     objects["fruit_y"] = ram_state[17]
     info["object-list"] = objects
@@ -34,7 +34,7 @@ def _augment_info_mspacman_revised(info, ram_state):
     objects = {}
 
     objects["level"] = ram_state[0]  # there is a total of 4 levels 0-3
-    objects["score"] = (_convert_number(ram_state[122]) * 10000) + (_convert_number(ram_state[121]) * 100) 
+    objects["score"] = (_convert_number(ram_state[122]) * 10000) + (_convert_number(ram_state[121]) * 100)
     + _convert_number(ram_state[120])
 
     objects["lives"] = ram_state[123]  # If this state is 0 the game will be over upon the next hit
@@ -47,23 +47,23 @@ def _augment_info_mspacman_revised(info, ram_state):
                                     "cyan": ram_state[7],
                                     "pink": ram_state[8],
                                     "red": ram_state[9]
-                                   }
+                                    }
     objects["enemy_position_y"] = {"orange": ram_state[12],
                                    "cyan": ram_state[13],
                                    "pink": ram_state[14],
                                    "red": ram_state[15]
-                                  }
+                                   }
 
     eatable = []
     eatable.append(ram_state[1] > 139)
     eatable.append(ram_state[2] > 124)
     eatable.append(ram_state[3] > 140)
     eatable.append(ram_state[4] > 130)
-    objects["enemy_eatable"] = {"orange": eatable[0], 
-                                "cyan": eatable[1],  
-                                "pink": eatable[2],  
-                                "red": eatable[3]    
-                               }
+    objects["enemy_eatable"] = {"orange": eatable[0],
+                                "cyan": eatable[1],
+                                "pink": eatable[2],
+                                "red": eatable[3]
+                                }
 
     objects["fruit_x"] = ram_state[11]
     objects["fruit_y"] = ram_state[17]
