@@ -40,8 +40,8 @@ def append_oinfo_values(obj_name, oinfo, object_infos):
         for oinfoTuple in oinfo:
             object_infos[f"{obj_name_altered}_x"].append(oinfo[0])
             object_infos[f"{obj_name_altered}_y"].append(oinfo[1])
-            obj_name_altered[len(obj_name_altered)-1] = chr(index)
-            index+=1
+            index += 1
+            obj_name_altered = obj_name_altered[:-1] + str(index)
 
 def generate_dataset(env, object_list, drop_constants, frames=400, skip_frames=3, manipulated_ram=None, ):
     """
