@@ -11,6 +11,7 @@ from vision.tennis import objects_colors
 from utils import load_agent, parser
 
 game_name = "Pong"
+game_name = "Boxing"
 # game_name = "Tennis"
 MODE = "vision"
 MODE = "revised"
@@ -24,7 +25,7 @@ opts = parser.parse_args()
 if opts.path:
     agent = load_agent(opts, env.action_space.n)
 
-for i in range(1000):
+for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
