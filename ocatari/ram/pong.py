@@ -6,7 +6,7 @@ def _augment_info_pong_raw(info, ram_state):
     info["objects_list"] = [ram_state[49], ram_state[54], ram_state[50], ram_state[51]]
 
 
-def _augment_info_pong_revised(info, ram_state):
+def _augment_info_pong_revised(info, ram_state, hud=False):
     """
     For all 3 objects:
     (x, y, w, h, r, g, b)
@@ -24,27 +24,17 @@ def _augment_info_pong_revised(info, ram_state):
         objects["enemy"] = 16, ram_state[50]-15, 4, 15, 213, 130, 74
     else:
         objects["enemy"] = (0, 0, 0, 0, 0, 0, 0)
-    enemy_score2 = (0, 0, 0, 0, 0, 0, 0)
-    player_score2 = (0, 0, 0, 0, 0, 0, 0)
-    if enemy_score > 10:
-        enemy_score2 = 20, 1, 12, 19, 213, 130, 74
-    if player_score > 10:
-        player_score2 = 100, 1, 12, 19, 92, 186, 92
-    objects['player_score'] = 116, 1, 12, 19, 92, 186, 92
-    objects['enemy_score'] = 36, 1, 12, 19, 213, 130, 74
-    objects['enemy_score2'] = enemy_score2
-    objects['player_score2'] = player_score2
     objects["player"] = 140, ram_state[51]-13, 4, 15, 92, 186, 92
-    # scores
-    if ram_state[13] < 10: # enemy score
-        objects["enemy_score"] = 0, 0, 0, 0, 0, 0, 0
-    else:
-        objects["enemy_score"] = 20, 1, 12, 20, 213, 130, 74
-    objects["enemy_score_2"] = 36, 1, 12, 20, 213, 130, 74
-    if ram_state[14] < 10: # player score
-        objects["player_score"] = (0, 0, 0, 0, 0, 0, 0)
-    else:
-        objects["player_score"] = 100, 1, 12, 20, 92, 186, 92
-    objects["player_score_2"] = 116, 1, 12, 20, 92, 186, 92
-    player_score = ram_state[14]
+    if hud:
+        # scores
+        if ram_state[13] < 10: # enemy score
+            objects["enemy_score"] = 0, 0, 0, 0, 0, 0, 0
+        else:
+            objects["enemy_score"] = 20, 1, 12, 20, 213, 130, 74
+        objects["enemy_score_2"] = 36, 1, 12, 20, 213, 130, 74
+        if ram_state[14] < 10: # player score
+            objects["player_score"] = (0, 0, 0, 0, 0, 0, 0)
+        else:
+            objects["player_score"] = 100, 1, 12, 20, 92, 186, 92
+        objects["player_score_2"] = 116, 1, 12, 20, 92, 186, 92
     info["objects"] = objects
