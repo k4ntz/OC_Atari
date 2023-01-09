@@ -12,7 +12,7 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [ ]  Ms.  Pacman (worked on by Bjarne)
 - [x]  Pong
 - [ ]  Seaquest (rework revised, vision -> worked on by Chris)
-- [ ]  Skiing (rework revised, vision)
+- [x]  Skiing
 - [ ]  Space Invaders (worked on by Belal/Sebastian)
 - [ ]  Asterix
 - [ ]  Asteroids (worked on by Chris)
@@ -30,7 +30,7 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [ ]  Q*bert
 - [ ]  Assault
 - [ ]  Beam Rider
-- [ ]  Boxing
+- [x]  Boxing
 - [ ]  Carnival
 - [ ]  Centipede
 
