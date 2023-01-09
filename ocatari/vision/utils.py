@@ -3,6 +3,7 @@ import cv2
 from skimage.morphology import (disk, square) # noqa
 from skimage.morphology import (erosion, dilation, opening, closing, white_tophat, skeletonize) # noqa
 import matplotlib.pyplot as plt
+from termcolor import colored
 
 
 def assert_in(observed, target, tol):
@@ -67,6 +68,33 @@ def plot_bounding_boxes(obs, bbs, objects_colors):
         except KeyError as err:
             print(err)
             mark_bb(obs, bb, np.array([255, 255, 255]))
+
+
+def plot_bounding_boxes_from_info(obs, info):
+    colors = info.get("objects_colors", {})
+    for name, oinf in info["objects"].items():
+        if type(oinf) == tuple:
+            _plot_bounding_boxes_from_tuple(obs, name, oinf, colors)
+
+        elif type(oinf) == list:
+            if len(oinf) > 0:
+                bb = oinf[0]
+                _plot_bounding_boxes_from_tuple(obs, name, bb, colors)
+
+        else:
+            print(colored("the return type is not supported", "red"))
+
+
+def _plot_bounding_boxes_from_tuple(obs, name, tup, colors):
+    if len(tup) == 4:
+        color = colors.get(name, np.array([0, 0, 0]))
+        mark_bb(obs, tup, color)
+    elif len(tup) == 7:
+        bb = tup[:4]
+        color = tup[4:]
+        mark_bb(obs, bb, color)
+    else:
+        print(colored("the return type is not supported", "red"))
 
 
 def find_objects(image, color, closing_active=True, size=None, tol_s=10,

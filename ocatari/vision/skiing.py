@@ -18,9 +18,10 @@ def _detect_objects_skiing(info, obs, fixed_objects=True):
     for object in objects_colors:
         found_objects = find_objects(obs, objects_colors[object])
         objects[object] = found_objects
-    if fixed_objects:
+    """if fixed_objects:
         fixed_objects_complete = {}
         for objn in fixed_objects_pos.keys():
-            fixed_objects_complete[objn] = [fixed_objects_pos[objn] + objects_colors[objn]]
-        objects.update(fixed_objects_complete)
+            fixed_objects_complete[objn] = [fixed_objects_pos[objn]]
+        objects.update(fixed_objects_complete)"""
     info["objects"] = objects
+    info["objects_colors"] = objects_colors
