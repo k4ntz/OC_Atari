@@ -31,19 +31,22 @@ def _augment_info_skiing_raw(info, ram_state):
     # print(ram_state)
 
 
-def _augment_info_skiing_revised(info, ram_state):
-    objects = {
-        "logo": (65, 187, 31, 6, 0, 0, 0),
-        "score1": (67, 6, 6, 7, 0, 0, 0),
-        "score2": (75, 6, 6, 7, 0, 0, 0),
-        "clock1": (59, 16, 6, 7, 0, 0, 0),
-        "clock2": (66, 17, 1, 5, 0, 0, 0),
-        "clock3": (68, 16, 6, 7, 0, 0, 0),
-        "clock4": (75, 16, 6, 7, 0, 0, 0),
-        "clock5": (82, 21, 1, 2, 0, 0, 0),
-        "clock6": (84, 16, 6, 7, 0, 0, 0),
-        "clock7": (91, 16, 6, 7, 0, 0, 0),
-    }
+def _augment_info_skiing_revised(info, ram_state, hud=False):
+    if hud:
+        objects = {
+            "logo": (65, 187, 31, 6, 0, 0, 0),
+            "score1": (67, 6, 6, 7, 0, 0, 0),
+            "score2": (75, 6, 6, 7, 0, 0, 0),
+            "clock1": (59, 16, 6, 7, 0, 0, 0),
+            "clock2": (66, 17, 1, 5, 0, 0, 0),
+            "clock3": (68, 16, 6, 7, 0, 0, 0),
+            "clock4": (75, 16, 6, 7, 0, 0, 0),
+            "clock5": (82, 21, 1, 2, 0, 0, 0),
+            "clock6": (84, 16, 6, 7, 0, 0, 0),
+            "clock7": (91, 16, 6, 7, 0, 0, 0),
+        }
+    else:
+        objects = {}
     objects["player"] = (ram_state[25], ram_state[26]-80, 10, 18, 214, 92, 92)
     info["score"] = _convert_number(ram_state[107])
     if info["score"] < 10:
@@ -117,12 +120,8 @@ def _augment_info_skiing_revised(info, ram_state):
             mogul_count += 1
         else:
             pass
-
-    # info["object_x"] = ram_state[62:69]  # 69 is the newest object, 62 is the oldest
-    # info["object_y"] = ram_state[86:93]  # 93 is the newest object, 86 is the oldest
-    # info["object_type"] = ram_state[70:77]  # 77 is the newest object, 70 is the oldest | 85 tree | 2 flag | 5 mogul
-    # info["object_colour"] = ram_state[78:85]  # 85 is the newest object, 78 is the oldest  |probably not important
     info["objects"] = objects
+
 
 def _time_skiing(ram_state):
     time = {}
