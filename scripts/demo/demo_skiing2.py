@@ -2,17 +2,17 @@
 # like it would have been installed as a package
 import sys
 sys.path.insert(0, '../../ocatari') # noqa
-from core import OCAtari
+from ocatari.core import OCAtari
 import random
 import matplotlib.pyplot as plt
-from vision.utils import mark_bb, make_darker
-from vision.skiing import objects_colors
-from utils import load_agent, parser
+from ocatari.vision.utils import mark_bb, make_darker
+from ocatari.vision.skiing import objects_colors
+from ocatari.utils import load_agent, parser
 
 game_name = "Skiing"
-MODE = "vision"
-MODE = "raw"
-# MODE = "revised"
+# MODE = "vision"
+# MODE = "raw"
+MODE = "revised"
 env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
