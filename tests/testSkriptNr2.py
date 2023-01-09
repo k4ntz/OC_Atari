@@ -1,4 +1,4 @@
-import gym
+import gymnasium as gym
 import time
 # created by timo to set the ram and see whats changed
 

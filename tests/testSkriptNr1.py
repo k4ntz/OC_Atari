@@ -1,4 +1,4 @@
-import gym
+import gymnasium as gym
 import time
 
 # created by timo to print out the ram changes and general testing
