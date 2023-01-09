@@ -12,7 +12,7 @@ import pathlib
 """
 trying to automate the creation of vision
 mouse button :      to select the object   (you have to be very precise)
-keybord button :    to go to next object
+enter / close :    end selection / print out colors, code etc.
 """
 rgb_array = []
 name = "object0"
