@@ -1,15 +1,10 @@
-import time
-import random
-import ipdb
 from matplotlib import pyplot as plt
 import sys
-from ocatari.vision.utils import plot_bounding_boxes_from_info
 # import pathlib
 sys.path.insert(0, '../../ocatari') # noqa
 from ocatari import core
 from ocatari.vision.utils import plot_bounding_boxes_from_info
 from ocatari.vision.utils import find_objects, plot_bounding_boxes # noqa
-from pynput.mouse import Listener
 
 """
 trying to automate the creation of vision
