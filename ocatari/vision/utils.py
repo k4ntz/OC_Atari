@@ -77,8 +77,7 @@ def plot_bounding_boxes_from_info(obs, info):
             _plot_bounding_boxes_from_tuple(obs, name, oinf, colors)
 
         elif type(oinf) == list:
-            if len(oinf) > 0:
-                bb = oinf[0]
+            for bb in oinf:
                 _plot_bounding_boxes_from_tuple(obs, name, bb, colors)
 
         else:
