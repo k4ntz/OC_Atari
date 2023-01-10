@@ -96,7 +96,6 @@ def _augment_info_skiing_revised(info, ram_state, hud=False):
                 # print("CORRECTING BUG")
                 x += 5
                 PREV_X, PREV_Y = x, y
-                print()
             elif tree_count == 0:
                 PREV_X, PREV_Y = x, y
             if y == 28 or y == 27:
