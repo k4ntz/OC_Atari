@@ -20,7 +20,7 @@ setup(
         "setuptools",
         "torch",
         "tqdm",
-        "gym",
+        "gymnasium[atari]",
         "opencv_python",
         "scikit_image",
         "termcolor",
