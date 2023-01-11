@@ -29,6 +29,7 @@ def ransac_regression(x, y):
     ransac.fit(np.array(x).reshape(-1, 1), y)
     return ransac.estimator_.coef_.item(), ransac.estimator_.intercept_.item()
 
+
 def append_oinfo_values(obj_name, oinfo, object_infos):
     if type(oinfo) == tuple:
         object_infos[f"{obj_name}_x"].append(oinfo[0])
@@ -36,12 +37,12 @@ def append_oinfo_values(obj_name, oinfo, object_infos):
 
     elif type(oinfo) == list:
         index = 0
-        obj_name_altered = str(obj_name) +"0"
         for oinfoTuple in oinfo:
-            object_infos[f"{obj_name_altered}_x"].append(oinfo[0])
-            object_infos[f"{obj_name_altered}_y"].append(oinfo[1])
+            obj_name_altered = str(obj_name) +str(index)
             index += 1
-            obj_name_altered = obj_name_altered[:-1] + str(index)
+            object_infos[f"{obj_name_altered}_x"].append(oinfoTuple[0])
+            object_infos[f"{obj_name_altered}_y"].append(oinfoTuple[1])
+
 
 def generate_dataset(env, object_list, drop_constants, frames=400, skip_frames=3, manipulated_ram=None, ):
     """
