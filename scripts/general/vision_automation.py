@@ -15,7 +15,7 @@ mouse button :      to select the object   (you have to be very precise)
 enter / close :    end selection / print out colors, code etc.
 """
 rgb_array = []
-name = "object0"
+name = "object"
 index = 0
 objects = {}
 colors = {}
@@ -23,19 +23,22 @@ colors = {}
 callback_queue = queue.Queue() #for threading
 
 def on_click(event):
-    global index, name
+    global index
+
+    name_indexed = name + str(index)
+    if name != "object":
+        name_indexed = name
+    index += 1
 
     x, y = event.xdata, event.ydata
     if x is not None and y is not None:
         color = rgb_array[int(y)][int(x)]
         print(rgb_array[int(y)][int(x)])
 
-        objects[name] = find_objects(rgb_array, color)
-        colors[name] = color.tolist()
-        print(objects[name])
+        objects[name_indexed] = find_objects(rgb_array, color)
+        colors[name_indexed] = color.tolist()
+        print(objects[name_indexed])
 
-        index += 1
-        name = name[:-1] + str(index)
         show_altered_image()
 
 def on_key_pressed(event):
