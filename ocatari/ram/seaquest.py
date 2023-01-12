@@ -1,7 +1,7 @@
 from ._helper_methods import _convert_number
 
 
-def _augment_info_seaquest_raw(info, ram_state):
+def _detect_objects_seaquest_raw(info, ram_state):
     """
     The game SEAQUEST displays the enemies and divers at specific lanes, where they move from the right side to the left
     or from the left side to the right. Thus there y-Position is fixed.
@@ -60,7 +60,7 @@ def _augment_info_seaquest_raw(info, ram_state):
     print(ram_state)
 
 
-def _augment_info_seaquest_human(info, ram_state):
+def _detect_objects_seaquest_human(info, ram_state):
     """
     The game SEAQUEST displays the enemies and divers at specific lanes, where they move from the right side to the left
     or from the left side to the right. Thus there y-Position is fixed.
@@ -142,5 +142,5 @@ def _augment_info_seaquest_human(info, ram_state):
     print(ram_state)
 
 
-def _augment_info_seaquest_revised(info, ram_state):
+def _detect_objects_seaquest_revised(info, ram_state):
     pass

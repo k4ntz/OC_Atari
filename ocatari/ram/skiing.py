@@ -1,22 +1,100 @@
 from ._helper_methods import _convert_number
 import matplotlib.pyplot as plt
+from .game_objects import GameObject
 
-TYPE_TO_COLOR = {
-    2: (10, 10, 255),
-    5: (214, 214, 214),
-    85: (30, 250, 30)
-}
-SUBTYPE_TO_COLOR = {
+
+TREE_COLOR = {
     2: (110, 156, 66),
     3: (82, 126, 45),
     6: (158, 208, 101),
     7: (72, 160, 72),
 }
 
+PREV_RAM_STATE = 0
+
+
+class Player(GameObject):
+    def __init__(self):
+        self._xy = 0, 0
+        self.wh = 10, 18
+        self.rgb = 214, 92, 92
+        self.hud = False
+
+class Flag(GameObject):
+    def __init__(self, x, y, w, h):
+        self.rgb = (10, 10, 255)
+        self._ram_id = 2
+        self._xy = x, y
+        self.wh = w, 0
+        self.set_height(h)
+
+    def set_height(self, height):
+        y = self._xy[1]
+        h = min(177-y, 14, y-15)
+        if y == 28 or y == 27:
+            h = height - 15
+        self.wh = self.wh[0], h
+
+
+class Mogul(GameObject):
+    def __init__(self):
+        self.rgb = (214, 214, 214)
+        self._ram_id = 5
+
+
+class Tree(GameObject):
+    def __init__(self, type):
+        self.rgb = TREE_COLOR[type]
+        self._type = type
+        self._ram_id = 85
+
+    def __eq__(self, o):
+        return isinstance(o, Tree) and o._type == self._type \
+            and self._xy[0] - o._xy[0] in [0, 5]
+
+    @property
+    def xy(self):
+        return self._xy
+
+    @xy.setter
+    def xy(self, xy):
+        if self._prev_xy[0] == self._xy + 5: # bug correction
+            xy[0] += 5
+        self._prev_xy = self._xy
+        self._xy = xy
+
+
+class Logo(GameObject):
+    def __init__(self):
+        self._xy = 65, 187
+        self.wh = 31, 6
+        self.rgb = 0, 0, 0
+        self.hud = True
+
+
+class Clock(GameObject):
+    def __init__(self, x, y, w, h):
+        self._xy = x, y
+        self.wh = w, h
+        self.rgb = 0, 0, 0
+        self.hud = True
+
+
+class Score(GameObject):
+    def __init__(self, ten=False):
+        if ten:
+            self._xy = 67, 6
+        else:
+            self._xy = 75, 6
+        self.ten = ten
+        self.rgb = 0, 0, 0
+        self.wh = 6, 7
+        self.hud = True
+
 PREV_X, PREV_Y = 0, 0
 
 
-def _augment_info_skiing_raw(info, ram_state):
+def _detect_objects_skiing_raw(info, ram_state):
     # player starts at x = 76
     info["player_x"] = ram_state[25]  # can go up to 150 (170 and you are back to the left side)
     info["player_y"] = ram_state[26]  # constant 120
@@ -31,7 +109,114 @@ def _augment_info_skiing_raw(info, ram_state):
     # print(ram_state)
 
 
-def _augment_info_skiing_revised(info, ram_state, hud=False):
+def _init_objects_skiing_ram(hud=False):
+    """
+    (Re)Initialize the objects
+    """
+    objects = [Player()]
+    if hud:
+        objects.extend([Score(), Score(ten=True), Logo(),
+                        Clock(59, 16, 6, 7), Clock(66, 17, 1, 5),
+                        Clock(68, 16, 6, 7), Clock(75, 16, 6, 7),
+                        Clock(82, 21, 1, 2), Clock(84, 16, 6, 7),
+                        Clock(91, 16, 6, 7)])
+    return objects
+
+
+def _detect_objects_skiing_revised(objects, ram_state, hud=False):
+    player = objects[0]
+    player.xy = (ram_state[25], ram_state[26]-80)
+    # info["speed"] = ram_state[14] or ram[20] both seem to have very similar behavior
+    # info["time"] = _time_skiing(ram_state)
+    # flag_count, tree_count, mogul_count = 0, 0, 0
+    offset = 1 if not hud else 11
+    #  check if first objects disappeared
+    # print(f"Len obj: {len(objects)}")
+    # if len(objects) > offset:
+    #     while objects[offset]._ram_id != ram_state[70]:
+    #         objects.pop(offset)
+    #         if len(objects) == offset:
+    #             break
+    # print(f"Len obj: {len(objects)}")
+    for i in range(8):
+        if offset+i < len(objects):
+            print(f"Reusing {offset+i}")
+            currobj = objects[offset+i]
+        else:
+            print("NONE")
+            currobj = None
+        type = ram_state[70+i]
+        height = 75 - ram_state[90+i]
+        x, y = ram_state[62+i], 178-ram_state[86+i]
+        if y > 177 or y < 25 or x == 155:
+            if len(objects) > offset+i:
+                if isinstance(objects[offset+i], Flag):
+                    objects.pop(offset+i+1)
+                objects.pop(offset+i)
+            continue
+        if type == 2:  # flags
+            if y > 172 or y < 26:
+                continue
+            w = min(152-x, 5)
+            if currobj is None:
+                objects.append(Flag(x+1, y+4, w, height))
+                objects.append(Flag(x+33, y+4, w, height))
+            else:
+                currobj.xy = x+1, y+4
+                objects[offset+i+1].xy = x+33, y+4
+                currobj.set_height(height)
+                objects[offset+i+1].set_height(height)
+                offset += 1
+            # objects[f"flag_{flag_count}"] = (x+1, y+4, w, h, *color)
+            # objects[f"flag_{flag_count+1}"] = (x+33, y+4, w, h, *color)
+            # flag_count += 2
+    print(f"objects = {objects}")
+    #     elif type == 85:  # tree
+    #         subtype = ram_state[78+i]
+    #         color = TREE_COLOR[subtype]
+    #         h = min(175-y, 30)
+    #         if x > 152:
+    #             w = min(163-x, 16)
+    #             if w < 5 and h < 20:
+    #                 continue
+    #             objects[f"tree_{tree_count}"] = (8, y+3, w, h, *color)
+    #             tree_count += 1
+    #             continue
+    #         w = min(155-x, 16)
+    #         global PREV_X, PREV_Y
+    #         if tree_count == 0 and PREV_X == x + 5 and abs(PREV_Y-y) <= 1: # bug correction
+    #             # print("CORRECTING BUG")
+    #             x += 5
+    #             PREV_X, PREV_Y = x, y
+    #         elif tree_count == 0:
+    #             PREV_X, PREV_Y = x, y
+    #         if y == 28 or y == 27:
+    #             if height > 0:
+    #                 objects[f"tree_{tree_count}"] = (x-3, y+4, w, height, *color)
+    #                 tree_count += 1
+    #             continue
+    #         if y < 27:
+    #             continue
+    #         if x < 11:
+    #             objects[f"tree_{tree_count}"] = (8, y+4, w, h, *color)
+    #             tree_count += 1
+    #             continue
+    #         objects[f"tree_{tree_count}"] = (x-3, y+4, w, h, *color)
+    #         tree_count += 1
+    #         continue
+    #     elif type == 5:
+    #         h = min(176-y, 7, y-23)
+    #         color = (192, 192, 192)
+    #         objects[f"mogul_{mogul_count}"] = (x+2, y+3, 16, h, *color)
+    #         mogul_count += 1
+    #     else:
+    #         pass
+    # if hud:
+    #     if info["score"] < 10:
+    #         objects["score1"] = (0, 0, 0, 0, 0, 0, 0)
+
+
+def _detect_objects_skiing_revised_old(info, ram_state, hud=True):
     if hud:
         objects = {
             "logo": (65, 187, 31, 6, 0, 0, 0),
@@ -71,7 +256,7 @@ def _augment_info_skiing_revised(info, ram_state, hud=False):
                 h = min(175-y, 30)
                 if w < 5 and h < 20:
                     continue
-                color = SUBTYPE_TO_COLOR[subtype]
+                color = TREE_COLOR[subtype]
                 objects[f"tree_{tree_count}"] = (8, y+3, w, h, *color)
                 tree_count += 1
                 continue
@@ -88,7 +273,7 @@ def _augment_info_skiing_revised(info, ram_state, hud=False):
             objects[f"flag_{flag_count+1}"] = (x+33, y+4, w, h, *color)
             flag_count += 2
         elif type == 85:  # tree
-            color = SUBTYPE_TO_COLOR[subtype]
+            color = TREE_COLOR[subtype]
             w = min(155-x, 16)
             h = min(175-y, 30)
             global PREV_X, PREV_Y

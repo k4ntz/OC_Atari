@@ -14,10 +14,13 @@ from ocatari.utils import load_agent, parser
 
 game_name = "SpaceInvaders"
 game_name = "Pong"
+game_name = "Boxing"
 # game_name = "Tennis"
+game_name = "Skiing"
 MODE = "vision"
 MODE = "revised"
-env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
+HUD=True
+env = OCAtari(game_name, mode=MODE,hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
@@ -34,11 +37,11 @@ for i in range(10000):
         action = random.randint(0, 5)
     obs, reward, terminated, truncated, info = env.step(action)
     if info.get('frame_number') > 0 and i % 100 == 0:
-        for obj_name, oinfo in info["objects"].items():
-            opos = oinfo[:4]
-            ocol = oinfo[4:]
+        for obj in env.objects:
+            opos = obj.xywh
+            ocol = obj.rgb
             if MODE == "vision":
-                ocol = objects_colors[obj_name]
+                ocol = objects_colors[obj.name]
             sur_col = make_darker(ocol)
             mark_bb(obs, opos, color=sur_col)
             # mark_point(obs, *opos[:2], color=(255, 255, 0))
