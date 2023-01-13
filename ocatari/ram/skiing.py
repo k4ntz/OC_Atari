@@ -21,25 +21,40 @@ class Player(GameObject):
         self.hud = False
 
 class Flag(GameObject):
-    def __init__(self, x, y, w, h):
+    def __init__(self, x, y):
         self.rgb = (10, 10, 255)
         self._ram_id = 2
-        self._xy = x, y
-        self.wh = w, 0
-        self.set_height(h)
+        self._xy = x+1, y+4
+        self.wh = 5, min(177-self._xy[1], 14, self._xy[1]-22)
 
-    def set_height(self, height):
-        y = self._xy[1]
-        h = min(177-y, 14, y-15)
-        if y == 28 or y == 27:
-            h = height - 15
-        self.wh = self.wh[0], h
+    @property
+    def xy(self):
+        return self._xy
 
+    @xy.setter
+    def xy(self, xy):
+        x, y = xy
+        self._prev_xy = self._xy
+        self._xy = x+1, y+4
+        self.wh = 5, min(177-y, 14, y+4-25)
 
 class Mogul(GameObject):
-    def __init__(self):
+    def __init__(self, x, y):
         self.rgb = (214, 214, 214)
         self._ram_id = 5
+        self._xy = x, y
+        self.wh = 16, min(176-y, 7, y-23)
+
+
+    @property
+    def xy(self):
+        return self._xy
+
+    @xy.setter
+    def xy(self, xy):
+        self._prev_xy = self._xy
+        self._xy = xy
+        self.wh = 16, min(176-self._xy[1], 7, self._xy[1]-23)
 
 
 class Tree(GameObject):
@@ -122,7 +137,7 @@ def _init_objects_skiing_ram(hud=False):
                         Clock(91, 16, 6, 7)])
     return objects
 
-
+import numpy as np
 def _detect_objects_skiing_revised(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = (ram_state[25], ram_state[26]-80)
@@ -138,40 +153,47 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
     #         if len(objects) == offset:
     #             break
     # print(f"Len obj: {len(objects)}")
+    print(f"objects = {objects} (b)")
+    xs = ram_state[62:70]
+    ys = 178-ram_state[86:94]
+    types = ram_state[70:78]
+    state = np.array([xs, ys, types]).T
+    print(state)
     for i in range(8):
-        if offset+i < len(objects):
-            print(f"Reusing {offset+i}")
-            currobj = objects[offset+i]
-        else:
-            print("NONE")
-            currobj = None
         type = ram_state[70+i]
-        height = 75 - ram_state[90+i]
         x, y = ram_state[62+i], 178-ram_state[86+i]
+        if offset < len(objects):
+            print(f"Reusing {objects[offset]}")
+            currobj = objects[offset]
+        else:
+            if type == 2:
+                print(f"NONE {x, y, offset}")
+            currobj = None
         if y > 177 or y < 25 or x == 155:
-            if len(objects) > offset+i:
-                if isinstance(objects[offset+i], Flag):
-                    objects.pop(offset+i+1)
-                objects.pop(offset+i)
+            if currobj and currobj._ram_id == type:  # object disappeared
+                print(f"POPPING {objects[offset]}")
+                if isinstance(objects[offset], Flag):
+                    objects.pop(offset+1)
+                objects.pop(offset)
             continue
         if type == 2:  # flags
-            if y > 172 or y < 26:
-                continue
-            w = min(152-x, 5)
+            # if y > 172 or y < 25:
+            #     continue
             if currobj is None:
-                objects.append(Flag(x+1, y+4, w, height))
-                objects.append(Flag(x+33, y+4, w, height))
+                objects.append(Flag(x, y))
+                objects.append(Flag(x+32, y))
             else:
-                currobj.xy = x+1, y+4
-                objects[offset+i+1].xy = x+33, y+4
-                currobj.set_height(height)
-                objects[offset+i+1].set_height(height)
-                offset += 1
+                currobj.xy = x, y
+                objects[offset+1].xy = x+32, y
+                if currobj._ram_id != 2:
+                    return
+            offset += 1
+            print("Added one")
             # objects[f"flag_{flag_count}"] = (x+1, y+4, w, h, *color)
             # objects[f"flag_{flag_count+1}"] = (x+33, y+4, w, h, *color)
             # flag_count += 2
-    print(f"objects = {objects}")
-    #     elif type == 85:  # tree
+        elif type == 85:  # tree
+            continue
     #         subtype = ram_state[78+i]
     #         color = TREE_COLOR[subtype]
     #         h = min(175-y, 30)
@@ -204,11 +226,17 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
     #         objects[f"tree_{tree_count}"] = (x-3, y+4, w, h, *color)
     #         tree_count += 1
     #         continue
-    #     elif type == 5:
-    #         h = min(176-y, 7, y-23)
-    #         color = (192, 192, 192)
-    #         objects[f"mogul_{mogul_count}"] = (x+2, y+3, 16, h, *color)
-    #         mogul_count += 1
+        elif type == 5:
+            if currobj is None:
+                objects.append(Mogul(x+2, y+3))
+                # objects[f"mogul_{mogul_count}"] = (x+2, y+3,  *color)
+            else:
+                if currobj._ram_id != 5:
+                    print("WRONG")
+                    import ipdb; ipdb.set_trace()
+                currobj.xy = x+2, y+3
+        offset += 1
+    print(f"objects = {objects}")
     #     else:
     #         pass
     # if hud:
