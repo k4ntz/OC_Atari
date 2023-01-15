@@ -63,4 +63,3 @@ def _detect_objects_space_invaders(info, obs):
             objects[name] = (x, y, w, h, r, g, b)
     info["objects"] = objects
     '''
-
