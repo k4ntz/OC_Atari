@@ -12,12 +12,14 @@ from utils import load_agent, parser
 
 game_name = "MsPacman"
 MODE = "vision"
-# MODE = "raw"
-# MODE = "revised"
+MODE = "revised"
 env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
+
+# env._env.unwrapped.ale.setRAM(11, 20)
+# env._env.unwrapped.ale.setRAM(17, 0)
 
 opts = parser.parse_args()
 
