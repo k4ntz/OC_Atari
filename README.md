@@ -18,7 +18,7 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [ ]  Asteroids (worked on by Chris)
 - [ ]  Demon Attack (worked on by Timo)
 - [x]  Tennis
-- [ ]  Kangaroo
+- [ ]  Kangaroo (Worked on by Bjarne)
 
 ### Priority 2:
 - [ ]  Berzerk
