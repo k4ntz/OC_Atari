@@ -8,6 +8,7 @@ from .skiing import _augment_info_skiing_raw, _augment_info_skiing_revised
 from .space_invaders import _augment_info_space_invaders_raw, \
                             _augment_info_space_invaders_revised
 from .tennis import _augment_info_tennis_raw, _augment_info_tennis_revised
+from .bowling import _augment_info_bowling_raw, _augment_info_bowling_revised
 
 
 def augment_info_raw(info, ram_state, game_name):
@@ -30,6 +31,8 @@ def augment_info_raw(info, ram_state, game_name):
         _augment_info_space_invaders_raw(info, ram_state)
     elif game_name.lower() == "tennis":
         _augment_info_tennis_raw(info, ram_state)
+    elif game_name.lower() == "bowling":
+        _augment_info_bowling_raw(info, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
         exit(1)
@@ -55,6 +58,8 @@ def augment_info_revised(info, ram_state, game_name):
         _augment_info_space_invaders_revised(info, ram_state)
     elif game_name.lower() == "tennis":
         _augment_info_tennis_revised(info, ram_state)
+    elif game_name.lower() == "bowling":
+        _augment_info_bowling_revised(info, ram_state)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
