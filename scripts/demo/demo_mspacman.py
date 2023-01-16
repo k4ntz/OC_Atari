@@ -2,12 +2,12 @@
 # like it would have been installed as a package
 import sys
 sys.path.insert(0, '../../ocatari') # noqa
-from ocatari.core import OCAtari
+from core import OCAtari
 import random
 import matplotlib.pyplot as plt
-from ocatari.vision.utils import mark_bb, make_darker
-from ocatari.vision.mspacman import objects_colors
-from ocatari.utils import load_agent, parser
+from vision.utils import mark_bb, make_darker
+from vision.mspacman import objects_colors
+from utils import load_agent, parser
 
 
 game_name = "MsPacman"
@@ -24,8 +24,6 @@ opts = parser.parse_args()
 if opts.path:
     agent = load_agent(opts, env.action_space.n)
 
-env._env.unwrapped.ale.setRAM(11,20)
-env._env.unwrapped.ale.setRAM(17,20)
 
 for i in range(1000):
     if opts.path is not None:
