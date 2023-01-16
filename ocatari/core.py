@@ -1,6 +1,6 @@
 import gym
-from .ram.extract_ram_info import augment_info_raw, augment_info_revised
-from .vision.extract_vision_info import augment_info_vision
+from ram.extract_ram_info import augment_info_raw, augment_info_revised
+from vision.extract_vision_info import augment_info_vision
 from termcolor import colored
 from collections import deque
 try:

@@ -84,7 +84,7 @@ def _augment_info_mspacman_revised(info, ram_state):
     elif ram_state[123] < 112:
         collectable = "banana"
 
-    objects["fruit_type"] = collectable  # every value above will result in a glitched collectable
+    objects["fruit_type"] = collectable  # every value of 112 and above will result in a glitched fruit
 
     objects["pac-dots_collected"] = ram_state[119]
 
