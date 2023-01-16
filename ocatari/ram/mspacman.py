@@ -39,53 +39,47 @@ def _augment_info_mspacman_revised(info, ram_state):
 
     objects["lives"] = ram_state[123]  # If this state is 0 the game will be over upon the next hit
 
-    objects["player_x"] = ram_state[10]
-    objects["player_y"] = ram_state[16]
+    objects["player"] = ram_state[10], ram_state[16], 9, 10, 210, 164, 74
 
     objects["enemy_amount"] = ram_state[19]
-    objects["ghosts_position_x"] = {"orange": ram_state[6],
-                                    "cyan": ram_state[7],
-                                    "pink": ram_state[8],
-                                    "red": ram_state[9]
-                                    }
-    objects["enemy_position_y"] = {"orange": ram_state[12],
-                                   "cyan": ram_state[13],
-                                   "pink": ram_state[14],
-                                   "red": ram_state[15]
-                                   }
+    objects["orange_ghost_position"] = ram_state[6], ram_state[12], 9, 10, 180, 122, 48
+    objects["cyan_ghost_position"] = ram_state[7], ram_state[13], 9, 10, 84, 184, 153
+    objects["pink_ghost_position"] = ram_state[8], ram_state[14], 9, 10, 198, 89, 179
+    objects["red_ghost_position"] = ram_state[9], ram_state[15], 9, 10, 200, 72, 72
 
-    eatable = []
-    eatable.append(ram_state[1] > 139)
-    eatable.append(ram_state[2] > 124)
-    eatable.append(ram_state[3] > 140)
-    eatable.append(ram_state[4] > 130)
-    objects["enemy_eatable"] = {"orange": eatable[0],
-                                "cyan": eatable[1],
-                                "pink": eatable[2],
-                                "red": eatable[3]
+    objects["enemy_eatable"] = {"orange": ram_state[1] > 139,
+                                "cyan": ram_state[2] > 124,
+                                "pink": ram_state[3] > 140,
+                                "red": ram_state[4] > 130
                                 }
 
-    objects["fruit_x"] = ram_state[11]
-    objects["fruit_y"] = ram_state[17]
+    objects["fruit_position"] = ram_state[11], ram_state[17], 184, 50, 50
     objects["fruit_in_play"] = not (ram_state[11] == 0 and ram_state[17] == 0)
 
-    if ram_state[123] < 16:
-        collectable = "cherry"
-    elif ram_state[123] < 32:
-        collectable = "strawberry"
-    elif ram_state[123] < 48:
-        collectable = "orange"
-    elif ram_state[123] < 64:
-        collectable = "pretzel"
-    elif ram_state[123] < 80:
-        collectable = "apple"
-    elif ram_state[123] < 96:
-        collectable = "pear"
-    elif ram_state[123] < 112:
-        collectable = "banana"
-
-    objects["fruit_type"] = collectable  # every value of 112 and above will result in a glitched fruit
+    objects["fruit_type"] = fruit_type(ram_state[123])  
 
     objects["pac-dots_collected"] = ram_state[119]
 
     info["objects"] = objects
+
+
+def fruit_type(ram_state):
+
+    """
+    every value of 112 and above will result in a glitched fruit
+    """
+
+    if ram_state < 16:
+        return "cherry"
+    elif ram_state < 32:
+        return "strawberry"
+    elif ram_state < 48:
+        return "orange"
+    elif ram_state < 64:
+        return "pretzel"
+    elif ram_state < 80:
+        return "apple"
+    elif ram_state < 96:
+        return "pear"
+    elif ram_state < 112:
+        return "banana"
