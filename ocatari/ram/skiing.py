@@ -31,6 +31,11 @@ TREE_COLOR = {
     7: (72, 160, 72),
 }
 
+FLAG_COLOR = {
+    0: (10, 10, 255),
+    4: (184, 50, 50)
+}
+
 MINIMAL_HEIGHT = {
     2: 16,
     5: 24,
@@ -48,10 +53,14 @@ class Player(GameObject):
 
 
 class Flag(GameObject):
-    def __init__(self, x, y, subtype=None):
-        self.rgb = (10, 10, 255)
+    def __init__(self, x, y, subtype):
+        self.rgb = FLAG_COLOR[subtype]
+        self._subtype = subtype
         self._ram_id = 2
-        self._xy = x+1, y+4
+        if subtype == 0:
+            self._xy = x+1, y+4
+        else:
+            self._xy = x+4, y+4
         self.wh = 5, min(177-self._xy[1], 14, self._xy[1]-22)
 
     @property
@@ -62,7 +71,7 @@ class Flag(GameObject):
     def xy(self, xy):
         x, y = xy
         self._prev_xy = self._xy
-        self._xy = x+1, y+4
+        self._xy = self._prev_xy[0], y+4
         self.wh = 5, min(177-y, 14)
 
     def __eq__(self, o):
@@ -197,7 +206,7 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
     for i in range(8):
         height = 75 - ram_state[90+i]
         type = ram_state[70+i]
-        tree_type = ram_state[78+i]
+        subtype = ram_state[78+i]
         x, y = ram_state[62+i], 178-ram_state[86+i]
         if offset < len(objects):
             currobj = objects[offset]
@@ -205,7 +214,7 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
             currobj = None
         if y > 177 or y < 27 or (y in [27, 28] and height < MINIMAL_HEIGHT[type]):
             if currobj:
-                removed_obj = TYPE_TO_OBJ[type](x, y, tree_type)
+                removed_obj = TYPE_TO_OBJ[type](x, y, subtype)
                 if currobj == removed_obj:  # object disappeared
                     if isinstance(objects[offset], Flag):
                         objects.pop(offset+1)
@@ -213,8 +222,8 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
             continue
         if type == 2:  # flags
             if currobj is None:
-                objects.append(Flag(x, y))
-                objects.append(Flag(x+32, y))
+                objects.append(Flag(x, y, subtype))
+                objects.append(Flag(x+32, y, subtype))
             else:
                 currobj.xy = x, y
                 objects[offset+1].xy = x+32, y
@@ -236,7 +245,7 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
         elif type == 85:  # tree
             if currobj is None:
                 if not y == 28 or y == 27:
-                    objects.append(Tree(x, y, tree_type))
+                    objects.append(Tree(x, y, subtype))
             else:
                 currobj.xy = x, y
                 if y <= 28:
