@@ -10,12 +10,12 @@ from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.tennis import objects_colors
 # from ocatari.vision.pong import objects_colors
-from ocatari.utils import load_agent, parser
+from ocatari.utils import load_agent, test_parser
 from copy import deepcopy
 import numpy as np
 import os
 
-WEIRD = False
+
 def get_iou(obj1, obj2):
     # determine the (x, y)-coordinates of the intersection rectangle
     xA = max(obj1.x, obj2.x)
@@ -70,13 +70,13 @@ def difference_objects(ram_list, vision_list):
 
 SAVE_IMAGE_FOLDER = "diff_images"
 os.makedirs(SAVE_IMAGE_FOLDER, exist_ok=True)
-game_name = "Pong"
+opts = test_parser.parse_args()
+game_name = opts.game
 MODE = "test"
 HUD=True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
-opts = parser.parse_args()
 
 if opts.path:
     agent = load_agent(opts, env.action_space.n)
@@ -90,28 +90,25 @@ for i in range(10000):
         action = random.randint(0, 5)
     obse, reward, terminated, truncated, info = env.step(action)
     avg_iou, d_ious, oir, oiv = difference_objects(env.objects, env.objects_v)
-    import re
-    if len([m.start() for m in re.finditer('Player at', str(env.objects_v))]) > 1:
-        import ipdb; ipdb.set_trace()
-    # if avg_iou < 0.5:
-    #     obse2 = deepcopy(obse)
-    #     for ax, obs, objects_list, title in zip(axes, [obse, obse2],
-    #                                             [env.objects, env.objects_v],
-    #                                             ["ram", "vision"]):
-    #         for obj in objects_list:
-    #             opos = obj.xywh
-    #             ocol = obj.rgb
-    #             sur_col = make_darker(ocol)
-    #             mark_bb(obs, opos, color=sur_col)
-    #             # mark_point(obs, *opos[:2], color=(255, 255, 0))
-    #         ax.imshow(obs)
-    #         ax.set_title(title)
-    #     for ax in axes.flatten():
-    #         ax.set_xticks([])
-    #         ax.set_yticks([])
-    #     # plt.show()
-    #     plt.savefig(f"{SAVE_IMAGE_FOLDER}/{game_name}_{i}.png")
-    #     print(f"Saved at {SAVE_IMAGE_FOLDER}/{game_name}_{i}.png for iou {avg_iou}")
+    if avg_iou < 0.5:
+        obse2 = deepcopy(obse)
+        for ax, obs, objects_list, title in zip(axes, [obse, obse2],
+                                                [env.objects, env.objects_v],
+                                                ["ram", "vision"]):
+            for obj in objects_list:
+                opos = obj.xywh
+                ocol = obj.rgb
+                sur_col = make_darker(ocol)
+                mark_bb(obs, opos, color=sur_col)
+                # mark_point(obs, *opos[:2], color=(255, 255, 0))
+            ax.imshow(obs)
+            ax.set_title(title)
+        for ax in axes.flatten():
+            ax.set_xticks([])
+            ax.set_yticks([])
+        # plt.show()
+        plt.savefig(f"{SAVE_IMAGE_FOLDER}/{game_name}_{i}.png")
+        print(f"Saved at {SAVE_IMAGE_FOLDER}/{game_name}_{i}.png for iou {avg_iou}")
 
 
 
