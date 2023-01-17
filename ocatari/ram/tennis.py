@@ -1,4 +1,4 @@
-def _augment_info_tennis_raw(info, ram_state):
+def _detect_objects_tennis_raw(info, ram_state):
     """
     returns unprocessed list with
     ball_x, ball_y, enemy_y, player_y
@@ -6,7 +6,7 @@ def _augment_info_tennis_raw(info, ram_state):
     info["objects_list"] = ram_state[32:36]
 
 
-def _augment_info_tennis_revised(info, ram_state):
+def _detect_objects_tennis_revised(info, ram_state):
     """
     For all 3 objects:
     (x, y, w, h, r, g, b)
