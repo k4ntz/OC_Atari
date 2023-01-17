@@ -9,7 +9,7 @@ from core import OCAtari
 Test raw/revised mode with a human render_mode and ipdb debugger
 """
 
-env = OCAtari("Skiing", mode="raw", render_mode='human')
+env = OCAtari("Bowling", mode="raw", render_mode='human')
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
@@ -22,7 +22,7 @@ for i in range(1000):
     # done split into 2 parts:
     # terminated = True if env terminates (completion or failure),
     # truncated = True if episodes truncates due to a time limit or a reason that is not defined of the task
-    obs, reward, terminated, truncated, info = env.step(random.randint(0, 0))
+    obs, reward, terminated, truncated, info = env.step(random.randint(0, 4))
 
     ram = env._env.unwrapped.ale.getRAM()
     if prevRam is not None:
