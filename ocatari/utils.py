@@ -6,9 +6,16 @@ from pathlib import Path
 import torch
 from torch import nn
 import keyboard
+
+
 parser = ArgumentParser()
 parser.add_argument("-p", "--path", type=str, help="path to the model", default=None)
 
+test_parser = ArgumentParser()
+test_parser.add_argument("-p", "--path", type=str, default=None,
+                         help="path to the model")
+test_parser.add_argument("-g", "--game", type=str, required=True,
+                         help="game to evaluate (e.g. 'Pong')")
 
 class AtariNet(nn.Module):
     """ Estimator used by DQN-style algorithms for ATARI games.
