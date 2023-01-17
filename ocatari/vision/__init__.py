@@ -1,6 +1,6 @@
-from .extract_vision_info import augment_info_vision
+from .extract_vision_info import detect_objects_vision
 
 
 __all__ = [
-    "augment_info_vision",
+    "detect_objects_vision",
 ]

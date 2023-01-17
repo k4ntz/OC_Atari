@@ -30,12 +30,12 @@ def _make_block_bitmap(ram_state):
     return blocks_int
 
 
-def _augment_info_breakout_raw(info, ram_state):
+def _detect_objects_breakout_raw(info, ram_state, hud=False):
     info["block_bitmap"] = _make_block_bitmap(ram_state)
     info["ball"] = ram_state[99], ram_state[101]
     info["player"] = ram_state[72] - 47, 189
     print(ram_state)
 
 
-def _augment_info_breakout_revised(info, ram_state):
+def _detect_objects_breakout_revised(info, ram_state):
     pass

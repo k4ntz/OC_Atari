@@ -1,65 +1,140 @@
 from termcolor import colored
-from .boxing import _augment_info_boxing_raw, _augment_info_boxing_revised
-from .breakout import _augment_info_breakout_raw, _augment_info_breakout_revised
-from .freeway import _augment_info_freeway_raw, _augment_info_freeway_revised
-from .pong import _augment_info_pong_raw, _augment_info_pong_revised
-from .seaquest import _augment_info_seaquest_raw, _augment_info_seaquest_revised
-from .skiing import _augment_info_skiing_raw, _augment_info_skiing_revised
-from .space_invaders import _augment_info_space_invaders_raw, \
-                            _augment_info_space_invaders_revised
-from .tennis import _augment_info_tennis_raw, _augment_info_tennis_revised
-from .bowling import _augment_info_bowling_raw, _augment_info_bowling_revised
+from .boxing import _detect_objects_boxing_raw, _detect_objects_boxing_revised, _init_objects_boxing_ram
+from .bowling import _detect_objects_bowling_raw, _detect_objects_bowling_revised
+from .breakout import _detect_objects_breakout_raw, _detect_objects_breakout_revised
+from .freeway import _detect_objects_freeway_raw, _detect_objects_freeway_revised
+from .pong import _detect_objects_pong_raw, _detect_objects_pong_revised, _init_objects_pong_ram
+from .seaquest import _detect_objects_seaquest_raw, _detect_objects_seaquest_revised
+from .skiing import _detect_objects_skiing_raw, _detect_objects_skiing_revised, _init_objects_skiing_ram
+from .space_invaders import _detect_objects_space_invaders_raw, \
+                            _detect_objects_space_invaders_revised
+from .tennis import _detect_objects_tennis_raw, _detect_objects_tennis_revised
 
-
-def augment_info_raw(info, ram_state, game_name):
+def init_objects(game_name, hud):
     """
-    Augment the info dictionary with object centric information
+    Initialize the object list for the correct game
     """
     if game_name.lower() == "boxing":
-        _augment_info_boxing_raw(info, ram_state)
-    elif game_name.lower() == "breakout":
-        _augment_info_breakout_raw(info, ram_state)
-    elif game_name.lower() == "freeway":
-        _augment_info_freeway_raw(info, ram_state)
+        return _init_objects_boxing_ram(hud)
+    # elif game_name.lower() == "breakout":
+    #     _detect_objects_breakout(objects, ram_state)
+    # elif game_name.lower() == "freeway":
+    #     _detect_objects_freeway(objects, ram_state)
     elif game_name.lower() == "pong":
-        _augment_info_pong_raw(info, ram_state)
+        return _init_objects_pong_ram(hud)
     elif game_name.lower() == "skiing":
-        _augment_info_skiing_raw(info, ram_state)
-    elif game_name.lower() == "seaquest":
-        _augment_info_seaquest_raw(info, ram_state)
-    elif game_name.lower() == "spaceinvaders":
-        _augment_info_space_invaders_raw(info, ram_state)
-    elif game_name.lower() == "tennis":
-        _augment_info_tennis_raw(info, ram_state)
-    elif game_name.lower() == "bowling":
-        _augment_info_bowling_raw(info, ram_state)
+        return _init_objects_skiing_ram(hud)
+    # elif game_name.lower() == "seaquest":
+    #     _detect_objects_seaquest(objects, ram_state)
+    # elif game_name.lower() == "spaceinvaders":
+    #     _detect_objects_space_invaders(objects, ram_state)
+    # elif game_name.lower() == "tennis":
+    #     _detect_objects_tennis(objects, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
         exit(1)
 
 
-def augment_info_revised(info, ram_state, game_name):
+def detect_objects_raw(info, ram_state, game_name):
     """
     Augment the info dictionary with object centric information
     """
     if game_name.lower() == "boxing":
-        _augment_info_boxing_revised(info, ram_state)
+        _detect_objects_boxing_raw(info, ram_state)
     elif game_name.lower() == "breakout":
-        _augment_info_breakout_revised(info, ram_state)
+        _detect_objects_breakout_raw(info, ram_state)
     elif game_name.lower() == "freeway":
-        _augment_info_freeway_revised(info, ram_state)
+        _detect_objects_freeway_raw(info, ram_state)
     elif game_name.lower() == "pong":
-        _augment_info_pong_revised(info, ram_state)
+        _detect_objects_pong_raw(info, ram_state)
     elif game_name.lower() == "skiing":
-        _augment_info_skiing_revised(info, ram_state)
+        _detect_objects_skiing_raw(info, ram_state)
     elif game_name.lower() == "seaquest":
-        _augment_info_seaquest_revised(info, ram_state)
+        _detect_objects_seaquest_raw(info, ram_state)
     elif game_name.lower() == "spaceinvaders":
-        _augment_info_space_invaders_revised(info, ram_state)
+        _detect_objects_space_invaders_revised(info, ram_state)
     elif game_name.lower() == "tennis":
-        _augment_info_tennis_revised(info, ram_state)
-    elif game_name.lower() == "bowling":
-        _augment_info_bowling_revised(info, ram_state)
+        _detect_objects_tennis_raw(info, ram_state)
+    else:
+        print(colored("Uncovered game in raw mode", "red"))
+        exit(1)
+
+
+def detect_objects_revised(info, ram_state, game_name, hud):
+    """
+    Augment the info dictionary with object centric information
+    """
+    if game_name.lower() == "boxing":
+        _detect_objects_boxing_revised(info, ram_state, hud)
+    elif game_name.lower() == "breakout":
+        _detect_objects_breakout_revised(info, ram_state, hud)
+    elif game_name.lower() == "freeway":
+        _detect_objects_freeway_revised(info, ram_state, hud)
+    elif game_name.lower() == "pong":
+        _detect_objects_pong_revised(info, ram_state, hud)
+    elif game_name.lower() == "skiing":
+        _detect_objects_skiing_revised(info, ram_state, hud)
+    elif game_name.lower() == "seaquest":
+        _detect_objects_seaquest_revised(info, ram_state, hud)
+    elif game_name.lower() == "spaceinvaders":
+        _detect_objects_space_invaders_revised(info, ram_state, hud)
+    elif game_name.lower() == "tennis":
+        _detect_objects_tennis_revised(info, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
+
+
+
+# def augment_info_raw(info, ram_state, game_name):
+#     """
+#     Augment the info dictionary with object centric information
+#     """
+#     if game_name.lower() == "boxing":
+#         _detect_objects_boxing_raw(info, ram_state)
+#     elif game_name.lower() == "breakout":
+#         _detect_objects_breakout_raw(info, ram_state)
+#     elif game_name.lower() == "freeway":
+#         _detect_objects_freeway_raw(info, ram_state)
+#     elif game_name.lower() == "pong":
+#         _detect_objects_pong_raw(info, ram_state)
+#     elif game_name.lower() == "skiing":
+#         _detect_objects_skiing_raw(info, ram_state)
+#     elif game_name.lower() == "seaquest":
+#         _detect_objects_seaquest_raw(info, ram_state)
+#     elif game_name.lower() == "spaceinvaders":
+#         _detect_objects_space_invaders_raw(info, ram_state)
+#     elif game_name.lower() == "tennis":
+#         _detect_objects_tennis_raw(info, ram_state)
+#     elif game_name.lower() == "bowling":
+#         _detect_objects_bowling_raw(info, ram_state)
+#     else:
+#         print(colored("Uncovered game in raw mode", "red"))
+#         exit(1)
+#
+#
+# def augment_info_revised(info, ram_state, game_name):
+#     """
+#     Augment the info dictionary with object centric information
+#     """
+#     if game_name.lower() == "boxing":
+#         _detect_objects_boxing_revised(info, ram_state)
+#     elif game_name.lower() == "breakout":
+#         _detect_objects_breakout_revised(info, ram_state)
+#     elif game_name.lower() == "freeway":
+#         _detect_objects_freeway_revised(info, ram_state)
+#     elif game_name.lower() == "pong":
+#         _detect_objects_pong_revised(info, ram_state)
+#     elif game_name.lower() == "skiing":
+#         _detect_objects_skiing_revised(info, ram_state)
+#     elif game_name.lower() == "seaquest":
+#         _detect_objects_seaquest_revised(info, ram_state)
+#     elif game_name.lower() == "spaceinvaders":
+#         _detect_objects_space_invaders_revised(info, ram_state)
+#     elif game_name.lower() == "tennis":
+#         _detect_objects_tennis_revised(info, ram_state)
+#     elif game_name.lower() == "bowling":
+#         _detect_objects_bowling_revised(info, ram_state)
+#     else:
+#         print(colored("Uncovered game in revised mode", "red"))
+#         exit(1)

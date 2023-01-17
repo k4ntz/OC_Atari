@@ -1,6 +1,6 @@
-import gym
-from ram.extract_ram_info import augment_info_raw, augment_info_revised
-from vision.extract_vision_info import augment_info_vision
+import gymnasium as gym
+from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects
+from ocatari.vision.extract_vision_info import detect_objects_vision
 from termcolor import colored
 from collections import deque
 try:
@@ -14,12 +14,12 @@ import torch
 
 DEVICE = "cpu"
 
-AVAILABLE_GAMES = ["Bowling", "Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
-                   "Skiing", "SpaceInvaders", "Tennis", "Freeway"]
+AVAILABLE_GAMES = ["Boxing", "Breakout", "Pong", "Seaquest",
+                   "Skiing", "SpaceInvaders", "Tennis"]
 
 
 class OCAtari():
-    def __init__(self, env_name, mode="raw", *args, **kwargs):
+    def __init__(self, env_name, mode="raw", hud=False, *args, **kwargs):
         """
         mode: raw/revised/vision/both
         """
@@ -31,15 +31,22 @@ class OCAtari():
         self.game_name = env_name.split("-")[0].split("No")[0].split("Deterministic")[0]
         self.mode = mode
         self._ale = self._env.unwrapped.ale
+        self.hud = hud
+        self.objects = init_objects(self.game_name, self.hud)
         if mode == "vision":
-            self.augment_info = augment_info_vision
+            self.detect_objects = detect_objects_vision
             self.step = self._step_vision
         elif mode == "raw":
-            self.augment_info = augment_info_raw
+            self.detect_objects = detect_objects_raw
             self.step = self._step_ram
         elif mode == "revised":
-            self.augment_info = augment_info_revised
+            self.detect_objects = detect_objects_revised
             self.step = self._step_ram
+        elif mode == "test":
+            self.detect_objects_v = detect_objects_vision
+            self.detect_objects_r = detect_objects_revised
+            self.objects_v = init_objects(self.game_name, self.hud)
+            self.step = self._step_test
         else:
             print(colored("Undefined mode for information extraction", "red"))
             exit(1)
@@ -49,13 +56,20 @@ class OCAtari():
 
     def _step_ram(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
-        self.augment_info(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
+        self.detect_objects(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self._fill_buffer()
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
-        self.augment_info(info, obs, self.game_name)
+        self.detect_objects(self.objects, obs, self.game_name, self.hud)
+        self._fill_buffer()
+        return obs, reward, truncated, terminated, info
+
+    def _step_test(self, *args, **kwargs):
+        obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
+        self.detect_objects_r(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
+        self.detect_objects_v(self.objects_v, obs, self.game_name, self.hud)
         self._fill_buffer()
         return obs, reward, truncated, terminated, info
 
@@ -67,6 +81,7 @@ class OCAtari():
 
     def reset(self, *args, **kwargs):
         self._reset_buffer()
+        self.objects = init_objects(self.game_name, self.hud)
         return self._env.reset(*args, **kwargs)
 
     def _fill_buffer(self):
