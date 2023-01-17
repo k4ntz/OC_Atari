@@ -5,6 +5,7 @@ from .tennis import _detect_objects_tennis
 from .freeway import _detect_objects_freeway
 from .seaquest import _detect_objects_seaquest
 from .bowling import _detect_objects_bowling
+from .kangaroo import _detect_objects_kangaroo
 
 
 def augment_info_vision(info, obs, game_name):
@@ -20,6 +21,8 @@ def augment_info_vision(info, obs, game_name):
         return _detect_objects_tennis(info, obs)
     elif game_name.lower() == "bowling":
         return _detect_objects_bowling(info, obs)
+    elif game_name.lower() == "kangaroo":
+        return _detect_objects_kangaroo(info, obs)
     else:
         print(colored("Uncovered game in vision mode", "red"))
         exit(1)
