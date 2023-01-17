@@ -2,15 +2,15 @@ class GameObject():
     GET_COLOR = False
     GET_WH = False
 
-    def __init__(self):
+    def __init__(self, x, y, w, h, *args):
         self.rgb = (0, 0, 0)
-        self._xy = (0, 0)
-        self.wh = (0, 0)
+        self._xy = x, y
+        self.wh = w, h
         self._prev_xy = (0, 0)
         self.hud = False
 
     def __repr__(self):
-        return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]})"
+        return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}"
 
     @property
     def xy(self):

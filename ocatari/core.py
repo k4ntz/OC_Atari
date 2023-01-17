@@ -42,6 +42,11 @@ class OCAtari():
         elif mode == "revised":
             self.detect_objects = detect_objects_revised
             self.step = self._step_ram
+        elif mode == "test":
+            self.detect_objects_v = detect_objects_vision
+            self.detect_objects_r = detect_objects_revised
+            self.objects_v = init_objects(self.game_name, self.hud)
+            self.step = self._step_test
         else:
             print(colored("Undefined mode for information extraction", "red"))
             exit(1)
@@ -58,6 +63,13 @@ class OCAtari():
     def _step_vision(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
         self.detect_objects(self.objects, obs, self.game_name, self.hud)
+        self._fill_buffer()
+        return obs, reward, truncated, terminated, info
+
+    def _step_test(self, *args, **kwargs):
+        obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
+        self.detect_objects_r(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
+        self.detect_objects_v(self.objects_v, obs, self.game_name, self.hud)
         self._fill_buffer()
         return obs, reward, truncated, terminated, info
 
