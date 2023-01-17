@@ -59,14 +59,14 @@ def _augment_info_mspacman_revised(info, ram_state):
     objects["fruit_position"] = ram_state[11], ram_state[17], 184, 50, 50
     info["fruit_in_play"] = not (ram_state[11] == 0 and ram_state[17] == 0)
 
-    info["fruit_type"] = fruit_type(ram_state[123])
+    info["fruit_type"] = get_fruit_type(ram_state[123])
 
     info["pac-dots_collected"] = ram_state[119]
 
     info["objects"] = objects
 
 
-def fruit_type(ram_state):
+def get_fruit_type(ram_state):
 
     """
     every value of 112 and above will result in a glitched fruit
