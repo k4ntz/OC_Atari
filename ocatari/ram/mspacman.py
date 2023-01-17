@@ -51,15 +51,15 @@ def _augment_info_mspacman_revised(info, ram_state):
     objects["red_ghost_position"] = ram_state[9], ram_state[15], 9, 10, 200, 72, 72
 
     info["enemy_eatable"] = {"orange": ram_state[1] > 139,
-                                "cyan": ram_state[2] > 124,
-                                "pink": ram_state[3] > 140,
-                                "red": ram_state[4] > 130
-                                }
+                             "cyan": ram_state[2] > 124,
+                             "pink": ram_state[3] > 140,
+                             "red": ram_state[4] > 130
+                             }
 
     objects["fruit_position"] = ram_state[11], ram_state[17], 184, 50, 50
     info["fruit_in_play"] = not (ram_state[11] == 0 and ram_state[17] == 0)
 
-    info["fruit_type"] = fruit_type(ram_state[123])  
+    info["fruit_type"] = fruit_type(ram_state[123])
 
     info["pac-dots_collected"] = ram_state[119]
 
