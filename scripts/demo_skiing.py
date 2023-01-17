@@ -53,7 +53,7 @@ for i in range(40000):
         action = 0
     obs, reward, terminated, truncated, info = env.step(action)
     if i > 70 and i % 1 == 0:
-    # if i > 3500 and i % 1 == 0:
+    # if i > 1350 and i % 10 == 0:
         # import ipdb; ipdb.set_trace()
         # if info["score"] < 10:
         show_detected_objects(obs, env)
