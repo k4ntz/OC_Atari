@@ -52,7 +52,8 @@ for i in range(40000):
         action = random.randint(0, 2)
         action = 0
     obs, reward, terminated, truncated, info = env.step(action)
-    if i > 30 and i % 1 == 0:
+    if i > 70 and i % 1 == 0:
+    # if i > 3500 and i % 1 == 0:
         # import ipdb; ipdb.set_trace()
         # if info["score"] < 10:
         show_detected_objects(obs, env)
