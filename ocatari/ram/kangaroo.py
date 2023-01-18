@@ -5,9 +5,6 @@ RAM extraction for the game KANGUROO. Supported modes: raw, revised.
 
 """
 
-
-
-
 def _augment_info_kangaroo_raw(info, ram_state):
     pass
 
@@ -18,7 +15,7 @@ def _augment_info_kangaroo_revised(info, ram_state):
     """
     For all 3 objects:
     (x, y, w, h, r, g, b)
-     """
+    """
     objects = {}
 
     info["time"] = _convert_number(ram_state[59]) * 100
@@ -51,6 +48,7 @@ def _augment_info_kangaroo_revised(info, ram_state):
     info["ticker"] = ram_state[57]  # Game starts when this state reaches 158
 
     info["objects"] = objects
+
 
 def _get_fruit_type_kangaroo(ram_state):
     if ram_state < 128:
