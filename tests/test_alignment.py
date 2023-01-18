@@ -2,14 +2,16 @@
 # like it would have been installed as a package
 import sys
 from os import path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
+
 
 import random
 import matplotlib.pyplot as plt
+# sys.path.insert(0, '../ocatari') # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.tennis import objects_colors
-# from ocatari.vision.pong import objects_colors
+from ocatari.vision.pong import objects_colors
 from ocatari.utils import load_agent, test_parser
 from copy import deepcopy
 import numpy as np
@@ -68,22 +70,23 @@ def difference_objects(ram_list, vision_list):
             only_in_vision.append(vobj)
     return np.mean(ious), detailled_ious, only_in_ram, only_in_vision
 
+
 SAVE_IMAGE_FOLDER = "diff_images"
 os.makedirs(SAVE_IMAGE_FOLDER, exist_ok=True)
 opts = test_parser.parse_args()
 game_name = opts.game
-MODE = "test"
-HUD=True
+MODE = "vision"
+HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
 
 if opts.path:
-    agent = load_agent(opts, env.action_space.n)
+   agent = load_agent(opts, env.action_space.n)
 
 
 fig, axes = plt.subplots(1, 2)
-for i in range(10000):
+for i in range(100):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
@@ -106,11 +109,10 @@ for i in range(10000):
         for ax in axes.flatten():
             ax.set_xticks([])
             ax.set_yticks([])
-        # plt.show()
+        plt.imshow(obse)
+        plt.show()
         plt.savefig(f"{SAVE_IMAGE_FOLDER}/{game_name}_{i}.png")
         print(f"Saved at {SAVE_IMAGE_FOLDER}/{game_name}_{i}.png for iou {avg_iou}")
-
-
 
     if terminated or truncated:
         observation, info = env.reset()

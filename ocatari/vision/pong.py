@@ -3,11 +3,10 @@ from .game_objects import GameObject
 
 
 objects_colors = {
-    "enemy": [213, 130, 74], "player": [92, 186, 92],"ball": [236, 236, 236],
+    "enemy": [213, 130, 74], "player": [92, 186, 92], "ball": [236, 236, 236],
     "background": [144, 72, 17], "player_score": [92, 186, 92],
     "enemy_score": [213, 130, 74], "player_score_2": [92, 186, 92],
-    "enemy_score_2": [213, 130, 74],
-                  }
+    "enemy_score_2": [213, 130, 74]}
 
 
 class Player(GameObject):
@@ -59,3 +58,4 @@ def _detect_objects_pong(objects, obs, hud=False):
     for el in ball:
         if el[2] < 20:
             objects.append(Ball(*el))
+
