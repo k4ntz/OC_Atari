@@ -98,7 +98,7 @@ def _detect_objects_pong_revised(objects, ram_state, hud=False):
             if player._above_10:
                 objects.remove(PlayerScore(ten=True))
                 player._above_10 = False
-    print(objects)
+    # print(objects)
 
 
 def _detect_objects_pong_raw(info, ram_state):
