@@ -58,4 +58,3 @@ def _detect_objects_pong(objects, obs, hud=False):
     for el in ball:
         if el[2] < 20:
             objects.append(Ball(*el))
-
