@@ -5,12 +5,12 @@ RAM extraction for the game KANGUROO. Supported modes: raw, revised.
 
 """
 
+
 def _augment_info_kangaroo_raw(info, ram_state):
     pass
 
 
 def _augment_info_kangaroo_revised(info, ram_state):
-
 
     """
     For all 3 objects:

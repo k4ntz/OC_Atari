@@ -11,9 +11,9 @@ from .tennis import _augment_info_tennis_raw, _augment_info_tennis_revised
 from .bowling import _augment_info_bowling_raw, _augment_info_bowling_revised
 from .kangaroo import _augment_info_kangaroo_raw, _augment_info_kangaroo_revised
 
+
 def augment_info_raw(info, ram_state, game_name):
 
-    
     """
     Augment the info dictionary with object centric information
     """
