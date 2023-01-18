@@ -32,7 +32,7 @@ def init_objects(game_name, hud):
     # elif game_name.lower() == "tennis":
     #     _detect_objects_tennis(objects, ram_state)
     else:
-        print(colored("Uncovered game in raw mode", "red"))
+        print(colored("Uncovered game in revised mode", "red"))
         exit(1)
 
 
