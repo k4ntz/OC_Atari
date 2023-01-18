@@ -8,7 +8,7 @@ def print_state(state):
     for el in state:
         x, y, type = el
         coord = el[0:2]
-        attr=[]
+        attr = []
         if y > 177 or y < 25 or x == 155:
             attr.append("dark")
         if type == 2:
@@ -43,6 +43,7 @@ MINIMAL_HEIGHT = {
 
 PREV_RAM_STATE = 0
 
+
 class Player(GameObject):
     def __init__(self):
         self._xy = 0, 0
@@ -75,6 +76,7 @@ class Flag(GameObject):
 
     def __eq__(self, o):
         return isinstance(o, Flag) and abs(self._xy[0] - o._xy[0]) < 5
+
 
 class Mogul(GameObject):
     def __init__(self, x, y, subtype=None):
@@ -121,7 +123,7 @@ class Tree(GameObject):
     @xy.setter
     def xy(self, xy):
         x, y = xy
-        if self._xy[0] == x + 2: # bug correction
+        if self._xy[0] == x + 2:    # bug correction
             x += 5
         self._prev_xy = self._xy
         if x > 158:
@@ -216,7 +218,8 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
                     currobj.wh = currobj.wh[0], height-15
                     objects[offset+1].wh = objects[offset+1].wh[0], height-15
                 if currobj._ram_id != 2:
-                    import ipdb; ipdb.set_trace()
+                    import ipdb
+                    ipdb.set_trace()
             offset += 1
         elif type == 5: # mogul
             if currobj is None:

@@ -82,19 +82,18 @@ def _detect_objects_boxing_revised(objects, ram_state, hud=False):
     enemy.xy = ram_state[33]+4, ram_state[35]+38, 14, 46,
     if hud:
         # scores
-        if ram_state[19] > 10: # enemy score
+        if ram_state[19] > 10:  # enemy score
             objects.append(EnemyScore(ten=True))
         else:
             tens = EnemyScore(ten=True)
             if tens in objects:
                 objects.remove(tens)
-        if ram_state[18] > 10: # player score
+        if ram_state[18] > 10:  # player score
             objects.append(PlayerScore(ten=True))
         else:
             tens = PlayerScore(ten=True)
             if tens in objects:
                 objects.remove(tens)
-
 
 
 def _detect_objects_boxing_raw(info, ram_state):
