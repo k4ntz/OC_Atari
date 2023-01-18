@@ -68,7 +68,7 @@ for i in tqdm(range(600)):
     # modify and display render
 env.close()
 
-import ipdb;
+import ipdb # noqa
 
 ipdb.set_trace()
 
