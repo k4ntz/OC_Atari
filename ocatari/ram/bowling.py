@@ -108,4 +108,3 @@ def y_pos_for_vision(ram_state):
     if 1 <= ram_state <= 40:
         return Y_POS_CONV[ram_state]
     print("Not a valid y-position")
-
