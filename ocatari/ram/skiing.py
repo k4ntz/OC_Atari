@@ -221,7 +221,7 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
                     import ipdb
                     ipdb.set_trace()
             offset += 1
-        elif type == 5: # mogul
+        elif type == 5:     # mogul
             if currobj is None:
                 objects.append(Mogul(x, y))
             else:
