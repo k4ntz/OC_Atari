@@ -11,7 +11,7 @@ from core import OCAtari
 Test vision mode with rgb_array_with_bbs as render_mode
 """
 
-env = OCAtari("Skiing", mode="vision", render_mode='rgb_array_with_bbs')
+env = OCAtari("Pong", mode="vision", render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
@@ -24,7 +24,7 @@ for i in range(1000):
     # done split into 2 parts:
     # terminated = True if env terminates (completion or failure),
     # truncated = True if episodes truncates due to a time limit or a reason that is not defined of the task
-    obs, reward, terminated, truncated, info = env.step(random.randint(0, 0))
+    obs, reward, terminated, truncated, info = env.step(random.randint(0, 4))
 
     ram = env._env.unwrapped.ale.getRAM()
     if prevRam is not None:
@@ -36,7 +36,6 @@ for i in range(1000):
                 print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prevRam[i]))
     print("------------------------------------------")
     prevRam = ram
-
     if terminated or truncated:
         observation, info = env.reset()
     print(info)
