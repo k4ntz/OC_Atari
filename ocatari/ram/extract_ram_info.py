@@ -10,6 +10,7 @@ from .space_invaders import _detect_objects_space_invaders_raw, \
                             _detect_objects_space_invaders_revised
 from .tennis import _detect_objects_tennis_raw, _detect_objects_tennis_revised
 
+
 def init_objects(game_name, hud):
     """
     Initialize the object list for the correct game
@@ -55,6 +56,8 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_space_invaders_revised(info, ram_state)
     elif game_name.lower() == "tennis":
         _detect_objects_tennis_raw(info, ram_state)
+    elif game_name.lower() == "bowling":
+        _detect_objects_tennis_raw(info, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
         exit(1)
@@ -80,10 +83,11 @@ def detect_objects_revised(info, ram_state, game_name, hud):
         _detect_objects_space_invaders_revised(info, ram_state, hud)
     elif game_name.lower() == "tennis":
         _detect_objects_tennis_revised(info, ram_state, hud)
+    elif game_name.lower() == "bowling":
+        _detect_objects_tennis_revised(info, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
-
 
 
 # def augment_info_raw(info, ram_state, game_name):
