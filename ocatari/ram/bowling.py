@@ -98,6 +98,8 @@ Y_POS_CONV = [None, 161, 160, 159, 158, 157, 156, 155, 153, 151, 150,
               148, 144, 144, 142, 140, 138, 136, 134, 132, 130, 127, 125, 123,
               122, 120, 116, 114, 112, 110, 106, 104, 102, 98, 95, 92, 88, 85,
               83, 82, 80]
+
+
 def y_pos_for_vision(ram_state):
     """
     Get an estimated y-position for the rendered image based on the ram value for the objects y-posiition.
@@ -106,86 +108,4 @@ def y_pos_for_vision(ram_state):
     if 1 <= ram_state <= 40:
         return Y_POS_CONV[ram_state]
     print("Not a valid y-position")
-    # match ram_state:
-    #     case 1:
-    #         return 161
-    #     case 2:
-    #         return 160
-    #     case 3:
-    #         return 159
-    #     case 4:
-    #         return 158
-    #     case 5:
-    #         return 157
-    #     case 6:
-    #         return 156
-    #     case 7:
-    #         return 155
-    #     case 8:
-    #         return 153
-    #     case 9:
-    #         return 151
-    #     case 10:
-    #         return 150
-    #     case 11:
-    #         return 148
-    #     case 12:
-    #         return 144
-    #     case 13:
-    #         return 144
-    #     case 14:
-    #         return 142
-    #     case 15:
-    #         return 140
-    #     case 16:
-    #         return 138
-    #     case 17:
-    #         return 136
-    #     case 18:
-    #         return 134
-    #     case 19:
-    #         return 132
-    #     case 20:
-    #         return 130
-    #     case 21:
-    #         return 127
-    #     case 22:
-    #         return 125
-    #     case 23:
-    #         return 123
-    #     case 24:
-    #         return 122
-    #     case 25:
-    #         return 120
-    #     case 26:
-    #         return 116
-    #     case 27:
-    #         return 114
-    #     case 28:
-    #         return 112
-    #     case 29:
-    #         return 110
-    #     case 30:
-    #         return 106
-    #     case 31:
-    #         return 104
-    #     case 32:
-    #         return 102
-    #     case 33:
-    #         return 98
-    #     case 34:
-    #         return 95
-    #     case 35:
-    #         return 92
-    #     case 36:
-    #         return 88
-    #     case 37:
-    #         return 85
-    #     case 38:
-    #         return 83
-    #     case 39:
-    #         return 82
-    #     case 40:
-    #         return 80
-    #     case _:
-    #         print("Not a valid y-position")
+
