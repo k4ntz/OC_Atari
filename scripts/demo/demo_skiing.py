@@ -4,14 +4,14 @@ import sys
 import random
 import matplotlib.pyplot as plt
 sys.path.insert(0, '../../ocatari') # noqa
-from core import OCAtari
-from vision.utils import mark_bb, make_darker
-from vision.skiing import objects_colors
-from utils import load_agent, parser
+from ocatari.core import OCAtari
+from ocatari.vision.utils import mark_bb, make_darker
+from ocatari.vision.skiing import objects_colors
+from ocatari.utils import load_agent, parser
 
 game_name = "Skiing"
 MODE = "vision"
-# MODE = "revised"
+MODE = "revised"
 env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
