@@ -10,9 +10,12 @@ from .space_invaders import _detect_objects_space_invaders_raw, \
                             _detect_objects_space_invaders_revised, \
                             _init_objects_space_invaders_ram
 from .tennis import _detect_objects_tennis_raw, _detect_objects_tennis_revised
-from .demonAttack import _detect_objects_demon_attack_revised, _detect_objects_demon_attack_raw,\
-    _init_objects_demon_attack_ram
-
+from .demonAttack import _detect_objects_demon_attack_raw, \
+                         _detect_objects_demon_attack_revised, \
+                         _init_objects_demon_attack_ram
+from .mspacman import _detect_objects_mspacman_raw, \
+                      _detect_objects_mspacman_revised, \
+                      _init_objects_mspacman_ram
 
 def init_objects(game_name, hud):
     """
@@ -36,6 +39,8 @@ def init_objects(game_name, hud):
     #     _detect_objects_tennis(objects, ram_state)
     elif game_name.lower() == "demonattack":
         return _init_objects_demon_attack_ram(hud)
+    elif game_name.lower() == "mspacman":
+        return _init_objects_mspacman_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
@@ -64,6 +69,8 @@ def detect_objects_raw(info, ram_state, game_name):
     elif game_name.lower() == "bowling":
         _detect_objects_bowling_raw(info, ram_state)
     elif game_name.lower() == "demonattack":
+        _detect_objects_demon_attack_raw(info, ram_state)
+    elif game_name.lower() == "mspacman":
         _detect_objects_demon_attack_raw(info, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
