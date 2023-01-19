@@ -20,9 +20,8 @@ observation, info = env.reset()
 
 
 for i in range(1000):
-
     obs, reward, terminated, truncated, info = env.step(1)  # env.step(env.action_space.sample())
-    if i % 1 == 0:
+    if i % 20 == 0:
         # obse2 = deepcopy(obse)
         print(env.objects)
         for obj in env.objects:
