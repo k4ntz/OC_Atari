@@ -1,4 +1,14 @@
-def _augment_info_space_invaders_raw(info, ram_state):
+def _init_objects_space_invaders_ram(hud=False):
+    """
+    (Re)Initialize the objects
+    """
+    objects = []
+    if hud:
+        objects.extend([])
+    return objects
+
+
+def _detect_objects_space_invaders_raw(info, ram_state):
     info["aliens_y"] = ram_state[16] % 32  # taking only the first 5 bits on the right
     info["number_enemies"] = ram_state[17]  # number of alive aliens and somehow the speed of aliens(less = quicker)
     info["enemies_alive"] = ram_state[18:23]  # are set bits (1's)
@@ -28,7 +38,7 @@ def _augment_info_space_invaders_raw(info, ram_state):
     print(ram_state)
 
 
-def _augment_info_space_invaders_revised(info, ram_state):
+def _detect_objects_space_invaders_revised(info, ram_state):
     info["aliens_y"] = ram_state[16] % 32  # taking only the first 5 bits on the right
     # ram_state[16] has also y of frame of players with walls together
 

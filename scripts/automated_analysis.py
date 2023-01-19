@@ -17,8 +17,8 @@ import pathlib
 from termcolor import colored
 import pickle
 sys.path.insert(0, '../ocatari') # noqa
-from core import OCAtari
-from vision.freeway import objects_colors
+from ocatari.core import OCAtari
+from ocatari.vision.freeway import objects_colors
 
 
 def ransac_regression(x, y):
@@ -30,7 +30,21 @@ def ransac_regression(x, y):
     return ransac.estimator_.coef_.item(), ransac.estimator_.intercept_.item()
 
 
-def generate_dataset(env, object_list, drop_constants, frames=200, skip_frames=3, manipulated_ram=None, ):
+def append_oinfo_values(obj_name, oinfo, object_infos):
+    if type(oinfo) == tuple:
+        object_infos[f"{obj_name}_x"].append(oinfo[0])
+        object_infos[f"{obj_name}_y"].append(oinfo[1])
+
+    elif type(oinfo) == list:
+        index = 0
+        for oinfoTuple in oinfo:
+            obj_name_altered = str(obj_name) +str(index)
+            index += 1
+            object_infos[f"{obj_name_altered}_x"].append(oinfoTuple[0])
+            object_infos[f"{obj_name_altered}_y"].append(oinfoTuple[1])
+
+
+def generate_dataset(env, object_list, drop_constants, frames=400, skip_frames=3, manipulated_ram=None, ):
     """
     generates test Data in the given environment(env) for the given objects(object_list)
     """
@@ -48,7 +62,8 @@ def generate_dataset(env, object_list, drop_constants, frames=200, skip_frames=3
             rand = random.randint(40, 100)
             env._env.unwrapped.ale.setRAM(manipulated_ram, rand)
 
-        obs, reward, terminated, truncated, info = env.step(random.randint(0, 1))
+        # obs, reward, terminated, truncated, info = env.step(env._env.action_space.sample())
+        obs, reward, terminated, truncated, info = env.step(5)
 
         if info.get('frame_number') > 10 and i % skip_frames == 0:
             SKIP = False
@@ -61,8 +76,7 @@ def generate_dataset(env, object_list, drop_constants, frames=200, skip_frames=3
                 continue
             for obj_name in object_list:
                 oinfo = info["objects"][obj_name]
-                object_infos[f"{obj_name}_x"].append(oinfo[0])
-                object_infos[f"{obj_name}_y"].append(oinfo[1])
+                append_oinfo_values(obj_name, oinfo, object_infos)
             ram = env._env.unwrapped.ale.getRAM()
             ram_saves.append(deepcopy(ram))
             if manipulated_ram is not None:
@@ -155,7 +169,7 @@ def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum_
     # ---------------------------test-data-dump-------------------------------
     game_name = env.game_name
     if dump_path is None:
-        dump_path = str(pathlib.Path().resolve()) + "/dumps/automated_analysis_dump/"
+        dump_path = str(pathlib.Path().resolve()) + "/../dumps/automated_analysis_dump/"
     if not os.path.exists(dump_path):
         os.mkdir(dump_path)
     dump_path = dump_path + game_name
@@ -236,6 +250,13 @@ def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum_
         prevC = c
 
     print(constant_str)
+    constant_str = "\n["
+    for c, v in constants.items():
+        constant_str = constant_str + str(c) +", "
+
+    constant_str = constant_str[:-2] +"]"
+    print(constant_str)
+
 
     # ---------print out candidates---------
     best_candidates = {}
@@ -264,22 +285,25 @@ def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum_
 
 
 if __name__ == "__main__":
-    GAME_NAME = "Freeway"
-    MODE = "vision"
+    GAME_NAME = "DemonAttack"
+    MODE = "vision"    # do not change
     # RENDER_MODE = "human"
-    RENDER_MODE = "rgb_array"
+    RENDER_MODE = "rgb_array"  # do not change
     MAXIMUM_X = 160  # right side of screen in rgb_array
     MAXIMUM_Y = 210  # bottom of screen in rgb_array
     DUMP_PATH = None  # path to dump otherwise takes standard
-    NEW_DUMP = False  # if True creates new datasets and dumps it overwriting the previous ones
+    NEW_DUMP = True  # if True creates new datasets and dumps it overwriting the previous ones
     MIN_CORRELATION = 0.8
     DROP_CONSTANTS = True  # if True does not consider not changing variables for objects
 
     env = OCAtari(GAME_NAME, mode=MODE, render_mode=RENDER_MODE)
     random.seed(0)
     observation, info = env.reset()
+    obs, reward, terminated, truncated, info = env.step(0)
+    env.reset()
 
-    object_list = objects_colors.keys()  # "ball_shadow"
+    object_list = ["player", "enemy0", "enemy1", "enemy2"]  # "ball_shadow"
+    print("objects that will be analyzed: " + str(object_list))
 
     do_analysis(env, object_list, drop_constants=DROP_CONSTANTS, dump_path=DUMP_PATH,
                 new_dump=NEW_DUMP, min_correlation=MIN_CORRELATION,
