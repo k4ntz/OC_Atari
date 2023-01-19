@@ -3,12 +3,11 @@ from .pong import _detect_objects_pong
 from .skiing import _detect_objects_skiing
 from .tennis import _detect_objects_tennis
 
-from .freeway import _detect_objects_freeway
-from .seaquest import _detect_objects_seaquest
+# from .freeway import _detect_objects_freeway
+# from .seaquest import _detect_objects_seaquest
 from .demonAttack import _detect_objects_demon_attack
-from .bowling import _detect_objects_bowling
+# from .bowling import _detect_objects_bowling
 from .space_invaders import _detect_objects_space_invaders
-
 
 
 def detect_objects_vision(objects, obs, game_name, hud=False):
