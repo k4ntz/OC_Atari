@@ -5,6 +5,7 @@ from .game_objects import GameObject
 objects_colors = {'player': [184, 70, 162], 'enemy': [213, 130, 74], 'projectile_friendly': [212, 140, 252],
                   'projectile_hostile': [252, 144, 144], 'live': [240, 128, 128], 'score': [223, 183, 85]}
 
+
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -64,9 +65,6 @@ def _detect_objects_demon_attack(objects, obs, hud=False):
         for l1 in live:
             objects.append(Live(*l1))
 
-    for name in ['projectile_friendly', 'projectile_hostile', 'live']:
-        obj = find_objects(obs, objects_colors[name], min_distance=1)
-
     proj_friendly = find_objects(obs, objects_colors['projectile_friendly'], min_distance=1)
     for proj in proj_friendly:
         objects.append(ProjectileFriendly(*proj))
@@ -74,7 +72,3 @@ def _detect_objects_demon_attack(objects, obs, hud=False):
     proj_hostile = find_objects(obs, objects_colors['projectile_hostile'], min_distance=1)
     for proj in proj_hostile:
         objects.append(ProjectileHostile(*proj))
-
-
-
-
