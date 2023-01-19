@@ -7,7 +7,7 @@ objects_colors = {"player": [50, 132, 50], "score": [50, 132, 50],
                   "alien": [134, 134, 29], "shield": [181, 83, 40],
                   "satellite": [151, 25, 122], "bullet": [142, 142, 142],
                   "lives": [162, 134, 56]
-                  }# "ground": [80, 89, 22], "background": [0, 0, 0]}
+                  }     # "ground": [80, 89, 22], "background": [0, 0, 0]}
 
 
 class Player(GameObject):
