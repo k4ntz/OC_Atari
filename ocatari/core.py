@@ -19,8 +19,7 @@ AVAILABLE_GAMES = ["Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
                    "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack"]
 
 
-
-class OCAtari():
+class OCAtari:
     def __init__(self, env_name, mode="raw", hud=False, *args, **kwargs):
         """
         mode: raw/revised/vision/both
