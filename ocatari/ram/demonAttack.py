@@ -130,7 +130,7 @@ def _detect_objects_demon_attack_revised(objects, ram_state, hud=False):
     objects_temp = [obj for obj in objects if not isinstance(obj, ProjectileHostile)]
     objects_temp.extend(calculate_small_projectiles_from_bitmap(ram_state[37:47], 3 + calc_x(ram_state[20], False)))
 
-    objects.clear()
+    objects.clear()     # giga ugly but i didnt find a better solution
     objects.extend(objects_temp)
 
     if hud:
