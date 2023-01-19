@@ -21,6 +21,7 @@ def _convert_number(number):
         count += 1
     return int(number_str)
 
+
 def number_to_bitfield(n):
     """
     convert number to 8 bit bitfield
@@ -29,6 +30,7 @@ def number_to_bitfield(n):
     buffer = [0] * (8 - len(lst))
     buffer.extend(lst)
     return buffer
+
 
 def bitfield_to_number(b, flip=False):
     exp = len(b)-1
