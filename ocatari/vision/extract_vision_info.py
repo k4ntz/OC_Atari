@@ -11,6 +11,7 @@ from .bowling import _detect_objects_bowling
 from .demonAttack import _detect_objects_demon_attack
 # from .bowling import _detect_objects_bowling
 from .space_invaders import _detect_objects_space_invaders
+from .mspacman import _detect_objects_mspacman
 
 
 def detect_objects_vision(objects, obs, game_name, hud=False):
@@ -24,12 +25,12 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
     #     return _detect_objects_seaquest(objects, obs, hud)
     elif game_name.lower() == "skiing":
         return _detect_objects_skiing(objects, obs, hud)
-    elif game_name.lower() == "mspacman":
-        return _detect_objects_mspacman(objects, obs, hud)
     elif game_name.lower() == "spaceinvaders":
         return _detect_objects_space_invaders(objects, obs, hud)
     elif game_name.lower() == "demonattack":
         return _detect_objects_demon_attack(objects, obs, hud)
+    elif game_name.lower() == "mspacman":
+        return _detect_objects_mspacman(objects, obs, hud)
     else:
         print(colored("Uncovered game in vision mode", "red"))
         exit(1)
