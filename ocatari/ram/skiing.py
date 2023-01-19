@@ -8,7 +8,7 @@ def print_state(state):
     for el in state:
         x, y, type = el
         coord = el[0:2]
-        attr=[]
+        attr = []
         if y > 177 or y < 25 or x == 155:
             attr.append("dark")
         if type == 2:
@@ -218,9 +218,10 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
                     currobj.wh = currobj.wh[0], height-15
                     objects[offset+1].wh = objects[offset+1].wh[0], height-15
                 if currobj._ram_id != 2:
-                    import ipdb; ipdb.set_trace()
+                    import ipdb
+                    ipdb.set_trace()
             offset += 1
-        elif type == 5: # mogul
+        elif type == 5:     # mogul
             if currobj is None:
                 objects.append(Mogul(x, y))
             else:
