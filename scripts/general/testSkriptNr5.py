@@ -2,14 +2,14 @@ import time
 import random
 import ipdb
 import sys
-sys.path.insert(0, '../../ocatari') # noqa
-from core import OCAtari
+sys.path.insert(0, '../../') # noqa
+from ocatari.core import OCAtari
 
 """
 Test raw/revised mode with a human render_mode and ipdb debugger
 """
 
-env = OCAtari("Pong", mode="raw", render_mode="human")
+env = OCAtari("Bowling", mode="raw", render_mode="human")
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []

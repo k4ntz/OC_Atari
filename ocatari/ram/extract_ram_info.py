@@ -1,6 +1,6 @@
 from termcolor import colored
 from .boxing import _detect_objects_boxing_raw, _detect_objects_boxing_revised, _init_objects_boxing_ram
-from .bowling import _detect_objects_bowling_raw, _detect_objects_bowling_revised
+from .bowling import _detect_objects_bowling_raw, _detect_objects_bowling_revised, _init_objects_bowling_ram
 from .breakout import _detect_objects_breakout_raw, _detect_objects_breakout_revised
 from .freeway import _detect_objects_freeway_raw, _detect_objects_freeway_revised
 from .pong import _detect_objects_pong_raw, _detect_objects_pong_revised, _init_objects_pong_ram
@@ -31,6 +31,8 @@ def init_objects(game_name, hud):
     #     _detect_objects_space_invaders(objects, ram_state)
     # elif game_name.lower() == "tennis":
     #     _detect_objects_tennis(objects, ram_state)
+    elif game_name.lower() == "bowling":
+        return _init_objects_bowling_ram(hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
