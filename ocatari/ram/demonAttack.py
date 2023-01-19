@@ -52,6 +52,16 @@ class Score(GameObject):
         self.hud = True
 
 
+class Live(GameObject):
+    def __init__(self):
+        super(Live, self).__init__()
+        self.visible = True
+        self._xy = 0, 0
+        self.wh = 3, 5
+        self.rgb = 240, 128, 128
+        self.hud = True
+
+
 def calculate_small_projectiles_from_bitmap(bitmap, basex):
     result = []
     offsetcollumn = 8
@@ -102,7 +112,16 @@ def _init_objects_demon_attack_ram(hud=False):
     """
     objects = [Player(), Enemy(), Enemy(), Enemy(), ProjectileFriendly()]
     if hud:
-        objects.extend([Score()])
+        objects.append(Score())
+
+        basex = 17
+        for i in range(3):
+            live = Live()
+            live.xy = basex, 188
+            objects.append(live)
+            basex += 8
+
+
     return objects
 
 
@@ -134,7 +153,12 @@ def _detect_objects_demon_attack_revised(objects, ram_state, hud=False):
     objects.extend(objects_temp)
 
     if hud:
-        pass
+        if ram_state[114] < 3 and len(objects) > 8 and isinstance(objects[8], Live):
+            del objects[8]
+        if ram_state[114] < 2 and len(objects) > 7 and isinstance(objects[7], Live):
+            del objects[7]
+        if ram_state[114] < 1 and len(objects) > 6 and isinstance(objects[6], Live):
+            del objects[6]
 
 
 def _detect_objects_demon_attack_raw(info, ram_state):
