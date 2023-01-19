@@ -72,7 +72,7 @@ def _detect_objects_pong_revised(objects, ram_state, hud=False):
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
-    # set defauld coord if object does not exist
+    # set default coord if object does not exist
     player, ball, enemy = objects[:3]
     if ram_state[54] != 0:  # otherwise no ball
         ball.xy = ram_state[49]-49, ram_state[54]-14
@@ -82,7 +82,7 @@ def _detect_objects_pong_revised(objects, ram_state, hud=False):
     player.xy = 140, ram_state[51]-13
     if hud:
         # scores
-        if ram_state[13] > 10: # enemy score
+        if ram_state[13] > 10:  # enemy score
             if not enemy._above_10:
                 objects.append(EnemyScore(ten=True))
                 enemy._above_10 = True
@@ -90,7 +90,7 @@ def _detect_objects_pong_revised(objects, ram_state, hud=False):
             if enemy._above_10:
                 objects.remove(EnemyScore(ten=True))
                 enemy._above_10 = False
-        if ram_state[14] > 10: # player score
+        if ram_state[14] > 10:  # player score
             if not player._above_10:
                 objects.append(PlayerScore(ten=True))
                 player._above_10 = True
@@ -98,6 +98,7 @@ def _detect_objects_pong_revised(objects, ram_state, hud=False):
             if player._above_10:
                 objects.remove(PlayerScore(ten=True))
                 player._above_10 = False
+    # print(objects)
 
 
 def _detect_objects_pong_raw(info, ram_state):
@@ -105,7 +106,10 @@ def _detect_objects_pong_raw(info, ram_state):
     returns unprocessed list with
     ball_x, ball_y, enemy_y, player_y
     """
-    info["objects_list"] = [ram_state[49], ram_state[54], ram_state[50], ram_state[51]]
+    info["ball_x"] = ram_state[49]
+    info["ball_y"] = ram_state[54]
+    info["enemy_y"] = ram_state[50]
+    info["player_y"] = ram_state[51]
 
 
 # def _detect_objects_pong_revised_old(info, ram_state, hud=False):

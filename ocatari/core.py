@@ -1,6 +1,6 @@
 import gymnasium as gym
-from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects
-from ocatari.vision.extract_vision_info import detect_objects_vision
+from .ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects
+from .vision.extract_vision_info import detect_objects_vision
 from termcolor import colored
 from collections import deque
 try:
@@ -14,11 +14,12 @@ import torch
 
 DEVICE = "cpu"
 
-AVAILABLE_GAMES = ["Boxing", "Breakout", "Pong", "Seaquest",
-                   "Skiing", "SpaceInvaders", "Tennis"]
+
+AVAILABLE_GAMES = ["Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
+                   "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack"]
 
 
-class OCAtari():
+class OCAtari:
     def __init__(self, env_name, mode="raw", hud=False, *args, **kwargs):
         """
         mode: raw/revised/vision/both
@@ -56,7 +57,10 @@ class OCAtari():
 
     def _step_ram(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
-        self.detect_objects(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
+        if self.mode == "revised":
+            self.detect_objects(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
+        else:   # mode == "raw" because in raw mode we augment the info dictionary
+            self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
         self._fill_buffer()
         return obs, reward, truncated, terminated, info
 
@@ -100,3 +104,9 @@ class OCAtari():
     @property
     def dqn_obs(self):
         return torch.stack(list(self._state_buffer), 0).unsqueeze(0).byte()
+
+    def set_ram(self, target_ram_position, new_value):
+        """
+        Directly manipulate a targeted RAM position
+        """
+        return self._env.unwrapped.ale.setRAM(target_ram_position, new_value)
