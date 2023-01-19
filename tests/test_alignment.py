@@ -90,7 +90,7 @@ for i in range(10000):
         action = random.randint(0, 5)
     obse, reward, terminated, truncated, info = env.step(action)
     avg_iou, d_ious, oir, oiv = difference_objects(env.objects, env.objects_v)
-    if avg_iou < 0.5:
+    if avg_iou < 0.9:
         obse2 = deepcopy(obse)
         for ax, obs, objects_list, title in zip(axes, [obse, obse2],
                                                 [env.objects, env.objects_v],
@@ -106,7 +106,7 @@ for i in range(10000):
         for ax in axes.flatten():
             ax.set_xticks([])
             ax.set_yticks([])
-        # plt.show()
+        plt.show()
         plt.savefig(f"{SAVE_IMAGE_FOLDER}/{game_name}_{i}.png")
         print(f"Saved at {SAVE_IMAGE_FOLDER}/{game_name}_{i}.png for iou {avg_iou}")
 

@@ -7,7 +7,8 @@ from .pong import _detect_objects_pong_raw, _detect_objects_pong_revised, _init_
 from .seaquest import _detect_objects_seaquest_raw, _detect_objects_seaquest_revised
 from .skiing import _detect_objects_skiing_raw, _detect_objects_skiing_revised, _init_objects_skiing_ram
 from .space_invaders import _detect_objects_space_invaders_raw, \
-                            _detect_objects_space_invaders_revised
+                            _detect_objects_space_invaders_revised, \
+                            _init_objects_space_invaders_ram
 from .tennis import _detect_objects_tennis_raw, _detect_objects_tennis_revised
 
 def init_objects(game_name, hud):
@@ -26,12 +27,12 @@ def init_objects(game_name, hud):
         return _init_objects_skiing_ram(hud)
     # elif game_name.lower() == "seaquest":
     #     _detect_objects_seaquest(objects, ram_state)
-    # elif game_name.lower() == "spaceinvaders":
-    #     _detect_objects_space_invaders(objects, ram_state)
+    elif game_name.lower() == "spaceinvaders":
+        return _init_objects_space_invaders_ram(hud)
     # elif game_name.lower() == "tennis":
     #     _detect_objects_tennis(objects, ram_state)
     else:
-        print(colored("Uncovered game in raw mode", "red"))
+        print(colored("Uncovered init objects", "red"))
         exit(1)
 
 

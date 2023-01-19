@@ -98,6 +98,8 @@ Y_POS_CONV = [None, 161, 160, 159, 158, 157, 156, 155, 153, 151, 150,
               148, 144, 144, 142, 140, 138, 136, 134, 132, 130, 127, 125, 123,
               122, 120, 116, 114, 112, 110, 106, 104, 102, 98, 95, 92, 88, 85,
               83, 82, 80]
+
+
 def y_pos_for_vision(ram_state):
     """
     Get an estimated y-position for the rendered image based on the ram value for the objects y-posiition.
