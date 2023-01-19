@@ -14,13 +14,10 @@ import torch
 
 DEVICE = "cpu"
 
-<<<<<<< HEAD
+
 AVAILABLE_GAMES = ["Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
                    "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack"]
-=======
-AVAILABLE_GAMES = ["Bowling", "Boxing", "Breakout", "Pong", "Seaquest",
-                   "Skiing", "SpaceInvaders", "Tennis"]
->>>>>>> c7179c0c2c47df090660e30191119a0fd87bb220
+
 
 
 class OCAtari():

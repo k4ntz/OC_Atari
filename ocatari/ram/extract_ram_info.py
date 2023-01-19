@@ -9,6 +9,8 @@ from .skiing import _detect_objects_skiing_raw, _detect_objects_skiing_revised, 
 from .space_invaders import _detect_objects_space_invaders_raw, \
                             _detect_objects_space_invaders_revised
 from .tennis import _detect_objects_tennis_raw, _detect_objects_tennis_revised
+from .demonAttack import _detect_objects_demon_attack_revised, _detect_objects_demon_attack_raw,\
+    _init_objects_demon_attack_ram
 
 
 def init_objects(game_name, hud):
@@ -31,6 +33,8 @@ def init_objects(game_name, hud):
     #     _detect_objects_space_invaders(objects, ram_state)
     # elif game_name.lower() == "tennis":
     #     _detect_objects_tennis(objects, ram_state)
+    elif game_name.lower() == "demonattack":
+        return _init_objects_demon_attack_ram(hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
@@ -58,6 +62,8 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_tennis_raw(info, ram_state)
     elif game_name.lower() == "bowling":
         _detect_objects_bowling_raw(info, ram_state)
+    elif game_name.lower() == "demonattack":
+        _detect_objects_demon_attack_raw(info, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
         exit(1)
@@ -85,6 +91,8 @@ def detect_objects_revised(info, ram_state, game_name, hud):
         _detect_objects_tennis_revised(info, ram_state, hud)
     elif game_name.lower() == "bowling":
         _detect_objects_bowling_revised(info, ram_state, hud)
+    elif game_name.lower() == "demonattack":
+        _detect_objects_demon_attack_revised(info, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
