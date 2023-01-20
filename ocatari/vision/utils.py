@@ -6,6 +6,18 @@ import matplotlib.pyplot as plt
 from termcolor import colored
 
 
+# to be removed
+def bbs_extend(labels, key: str, stationary=False):
+    labels['bbs'].extend([(*bb, "S" if stationary else "M", key) for bb in labels[key]])
+
+
+# to be removed
+def bb_by_color(labels, obs, color, key, closing_active=True):
+    print(colored("\n\n\n PLEASE DON'T USE, USE 'find_objects' instead\n\n\n", "red"))
+    labels[key] = find_objects(obs, color, closing_active)
+    bbs_extend(labels, key)
+
+
 def assert_in(observed, target, tol):
     if type(tol) is int:
         tol = (tol, tol)
@@ -96,8 +108,14 @@ def _plot_bounding_boxes_from_tuple(obs, name, tup, colors):
         print(colored("the return type is not supported", "red"))
 
 
+def showim(im):
+    plt.imshow(im)
+    plt.show()
+
+
 def find_objects(image, color, closing_active=True, size=None, tol_s=10,
-                 position=None, tol_p=2, min_distance=10):
+                 position=None, tol_p=2, min_distance=10, closing_dist=3,
+                 minx=0, miny=0, maxx=160, maxy=210):
     """
     image: image to detects objects from
     color: fixed color of the object
@@ -108,22 +126,23 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
     min_distance: minimal distance between two detected objects
     """
     mask = cv2.inRange(image, np.array(color), np.array(color))
+    # import ipdb; ipdb.set_trace()
     if closing_active:
-        closed = closing(mask, disk(3))
-        closed = closing(closed, square(3))
+        closed = closing(mask, square(closing_dist))
+        # closed = closing(closed, square(closing_dist))
     else:
-        closed = closing(mask, disk(2))
-    contours, _ = cv2.findContours(closed.copy(), 1, 1)
+        closed = mask
+    contours, _ = cv2.findContours(closed.copy(), cv2.RETR_EXTERNAL, 1)
     detected = []
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
-        if size is not None:
+        if size:
             if not assert_in((h, w), size, tol_s):
                 continue
-        if position is not None:
+        if position:
             if not assert_in((x, y), position, tol_p):
                 continue
-        if min_distance is not None:
+        if min_distance:
             too_close = False
             for det in detected:
                 if iou(det, (x, y, w, h)) > 0.05:
@@ -131,6 +150,8 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
                     break
             if too_close:
                 continue
+        if x < minx or x+w > maxx or y < miny or y+h > maxy:
+            continue
         # detected.append((y, x, h, w))
         detected.append((x, y, w, h))
     return detected
