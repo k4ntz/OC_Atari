@@ -112,7 +112,7 @@ def _detect_objects_bowling_revised(objects, ram_state, hud=False):
 
     pins = [pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8, pin9, pin10]
     for i in range(10):
-        if ram_state[57 + i] == 255: # pin is knocked down in this case
+        if ram_state[57 + i] == 255:    # pin is knocked down in this case
             pins[i].visible = False
         else:
             pins[i].visible = True
