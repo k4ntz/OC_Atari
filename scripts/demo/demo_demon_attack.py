@@ -9,14 +9,18 @@ from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.ram.demonAttack import ProjectileHostile
 
-game_name = "Bowling"
-MODE = "revised"
+
+game_name = "DemonAttack"
+MODE = "vision"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
+
+
+
 for i in range(1000):
-    obs, reward, terminated, truncated, info = env.step(random.randint(0, 4))
+    obs, reward, terminated, truncated, info = env.step(1)  # env.step(env.action_space.sample())
     if i % 20 == 0:
         # obse2 = deepcopy(obse)
         print(env.objects)
@@ -26,6 +30,8 @@ for i in range(1000):
                 opos = obj.xywh
                 ocol = obj.rgb
                 sur_col = make_darker(ocol)
+                if isinstance(obj, ProjectileHostile):
+                    sur_col = 255, 255, 255
                 mark_bb(obs, opos, color=sur_col)
             # mark_point(obs, *opos[:2], color=(255, 255, 0))
 

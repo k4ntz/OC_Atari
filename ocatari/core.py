@@ -14,11 +14,12 @@ import torch
 
 DEVICE = "cpu"
 
-AVAILABLE_GAMES = ["Bowling", "Boxing", "Breakout", "Pong", "Seaquest",
-                   "Skiing", "SpaceInvaders", "Tennis"]
+
+AVAILABLE_GAMES = ["Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
+                   "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack", "Bowling"]
 
 
-class OCAtari():
+class OCAtari:
     def __init__(self, env_name, mode="raw", hud=False, *args, **kwargs):
         """
         mode: raw/revised/vision/both

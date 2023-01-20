@@ -3,20 +3,39 @@ from .game_objects import GameObject
 
 """
 RAM extraction for the game BOWLING. Supported modes: raw, revised.
-
 """
 
 
-class Player(GameObject):
+class PlayerShoes(GameObject):
     def __init__(self):
+        self.visible = True
         self._xy = 18, 169
-        self.wh = 10, 10
+        self.wh = 8, 2
         self.rgb = 0, 0, 0
+        self.hud = False
+
+
+class PlayerTorso(GameObject):
+    def __init__(self):
+        self.visible = True
+        self._xy = 22, 139
+        self.wh = 4, 8
+        self.rgb = 84, 92, 214
+        self.hud = False
+
+
+class PlayerHead(GameObject):
+    def __init__(self):
+        self.visible = True
+        self._xy = 22, 147
+        self.wh = 4, 8
+        self.rgb = 198, 89, 179
         self.hud = False
 
 
 class Ball(GameObject):
     def __init__(self):
+        self.visible = True
         self._xy = 22, 139
         self.wh = 4, 10
         self.rgb = 45, 50, 184
@@ -34,6 +53,7 @@ class Pin(GameObject):
 
 class PlayerScore(GameObject):
     def __init__(self):
+        self.visible = True
         self._xy = 32, 19
         self.rgb = 84, 92, 214
         self.wh = 28, 15
@@ -45,6 +65,7 @@ class PlayerScore(GameObject):
 
 class PlayerRound(GameObject):
     def __init__(self):
+        self.visible = True
         self._xy = 40, 7
         self.rgb = 45, 50, 184
         self.wh = 4, 10
@@ -53,6 +74,7 @@ class PlayerRound(GameObject):
 
 class Player2Round(GameObject):
     def __init__(self):
+        self.visible = True
         self._xy = 120, 7
         self.rgb = 45, 50, 184
         self.wh = 4, 10
@@ -63,7 +85,8 @@ def _init_objects_bowling_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Ball(), Pin(), Pin(), Pin(), Pin(), Pin(), Pin(), Pin(), Pin(), Pin(), Pin()]
+    objects = [PlayerShoes(), PlayerTorso(), PlayerHead(),
+               Ball(), Pin(), Pin(), Pin(), Pin(), Pin(), Pin(), Pin(), Pin(), Pin(), Pin()]
     if hud:
         objects.extend([PlayerScore(), PlayerRound(), Player2Round()])
     return objects
@@ -76,48 +99,55 @@ def _detect_objects_bowling_revised(objects, ram_state, hud=False):
     """
 
     # set default coord if object does not exist
-    player, ball, pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8, pin9, pin10 = objects[:12]
+    player_shoes, player_torso, player_head, ball, pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8, pin9, pin10\
+        = objects[:14]
 
     # not a perfect shape around the ball because the ram y-value and the rendered image y-position are
     # in no correlation and the ram position encodes the lowest position of the ball and not the middle of the ball
     # thus a rectangle will not perfectly fit the ball
     ball.xy = ram_state[30] + 7, 161 - 2 * (ram_state[41] - 1)
-    player.xy = ram_state[29] + 8, 161 - 2 * (ram_state[40] - 1)
+    player_shoes.xy = ram_state[29] + 8, 169 - 2 * (ram_state[40] - 1)
+    player_torso.xy = ram_state[29] + 10, 147 - 2 * (ram_state[40] - 1)
+    player_head.xy = ram_state[29] + 10, 139 - 2 * (ram_state[40] - 1)
 
     pins = [pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8, pin9, pin10]
     for i in range(10):
-        if ram_state[57 + i] == 255:
-            print("hier")
+        if ram_state[57 + i] == 255: # pin is knocked down in this case
             pins[i].visible = False
         else:
             pins[i].visible = True
         pins[i].xy = pin_location(ram_state[57 + i]) + 9, 170 - 2 * (ram_state[47 + i])
 
     if hud:
+        # score >= 100
+        if ram_state[38] == 1:
+            objects[14].wh = 36, 15
+            objects[14].xy = 24, 19
+        # score > 199
+        elif ram_state[38] > 1:
+            objects[14].wh = 44, 15
+            objects[14].xy = 16, 19
         # round is wider if its not round 1 or its 10
         if _convert_number(ram_state[36]) == 10:
-            objects[13].wh = 20, 10
+            objects[15].wh = 20, 10
+            objects[15].xy = 24, 7
         elif _convert_number(ram_state[36]) != 1:
-            objects[13].wh = 12, 10
+            objects[15].wh = 12, 10
+            objects[15].xy = 32, 7
 
     print(objects)
 
-    # info["score"] = _convert_number(ram_state[33])
-    # info["round"] = _convert_number(ram_state[36])
-    # info["pins_standing_count"] = pins_standing_count(ram_state[57:66])
-    # info["throw_of_that_round"] = ram_state[18]
-    # info["objects"] = objects
-
 
 def _detect_objects_bowling_raw(info, ram_state):
-    relevant_objects = []
-    player = [ram_state[29], ram_state[40]]   # player_x, player_y  y: from 1 (down) to 28 (up)
+    player = [ram_state[29], ram_state[40]]  # player_x, player_y  y: from 1 (down) to 28 (up)
     ball = [ram_state[30], ram_state[41]]  # ball_x, ball_y
     # for the ten pins the x-position from 57:67 and the y-position from 47:57
-    pins = [ram_state[47:67]]
-    relevant_objects = player + ball + pins
+    pins = ram_state[47:67]
+    relevant_objects = player + ball + pins.tolist()
+
+    # additional info
     info["relevant_objects"] = relevant_objects
-    info["score"] = _convert_number(ram_state[33])
+    info["score"] = ram_state[38] * 100 + _convert_number(ram_state[33])
     info["pins_standing_count"] = pins_standing_count(ram_state[57:66])
     info["round"] = _convert_number(ram_state[36])  # displayed as hexadecimal, up to ten
     info["throw_of_that_round"] = ram_state[18]  # 0: first throw; 1: second throw

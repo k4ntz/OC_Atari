@@ -31,12 +31,14 @@ class PlayerScore(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 92, 186, 92
+        self.hud = True
 
 
 class EnemyScore(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 213, 130, 74
+        self.hud = True
 
 
 def _detect_objects_pong(objects, obs, hud=False):

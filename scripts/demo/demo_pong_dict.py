@@ -3,20 +3,22 @@
 import sys
 import random
 import matplotlib.pyplot as plt
-from os import path
-sys.path.insert(0, '../../') # noqa
-# sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
-from ocatari.core import OCAtari
-from ocatari.vision.utils import mark_bb, make_darker
-from ocatari.vision.pong import objects_colors
-from ocatari.utils import load_agent, parser
-
+sys.path.insert(0, '../../ocatari') # noqa
+from core import OCAtari
+from vision.utils import mark_bb, make_darker
+from vision.space_invaders import objects_colors
+# from ocatari.vision.pong import objects_colors
+from utils import load_agent, parser
 
 game_name = "Pong"
+# game_name = "SpaceInvaders"
+# game_name = "Tennis"
 MODE = "vision"
 MODE = "revised"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
+# MODE = "revised"
+env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
 observation, info = env.reset()
 
 opts = parser.parse_args()

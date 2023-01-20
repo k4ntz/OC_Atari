@@ -18,9 +18,9 @@ car_colors = {"car1": [167, 26, 26], "car2": [180, 231, 117], "car3": [105, 105,
 
 def _detect_objects_freeway_revised(info, ram_state):
     """
-        For all objects:
-        (x, y, w, h, r, g, b)
-        """
+    For all objects:
+    (x, y, w, h, r, g, b)
+    """
     objects = {}
 
     y = 27
