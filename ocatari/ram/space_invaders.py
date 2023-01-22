@@ -1,11 +1,65 @@
+from .game_objects import GameObject
+
+
+
 def _init_objects_space_invaders_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = []
+    objects = [Player(), Alien(), Satellite(), Shield(), Bullet(), Score(), Lives()]
     if hud:
-        objects.extend([])
+        objects.append(Score(), Lives)
     return objects
+
+
+class Player(GameObject):
+    def __init__(self, x, y, w, h, num, *args, **kwargs):
+        super().__init__(x, y, w, h, *args, **kwargs)
+        if num == 1:
+            self.rgb = 92, 186, 92
+        else:
+            self.rgb = 162, 134, 56  # yellow
+        self.player_num = num
+
+
+class Alien(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 134, 134, 29
+
+
+class Satellite(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 151, 25, 122
+
+
+class Shield(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 181, 83, 40
+
+
+class Bullet(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 142, 142, 142
+
+
+class Score(GameObject):
+    def __init__(self, x, y, w, h, num, *args, **kwargs):
+        super().__init__(x, y, w, h, *args, **kwargs)
+        if num == 1:
+            self.rgb = 92, 186, 92
+        else:
+            self.rgb = 162, 134, 56
+
+
+class Lives(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 162, 134, 56
+
 
 
 def _detect_objects_space_invaders_raw(info, ram_state):
@@ -14,7 +68,7 @@ def _detect_objects_space_invaders_raw(info, ram_state):
     info["walls"] = ram_state[43:69]
     info["lives"] = ram_state[73]
     info["bullet_1_enemy_y"] = ram_state[81:89]
-    info["score"] = ram_state[102:106]  # score is saved in hexadecimal
+    info["score"] = ram_state[102:106]
 
     print(ram_state)
 
