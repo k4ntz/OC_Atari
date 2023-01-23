@@ -7,7 +7,7 @@ objects_colors = {"player": [50, 132, 50], "score": [50, 132, 50],
                   "alien": [134, 134, 29], "shield": [181, 83, 40],
                   "satellite": [151, 25, 122], "bullet": [142, 142, 142],
                   "lives": [162, 134, 56]
-                  }     # "ground": [80, 89, 22], "background": [0, 0, 0]}
+                  }
 
 
 class Player(GameObject):
@@ -16,7 +16,7 @@ class Player(GameObject):
         if num == 1:
             self.rgb = 92, 186, 92
         else:
-            self.rgb = 162, 134, 56
+            self.rgb = 162, 134, 56  # yellow
         self.player_num = num
 
 
@@ -94,7 +94,7 @@ def _detect_objects_space_invaders(objects, obs, hud):
     #         detected['bbs'] = [bb for bb in detected['bbs'] if
     #                            bb[5] != "player_green" or bb[0] > 140]
     #
-    #     # dangerous. all digits get detected but its not expected because of separation. same for yellow
+    #     # dangerous. all digits get detected, but it's not expected because of separation. same for yellow
     #     elif k == "score_green":
     #         detected['bbs'] = [bb for bb in detected['bbs'] if
     #                            bb[5] != "score_green" or bb[0] < 140]
