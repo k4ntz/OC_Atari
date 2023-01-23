@@ -15,11 +15,12 @@ HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
+env._env.unwrapped.ale.setRAM(11, 0)
+env._env.unwrapped.ale.setRAM(17, 0)
 
 for i in range(1000):
-    obs, reward, terminated, truncated, info = env.step(1)  # env.step(env.action_space.sample())
+    obs, reward, terminated, truncated, info = env.step(1) 
     if i % 20 == 0:
-        # obse2 = deepcopy(obse)
         print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
@@ -27,8 +28,6 @@ for i in range(1000):
                 opos = obj.xywh
                 ocol = obj.rgb
                 sur_col = make_darker(ocol)
-                if isinstance(obj, ProjectileHostile):
-                    sur_col = 255, 255, 255
                 mark_bb(obs, opos, color=sur_col)
             # mark_point(obs, *opos[:2], color=(255, 255, 0))
 
