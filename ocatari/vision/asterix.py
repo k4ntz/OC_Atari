@@ -1,24 +1,13 @@
+from .utils import find_objects
 from .game_objects import GameObject
+
+
+objects_colors = {}
 
 
 class Player(GameObject):
     pass
 
 
-def _init_objects_asterix_ram(hud=False):
-    """
-    (Re)Initialize the objects
-    """
-    objects = [Player()]
-    if hud:
-        pass
-
-    return objects
-
-
-def _detect_objects_asterix_revised(objects, ram_state, hud=False):
-    pass
-
-
-def _detect_objects_asterix_raw(info, ram_state):
+def _detect_objects_demon_attack(objects, obs, hud=False):
     pass
