@@ -1,4 +1,4 @@
-class GameObject():
+class GameObject:
     GET_COLOR = False
     GET_WH = False
 
