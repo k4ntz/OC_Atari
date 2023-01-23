@@ -39,7 +39,7 @@ class Life(GameObject):
         self.rgb = 187, 187, 53
 
 
-def _detect_objects_mspacman(objects, obs, hud=False):
+def _detect_objects_mspacman(objects, obs, hud=True):
     objects.clear()
 
     player = find_objects(obs, objects_colors["player"], min_distance=1)
@@ -53,16 +53,15 @@ def _detect_objects_mspacman(objects, obs, hud=False):
             ghs = Ghost(*bb)
             ghs.rgb = objects_colors["ghosts"][i]
             objects.append(ghs)
-
-    for i in objects_colors["fruit"]:
-        fruit = find_objects(obs, objects_colors["fruit"][i], min_distance=1)
-
-        for bb in fruit:
-            fru = Fruit(*bb)
-            fru.rgb = objects_colors["fruit"][i]
-            objects.append(fru)
-
     if hud:
+        for i in objects_colors["fruit"]:
+            fruit = find_objects(obs, objects_colors["fruit"][i], min_distance=1)
+
+            for bb in fruit:
+                fru = Fruit(*bb)
+                fru.rgb = objects_colors["fruit"][i]
+                objects.append(fru)
+
         score = find_objects(obs, objects_colors["score"], min_distance=1)
         for s in score:
             objects.append(Score(*s))
@@ -70,3 +69,12 @@ def _detect_objects_mspacman(objects, obs, hud=False):
         life = find_objects(obs, objects_colors["life"], min_distance=1)
         for l1 in life:
             objects.append(Life(*l1))
+    else:
+        for i in objects_colors["fruit"]:
+            fruit = find_objects(obs, objects_colors["fruit"][i], min_distance=1)
+
+            for bb in fruit:
+                if bb[1] < 170:
+                    fru = Fruit(*bb)
+                    fru.rgb = objects_colors["fruit"][i]
+                    objects.append(fru)
