@@ -1,7 +1,6 @@
 from .utils import find_objects
 from .game_objects import GameObject
 
-
 objects_colors = {"player": [210, 164, 74], "life": [187, 187, 53], "score": [195, 144, 61],
                   "ghosts": {"orange": [180, 122, 48], "cyan": [84, 184, 153],
                              "pink": [198, 89, 179], "red": [200, 72, 72], "eatable": [66, 114, 194]},
@@ -50,7 +49,7 @@ def _detect_objects_mspacman(objects, obs, hud=False):
 
     for i in objects_colors["ghosts"]:
         ghosts = find_objects(obs, objects_colors["ghosts"][i], min_distance=1)
-        
+
         for bb in ghosts:
             ghs = Ghost(*bb)
             ghs.rgb = objects_colors["ghosts"][i]
@@ -58,7 +57,7 @@ def _detect_objects_mspacman(objects, obs, hud=False):
 
     for i in objects_colors["fruit"]:
         fruit = find_objects(obs, objects_colors["fruit"][i], min_distance=1)
-        
+
         for bb in fruit:
             fru = Fruit(*bb)
             fru.rgb = objects_colors["fruit"][i]
