@@ -1,6 +1,6 @@
 import gymnasium as gym
-from .ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects
-from .vision.extract_vision_info import detect_objects_vision
+from ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects
+from vision.extract_vision_info import detect_objects_vision
 from termcolor import colored
 from collections import deque
 try:
