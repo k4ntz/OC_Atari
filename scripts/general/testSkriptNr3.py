@@ -5,13 +5,13 @@ from matplotlib import pyplot as plt
 import sys
 # import pathlib
 sys.path.insert(0, '../../ocatari') # noqa
-from core import OCAtari
+from ocatari.core import OCAtari
 
 """
-Test vision mode with rgb_array_with_bbs as render_mode
+Test vision mode with rgb_array as render_mode
 """
 
-env = OCAtari("Pong", mode="vision", render_mode='rgb_array')
+env = OCAtari("Asterix-v4", mode="vision", render_mode='rgb_array')  # Skiing-v4, DemonAttack-v4, SpaceInvaders-v4
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
