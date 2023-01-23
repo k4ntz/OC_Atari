@@ -3,9 +3,9 @@ from .game_objects import GameObject
 
 
 objects_colors = {"player": [210, 164, 74], "life": [187, 187, 53], "score": [195, 144, 61],
-                  "ghosts":{"orange": [180, 122, 48], "cyan": [84, 184, 153],
+                  "ghosts": {"orange": [180, 122, 48], "cyan": [84, 184, 153],
                   "pink": [198, 89, 179], "red": [200, 72, 72], "eatable": [66, 114, 194]},
-                  "fruit":{"cherry/strawberry/Apple": [184, 50, 50], "pretzel": [162, 162, 42],
+                  "fruit": {"cherry/strawberry/Apple": [184, 50, 50], "pretzel": [162, 162, 42],
                   "orange/banana": [198, 108, 58], "pear": [110, 156, 66]},
                   }
 

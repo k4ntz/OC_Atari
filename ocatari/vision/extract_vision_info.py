@@ -1,7 +1,7 @@
 from termcolor import colored
 from .pong import _detect_objects_pong
 from .skiing import _detect_objects_skiing
-from .tennis import _detect_objects_tennis
+# from .tennis import _detect_objects_tennis
 # from .freeway import _detect_objects_freeway
 # from .seaquest import _detect_objects_seaquest
 # from .bowling import _detect_objects_bowling
