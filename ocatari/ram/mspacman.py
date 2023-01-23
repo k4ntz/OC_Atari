@@ -16,51 +16,28 @@ class Ghost(GameObject):
     def __init__(self, *args, **kwargs):
         super(Ghost, self).__init__()
         super().__init__(*args, **kwargs)
-        if GameObject == "orange":
-            self.visible = False
-            self._xy = 79, 86
-            self.wh = 9, 10
-            self.rgb = 180, 122, 48
-        elif GameObject == "cyan":
-            self.visible = False
-            self._xy = 79, 86
-            self.wh = 9, 10
-            self.rgb = 84, 184, 153
-        elif GameObject == "pink":
-            self.visible = True
-            self._xy = 79, 86
-            self.wh = 9, 10
-            self.rgb = 198, 89, 179
-        elif GameObject == "red":
-            self.visible = True
-            self._xy = 79, 57
-            self.wh = 9, 10
-            self.rgb = 200, 72, 72
+        self.visible = True
+        self._xy = 79, 57
+        self.wh = 9, 10
+        self.rgb = 200, 72, 72
         self.hud = False
 
 
 class Fruit(GameObject):
     def __init__(self, *args, **kwargs):
         super(Fruit, self).__init__()
-        self.visible = False
+        self.visible = True
         self._xy = 0, 0
         self.wh = 10, 10
-        if GameObject == "cherry/strawberry/Apple":
-            self.rgb = 184, 50, 50
-        elif GameObject == "pretzel":
-            self.rgb = 162, 162, 42
-        elif GameObject == "orange/banana":
-            self.rgb = 198, 108, 58
-        elif GameObject == "pear":
-            self.rgb = 110, 156, 66
+        self.rgb = 110, 156, 66
         self.hud = False
 
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super(Score, self).__init__()
         self.visible = True
-        self._xy = 97, 189
-        self.wh = 10, 10
+        self._xy = 95, 187
+        self.wh = 7, 7
         self.rgb = 195, 144, 61
         self.hud = True
 
@@ -69,8 +46,8 @@ class Life(GameObject):
     def __init__(self, *args, **kwargs):
         super(Life, self).__init__()
         self.visible = True
-        self._xy = 15, 178
-        self.wh = 10, 10
+        self._xy = 12, 171
+        self.wh = 9, 10
         self.rgb = 187, 187, 53
         self.hud = True
 
@@ -79,14 +56,21 @@ def _init_objects_mspacman_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Ghost(), Ghost(), Ghost(), Ghost(), Fruit()]
-    if hud:
-        objects.append(Score())
 
-        x = 15
+    objects = [Player(), Ghost(), Ghost(), Ghost(), Ghost(), Fruit()]
+
+    if hud:
+        x = 95
+        for i in range(6):
+            score = Score()
+            score.xy = x, 187
+            objects.append(score)
+            x -= 8
+
+        x = 12
         for i in range(3):
             life = Life()
-            life.xy = x, 188
+            life.xy = x, 173
             objects.append(life)
             x += 15
 
@@ -94,40 +78,79 @@ def _init_objects_mspacman_ram(hud=False):
 
 
 def _detect_objects_mspacman_revised(objects, ram_state, hud=False):
-    player, e1, e2, e3, proj_frienddly, proj_hostile = objects[:6]
+    player, g1, g2, g3, g4, fruit = objects[:6]
 
-    player.xy = calc_x(ram_state[16], True), 174
+    player.xy = ram_state[10] - 13, ram_state[16] + 1
 
-    enemies = [e1, e2, e3]
-    for i in range(3):
-        if ram_state[13 + i] == 0:
-            enemies[i].visible = False
-        else:
-            enemies[i].visible = True
-        x = calc_x(ram_state[13 + i], False)
-        if i == 2:
-            x = x + 3
-        enemies[i].xy = x, 175 - ram_state[69 + i]
+    g1.xy = ram_state[6] - 13, ram_state[12] + 1
+    g1.rgb = 180, 122, 48
+    g2.xy = ram_state[7] - 13, ram_state[13] + 1
+    g2.rgb = 84, 184, 153
+    g3.xy = ram_state[8] - 13, ram_state[14] + 1
+    g3.rgb = 198, 89, 179
+    g4.xy = ram_state[9] - 13, ram_state[15] + 1
+    # no rgb adjustment, since this colour is the default one
 
-    if 90 <= ram_state[21]:
-        proj_frienddly.xy = 3 + calc_x(ram_state[22]), 176 - ram_state[21]
+    if ram_state[11] > 0 and ram_state[17] > 0: 
+        fruit.xy = ram_state[11] - 13, ram_state[17] + 1
+        fruit.rgb = get_fruit_rgb(ram_state[123])
     else:
-        proj_frienddly.xy = 3 + calc_x(ram_state[22]), 178 - ram_state[21]
-
-    objects_temp = [obj for obj in objects if not isinstance(obj, ProjectileHostile)]
-    objects_temp.extend(calculate_small_projectiles_from_bitmap(ram_state[37:47], 3 + calc_x(ram_state[20], False)))
-
-    objects.clear()     # giga ugly but i didnt find a better solution
-    objects.extend(objects_temp)
+        fruit.visible = False
 
     if hud:
-        if ram_state[114] < 3 and len(objects) > 8 and isinstance(objects[8], Live):
-            del objects[8]
-        if ram_state[114] < 2 and len(objects) > 7 and isinstance(objects[7], Live):
-            del objects[7]
-        if ram_state[114] < 1 and len(objects) > 6 and isinstance(objects[6], Live):
-            del objects[6]
-
+        if ram_state[122] < 16:
+            objects[11].visible = False
+            if ram_state[122] == 0:
+                objects[10].visible = False
+                if ram_state[121] < 16:
+                    objects[9].visible = False
+                    if ram_state[121] == 0:
+                        objects[8].visible = False
+                        if ram_state[120] < 16:
+                            objects[7].visible = False    
+    
 
 def _detect_objects_mspacman_raw(info, ram_state):
-    pass
+    """
+    returns unprocessed list with
+    player_x, player_y, ghosts_position_x, enemy_position_y, fruit_x, fruit_y
+    """
+
+    object_info = {}
+    object_info["player_x"] = ram_state[10]
+    object_info["player_y"] = ram_state[16]
+    object_info["enemy_amount"] = ram_state[19]
+    object_info["ghosts_position_x"] = {"orange": ram_state[6],
+                                    "cyan": ram_state[7],
+                                    "pink": ram_state[8],
+                                    "red": ram_state[9]
+                                    }
+    object_info["enemy_position_y"] = {"orange": ram_state[12],
+                                   "cyan": ram_state[13],
+                                   "pink": ram_state[14],
+                                   "red": ram_state[15]
+                                   }
+    object_info["fruit_x"] = ram_state[11]
+    object_info["fruit_y"] = ram_state[17]
+    info["object-list"] = object_info
+
+def get_fruit_rgb(ram_state):
+
+    """
+    every value of 112 and above will result in a glitched fruit
+    """
+
+    if ram_state < 16:
+        return 184, 50, 50   # "cherry"
+    elif ram_state < 32:
+        return 184, 50, 50   # "strawberry"
+    elif ram_state < 48:
+        return 198, 108, 58  # "orange"
+    elif ram_state < 64:
+        return 162, 162, 42  # "pretzel"
+    elif ram_state < 80:
+        return 184, 50, 50   # "apple"
+    elif ram_state < 96:
+        return 110, 156, 66  # "pear"
+    elif ram_state < 112:
+        return 198, 108, 58  # "banana"

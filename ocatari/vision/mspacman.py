@@ -79,4 +79,4 @@ def _detect_objects_mspacman(objects, obs, hud=False):
 
         life = find_objects(obs, objects_colors["live"], min_distance=1)
         for l1 in life:
-            objects.append(Live(*l1))
+            objects.append(Life(*l1))

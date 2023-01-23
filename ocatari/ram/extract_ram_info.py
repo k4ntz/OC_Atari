@@ -71,7 +71,7 @@ def detect_objects_raw(info, ram_state, game_name):
     elif game_name.lower() == "demonattack":
         _detect_objects_demon_attack_raw(info, ram_state)
     elif game_name.lower() == "mspacman":
-        _detect_objects_demon_attack_raw(info, ram_state)
+        _detect_objects_mspacman_raw(info, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
         exit(1)
@@ -101,6 +101,8 @@ def detect_objects_revised(info, ram_state, game_name, hud):
         _detect_objects_bowling_revised(info, ram_state, hud)
     elif game_name.lower() == "demonattack":
         _detect_objects_demon_attack_revised(info, ram_state, hud)
+    elif game_name.lower() == "mspacman":
+        _detect_objects_mspacman_revised(info, ram_state)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
