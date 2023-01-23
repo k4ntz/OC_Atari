@@ -26,9 +26,9 @@ class Fruit(GameObject):
     def __init__(self, *args, **kwargs):
         super(Fruit, self).__init__()
         self.visible = True
-        self._xy = 0, 0
-        self.wh = 10, 10
-        self.rgb = 110, 156, 66
+        self._xy = 125, 173
+        self.wh = 9, 10
+        self.rgb = 184, 50, 50
         self.hud = False
 
 
@@ -73,11 +73,12 @@ def _init_objects_mspacman_ram(hud=False):
             life.xy = x, 173
             objects.append(life)
             x += 15
+        objects.append(Fruit())
 
     return objects
 
 
-def _detect_objects_mspacman_revised(objects, ram_state, hud=False):
+def _detect_objects_mspacman_revised(objects, ram_state, hud=True):
     player, g1, g2, g3, g4, fruit = objects[:6]
 
     player.xy = ram_state[10] - 13, ram_state[16] + 1
@@ -108,6 +109,8 @@ def _detect_objects_mspacman_revised(objects, ram_state, hud=False):
                         objects[8].visible = False
                         if ram_state[120] < 16:
                             objects[7].visible = False
+        objects[15].rgb = get_fruit_rgb(ram_state[123])
+        
 
 
 def _detect_objects_mspacman_raw(info, ram_state):
