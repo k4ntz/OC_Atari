@@ -1,5 +1,4 @@
 from .game_objects import GameObject
-from ._helper_methods import bitfield_to_number, number_to_bitfield
 
 
 class Player(GameObject):
@@ -31,6 +30,7 @@ class Fruit(GameObject):
         self.wh = 10, 10
         self.rgb = 110, 156, 66
         self.hud = False
+
 
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
@@ -91,7 +91,7 @@ def _detect_objects_mspacman_revised(objects, ram_state, hud=False):
     g4.xy = ram_state[9] - 13, ram_state[15] + 1
     # no rgb adjustment, since this colour is the default one
 
-    if ram_state[11] > 0 and ram_state[17] > 0: 
+    if ram_state[11] > 0 and ram_state[17] > 0:
         fruit.xy = ram_state[11] - 13, ram_state[17] + 1
         fruit.rgb = get_fruit_rgb(ram_state[123])
     else:
@@ -107,8 +107,8 @@ def _detect_objects_mspacman_revised(objects, ram_state, hud=False):
                     if ram_state[121] == 0:
                         objects[8].visible = False
                         if ram_state[120] < 16:
-                            objects[7].visible = False    
-    
+                            objects[7].visible = False
+
 
 def _detect_objects_mspacman_raw(info, ram_state):
     """
@@ -121,18 +121,19 @@ def _detect_objects_mspacman_raw(info, ram_state):
     object_info["player_y"] = ram_state[16]
     object_info["enemy_amount"] = ram_state[19]
     object_info["ghosts_position_x"] = {"orange": ram_state[6],
-                                    "cyan": ram_state[7],
-                                    "pink": ram_state[8],
-                                    "red": ram_state[9]
-                                    }
+                                        "cyan": ram_state[7],
+                                        "pink": ram_state[8],
+                                        "red": ram_state[9]
+                                        }
     object_info["enemy_position_y"] = {"orange": ram_state[12],
-                                   "cyan": ram_state[13],
-                                   "pink": ram_state[14],
-                                   "red": ram_state[15]
-                                   }
+                                       "cyan": ram_state[13],
+                                       "pink": ram_state[14],
+                                       "red": ram_state[15]
+                                       }
     object_info["fruit_x"] = ram_state[11]
     object_info["fruit_y"] = ram_state[17]
     info["object-list"] = object_info
+
 
 def get_fruit_rgb(ram_state):
 
