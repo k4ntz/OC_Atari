@@ -6,8 +6,8 @@ from matplotlib import pyplot as plt
 from tqdm import tqdm
 
 """
-this skript can be used to find score like objects in RAM
-given bb should countain the score like object
+This script can be used to find score like objects in RAM
+given bb should contain the score like object
 """
 
 

@@ -16,7 +16,7 @@ DEVICE = "cpu"
 
 
 AVAILABLE_GAMES = ["Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
-                   "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack"]
+                   "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack", "Bowling"]
 
 
 class OCAtari:
