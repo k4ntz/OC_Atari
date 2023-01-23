@@ -46,7 +46,6 @@ def _detect_objects_mspacman(objects, obs, hud=False):
     for bb in player:
         objects.append(Player(*bb))
 
-
     for i in objects_colors["ghosts"]:
         ghosts = find_objects(obs, objects_colors["ghosts"][i], min_distance=1)
 
