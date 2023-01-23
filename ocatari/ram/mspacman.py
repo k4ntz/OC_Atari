@@ -109,6 +109,14 @@ def _detect_objects_mspacman_revised(objects, ram_state, hud=True):
                         objects[8].visible = False
                         if ram_state[120] < 16:
                             objects[7].visible = False
+
+        if ram_state[123] <= 2:
+            objects[14].visible = False
+            if ram_state[123] <= 1:
+                objects[13].visible = False
+                if ram_state[123] == 0:
+                    objects[12].visible = False
+
         objects[15].rgb = get_fruit_rgb(ram_state[123])
 
 
