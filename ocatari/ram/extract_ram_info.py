@@ -20,8 +20,8 @@ def init_objects(game_name, hud):
     """
     if game_name.lower() == "boxing":
         return _init_objects_boxing_ram(hud)
-    # elif game_name.lower() == "breakout":
-    #     _detect_objects_breakout(objects, ram_state)
+    elif game_name.lower() == "breakout":
+        return _init_objects_breakout_ram(hud)
     # elif game_name.lower() == "freeway":
     #     _detect_objects_freeway(objects, ram_state)
     elif game_name.lower() == "pong":
