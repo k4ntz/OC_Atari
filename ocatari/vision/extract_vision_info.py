@@ -11,6 +11,7 @@ from .demonAttack import _detect_objects_demon_attack
 # from .bowling import _detect_objects_bowling
 from .breakout import _detect_objects_breakout
 from .space_invaders import _detect_objects_space_invaders
+from .asterix import _detect_objects_asterix
 
 
 def detect_objects_vision(objects, obs, game_name, hud=False):
@@ -32,6 +33,8 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_demon_attack(objects, obs, hud)
     elif game_name.lower() == "breakout":
         return _detect_objects_breakout(objects, obs, hud)
+    elif game_name.lower() == "asterix":
+        return _detect_objects_asterix(objects, obs, hud)
     else:
         print(colored("Uncovered game in vision mode", "red"))
         exit(1)
