@@ -17,6 +17,7 @@ from .mspacman import _detect_objects_mspacman_raw, \
                       _detect_objects_mspacman_revised, \
                       _init_objects_mspacman_ram
 
+
 def init_objects(game_name, hud):
     """
     Initialize the object list for the correct game

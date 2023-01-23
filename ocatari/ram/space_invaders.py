@@ -1,7 +1,6 @@
 from .game_objects import GameObject
 
 
-
 def _init_objects_space_invaders_ram(hud=False):
     """
     (Re)Initialize the objects
@@ -59,7 +58,6 @@ class Lives(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 162, 134, 56
-
 
 
 def _detect_objects_space_invaders_raw(info, ram_state):
