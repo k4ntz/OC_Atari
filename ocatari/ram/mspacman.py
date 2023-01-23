@@ -6,7 +6,7 @@ class Player(GameObject):
     def __init__(self):
         super(Player, self).__init__()
         self.visible = True
-        self._xy = 0, 0
+        self._xy = 78, 103
         self.wh = 9, 10
         self.rgb = 210, 164, 74
         self.hud = False
@@ -15,17 +15,26 @@ class Player(GameObject):
 class Ghost(GameObject):
     def __init__(self, *args, **kwargs):
         super(Ghost, self).__init__()
-        self.visible = True
-        self._xy = 0, 0
-        self.wh = 9, 10
         super().__init__(*args, **kwargs)
         if GameObject == "orange":
+            self.visible = False
+            self._xy = 79, 86
+            self.wh = 9, 10
             self.rgb = 180, 122, 48
         elif GameObject == "cyan":
+            self.visible = False
+            self._xy = 79, 86
+            self.wh = 9, 10
             self.rgb = 84, 184, 153
         elif GameObject == "pink":
+            self.visible = True
+            self._xy = 79, 86
+            self.wh = 9, 10
             self.rgb = 198, 89, 179
         elif GameObject == "red":
+            self.visible = True
+            self._xy = 79, 57
+            self.wh = 9, 10
             self.rgb = 200, 72, 72
         self.hud = False
 
@@ -33,6 +42,7 @@ class Ghost(GameObject):
 class Fruit(GameObject):
     def __init__(self, *args, **kwargs):
         super(Fruit, self).__init__()
+        self.visible = False
         self._xy = 0, 0
         self.wh = 10, 10
         if GameObject == "cherry/strawberry/Apple":
@@ -48,7 +58,8 @@ class Fruit(GameObject):
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super(Score, self).__init__()
-        self._xy = 0, 0
+        self.visible = True
+        self._xy = 97, 189
         self.wh = 10, 10
         self.rgb = 195, 144, 61
         self.hud = True
@@ -57,7 +68,8 @@ class Score(GameObject):
 class Life(GameObject):
     def __init__(self, *args, **kwargs):
         super(Life, self).__init__()
-        self._xy = 0, 0
+        self.visible = True
+        self._xy = 15, 178
         self.wh = 10, 10
         self.rgb = 187, 187, 53
         self.hud = True
@@ -71,12 +83,12 @@ def _init_objects_mspacman_ram(hud=False):
     if hud:
         objects.append(Score())
 
-        basex = 17
+        x = 15
         for i in range(3):
             life = Life()
-            life.xy = basex, 188
+            life.xy = x, 188
             objects.append(life)
-            basex += 8
+            x += 15
 
     return objects
 
