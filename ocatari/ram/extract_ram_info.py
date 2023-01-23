@@ -1,7 +1,7 @@
 from termcolor import colored
 from .boxing import _detect_objects_boxing_raw, _detect_objects_boxing_revised, _init_objects_boxing_ram
 from .bowling import _detect_objects_bowling_raw, _detect_objects_bowling_revised
-from .breakout import _detect_objects_breakout_raw, _detect_objects_breakout_revised
+from .breakout import _detect_objects_breakout_raw, _detect_objects_breakout_revised, _init_objects_breakout_ram
 from .freeway import _detect_objects_freeway_raw, _detect_objects_freeway_revised
 from .pong import _detect_objects_pong_raw, _detect_objects_pong_revised, _init_objects_pong_ram
 from .seaquest import _detect_objects_seaquest_raw, _detect_objects_seaquest_revised
@@ -20,8 +20,8 @@ def init_objects(game_name, hud):
     """
     if game_name.lower() == "boxing":
         return _init_objects_boxing_ram(hud)
-    # elif game_name.lower() == "breakout":
-    #     _detect_objects_breakout(objects, ram_state)
+    elif game_name.lower() == "breakout":
+        return _init_objects_breakout_ram(hud)
     # elif game_name.lower() == "freeway":
     #     _detect_objects_freeway(objects, ram_state)
     elif game_name.lower() == "pong":
