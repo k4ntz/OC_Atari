@@ -19,27 +19,13 @@ class Player(GameObject):
 class Ghost(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if GameObject == "orange":
-            self.rgb = 180, 122, 48
-        elif GameObject == "cyan":
-            self.rgb = 84, 184, 153
-        elif GameObject == "pink":
-            self.rgb = 198, 89, 179
-        elif GameObject == "red":
-            self.rgb = 200, 72, 72
+        self.rgb = 180, 122, 48
 
 
 class Fruit(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if GameObject == "cherry/strawberry/Apple":
-            self.rgb = 184, 50, 50
-        elif GameObject == "pretzel":
-            self.rgb = 162, 162, 42
-        elif GameObject == "orange/banana":
-            self.rgb = 198, 108, 58
-        elif GameObject == "pear":
-            self.rgb = 110, 156, 66
+        self.rgb = 184, 50, 50
 
 
 class Score(GameObject):
@@ -58,25 +44,31 @@ def _detect_objects_mspacman(objects, obs, hud=False):
     objects.clear()
 
     player = find_objects(obs, objects_colors["player"], min_distance=1)
-    if len(player) >= 1:
-        for p in player:
-            objects.append(Player(*player))
+    for bb in player:
+        objects.append(Player(*bb))
+
 
     for i in objects_colors["ghosts"]:
         ghosts = find_objects(obs, objects_colors["ghosts"][i], min_distance=1)
-        # index = 0
-        objects.append(Ghost(ghosts))
+        
+        for bb in ghosts:
+            ghs = Ghost(*bb)
+            ghs.rgb = objects_colors["ghosts"][i]
+            objects.append(ghs)
 
     for i in objects_colors["fruit"]:
         fruit = find_objects(obs, objects_colors["fruit"][i], min_distance=1)
-        for f in fruit:
-            objects.append(Fruit(f))
+        
+        for bb in fruit:
+            fru = Fruit(*bb)
+            fru.rgb = objects_colors["fruit"][i]
+            objects.append(fru)
 
     if hud:
         score = find_objects(obs, objects_colors["score"], min_distance=1)
         for s in score:
             objects.append(Score(*s))
 
-        life = find_objects(obs, objects_colors["live"], min_distance=1)
+        life = find_objects(obs, objects_colors["life"], min_distance=1)
         for l1 in life:
             objects.append(Life(*l1))
