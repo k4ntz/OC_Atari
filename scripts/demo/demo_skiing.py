@@ -3,7 +3,7 @@
 import sys
 import random
 import matplotlib.pyplot as plt
-sys.path.insert(0, '../../ocatari') # noqa
+sys.path.insert(0, '../../') # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.skiing import objects_colors
