@@ -101,9 +101,9 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
     elif game_name.lower() == "seaquest":
         _detect_objects_seaquest_revised(objects, ram_state, hud)
     elif game_name.lower() == "spaceinvaders":
-        _detect_objects_space_invaders_revised(objects, ram_state, hud)
+        _detect_objects_space_invaders_revised(objects, ram_state)
     elif game_name.lower() == "tennis":
-        _detect_objects_tennis_revised(objects, ram_state, hud)
+        _detect_objects_tennis_revised(objects, ram_state)
     elif game_name.lower() == "bowling":
         _detect_objects_bowling_revised(objects, ram_state, hud)
     elif game_name.lower() == "demonattack":
