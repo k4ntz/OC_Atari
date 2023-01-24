@@ -6,15 +6,15 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, '../../ocatari') # noqa
 from core import OCAtari
 from vision.utils import mark_bb, make_darker
-from vision.tennis import objects_colors
+from vision.space_invaders import objects_colors
 # from ocatari.vision.pong import objects_colors
 from utils import load_agent, parser
 
 game_name = "Pong"
-game_name = "Boxing"
+game_name = "SpaceInvaders"
 # game_name = "Tennis"
 MODE = "vision"
-MODE = "revised"
+# MODE = "revised"
 env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
@@ -32,13 +32,15 @@ for i in range(10000):
         action = random.randint(0, 5)
     obs, reward, terminated, truncated, info = env.step(action)
     if info.get('frame_number') > 0 and i % 100 == 0:
-        for obj_name, oinfo in info["objects"].items():
-            opos = oinfo[:4]
-            ocol = oinfo[4:]
-            if MODE == "vision":
-                ocol = objects_colors[obj_name]
-            sur_col = make_darker(ocol)
-            mark_bb(obs, opos, color=sur_col)
+        import ipdb; ipdb.set_trace()
+        for obj_name, olist in env.objects.items():
+            for oinfo in olist:
+                opos = oinfo[:4]
+                ocol = oinfo[4:]
+                if MODE == "vision":
+                    ocol = objects_colors[obj_name]
+                sur_col = make_darker(ocol)
+                mark_bb(obs, opos, color=sur_col)
             # mark_point(obs, *opos[:2], color=(255, 255, 0))
         plt.imshow(obs)
         plt.show()

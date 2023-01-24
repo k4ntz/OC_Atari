@@ -1,34 +1,77 @@
-def _augment_info_space_invaders_raw(info, ram_state):
-    info["aliens_y"] = ram_state[16] % 32  # taking only the first 5 bits on the right
-    info["number_enemies"] = ram_state[17]  # number of alive aliens and somehow the speed of aliens(less = quicker)
-    info["enemies_alive"] = ram_state[18:23]  # are set bits (1's)
-    info["visibility_players_walls"] = ram_state[24]
-    info["aliens_x"] = ram_state[26]
-    info["walls_x"] = ram_state[27]  # wall_left is reference. but they are constant
-    info["player_green_x"] = ram_state[28]  # begins with 35. (0 < player_x < 255)
-    info["player_yellow_x"] = ram_state[29]  # begins with 117. (0 < player_x < 255)
-    info["satellite_dish_x"] = ram_state[30]
-    info["graphics"] = ram_state[42]  # graphics of players being destroyed and visibility of score
-    info["walls"] = ram_state[43:69]  # the 3 walls
-    info["objects_colours"] = ram_state[71]  # colours
-    info["symbols_changing_enemies"] = ram_state[72]  # when destroyed
-    info["lives"] = ram_state[73]  # you have 3 lives from beginning
-    info["temporal_reference"] = ram_state[74]  # works as temporal reference for the game
-    info["bullet_1_enemy_y"] = ram_state[81]
-    info["bullet_2_enemy_y"] = ram_state[82]
-    info["bullet_1_enemy_x"] = ram_state[83]
-    info["bullet_2_enemy_x"] = ram_state[84]
-    info["bullet_1_player_green_y"] = ram_state[85]
-    info["bullet_2_player_green_y"] = ram_state[86]
-    info["bullet_player_green_x"] = ram_state[87]
-    info["bullet_player_yellow_x"] = ram_state[88]
-    info["score_player_green"] = {ram_state[102], ram_state[104]}  # score is saved in hexadecimal
-    info["score_player_yellow"] = {ram_state[103], ram_state[105]}  # score is saved in hexadecimal
+from .game_objects import GameObject
+
+
+def _init_objects_space_invaders_ram(hud=False):
+    """
+    (Re)Initialize the objects
+    """
+    objects = [Player(), Alien(), Satellite(), Shield(), Bullet(), Score(), Lives()]
+    if hud:
+        objects.append(Score(), Lives)
+    return objects
+
+
+class Player(GameObject):
+    def __init__(self, x, y, w, h, num, *args, **kwargs):
+        super().__init__(x, y, w, h, *args, **kwargs)
+        if num == 1:
+            self.rgb = 92, 186, 92
+        else:
+            self.rgb = 162, 134, 56  # yellow
+        self.player_num = num
+
+
+class Alien(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 134, 134, 29
+
+
+class Satellite(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 151, 25, 122
+
+
+class Shield(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 181, 83, 40
+
+
+class Bullet(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 142, 142, 142
+
+
+class Score(GameObject):
+    def __init__(self, x, y, w, h, num, *args, **kwargs):
+        super().__init__(x, y, w, h, *args, **kwargs)
+        if num == 1:
+            self.rgb = 92, 186, 92
+        else:
+            self.rgb = 162, 134, 56
+
+
+class Lives(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 162, 134, 56
+
+
+def _detect_objects_space_invaders_raw(info, ram_state):
+    info["aliens"] = ram_state[16:24]
+    info["x_positions"] = ram_state[26:31]
+    info["walls"] = ram_state[43:69]
+    info["lives"] = ram_state[73]
+    info["bullet_1_enemy_y"] = ram_state[81:89]
+    info["score"] = ram_state[102:106]
 
     print(ram_state)
 
 
-def _augment_info_space_invaders_revised(info, ram_state):
+def _detect_objects_space_invaders_revised(info, ram_state):
     info["aliens_y"] = ram_state[16] % 32  # taking only the first 5 bits on the right
     # ram_state[16] has also y of frame of players with walls together
 

@@ -8,6 +8,7 @@ from ocatari.vision.utils import find_objects, plot_bounding_boxes # noqa
 import queue
 import os
 import pathlib
+import gym
 
 """
 trying to automate the creation of vision
@@ -81,13 +82,13 @@ def generate_code(game_name):
     code = "from .utils import find_objects\n\n\n"
     code += "objects_colors = " + str(colors) +"\n\n"
     code += "def _detect_objects_" + str(game_name) + "(info, obs):\n"
-    code += "   objects = {}\n"
+    code += "    objects = {}\n"
     for obj, col in colors.items():
-        code += "   " + str(obj) + " = find_objects(obs, objects_colors['"+ str(obj) + "'], min_distance=1)\n"
+        code += "    " + str(obj) + " = find_objects(obs, objects_colors['"+ str(obj) + "'], min_distance=1)\n"
         code += "    objects['" + str(obj) + "'] = " + str(obj) + "\n\n"
 
-    code += "   info['objects_colors'] = objects_colors\n"
-    code += "   info['objects'] = objects\n\n\n"
+    code += "    info['objects_colors'] = objects_colors\n"
+    code += "    info['objects'] = objects\n\n\n"
 
     return code
 
@@ -102,9 +103,12 @@ def write_code_to_file(code, game_name, overwrite = False):
 
 
 if __name__ == "__main__":
-    GAME_NAME = "Skiingabc"
-    env = core.OCAtari("Skiing", mode="vision", render_mode='rgb_array')
+    GAME_NAME = "DemonAttack"
+    env = gym.make(GAME_NAME, render_mode='rgb_array')
     rgb_array, info = env.reset()
+    rgb_array = env.render()
+    for i in range(20):
+        env.step(0)
     rgb_array = env.render()
 
     try:

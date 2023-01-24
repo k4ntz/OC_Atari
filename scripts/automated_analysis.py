@@ -62,7 +62,8 @@ def generate_dataset(env, object_list, drop_constants, frames=400, skip_frames=3
             rand = random.randint(40, 100)
             env._env.unwrapped.ale.setRAM(manipulated_ram, rand)
 
-        obs, reward, terminated, truncated, info = env.step(env._env.action_space.sample())
+        # obs, reward, terminated, truncated, info = env.step(env._env.action_space.sample())
+        obs, reward, terminated, truncated, info = env.step(5)
 
         if info.get('frame_number') > 10 and i % skip_frames == 0:
             SKIP = False
@@ -249,6 +250,13 @@ def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum_
         prevC = c
 
     print(constant_str)
+    constant_str = "\n["
+    for c, v in constants.items():
+        constant_str = constant_str + str(c) +", "
+
+    constant_str = constant_str[:-2] +"]"
+    print(constant_str)
+
 
     # ---------print out candidates---------
     best_candidates = {}
@@ -294,7 +302,7 @@ if __name__ == "__main__":
     obs, reward, terminated, truncated, info = env.step(0)
     env.reset()
 
-    object_list = info["objects"].keys()  # "ball_shadow"
+    object_list = ["player", "enemy0", "enemy1", "enemy2"]  # "ball_shadow"
     print("objects that will be analyzed: " + str(object_list))
 
     do_analysis(env, object_list, drop_constants=DROP_CONSTANTS, dump_path=DUMP_PATH,
