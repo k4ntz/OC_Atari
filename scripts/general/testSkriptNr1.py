@@ -7,7 +7,7 @@ created by timo to print out the ram changes and general testing
 """
 
 
-env = gym.make("MsPacman", render_mode="rgb_array")
+env = gym.make("MsPacman", render_mode="human")
 observation, info = env.reset(seed=42)
 prevRam = None
 # already_figured_out = [25, 107, 104, 105, 106, 14]  # all the ram positions you already know
