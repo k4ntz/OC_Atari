@@ -30,6 +30,7 @@ for i in range(1000):
     obs, reward, terminated, truncated, info = env.step(random.randint(0, 1))
     env.set_ram(57, 1)
 
+    env.set_ram(62, 1)
     ram = env._env.unwrapped.ale.getRAM()
     if prevRam is not None:
         for i in range(len(ram)):
