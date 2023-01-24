@@ -1,26 +1,133 @@
 from .utils import find_objects
+from .game_objects import GameObject
 
-objects_colors = {"enemy": [92, 186, 92], "player": [187, 187, 53],
-                  "diver": [66, 72, 200], "background": [0, 28, 136],
-                  "player_score": [210, 210, 64], "oxygen_bar": [214, 214, 214], "lives": [210, 210, 64]}
+objects_colors = {"player": [187, 187, 53], "diver": [66, 72, 200], "background_water": [0, 28, 136],
+                  "player_score": [210, 210, 64], "oxygen_bar": [214, 214, 214], "lives": [210, 210, 64],
+                  "logo": [66, 72, 200], "player_missile": [187, 187, 53], "oxygen_bar_depleted": [163, 57, 21],
+                  "oxygen_logo": [0, 0, 0], "collected_diver": [24, 26, 167]}
 
-fixed_objects_pos = {
+enemy_colors = {"green": [92, 186, 92], "orange": [198, 108, 58], "yellow": [160, 171, 79], "lightgreen": [72, 160, 72],
+                "submarine": [170, 170, 170], "pink": [198, 89, 179]}
 
-}
+
+class Player(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 187, 187, 53
 
 
-# TODO: fix
-def _detect_objects_seaquest(info, obs):
-    objects = {}
-    enemy = [bb for bb in find_objects(obs, objects_colors["enemy"], min_distance=None)
-             if 5 < bb[1] < 189 and bb[2] > 10 and bb[3] < 28]
-    if enemy:
-        objects["enemy"] = enemy[0]
-    player = [bb for bb in find_objects(obs, objects_colors["player"], min_distance=None)
-              if 5 < bb[1] < 189 and bb[2] > 10 and bb[3] < 28]
-    if player:
-        objects["player"] = player[0]
-    diver = find_objects(obs, objects_colors["diver"])
-    if diver:
-        objects["diver"] = diver[0]
-    info["objects"] = objects
+class Diver(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 66, 72, 200
+
+
+class Enemy(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 92, 186, 92
+
+
+class PlayerMissile(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 187, 187, 53
+
+
+class OxygenBar(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 214, 214, 214
+
+
+class OxygenBarDepleted(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 163, 57, 21
+
+
+class OxygenBarLogo(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 0, 0, 0
+
+
+class Score(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 210, 210, 64
+
+
+class Lives(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 210, 210, 64
+
+
+class Logo(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 66, 72, 200
+
+
+class CollectedDiver(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 24, 26, 167
+
+
+def _detect_objects_seaquest(objects, obs, hud=False):
+    objects.clear()
+
+    player = find_objects(obs, objects_colors["player"], min_distance=1)
+    for p in player:
+        if p[1] > 30 and p[3] > 6:
+            objects.append(Player(*p))
+
+        if p[1] > 30 and p[3] == 1 and p[2] == 8:
+            objects.append(PlayerMissile(*p))
+
+    divers = find_objects(obs, objects_colors["diver"], min_distance=1)
+    for d in divers:
+        if d[1] < 190 and d[2] > 2:
+            objects.append(Diver(*d))
+
+    for enemyColor in enemy_colors.values():
+        enemy = find_objects(obs, enemyColor, min_distance=1)
+        for en in enemy:
+            enemy_inst = Enemy(*en)
+            enemy_inst.rgb = enemyColor
+            objects.append(enemy_inst)
+
+    if hud:
+        score_lives = find_objects(obs, objects_colors["player_score"], min_distance=1)
+        for s in score_lives:
+            if s[1] < 22:
+                objects.append(Score(*s))
+
+            if 50 > s[1] > 21:
+                objects.append(Lives(*s))
+
+        oxygen_bar = find_objects(obs, objects_colors["oxygen_bar"], min_distance=1)
+        for ox in oxygen_bar:
+            objects.append(OxygenBar(*ox))
+
+        oxygen_bar_depl = find_objects(obs, objects_colors["oxygen_bar_depleted"], min_distance=1)
+        for ox_depl in oxygen_bar_depl:
+            objects.append(OxygenBarDepleted(*ox_depl))
+
+        oxygen_logo = find_objects(obs, objects_colors["oxygen_logo"], min_distance=1)
+        for ox_logo in oxygen_logo:
+            if ox_logo[0] > 0:
+                objects.append(OxygenBarLogo(*ox_logo))
+
+        logo = find_objects(obs, objects_colors["logo"], min_distance=1)
+        for log in logo:
+            if log[1] > 190:
+                objects.append(Logo(*log))
+
+        coll_diver = find_objects(obs, objects_colors["collected_diver"], min_distance=10)
+        for div in coll_diver:
+            objects.append(CollectedDiver(*div))
+
+    print(objects)
