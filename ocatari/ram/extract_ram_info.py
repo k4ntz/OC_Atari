@@ -4,7 +4,7 @@ from .bowling import _detect_objects_bowling_raw, _detect_objects_bowling_revise
 from .breakout import _detect_objects_breakout_raw, _detect_objects_breakout_revised, _init_objects_breakout_ram
 from .freeway import _detect_objects_freeway_raw, _detect_objects_freeway_revised
 from .pong import _detect_objects_pong_raw, _detect_objects_pong_revised, _init_objects_pong_ram
-from .seaquest import _detect_objects_seaquest_raw, _detect_objects_seaquest_revised
+from .seaquest import _detect_objects_seaquest_raw, _detect_objects_seaquest_revised, _init_objects_seaquest_ram
 from .skiing import _detect_objects_skiing_raw, _detect_objects_skiing_revised, _init_objects_skiing_ram
 from .space_invaders import _detect_objects_space_invaders_raw, \
                             _detect_objects_space_invaders_revised, \
@@ -32,8 +32,8 @@ def init_objects(game_name, hud):
         return _init_objects_pong_ram(hud)
     elif game_name.lower() == "skiing":
         return _init_objects_skiing_ram(hud)
-    # elif game_name.lower() == "seaquest":
-    #     _detect_objects_seaquest(objects, ram_state)
+    elif game_name.lower() == "seaquest":
+        return _init_objects_seaquest_ram(hud)
     elif game_name.lower() == "spaceinvaders":
         return _init_objects_space_invaders_ram(hud)
     # elif game_name.lower() == "tennis":
