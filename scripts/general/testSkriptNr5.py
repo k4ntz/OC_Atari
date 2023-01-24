@@ -2,14 +2,14 @@ import time
 import random
 import ipdb
 import sys
-sys.path.insert(0, '../../ocatari') # noqa
-from core import OCAtari
+sys.path.insert(0, '../../') # noqa
+from ocatari.core import OCAtari
 
 """
 Test raw/revised mode with a human render_mode and ipdb debugger
 """
 
-env = OCAtari("Pong", mode="raw", render_mode="human")
+env = OCAtari("Seaquest", mode="raw", render_mode="human")
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
@@ -24,6 +24,7 @@ for i in range(1000):
     # truncated = True if episodes truncates due to a time limit or a reason that is not defined of the task
     obs, reward, terminated, truncated, info = env.step(random.randint(0, 1))
 
+    env.set_ram(62, 1)
     ram = env._env.unwrapped.ale.getRAM()
     if prevRam is not None:
         for i in range(len(ram)):
