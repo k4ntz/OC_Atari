@@ -4,19 +4,20 @@ import sys
 import random
 import matplotlib.pyplot as plt
 sys.path.insert(0, '../../') # noqa
-
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.ram.demonAttack import ProjectileHostile
 
-game_name = "Bowling"
+game_name = "Breakout"
+MODE = "vision"
 MODE = "revised"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
 for i in range(1000):
-    obs, reward, terminated, truncated, info = env.step(random.randint(0, 4))
+    obs, reward, terminated, truncated, info = env.step(random.randint(0, 2))  # env.step(env.action_space.sample())
+    env.set_ram(76, 2)
     if i % 20 == 0:
         # obse2 = deepcopy(obse)
         print(env.objects)
