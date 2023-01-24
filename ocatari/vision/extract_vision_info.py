@@ -31,6 +31,8 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_demon_attack(objects, obs, hud)
     elif game_name.lower() == "breakout":
         return _detect_objects_breakout(objects, obs, hud)
+    elif game_name.lower() == "mspacman":
+        return _detect_objects_mspacman(objects, obs, hud)
     else:
         print(colored("Uncovered game in vision mode", "red"))
         exit(1)
