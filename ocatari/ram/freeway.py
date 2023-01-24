@@ -1,7 +1,7 @@
 from ._helper_methods import _convert_number
 
 
-def _augment_info_freeway_raw(info, ram_state):
+def _detect_objects_freeway_raw(info, ram_state):
     info["chicken1_y"] = ram_state[14]
     info["chicken2_y"] = ram_state[15]
     info["score1"] = _convert_number(ram_state[103])
@@ -16,11 +16,11 @@ car_colors = {"car1": [167, 26, 26], "car2": [180, 231, 117], "car3": [105, 105,
               }
 
 
-def _augment_info_freeway_revised(info, ram_state):
+def _detect_objects_freeway_revised(info, ram_state):
     """
-        For all objects:
-        (x, y, w, h, r, g, b)
-        """
+    For all objects:
+    (x, y, w, h, r, g, b)
+    """
     objects = {}
 
     y = 27

@@ -1,4 +1,94 @@
 import numpy as np
+from .game_objects import GameObject
+from ._helper_methods import _convert_number
+
+"""
+RAM extraction for the game BREAKOUT. Supported modes: raw, revised.
+"""
+
+
+class Player(GameObject):
+    def __init__(self):
+        self._xy = 99, 189
+        self.wh = 16, 4
+        self.rgb = 200, 72, 72
+        self.hud = False
+        self.visible = True
+
+
+class Ball(GameObject):
+    def __init__(self):
+        self._xy = 0, 0
+        self.wh = 2, 4
+        self.rgb = 200, 72, 72
+        self.hud = False
+        self.visible = True
+
+
+class PlayerScore(GameObject):
+    def __init__(self):
+        self._xy = 36, 6
+        self.rgb = 142, 142, 142
+        self.wh = 44, 9
+        self.hud = True
+        self.visible = True
+
+    def __eq__(self, o):
+        return isinstance(o, PlayerScore) and self.xy == o.xy
+
+
+class Lives(GameObject):
+    def __init__(self):
+        self._xy = 100, 6
+        self.rgb = 142, 142, 142
+        self.wh = 12, 9
+        self.hud = True
+        self.visible = True
+
+
+class BlockRow(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.xy = 8, 87
+        self.wh = 144, 6
+        self.rgb = 66, 72, 200
+        self.hud = False
+        self.visible = True
+
+
+class PlayerNumber(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.xy = 136, 6
+        self.wh = 4, 9
+        self.rgb = 142, 142, 142
+        self.hud = True
+        self.visible = True
+
+
+blockRow_colors = {"5": [66, 72, 200], "4": [72, 160, 72],
+                   "3": [162, 162, 42], "2": [180, 122, 48],
+                   "1": [198, 108, 58], "0": [200, 72, 72]}
+
+
+def _init_objects_breakout_ram(hud=False):
+    """
+    (Re)Initialize the objects
+    """
+    objects = [Player(), Ball()]
+
+    if hud:
+        objects.extend([PlayerScore(), Lives(), PlayerNumber()])
+
+    y = 87
+    for color in blockRow_colors:
+        row = BlockRow()
+        row.rgb = (blockRow_colors.get(color))
+        row.xy = 8, y
+        objects.append(row)
+        y -= 6
+
+    return objects
 
 
 def _make_block_bitmap(ram_state):
@@ -30,12 +120,95 @@ def _make_block_bitmap(ram_state):
     return blocks_int
 
 
-def _augment_info_breakout_raw(info, ram_state):
+def _detect_objects_breakout_revised(objects, ram_state, hud=False):
+    """
+       For all objects:
+       (x, y, w, h, r, g, b)
+    """
+
+    # set default coord if object does not exist
+    player, ball = objects[0:2]
+    score, lives, player_num = objects[2:5]
+
+    player.xy = ram_state[72] - 47, 189
+    if ram_state[101] + 9 <= 210 and ram_state[101] != 0:  # else no ball
+        ball.xy = ram_state[99] - 49, ram_state[101] + 9
+        ball.visible = True
+    else:
+        ball.visible = False
+
+    del objects[5:]
+    blocks = _calculate_blocks(ram_state)
+    objects.extend(blocks)
+
+    if hud:
+        # 1 is more thin than the other numbers
+        if ram_state[57] == 1:
+            lives.xy = 104, 6
+            lives.wh = 4, 9
+        elif ram_state[57] == 0:
+            lives.xy = 100, 6
+            lives.wh = 12, 9
+
+        # 1 is more thin than the other numbers
+        if _convert_number(ram_state[77]) % 10 == 1:
+            score.wh = 40, 9
+            if _convert_number(ram_state[76] == 1):
+                score.xy = 40, 6
+                score.wh = 36, 9
+
+        elif _convert_number(ram_state[76] == 1):
+            score.xy = 40, 6
+            score.wh = 40, 9
+        else:
+            score.xy = 36, 6
+            score.wh = 44, 9
+
+
+def _calculate_blocks(ram_state):
+    """
+    Calculate the block lengths for all rows.
+    """
+    bitmap = _make_block_bitmap(ram_state)
+    blocks = []
+
+    for row in range(6):
+        start_of_new_block = True
+        row_empty = True
+        x = 0
+        width = 0
+        for column in range(18):
+            if bitmap[row, column] == 1 and start_of_new_block:
+                x = 8 + column * 8
+                start_of_new_block = False
+                row_empty = False
+                width = 0
+
+            if bitmap[row, column] == 1:
+                width += 8
+
+            if (bitmap[row, column] == 0 or column == 17) and row_empty is False:
+                block = BlockRow()
+                block.rgb = blockRow_colors.get(str(row))  # uses the blockRow color dictionary
+                block.xy = x, 57 + 6 * row
+                block.wh = width, 6
+                blocks.append(block)
+                start_of_new_block = True
+
+    return blocks
+
+
+def _detect_objects_breakout_raw(info, ram_state):
+    # player_x
+    player = [ram_state[72]]
+    # ball x and ball y
+    ball = [ram_state[99], ram_state[101]]
+    blocks = ram_state[0:36]
+    relevant_objects = player + ball + blocks.tolist()
+    info["relevant_objects"] = relevant_objects
+
+    # additional info
     info["block_bitmap"] = _make_block_bitmap(ram_state)
-    info["ball"] = ram_state[99], ram_state[101]
-    info["player"] = ram_state[72] - 47, 189
+    info["lives"] = ram_state[57]
+    info["score"] = _convert_number(ram_state[76]) * 100 + _convert_number(ram_state[77])
     print(ram_state)
-
-
-def _augment_info_breakout_revised(info, ram_state):
-    pass
