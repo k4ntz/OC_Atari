@@ -11,11 +11,10 @@ from ocatari.ram.demonAttack import ProjectileHostile
 
 
 game_name = "DemonAttack"
-MODE = "revised"
+MODE = "vision"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
-
 
 
 
