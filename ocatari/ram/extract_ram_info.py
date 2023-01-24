@@ -1,7 +1,7 @@
 from termcolor import colored
 from .boxing import _detect_objects_boxing_raw, _detect_objects_boxing_revised, _init_objects_boxing_ram
-from .bowling import _detect_objects_bowling_raw, _detect_objects_bowling_revised
-from .breakout import _detect_objects_breakout_raw, _detect_objects_breakout_revised
+# from .bowling import _detect_objects_bowling_raw, _detect_objects_bowling_revised
+# from .breakout import _detect_objects_breakout_raw, _detect_objects_breakout_revised
 from .freeway import _detect_objects_freeway_raw, _detect_objects_freeway_revised, _init_objects_freeway_ram
 from .bowling import _detect_objects_bowling_raw, _detect_objects_bowling_revised, _init_objects_bowling_ram
 from .breakout import _detect_objects_breakout_raw, _detect_objects_breakout_revised, _init_objects_breakout_ram
