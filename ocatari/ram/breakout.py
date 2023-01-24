@@ -137,7 +137,10 @@ def _detect_objects_breakout_revised(objects, ram_state, hud=False):
     else:
         ball.visible = False
 
-    del objects[5:]
+    if hud:
+        del objects[5:]
+    else:
+        del objects[2:]
     blocks = _calculate_blocks(ram_state)
     objects.extend(blocks)
 
