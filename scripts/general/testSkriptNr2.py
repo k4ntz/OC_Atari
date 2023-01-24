@@ -7,7 +7,7 @@ created by timo to set the ram and see whats changed
 """
 
 
-env = gym.make("Tennis", render_mode="human")
+env = gym.make("MsPacman", render_mode="human")
 env.metadata['render_fps'] = 60
 observation, info = env.reset(seed=42)
 observation, reward, terminated, truncated, info = env.step(0)
@@ -21,7 +21,8 @@ for _ in range(1000):
     previous_ram_at_position = ram[target_ram_position]
     new_ram_value = random.randint(0, 255)
     # print(new_ram_value)
-    print(ram)
+    # print(ram)
+    print(ram[17])
     if new_ram_value > 255 or new_ram_value < 0:
         print("ram out of bounds")
         new_ram_value = 0
