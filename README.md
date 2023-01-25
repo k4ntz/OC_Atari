@@ -6,17 +6,17 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 ## List of covered games
 
 ### Priority 1:
-- [ ]  Breakout (worked on by Chris)
+- [x]  Breakout 
 - [x]  Freeway
-- [ ]  Bowling (worked on by Chris)
-- [ ]  Ms.  Pacman (worked on by Bjarne)
+- [x]  Bowling 
+- [x]  Ms.  Pacman 
 - [x]  Pong
-- [ ]  Seaquest (worked on by Chris)
+- [x]  Seaquest
 - [x]  Skiing
 - [ ]  Space Invaders (worked on by Belal/Sebastian)
 - [ ]  Asterix
 - [ ]  Asteroids (worked on by Chris)
-- [ ]  Demon Attack (worked on by Timo)
+- [x]  Demon Attack (worked on by Timo)
 - [x]  Tennis
 - [ ]  Kangaroo (Worked on by Bjarne)
 

@@ -11,7 +11,7 @@ from core import OCAtari
 Test vision mode with rgb_array_with_bbs as render_mode
 """
 
-env = OCAtari("Pong", mode="vision", render_mode='rgb_array')
+env = OCAtari("MsPacman", mode="revised", render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []

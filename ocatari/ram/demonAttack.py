@@ -43,7 +43,7 @@ class ProjectileHostile(GameObject):
 
 
 class Score(GameObject):
-    def __init__(self):
+    def __init__(self):     # TODO
         super(Score, self).__init__()
         self.visible = True
         self._xy = 96, 7

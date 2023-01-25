@@ -5,9 +5,11 @@ from skimage.morphology import (erosion, dilation, opening, closing, white_topha
 import matplotlib.pyplot as plt
 from termcolor import colored
 
+
 # to be removed
 def bbs_extend(labels, key: str, stationary=False):
     labels['bbs'].extend([(*bb, "S" if stationary else "M", key) for bb in labels[key]])
+
 
 # to be removed
 def bb_by_color(labels, obs, color, key, closing_active=True):
@@ -109,6 +111,7 @@ def _plot_bounding_boxes_from_tuple(obs, name, tup, colors):
 def showim(im):
     plt.imshow(im)
     plt.show()
+
 
 def find_objects(image, color, closing_active=True, size=None, tol_s=10,
                  position=None, tol_p=2, min_distance=10, closing_dist=3,
