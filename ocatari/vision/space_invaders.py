@@ -49,13 +49,13 @@ class Score(GameObject):
         super().__init__(x, y, w, h, *args)
         if num == 1:
             self.rgb = 92, 186, 92
-        else:
+        else:  # if you don't play with multiple agent why to consider the yellow value?
             self.rgb = 162, 134, 56
 
 
 class Lives(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):  # could we add parameters x and y here?
+        super().__init__(*args, **kwargs)  # because they are constant
         self.rgb = 162, 134, 56
 
 
