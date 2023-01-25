@@ -2,7 +2,8 @@ from .utils import find_objects
 from .game_objects import GameObject
 
 objects_colors = {"kangaroo": [223, 183, 85], "bell": [210, 164, 74],
-                  "fruit": [214, 92, 92], "hud": [160, 171, 79], "enemy": [227,151,89]
+                  "fruit": [214, 92, 92], "hud": [160, 171, 79], "enemy": [227,151,89],
+                  "apple": [162, 98, 33]
                   }
 
 
@@ -42,6 +43,12 @@ class Life(GameObject):
         self.rgb = 160, 171, 79
 
 
+class Time(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 160, 171, 79
+
+
 def _detect_objects_kangaroo(objects, obs, hud=True):
     objects.clear()
 
@@ -66,10 +73,14 @@ def _detect_objects_kangaroo(objects, obs, hud=True):
         objects.append(en)
 
     if hud:
-        score = find_objects(obs, objects_colors["hud"], min_distance=1)
-        for s in score:
-            objects.append(Score(*s))
+        life = find_objects(obs, objects_colors["hud"], min_distance=1, minx=10, maxx= 40)
+        for bb in life:
+            objects.append(Life(*bb))
 
-        life = find_objects(obs, objects_colors["hud"], min_distance=1)
-        for l1 in life:
-            objects.append(Life(*l1))
+        time = find_objects(obs, objects_colors["hud"], min_distance=1, minx=70, maxx= 100)
+        for bb in time:
+            objects.append(Time(*bb))
+
+        score = find_objects(obs, objects_colors["hud"], min_distance=1, minx=120, maxx= 150)
+        for bb in score:
+            objects.append(Score(*bb))

@@ -51,7 +51,7 @@ class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super(Score, self).__init__()
         self.visible = True
-        self._xy = 95, 187
+        self._xy = 137, 183
         self.wh = 7, 7
         self.rgb = 160, 171, 79
         self.hud = True
@@ -61,8 +61,18 @@ class Life(GameObject):
     def __init__(self, *args, **kwargs):
         super(Life, self).__init__()
         self.visible = True
-        self._xy = 12, 171
-        self.wh = 9, 10
+        self._xy = 16, 183
+        self.wh = 3, 7
+        self.rgb = 160, 171, 79
+        self.hud = True
+
+
+class Time(GameObject):
+    def __init__(self, *args, **kwargs):
+        super(Time, self).__init__()
+        self.visible = True
+        self._xy = 92, 191
+        self.wh = 3, 5
         self.rgb = 160, 171, 79
         self.hud = True
 
@@ -74,21 +84,27 @@ def _init_objects_kangaroo_ram(hud=False):
 
     objects = [Kangaroo(), Enemy(), Enemy(), Enemy(), Fruit(), Fruit(), Fruit(), Bell()]
 
-    # if hud:
-    #     x = 95
-    #     for i in range(6):
-    #         score = Score()
-    #         score.xy = x, 187
-    #         objects.append(score)
-    #         x -= 8
+    if hud:
+        x = 92
+        for i in range(6):
+            score = Score()
+            score.xy = x, 183
+            objects.append(score)
+            x -= 8
 
-    #     x = 12
-    #     for i in range(3):
-    #         life = Life()
-    #         life.xy = x, 173
-    #         objects.append(life)
-    #         x += 15
-    #     objects.append(Fruit())
+        x = 16
+        for i in range(3):
+            life = Life()
+            life.xy = x, 183
+            objects.append(life)
+            x += 8
+
+        x = 92
+        for i in range(4):
+            time = Life()
+            time.xy = x, 191
+            objects.append(time)
+            x -= 5
 
     return objects
 
