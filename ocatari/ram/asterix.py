@@ -46,6 +46,7 @@ class Score(GameObject):
                          #      x: 95 - 102
                          #      y: 183 - 191
                          # so you have same y but not x. but end of it (102)
+                         # it's enough to define y
         # self.wh =
         self.hud = True
 

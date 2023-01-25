@@ -2,8 +2,9 @@ from .utils import find_objects
 from .game_objects import GameObject
 
 objects_colors = {'player': [187, 187, 53],
-                  'Cauldron': [184, 50, 50],
-                  'enemy': [227, 110, 110],
+                  'Cauldron': [184, 50, 50],  # another color in there 167, 26, 26
+                  # and 184, 50, 50 you could see in the enemy!
+                  'enemy': [228, 111, 111],
                   'score': [187, 187, 53],
                   'lives': [187, 187, 53],
 
