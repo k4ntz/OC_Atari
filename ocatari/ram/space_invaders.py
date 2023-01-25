@@ -1,16 +1,6 @@
 from .game_objects import GameObject
 
 
-def _init_objects_space_invaders_ram(hud=False):
-    """
-    (Re)Initialize the objects
-    """
-    objects = [Player(), Alien(), Satellite(), Shield(), Bullet(), Score(), Lives()]
-    if hud:
-        objects.append(Score(), Lives)
-    return objects
-
-
 class Player(GameObject):
     def __init__(self, x, y, w, h, num, *args, **kwargs):
         super().__init__(x, y, w, h, *args, **kwargs)
@@ -20,11 +10,17 @@ class Player(GameObject):
             self.rgb = 162, 134, 56  # yellow
         self.player_num = num
 
+        self._xy = 0, 0
+        self.hud = False
+
 
 class Alien(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 134, 134, 29
+
+        self._xy = 0, 0
+        self.hud = False
 
 
 class Satellite(GameObject):
@@ -32,17 +28,26 @@ class Satellite(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 151, 25, 122
 
+        self._xy = 0, 0
+        self.hud = False
+
 
 class Shield(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 181, 83, 40
 
+        self._xy = 0, 0
+        self.hud = False
+
 
 class Bullet(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
+
+        self._xy = 0, 0
+        self.hud = False
 
 
 class Score(GameObject):
@@ -53,11 +58,36 @@ class Score(GameObject):
         else:
             self.rgb = 162, 134, 56
 
+        # self._xy = 0, 0
+        self.hud = True
+
 
 class Lives(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 162, 134, 56
+
+        self._xy = 0, 0
+        self.hud = True
+
+
+def _init_objects_space_invaders_ram(hud=False):
+    """
+    (Re)Initialize the objects
+    """
+    objects = [Player(), Alien(), Satellite(), Shield(), Bullet(), Score(), Lives()]
+    if hud:
+        objects.append(Score())
+
+        # hier soll aehnlicher Code sein
+        # basex = 17
+        # for i in range(3):
+        #     live = Live()
+        #     live.xy = basex, 188
+        #     objects.append(live)
+        #     basex += 8
+
+    return objects
 
 
 def _detect_objects_space_invaders_raw(info, ram_state):
