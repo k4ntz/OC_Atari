@@ -43,6 +43,7 @@ MINIMAL_HEIGHT = {
 
 PREV_RAM_STATE = 0
 
+
 class Player(GameObject):
     def __init__(self):
         self._xy = 0, 0
@@ -75,6 +76,7 @@ class Flag(GameObject):
 
     def __eq__(self, o):
         return isinstance(o, Flag) and abs(self._xy[0] - o._xy[0]) < 5
+
 
 class Mogul(GameObject):
     def __init__(self, x, y, subtype=None):
@@ -188,6 +190,7 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
     # types = ram_state[70:78]
     # state = np.array([xs, ys, types]).T
     # print_state(state)
+    exit(0)
     for i in range(8):
         height = 75 - ram_state[90+i]
         type = ram_state[70+i]
@@ -236,6 +239,7 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
                 if y <= 28:
                     currobj.wh = currobj.wh[0], height+2
         offset += 1
+    # print(objects)
 
 
 def _detect_objects_skiing_raw(info, ram_state):

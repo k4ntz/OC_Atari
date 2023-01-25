@@ -15,7 +15,7 @@ from ocatari.utils import load_agent, parser
 game_name = "Skiing"
 MODE = "vision"
 MODE = "revised"
-env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
+env = OCAtari(game_name, mode=MODE, render_mode='rgb_array', hud=True)
 # env = OCAtari(game_name, mode=MODE, render_mode='human')
 observation, info = env.reset()
 prevRam = None
@@ -52,7 +52,8 @@ for i in range(40000):
         action = random.randint(0, 2)
         action = 0
     obs, reward, terminated, truncated, info = env.step(action)
-    if i > 70 and i % 1 == 0:
+    # if i > 70 and i % 1 == 0:
+    if False:
     # if i > 1350 and i % 10 == 0:
         # import ipdb; ipdb.set_trace()
         # if info["score"] < 10:
@@ -60,5 +61,6 @@ for i in range(40000):
         print(i)
     if terminated or truncated:
         observation, info = env.reset()
+        print("Reset")
     # modify and display render
 env.close()

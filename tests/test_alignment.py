@@ -14,6 +14,7 @@ from ocatari.utils import load_agent, test_parser
 from copy import deepcopy
 import numpy as np
 import os
+from tqdm import tqdm
 
 
 def get_iou(obj1, obj2):
@@ -83,7 +84,7 @@ if opts.path:
 
 
 fig, axes = plt.subplots(1, 2)
-for i in range(10000):
+for i in tqdm(range(10000)):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
@@ -91,6 +92,7 @@ for i in range(10000):
     obse, reward, terminated, truncated, info = env.step(action)
     avg_iou, d_ious, oir, oiv = difference_objects(env.objects, env.objects_v)
     if avg_iou < 0.5:
+        print(f"Detailled IOUs: {d_ious}")
         obse2 = deepcopy(obse)
         for ax, obs, objects_list, title in zip(axes, [obse, obse2],
                                                 [env.objects, env.objects_v],
