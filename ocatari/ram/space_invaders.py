@@ -9,8 +9,9 @@ class Player(GameObject):
         else:
             self.rgb = 162, 134, 56  # yellow
         self.player_num = num
-
+        # self.visible =
         self._xy = 0, 0
+        # self.wh =
         self.hud = False
 
 
@@ -18,8 +19,9 @@ class Alien(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 134, 134, 29
-
+        # self.visible =
         self._xy = 0, 0
+        # self.wh =
         self.hud = False
 
 
@@ -27,8 +29,9 @@ class Satellite(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 151, 25, 122
-
+        # self.visible =
         self._xy = 0, 0
+        # self.wh =
         self.hud = False
 
 
@@ -36,8 +39,9 @@ class Shield(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 181, 83, 40
-
+        # self.visible =
         self._xy = 0, 0
+        # self.wh =
         self.hud = False
 
 
@@ -45,8 +49,9 @@ class Bullet(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
-
+        # self.visible =
         self._xy = 0, 0
+        # self.wh =
         self.hud = False
 
 
@@ -57,8 +62,9 @@ class Score(GameObject):
             self.rgb = 92, 186, 92
         else:
             self.rgb = 162, 134, 56
-
+        # self.visible =
         # self._xy = 0, 0
+        # self.wh =
         self.hud = True
 
 
@@ -66,8 +72,9 @@ class Lives(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 162, 134, 56
-
+        # self.visible =
         self._xy = 0, 0
+        # self.wh =
         self.hud = True
 
 
