@@ -30,8 +30,8 @@ class Enemy(GameObject):
 
 
 class Score(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, x, y, w, h, num, *args, **kwargs):
+        super().__init__(x, y, w, h, *args, **kwargs)
         self.rgb = 187, 187, 53  # same color as player
 
 
