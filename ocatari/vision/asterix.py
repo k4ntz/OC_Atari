@@ -5,8 +5,7 @@ objects_colors = {'player': [187, 187, 53],
                   'Cauldron': [184, 50, 50],
                   'enemy': [227, 110, 110],
                   'score': [187, 187, 53],
-                  'lives_1': [187, 187, 53],
-                  'lives_2': [187, 187, 53],
+                  'lives': [187, 187, 53],
 
                   }  # they still not all objects covered
 
