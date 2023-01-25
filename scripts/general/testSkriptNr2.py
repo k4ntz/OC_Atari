@@ -17,9 +17,9 @@ for _ in range(1000):
 
     # -------------------manipulate ram----------------------------------
     ram = env.unwrapped.ale.getRAM()
-    target_ram_position = 71
+    target_ram_position = 15
     previous_ram_at_position = ram[target_ram_position]
-    new_ram_value = 130
+    new_ram_value = 10
     # print(new_ram_value)
     print(ram)
     # print(ram[57])
@@ -27,6 +27,7 @@ for _ in range(1000):
         print("ram out of bounds")
         new_ram_value = 0
     env.unwrapped.ale.setRAM(target_ram_position, new_ram_value)
+    env.unwrapped.ale.setRAM(11, 10)
     # -------------------------------------------------------------------
     terminated, truncated = False, False
     observation, reward, terminated, truncated, info = env.step(5)

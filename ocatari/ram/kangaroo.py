@@ -11,7 +11,7 @@ class Kangaroo(GameObject):
         super(Kangaroo, self).__init__()
         self.visible = True
         self._xy = 78, 103
-        self.wh = 9, 10
+        self.wh = 8, 24
         self.rgb = 223, 183, 85
         self.hud = False
 
@@ -22,7 +22,7 @@ class Enemy(GameObject):
         super().__init__(*args, **kwargs)
         self.visible = True
         self._xy = 79, 57
-        self.wh = 9, 10
+        self.wh = 9, 15
         self.rgb = 227,159,89
         self.hud = False
 
@@ -32,8 +32,18 @@ class Fruit(GameObject):
         super(Fruit, self).__init__()
         self.visible = True
         self._xy = 125, 173
-        self.wh = 9, 10
+        self.wh = 7, 10
         self.rgb = 214, 92, 92
+        self.hud = False
+
+
+class Apple(GameObject):
+    def __init__(self, *args, **kwargs):
+        super(Apple, self).__init__()
+        self.visible = True
+        self._xy = 0, 0
+        self.wh = 2, 2
+        self.rgb = 162, 98, 33
         self.hud = False
 
 
@@ -42,7 +52,7 @@ class Bell(GameObject):
         super(Bell, self).__init__()
         self.visible = True
         self._xy = 125, 173
-        self.wh = 9, 10
+        self.wh = 8, 11
         self.rgb = 210, 164, 74
         self.hud = False
 
@@ -77,15 +87,19 @@ class Time(GameObject):
         self.hud = True
 
 
-def _init_objects_kangaroo_ram(hud=False):
+def _init_objects_kangaroo_ram(hud=True):
     """
     (Re)Initialize the objects
     """
 
-    objects = [Kangaroo(), Enemy(), Enemy(), Enemy(), Fruit(), Fruit(), Fruit(), Bell()]
+    objects = [Kangaroo(), Kangaroo(), Enemy(), Enemy(), Enemy(), Enemy(), Apple(), Fruit(), Fruit(), Fruit(), Bell()]
+
+    objects[3].visible = False
+    objects[4].visible = False
+    objects[5].visible = False
 
     if hud:
-        x = 92
+        x = 137
         for i in range(6):
             score = Score()
             score.xy = x, 183
@@ -93,7 +107,7 @@ def _init_objects_kangaroo_ram(hud=False):
             x -= 8
 
         x = 16
-        for i in range(3):
+        for i in range(8):
             life = Life()
             life.xy = x, 183
             objects.append(life)
@@ -101,55 +115,49 @@ def _init_objects_kangaroo_ram(hud=False):
 
         x = 92
         for i in range(4):
-            time = Life()
+            time = Time()
             time.xy = x, 191
             objects.append(time)
-            x -= 5
+            x -= 4
 
     return objects
 
 
 def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
-    # player, g1, g2, g3, g4, fruit = objects[:6]
+    kp, kk, m1, m2, m3, m4, apple, f1, f2, f3, bell = objects[:11]
 
-    # player.xy = ram_state[10] - 13, ram_state[16] + 1
+    kp.xy = ram_state[17] + 15, (ram_state[16] * 10) - 32
 
-    # g1.xy = ram_state[6] - 13, ram_state[12] + 1
-    # g1.rgb = 180, 122, 48
-    # g2.xy = ram_state[7] - 13, ram_state[13] + 1
-    # g2.rgb = 84, 184, 153
-    # g3.xy = ram_state[8] - 13, ram_state[14] + 1
-    # g3.rgb = 198, 89, 179
-    # g4.xy = ram_state[9] - 13, ram_state[15] + 1
-    # # no rgb adjustment, since this colour is the default one
+    kk.xy = ram_state[83] + 15, 12
+    kk.wh = 8, 15
 
-    # if ram_state[11] > 0 and ram_state[17] > 0:
-    #     fruit.xy = ram_state[11] - 13, ram_state[17] + 1
-    #     fruit.rgb = get_fruit_rgb(ram_state[123])
-    # else:
-    #     fruit.visible = False
+    m1.xy = ram_state[15] + 15, (ram_state[11] * 10) - 32
 
-    # if hud:
-    #     if ram_state[122] < 16:
-    #         objects[11].visible = False
-    #         if ram_state[122] == 0:
-    #             objects[10].visible = False
-    #             if ram_state[121] < 16:
-    #                 objects[9].visible = False
-    #                 if ram_state[121] == 0:
-    #                     objects[8].visible = False
-    #                     if ram_state[120] < 16:
-    #                         objects[7].visible = False
+    apple.xy = ram_state[34] + 15, (ram_state[33] * 10)
 
-    #     if ram_state[123] <= 2:
-    #         objects[14].visible = False
-    #         if ram_state[123] <= 1:
-    #             objects[13].visible = False
-    #             if ram_state[123] == 0:
-    #                 objects[12].visible = False
+    f1.xy = ram_state[81] + 15, 60  # top
+    f2.xy = ram_state[80] + 15, 84  # mid
+    f3.xy = ram_state[79] + 15, 108  # low
+    bell.xy = ram_state[82] + 15, 36 
 
-    #     objects[15].rgb = get_fruit_rgb(ram_state[123])
-    pass
+
+    if hud:
+        if ram_state[39] < 16:
+            objects[16].visible = False
+            if ram_state[39] == 0:
+                objects[15].visible = False
+                if ram_state[40] < 16:
+                    objects[14].visible = False
+                    if ram_state[40] == 0:
+                        objects[13].visible = False
+        objects[7].visible = True
+        objects[6].visible = True
+
+        for i in range(8):
+            if i+1 > ram_state[45]:
+                objects[17 + i].visible = False
+
+    return objects
 
 
 
