@@ -15,7 +15,7 @@ class Player(GameObject):
     def __init__(self, x, y, w, h, num, *args, **kwargs):
         super().__init__(x, y, w, h, *args, **kwargs)
         if num == 1:
-            self.rgb = 92, 186, 92
+            self.rgb = 92, 186, 92  # green
         else:
             self.rgb = 162, 134, 56  # yellow
         self.player_num = num
