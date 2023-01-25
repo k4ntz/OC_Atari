@@ -4,11 +4,11 @@ import sys
 import random
 import matplotlib.pyplot as plt
 sys.path.insert(0, '../../') # noqa
+
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 
-
-game_name = "Breakout"
+game_name = "Asteroids"
 MODE = "vision"
 MODE = "revised"
 HUD = True
@@ -16,11 +16,15 @@ env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
 for i in range(1000):
-    obs, reward, terminated, truncated, info = env.step(random.randint(0, 2))  # env.step(env.action_space.sample())
-    env.set_ram(76, 2)
-    if i % 20 == 0:
+    obs, reward, terminated, truncated, info = env.step(random.randint(0, 4))
+    # env.set_ram(21, 255)
+    ram = env._env.unwrapped.ale.getRAM()
+   # env.set_ram(3, 30)
+    if i % 5 == 0:
         # obse2 = deepcopy(obse)
         print(env.objects)
+        print(ram[21])
+        print(ram[39])
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210 and obj.visible:
@@ -32,6 +36,7 @@ for i in range(1000):
 
         plt.imshow(obs)
         plt.show()
+        print("image was shown")
 
     if terminated or truncated:
         observation, info = env.reset()

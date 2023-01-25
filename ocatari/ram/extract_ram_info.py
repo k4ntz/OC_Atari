@@ -16,6 +16,7 @@ from .demonAttack import _detect_objects_demon_attack_raw, \
 from .mspacman import _detect_objects_mspacman_raw, \
                       _detect_objects_mspacman_revised, \
                       _init_objects_mspacman_ram
+from .asteroids import _init_objects_asteroids_ram, _detect_objects_asteroids_revised, _detect_objects_asteroids_raw
 
 
 def init_objects(game_name, hud):
@@ -44,6 +45,8 @@ def init_objects(game_name, hud):
         return _init_objects_demon_attack_ram(hud)
     elif game_name.lower() == "mspacman":
         return _init_objects_mspacman_ram(hud)
+    elif game_name.lower() == "asteroids":
+        return _init_objects_asteroids_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
@@ -75,6 +78,8 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_demon_attack_raw(info, ram_state)
     elif game_name.lower() == "mspacman":
         _detect_objects_mspacman_raw(info, ram_state)
+    elif game_name.lower() == "asteroids":
+        _detect_objects_asteroids_raw(info, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
         exit(1)
@@ -106,6 +111,8 @@ def detect_objects_revised(info, ram_state, game_name, hud):
         _detect_objects_demon_attack_revised(info, ram_state, hud)
     elif game_name.lower() == "mspacman":
         _detect_objects_mspacman_revised(info, ram_state)
+    elif game_name.lower() == "asteroids":
+        _detect_objects_asteroids_revised(info, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
