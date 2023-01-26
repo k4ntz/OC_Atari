@@ -21,7 +21,7 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [ ]  Kangaroo (Worked on by Bjarne)
 
 ### Priority 2:
-- [ ]  Berzerk
+- [ ]  Berzerk (worked on by Chris)
 - [ ]  Secret Quest
 - [ ]  River Raid (worked on by Chris)
 - [ ]  Atlantis
