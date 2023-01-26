@@ -9,12 +9,12 @@ from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 
 game_name = "Kangaroo"
-MODE = "revised"
+MODE = "vision"
 # MODE = "revised"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
-env._env.unwrapped.ale.setRAM(36, 1)
+# env._env.unwrapped.ale.setRAM(36, 2)
 
 for i in range(1000):
     obs, reward, terminated, truncated, info = env.step(0)  # env.step(6) for easy movement
