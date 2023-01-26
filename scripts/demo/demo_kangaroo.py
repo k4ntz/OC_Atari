@@ -14,12 +14,13 @@ MODE = "revised"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
+env._env.unwrapped.ale.setRAM(36, 1)
 
 for i in range(1000):
-    obs, reward, terminated, truncated, info = env.step(6)
-    # env._env.unwrapped.ale.setRAM(15, 10)
+    obs, reward, terminated, truncated, info = env.step(0)  # env.step(6) for easy movement
+    # env._env.unwrapped.ale.setRAM(43, 6)
     # env._env.unwrapped.ale.setRAM(11, 10)
-    if i % 20 == 0:
+    if i % 10 == 0:
         # obse2 = deepcopy(obse)
         print(env.objects)
         for obj in env.objects:
