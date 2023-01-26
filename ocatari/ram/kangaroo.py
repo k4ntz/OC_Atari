@@ -22,7 +22,7 @@ class Enemy(GameObject):
         super().__init__(*args, **kwargs)
         self.visible = True
         self._xy = 79, 57
-        self.wh = 9, 15
+        self.wh = 7, 15
         self.rgb = 227,159,89
         self.hud = False
 
@@ -37,12 +37,13 @@ class Fruit(GameObject):
         self.hud = False
 
 
-class Apple(GameObject):
+# This is the object falling from the Top onto you or the one thrown at you
+class Projectile(GameObject):
     def __init__(self, *args, **kwargs):
-        super(Apple, self).__init__()
+        super(Projectile, self).__init__()
         self.visible = True
         self._xy = 0, 0
-        self.wh = 2, 2
+        self.wh = 2, 3
         self.rgb = 162, 98, 33
         self.hud = False
 
@@ -92,7 +93,7 @@ def _init_objects_kangaroo_ram(hud=True):
     (Re)Initialize the objects
     """
 
-    objects = [Kangaroo(), Kangaroo(), Enemy(), Enemy(), Enemy(), Enemy(), Apple(), Fruit(), Fruit(), Fruit(), Bell()]
+    objects = [Kangaroo(), Kangaroo(), Enemy(), Enemy(), Enemy(), Enemy(), Projectile(), Projectile(), Fruit(), Fruit(), Fruit(), Bell()]
 
     objects[3].visible = False
     objects[4].visible = False
@@ -124,16 +125,32 @@ def _init_objects_kangaroo_ram(hud=True):
 
 
 def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
-    kp, kk, m1, m2, m3, m4, apple, f1, f2, f3, bell = objects[:11]
+    kp, kk, m1, m2, m3, m4, p1, p2, f1, f2, f3, bell = objects[:12]
 
-    kp.xy = ram_state[17] + 15, (ram_state[16] * 10) - 32
+    kp.xy = ram_state[17] + 15, ram_state[16] * 8 +5
 
     kk.xy = ram_state[83] + 15, 12
     kk.wh = 8, 15
 
-    m1.xy = ram_state[15] + 15, (ram_state[11] * 10) - 32
+    if ram_state[11] != 255:
+        m1.visible = True
+        m1.xy = ram_state[15] + 16, ram_state[11] * 8 + 5
+    else:
+        m1.visible = False
 
-    apple.xy = ram_state[34] + 15, (ram_state[33] * 10)
+    if ram_state[33] != 255:
+        p1.visible = True
+        p1.xy = ram_state[34] + 14, (ram_state[33] * 8) + 9
+    else:
+        p1.visible = False
+
+    # This projectiles visual representation seems to differ from its RAM x position,
+    # therefor you will see it leaving the bounding box on both left and right depending on the situation
+    if ram_state[25] != 255:
+        p2.visible = True
+        p2.xy = ram_state[28] + 15, (ram_state[25] * 8) + 1
+    else:
+        p2.visible = False
 
     f1.xy = ram_state[81] + 15, 60  # top
     f2.xy = ram_state[80] + 15, 84  # mid
