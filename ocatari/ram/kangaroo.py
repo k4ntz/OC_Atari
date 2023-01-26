@@ -174,12 +174,45 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
         p2.visible = False
     
     # fruits
-    f1.xy = ram_state[81] + 15, 60  # top
-    f1.rgb = _get_fruit_type_kangaroo(ram_state[42])
-    f2.xy = ram_state[80] + 15, 84  # mid
-    f2.rgb = _get_fruit_type_kangaroo(ram_state[43])
-    f3.xy = ram_state[79] + 15, 108  # low
-    f3.rgb = _get_fruit_type_kangaroo(ram_state[44])
+    if ram_state[87] == ram_state[86]:
+        y1 = (ram_state[84] * 8) + 4
+        y2 = (ram_state[85] * 8) + 4
+        y3 = (ram_state[86] * 8) + 4
+    else:
+        y1 = (ram_state[85] * 8) + 4  # top
+        y2 = (ram_state[86] * 8) + 4  # mid
+        y3 = (ram_state[87] * 8) + 4  # low
+
+    if ram_state[92] == ram_state[91]:
+        x1 = ram_state[89] + 15
+        x2 = ram_state[90] + 15
+        x3 = ram_state[91] + 15
+    else:
+        x1 = ram_state[90] + 15
+        x2 = ram_state[91] + 15
+        x3 = ram_state[92] + 15
+
+    f1.xy = x1, y1  # top
+    f2.xy = x2, y2  # mid
+    f3.xy = x3, y3  # low
+
+    rgb = _get_fruit_type_kangaroo(ram_state[42])
+    if rgb is not None:
+        f1.rgb = _get_fruit_type_kangaroo(ram_state[42])
+    else:
+        f1.visible = False
+
+    rgb = _get_fruit_type_kangaroo(ram_state[43])
+    if rgb is not None:
+        f2.rgb = _get_fruit_type_kangaroo(ram_state[43])
+    else:
+        f2.visible = False
+
+    rgb = _get_fruit_type_kangaroo(ram_state[44])
+    if rgb is not None:
+        f3.rgb = _get_fruit_type_kangaroo(ram_state[44])
+    else:
+        f3.visible = False
 
     bell.xy = ram_state[82] + 15, 36 
 
