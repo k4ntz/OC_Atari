@@ -75,8 +75,8 @@ def _detect_objects_space_invaders(objects, obs, hud):
         for i, obj in enumerate(["score", "score2"]):
             # in jeder Runde von dieser for-Schleife wird nur ein Objekt erkannt?
 
-            scores = find_objects(obs, objects_colors[obj],  # closing_active=False,
-                                 maxy=30)
+            scores = find_objects(obs, objects_colors[obj], min_distance=10,  # closing_active=False,
+                                  maxy=30)
             for instance in scores:
                 objects.append(Score(*instance, i + 1))
 
