@@ -7,7 +7,7 @@ class Player(GameObject):
             super().__init__(x, y, w, h, *args, **kwargs)
             self.rgb = 187, 187, 53
             self.player_num = num
-            # self.visible =
+            self.visible = False
             self._xy = 0, 0
             # self.wh =
             self.hud = False
@@ -17,19 +17,19 @@ class Cauldron(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 184, 50, 50
-        # self.visible =
+        self.visible = False
         self._xy = 0, 0
-        # self.wh =
+        self.wh = 8, 11
         self.hud = False
 
 
 class Enemy(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 227, 110, 110
-        # self.visible =
+        self.rgb = 228, 111, 111
+        self.visible = False
         self._xy = 0, 0
-        # self.wh =
+        self.wh = 8, 13
         self.hud = False
 
 
@@ -37,7 +37,7 @@ class Score(GameObject):
     def __init__(self, x, y, w, h, num, *args, **kwargs):
         super().__init__(x, y, w, h, *args, **kwargs)
         self.rgb = 187, 187, 53  # same color as player
-        # self.visible =
+        self.visible = True
         self._xy = 0, 0  # think about the x:
                          #    for score 100:
                          #      x: von 79 bis 102
@@ -55,7 +55,7 @@ class Lives(GameObject):
     def __init__(self, y, *args, **kwargs):
         super().__init__(y, *args, **kwargs)
         self.rgb = 187, 187, 53  # same color as player
-        # self.visible =
+        self.visible = True
         self._xy = 0, 0  # y: 168 - 180 (siehe unten)
         # self.wh =
         self.hud = True
