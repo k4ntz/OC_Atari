@@ -1,7 +1,6 @@
 from .utils import find_objects
 from .game_objects import GameObject
 
-
 objects_colors = {"player": [50, 132, 50], "score": [50, 132, 50],
                   "player2": [162, 134, 56], "score2": [162, 134, 56],
                   "alien": [134, 134, 29], "shield": [181, 83, 40],
@@ -63,21 +62,23 @@ def _detect_objects_space_invaders(objects, obs, hud):
     objects.clear()
     for i, obj in enumerate(["player", "player2"]):
         # in jeder Runde von dieser for-Schleife wird nur ein Objekt erkannt?
-        if hud:
-            scores = find_objects(obs, objects_colors[obj], maxy=30)
-            # list((x, y, w, h), ...)
-            # and maxy damit wir nicht weiter unten suchen
-            for instance in scores:
-                objects.append(Score(*instance, i+1))
-                # i+1 is parameter num
-                # and *instance is the first four parameters
-        player = find_objects(obs, objects_colors[obj], closing_active=False,
-                              miny=180, maxy=195)
-        for instance in player:
+
+        players = find_objects(obs, objects_colors[obj], closing_active=False,
+                               miny=180, maxy=195)
+        for instance in players:
             if instance[2] < 10:  # width
-                objects.append(Player(*instance, i+1))
-            else:
+                objects.append(Player(*instance, i + 1))
+            elif hud and instance[2] > 10:
                 objects.append(Lives(*instance))
+
+    if hud:
+        for i, obj in enumerate(["score", "score2"]):
+            # in jeder Runde von dieser for-Schleife wird nur ein Objekt erkannt?
+
+            scores = find_objects(obs, objects_colors[obj],  # closing_active=False,
+                                 maxy=30)
+            for instance in scores:
+                objects.append(Score(*instance, i + 1))
 
     aliens = find_objects(obs, objects_colors["alien"])
     for instance in aliens:
