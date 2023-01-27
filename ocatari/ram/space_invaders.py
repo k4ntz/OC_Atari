@@ -73,7 +73,8 @@ class Lives(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 162, 134, 56
         # self.visible =
-        self._xy = 0, 0
+        self._xy = 0, 0  # 38-96
+                         # 184-195
         # self.wh =
         self.hud = True
 
@@ -82,17 +83,9 @@ def _init_objects_space_invaders_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Alien(), Satellite(), Shield(), Bullet(), Score(), Lives()]
+    objects = []  # Player(), Alien(), Satellite(), Shield(), Bullet(), Score(), Lives()]
     if hud:
-        objects.append(Score())
-
-        # hier soll aehnlicher Code sein
-        # basex = 17
-        # for i in range(3):
-        #     live = Live()
-        #     live.xy = basex, 188
-        #     objects.append(live)
-        #     basex += 8
+        objects.append(Score(), Lives())
 
     return objects
 
@@ -117,12 +110,12 @@ def _detect_objects_space_invaders_revised(info, ram_state):
     # positions of enemies from left to right are the individual, set bits from right to left
     # rows are counted from bottom
     # the two msb-bits are to be discarded. they remain 0
-    info["row_1"] = ram_state[18]  #
-    info["row_2"] = ram_state[19]  #
-    info["row_3"] = ram_state[20]  #
-    info["row_4"] = ram_state[21]  #
-    info["row_5"] = ram_state[22]  #
-    info["row_6"] = ram_state[23]  #
+    info["row_1"] = ram_state[18]
+    info["row_2"] = ram_state[19]
+    info["row_3"] = ram_state[20]
+    info["row_4"] = ram_state[21]
+    info["row_5"] = ram_state[22]
+    info["row_6"] = ram_state[23]
     # ram[32:38] have the same value as ram[17:23] initialized. sense still not known
 
     info["visibility_players_walls"] = ram_state[24]
