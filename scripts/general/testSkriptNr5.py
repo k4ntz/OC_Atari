@@ -16,11 +16,12 @@ already_figured_out = []
 for i in range(1000):
     # n: next line, c: resume execution
     # if info.get('frame_number') > 400:
+    env.set_ram(21, 5)
     # if info.get('episode_frame_number') > 40:
-    #    for b in range(65, 126):
+    #    for b in range(0, 70):
     #        obs, reward, terminated, truncated, info = env.step(random.randint(0, 0))
     #        print(b)
-    #        env.set_ram(b, 10)
+    #        env.set_ram(b, 1)
     #        env.render()
     #        ipdb.set_trace()
 
@@ -29,8 +30,6 @@ for i in range(1000):
     # truncated = True if episodes truncates due to a time limit or a reason that is not defined of the task
     obs, reward, terminated, truncated, info = env.step(random.randint(1, 1))
     # env.set_ram(11, 127)
-    # env.set_ram(21, 8)
-    env.set_ram(93, 1)
     ram = env._env.unwrapped.ale.getRAM()
     if prevRam is not None:
         for i in range(len(ram)):
