@@ -1,7 +1,6 @@
 # appends parent path to syspath to make ocatari importable
 # like it would have been installed as a package
 import sys
-import random
 import matplotlib.pyplot as plt
 sys.path.insert(0, '../../') # noqa
 
