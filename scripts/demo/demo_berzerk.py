@@ -16,13 +16,11 @@ env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
 for i in range(1000):
-    obs, reward, terminated, truncated, info = env.step(random.randint(10, 10))
-    env.set_ram(93, 1)
+    obs, reward, terminated, truncated, info = env.step(random.randint(1, 3))
     ram = env._env.unwrapped.ale.getRAM()
-    if i % 25 == 0:
+    if i % 15 == 0:
         # obse2 = deepcopy(obse)
         print(env.objects)
-        print(ram[56:65])
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210 and obj.visible:

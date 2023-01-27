@@ -3,6 +3,7 @@ from .game_objects import GameObject
 
 """
 RAM extraction for the game BERZERK. Supported modes: raw, revised.
+Attention: EvilOtto enemy not implemented due to not spawning. 
 """
 
 
@@ -68,18 +69,20 @@ def _init_objects_berzerk_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = []
-    if hud:
-        pass
     return objects
 
 
-enemy_colors = {1: [210, 210, 64], 2: [198, 108, 58], 3: [198, 108, 58], 4: [214, 214, 214], "green": [111, 210, 111],
-                "rose": [240, 128, 128], "blue": [84, 160, 197], "lightyellow": [232, 204, 99], "pink": [198, 89, 179]}
+# enemy color based on current game level
+enemy_colors = {1: [210, 210, 64], 2: [198, 108, 58], 3: [198, 108, 58], 4: [214, 214, 214], 5: [214, 214, 214],
+                6: [111, 210, 111], 7: [111, 210, 111], 8: [240, 128, 128], 9: [240, 128, 128], 10: [84, 160, 197],
+                11: [84, 160, 197], 12: [232, 204, 99], 13: [232, 204, 99], 14: [198, 89, 179], 15: [198, 89, 179]}
+
+prev_missile = [0, 0]
 
 
 def _detect_objects_berzerk_revised(objects, ram_state, hud=False):
     """
-    For all 3 objects:
+    For all objects:
     (x, y, w, h, r, g, b)
     """
     del objects[0:]
@@ -91,15 +94,29 @@ def _detect_objects_berzerk_revised(objects, ram_state, hud=False):
         objects.append(player)
 
     # player missile
-    if ram_state[22] != 0 and ram_state[23] != 0 and ram_state[23] != 3:
+    if (ram_state[22] != 0 and ram_state[23] != 0) or ram_state[21] == 0:
         missile = PlayerMissile()
-        missile.xy = ram_state[22] + 2, (ram_state[23] * 2) + 3
         y = 0
+        x = 0
+        missile.visible = True
         if ram_state[21] == 1:  # shooting up
+            x = ram_state[22] + 2
             y = ram_state[23] * 2 + 3
+            if prev_missile[1] == y:
+                missile.visible = False
         elif ram_state[21] == 2:
+            x = ram_state[22] + 2
             y = ram_state[23] * 2 - 1
-        missile.xy = ram_state[22] + 2, y
+            if prev_missile[1] == y:
+                missile.visible = False
+        else:
+            x = ram_state[22]
+            y = ram_state[23] * 2
+            if prev_missile[0] == x:
+                missile.visible = False
+        missile.xy = x, y
+        prev_missile[0] = x
+        prev_missile[1] = y
         if ram_state[21] <= 2:
             missile.wh = 1, 6
         else:
@@ -115,19 +132,13 @@ def _detect_objects_berzerk_revised(objects, ram_state, hud=False):
             objects.append(enemy)
 
     # enemy missile
-    if ram_state[29] != 0 and ram_state[30] != 0:
+    if (ram_state[29] != 0 and ram_state[30] != 0) or ram_state[26] == 0:
         missile = EnemyMissile()
-        missile.xy = ram_state[29] + 2, (ram_state[30] * 2) + 3
-        y = 0
-        if ram_state[26] == 1:  # shooting up
-            y = ram_state[30] * 2 + 3
-        elif ram_state[26] == 2:
-            y = ram_state[30] * 2
-        missile.xy = ram_state[29] + 2, y
-        if ram_state[26] == 2:
-            missile.wh = 4, 3
-        else:
+        missile.xy = ram_state[29] + 2, ram_state[30] * 2
+        if ram_state[26] == 4 or ram_state[26] == 12 or ram_state[26] == 8:  # shooting up or down
             missile.wh = 1, 6
+        else:
+            missile.wh = 4, 3
         missile.rgb = enemy_colors.get(ram_state[92])
         objects.append(missile)
 
@@ -135,6 +146,7 @@ def _detect_objects_berzerk_revised(objects, ram_state, hud=False):
         score_value = _convert_number(ram_state[93]) * 10000 + _convert_number(ram_state[94]) * 100 + \
                       _convert_number(ram_state[95])
         print(score_value)
+        # if score is 0 the logo is shown
         if score_value == 0:
             logo = Logo()
             logo.xy = 86, 183
@@ -180,25 +192,25 @@ def _detect_objects_berzerk_raw(info, ram_state):
     7: move up, left
     8: move down, right
     9: move down, left
+    ...
     """
-    info["player_x"] = ram_state[19]  # starts at x = 6
-    info["player_y"] = ram_state[11]  # starts at y = 74
-    info["player_direction"] = ram_state[14]  # 1 = up, 2 = down, 4 = left, 5 = up left, 6 = down left
-    # 8 = right, 9 = up right, 10 = down right
-    info["player_missile_x"] = ram_state[22]
-    info["player_missile_y"] = ram_state[23]
-    info["player_missile_direction"] = ram_state[21]  # 1 = up, 2 = down, 8 = right
-    info["robot_missile_direction"] = ram_state[26]  # 2 = left
-    info["robot_missile_x"] = ram_state[29]
-    info["robot_missile_y"] = ram_state[30]
-    info["num_lives"] = ram_state[90]
+    player = [ram_state[19], ram_state[11]]     # player_x, player_y
+    player_missile = [ram_state[22], ram_state[23]]     # missile_x, missile_y
+    robot_misile = [ram_state[29],  ram_state[30]]   # missile_x, missile_y
+    robot = ram_state[56:74]    # x [65:74] and y [56:65]
+    evil_otto = [ram_state[46], ram_state[89]]
+    objects = player + player_missile + robot.tolist() + robot_misile + evil_otto
+    info["objects"] = objects
+
+    # additional info
+    info["number_lives"] = ram_state[90]
     info["robots_killed_count"] = ram_state[91]
     info["game_level"] = ram_state[92]  # starts at 1
-    # info["enemies_count"] # 124
-    info["enemy_evilOtto_x"] = ram_state[46]
-    info["enemy_evilOtto_y"] = ram_state[89]
-    info["robot"] = ram_state[74:78]
-    info["enemy_robots_x"] = ram_state[65:74]
-    info["enemy_robots_y"] = ram_state[56:65]
     info["player_score"] = _convert_number(ram_state[93]) * 10000 + _convert_number(ram_state[94]) * 100 \
-                           + _convert_number(ram_state[95])
+                                                                  + _convert_number(ram_state[95])
+    info["player_direction"] = ram_state[14]  # 1 = up, 2 = down, 4 = left, 5 = up left, 6 = down left
+    # 8 = right, 9 = up right, 10 = down right
+    info["player_missile_direction"] = ram_state[21]  # 1 = up, 2 = down, 8 = right
+    info["robot_missile_direction"] = ram_state[26]  # 1 = right, 2 = left, 3 = left, 4,12 = down,
+    # 5,7,13 = down and right, 6 = down and left, 8 = up, 9,11 = up and right, 10 = up and left
+    print(ram_state)
