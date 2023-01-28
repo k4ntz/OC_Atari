@@ -64,9 +64,9 @@ class Live(GameObject):
 
 def calculate_small_projectiles_from_bitmap(bitmap, basex):
     result = []
-    offsetcollumn = 8
+    offset_column = 8
 
-    currenty = 183
+    current_y = 183
     for number in bitmap:
         bitfield = number_to_bitfield(number)
 
@@ -74,11 +74,11 @@ def calculate_small_projectiles_from_bitmap(bitmap, basex):
         for b in bitfield:
             if b == 1:
                 proj = ProjectileHostile()
-                proj.xy = basex + index, currenty  # projectiles are only one pixel wide
+                proj.xy = basex + index, current_y  # projectiles are only one pixel wide
                 result.append(proj)
             index += 1
 
-        currenty -= offsetcollumn
+        current_y -= offset_column
 
     return result
 
@@ -94,14 +94,14 @@ def calc_x(number, ignore_upper=True):
     way too complicated for no reason
     """
     bitfield = number_to_bitfield(number)
-    xbits = bitfield[4:]
+    x_bits = bitfield[4:]
     # res = 26 - bitfield_to_number(bitfield[:4])
     res = 10 + bitfield_to_number_equality(bitfield[:4])
 
     if ignore_upper:
         res = 10
 
-    res = res + int(bitfield_to_number(xbits) * 15.5)
+    res = res + int(bitfield_to_number(x_bits) * 15.5)
 
     return res
 
@@ -114,18 +114,18 @@ def _init_objects_demon_attack_ram(hud=False):
     if hud:
         objects.append(Score())
 
-        basex = 17
+        base_x = 17
         for i in range(3):
             live = Live()
-            live.xy = basex, 188
+            live.xy = base_x, 188
             objects.append(live)
-            basex += 8
+            base_x += 8
 
     return objects
 
 
 def _detect_objects_demon_attack_revised(objects, ram_state, hud=False):
-    player, e1, e2, e3, proj_frienddly, proj_hostile = objects[:6]
+    player, e1, e2, e3, proj_friendly = objects[:5]
 
     player.xy = calc_x(ram_state[16], True), 174
 
@@ -141,9 +141,9 @@ def _detect_objects_demon_attack_revised(objects, ram_state, hud=False):
         enemies[i].xy = x, 175 - ram_state[69 + i]
 
     if 90 <= ram_state[21]:
-        proj_frienddly.xy = 3 + calc_x(ram_state[22]), 176 - ram_state[21]
+        proj_friendly.xy = 3 + calc_x(ram_state[22]), 176 - ram_state[21]
     else:
-        proj_frienddly.xy = 3 + calc_x(ram_state[22]), 178 - ram_state[21]
+        proj_friendly.xy = 3 + calc_x(ram_state[22]), 178 - ram_state[21]
 
     objects_temp = [obj for obj in objects if not isinstance(obj, ProjectileHostile)]
     objects_temp.extend(calculate_small_projectiles_from_bitmap(ram_state[37:47], 3 + calc_x(ram_state[20], False)))
@@ -152,11 +152,11 @@ def _detect_objects_demon_attack_revised(objects, ram_state, hud=False):
     objects.extend(objects_temp)
 
     if hud:
-        if ram_state[114] < 3 and len(objects) > 8 and isinstance(objects[8], Live):
+        if ram_state[114] < 3 and len(objects) > 8 and isinstance(objects[7], Live):
             del objects[8]
-        if ram_state[114] < 2 and len(objects) > 7 and isinstance(objects[7], Live):
+        if ram_state[114] < 2 and len(objects) > 7 and isinstance(objects[6], Live):
             del objects[7]
-        if ram_state[114] < 1 and len(objects) > 6 and isinstance(objects[6], Live):
+        if ram_state[114] < 1 and len(objects) > 6 and isinstance(objects[5], Live):
             del objects[6]
 
 
