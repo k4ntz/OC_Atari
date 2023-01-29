@@ -15,7 +15,9 @@ env = OCAtari("Asterix-v4", mode="vision", render_mode='rgb_array')  # Skiing-v4
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
-for i in range(1000):
+
+
+for _ in range(1000):
     # n: next line, c: resume execution
     if info.get('frame_number') > 400:
         ipdb.set_trace()
@@ -40,6 +42,7 @@ for i in range(1000):
         observation, info = env.reset()
     print(info)
     if info.get("frame_number") % 20 == 0:
+        env._env.unwrapped.ale.setRAM(109, -ram[i])  # wert)
         rgb_array = env.render()
         plt.imshow(rgb_array)  # rgb_array stuff for fun
         plt.show()

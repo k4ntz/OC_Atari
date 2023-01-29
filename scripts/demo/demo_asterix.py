@@ -1,5 +1,6 @@
 # appends parent path to syspath to make ocatari importable
 # like it would have been installed as a package
+import random
 import sys
 import matplotlib.pyplot as plt
 sys.path.insert(0, '../../')  # noqa
@@ -15,9 +16,10 @@ env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
 for i in range(1000):
-    obs, reward, terminated, truncated, info = env.step(1)
+    obs, reward, terminated, truncated, info = env.step(-2)
+    obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))
     # env.step(env.action_space.sample())
-    if i % 20 == 0:
+    if i % 5 == 0:
         print(env.objects)
         for obj in env.objects:
             x, y = obj.xy

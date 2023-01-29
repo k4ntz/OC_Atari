@@ -3,8 +3,8 @@ from .game_objects import GameObject
 
 objects_colors = {'player': [187, 187, 53],
                   'cauldron': [167, 26, 26],  # two colors: 167, 26, 26 / 184, 50, 50
-                  # and 184, 50, 50 you could see in the enemy!
-                  'enemy': [228, 111, 111],  # two colors: 184, 50, 50 (two red lines in middle) / 228, 111, 111
+
+                  'enemy': [228, 111, 111],
                   'score': [187, 187, 53],
                   'lives': [187, 187, 53],
 
@@ -37,13 +37,13 @@ class Enemy(GameObject):
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 187, 187, 53  # same color as player
+        self.rgb = 187, 187, 53
 
 
 class Lives(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 187, 187, 53  # same color as player
+        self.rgb = 187, 187, 53
 
 
 class Bounty(GameObject):
@@ -73,18 +73,19 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in enemy:
         objects.append(Enemy(*instance))
 
-    score = find_objects(obs, objects_colors["score"], closing_dist=10, miny=160, maxy=181)
-    for instance in score:
-        objects.append(Score(*instance))
+    if hud:
+        score = find_objects(obs, objects_colors["score"], closing_dist=1, miny=160, maxy=181)  # min_distance=10) !!
+        for instance in score:
+            objects.append(Score(*instance))
 
-    lives = find_objects(obs, objects_colors["lives"], miny=181)
-    for instance in lives:
-        objects.append(Lives(*instance))
+        lives = find_objects(obs, objects_colors["lives"], min_distance=1, miny=181)
+        for instance in lives:
+            objects.append(Lives(*instance))
 
     bounty = find_objects(obs, objects_colors["bounty"], closing_dist=10)
     for instance in bounty:
         objects.append(Bounty(*instance))
 
-    print(len(objects), "elements in objects:\n")
+    print("\n", len(objects), "elements in objects:")
     print(*objects, sep="\n")
-    print("\n\n")
+    # print("\n\n")
