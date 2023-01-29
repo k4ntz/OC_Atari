@@ -3,6 +3,7 @@ from .game_objects import GameObject
 
 class Player(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 14, 46
         self.rgb = 214, 214, 214
@@ -11,6 +12,7 @@ class Player(GameObject):
 
 class Enemy(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 14, 46
         self.rgb = 0, 0, 0
@@ -19,6 +21,7 @@ class Enemy(GameObject):
 
 class Logo(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 62, 189
         self.wh = 32, 7
         self.rgb = 20, 60, 0
@@ -27,6 +30,7 @@ class Logo(GameObject):
 
 class Clock(GameObject):
     def __init__(self, x, y, w, h):
+        super().__init__()
         self._xy = x, y
         self.wh = w, h
         self.rgb = 20, 60, 0
@@ -35,6 +39,7 @@ class Clock(GameObject):
 
 class PlayerScore(GameObject):
     def __init__(self, ten=False):
+        super().__init__()
         if ten:
             self._xy = 39, 5
         else:
@@ -50,6 +55,7 @@ class PlayerScore(GameObject):
 
 class EnemyScore(GameObject):
     def __init__(self, ten=False):
+        super().__init__()
         if ten:
             self._xy = 103, 5
         else:
@@ -79,7 +85,7 @@ def _detect_objects_boxing_revised(objects, ram_state, hud=False):
     """
     player, enemy = objects[:2]
     player.xy = ram_state[32]+5, ram_state[34]+38
-    enemy.xy = ram_state[33]+4, ram_state[35]+38, 14, 46,
+    enemy.xy = ram_state[33]+4, ram_state[35]+38
     if hud:
         # scores
         if ram_state[19] > 10: # enemy score
