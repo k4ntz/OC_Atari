@@ -9,7 +9,7 @@ from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.ram.demonAttack import ProjectileHostile
 
 
-game_name = "DemonAttack"
+game_name = "DemonAttack-v4"
 MODE = "vision"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')

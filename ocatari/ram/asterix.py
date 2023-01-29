@@ -9,7 +9,7 @@ class Player(GameObject):
             self.player_num = num
             self.visible = False
             self._xy = 0, 0
-            # self.wh =
+            self.wh = 8, 11
             self.hud = False
 
 
@@ -19,7 +19,7 @@ class Cauldron(GameObject):
         self.rgb = 184, 50, 50
         self.visible = False
         self._xy = 0, 0
-        self.wh = 8, 11
+        self.wh = 6, 8
         self.hud = False
 
 

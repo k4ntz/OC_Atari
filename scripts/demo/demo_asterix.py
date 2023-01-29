@@ -20,7 +20,7 @@ for i in range(1000):
     if i % 20 == 0:
         print(env.objects)
         for obj in env.objects:
-            x, y = obj._xy
+            x, y = obj.xy
             if x < 160 and y < 210 and obj.visible:
                 opos = obj.xywh
                 ocol = obj.rgb
