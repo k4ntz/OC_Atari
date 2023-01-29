@@ -46,6 +46,7 @@ PREV_RAM_STATE = 0
 
 class Player(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 10, 18
         self.rgb = 214, 92, 92
@@ -54,6 +55,7 @@ class Player(GameObject):
 
 class Flag(GameObject):
     def __init__(self, x, y, subtype):
+        super().__init__()
         self.rgb = FLAG_COLOR[subtype]
         self._subtype = subtype
         self._ram_id = 2
@@ -80,6 +82,7 @@ class Flag(GameObject):
 
 class Mogul(GameObject):
     def __init__(self, x, y, subtype=None):
+        super().__init__()
         self.rgb = (214, 214, 214)
         self._ram_id = 5
         self._xy = x+2, y+3
@@ -102,6 +105,7 @@ class Mogul(GameObject):
 
 class Tree(GameObject):
     def __init__(self, x, y, subtype):
+        super().__init__()
         self.rgb = TREE_COLOR[subtype]
         self._subtype = subtype
         self._ram_id = 85
@@ -136,6 +140,7 @@ class Tree(GameObject):
 
 class Logo(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 65, 187
         self.wh = 31, 6
         self.rgb = 0, 0, 0
@@ -144,6 +149,7 @@ class Logo(GameObject):
 
 class Clock(GameObject):
     def __init__(self, x, y, w, h):
+        super().__init__()
         self._xy = x, y
         self.wh = w, h
         self.rgb = 0, 0, 0
@@ -152,6 +158,7 @@ class Clock(GameObject):
 
 class Score(GameObject):
     def __init__(self, ten=False):
+        super().__init__()
         if ten:
             self._xy = 67, 6
         else:

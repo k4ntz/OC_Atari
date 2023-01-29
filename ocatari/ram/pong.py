@@ -3,6 +3,7 @@ from .game_objects import GameObject
 
 class Player(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 4, 15
         self.rgb = 92, 186, 92
@@ -12,6 +13,7 @@ class Player(GameObject):
 
 class Enemy(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 4, 15
         self.rgb = 213, 130, 74
@@ -21,6 +23,7 @@ class Enemy(GameObject):
 
 class Ball(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 2, 3
         self.rgb = 236, 236, 236
@@ -29,6 +32,7 @@ class Ball(GameObject):
 
 class PlayerScore(GameObject):
     def __init__(self, ten=False):
+        super().__init__()
         if ten:
             self._xy = 100, 1
         else:
@@ -44,6 +48,7 @@ class PlayerScore(GameObject):
 
 class EnemyScore(GameObject):
     def __init__(self, ten=False):
+        super().__init__()
         if ten:
             self._xy = 20, 1
         else:
