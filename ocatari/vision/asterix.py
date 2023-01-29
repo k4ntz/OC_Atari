@@ -16,7 +16,7 @@ objects_colors = {'player': [187, 187, 53],
                   }  # it still not all objects covered
 
 
-class Player(GameObject):
+class Player(GameObject):  # player could be shown over all enemies/other objects (see Figure_4.png)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 187, 187, 53
@@ -53,27 +53,29 @@ class Lives(GameObject):
 def _detect_objects_asterix(objects, obs, hud=False):
     objects.clear()
 
-    player = find_objects(obs, objects_colors["player"], min_distance=10,
-                          maxy=160)  # enemy has same color
+    player = find_objects(obs, objects_colors["player"], maxy=160)  # enemy has same color
     #  if___:  # we need some if?
-    objects.append(player)
+    for instance in player:
+        objects.append(Player(*instance))
+    # objects.append(player)
 
     cauldron = find_objects(obs, objects_colors["cauldron"], closing_dist=6)
     objects.append(cauldron)
 
-    enemy = find_objects(obs, objects_colors["enemy"], min_distance=10)
+    enemy = find_objects(obs, objects_colors["enemy"], closing_dist=6)
     objects.append(enemy)
 
-    score = find_objects(obs, objects_colors["score"], min_distance=10,
+    score = find_objects(obs, objects_colors["score"], closing_distance=10,
                          miny=160, maxy=181)
     objects.append(score)
 
-    lives = find_objects(obs, objects_colors["lives"], min_distance=10,
+    lives = find_objects(obs, objects_colors["lives"],
                          miny=181)
     objects.append(lives)
 
-    bounty = find_objects(obs, objects_colors["bounty"], min_distance=10)
+    bounty = find_objects(obs, objects_colors["bounty"], closing_dist=10)
     objects.append(bounty)
 
+    print(len(objects), "elements in objects:\n")
     print(*objects, sep="\n")
-    print(len(objects))
+    print("\n\n")
