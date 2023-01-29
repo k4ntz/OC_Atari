@@ -29,7 +29,7 @@ class Enemy(GameObject):
         self.rgb = 228, 111, 111
         self.visible = False
         self._xy = 0, 0
-        self.wh = 8, 13
+        self.wh = 7, 11
         self.hud = False
 
 
@@ -38,16 +38,8 @@ class Score(GameObject):
         super().__init__(x, y, w, h, *args, **kwargs)
         self.rgb = 187, 187, 53  # same color as player
         self.visible = True
-        self._xy = 0, 0  # think about the x:
-                         #    for score 100:
-                         #      x: von 79 bis 102
-                         #      y: von 183 bis 191
-                         #    for score 0:
-                         #      x: 95 - 102
-                         #      y: 183 - 191
-                         # so you have same y but not x. but end of it (102)
-                         # it's enough to define y
-        # self.wh =
+        self._xy = 0, 0
+        self.wh = 8, 11
         self.hud = True
 
 
@@ -56,10 +48,19 @@ class Lives(GameObject):
         super().__init__(y, *args, **kwargs)
         self.rgb = 187, 187, 53  # same color as player
         self.visible = True
-        self._xy = 0, 0  # y: 168 - 180 (siehe unten)
-        self.wh = 8, 11
+        self._xy = 0, 0
+        self.wh = 6, 7
         self.hud = True
 
+
+class Bounty(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 198, 89, 179
+        self.visible = True
+        self._xy = 0, 0
+        self.wh = 6, 11
+        self.hud = False
 
 # initialize new classes for new covered objects
 
@@ -80,10 +81,8 @@ def _init_objects_asterix_ram(hud=False):
 
 
 def _detect_objects_asterix_raw(info, ram_state):
-
     print(ram_state)
 
 
 def _detect_objects_asterix_revised(objects, ram_state, hud=False):
-
     print(ram_state)

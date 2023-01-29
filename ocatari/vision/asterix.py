@@ -35,8 +35,8 @@ class Enemy(GameObject):
 
 
 class Score(GameObject):
-    def __init__(self, x, y, w, h, num, *args, **kwargs):
-        super().__init__(x, y, w, h, *args)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.rgb = 187, 187, 53  # same color as player
 
 
@@ -44,6 +44,12 @@ class Lives(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 187, 187, 53  # same color as player
+
+
+class Bounty(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 198, 89, 179
 
 
 # initialize new classes for new covered objects
@@ -60,21 +66,24 @@ def _detect_objects_asterix(objects, obs, hud=False):
     # objects.append(player)
 
     cauldron = find_objects(obs, objects_colors["cauldron"], closing_dist=6)
-    objects.append(cauldron)
+    for instance in cauldron:
+        objects.append(Cauldron(*instance))
 
     enemy = find_objects(obs, objects_colors["enemy"], closing_dist=6)
-    objects.append(enemy)
+    for instance in enemy:
+        objects.append(Enemy(*instance))
 
-    score = find_objects(obs, objects_colors["score"], closing_distance=10,
-                         miny=160, maxy=181)
-    objects.append(score)
+    score = find_objects(obs, objects_colors["score"], closing_dist=10, miny=160, maxy=181)
+    for instance in score:
+        objects.append(Score(*instance))
 
-    lives = find_objects(obs, objects_colors["lives"],
-                         miny=181)
-    objects.append(lives)
+    lives = find_objects(obs, objects_colors["lives"], miny=181)
+    for instance in lives:
+        objects.append(Lives(*instance))
 
     bounty = find_objects(obs, objects_colors["bounty"], closing_dist=10)
-    objects.append(bounty)
+    for instance in bounty:
+        objects.append(Bounty(*instance))
 
     print(len(objects), "elements in objects:\n")
     print(*objects, sep="\n")
