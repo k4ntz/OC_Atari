@@ -9,7 +9,7 @@ class Player(GameObject):
             self.player_num = num
             self.visible = False
             self._xy = 0, 0
-            self.wh = 8, 11
+            self.wh = 8, 11  # at some point 16, 11
             self.hud = False
 
 
@@ -69,7 +69,7 @@ def _init_objects_asterix_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player()]
+    objects = [Player, Cauldron, Enemy, Score, Lives, Bounty]
     if hud:
         objects.append(Score)
         # TODO Code for Lives
@@ -81,6 +81,8 @@ def _init_objects_asterix_ram(hud=False):
 
 
 def _detect_objects_asterix_raw(info, ram_state):
+    info["x_positions"] = ram_state[42:50] + ram_state[78]  # 0-3 but renders correctly till 6
+
     print(ram_state)
 
 

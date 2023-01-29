@@ -7,9 +7,13 @@ import ipdb
 env = OCAtari("Asterix-v4")
 observation, info = env.reset()
 prevRam = None
-already_figured_out = []  # [17, 18, 19, 20, 21, 22, 23, 28, 30, 73, 87, 102, 103, 104, 105]
+
+constant = [109]
+not_important = constant + []
+already_figured_out = not_important + []
+
 wert = 0
-ctr = 33
+ctr = 0
 
 for k in range(1000000):
 
