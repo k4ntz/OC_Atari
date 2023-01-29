@@ -7,6 +7,7 @@ sys.path.insert(0, '../../') # noqa
 
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
+from ocatari.utils import load_agent, parser
 
 game_name = "Berzerk"
 MODE = "vision"
@@ -15,12 +16,21 @@ HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
-for i in range(1000):
-    obs, reward, terminated, truncated, info = env.step(random.randint(1, 3))
+opts = parser.parse_args()
+
+if opts.path:
+    agent = load_agent(opts, env.action_space.n)
+
+for i in range(10000):
+    if opts.path is not None:
+        action = agent.draw_action(env.dqn_obs)
+    else:
+        action = random.randint(0, 0)
+    obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
-    if i % 15 == 0:
+    if i % 200 == 0:
         # obse2 = deepcopy(obse)
-        print(env.objects)
+        # print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210 and obj.visible:
