@@ -47,5 +47,5 @@ for _ in range(1000):
         plt.imshow(rgb_array)  # rgb_array stuff for fun
         plt.show()
         print(rgb_array)
-    time.sleep(0.01)
+    time.sleep(0)
 env.close()
