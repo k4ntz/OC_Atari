@@ -81,7 +81,7 @@ def _init_objects_asterix_ram(hud=False):
 
 
 def _detect_objects_asterix_raw(info, ram_state):
-    info["x_positions"] = ram_state[42:50] + ram_state[78]  # 0-3 but renders correctly till 6
+    info["x_positions"] = ram_state[42:50]
 
     print(ram_state)
 

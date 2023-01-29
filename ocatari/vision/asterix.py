@@ -86,6 +86,6 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in bounty:
         objects.append(Bounty(*instance))
 
-    print("\n", len(objects), "elements in objects:")
-    print(*objects, sep="\n")
+    # print("\n", len(objects), "elements in objects:")
+    # print(*objects, sep="\n")
     # print("\n\n")
