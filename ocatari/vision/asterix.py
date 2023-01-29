@@ -2,7 +2,7 @@ from .utils import find_objects
 from .game_objects import GameObject
 
 objects_colors = {'player': [187, 187, 53],
-                  'Cauldron': [184, 50, 50],  # another color in there 167, 26, 26
+                  'cauldron': [184, 50, 50],  # another color in there 167, 26, 26
                   # and 184, 50, 50 you could see in the enemy!
                   'enemy': [228, 111, 111],
                   'score': [187, 187, 53],
@@ -12,7 +12,6 @@ objects_colors = {'player': [187, 187, 53],
                   'bounty': [198, 89, 179],  # bounty or prize or bonus
                   # make min_distance for bounty bigger cause of more than one color in this and you are
                   # taking the borders, so you have all the object in the rectangle
-
 
                   }  # it still not all objects covered
 
@@ -53,3 +52,25 @@ class Lives(GameObject):
 # TODO
 def _detect_objects_asterix(objects, obs, hud=False):
     objects.clear()
+
+    player = find_objects(obs, objects_colors["player"], min_distance=10,
+                          maxy=160)  # enemy has same color
+    #  if___:  # we need some if?
+    objects.append(player)
+
+    cauldron = find_objects(obs, objects_colors["cauldron"], min_distance=10)
+    objects.append(cauldron)
+
+    enemy = find_objects(obs, objects_colors["enemy"], min_distance=10)
+    objects.append(enemy)
+
+    score = find_objects(obs, objects_colors["score"], min_distance=10,
+                         miny=160, maxy=181)
+    objects.append(score)
+
+    lives = find_objects(obs, objects_colors["lives"], min_distance=10,
+                         miny=181)
+    objects.append(lives)
+
+    print(*objects, sep="\n")
+    print(len(objects))
