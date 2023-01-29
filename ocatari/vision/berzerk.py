@@ -45,6 +45,7 @@ class Score(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 232, 232, 74
 
+
 class RoomCleared(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

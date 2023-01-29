@@ -25,12 +25,10 @@ for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
-        action = random.randint(0, 0)
+        action = random.randint(0, 10)
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
     if i % 200 == 0:
-        # obse2 = deepcopy(obse)
-        # print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210 and obj.visible:
@@ -38,12 +36,8 @@ for i in range(10000):
                 ocol = obj.rgb
                 sur_col = make_darker(ocol)
                 mark_bb(obs, opos, color=sur_col)
-            # mark_point(obs, *opos[:2], color=(255, 255, 0))
-
         plt.imshow(obs)
         plt.show()
-
     if terminated or truncated:
         observation, info = env.reset()
-    # modify and display render
 env.close()
