@@ -57,7 +57,7 @@ class Lives(GameObject):
         self.rgb = 187, 187, 53  # same color as player
         self.visible = True
         self._xy = 0, 0  # y: 168 - 180 (siehe unten)
-        # self.wh =
+        self.wh = 8, 11
         self.hud = True
 
 

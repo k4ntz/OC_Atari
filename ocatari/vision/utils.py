@@ -117,7 +117,7 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
                  position=None, tol_p=2, min_distance=10, closing_dist=3,
                  minx=0, miny=0, maxx=160, maxy=210):
     """
-    image: image to detects objects from
+    image: image to detect objects from
     color: fixed color of the object
     size: presupposed size
     tol_s: tolerance on the size

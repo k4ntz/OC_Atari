@@ -2,9 +2,9 @@ from .utils import find_objects
 from .game_objects import GameObject
 
 objects_colors = {'player': [187, 187, 53],
-                  'cauldron': [184, 50, 50],  # another color in there 167, 26, 26
+                  'cauldron': [167, 26, 26],  # two colors: 167, 26, 26 / 184, 50, 50
                   # and 184, 50, 50 you could see in the enemy!
-                  'enemy': [228, 111, 111],
+                  'enemy': [228, 111, 111],  # two colors: 184, 50, 50 (two red lines in middle) / 228, 111, 111
                   'score': [187, 187, 53],
                   'lives': [187, 187, 53],
 
@@ -36,7 +36,7 @@ class Enemy(GameObject):
 
 class Score(GameObject):
     def __init__(self, x, y, w, h, num, *args, **kwargs):
-        super().__init__(x, y, w, h, *args, **kwargs)
+        super().__init__(x, y, w, h, *args)
         self.rgb = 187, 187, 53  # same color as player
 
 
@@ -58,7 +58,7 @@ def _detect_objects_asterix(objects, obs, hud=False):
     #  if___:  # we need some if?
     objects.append(player)
 
-    cauldron = find_objects(obs, objects_colors["cauldron"], min_distance=10)
+    cauldron = find_objects(obs, objects_colors["cauldron"], closing_dist=6)
     objects.append(cauldron)
 
     enemy = find_objects(obs, objects_colors["enemy"], min_distance=10)
@@ -71,6 +71,9 @@ def _detect_objects_asterix(objects, obs, hud=False):
     lives = find_objects(obs, objects_colors["lives"], min_distance=10,
                          miny=181)
     objects.append(lives)
+
+    bounty = find_objects(obs, objects_colors["bounty"], min_distance=10)
+    objects.append(bounty)
 
     print(*objects, sep="\n")
     print(len(objects))
