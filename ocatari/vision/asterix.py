@@ -1,17 +1,18 @@
 from .utils import find_objects
 from .game_objects import GameObject
 
-objects_colors = {'player': [187, 187, 53],  # meat has same color
+objects_colors = {'player': [187, 187, 53],
                   'cauldron': [167, 26, 26],  # two colors: 167, 26, 26 / 184, 50, 50
                   'enemy': [228, 111, 111],
                   'score': [187, 187, 53],
                   'lives': [187, 187, 53],
                   'bounty': [198, 89, 179],  # bounty or prize or bonus
+                  'helmet': [240, 128, 128]  # got when I fastened lives and after 13600 frames
 
-                  # new not edited objects:
-
-                  # 'lamp': [184, 50, 50],  # you dont see it if you dont play with ram (and not sure if CORRECT color)
-                  # 'meat': [187, 187, 53], same color as player. you dont see it if you dont play with ram
+                  # objects you only see if you play with ram (and not sure if CORRECT color):
+                  # 'lamp': [184, 50, 50],
+                  # 'meat': [187, 187, 53], same color as player
+                  # 'mug': [187, 187, 53], (see pictures)
                   # play with index 90 to maybe see other kind of objects
 
                   }  # it still not all objects covered
@@ -53,6 +54,11 @@ class Bounty(GameObject):
         self.rgb = 198, 89, 179
 
 
+class Helmet(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 240, 128, 128
+
 # initialize new classes for new covered objects
 
 
@@ -87,6 +93,6 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in bounty:
         objects.append(Bounty(*instance))
 
-    # print("\n", len(objects), "elements in objects:")
+    # print("\nobjects:")
     # print(*objects, sep="\n")
-    # print("\n\n")
+    # print("\n")
