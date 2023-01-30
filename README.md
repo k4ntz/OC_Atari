@@ -22,7 +22,7 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 
 ### Priority 2:
 - [ ]  Berzerk (worked on by Chris)
-- [ ]  Secret Quest (worked on by Chris)
+- [ ]  Secret Quest -> not supported by gym
 - [ ]  River Raid (worked on by Chris)
 - [ ]  Atlantis
 - [ ]  Star Raiders
