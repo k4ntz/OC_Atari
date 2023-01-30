@@ -79,12 +79,19 @@ def _init_objects_asterix_ram(hud=False):
 
     return objects
 
-
 def _detect_objects_asterix_raw(info, ram_state):
-    info["x_positions"] = ram_state[42:50]
+    info["x_positions"] = ram_state[41:50]  # 41 for player
+    info["y_player"] = ram_state[39]  # from 0 to 7 (8 lanes)
+    info["score"] = ram_state[94:97]
+    info["lives"] = ram_state[83]
+    info["ability_moving_objects"] = ram_state[19:27]
+    info["kind_of_objs"] = ram_state[29:37]  # if enemy or cauldron (first bit lsb)
 
     print(ram_state)
 
 
 def _detect_objects_asterix_revised(objects, ram_state, hud=False):
+    for x in objects[:9]:
+        objects[x].xy = ram_state[41+x], None
+
     print(ram_state)

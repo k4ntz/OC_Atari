@@ -1,17 +1,18 @@
 from .utils import find_objects
 from .game_objects import GameObject
 
-objects_colors = {'player': [187, 187, 53],
+objects_colors = {'player': [187, 187, 53],  # meat has same color
                   'cauldron': [167, 26, 26],  # two colors: 167, 26, 26 / 184, 50, 50
-
                   'enemy': [228, 111, 111],
                   'score': [187, 187, 53],
                   'lives': [187, 187, 53],
+                  'bounty': [198, 89, 179],  # bounty or prize or bonus
 
                   # new not edited objects:
-                  'bounty': [198, 89, 179],  # bounty or prize or bonus
-                  # make min_distance for bounty bigger cause of more than one color in this and you are
-                  # taking the borders, so you have all the object in the rectangle
+
+                  # 'lamp': [184, 50, 50],  # you dont see it if you dont play with ram (and not sure if CORRECT color)
+                  # 'meat': [187, 187, 53], same color as player. you dont see it if you dont play with ram
+                  # play with index 90 to maybe see other kind of objects
 
                   }  # it still not all objects covered
 
