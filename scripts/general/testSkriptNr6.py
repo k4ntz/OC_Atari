@@ -10,58 +10,69 @@ env = OCAtari("Asterix-v4", mode="vision", render_mode='rgb_array')  # Skiing-v4
 observation, info = env.reset()
 prevRam = None
 
-# constant = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 19, 20, 21, 23, 24, 26, 27, 37, 38, 50, 51, 52, 53, 54, 55, 56, 57, 58,
-# 59, 60, 61, 62, 63, 64, 65, 66, 67, 70, 72, 81, 82, 84, 85, 86, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
-# 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 119, 120, 121, 122, 123,
-# 124, 125, 126, 127]
-
 constant = []
 not_important = constant + []
-already_figured_out = not_important + list(range(41, 50))  # 50 is excluded
-                                            # x_objects
-value = 0
-index = 84
+already_figured_out = not_important + list(range(41, 50)) + list(range(94, 97))\
+                      + list(range(29, 37)) + list(range(19, 27))
 
+value = 0
+index = 61
 for ROUND in range(1000000):
 
     if ROUND > 0:
-        print('round =', ROUND, 'index =', index, 'ram[' + str(index) + '] =', ram[index])
+        print('round =', ROUND, 'ram[' + str(index-1) + '] =', ram[index-1])
+        # for k in [6, 38, 54, 83, 88, 89, 120]:  # checking specific values
+        #     print( 'ram[' + str(k) + '] =', ram[k])
     else:
         print('round =', ROUND, 'index =', index)
     obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))
 
     if prevRam is not None:
-        # i = 7  # to test an individual index in all rounds
-        i = index
+        i = 39  # to test an individual index in all rounds (where the index keeps constant)
+        # i = index  # here the index meant to be incremented
 
-        value = (prevRam[i] + 31) % 256  # 31 = 00011111  (= more changes)
+        # value = (prevRam[i] + 31) % 256  # 31 = 00011111
+        # value = (prevRam[i] + 3) % 256
+        value = (prevRam[i] + 51) % 256  # 51 = 00110011 for efficient changes (= more and fast)
+        # value = (prevRam[i] + 1) % 256
+        # value = (prevRam[i] + 16) % 256
+        # value = (prevRam[i] * 2) % 256
+        # value = prevRam[i] + ( -1 ^ ( ROUND % 2 ))
+        # if ROUND % 2 == 0:
+        #     value = prevRam[i] -1
+        # else:
+        #     value = prevRam[i] + 1
         # value = -ram[i]
+        # value = 86
 
-        if ROUND % 1 == 0:
-            if index in [38, 86, 90]:  # this array is for asterix
-                index = index + 2
-            else:
+        if ROUND % 3 == 0:
+            while index in already_figured_out:
                 index = index + 1
+            index = index + 1
+
         if ROUND > 1:
-            env._env.unwrapped.ale.setRAM(i, value)
+            env._env.unwrapped.ale.setRAM(i, value)  # DON'T CHANGE. CHANGE ABOVE
 
         print(ram)
 
-        for i in range(len(ram)):
-            if ram[i] != prevRam[i] and i not in already_figured_out:
-                integ = ram[i] - prevRam[i]
+        for k in range(len(ram)):
+            if ram[k] != prevRam[k] and k not in already_figured_out:
+                if ram[k] > prevRam[k]:
+                    integ = ram[k] - prevRam[k]
+                else:
+                    integ = prevRam[k] - ram[k]
 
                 if integ > 127:
-                    print(str(i), '\t', -integ, '\t',
+                    print(str(k), '\t', -integ, '\t',
                           format(-integ, '08b'), '\t',
-                          str(ram[i]), '\t',
-                          format(ram[i], '08b'),
+                          str(ram[k]), '\t',
+                          format(ram[k], '08b'),
                           "negativ")
                 else:
-                    print(str(i), '\t', integ, '\t',
+                    print(str(k), '\t', integ, '\t',
                           format(integ, '08b'), '\t',
-                          str(ram[i]), '\t',
-                          format(ram[i], '08b')
+                          str(ram[k]), '\t',
+                          format(ram[k], '08b')
                           )
 
         print("------------------------------------------")

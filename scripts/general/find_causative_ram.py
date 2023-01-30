@@ -57,7 +57,7 @@ def find_causative_ram(game, x, y, width, height, show_plot=False):
 
 if __name__ == "__main__":
     X = 0
-    Y = 183
+    Y = 173
     WIDTH = 158
     HEIGHT = 10
 
