@@ -56,6 +56,8 @@ for ROUND in range(1000000):
         # print(ram)
 
         env._env.unwrapped.ale.setRAM(83, 2)
+        # env._env.unwrapped.ale.setRAM(94, 10)
+        # env._env.unwrapped.ale.setRAM(95, 10)
 
         for k in range(len(ram)):
             if ram[k] != prevRam[k] and k not in already_figured_out:
@@ -81,10 +83,13 @@ for ROUND in range(1000000):
 
         if terminated or truncated:
             observation, info = env.reset()
-        print(info)
+        # print(info)
 
         env.render()
-        if info.get("frame_number") % 100 == 0:
+        if ROUND % 100 == 1:
+            env._env.unwrapped.ale.setRAM(96, ram[96]+10)
+            env._env.unwrapped.ale.setRAM(95, ram[95] + 10)
+        if ROUND % 100 == 0:
             rgb_array = env.render()
             plt.imshow(rgb_array)  # rgb_array stuff for fun
             plt.show()

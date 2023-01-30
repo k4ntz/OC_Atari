@@ -19,7 +19,7 @@ for i in range(1000):
     obs, reward, terminated, truncated, info = env.step(-2)
     obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))
     # env.step(env.action_space.sample())
-    if i % 5 == 0:
+    if i % 50 == 0:
         print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
