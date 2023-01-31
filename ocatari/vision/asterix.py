@@ -2,37 +2,48 @@ from .utils import find_objects
 from .game_objects import GameObject
 
 objects_colors = {'player': [187, 187, 53],
-                  'cauldron': [167, 26, 26],  # two colors: 167, 26, 26 / 184, 50, 50
                   'enemy': [228, 111, 111],
                   'score': [187, 187, 53],
                   'lives': [187, 187, 53],
-                  # eataobjects
-                  # (bounty or prize or bonus). and all bounties have same size
+
+                  # (bounty/prize/bonus). and all bounties have same size
                   'bounty1': [198, 89, 179],  # value 50  cauldron
-                  'bounty2': [135, 183, 84],  # value 100 helmet
+                  'bounty2': [135, 183, 84],  # value 100 helmet. same as bounty5 :(
                   'bounty3': [195, 144, 61],  # value 200 shield
-                  'bounty4': [213, 130, 74],  # value 300
-                  # 'bounty5': [],            # value 400
-                  'bounty6': [163, 57, 21],  # value 500 (meet, )
+                  'bounty4': [213, 130, 74],  # value 300 lamp
+                  'bounty5': [135, 183, 84],  # value 400 apple
+                  'bounty6': [163, 57, 21],  # value 500 fish, meat and mug
+
+                  # next objects are which meant with reward
+                  'cauldron': [167, 26, 26],  # two colors: 167, 26, 26 / 184, 50, 50
                   'helmet': [240, 128, 128],  # first line color 236, 236, 236 after 13600 frames
                   'shield': [214, 214, 214],
                   'lamp': [187, 53, 53],
-                  'fish': [198, 89, 179],
                   'apple': [184, 50, 50],  # for red. and 110, 156, 66 for green
+                  'fish': [198, 89, 179],
                   'meat': [184, 50, 50],  # 214, 214, 214 for small white part (like shield)
                   'mug': [184, 50, 50],  # 214, 214, 214 for small white part (both colors like shield and meat)
-
-                  # objects you only see if you play with ram (and not sure if CORRECT color):
-                  # 'mug': [187, 187, 53], (see pictures)
-                  # play with index 90 to maybe see other kind of objects
-
-                  }  # it still not all objects covered
+                  }
 
 
 class Player(GameObject):  # player could be shown over all enemies/other objects (see Figure_4.png)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 187, 187, 53
+
+
+# is it better to implement this class for all possible rewards than to have a class for every reward?
+class Reward(GameObject):
+    def __init__(self, num, *args, **kwargs):
+        super(self).__init__(*args, **kwargs)
+        self.rgb = ([167, 26, 26],
+                    [240, 128, 128],
+                    [214, 214, 214],
+                    [187, 53, 53],
+                    [184, 50, 50],
+                    [198, 89, 179],
+                    [184, 50, 50],
+                    [184, 50, 50])[num + 1]
 
 
 class Cauldron(GameObject):
@@ -68,6 +79,7 @@ class Bounty(GameObject):
         #             (195, 144, 61),
         #             )[num - 1]
 
+
 class Helmet(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -78,6 +90,7 @@ class Shield(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 214, 214, 214
+
 
 # initialize new classes for new covered objects
 
