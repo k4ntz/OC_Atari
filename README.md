@@ -22,17 +22,17 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 
 ### Priority 2:
 - [ ]  Berzerk (worked on by Chris)
-- [ ]  Secret Quest
+- [ ]  Secret Quest -> not supported by gym
 - [ ]  River Raid (worked on by Chris)
 - [ ]  Atlantis
-- [ ]  Star Raiders
+- [ ]  Star Raiders -> not supported by gym
 - [ ]  Chopper Command (worked on by Sebastian)
 - [ ]  Q*bert
 - [ ]  Assault
 - [ ]  Beam Rider
 - [x]  Boxing
-- [ ]  Carnival
-- [ ]  Centipede
+- [ ]  Carnival (worked on by Chris)
+- [ ]  Centipede (worked on by Timo)
 
 ### Priority 3:
 - [ ]  Montezumas Revenge
@@ -57,7 +57,7 @@ You can change the `mode` argument line 10!
 
 ##
 ```py
-from ocatari import OCAtari
+from ocatari.core import OCAtari
 import time
 import random
 env = OCAtari("Skiing")

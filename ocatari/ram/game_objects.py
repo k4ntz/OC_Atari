@@ -1,4 +1,4 @@
-class GameObject():
+class GameObject:
     GET_COLOR = False
     GET_WH = False
 
@@ -53,6 +53,10 @@ class GameObject():
     @property
     def w(self):
         return self.wh[0]
+
+    @w.setter
+    def w(self, w):
+        self.wh = w, self.h
 
     @property
     def h(self):
