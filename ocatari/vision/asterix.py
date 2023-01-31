@@ -7,25 +7,27 @@ objects_colors = {'player': [187, 187, 53],
                   'lives': [187, 187, 53],
 
                   # (bounty/prize/bonus). and all bounties have same size
-                  'bounty1': [198, 89, 179],  # value 50  cauldron
-                  'bounty2': [135, 183, 84],  # value 100 helmet. same as bounty5 :(
-                  'bounty3': [195, 144, 61],  # value 200 shield
-                  'bounty4': [213, 130, 74],  # value 300 lamp
-                  'bounty5': [135, 183, 84],  # value 400 apple
-                  'bounty6': [163, 57, 21],  # value 500 fish, meat and mug
+                  # next color is inner one. [170, 170, 170] is in all bounties
+                  # rename bounty to x_reward?
+                  'bounty1': [[198, 89, 179], [127, 92, 213]],  # value 50  cauldron
+                  'bounty2': [[135, 183, 84], [213, 130, 74]],  # value 100 helmet. same as bounty5 :(
+                  'bounty3': [[195, 144, 61], [84, 138, 210]],  # value 200 shield
+                  'bounty4': [[213, 130, 74], [84, 92, 214]],  # value 300 lamp
+                  'bounty5': [[135, 183, 84], [214, 92, 92]],  # value 400 apple
+                  'bounty6': [[163, 57, 21], [164, 89, 208]],  # value 500 fish, meat and mug
 
                   # next objects are which meant with reward
-                  'cauldron': [167, 26, 26],  # two colors: 167, 26, 26 / 184, 50, 50
+                  'cauldron': [[167, 26, 26], [184, 50, 50]],
                   'helmet': [240, 128, 128],  # first line color 236, 236, 236 after 13600 frames
                   'shield': [214, 214, 214],
                   'lamp': [187, 53, 53],
-                  'apple': [184, 50, 50],  # for red. and 110, 156, 66 for green
+                  'apple': [[184, 50, 50], [110, 156, 66]],  # red and green. 110, 156, 66 is for green
                   'fish': [198, 89, 179],
-                  'meat': [184, 50, 50],  # 214, 214, 214 for small white part (like shield)
-                  'mug': [184, 50, 50],  # 214, 214, 214 for small white part (both colors like shield and meat)
+                  'meat': [[184, 50, 50], [214, 214, 214]],  # 214, 214, 214 for small white part
+                  'mug': [[184, 50, 50], [214, 214, 214]]  # like meat. how to differ?
 
-                  # multicolor objects
-                  '50_reward': [[170, 170, 170], [127, 92, 213], [198, 89, 179]]
+                  # multicolor objects. should we give all contained colores or just what makes obj unique
+                  # '50_reward': [[170, 170, 170], [127, 92, 213], [198, 89, 179]]
                   }
 
 
@@ -36,6 +38,7 @@ class Player(GameObject):  # player could be shown over all enemies/other object
 
 
 # is it better to implement this class for all possible rewards than to have a class for every reward?
+# one of the advantages is that the one object turns into another at once
 class Reward(GameObject):
     def __init__(self, num, *args, **kwargs):
         super(self).__init__(*args, **kwargs)
@@ -46,7 +49,7 @@ class Reward(GameObject):
                     [184, 50, 50],
                     [198, 89, 179],
                     [184, 50, 50],
-                    [184, 50, 50])[num + 1]
+                    [184, 50, 50])[num - 1]
 
 
 class Cauldron(GameObject):
