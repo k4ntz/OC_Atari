@@ -92,7 +92,7 @@ def _init_objects_asterix_ram(hud=False):
     """
     objects = [Player, Cauldron, Enemy, Bounty, Helmet]
     if hud:
-        objects.append(Score, Lives)
+        objects.extend([Score, Lives])
 
     return objects
 
