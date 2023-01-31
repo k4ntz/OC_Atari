@@ -6,15 +6,23 @@ objects_colors = {'player': [187, 187, 53],
                   'enemy': [228, 111, 111],
                   'score': [187, 187, 53],
                   'lives': [187, 187, 53],
-                  'bounty1': [198, 89, 179],  # (bounty or prize or bonus) value 50
-                  'bounty2': [135, 183, 84],  # value 100
-                  'bounty3': [195, 144, 61],  # value 200
-                  'helmet': [240, 128, 128],  # got when I fastened lives and after 13600 frames
+                  # eataobjects
+                  # (bounty or prize or bonus). and all bounties have same size
+                  'bounty1': [198, 89, 179],  # value 50  cauldron
+                  'bounty2': [135, 183, 84],  # value 100 helmet
+                  'bounty3': [195, 144, 61],  # value 200 shield
+                  'bounty4': [213, 130, 74],  # value 300
+                  # 'bounty5': [],            # value 400
+                  'bounty6': [163, 57, 21],  # value 500 (meet, )
+                  'helmet': [240, 128, 128],  # first line color 236, 236, 236 after 13600 frames
                   'shield': [214, 214, 214],
+                  'lamp': [187, 53, 53],
+                  'fish': [198, 89, 179],
+                  'apple': [184, 50, 50],  # for red. and 110, 156, 66 for green
+                  'meat': [184, 50, 50],  # 214, 214, 214 for small white part (like shield)
+                  'mug': [184, 50, 50],  # 214, 214, 214 for small white part (both colors like shield and meat)
 
                   # objects you only see if you play with ram (and not sure if CORRECT color):
-                  # 'lamp': [184, 50, 50],
-                  # 'meat': [187, 187, 53], same color as player
                   # 'mug': [187, 187, 53], (see pictures)
                   # play with index 90 to maybe see other kind of objects
 
@@ -50,12 +58,15 @@ class Lives(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 187, 187, 53
 
-# TODO
+
 class Bounty(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, num, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 198, 89, 179
-
+        # self.rgb = ((187, 187, 53),
+        #             (135, 183, 84),
+        #             (195, 144, 61),
+        #             )[num - 1]
 
 class Helmet(GameObject):
     def __init__(self, *args, **kwargs):
@@ -98,9 +109,9 @@ def _detect_objects_asterix(objects, obs, hud=False):
         for instance in lives:
             objects.append(Lives(*instance))
 
-    bounty = find_objects(obs, objects_colors["bounty"], closing_dist=10)
-    for instance in bounty:
-        objects.append(Bounty(*instance))
+    # bounty = find_objects(obs, objects_colors["bounty"], closing_dist=10)
+    # for instance in bounty:
+    #     objects.append(Bounty(*instance))
 
     # print("\nobjects:")
     # print(*objects, sep="\n")
