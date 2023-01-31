@@ -1,4 +1,4 @@
-from .utils import find_objects
+from .utils import find_objects, find_mc_objects
 from .game_objects import GameObject
 
 objects_colors = {'player': [187, 187, 53],
@@ -23,6 +23,9 @@ objects_colors = {'player': [187, 187, 53],
                   'fish': [198, 89, 179],
                   'meat': [184, 50, 50],  # 214, 214, 214 for small white part (like shield)
                   'mug': [184, 50, 50],  # 214, 214, 214 for small white part (both colors like shield and meat)
+
+                  # multicolor objects
+                  '50_reward': [[170, 170, 170], [127, 92, 213], [198, 89, 179]]
                   }
 
 
@@ -80,6 +83,13 @@ class Bounty(GameObject):
         #             )[num - 1]
 
 
+class Reward(GameObject):
+    def __init__(self, num, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 170, 170, 170
+        self.value = num
+
+
 class Helmet(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -112,6 +122,11 @@ def _detect_objects_asterix(objects, obs, hud=False):
     enemy = find_objects(obs, objects_colors["enemy"], closing_dist=6)
     for instance in enemy:
         objects.append(Enemy(*instance))
+
+    rewards = find_mc_objects(obs, objects_colors["50_reward"], size=(10, 10),
+                              closing_dist=6)
+    for instance in rewards:
+        objects.append(Reward(50, *instance))
 
     if hud:
         score = find_objects(obs, objects_colors["score"], closing_dist=1, miny=160, maxy=181)  # min_distance=10) !!
