@@ -74,6 +74,16 @@ class Helmet(GameObject):
         self.hud = False
 
 
+
+class Shield(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 214, 214, 214
+        # self.visible = True
+        self._xy = 0, 0
+        # self.wh =
+        self.hud = False
+
 # initialize new classes for new covered objects
 
 
@@ -81,9 +91,9 @@ def _init_objects_asterix_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player, Cauldron, Enemy, Score, Lives, Bounty]
+    objects = [Player, Cauldron, Enemy, Bounty, Helmet]
     if hud:
-        objects.append(Score)
+        objects.append(Score, Lives)
 
 
     return objects
@@ -100,6 +110,12 @@ def _detect_objects_asterix_raw(info, ram_state):
 
 
 def _detect_objects_asterix_revised(objects, ram_state, hud=False):
+    # always 11 objects are given over:
+    # obj could be cauldron, enemy, helmet or bounty
+    objs = ()
+    player, *objs, score, lives = objects
+
+
     # for x in objects[:9]:
     #     objects[x].xy = ram_state[41+x], None
 

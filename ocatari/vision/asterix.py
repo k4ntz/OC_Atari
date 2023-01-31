@@ -6,8 +6,11 @@ objects_colors = {'player': [187, 187, 53],
                   'enemy': [228, 111, 111],
                   'score': [187, 187, 53],
                   'lives': [187, 187, 53],
-                  'bounty': [198, 89, 179],  # bounty or prize or bonus
-                  'helmet': [240, 128, 128]  # got when I fastened lives and after 13600 frames
+                  'bounty1': [198, 89, 179],  # (bounty or prize or bonus) value 50
+                  'bounty2': [198, 89, 179],  # value 100
+                  'bounty3': [198, 89, 179],  # value 200
+                  'helmet': [240, 128, 128],  # got when I fastened lives and after 13600 frames
+                  'shield': [214, 214, 214],
 
                   # objects you only see if you play with ram (and not sure if CORRECT color):
                   # 'lamp': [184, 50, 50],
@@ -47,7 +50,7 @@ class Lives(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 187, 187, 53
 
-
+# TODO
 class Bounty(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -58,6 +61,12 @@ class Helmet(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 240, 128, 128
+
+
+class Shield(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 214, 214, 214
 
 # initialize new classes for new covered objects
 
