@@ -25,13 +25,13 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [ ]  Secret Quest -> not supported by gym
 - [ ]  River Raid (worked on by Chris)
 - [ ]  Atlantis
-- [ ]  Star Raiders
+- [ ]  Star Raiders -> not supported by gym
 - [ ]  Chopper Command (worked on by Sebastian)
 - [ ]  Q*bert
 - [ ]  Assault
 - [ ]  Beam Rider
 - [x]  Boxing
-- [ ]  Carnival
+- [ ]  Carnival (worked on by Chris)
 - [ ]  Centipede (worked on by Timo)
 
 ### Priority 3:
