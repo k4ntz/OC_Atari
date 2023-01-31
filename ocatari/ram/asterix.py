@@ -63,7 +63,6 @@ class Bounty(GameObject):
         self.hud = False
 
 
-
 class Helmet(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -74,7 +73,6 @@ class Helmet(GameObject):
         self.hud = False
 
 
-
 class Shield(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -83,6 +81,7 @@ class Shield(GameObject):
         self._xy = 0, 0
         # self.wh =
         self.hud = False
+
 
 # initialize new classes for new covered objects
 
@@ -95,8 +94,8 @@ def _init_objects_asterix_ram(hud=False):
     if hud:
         objects.append(Score, Lives)
 
-
     return objects
+
 
 def _detect_objects_asterix_raw(info, ram_state):
     info["x_positions"] = ram_state[41:50]  # 41 for player
@@ -104,7 +103,7 @@ def _detect_objects_asterix_raw(info, ram_state):
     info["score"] = ram_state[94:97]  # on ram in decimal/ on screen in hex(like other 2 games)
     info["lives"] = ram_state[83]
     info["ability_moving_objects"] = ram_state[19:27]
-    info["kind_of_objs"] = ram_state[29:37]  # if enemy or cauldron (first bit lsb)
+    info["kind_of_objs"] = ram_state[29:37]  # just if enemy or cauldron (first bit lsb)
 
     print(ram_state)
 
@@ -114,7 +113,6 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
     # obj could be cauldron, enemy, helmet or bounty
     objs = ()
     player, *objs, score, lives = objects
-
 
     # for x in objects[:9]:
     #     objects[x].xy = ram_state[41+x], None
