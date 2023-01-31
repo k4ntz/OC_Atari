@@ -7,8 +7,8 @@ objects_colors = {'player': [187, 187, 53],
                   'score': [187, 187, 53],
                   'lives': [187, 187, 53],
                   'bounty1': [198, 89, 179],  # (bounty or prize or bonus) value 50
-                  'bounty2': [198, 89, 179],  # value 100
-                  'bounty3': [198, 89, 179],  # value 200
+                  'bounty2': [135, 183, 84],  # value 100
+                  'bounty3': [195, 144, 61],  # value 200
                   'helmet': [240, 128, 128],  # got when I fastened lives and after 13600 frames
                   'shield': [214, 214, 214],
 
