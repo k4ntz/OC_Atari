@@ -32,7 +32,7 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [ ]  Beam Rider
 - [x]  Boxing
 - [ ]  Carnival
-- [ ]  Centipede
+- [ ]  Centipede (worked on by Timo)
 
 ### Priority 3:
 - [ ]  Montezumas Revenge
@@ -57,7 +57,7 @@ You can change the `mode` argument line 10!
 
 ##
 ```py
-from ocatari import OCAtari
+from ocatari.core import OCAtari
 import time
 import random
 env = OCAtari("Skiing")
