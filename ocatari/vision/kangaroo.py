@@ -25,7 +25,8 @@ class Fruit(GameObject):
         self.rgb = 214, 92, 92
 
 
-# This is the object falling from the Top onto you or the one thrown at you
+# This would be the Object dropping from the Top, but the colour matches with the walls, floors and ladders.
+# It can therefore not be detected Properly
 class Projectile(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -76,34 +77,38 @@ def _detect_objects_kangaroo(objects, obs, hud=True):
     for bb in bell:
         objects.append(Bell(*bb))
 
+    # In this game both the enemy and their Projectile have the same colour.
+    # Both of them can be positioned at varios spots in the level, which makes it almost impossible to differ between them
     enemy = find_objects(obs, objects_colors["enemy"], min_distance=1)
 
     for bb in enemy:
         en = Enemy(*bb)
         objects.append(en)
 
-    proj = find_objects(obs, objects_colors["projectile"], min_distance=0.1, minx=16, maxx= 140, miny=3, maxy=27)
-    
+    proj = find_objects(obs, objects_colors["projectile"], min_distance=1, size= [2,3])
+
+    # proj = find_objects(obs, objects_colors["projectile"], min_distance=1, minx=16, maxx= 140, miny=3, maxy=27)
+
     for bb in proj:
         p = Projectile(*bb)
         objects.append(p)
 
-    proj = find_objects(obs, objects_colors["projectile"], min_distance=0.1, minx=16, maxx= 120, miny=32, maxy=75)
-    
-    for bb in proj:
-        p = Projectile(*bb)
-        objects.append(p)
+    # proj = find_objects(obs, objects_colors["projectile"], min_distance=1, minx=16, maxx= 120, miny=35, maxy=70)
+
+    # for bb in proj:
+    #     p = Projectile(*bb)
+    #     objects.append(p)
 
 
     if hud:
-        life = find_objects(obs, objects_colors["hud"], min_distance=1, minx=10, maxx= 40)
+        life = find_objects(obs, objects_colors["hud"], min_distance=1, minx=10, maxx=40)
         for bb in life:
             objects.append(Life(*bb))
 
-        time = find_objects(obs, objects_colors["hud"], min_distance=1, minx=70, maxx= 100)
+        time = find_objects(obs, objects_colors["hud"], min_distance=1, minx=70, maxx=100)
         for bb in time:
             objects.append(Time(*bb))
 
-        score = find_objects(obs, objects_colors["hud"], min_distance=1, minx=120, maxx= 150)
+        score = find_objects(obs, objects_colors["hud"], min_distance=1, minx=120, maxx=150)
         for bb in score:
             objects.append(Score(*bb))
