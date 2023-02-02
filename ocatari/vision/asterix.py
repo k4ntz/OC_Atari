@@ -135,7 +135,7 @@ def _detect_objects_asterix(objects, obs, hud=False):
 
     ctr = 1
     for x in ["reward1", "reward2", "reward3", "reward4", "reward5", "reward6"]:
-        reward = find_mc_objects(obs, objects_colors[x], min_distance=1, size=(10, 10), closing_dist=8)
+        reward = find_mc_objects(obs, objects_colors[x], min_distance=2, size=(10, 10), closing_dist=8)
         for instance in reward:
             objects.append(Reward(ctr, *instance))
             ctr += 1
@@ -144,7 +144,7 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in helmet:
         objects.append(Helmet(*instance))
 
-    shield = find_objects(obs, objects_colors["shield"], closing_dist=0, size=(5, 11), min_distance=0)  # teste pars
+    shield = find_objects(obs, objects_colors["shield"], closing_dist=1, size=(5, 11), min_distance=2)  #
     for instance in shield:
         objects.append(Shield(*instance))
 
@@ -152,14 +152,28 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in lamp:
         objects.append(Lamp(*instance))
 
-    # 'apple':     'fish': 'meat':  'mug':
-    
+    apple = find_mc_objects(obs, objects_colors["apple"], closing_dist=2, min_distance=2)
+    for instance in apple:
+        objects.append(Apple(*instance))
+
+    fish = find_objects(obs, objects_colors["fish"], closing_dist=1, min_distance=2)
+    for instance in fish:
+        objects.append(Fish(*instance))
+
+    meat = find_mc_objects(obs, objects_colors["meat"], closing_dist=1, min_distance=2)
+    for instance in meat:
+        objects.append(Meat(*instance))
+
+    mug = find_mc_objects(obs, objects_colors["mug"], closing_dist=1, min_distance=2)
+    for instance in mug:
+        objects.append(Mug(*instance))
+
     if hud:
         score = find_objects(obs, objects_colors["score"], closing_dist=3, miny=160, maxy=181)  # cl_di was 1 before
         for instance in score:
             objects.append(Score(*instance))
 
-        lives = find_objects(obs, objects_colors["lives"], min_distance=1, miny=181)
+        lives = find_objects(obs, objects_colors["lives"], min_distance=2, miny=181)
         for instance in lives:
             objects.append(Lives(*instance))
 
