@@ -41,20 +41,20 @@ class Reward(GameObject):
     def __init__(self, num, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = (
-            [[198, 89, 179], [127, 92, 213]],
-            [[135, 183, 84], [213, 130, 74]],
-            [[195, 144, 61], [84, 138, 210]],
-            [[213, 130, 74], [84, 92, 214]],
-            [[135, 183, 84], [214, 92, 92]],
-            [[163, 57, 21], [164, 89, 208]]
+            (198, 89, 179),  # , [127, 92, 213]],
+            (135, 183, 84),  # , [213, 130, 74]],
+            (195, 144, 61),  # [84, 138, 210]],
+            (213, 130, 74),  # [84, 92, 214]],
+            (135, 183, 84),  # [214, 92, 92]],
+            (163, 57, 21)  # [164, 89, 208]]
         )[num - 1]
-        # self.value = num  # what is this for, quentin?
+        # self.value = num
 
 
 class Cauldron(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = [[167, 26, 26], [184, 50, 50]]
+        self.rgb = 167, 26, 26  # , [184, 50, 50]]
 
 
 class Enemy(GameObject):
@@ -78,7 +78,7 @@ class Lives(GameObject):
 class Helmet(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = [[240, 128, 128], [236, 236, 236]]
+        self.rgb = 240, 128, 128  # [[240, 128, 128], [236, 236, 236]]
 
 
 class Shield(GameObject):
@@ -96,36 +96,35 @@ class Lamp(GameObject):
 class Apple(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = [[184, 50, 50], [110, 156, 66]]
+        self.rgb = 184, 50, 50  # [[184, 50, 50], [110, 156, 66]]
 
 
 class Fish(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = [198, 89, 179]
+        self.rgb = 198, 89, 179
 
 
 class Meat(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = [[184, 50, 50], [214, 214, 214]]
+        self.rgb = 184, 50, 50  # [[184, 50, 50], [214, 214, 214]]
 
 
 class Mug(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = [[184, 50, 50], [214, 214, 214]]
+        self.rgb = 184, 50, 50  # [[184, 50, 50], [214, 214, 214]]
 
 
-# TODO
 def _detect_objects_asterix(objects, obs, hud=False):
     objects.clear()
 
-    player = find_objects(obs, objects_colors["player"], maxy=160)
+    player = find_objects(obs, objects_colors["player"], maxy=160, tol_p=20)
     for instance in player:
         objects.append(Player(*instance))
 
-    cauldron = find_mc_objects(obs, objects_colors["cauldron"], size=(10, 10), closing_dist=6)
+    cauldron = find_mc_objects(obs, objects_colors["cauldron"], min_distance=3, size=(8, 11), tol_s=7, closing_dist=6)
     for instance in cauldron:
         objects.append(Cauldron(*instance))
 
@@ -135,10 +134,15 @@ def _detect_objects_asterix(objects, obs, hud=False):
 
     ctr = 1
     for x in ["reward1", "reward2", "reward3", "reward4", "reward5", "reward6"]:
-        reward = find_mc_objects(obs, objects_colors[x], min_distance=2, size=(10, 10), closing_dist=8)
-        for instance in reward:
-            objects.append(Reward(ctr, *instance))
-            ctr += 1
+        reward = find_mc_objects(obs, objects_colors[x], min_distance=2, closing_dist=10, miny=24, maxy=150)  # size=(9, 12),
+        if reward is not None:
+            for num in range(1, 7):
+                reward = find_mc_objects(obs, objects_colors[x], min_distance=2, closing_dist=10, miny=24, maxy=150)  # size=(10, 10),
+            for instance in reward:
+                objects.append(Reward(ctr, *instance))
+            break
+        ctr += 1
+
 
     helmet = find_mc_objects(obs, objects_colors["helmet"], closing_dist=6)
     for instance in helmet:
@@ -156,7 +160,7 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in apple:
         objects.append(Apple(*instance))
 
-    fish = find_objects(obs, objects_colors["fish"], closing_dist=1, min_distance=2)
+    fish = find_objects(obs, objects_colors["fish"], size=(8, 5), tol_s=2, closing_dist=1, min_distance=1)
     for instance in fish:
         objects.append(Fish(*instance))
 
@@ -169,11 +173,11 @@ def _detect_objects_asterix(objects, obs, hud=False):
         objects.append(Mug(*instance))
 
     if hud:
-        score = find_objects(obs, objects_colors["score"], closing_dist=3, miny=160, maxy=181)  # cl_di was 1 before
+        score = find_objects(obs, objects_colors["score"], closing_dist=4, miny=181)
         for instance in score:
             objects.append(Score(*instance))
 
-        lives = find_objects(obs, objects_colors["lives"], min_distance=2, miny=181)
+        lives = find_objects(obs, objects_colors["lives"], min_distance=1, miny=160, maxy=181)
         for instance in lives:
             objects.append(Lives(*instance))
 
