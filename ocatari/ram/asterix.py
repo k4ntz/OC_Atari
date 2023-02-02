@@ -53,7 +53,7 @@ class Lives(GameObject):
         self.hud = True
 
 
-class Bounty(GameObject):
+class Reward(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 198, 89, 179
@@ -90,7 +90,7 @@ def _init_objects_asterix_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player, Cauldron, Enemy, Bounty, Helmet]
+    objects = [Player, Cauldron, Enemy, Reward, Helmet]
     if hud:
         objects.extend([Score, Lives])
 
@@ -103,20 +103,19 @@ def _detect_objects_asterix_raw(info, ram_state):
     info["score"] = ram_state[94:97]  # on ram in decimal/ on screen in hex(like other 2 games)
     info["lives"] = ram_state[83]
     info["ability_moving_objects"] = ram_state[19:27]
-    info["kind_of_objs"] = ram_state[29:37]  # just if enemy or cauldron (first bit lsb)
+    # info["kind_of_objs"] = ram_state[29:37]  # just if enemy or cauldron (first bit lsb)
 
     print(ram_state)
 
 
 def _detect_objects_asterix_revised(objects, ram_state, hud=False):
     # always 11 objects are given over:
-    # obj could be cauldron, enemy, helmet or bounty
     objs = ()
     player, *objs, score, lives = objects
 
-    # for x in objects[:9]:
-    #     objects[x].xy = ram_state[41+x], None
-
-    # y-2 for a cauldron cause of change in color
+    # for x in objs:
+    #     if type(objs[x]) is Cauldron:
+    #         objs[objs[x]].y = objs[objs[x]].y - 2
+    #         objs[objs[x]].h = objs[objs[x]].h + 2
 
     print(ram_state)
