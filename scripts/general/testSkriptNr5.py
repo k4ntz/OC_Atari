@@ -27,19 +27,19 @@ for i in range(1000):
     # done split into 2 parts:
     # terminated = True if env terminates (completion or failure),
     # truncated = True if episodes truncates due to a time limit or a reason that is not defined of the task
-    obs, reward, terminated, truncated, info = env.step(6)
-    env.set_ram(36, 1)
+    obs, reward, terminated, truncated, info = env.step(5)
+    # env.set_ram(36, 1)
 
     # env.set_ram(62, 1)
     ram = env._env.unwrapped.ale.getRAM()
-    print(ram)
-    if prevRam is not None:
-        for i in range(len(ram)):
-            if ram[i] != prevRam[i] and i not in already_figured_out:
-                pad = "           "
-                for u in range(4 - len(str(i))):
-                    pad += " "
-                print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prevRam[i]))
+    print(ram[19])
+    # if prevRam is not None:
+    #     for i in range(len(ram)):
+    #         if ram[i] != prevRam[i]:  # and i not in already_figured_out:
+    #             pad = "           "
+    #             for u in range(4 - len(str(i))):
+    #                 pad += " "
+    #             print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prevRam[i]))
     print("------------------------------------------")
     prevRam = ram
 

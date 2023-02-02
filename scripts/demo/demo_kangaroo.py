@@ -17,13 +17,12 @@ observation, info = env.reset()
 # env._env.unwrapped.ale.setRAM(36, 2)
 
 for i in range(1000):
-    # if i < 105:
-    #     obs, reward, terminated, truncated, info = env.step(3)
-    # else:
+
     obs, reward, terminated, truncated, info = env.step(6)  # env.step(6) for easy movement
+
     # env._env.unwrapped.ale.setRAM(43, 6)
     # env._env.unwrapped.ale.setRAM(11, 10)
-    if i % 10 == 0 and i > 50:
+    if i%10 == 0 and i > 50:
         # obse2 = deepcopy(obse)
         print(env.objects)
         for obj in env.objects:
