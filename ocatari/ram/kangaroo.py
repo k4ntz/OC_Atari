@@ -1,10 +1,10 @@
-from ._helper_methods import _convert_number
 from .game_objects import GameObject
 
 """
 RAM extraction for the game KANGUROO. Supported modes: raw, revised.
 
 """
+
 
 class Player(GameObject):
     def __init__(self):
@@ -24,6 +24,7 @@ class Child(GameObject):
         self.wh = 8, 15
         self.rgb = 223, 183, 85
         self.hud = False
+
 
 class Enemy(GameObject):
     def __init__(self, *args, **kwargs):
@@ -111,7 +112,8 @@ def _init_objects_kangaroo_ram(hud=True):
     (Re)Initialize the objects
     """
 
-    objects = [Player(), Child(), Enemy(), Enemy(), Enemy(), Enemy(), Projectile_top(), Projectile_enemy(), Fruit(), Fruit(), Fruit(), Bell()]
+    objects = [Player(), Child(), Enemy(), Enemy(), Enemy(), Enemy(),
+    Projectile_top(), Projectile_enemy(), Fruit(), Fruit(), Fruit(), Bell()]
 
     if hud:
         x = 137
@@ -195,7 +197,7 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
         p2.xy = ram_state[28] + 15, (ram_state[25] * 8) + 1
     else:
         p2.visible = False
-    
+
     # fruits
     if ram_state[87] == ram_state[86]:
         y1 = (ram_state[84] * 8) + 4
@@ -237,8 +239,7 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
     else:
         f3.visible = False
 
-    bell.xy = ram_state[82] + 15, 36 
-
+    bell.xy = ram_state[82] + 15, 36
 
     if hud:
         # score
@@ -267,7 +268,6 @@ def _detect_objects_kangaroo_raw(info, ram_state):
     # if the coordinates equal 255 they are not visible on screen
     info["ram_slice"] = ram_state[0:18] + ram_state[25], ram_state[28], ram_state[33:35], ram_state[83]
 
-
     # info["player_position"] = ram_state[17], ram_state[16]
     # info["kangaroo_child"] = ram_state[83]
     # info["monkey_1_position"] = ram_state[15], ram_state[11]
@@ -276,6 +276,7 @@ def _detect_objects_kangaroo_raw(info, ram_state):
     # info["monkey_4_position"] = ram_state[12], ram_state[8]
     # info["bouncing_projectile_position"] = ram_state[34], ram_state[33]
     # info["monkey_projectile_position"] = ram_state[28], ram_state[25]
+    # info["level"] = ram_state[36] takes values 0-2
 
 
 def _get_fruit_type_kangaroo(ram_state):
