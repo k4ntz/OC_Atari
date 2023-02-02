@@ -143,7 +143,13 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
     kp, kc, m1, m2, m3, m4, p1, p2, f1, f2, f3, bell = objects[:12]
 
     # player
-    kp.xy = ram_state[17] + 15, ram_state[16] * 8 +5
+    kp.xy = ram_state[17] + 15, ram_state[16] * 8 + 5
+    if ram_state[19] > 16 and ram_state[19] < 24:
+        kp.wh = 8, 13
+    elif ram_state[19] == 31:
+        kp.wh = 8, 15
+    else:
+        kp.wh = 8, 24
 
     # kangaroo child (goal)
     kc.xy = ram_state[83] + 15, 12
@@ -259,7 +265,7 @@ def _detect_objects_kangaroo_raw(info, ram_state):
 
     # for proper y coordinates you will have to multiply by 8
     # if the coordinates equal 255 they are not visible on screen
-    info["ram_slice"] = ram_state[0:18, 25, 28, 33:35, 83]
+    info["ram_slice"] = ram_state[0:18] + ram_state[25], ram_state[28], ram_state[33:35], ram_state[83]
 
 
     # info["player_position"] = ram_state[17], ram_state[16]
