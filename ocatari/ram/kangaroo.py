@@ -113,7 +113,7 @@ def _init_objects_kangaroo_ram(hud=True):
     """
 
     objects = [Player(), Child(), Enemy(), Enemy(), Enemy(), Enemy(),
-    Projectile_top(), Projectile_enemy(), Fruit(), Fruit(), Fruit(), Bell()]
+               Projectile_top(), Projectile_enemy(), Fruit(), Fruit(), Fruit(), Bell()]
 
     if hud:
         x = 137
