@@ -6,15 +6,24 @@ RAM extraction for the game KANGUROO. Supported modes: raw, revised.
 
 """
 
-class Kangaroo(GameObject):
+class Player(GameObject):
     def __init__(self):
-        super(Kangaroo, self).__init__()
+        super(Player, self).__init__()
         self.visible = True
         self._xy = 78, 103
         self.wh = 8, 24
         self.rgb = 223, 183, 85
         self.hud = False
 
+
+class Child(GameObject):
+    def __init__(self):
+        super(Child, self).__init__()
+        self.visible = True
+        self._xy = 78, 12
+        self.wh = 8, 15
+        self.rgb = 223, 183, 85
+        self.hud = False
 
 class Enemy(GameObject):
     def __init__(self, *args, **kwargs):
@@ -23,7 +32,7 @@ class Enemy(GameObject):
         self.visible = True
         self._xy = 79, 57
         self.wh = 7, 15
-        self.rgb = 227,159,89
+        self.rgb = 227, 159, 89
         self.hud = False
 
 
@@ -37,14 +46,23 @@ class Fruit(GameObject):
         self.hud = False
 
 
-# This is the object falling from the Top onto you or the one thrown at you by mokeys
-class Projectile(GameObject):
+class Projectile_top(GameObject):
     def __init__(self, *args, **kwargs):
-        super(Projectile, self).__init__()
+        super(Projectile_top, self).__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 2, 3
         self.rgb = 162, 98, 33
+        self.hud = False
+
+
+class Projectile_enemy(GameObject):
+    def __init__(self, *args, **kwargs):
+        super(Projectile_enemy, self).__init__()
+        self.visible = True
+        self._xy = 0, 0
+        self.wh = 2, 3
+        self.rgb = 227, 159, 89
         self.hud = False
 
 
@@ -93,7 +111,7 @@ def _init_objects_kangaroo_ram(hud=True):
     (Re)Initialize the objects
     """
 
-    objects = [Kangaroo(), Kangaroo(), Enemy(), Enemy(), Enemy(), Enemy(), Projectile(), Projectile(), Fruit(), Fruit(), Fruit(), Bell()]
+    objects = [Player(), Child(), Enemy(), Enemy(), Enemy(), Enemy(), Projectile_top(), Projectile_enemy(), Fruit(), Fruit(), Fruit(), Bell()]
 
     if hud:
         x = 137
@@ -122,14 +140,13 @@ def _init_objects_kangaroo_ram(hud=True):
 
 # levels: ram_state[36], total of 3 levels: 0,1 and 2
 def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
-    kp, kk, m1, m2, m3, m4, p1, p2, f1, f2, f3, bell = objects[:12]
+    kp, kc, m1, m2, m3, m4, p1, p2, f1, f2, f3, bell = objects[:12]
 
     # player
     kp.xy = ram_state[17] + 15, ram_state[16] * 8 +5
 
-    # kangaroo kid (goal)
-    kk.xy = ram_state[83] + 15, 12
-    kk.wh = 8, 15
+    # kangaroo child (goal)
+    kc.xy = ram_state[83] + 15, 12
 
     # enemys/mokeys
     if ram_state[11] != 255:
@@ -238,19 +255,21 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
     return objects
 
 
-
 def _detect_objects_kangaroo_raw(info, ram_state):
 
     # for proper y coordinates you will have to multiply by 8
     # if the coordinates equal 255 they are not visible on screen
-    info["player_position"] = ram_state[17], ram_state[16]
-    info["kangaroo_child"] = ram_state[83]
-    info["monkey_1_position"] = ram_state[15], ram_state[11]
-    info["monkey_2_position"] = ram_state[14], ram_state[10]
-    info["monkey_3_position"] = ram_state[13], ram_state[9]
-    info["monkey_4_position"] = ram_state[12], ram_state[8]
-    info["bouncing_projectile_position"] = ram_state[34], ram_state[33]
-    info["monkey_projectile_position"] = ram_state[28], ram_state[25]
+    info["ram_slice"] = ram_state[0:18, 25, 28, 33:35, 83]
+
+
+    # info["player_position"] = ram_state[17], ram_state[16]
+    # info["kangaroo_child"] = ram_state[83]
+    # info["monkey_1_position"] = ram_state[15], ram_state[11]
+    # info["monkey_2_position"] = ram_state[14], ram_state[10]
+    # info["monkey_3_position"] = ram_state[13], ram_state[9]
+    # info["monkey_4_position"] = ram_state[12], ram_state[8]
+    # info["bouncing_projectile_position"] = ram_state[34], ram_state[33]
+    # info["monkey_projectile_position"] = ram_state[28], ram_state[25]
 
 
 def _get_fruit_type_kangaroo(ram_state):
