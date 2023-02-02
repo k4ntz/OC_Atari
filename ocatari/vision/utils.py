@@ -126,7 +126,8 @@ def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
     min_distance: minimal distance between two detected objects
     """
 
-    masks = [cv2.inRange(image, np.array(color), np.array(color)) for color in colors]
+    masks = [cv2.inRange(image[miny:maxy,minx:maxx,:],
+                         np.array(color), np.array(color)) for color in colors]
     for mask in masks:
         if mask.max() == 0:
             return []
@@ -142,6 +143,7 @@ def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
     #     cv2.drawContours(image, contour, -1, (0, 255, 0), 3)
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
+        x, y = x + minx, y + miny  # compensing cuttoff
         if size:
             if not assert_in((h, w), size, tol_s):
                 continue
@@ -156,8 +158,8 @@ def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
                     break
             if too_close:
                 continue
-        if x < minx or x+w > maxx or y < miny or y+h > maxy:
-            continue
+        # if x < minx or x+w > maxx or y < miny or y+h > maxy:
+        #     continue
         # detected.append((y, x, h, w))
         detected.append((x, y, w, h))
     return detected
@@ -175,8 +177,8 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
     tol_p: tolerance on the position
     min_distance: minimal distance between two detected objects
     """
-    mask = cv2.inRange(image, np.array(color), np.array(color))
-    # import ipdb; ipdb.set_trace()
+    mask = cv2.inRange(image[miny:maxy,minx:maxx,:],
+                       np.array(color), np.array(color))
     if closing_active:
         closed = closing(mask, square(closing_dist))
         # closed = closing(closed, square(closing_dist))
@@ -186,6 +188,7 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
     detected = []
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
+        x, y = x + minx, y + miny  # compensing cuttoff
         if size:
             if not assert_in((h, w), size, tol_s):
                 continue
@@ -200,8 +203,8 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
                     break
             if too_close:
                 continue
-        if x < minx or x+w > maxx or y < miny or y+h > maxy:
-            continue
+        # if x < minx or x+w > maxx or y < miny or y+h > maxy:
+        #     continue
         # detected.append((y, x, h, w))
         detected.append((x, y, w, h))
     return detected

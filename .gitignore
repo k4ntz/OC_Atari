@@ -7,6 +7,7 @@ scripts/general/testSkriptNr2.py
 scripts/general/testSkriptNr3.py
 scripts/general/testSkriptNr4.py
 scripts/general/testSkriptNr5.py
-tests/diff_images
+*diff_images
 *.xml
 .idea/bachelor-praktikum.iml
+
