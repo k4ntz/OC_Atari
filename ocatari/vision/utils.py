@@ -125,7 +125,7 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
     tol_p: tolerance on the position
     min_distance: minimal distance between two detected objects
     """
-    mask = cv2.inRange(image, np.array(color), np.array(color))
+    mask = cv2.inRange(image[miny:maxy,minx:maxx,:], np.array(color), np.array(color))
     # import ipdb; ipdb.set_trace()
     if closing_active:
         closed = closing(mask, square(closing_dist))
@@ -136,6 +136,7 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
     detected = []
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
+        x, y = x + minx, y + miny  # compensing cuttoff
         if size:
             if not assert_in((h, w), size, tol_s):
                 continue

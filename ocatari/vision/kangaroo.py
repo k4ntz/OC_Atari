@@ -85,19 +85,29 @@ def _detect_objects_kangaroo(objects, obs, hud=True):
         en = Enemy(*bb)
         objects.append(en)
 
-    proj = find_objects(obs, objects_colors["projectile"], min_distance=1, size= [2,3])
-
-    # proj = find_objects(obs, objects_colors["projectile"], min_distance=1, minx=16, maxx= 140, miny=3, maxy=27)
+    proj = find_objects(obs, objects_colors["projectile"], min_distance=1, minx=16, maxx= 140, miny=3, maxy=27, size=(2,3), tol_s=2)
 
     for bb in proj:
         p = Projectile(*bb)
         objects.append(p)
 
-    # proj = find_objects(obs, objects_colors["projectile"], min_distance=1, minx=16, maxx= 120, miny=35, maxy=70)
+    proj = find_objects(obs, objects_colors["projectile"], min_distance=1, minx=16, maxx= 140, miny=35, maxy=70, size=(2,3), tol_s=2)
 
-    # for bb in proj:
-    #     p = Projectile(*bb)
-    #     objects.append(p)
+    for bb in proj:
+        p = Projectile(*bb)
+        objects.append(p)
+    
+    proj = find_objects(obs, objects_colors["projectile"], min_distance=1, minx=16, maxx= 140, miny=80, maxy=123, size=(2,3), tol_s=2)
+
+    for bb in proj:
+        p = Projectile(*bb)
+        objects.append(p)
+    
+    proj = find_objects(obs, objects_colors["projectile"], min_distance=1, minx=16, maxx= 140, miny=128, maxy=171, size=(2,3), tol_s=2)
+
+    for bb in proj:
+        p = Projectile(*bb)
+        objects.append(p)
 
 
     if hud:
