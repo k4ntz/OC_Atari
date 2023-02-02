@@ -24,10 +24,10 @@ objects_colors = {'player': [187, 187, 53],
                   'apple': [[184, 50, 50], [110, 156, 66]],  # red and green. 110, 156, 66 is for green
                   'fish': [198, 89, 179],
                   'meat': [[184, 50, 50], [214, 214, 214]],  # 214, 214, 214 for small white part
-                  'mug': [[184, 50, 50], [214, 214, 214]]  # like meat. how to differ?
+                  'mug': [[184, 50, 50], [214, 214, 214]],  # like meat. how to differ?
 
                   # multicolor objects. should we give all contained colores or just what makes obj unique
-                  # '50_reward': [[170, 170, 170], [127, 92, 213], [198, 89, 179]]
+                  '50_reward': [[170, 170, 170], [127, 92, 213], [198, 89, 179]]
                   }
 
 
@@ -118,7 +118,7 @@ def _detect_objects_asterix(objects, obs, hud=False):
         objects.append(Player(*instance))
     # objects.append(player)
 
-    cauldron = find_objects(obs, objects_colors["cauldron"], closing_dist=6)
+    cauldron = find_mc_objects(obs, objects_colors["cauldron"], closing_dist=6)
     for instance in cauldron:
         objects.append(Cauldron(*instance))
 
@@ -127,7 +127,7 @@ def _detect_objects_asterix(objects, obs, hud=False):
         objects.append(Enemy(*instance))
 
     rewards = find_mc_objects(obs, objects_colors["50_reward"], size=(10, 10),
-                              closing_dist=6)
+                              closing_dist=2)
     for instance in rewards:
         objects.append(Reward(50, *instance))
 
