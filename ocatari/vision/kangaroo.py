@@ -122,14 +122,14 @@ def _detect_objects_kangaroo(objects, obs, hud=True):
     for bb in proj:
         p = Projectile_top(*bb)
         objects.append(p)
-    
+
     proj = find_objects(obs, objects_colors["projectile_top"], min_distance=1, minx=16, maxx=140, miny=80, maxy=123,
                         size=(2, 3), tol_s=2)
 
     for bb in proj:
         p = Projectile_top(*bb)
         objects.append(p)
-    
+
     proj = find_objects(obs, objects_colors["projectile_top"], min_distance=1, minx=16, maxx=140, miny=128, maxy=171,
                         size=(2, 3), tol_s=2)
 
