@@ -6,13 +6,13 @@ objects_colors = {'player': [187, 187, 53],
                   'score': [187, 187, 53],
                   'lives': [187, 187, 53],
 
-                  # next color is inner one. [170, 170, 170] is in all rewards
-                  'reward1': [[198, 89, 179], [127, 92, 213]],  # value 50  cauldron
-                  'reward2': [[135, 183, 84], [213, 130, 74]],  # value 100 helmet. same as reward5 :(
-                  'reward3': [[195, 144, 61], [84, 138, 210]],  # value 200 shield
-                  'reward4': [[213, 130, 74], [84, 92, 214]],  # value 300 lamp
-                  'reward5': [[135, 183, 84], [214, 92, 92]],  # value 400 apple
-                  'reward6': [[163, 57, 21], [164, 89, 208]],  # value 500 fish, meat and mug
+                  # next color is inner one
+                  'reward1': [[198, 89, 179], [127, 92, 213], [170, 170, 170]],  # value 50  cauldron
+                  'reward2': [[135, 183, 84], [213, 130, 74], [170, 170, 170]],  # value 100 helmet. same as reward5 :(
+                  'reward3': [[195, 144, 61], [84, 138, 210], [170, 170, 170]],  # value 200 shield
+                  'reward4': [[213, 130, 74], [84, 92, 214], [170, 170, 170]],  # value 300 lamp
+                  'reward5': [[135, 183, 84], [214, 92, 92], [170, 170, 170]],  # value 400 apple
+                  'reward6': [[163, 57, 21], [164, 89, 208], [170, 170, 170]],  # value 500 fish, meat and mug
 
                   # next objects are which meant with reward
                   'cauldron': [[167, 26, 26], [184, 50, 50]],
@@ -124,7 +124,7 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in player:
         objects.append(Player(*instance))
 
-    cauldron = find_mc_objects(obs, objects_colors["cauldron"], min_distance=3, size=(8, 11), tol_s=7, closing_dist=6)
+    cauldron = find_mc_objects(obs, objects_colors["cauldron"], size=(7, 10), tol_s=4, closing_dist=2)
     for instance in cauldron:
         objects.append(Cauldron(*instance))
 
@@ -134,10 +134,10 @@ def _detect_objects_asterix(objects, obs, hud=False):
 
     ctr = 1
     for x in ["reward1", "reward2", "reward3", "reward4", "reward5", "reward6"]:
-        reward = find_mc_objects(obs, objects_colors[x], min_distance=2, closing_dist=10, miny=24, maxy=150)  # size=(9, 12),
+        reward = find_mc_objects(obs, objects_colors[x], min_distance=3, closing_dist=2, miny=24, maxy=151)
         if reward is not None:
             for num in range(1, 7):
-                reward = find_mc_objects(obs, objects_colors[x], min_distance=2, closing_dist=10, miny=24, maxy=150)  # size=(10, 10),
+                reward = find_mc_objects(obs, objects_colors[x], min_distance=3, closing_dist=2, miny=24, maxy=151)
             for instance in reward:
                 objects.append(Reward(ctr, *instance))
             break
@@ -148,7 +148,7 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in helmet:
         objects.append(Helmet(*instance))
 
-    shield = find_objects(obs, objects_colors["shield"], closing_dist=1, size=(5, 11), min_distance=2)  #
+    shield = find_objects(obs, objects_colors["shield"], closing_dist=1, size=(5, 11), min_distance=2)
     for instance in shield:
         objects.append(Shield(*instance))
 
@@ -173,14 +173,14 @@ def _detect_objects_asterix(objects, obs, hud=False):
         objects.append(Mug(*instance))
 
     if hud:
-        score = find_objects(obs, objects_colors["score"], closing_dist=4, miny=181)
-        for instance in score:
-            objects.append(Score(*instance))
-
         lives = find_objects(obs, objects_colors["lives"], min_distance=1, miny=160, maxy=181)
         for instance in lives:
             objects.append(Lives(*instance))
 
-    # print("\nobjects:")
-    # print(*objects, sep="\n")
-    # print("\n")
+        score = find_objects(obs, objects_colors["score"], closing_dist=4, miny=181)  # don't change closing_dist=4
+        for instance in score:
+            objects.append(Score(*instance))
+
+    print("\nobjects:")
+    print(*objects, sep="\n")
+    print("\n")
