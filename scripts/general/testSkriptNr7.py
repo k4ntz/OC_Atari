@@ -6,7 +6,7 @@ sys.path.insert(0, '../..') # noqa
 from ocatari.core import OCAtari
 
 """
-Test raw/revised mode with a human render_mode and ipdb debugger
+Set each RAM position to a specific value.
 """
 
 env = OCAtari("Carnival", mode="raw", render_mode="human")
@@ -14,9 +14,19 @@ observation, info = env.reset()
 prevRam = None
 already_figured_out = []
 for i in range(1000):
+    ram_value = 1
+    for b in range(0, 126):
+        if b == 55:
+            continue
+        obs, reward, terminated, truncated, info = env.step(random.randint(0, 0))
+        print(b - 1)
+        env.set_ram(55, 20)
+        env.set_ram(b, ram_value)
+        env.render()
+        ipdb.set_trace()
+
     obs, reward, terminated, truncated, info = env.step(random.randint(0, 1))
     ram = env._env.unwrapped.ale.getRAM()
-    env.set_ram(2, i)
     if prevRam is not None:
         for i in range(len(ram)):
             if ram[i] != prevRam[i] and i not in already_figured_out:
@@ -32,5 +42,5 @@ for i in range(1000):
     print(info)
     env.render()
     time.sleep(0.01)
-    ipdb.set_trace()
 env.close()
+

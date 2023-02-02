@@ -8,6 +8,7 @@ from .demonAttack import _detect_objects_demon_attack
 from .breakout import _detect_objects_breakout
 from .space_invaders import _detect_objects_space_invaders
 from .mspacman import _detect_objects_mspacman
+from .carnival import _detect_objects_carnival
 
 
 def detect_objects_vision(objects, obs, game_name, hud=False):
@@ -29,6 +30,8 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_breakout(objects, obs, hud)
     elif game_name.lower() == "mspacman":
         return _detect_objects_mspacman(objects, obs, hud)
+    elif game_name.lower() == "carnival":
+        return _detect_objects_carnival(objects, obs, hud)
     else:
         print(colored("Uncovered game in vision mode", "red"))
         exit(1)
