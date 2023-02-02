@@ -8,7 +8,7 @@ from ocatari.vision.utils import find_objects, plot_bounding_boxes # noqa
 import queue
 import os
 import pathlib
-import gym
+import gymnasium as gym
 
 """
 trying to automate the creation of vision
@@ -79,22 +79,29 @@ def get_user_input():
 
 
 def generate_code(game_name):
-    code = "from .utils import find_objects\n\n\n"
-    code += "objects_colors = " + str(colors) +"\n\n"
-    code += "def _detect_objects_" + str(game_name) + "(info, obs):\n"
-    code += "    objects = {}\n"
+    code = "from .game_objects import GameObject\n"
+    code += "from .utils import find_objects\n\n\n"
+    code += "objects_colors = " + str(colors) +"\n\n\n"
+    for obj, col in colors.items():
+        code += "class " + str(obj).capitalize() + "(GameObject):\n"
+        code += "    def __init__(self, *args, **kwargs):\n"
+        code += "        super().__init__(*args, **kwargs)\n"
+        code += "        self.rgb = " + str(col) + "\n\n\n"
+    code += "\ndef _detect_objects_" + str(game_name).lower() + "(objects, obs, hud=False):\n"
+    code += "    objects.clear()\n\n"
     for obj, col in colors.items():
         code += "    " + str(obj) + " = find_objects(obs, objects_colors['"+ str(obj) + "'], min_distance=1)\n"
-        code += "    objects['" + str(obj) + "'] = " + str(obj) + "\n\n"
+        # code += "    objects['" + str(obj) + "'] = " + str(obj) + "\n\n"
+        code += "    for bb in " + str(obj) + ":\n"
+        code += "        objects.append(" + str(obj).capitalize() + "(*bb))\n\n"
 
-    code += "    info['objects_colors'] = objects_colors\n"
-    code += "    info['objects'] = objects\n\n\n"
+    code += "\n\n"
 
     return code
 
 
 def write_code_to_file(code, game_name, overwrite = False):
-    path = str(pathlib.Path().resolve()) + "/../../ocatari/vision/" + str(game_name) +".py"
+    path = str(pathlib.Path().resolve()) + "/../../ocatari/vision/" + str(game_name).lower() +".py"
 
     if not os.path.exists(path) or overwrite:
         with open(path, 'w') as f:
@@ -103,11 +110,11 @@ def write_code_to_file(code, game_name, overwrite = False):
 
 
 if __name__ == "__main__":
-    GAME_NAME = "DemonAttack"
+    GAME_NAME = "Centipede"
     env = gym.make(GAME_NAME, render_mode='rgb_array')
     rgb_array, info = env.reset()
     rgb_array = env.render()
-    for i in range(20):
+    for i in range(100):
         env.step(0)
     rgb_array = env.render()
 
