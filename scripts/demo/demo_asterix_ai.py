@@ -31,8 +31,8 @@ for i in range(10000000):
         action = random.randint(0, 5)
     obs, reward, terminated, truncated, info = env.step(action)
     env._env.unwrapped.ale.setRAM(83, 2)
-    if i == 1:
-        env._env.unwrapped.ale.setRAM(95, 9)
+    # if i == 1:
+    #     env._env.unwrapped.ale.setRAM(95, 9)  # does not make difference
     if i % 300 == 0:
         # obse2 = deepcopy(obse)
         for ax, obs, objects_list, title in zip(axes, [obs],

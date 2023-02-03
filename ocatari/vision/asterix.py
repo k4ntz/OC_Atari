@@ -2,7 +2,7 @@ from .utils import find_objects, find_mc_objects
 from .game_objects import GameObject
 
 objects_colors = {'player': [187, 187, 53],
-                  'enemy': [228, 111, 111],
+                  'enemy': [[228, 111, 111], [184, 50, 50]],
                   'score': [187, 187, 53],
                   'lives': [187, 187, 53],
 
@@ -170,36 +170,33 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in enemy:
         objects.append(Enemy(*instance))
 
-    reward50 = find_mc_objects(obs, objects_colors["reward_50"], min_distance=3, closing_dist=5, miny=24, maxy=151)
-    # size=(6, 11), tol_s=0
+    reward50 = find_mc_objects(obs, objects_colors["reward_50"], min_distance=3, closing_dist=3, miny=24, maxy=151,
+                               size=(6, 11))  # , tol_s=3
     for instance in reward50:
         objects.append(Reward50(*instance))
 
-    reward100 = find_mc_objects(obs, objects_colors["reward_100"], min_distance=3, closing_dist=5, miny=24, maxy=151,
-                                )
+    reward100 = find_mc_objects(obs, objects_colors["reward_100"], min_distance=3, closing_dist=3, miny=24, maxy=151,
+                                size=(8, 11), )
     for instance in reward100:
         objects.append(Reward100(*instance))
 
-    reward200 = find_mc_objects(obs, objects_colors["reward_200"], min_distance=3, closing_dist=5, miny=24, maxy=151,
-
-                                )
+    reward200 = find_mc_objects(obs, objects_colors["reward_200"], min_distance=3, closing_dist=3, miny=24, maxy=151,
+                                size=(8, 11), )
     for instance in reward200:
         objects.append(Reward200(*instance))
 
-    reward300 = find_mc_objects(obs, objects_colors["reward_300"], min_distance=3, closing_dist=5, miny=24, maxy=151,
-                                )
+    reward300 = find_mc_objects(obs, objects_colors["reward_300"], min_distance=3, closing_dist=3, miny=24, maxy=151,
+                                size=(8, 11), )
     for instance in reward300:
         objects.append(Reward300(*instance))
 
-    reward400 = find_mc_objects(obs, objects_colors["reward_400"], min_distance=3, closing_dist=5, miny=24, maxy=151,
-
-                                )
+    reward400 = find_mc_objects(obs, objects_colors["reward_400"], min_distance=3, closing_dist=3, miny=24, maxy=151,
+                                size=(8, 11), )
     for instance in reward400:
         objects.append(Reward400(*instance))
 
-    reward500 = find_mc_objects(obs, objects_colors["reward_500"], min_distance=3, closing_dist=5, miny=24, maxy=151,
-
-                                )
+    reward500 = find_mc_objects(obs, objects_colors["reward_500"], min_distance=3, closing_dist=3, miny=24, maxy=151,
+                                size=(8, 11), )
     for instance in reward500:
         objects.append(Reward500(*instance))
 
@@ -217,7 +214,8 @@ def _detect_objects_asterix(objects, obs, hud=False):
     #         break
     #     ctr += 1
 
-    helmet = find_mc_objects(obs, objects_colors["helmet"], closing_dist=1, min_distance=1, size=(7, 11))
+    helmet = find_mc_objects(obs, objects_colors["helmet"], closing_dist=1, min_distance=1, size=(7, 11),
+                             tol_s=2)
     for instance in helmet:
         objects.append(Helmet(*instance))
 
@@ -238,11 +236,13 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in fish:
         objects.append(Fish(*instance))
 
-    meat = find_mc_objects(obs, objects_colors["meat"], closing_dist=1, min_distance=1, size=(5, 11))
+    meat = find_mc_objects(obs, objects_colors["meat"], closing_dist=1, min_distance=1, size=(5, 11)
+                           , tol_s=2)  # with size alone, two lines in enemy are meat
     for instance in meat:
         objects.append(Meat(*instance))
 
-    mug = find_mc_objects(obs, objects_colors["mug"], closing_dist=2, min_distance=2, size=(7, 11))
+    mug = find_mc_objects(obs, objects_colors["mug"], closing_dist=2, min_distance=2, size=(7, 11)
+                          , tol_s=2)  # # with size alone, two lines in enemy are
     for instance in mug:
         objects.append(Mug(*instance))
 
