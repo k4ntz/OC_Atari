@@ -132,7 +132,6 @@ def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
                          np.array(color), np.array(color)) for color in colors]
     for mask in masks:
         if mask.max() == 0:
-            # if mask.max() < len(colors) - 1:  # changed by belal
             return []
 
     mask = sum(masks)
