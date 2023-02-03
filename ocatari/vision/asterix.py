@@ -166,7 +166,7 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in cauldron:
         objects.append(Cauldron(*instance))
 
-    enemy = find_objects(obs, objects_colors["enemy"], closing_dist=2)
+    enemy = find_mc_objects(obs, objects_colors["enemy"], closing_dist=2)
     for instance in enemy:
         objects.append(Enemy(*instance))
 
