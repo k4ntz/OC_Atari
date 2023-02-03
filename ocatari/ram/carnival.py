@@ -207,8 +207,7 @@ def _detect_objects_carnival_revised(objects, ram_state, hud=False):
                 objects.append(duck)
                 targets = []
         else:
-            targets = []
-            print("No object " + str(sprite))
+            pass
     objects.extend(targets)
 
     # wheel
@@ -222,7 +221,10 @@ def _detect_objects_carnival_revised(objects, ram_state, hud=False):
         if(ram_state[3]) != 0:
             ammo = AmmoBar()
             ammo.wh = ram_state[3] * 4, 5
-            ammo.rgb = ammo_bar_colors.get(ram_state[42])
+            if ram_state[42] < 32:
+                ammo.rgb = ammo_bar_colors.get(ram_state[42])
+            else:
+                ammo.rgb = [24, 59, 157]
             objects.append(ammo)
 
         # bonus
@@ -309,14 +311,14 @@ def _detect_objects_carnival_raw(info, ram_state):
     4: fire once + move right
     5: fire once + move left
     """
-    info["player_x"] = ram_state[2]     # start at 87, right side = 150, left side = 12; player_y fix
-    info["ammo_count"] = ram_state[3]   # max and start = 40
-    info["player_missile_y"] = ram_state[55]   # 0 if not shot
-    info["targets_first_row_x"] = ram_state[18:20]
-    info["targets_second_row_x"] = ram_state[20:22]
-    info["targets_third_row_x"] = ram_state[22:24]
-    info["flying_duck_x"] = ram_state[111]
-    info["flying_duck_y"] = ram_state[1]
+    player = ram_state[2]   # player_x start at 87, right side = 150, left side = 12; player_y fix
+    missile = ram_state[55]     # missile_y: 0 if not shot
+    ammo_count = ram_state[3]   # max and start = 40
+    targets_x = ram_state[18:24]    # 18, 19 for first row, 20, 21 for second row and 22, 23 for third row
+    flying_duck_x = ram_state[111]
+    flying_duck_y = ram_state[1]
+    relevant_objects = player + missile + ammo_count + targets_x.tolist() + flying_duck_x + flying_duck_y
+    info["relevant_objects"] = relevant_objects
 
     # additional info
     info["targets_sprites_first_row"] = ram_state[24:28]    # 0 = duck, 16 = rabbit, 32 = owl, 48 = extra bullets,
@@ -332,4 +334,3 @@ def _detect_objects_carnival_raw(info, ram_state):
     info["score"] = _convert_number(ram_state[45]) * 1000 + _convert_number(ram_state[46]) * 10
     info["wheel_sprites"] = ram_state[121:125]
     info["wheel_color"] = ram_state[125]  # 0 = blue, 1 = green, 2 = purple, 3 = orange
-    print(ram_state)
