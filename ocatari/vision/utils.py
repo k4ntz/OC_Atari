@@ -1,3 +1,4 @@
+import ipdb
 import numpy as np
 import cv2
 from skimage.morphology import (disk, square)  # noqa
@@ -130,10 +131,12 @@ def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
     masks = [cv2.inRange(image[miny:maxy,minx:maxx,:],
                          np.array(color), np.array(color)) for color in colors]
     for mask in masks:
-        # if mask.max() == 0:
-        if mask.max() < len(colors) - 1:  # changed by belal
+        if mask.max() == 0:
+            # if mask.max() < len(colors) - 1:  # changed by belal
             return []
+
     mask = sum(masks)
+    ipdb.set_trace()
     if closing_active:
         closed = closing(mask, square(closing_dist))
         # closed = closing(closed, square(closing_dist))
@@ -147,7 +150,7 @@ def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
         x, y, w, h = cv2.boundingRect(cnt)
         x, y = x + minx, y + miny  # compensing cuttoff
         if size:
-            if not assert_in((h, w), size, tol_s):
+            if not assert_in((w, h), size, tol_s):
                 continue
         if position:
             if not assert_in((x, y), position, tol_p):
@@ -192,7 +195,7 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
         x, y, w, h = cv2.boundingRect(cnt)
         x, y = x + minx, y + miny  # compensing cuttoff
         if size:
-            if not assert_in((h, w), size, tol_s):
+            if not assert_in((w, h), size, tol_s):
                 continue
         if position:
             if not assert_in((x, y), position, tol_p):
