@@ -15,7 +15,7 @@ game_name = "Asterix-v4"  # Pong
 # game_name = "Tennis"
 MODE = "vision"
 # MODE = "revised"
-env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
+env = OCAtari(game_name, mode=MODE, render_mode='human')
 observation, info = env.reset()
 
 opts = parser.parse_args()
@@ -24,13 +24,16 @@ if opts.path:
     agent = load_agent(opts, env.action_space.n)
 
 fig, axes = plt.subplots(1, 2)
-for i in range(1000):
+for i in range(10000000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
         action = random.randint(0, 5)
     obs, reward, terminated, truncated, info = env.step(action)
-    if i % 25 == 0:
+    env._env.unwrapped.ale.setRAM(83, 2)
+    if i == 1:
+        env._env.unwrapped.ale.setRAM(95, 9)
+    if i % 300 == 0:
         # obse2 = deepcopy(obse)
         for ax, obs, objects_list, title in zip(axes, [obs],
                                                 [env.objects],
