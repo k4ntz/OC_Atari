@@ -16,7 +16,7 @@ class Player(GameObject):
 class Cauldron(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = [[167, 26, 26], [184, 50, 50]]
+        self.rgb = 167, 26, 26
         # self.visible = False
         self._xy = 0, 0
         self.wh = 6, 8
@@ -53,30 +53,30 @@ class Lives(GameObject):
         self.hud = True
 
 
-class Reward(GameObject):
-    def __init__(self, num, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = (
-            [[198, 89, 179], [127, 92, 213]],
-            [[135, 183, 84], [213, 130, 74]],
-            [[195, 144, 61], [84, 138, 210]],
-            [[213, 130, 74], [84, 92, 214]],
-            [[135, 183, 84], [214, 92, 92]],
-            [[163, 57, 21], [164, 89, 208]]
-        )[num - 1]
-        # self.visible = True
-        self._xy = 0, 0
-        self.wh = 6, 11
-        self.hud = False
+# class Reward(GameObject):
+#     def __init__(self, num, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.rgb = (
+#             (198, 89, 179),
+#             (135, 183, 84),
+#             (195, 144, 61),
+#             (213, 130, 74),
+#             (135, 183, 84),
+#             (163, 57, 21)
+#         )[num - 1]
+#         # self.visible = True
+#         self._xy = 0, 0
+#         self.wh = 6, 11
+#         self.hud = False
 
 
 class Helmet(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = [[240, 128, 128], [236, 236, 236]]
+        self.rgb = 240, 128, 128
         # self.visible = True
         self._xy = 0, 0
-        # self.wh =
+        self.wh = 7, 11
         self.hud = False
 
 
@@ -86,41 +86,58 @@ class Shield(GameObject):
         self.rgb = 214, 214, 214
         # self.visible = True
         self._xy = 0, 0
-        # self.wh =
+        self.wh = 5, 11
         self.hud = False
-
-
 
 
 class Lamp(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 187, 53, 53
+        # self.visible = True
+        self._xy = 0, 0
+        self.wh = 8, 11
+        self.hud = False
 
 
 class Apple(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = [[184, 50, 50], [110, 156, 66]]
+        self.rgb = 184, 50, 50
+        # self.visible = True
+        self._xy = 0, 0
+        self.wh = 8, 11
+        self.hud = False
 
 
 class Fish(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = [198, 89, 179]
+        self.rgb = 198, 89, 179
+        # self.visible = True
+        self._xy = 0, 0
+        self.wh = 8, 5
+        self.hud = False
 
 
 class Meat(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = [[184, 50, 50], [214, 214, 214]]
+        self.rgb = 184, 50, 50  # ], [214, 214, 214]]
+        # self.visible = True
+        self._xy = 0, 0
+        self.wh = 5, 11
+        self.hud = False
 
 
 class Mug(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = [[184, 50, 50], [214, 214, 214]]
-
+        self.rgb = 184, 50, 50  # ], [214, 214, 214]]
+        # self.visible = True
+        self._xy = 0, 0
+        self.wh = 7, 11
+        self.hud = False
 
 
 
@@ -128,7 +145,7 @@ def _init_objects_asterix_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player, Enemy, Reward, Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat, Mug]
+    objects = [Player, Enemy, Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat, Mug]
     if hud:
         objects.extend([Score, Lives])
 
