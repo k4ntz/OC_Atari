@@ -14,7 +14,7 @@ game_name = "Asterix-v4"  # Pong
 # game_name = "SpaceInvaders"
 # game_name = "Tennis"
 MODE = "vision"
-MODE = "revised"
+# MODE = "revised"
 env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
 observation, info = env.reset()
 
