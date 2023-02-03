@@ -162,41 +162,41 @@ def _detect_objects_asterix(objects, obs, hud=False):
 
     cauldron = find_mc_objects(obs, objects_colors["cauldron"], closing_dist=2,
                                size=(7, 10),  # 7, 10, 3
-                               tol_s=4)  # don't change size and tol_s! otherwise lines in enemy are cauldrons
+                               tol_s=1)  # don't change size and tol_s! otherwise lines in enemy are cauldrons
     for instance in cauldron:
         objects.append(Cauldron(*instance))
 
-    enemy = find_mc_objects(obs, objects_colors["enemy"], closing_dist=2)
+    enemy = find_mc_objects(obs, objects_colors["enemy"], closing_dist=2, miny=24, maxy=151, size=(7, 11), tol_s=1)
     for instance in enemy:
         objects.append(Enemy(*instance))
 
-    reward50 = find_mc_objects(obs, objects_colors["reward_50"], min_distance=3, closing_dist=3, miny=24, maxy=151,
-                               size=(6, 11))  # , tol_s=3
+    reward50 = find_mc_objects(obs, objects_colors["reward_50"], min_distance=3, closing_dist=4, miny=24, maxy=151,
+                               tol_s=3, size=(6, 11))
     for instance in reward50:
         objects.append(Reward50(*instance))
 
     reward100 = find_mc_objects(obs, objects_colors["reward_100"], min_distance=3, closing_dist=3, miny=24, maxy=151,
-                                size=(8, 11), )
+                                size=(8, 11), tol_s=2)
     for instance in reward100:
         objects.append(Reward100(*instance))
 
     reward200 = find_mc_objects(obs, objects_colors["reward_200"], min_distance=3, closing_dist=3, miny=24, maxy=151,
-                                size=(8, 11), )
+                                size=(8, 11), tol_s=3)
     for instance in reward200:
         objects.append(Reward200(*instance))
 
     reward300 = find_mc_objects(obs, objects_colors["reward_300"], min_distance=3, closing_dist=3, miny=24, maxy=151,
-                                size=(8, 11), )
+                                size=(8, 11), tol_s=3)
     for instance in reward300:
         objects.append(Reward300(*instance))
 
     reward400 = find_mc_objects(obs, objects_colors["reward_400"], min_distance=3, closing_dist=3, miny=24, maxy=151,
-                                size=(8, 11), )
+                                size=(8, 11), tol_s=3)
     for instance in reward400:
         objects.append(Reward400(*instance))
 
     reward500 = find_mc_objects(obs, objects_colors["reward_500"], min_distance=3, closing_dist=3, miny=24, maxy=151,
-                                size=(8, 11), )
+                                size=(8, 11), tol_s=3)
     for instance in reward500:
         objects.append(Reward500(*instance))
 
@@ -215,39 +215,40 @@ def _detect_objects_asterix(objects, obs, hud=False):
     #     ctr += 1
 
     helmet = find_mc_objects(obs, objects_colors["helmet"], closing_dist=1, min_distance=1, size=(7, 11),
-                             tol_s=2)
+                             tol_s=2, miny=24, maxy=151,)
     for instance in helmet:
         objects.append(Helmet(*instance))
 
-    shield = find_objects(obs, objects_colors["shield"], closing_dist=1, size=(5, 11), tol_s=1, min_distance=2)
+    shield = find_objects(obs, objects_colors["shield"], closing_dist=1, size=(5, 11), tol_s=1, min_distance=2
+                          , miny=24, maxy=151,)
     for instance in shield:  # specify size(make it work)
         objects.append(Shield(*instance))
 
-    lamp = find_mc_objects(obs, objects_colors["lamp"], closing_dist=3, size=(8, 11))
+    lamp = find_mc_objects(obs, objects_colors["lamp"], closing_dist=3, size=(8, 11), miny=24, maxy=151,)
     for instance in lamp:
         objects.append(Lamp(*instance))
 
-    apple = find_mc_objects(obs, objects_colors["apple"], closing_dist=2, min_distance=2, size=(8, 11))
+    apple = find_mc_objects(obs, objects_colors["apple"], closing_dist=2, min_distance=2, size=(8, 11), miny=24, maxy=151,)
     for instance in apple:
         objects.append(Apple(*instance))
 
     fish = find_objects(obs, objects_colors["fish"], closing_dist=1, min_distance=1,
-                        size=(8, 5), tol_s=2, )  # size=(8, 5), tol_s=2,  does it work?
+                        size=(8, 5), tol_s=2, miny=24, maxy=151,)  # size=(8, 5), tol_s=2,  does it work?
     for instance in fish:
         objects.append(Fish(*instance))
 
     meat = find_mc_objects(obs, objects_colors["meat"], closing_dist=1, min_distance=1, size=(5, 11)
-                           , tol_s=2)  # with size alone, two lines in enemy are meat
+                           , tol_s=2, miny=24, maxy=151,)  # with size alone, two lines in enemy are meat
     for instance in meat:
         objects.append(Meat(*instance))
 
     mug = find_mc_objects(obs, objects_colors["mug"], closing_dist=2, min_distance=2, size=(7, 11)
-                          , tol_s=2)  # # with size alone, two lines in enemy are
+                          , tol_s=2, miny=24, maxy=151,)  # # with size alone, two lines in enemy are
     for instance in mug:
         objects.append(Mug(*instance))
 
     if hud:
-        lives = find_objects(obs, objects_colors["lives"], min_distance=1, miny=160, maxy=181)
+        lives = find_objects(obs, objects_colors["lives"], min_distance=1, miny=160, maxy=181, )
         for instance in lives:
             objects.append(Lives(*instance))
 
