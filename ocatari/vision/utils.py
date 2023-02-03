@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
-from skimage.morphology import (disk, square) # noqa
-from skimage.morphology import (erosion, dilation, opening, closing, white_tophat, skeletonize) # noqa
+from skimage.morphology import (disk, square)  # noqa
+from skimage.morphology import (erosion, dilation, opening, closing, white_tophat, skeletonize)  # noqa
 import matplotlib.pyplot as plt
 from termcolor import colored
 
@@ -22,6 +22,7 @@ def assert_in(observed, target, tol):
     if type(tol) is int:
         tol = (tol, tol)
     return np.all([target[i] + tol[i] > observed[i] > target[i] - tol[i] for i in range(2)])
+    # return np.all([target[i] + tol[i] >= observed[i] >= target[i] - tol[i] for i in range(2)])
 
 
 def iou(bb, gt_bb):
@@ -114,8 +115,8 @@ def showim(im):
 
 
 def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
-                     position=None, tol_p=2, min_distance=10, closing_dist=3,
-                     minx=0, miny=0, maxx=160, maxy=210):
+                    position=None, tol_p=2, min_distance=10, closing_dist=3,
+                    minx=0, miny=0, maxx=160, maxy=210):
     """
     image: image to detect objects from
     color: fixed color of the object
@@ -129,7 +130,8 @@ def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
     masks = [cv2.inRange(image[miny:maxy,minx:maxx,:],
                          np.array(color), np.array(color)) for color in colors]
     for mask in masks:
-        if mask.max() == 0:
+        # if mask.max() == 0:
+        if mask.max() < len(colors) - 1:  # changed by belal
             return []
     mask = sum(masks)
     if closing_active:
