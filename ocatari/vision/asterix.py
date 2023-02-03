@@ -8,6 +8,7 @@ objects_colors = {'player': [187, 187, 53],
 
                   # next color is inner one
                   'reward1': [[198, 89, 179], [127, 92, 213], [170, 170, 170]],  # value 50  cauldron
+                  'reward_50': [[198, 89, 179], [127, 92, 213], [170, 170, 170]],
                   'reward2': [[135, 183, 84], [213, 130, 74], [170, 170, 170]],  # value 100 helmet. same as reward5 :(
                   'reward3': [[195, 144, 61], [84, 138, 210], [170, 170, 170]],  # value 200 shield
                   'reward4': [[213, 130, 74], [84, 92, 214], [170, 170, 170]],  # value 300 lamp
@@ -35,7 +36,7 @@ class Player(GameObject):  # player could be shown over all enemies/other object
         self.rgb = 187, 187, 53
 
 
-# is it better to implement this class for all possible rewards than to have a class for every reward?
+# code for not much classes reward
 # cause they are not important for the agent
 class Reward(GameObject):
     def __init__(self, num, *args, **kwargs):
@@ -117,6 +118,12 @@ class Mug(GameObject):
         self.rgb = 184, 50, 50  # [[184, 50, 50], [214, 214, 214]]
 
 
+class Reward_50(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 198, 89, 179
+
+
 def _detect_objects_asterix(objects, obs, hud=False):
     objects.clear()
 
@@ -125,7 +132,8 @@ def _detect_objects_asterix(objects, obs, hud=False):
         objects.append(Player(*instance))
 
     cauldron = find_mc_objects(obs, objects_colors["cauldron"], closing_dist=2,
-                               size=(7, 10), tol_s=3)  # don't change size and tol_s! otherwise lines in enemy are cauldrons
+                               size=(7, 10),  # 7, 10, 3
+                               tol_s=4)  # don't change size and tol_s! otherwise lines in enemy are cauldrons
     for instance in cauldron:
         objects.append(Cauldron(*instance))
 
@@ -133,18 +141,25 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in enemy:
         objects.append(Enemy(*instance))
 
-    ctr = 1
-    for x in ["reward1", "reward2", "reward3", "reward4", "reward5", "reward6"]:
-        reward = find_mc_objects(obs, objects_colors[x], min_distance=3, closing_dist=2, miny=24, maxy=151, )
-        # size=(6, 11), tol_s=(4, 2))
-        if reward is not None:
-            for num in range(1, 7):
-                reward = find_mc_objects(obs, objects_colors[x], min_distance=3, closing_dist=2, miny=24, maxy=151, )
-                # size=(6, 11), tol_s=(4, 2))
-            for instance in reward:
-                objects.append(Reward(ctr, *instance))
-            break
-        ctr += 1
+    reward_50 = find_mc_objects(obs, objects_colors["reward_50"], min_distance=3, closing_dist=5, miny=24, maxy=151,
+                                size=(6, 11), tol_s=0
+                                )
+    for instance in reward_50:
+        objects.append(Reward_50(*instance))
+
+    # code for not much classes from rewards
+    # ctr = 1
+    # for x in ["reward1", "reward2", "reward3", "reward4", "reward5", "reward6"]:
+    #     reward = find_mc_objects(obs, objects_colors[x], min_distance=3, closing_dist=2, miny=24, maxy=151,  # )
+    #                              size=(6, 11), tol_s=4)
+    #     if reward is not None:
+    #         for _ in range(1, 7):
+    #             reward = find_mc_objects(obs, objects_colors[x], min_distance=3, closing_dist=2, miny=24, maxy=151,  # )
+    #                                      size=(6, 11), tol_s=5)
+    #         for instance in reward:
+    #             objects.append(Reward(ctr, *instance))
+    #         break
+    #     ctr += 1
 
     helmet = find_mc_objects(obs, objects_colors["helmet"], closing_dist=3, min_distance=4)
     for instance in helmet:
@@ -162,7 +177,8 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in apple:
         objects.append(Apple(*instance))
 
-    fish = find_objects(obs, objects_colors["fish"], closing_dist=1, min_distance=1)  # size=(8, 5), tol_s=2,
+    fish = find_objects(obs, objects_colors["fish"], closing_dist=1, min_distance=1,
+                        size=(8, 5), tol_s=2, )  # size=(8, 5), tol_s=2,
     for instance in fish:
         objects.append(Fish(*instance))
 
@@ -183,6 +199,7 @@ def _detect_objects_asterix(objects, obs, hud=False):
         for instance in score:
             objects.append(Score(*instance))
 
+    # do pars min max y for all
     # print("\nobjects:")
     # print(*objects, sep="\n")
     # print("\n")
