@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
-from skimage.morphology import (disk, square) # noqa
-from skimage.morphology import (erosion, dilation, opening, closing, white_tophat, skeletonize) # noqa
+from skimage.morphology import (disk, square)  # noqa
+from skimage.morphology import (erosion, dilation, opening, closing, white_tophat, skeletonize)  # noqa
 import matplotlib.pyplot as plt
 from termcolor import colored
 
@@ -22,6 +22,7 @@ def assert_in(observed, target, tol):
     if type(tol) is int:
         tol = (tol, tol)
     return np.all([target[i] + tol[i] > observed[i] > target[i] - tol[i] for i in range(2)])
+    # return np.all([target[i] + tol[i] >= observed[i] >= target[i] - tol[i] for i in range(2)])
 
 
 def iou(bb, gt_bb):
@@ -114,8 +115,8 @@ def showim(im):
 
 
 def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
-                     position=None, tol_p=2, min_distance=10, closing_dist=3,
-                     minx=0, miny=0, maxx=160, maxy=210):
+                    position=None, tol_p=2, min_distance=10, closing_dist=3,
+                    minx=0, miny=0, maxx=160, maxy=210):
     """
     image: image to detect objects from
     color: fixed color of the object
@@ -156,7 +157,7 @@ def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
                     break
             if too_close:
                 continue
-        if x < minx or x+w > maxx or y < miny or y+h > maxy:
+        if x < minx or x + w > maxx or y < miny or y + h > maxy:
             continue
         # detected.append((y, x, h, w))
         detected.append((x, y, w, h))
@@ -200,7 +201,7 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
                     break
             if too_close:
                 continue
-        if x < minx or x+w > maxx or y < miny or y+h > maxy:
+        if x < minx or x + w > maxx or y < miny or y + h > maxy:
             continue
         # detected.append((y, x, h, w))
         detected.append((x, y, w, h))
