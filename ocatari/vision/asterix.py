@@ -156,7 +156,7 @@ class Reward500(GameObject):
 def _detect_objects_asterix(objects, obs, hud=False):
     objects.clear()
 
-    player = find_objects(obs, objects_colors["player"], maxy=160, tol_p=20)
+    player = find_objects(obs, objects_colors["player"], maxy=160, tol_p=20, tol_s=0)
     for instance in player:
         objects.append(Player(*instance))
 
@@ -200,50 +200,40 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in reward500:
         objects.append(Reward500(*instance))
 
-    # code for not much classes from rewards
-    # ctr = 1
-    # for x in ["reward1", "reward2", "reward3", "reward4", "reward5", "reward6"]:
-    #     reward = find_mc_objects(obs, objects_colors[x], min_distance=3, closing_dist=2, miny=24, maxy=151,  # )
-    #                              size=(6, 11), tol_s=4)
-    #     if reward is not None:
-    #         for _ in range(1, 7):
-    #             reward = find_mc_objects(obs, objects_colors[x], min_distance=3, closing_dist=2, miny=24, maxy=151,
-    #                                      size=(6, 11), tol_s=5)
-    #         for instance in reward:
-    #             objects.append(Reward(ctr, *instance))
-    #         break
-    #     ctr += 1
-
     helmet = find_mc_objects(obs, objects_colors["helmet"], closing_dist=1, min_distance=1, size=(7, 11),
-                             tol_s=2, miny=24, maxy=151,)
+                             tol_s=2, miny=24, maxy=151, )
     for instance in helmet:
         objects.append(Helmet(*instance))
 
-    shield = find_objects(obs, objects_colors["shield"], closing_dist=1, size=(5, 11), tol_s=1, min_distance=2
-                          , miny=24, maxy=151,)
+    no_shield = True
+    shield = find_objects(obs, objects_colors["shield"], closing_dist=1, size=(5, 11), tol_s=1, min_distance=2,
+                          miny=24, maxy=151, )
     for instance in shield:  # specify size(make it work)
         objects.append(Shield(*instance))
+        no_shield = False
 
-    lamp = find_mc_objects(obs, objects_colors["lamp"], closing_dist=3, size=(8, 11), miny=24, maxy=151,)
+    lamp = find_mc_objects(obs, objects_colors["lamp"], closing_dist=3, size=(8, 11), tol_s=1, miny=24, maxy=151, )
     for instance in lamp:
         objects.append(Lamp(*instance))
 
-    apple = find_mc_objects(obs, objects_colors["apple"], closing_dist=2, min_distance=2, size=(8, 11), miny=24, maxy=151,)
+    apple = find_mc_objects(obs, objects_colors["apple"], closing_dist=2, min_distance=2, size=(8, 11),
+                            tol_s=1, miny=24, maxy=151, )
     for instance in apple:
         objects.append(Apple(*instance))
 
     fish = find_objects(obs, objects_colors["fish"], closing_dist=1, min_distance=1,
-                        size=(8, 5), tol_s=2, miny=24, maxy=151,)  # size=(8, 5), tol_s=2,  does it work?
+                        size=(8, 5), tol_s=2, miny=24, maxy=151, )  # size=(8, 5), tol_s=2,  does it work?
     for instance in fish:
         objects.append(Fish(*instance))
 
-    meat = find_mc_objects(obs, objects_colors["meat"], closing_dist=1, min_distance=1, size=(5, 11)
-                           , tol_s=2, miny=24, maxy=151,)  # with size alone, two lines in enemy are meat
+    meat = find_mc_objects(obs, objects_colors["meat"], closing_dist=1, min_distance=1, size=(5, 11),
+                           tol_s=2, miny=24, maxy=151, )  # with size alone, two lines in enemy are meat
     for instance in meat:
-        objects.append(Meat(*instance))
+        if no_shield:
+            objects.append(Meat(*instance))
 
-    mug = find_mc_objects(obs, objects_colors["mug"], closing_dist=2, min_distance=2, size=(7, 11)
-                          , tol_s=2, miny=24, maxy=151,)  # # with size alone, two lines in enemy are
+    mug = find_mc_objects(obs, objects_colors["mug"], closing_dist=2, min_distance=2, size=(7, 11),
+                          tol_s=2, miny=24, maxy=151, )  # # with size alone, two lines in enemy are
     for instance in mug:
         objects.append(Mug(*instance))
 
@@ -260,3 +250,9 @@ def _detect_objects_asterix(objects, obs, hud=False):
     # print("\nobjects:")
     print(*objects, sep="\n")
     print("\n")
+
+    # problems until now:
+    # apple in enemy when there is  (set size and tol)
+    # shield as shield and meat (set condition noShield)
+    # reward_300 not recognized (later)
+    # notice: agent runs away from meat and mug

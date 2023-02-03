@@ -135,7 +135,9 @@ def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
             return []
 
     mask = sum(masks)
-    ipdb.set_trace()
+    ######
+    # ipdb.set_trace()
+    ######
     if closing_active:
         closed = closing(mask, square(closing_dist))
         # closed = closing(closed, square(closing_dist))
