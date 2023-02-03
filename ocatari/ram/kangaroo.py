@@ -184,7 +184,7 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
     # falling Projectile
     if ram_state[33] != 255:
         p1.visible = True
-        p1.xy = ram_state[34] + 14, (ram_state[33] * 8) + 9
+        p1.xy = ram_state[34] + 14, ((ram_state[33] - (22 * ram_state[36])) * 8) + 9
     else:
         p1.visible = False
 
@@ -243,6 +243,7 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
 
     if hud:
         # score
+        for s in objects[14:18]: s.visible = True
         if ram_state[39] < 16:
             objects[17].visible = False
             if ram_state[39] == 0:
