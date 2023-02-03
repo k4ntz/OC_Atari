@@ -9,7 +9,7 @@ class Player(GameObject):
             self.player_num = num
             # self.visible = False
             self._xy = 0, 0
-            self.wh = 8, 11  # at some point 16, 11
+            self.wh = 8, 11  # at some point 16, 11. other advanced player is (6, 11)
             self.hud = False
 
 
@@ -51,23 +51,6 @@ class Lives(GameObject):
         self._xy = 0, 0
         self.wh = 6, 7
         self.hud = True
-
-
-# class Reward(GameObject):
-#     def __init__(self, num, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.rgb = (
-#             (198, 89, 179),
-#             (135, 183, 84),
-#             (195, 144, 61),
-#             (213, 130, 74),
-#             (135, 183, 84),
-#             (163, 57, 21)
-#         )[num - 1]
-#         # self.visible = True
-#         self._xy = 0, 0
-#         self.wh = 6, 11
-#         self.hud = False
 
 
 class Helmet(GameObject):
@@ -140,6 +123,65 @@ class Mug(GameObject):
         self.hud = False
 
 
+class Reward50(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 198, 89, 179
+        # self.visible = True
+        self._xy = 0, 0
+        self.wh = 6, 11
+        self.hud = False
+
+
+class Reward100(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 135, 183, 84
+        # self.visible = True
+        self._xy = 0, 0
+        self.wh = 8, 11
+        self.hud = False
+
+
+class Reward200(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 195, 144, 61
+        # self.visible = True
+        self._xy = 0, 0
+        self.wh = 8, 11
+        self.hud = False
+
+
+class Reward300(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 213, 130, 74
+        # self.visible = True
+        self._xy = 0, 0
+        self.wh = 8, 11
+        self.hud = False
+
+
+class Reward400(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 135, 183, 84
+        # self.visible = True
+        self._xy = 0, 0
+        self.wh = 8, 11
+        self.hud = False
+
+
+class Reward500(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 163, 57, 21
+        # self.visible = True
+        self._xy = 0, 0
+        self.wh = 8, 11
+        self.hud = False
+        
 
 def _init_objects_asterix_ram(hud=False):
     """
