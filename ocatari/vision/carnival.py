@@ -17,6 +17,7 @@ ammo_bar_colors = {"blue": [24, 59, 157], "green": [0, 68, 0], "purple": [125, 4
 
 wheel_colors = {"blue": [45, 87, 176], "green": [26, 102, 26], "purple": [125, 48, 173], "orange": [162, 98, 33]}
 
+
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
