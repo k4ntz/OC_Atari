@@ -3,10 +3,9 @@ from .game_objects import GameObject
 
 class Player(GameObject):
     class Player(GameObject):
-        def __init__(self, x, y, w, h, num, *args, **kwargs):
-            super().__init__(x, y, w, h, *args, **kwargs)
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
             self.rgb = 187, 187, 53
-            self.player_num = num
             # self.visible = False
             self._xy = 0, 0
             self.wh = 8, 11  # at some point 16, 11. other advanced player is (6, 11)
@@ -19,7 +18,7 @@ class Cauldron(GameObject):
         self.rgb = 167, 26, 26
         # self.visible = False
         self._xy = 0, 0
-        self.wh = 6, 8
+        self.wh = 7, 10
         self.hud = False
 
 
@@ -34,8 +33,8 @@ class Enemy(GameObject):
 
 
 class Score(GameObject):
-    def __init__(self, x, y, w, h, num, *args, **kwargs):
-        super().__init__(x, y, w, h, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.rgb = 187, 187, 53  # same color as player
         # self.visible = True
         self._xy = 0, 0
@@ -181,7 +180,7 @@ class Reward500(GameObject):
         self._xy = 0, 0
         self.wh = 8, 11
         self.hud = False
-        
+
 
 def _init_objects_asterix_ram(hud=False):
     """
