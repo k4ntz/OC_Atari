@@ -11,7 +11,7 @@ class GameObject:
         self.visible = True
 
     def __repr__(self):
-        return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}"
+        return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}\n"
 
     @property
     def xy(self):

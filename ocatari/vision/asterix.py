@@ -124,7 +124,8 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in player:
         objects.append(Player(*instance))
 
-    cauldron = find_mc_objects(obs, objects_colors["cauldron"], size=(7, 10), tol_s=4, closing_dist=2)
+    cauldron = find_mc_objects(obs, objects_colors["cauldron"], closing_dist=2,
+                               size=(7, 10), tol_s=3)  # don't change size and tol_s! otherwise lines in enemy are cauldrons
     for instance in cauldron:
         objects.append(Cauldron(*instance))
 
@@ -145,7 +146,7 @@ def _detect_objects_asterix(objects, obs, hud=False):
             break
         ctr += 1
 
-    helmet = find_mc_objects(obs, objects_colors["helmet"], closing_dist=3)
+    helmet = find_mc_objects(obs, objects_colors["helmet"], closing_dist=3, min_distance=4)
     for instance in helmet:
         objects.append(Helmet(*instance))
 
@@ -161,7 +162,7 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in apple:
         objects.append(Apple(*instance))
 
-    fish = find_objects(obs, objects_colors["fish"],closing_dist=1, min_distance=1)  # size=(8, 5), tol_s=2,
+    fish = find_objects(obs, objects_colors["fish"], closing_dist=1, min_distance=1)  # size=(8, 5), tol_s=2,
     for instance in fish:
         objects.append(Fish(*instance))
 
