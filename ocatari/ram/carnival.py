@@ -1,4 +1,3 @@
-import numpy as np
 from .game_objects import GameObject
 from ._helper_methods import _convert_number
 
@@ -159,9 +158,9 @@ def _detect_objects_carnival_revised(objects, ram_state, hud=False):
         player.xy = ram_state[2] - 4, 186
 
     if hud:
-        del(objects[2:])
+        del objects[2:]
     else:
-        del(objects[1:])
+        del objects[1:]
 
     global x_missile
     global y_prev_missile
@@ -218,7 +217,7 @@ def _detect_objects_carnival_revised(objects, ram_state, hud=False):
 
     if hud:
         # ammo bar, starts blinking if ten or less but that is not implemented
-        if(ram_state[3]) != 0:
+        if ram_state[3] != 0:
             ammo = AmmoBar()
             ammo.wh = ram_state[3] * 4, 5
             if ram_state[42] < 32:
@@ -301,6 +300,7 @@ def _calculate_targets(ram_state, target_num, x, i):
         targets.append(obj3)
 
     return targets
+
 
 def _detect_objects_carnival_raw(info, ram_state):
     """
