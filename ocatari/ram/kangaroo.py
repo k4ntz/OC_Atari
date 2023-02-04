@@ -282,6 +282,10 @@ def _detect_objects_kangaroo_raw(info, ram_state):
 
 
 def _get_fruit_type_kangaroo(ram_state):
+    """
+    Returns the RGB value for fruits depending on the ram-state given
+    """
+
     if ram_state < 128:
         if ram_state % 4 == 3:
             return 195, 144, 61
