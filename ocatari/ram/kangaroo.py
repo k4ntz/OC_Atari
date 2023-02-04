@@ -156,7 +156,7 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
     # kangaroo child (goal)
     kc.xy = ram_state[83] + 15, 12
 
-    # enemys/mokeys
+    # enemies/monkeys
     if ram_state[11] != 255:
         m1.visible = True
         m1.xy = ram_state[15] + 16, ram_state[11] * 8 + 5
@@ -188,7 +188,7 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
     else:
         p1.visible = False
 
-    # thrown by mokeys Projectile
+    # thrown by monkeys Projectile
 
     # This projectiles visual representation seems to differ from its RAM x position,
     # therefor you will see it leaving the bounding box on both left and right depending on the situation
