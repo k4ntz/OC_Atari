@@ -214,13 +214,19 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
     # player.xy = ram_state[41], ram_state[39]
 
     if hud:
-        for i in range(ram_state[83] - 1):  # 3 for two Symbols
-            lives = objects[-2 - i]
-            # hier berechne x_lives
-            lives.xy = 60 + i * 16, 169
+        lives = objects[-2]
+        if ram_state[83] >= 2:
+            lives.xy = 60, 169
             lives.wh = 8, 11
-        # for i in range(2 - (ram_state[83] - 1)):
-        #     del objects[-2 - i]
+        else:
+            lives.xy = 0, 0
+
+        lives = objects[-3]
+        if ram_state[83] >= 3:
+            lives.xy = 60 + 16, 169
+            lives.wh = 8, 11
+        else:
+            lives.xy = 0, 0
 
         score = objects[-1]
         digits = 0

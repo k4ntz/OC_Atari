@@ -2,7 +2,14 @@
 # like it would have been installed as a package
 import sys
 import random
+
+import cv2
+import ipdb
 import matplotlib.pyplot as plt
+import numpy as np
+
+from ocatari.vision import utils
+
 sys.path.insert(0, '../..') # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
@@ -33,7 +40,8 @@ for i in range(10000000):
     env._env.unwrapped.ale.setRAM(83, 2)
     # if i == 1:
     #     env._env.unwrapped.ale.setRAM(95, 9)  # does not make difference
-    if i % 300 == 0:
+
+    if i % 3000 == 0 or i % 3000 < 15:
         # obse2 = deepcopy(obse)
         for ax, obs, objects_list, title in zip(axes, [obs],
                                                 [env.objects],
@@ -46,6 +54,18 @@ for i in range(10000000):
                 # mark_point(obs, *opos[:2], color=(255, 255, 0))
             plt.imshow(obs)
             plt.show()
+
+            ########
+            ipdb.set_trace()
+
+            masks = [cv2.inRange(obs[0:200, 0:159, :],
+                                 np.array(color), np.array(color)) for color in ocol]
+
+            mask = sum(masks)
+
+            ipdb.set_trace()
+            ########
+
         for ax in axes.flatten():
             ax.set_xticks([])
             ax.set_yticks([])
