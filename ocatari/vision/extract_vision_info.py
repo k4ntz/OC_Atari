@@ -39,13 +39,10 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_breakout(objects, obs, hud)
     elif game_name.lower() == "mspacman":
         return _detect_objects_mspacman(objects, obs, hud)
-<<<<<<< ocatari/vision/extract_vision_info.py
     elif game_name.lower() == "carnival":
         return _detect_objects_carnival(objects, obs, hud)
-=======
     elif game_name.lower() == "berzerk":
         return _detect_objects_berzerk(objects, obs, hud)
->>>>>>> ocatari/vision/extract_vision_info.py
     else:
         print(colored("Uncovered game in vision mode", "red"))
         exit(1)
