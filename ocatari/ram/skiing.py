@@ -180,6 +180,7 @@ def _init_objects_skiing_ram(hud=False):
                         Clock(91, 16, 6, 7)])
     return objects
 
+
 # import numpy as np
 def _detect_objects_skiing_revised(objects, ram_state, hud=False):
     player = objects[0]
