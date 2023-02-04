@@ -7,27 +7,21 @@ sys.path.insert(0, '../../') # noqa
 
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
-from ocatari.utils import load_agent, parser
 
-game_name = "Seaquest"
-# MODE = "vision"
+game_name = "Kangaroo"
+MODE = "vision"
 MODE = "revised"
-HUD = True
+HUD = False
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
-opts = parser.parse_args()
-
-if opts.path:
-    agent = load_agent(opts, env.action_space.n)
+# env._env.unwrapped.ale.setRAM(36, 1)
 
 for i in range(1000):
-    if opts.path is not None:
-        action = agent.draw_action(env.dqn_obs)
-    else:
-        action = random.randint(0, 14)
-    obs, reward, terminated, truncated, info = env.step(action)
-    if i % 100 == 0:
+
+    obs, reward, terminated, truncated, info = env.step(0)  # env.step(6) for easy movement
+
+    if i%10 == 0 and i > 50:
         # obse2 = deepcopy(obse)
         print(env.objects)
         for obj in env.objects:

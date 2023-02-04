@@ -6,10 +6,10 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 ## List of covered games
 
 ### Priority 1:
-- [x]  Breakout 
+- [x]  Breakout
 - [x]  Freeway
-- [x]  Bowling 
-- [x]  Ms.  Pacman 
+- [x]  Bowling
+- [x]  Ms.Pacman
 - [x]  Pong
 - [x]  Seaquest
 - [x]  Skiing
@@ -21,7 +21,7 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [ ]  Kangaroo (Worked on by Bjarne)
 
 ### Priority 2:
-- [ ]  Berzerk (worked on by Chris)
+- [x]   Berzerk
 - [ ]  Secret Quest -> not supported by gym
 - [ ]  River Raid (worked on by Chris)
 - [ ]  Atlantis
