@@ -20,7 +20,6 @@ AVAILABLE_GAMES = ["Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
                    "MsPacman", "Kangaroo", "Berzerk"]
 
 
-
 class OCAtari:
     def __init__(self, env_name, mode="raw", hud=False, *args, **kwargs):
         """
