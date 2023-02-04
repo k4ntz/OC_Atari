@@ -9,7 +9,7 @@ from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.ram.demonAttack import ProjectileHostile
 
 game_name = "Asterix-v4"  # Breakout
-game_name = "DemonAttack-v4"
+# game_name = "DemonAttack-v4"
 MODE = "vision"
 MODE = "revised"
 HUD = True
@@ -18,13 +18,13 @@ observation, info = env.reset()
 
 for i in range(1000):
     obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))  # env.step(env.action_space.sample())
-    env.set_ram(83, 2)
+    # env.set_ram(83, 2)
     if i % 20 == 0:
         # obse2 = deepcopy(obse)
         print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
-            if x < 160 and y < 210 and obj.visible:
+            if x < 160 and 0 < y < 210:  # and obj.visible:
                 opos = obj.xywh
                 ocol = obj.rgb
                 sur_col = make_darker(ocol)

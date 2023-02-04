@@ -3,6 +3,7 @@
 import random
 import sys
 import matplotlib.pyplot as plt
+import ipdb
 sys.path.insert(0, '../../')  # noqa
 
 from ocatari.core import OCAtari
@@ -15,11 +16,15 @@ HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
-for i in range(1000):
+for i in range(10000000):
     # obs, reward, terminated, truncated, info = env.step(-2)
     obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))
     # env.step(env.action_space.sample())
-    if i % 50 == 0:
+    env._env.unwrapped.ale.setRAM(83, 2)
+
+    if i % 1000 == 0:
+        print(i)
+    if i % 1 == 0:  # i > 3000 and and i % 3000 < 300
         print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
@@ -34,6 +39,8 @@ for i in range(1000):
 
         plt.imshow(obs)
         plt.show()
+
+        # ipdb.set_trace()
 
     if terminated or truncated:
         observation, info = env.reset()
