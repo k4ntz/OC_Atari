@@ -15,6 +15,8 @@ test_parser.add_argument("-p", "--path", type=str, default=None,
                          help="path to the model")
 test_parser.add_argument("-g", "--game", type=str, required=True,
                          help="game to evaluate (e.g. 'Pong')")
+test_parser.add_argument("-i", "--iou", type=float, default=0.8,
+                         help="Minimum iou for image saving (e.g. 0.7)")
 
 
 class AtariNet(nn.Module):
