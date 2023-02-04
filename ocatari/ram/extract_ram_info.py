@@ -1,7 +1,5 @@
 from termcolor import colored
 from .boxing import _detect_objects_boxing_raw, _detect_objects_boxing_revised, _init_objects_boxing_ram
-# from .bowling import _detect_objects_bowling_raw, _detect_objects_bowling_revised
-# from .breakout import _detect_objects_breakout_raw, _detect_objects_breakout_revised
 from .freeway import _detect_objects_freeway_raw, _detect_objects_freeway_revised, _init_objects_freeway_ram
 from .bowling import _detect_objects_bowling_raw, _detect_objects_bowling_revised, _init_objects_bowling_ram
 from .breakout import _detect_objects_breakout_raw, _detect_objects_breakout_revised, _init_objects_breakout_ram
@@ -18,6 +16,10 @@ from .demonAttack import _detect_objects_demon_attack_raw, \
 from .mspacman import _detect_objects_mspacman_raw, \
                       _detect_objects_mspacman_revised, \
                       _init_objects_mspacman_ram
+from .kangaroo import _detect_objects_kangaroo_raw, \
+                      _detect_objects_kangaroo_revised, \
+                      _init_objects_kangaroo_ram
+from .berzerk import _detect_objects_berzerk_raw, _detect_objects_berzerk_revised, _init_objects_berzerk_ram
 
 
 def init_objects(game_name, hud):
@@ -26,8 +28,6 @@ def init_objects(game_name, hud):
     """
     if game_name.lower() == "boxing":
         return _init_objects_boxing_ram(hud)
-    # elif game_name.lower() == "breakout":
-    #     _detect_objects_breakout(objects, ram_state)
     elif game_name.lower() == "freeway":
         return _init_objects_freeway_ram(hud)
     elif game_name.lower() == "breakout":
@@ -48,6 +48,10 @@ def init_objects(game_name, hud):
         return _init_objects_demon_attack_ram(hud)
     elif game_name.lower() == "mspacman":
         return _init_objects_mspacman_ram(hud)
+    elif game_name.lower() == "kangaroo":
+        return _init_objects_kangaroo_ram(hud)
+    elif game_name.lower() == "berzerk":
+        return _init_objects_berzerk_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
@@ -79,6 +83,10 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_demon_attack_raw(info, ram_state)
     elif game_name.lower() == "mspacman":
         _detect_objects_mspacman_raw(info, ram_state)
+    elif game_name.lower() == "kangaroo":
+        _detect_objects_kangaroo_raw(info, ram_state)
+    elif game_name.lower() == "kangaroo":
+        _detect_objects_berzerk_raw(info, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
         exit(1)
@@ -110,6 +118,10 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_demon_attack_revised(objects, ram_state, hud)
     elif game_name.lower() == "mspacman":
         _detect_objects_mspacman_revised(objects, ram_state, hud)
+    elif game_name.lower() == "kangaroo":
+        _detect_objects_kangaroo_revised(objects, ram_state, hud)
+    elif game_name.lower() == "berzerk":
+        _detect_objects_berzerk_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
