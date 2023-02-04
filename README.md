@@ -29,7 +29,7 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [ ]  Chopper Command (worked on by Sebastian)
 - [ ]  Q*bert
 - [ ]  Assault
-- [ ]  Beam Rider
+- [ ]  Beam Rider (worked on by Bjarne)
 - [x]  Boxing
 - [x]  Carnival
 - [ ]  Centipede (worked on by Timo)
