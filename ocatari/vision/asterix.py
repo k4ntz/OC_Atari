@@ -224,8 +224,8 @@ def _detect_objects_asterix(objects, obs, hud=False):
         for instance in score:
             objects.append(Score(*instance))
 
-    print(*objects, sep="\n")
-    print("\n")
+    # print(*objects, sep="\n")
+    # print("\n")
 
     # problems until now:
     # apple in enemy when there is  (set size and tol) (solved)

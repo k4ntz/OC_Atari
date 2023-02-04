@@ -194,20 +194,25 @@ def _init_objects_asterix_ram(hud=False):
 
 
 def _detect_objects_asterix_raw(info, ram_state):
-    info["x_positions"] = ram_state[41:50]  # 41 for player
-    info["y_player"] = ram_state[39]  # from 0 to 7 (8 lanes) is there other possible values too!?
+    info["x_positions"] = ram_state[41:50]  # 41 for player, 42 for obj in upper lane...
+    info["y_player"] = ram_state[39]  # from 0 to 7 (8 lanes)
     info["score"] = ram_state[94:97]  # on ram in decimal/ on screen in hex(like other 2 games)
     info["lives"] = ram_state[83]
-    info["ability_moving_objects"] = ram_state[19:27]
-    # info["kind_of_objs"] = ram_state[29:37]  # just if enemy or cauldron (first bit lsb)
 
+    # info["maybe_useful"] = ram_state[10:18], ram_state[40], ram_state[19:27], ram_state[29:37], ram_state[87]
+    # not known what they are for exactly
     print(ram_state)
 
 
 def _detect_objects_asterix_revised(objects, ram_state, hud=False):
     objs = None  # could be Enemy, Reward, Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat or Mug
     player, *objs, score, lives = objects
+    player = objects[0]
+    player.xy = ram_state[41], ram_state[39]
 
+    score = objects[-2]
+    # score.xy =
+    
     # for x in objs:
     #     if type(objs[x]) is Cauldron:
     #         objs[objs[x]].y = objs[objs[x]].y - 2
