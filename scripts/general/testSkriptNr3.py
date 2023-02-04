@@ -11,7 +11,7 @@ from ocatari.core import OCAtari
 Test vision mode with rgb_array as render_mode
 """
 
-env = OCAtari("Asterix-v4", mode="vision", render_mode='rgb_array')  # Skiing-v4, DemonAttack-v4, SpaceInvaders-v4
+env = OCAtari("Asterix-v4", mode="revised", render_mode='rgb_array')  # Skiing-v4, DemonAttack-v4, SpaceInvaders-v4
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
@@ -42,7 +42,6 @@ for _ in range(1000):
         observation, info = env.reset()
     print(info)
     if info.get("frame_number") % 20 == 0:
-        env._env.unwrapped.ale.setRAM(109, -ram[i])  # wert)
         rgb_array = env.render()
         plt.imshow(rgb_array)  # rgb_array stuff for fun
         plt.show()

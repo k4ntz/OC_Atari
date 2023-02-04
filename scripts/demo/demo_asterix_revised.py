@@ -13,11 +13,11 @@ game_name = "Asterix-v4"  # Breakout
 MODE = "vision"
 MODE = "revised"
 HUD = True
-env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
+env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='human')
 observation, info = env.reset()
 
 for i in range(1000):
-    obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))  # env.step(env.action_space.sample())
+    obs, reward, terminated, truncated, info = env.step(random.randint(0, 2))  # env.step(env.action_space.sample())
     # env.set_ram(83, 2)
     if i % 20 == 0:
         # obse2 = deepcopy(obse)

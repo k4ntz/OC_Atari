@@ -187,8 +187,8 @@ def _init_objects_asterix_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Enemy(), Cauldron(), Helmet(), Shield(), Lamp(), Apple(), Fish(), Meat(), Mug(),
-               Reward50(), Reward100(), Reward200(), Reward300(), Reward400(), Reward500()]
+    objects = [Cauldron(), Helmet(), Shield(), Lamp(), Apple(), Fish(), Meat(), Mug(), Enemy(), Player()]
+    # Reward50(), Reward100(), Reward200(), Reward300(), Reward400(), Reward500()]
     if hud:
         objects.extend([Score(), Lives(), Lives()])
         # for i in range(ram_state[83])
@@ -201,6 +201,7 @@ def _detect_objects_asterix_raw(info, ram_state):
     info["y_player"] = ram_state[39]  # from 0 to 7 (8 lanes)
     info["score"] = ram_state[94:97]  # on ram in decimal/ on screen in hex(like other 2 games)
     info["lives"] = ram_state[83]
+    info["kind_of_visible_objs"] = ram_state[54] % 8
 
     # info["maybe_useful"] = ram_state[10:18], ram_state[40], ram_state[19:27], ram_state[29:37], ram_state[87]
     # not known what they are for exactly
@@ -208,10 +209,18 @@ def _detect_objects_asterix_raw(info, ram_state):
 
 
 def _detect_objects_asterix_revised(objects, ram_state, hud=False):
-    objs = None  # could be Enemy, Reward, Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat or Mug
-    # player, *objs, score, lives = objects
-    player = objects[0]
-    player.xy = ram_state[41], 26 + ram_state[39]*16  # 84, 90   84 26 90-26 /4 = 16
+    del objects[0:8]
+    const = ram_state[54] % 8
+    eatable = []
+    if const == 0:
+        for i in range(8):
+            eatable.append(Cauldron())
+            eatable[i].xy = ram_state[42 + i] + 1, 26 + i * 16 + 1
+            # eatable[i].rgb =
+            objects.insert(i, eatable[i])
+
+    player = objects[-4]
+    player.xy = ram_state[41], 26 + ram_state[39] * 16  # 84, 90   84 26 90-26 /4 = 16
     if ram_state[71] == 0:
         player.wh = 8, 11
     else:
@@ -247,13 +256,6 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
             digits = 1
         score.xy = 96 - digits * 8, 184  # correct the 96
         score.wh = 6 + digits * 8, 7
-
-    objs = objects[1:-2]  # enemy, eatable, rewards
-
-    # for x in objs:
-    #     if type(objs[x]) is Cauldron:
-    #         objs[objs[x]].y = objs[objs[x]].y - 2
-    #         objs[objs[x]].h = objs[objs[x]].h + 2
 
     print("ram_state:")
     print(ram_state)

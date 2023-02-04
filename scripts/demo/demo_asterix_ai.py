@@ -41,30 +41,68 @@ for i in range(10000000):
     # if i == 1:
     #     env._env.unwrapped.ale.setRAM(95, 9)  # does not make difference
 
-    if i % 3000 == 0 or i % 3000 < 15:
-        # obse2 = deepcopy(obse)
-        for ax, obs, objects_list, title in zip(axes, [obs],
-                                                [env.objects],
-                                                ["ram"] if MODE == "revised" else ["vision"]):
-            for obj in objects_list:
-                opos = obj.xywh
-                ocol = obj.rgb
-                sur_col = make_darker(ocol)
-                mark_bb(obs, opos, color=sur_col)
-                # mark_point(obs, *opos[:2], color=(255, 255, 0))
-            plt.imshow(obs)
-            plt.show()
+    # if i % 3000 == 0 or i % 3000 < 15:
+    #     # obse2 = deepcopy(obse)
+    #     for ax, obs, objects_list, title in zip(axes, [obs],
+    #                                             [env.objects],
+    #                                             ["ram"] if MODE == "revised" else ["vision"]):
+    #         for obj in objects_list:
+    #             opos = obj.xywh
+    #             ocol = obj.rgb
+    #             sur_col = make_darker(ocol)
+    #             mark_bb(obs, opos, color=sur_col)
+    #             # mark_point(obs, *opos[:2], color=(255, 255, 0))
+    #         plt.imshow(obs)
+    #         plt.show()
+    ########
+    # ipdb.set_trace()
+    #
+    # masks = [cv2.inRange(obs[0:200, 0:159, :],
+    #                      np.array(color), np.array(color)) for color in ocol]
+    #
+    # mask = sum(masks)
+    #
+    # ipdb.set_trace()
+    ########
 
-            ########
-            ipdb.set_trace()
+    ################
+    # print ram when changing score to detect bits for kind of objects
+    ram = env._env.unwrapped.ale.getRAM()
+    if i>1 and prevRam[95] != ram[95]:
+        for k in range(len(ram)):
+            if ram[k] != prevRam[k]:
+                if ram[k] > prevRam[k]:
+                    integ = ram[k] - prevRam[k]
+                else:
+                    integ = prevRam[k] - ram[k]
 
-            masks = [cv2.inRange(obs[0:200, 0:159, :],
-                                 np.array(color), np.array(color)) for color in ocol]
+                if integ > 127:
+                    print(str(k), '\t', -integ, '\t',
+                          format(-integ, '08b'), '\t',
+                          str(ram[k]), '\t',
+                          format(ram[k], '08b'),
+                          "negativ")
+                else:
+                    print(str(k), '\t', integ, '\t',
+                          format(integ, '08b'), '\t',
+                          str(ram[k]), '\t',
+                          format(ram[k], '08b')
+                          )
+        print(ram)
+        # env.render()
+        # rgb_array = env.render()
+        # plt.imshow(rgb_array)  # rgb_array stuff for fun
+        # plt.show()
 
-            mask = sum(masks)
+        # plt.imshow(obs)
+        # plt.show()
+        print("------------------------------------------")
 
-            ipdb.set_trace()
-            ########
+    if i > 0:
+        prevRam = ram
+        ################
+
+
 
         for ax in axes.flatten():
             ax.set_xticks([])

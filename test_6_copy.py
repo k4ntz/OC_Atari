@@ -86,10 +86,10 @@ for ROUND in range(1000000):
         # print(info)
 
         env.render()
-        if ROUND % 100 == 1:
-            env._env.unwrapped.ale.setRAM(96, ram[96]+10)
-            env._env.unwrapped.ale.setRAM(95, ram[95] + 10)
-        if ROUND % 100 == 0:
+        if ROUND % 10 == 1:
+            env._env.unwrapped.ale.setRAM(90, ram[90]+10)
+            #env._env.unwrapped.ale.setRAM(90, ram[90] + 10)
+        if ROUND % 10 == 0:
             rgb_array = env.render()
             plt.imshow(rgb_array)  # rgb_array stuff for fun
             plt.show()

@@ -3,7 +3,9 @@ from ocatari.core import OCAtari
 import time
 import random
 
-# this test makes it easy to test several indices
+"""
+this test makes it easy to test several indices
+"""
 
 env = OCAtari("Asterix-v4", mode="vision", render_mode='rgb_array')  # Skiing-v4, DemonAttack-v4, SpaceInvaders-v4
 observation, info = env.reset()
@@ -11,23 +13,27 @@ prevRam = None
 
 constant = []
 not_important = constant + list(range(55, 57))
-already_figured_out = not_important  + list(range(94, 97))\
-                      + list(range(29, 37))  # + list(range(19, 27)) + list(range(41, 50))
+already_figured_out = not_important + list(range(94, 97)) \
+                      + list(range(41, 50))  # + list(range(19, 27)) + list(range(29, 37))
 
-value = 85
-index = 70
+
+value = 128
+index = 54
 
 for ROUND in range(10000000):
-
 
     obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))
 
     if prevRam is not None:
-        i = 71  # to test an individual index in all rounds (where the index keeps constant)
+        i = 54  # to test an individual index in all rounds (where the index keeps constant)
         # i = index  # here the index meant to be incremented
 
+        # if ROUND > 1:
+        #     env._env.unwrapped.ale.setRAM(i, value)  # DON'T CHANGE. CHANGE ABOVE
+
         # value = (prevRam[i] + 31) % 256  # 31 = 00001111
-        value = (prevRam[i] + 33) % 256  # 33 = 00010001
+        # value = (prevRam[i] + 32) % 256  # 32 = 00010000
+        # value = (prevRam[i] + 33) % 256  # 33 = 00010001
         # value = (prevRam[i] + 3) % 256
         # value = (prevRam[i] + 85) % 256  # 85 = 01010101 for efficient changes (= more and fast)
         # value = (prevRam[i] + 1) % 256
@@ -46,14 +52,16 @@ for ROUND in range(10000000):
             while index in already_figured_out:
                 index += 1
 
-        # if ROUND > 1:
-        #     env._env.unwrapped.ale.setRAM(i, value)  # DON'T CHANGE. CHANGE ABOVE
+        # if ram[29] % 2 != 1:
+        #     env._env.unwrapped.ale.setRAM(29, ram[29]+1)
+
+        if ROUND > 1:
+            env._env.unwrapped.ale.setRAM(i, value)  # DON'T CHANGE. CHANGE ABOVE
 
         env._env.unwrapped.ale.setRAM(83, 2)
 
-        print(ram)
-
-        if ROUND % 25 == 0:
+        if ROUND % 40 == 0:
+            print(ram)
             for k in range(len(ram)):
                 if ram[k] != prevRam[k] and k not in already_figured_out:
                     if ram[k] > prevRam[k]:
@@ -74,10 +82,11 @@ for ROUND in range(10000000):
                               format(ram[k], '08b')
                               )
 
-            print("------------------------------------------")
+            env.render()
             rgb_array = env.render()
             plt.imshow(rgb_array)  # rgb_array stuff for fun
             plt.show()
+            print("------------------------------------------")
 
         if terminated or truncated:
             observation, info = env.reset()
@@ -89,8 +98,6 @@ for ROUND in range(10000000):
             #     print('ram[' + str(k) + '] =', ram[k])
         else:
             print('round =', ROUND, 'i =', i)
-
-        env.render()
 
         # time.sleep(0)
     if ROUND > 0:
