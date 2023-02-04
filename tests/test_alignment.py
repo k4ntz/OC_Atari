@@ -17,6 +17,47 @@ from copy import deepcopy
 import numpy as np
 import os
 import json
+from termcolor import colored
+from pyfiglet import Figlet
+from tqdm import tqdm
+
+import warnings
+warnings.filterwarnings("ignore")
+
+
+def print_all_stats(all_stats):
+    linelength = 30
+    print("Mean IOUs: ", round(all_stats['mean_ious'], 2))
+    print("-"*linelength)
+    print("\nPer class IOU: ")
+    for objname, res in all_stats['per_class_ious'].items():
+        if res < 0.6:
+            print(colored(f"\t| {objname}: {res:.2f}", 'red'))
+        elif res < 0.9:
+            print(colored(f"\t| {objname}: {res:.2f}", 'yellow'))
+        else:
+            print(colored(f"\t| {objname}: {res:.2f}", 'green'))
+    if all_stats['only_in_ram']:
+        print("-"*linelength)
+        print("Objects found only in ram version: ")
+        for objname, res in all_stats['only_in_ram'].items():
+            if eval(res) < 0.6:
+                print(colored(f"\t| {objname}: {res}", 'red'))
+            elif eval(res) < 0.9:
+                print(colored(f"\t| {objname}: {res}", 'yellow'))
+            else:
+                print(colored(f"\t| {objname}: {res}", 'green'))
+    if all_stats['only_in_vision']:
+        print("-"*linelength)
+        print("Objects found only in vision version: ")
+        for objname, res in all_stats['only_in_vision'].items():
+            if eval(res) < 0.6:
+                print(colored(f"\t| {objname}: {res}", 'red'))
+            elif eval(res) < 0.9:
+                print(colored(f"\t| {objname}: {res}", 'yellow'))
+            else:
+                print(colored(f"\t| {objname}: {res}", 'green'))
+    print("-"*linelength)
 
 
 def get_iou(obj1, obj2):
@@ -74,13 +115,14 @@ def difference_objects(ram_list, vision_list):
     return {"mean_iou": np.mean(ious), "per_class_ious": per_class_ious,
             "only_in_ram": only_in_ram, "only_in_vision": only_in_vision}
 
-
+figlet = Figlet()
 report_bad = {}
 all_stats = []
 SAVE_IMAGE_FOLDER = "diff_images"
 os.makedirs(SAVE_IMAGE_FOLDER, exist_ok=True)
 opts = test_parser.parse_args()
 game_name = opts.game
+print(colored(figlet.renderText(f"Testing  {game_name}"), "blue"))
 MODE = "test"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
@@ -92,18 +134,18 @@ ALL_STATS = {
              "only_in_ram": {},
              "only_in_vision": {}
              }
-MIN_ACCEPTABLE_IOU = 0.8
+MIN_ACCEPTABLE_IOU = opts.iou
 
 if opts.path:
    agent = load_agent(opts, env.action_space.n)
 
-
+im_reports = ""
 fig, axes = plt.subplots(1, 2)
-for i in range(NB_SAMPLES):
+for i in tqdm(range(NB_SAMPLES)):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
-        action = random.randint(0, 5)
+        action = random.randint(0, env.action_space.n-1)
     obse, reward, terminated, truncated, info = env.step(action)
     stats = difference_objects(env.objects, env.objects_v)
     ALL_STATS["mean_ious"].append(stats["mean_iou"])
@@ -136,7 +178,7 @@ for i in range(NB_SAMPLES):
         # plt.imshow(obse)
         # plt.show()
         plt.savefig(f"{SAVE_IMAGE_FOLDER}/{game_name}_{i}.png")
-        print(f"Saved at {SAVE_IMAGE_FOLDER}/{game_name}_{i}.png for iou {stats['mean_iou']}")
+        im_reports += f"{i} (iou={stats['mean_iou']:.3f}),  "
         report_bad[f"Image_{i}"] = stats
 
     if terminated or truncated:
@@ -159,3 +201,11 @@ with open(f"{SAVE_IMAGE_FOLDER}/report_bad_{game_name}.json", "w") as outfile:
 json_all_stats = json.dumps(ALL_STATS, indent=4)
 with open(f"{SAVE_IMAGE_FOLDER}/all_stats_{game_name}.json", "w") as outfile:
     outfile.write(json_all_stats)
+
+print_all_stats(ALL_STATS)
+print(f"Saved report_bad_{game_name}.json and all_stats_{game_name}.json in {SAVE_IMAGE_FOLDER}")
+
+
+if im_reports:
+    print(f"Saved the following images with iou < {MIN_ACCEPTABLE_IOU}:\n" + im_reports + f"\n in {SAVE_IMAGE_FOLDER}")
+    print(f"Saved {SAVE_IMAGE_FOLDER}/report_bad_{game_name}.json for details on these images")

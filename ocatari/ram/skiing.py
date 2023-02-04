@@ -131,6 +131,8 @@ class Tree(GameObject):
             self.wh = min(164-x, 16), min(175-y, 30)
         else:
             self._xy = x-3, y+4
+        # if abs(self._prev_xy[0] - self._xy[0]) > 10:
+        #     import ipdb; ipdb.set_trace()
         self.wh = self.wh[0], min(175-y, 30)
 
 
@@ -178,7 +180,7 @@ def _init_objects_skiing_ram(hud=False):
                         Clock(91, 16, 6, 7)])
     return objects
 
-
+# import numpy as np
 def _detect_objects_skiing_revised(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = (ram_state[25], ram_state[26]-80)
@@ -218,8 +220,7 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
                     currobj.wh = currobj.wh[0], height-15
                     objects[offset+1].wh = objects[offset+1].wh[0], height-15
                 if currobj._ram_id != 2:
-                    import ipdb
-                    ipdb.set_trace()
+                    raise ValueError
             offset += 1
         elif type == 5:     # mogul
             if currobj is None:
