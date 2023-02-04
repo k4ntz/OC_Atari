@@ -212,12 +212,27 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
     del objects[0:8]
     const = ram_state[54] % 8
     eatable = []
+    enemy_lanes = []
+    ctr = 0
     if const == 0:
         for i in range(8):
-            eatable.append(Cauldron())
-            eatable[i].xy = ram_state[42 + i] + 1, 26 + i * 16 + 1
-            # eatable[i].rgb =
-            objects.insert(i, eatable[i])
+            if ram_state[29+i] % 2 == 1:
+                enemy_lanes.append(i)
+                continue
+            else:
+                eatable.append(Cauldron())
+                eatable[ctr].xy = ram_state[42 + i] + 1, 26 + i * 16 + 1
+                # eatable[i].rgb =
+                objects.insert(0, eatable[ctr])
+                ctr += 1
+
+    enemy = []
+    ctr = 0
+    for i in enemy_lanes:
+        enemy.append(Enemy())
+        enemy[ctr].xy = ram_state[42 + i], 26 + i * 16
+        objects.insert(0, enemy[ctr])
+        ctr += 1
 
     player = objects[-4]
     player.xy = ram_state[41], 26 + ram_state[39] * 16  # 84, 90   84 26 90-26 /4 = 16
