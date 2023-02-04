@@ -102,9 +102,6 @@ def _detect_objects_bowling_revised(objects, ram_state, hud=False):
     player_shoes, player_torso, player_head, ball, pin1, pin2, pin3, pin4, pin5, pin6, pin7, pin8, pin9, pin10\
         = objects[:14]
 
-    # not a perfect shape around the ball because the ram y-value and the rendered image y-position are
-    # in no correlation and the ram position encodes the lowest position of the ball and not the middle of the ball
-    # thus a rectangle will not perfectly fit the ball
     ball.xy = ram_state[30] + 7, 161 - 2 * (ram_state[41] - 1)
     player_shoes.xy = ram_state[29] + 8, 169 - 2 * (ram_state[40] - 1)
     player_torso.xy = ram_state[29] + 10, 147 - 2 * (ram_state[40] - 1)
@@ -134,8 +131,6 @@ def _detect_objects_bowling_revised(objects, ram_state, hud=False):
         elif _convert_number(ram_state[36]) != 1:
             objects[15].wh = 12, 10
             objects[15].xy = 32, 7
-
-    print(objects)
 
 
 def _detect_objects_bowling_raw(info, ram_state):

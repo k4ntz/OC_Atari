@@ -31,6 +31,8 @@ for i in range(1000):
         observation, info = env.reset()
     print(info)
     env.render()
+    if info.get('episode_frame_number') > 50:
+        ipdb.set_trace()
     time.sleep(0.01)
     ipdb.set_trace()
 env.close()
