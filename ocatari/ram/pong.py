@@ -77,9 +77,25 @@ def _detect_objects_pong_revised(objects, ram_state, hud=False):
     if ram_state[54] != 0:  # otherwise no ball
         ball.xy = ram_state[49]-49, ram_state[54]-14
     # same for enemy
-    if ram_state[50] > 18 or ram_state[50] != 0:  # otherwise no enemy
-        enemy.xy = 16, ram_state[50]-15
-    player.xy = 140, ram_state[51]-13
+    if ram_state[50] > 18:  # otherwise no enemy
+        if ram_state[50] - 15 < 34:
+            player.xy = 16, 34
+            player.wh = 4, ram_state[50]-35
+        elif ram_state[50] > 194:
+            player.xy = 140, ram_state[50]-15
+            player.wh = 4, 207 - ram_state[50]
+        else:
+            enemy.xy = 16, ram_state[50]-15
+            player.wh = 4, 15
+    if ram_state[51] - 13 < 34:
+        player.xy = 140, 34
+        player.wh = 4, ram_state[51]-33
+    elif ram_state[51] + 2 > 194:
+        player.xy = 140, ram_state[51]-13
+        player.wh = 4, 207 - ram_state[51]
+    else:
+        player.xy = 140, ram_state[51]-13
+        player.wh = 4, 15
     if hud:
         # scores
         if ram_state[13] > 10:  # enemy score
