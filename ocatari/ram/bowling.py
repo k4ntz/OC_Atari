@@ -132,8 +132,6 @@ def _detect_objects_bowling_revised(objects, ram_state, hud=False):
             objects[15].wh = 12, 10
             objects[15].xy = 32, 7
 
-    print(objects)
-
 
 def _detect_objects_bowling_raw(info, ram_state):
     player = [ram_state[29], ram_state[40]]  # player_x, player_y  y: from 1 (down) to 28 (up)

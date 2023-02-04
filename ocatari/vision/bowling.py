@@ -92,4 +92,3 @@ def _detect_objects_bowling(objects, obs, hud=False):
     for p in player_torso:
         if p[1] > 100:
             objects.append(PlayerTorso(*p))
-    print(objects)
