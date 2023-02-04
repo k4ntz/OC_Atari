@@ -210,8 +210,13 @@ def _detect_objects_asterix_raw(info, ram_state):
 def _detect_objects_asterix_revised(objects, ram_state, hud=False):
     objs = None  # could be Enemy, Reward, Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat or Mug
     # player, *objs, score, lives = objects
-    # player = objects[0]
-    # player.xy = ram_state[41], ram_state[39]
+    player = objects[0]
+    player.xy = ram_state[41], 26 + ram_state[39]*16  # 84, 90   84 26 90-26 /4 = 16
+    if ram_state[71] == 0:
+        player.wh = 8, 11
+    else:
+        player.wh = 16, 11
+    player.rgb = 187, 187, 53
 
     if hud:
         lives = objects[-2]
