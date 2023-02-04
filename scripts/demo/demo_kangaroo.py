@@ -8,15 +8,20 @@ sys.path.insert(0, '../../') # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 
-game_name = "MsPacman"
+game_name = "Kangaroo"
+MODE = "vision"
 MODE = "revised"
-HUD = True
+HUD = False
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
+# env._env.unwrapped.ale.setRAM(36, 1)
+
 for i in range(1000):
-    obs, reward, terminated, truncated, info = env.step(random.randint(0, 4))
-    if i % 20 == 0:
+
+    obs, reward, terminated, truncated, info = env.step(0)  # env.step(6) for easy movement
+
+    if i%10 == 0 and i > 50:
         # obse2 = deepcopy(obse)
         print(env.objects)
         for obj in env.objects:
