@@ -16,6 +16,7 @@ from .demonAttack import _detect_objects_demon_attack_raw, \
 from .mspacman import _detect_objects_mspacman_raw, \
                       _detect_objects_mspacman_revised, \
                       _init_objects_mspacman_ram
+from .carnival import _init_objects_carnival_ram, _detect_objects_carnival_raw, _detect_objects_carnival_revised
 from .kangaroo import _detect_objects_kangaroo_raw, \
                       _detect_objects_kangaroo_revised, \
                       _init_objects_kangaroo_ram
@@ -48,6 +49,8 @@ def init_objects(game_name, hud):
         return _init_objects_demon_attack_ram(hud)
     elif game_name.lower() == "mspacman":
         return _init_objects_mspacman_ram(hud)
+    elif game_name.lower() == "carnival":
+        return _init_objects_carnival_ram(hud)
     elif game_name.lower() == "kangaroo":
         return _init_objects_kangaroo_ram(hud)
     elif game_name.lower() == "berzerk":
@@ -83,6 +86,8 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_demon_attack_raw(info, ram_state)
     elif game_name.lower() == "mspacman":
         _detect_objects_mspacman_raw(info, ram_state)
+    elif game_name.lower() == "carnival":
+        _detect_objects_carnival_raw(info, ram_state)
     elif game_name.lower() == "kangaroo":
         _detect_objects_kangaroo_raw(info, ram_state)
     elif game_name.lower() == "kangaroo":
@@ -118,6 +123,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_demon_attack_revised(objects, ram_state, hud)
     elif game_name.lower() == "mspacman":
         _detect_objects_mspacman_revised(objects, ram_state, hud)
+    elif game_name.lower() == "carnival":
+        _detect_objects_carnival_revised(objects, ram_state, hud)
     elif game_name.lower() == "kangaroo":
         _detect_objects_kangaroo_revised(objects, ram_state, hud)
     elif game_name.lower() == "berzerk":

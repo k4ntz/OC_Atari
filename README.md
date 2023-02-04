@@ -17,8 +17,8 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [ ]  Asterix (worked on by Belal)
 - [ ]  Asteroids (worked on by Chris)
 - [x]  Demon Attack
-- [x]  Tennis
-- [ ]  Kangaroo (Worked on by Bjarne)
+- [x]  Tennis (reworking it for classes - Chris)
+- [x]  Kangaroo
 
 ### Priority 2:
 - [x]   Berzerk
@@ -29,9 +29,9 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [ ]  Chopper Command (worked on by Sebastian)
 - [ ]  Q*bert
 - [ ]  Assault
-- [ ]  Beam Rider
+- [ ]  Beam Rider (worked on by Bjarne)
 - [x]  Boxing
-- [ ]  Carnival (worked on by Chris)
+- [x]  Carnival
 - [ ]  Centipede (worked on by Timo)
 
 ### Priority 3:
