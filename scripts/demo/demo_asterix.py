@@ -21,6 +21,9 @@ for i in range(10000000):
     obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))
     # env.step(env.action_space.sample())
     env._env.unwrapped.ale.setRAM(83, 2)
+    # env._env.unwrapped.ale.setRAM(39, 0)
+
+
 
     if i % 1000 == 0:
         print(i)
