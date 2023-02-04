@@ -126,7 +126,7 @@ opts = test_parser.parse_args()
 game_name = opts.game
 print(colored(figlet.renderText(f"Testing  {game_name}"), "blue"))
 MODE = "test"
-HUD = False
+HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 NB_SAMPLES = 100
