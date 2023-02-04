@@ -140,43 +140,13 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in player:
         objects.append(Player(*instance))
 
-    cauldron = find_mc_objects(obs, objects_colors["cauldron"], closing_dist=2, size=(7, 10), tol_s=2)
-    for instance in cauldron:
-        objects.append(Cauldron(*instance))
-
     enemy = find_mc_objects(obs, objects_colors["enemy"], closing_dist=2, miny=24, maxy=151, size=(7, 11), tol_s=1)
     for instance in enemy:
         objects.append(Enemy(*instance))
 
-    reward50 = find_mc_objects(obs, objects_colors["reward_50"], min_distance=3, closing_dist=4, miny=24, maxy=151,
-                               tol_s=3, size=(6, 11))
-    for instance in reward50:
-        objects.append(Reward50(*instance))
-
-    reward100 = find_mc_objects(obs, objects_colors["reward_100"], min_distance=3, closing_dist=3, miny=24, maxy=151,
-                                size=(8, 11), tol_s=2)
-    for instance in reward100:
-        objects.append(Reward100(*instance))
-
-    reward200 = find_mc_objects(obs, objects_colors["reward_200"], min_distance=3, closing_dist=3, miny=24, maxy=151,
-                                size=(8, 11), tol_s=3)
-    for instance in reward200:
-        objects.append(Reward200(*instance))
-
-    reward300 = find_mc_objects(obs, objects_colors["reward_300"], min_distance=3, closing_dist=3, miny=24, maxy=151,
-                                size=(8, 11), tol_s=3)
-    for instance in reward300:
-        objects.append(Reward300(*instance))
-
-    reward400 = find_mc_objects(obs, objects_colors["reward_400"], min_distance=3, closing_dist=3, miny=24, maxy=151,
-                                size=(8, 11), tol_s=3)
-    for instance in reward400:
-        objects.append(Reward400(*instance))
-
-    reward500 = find_mc_objects(obs, objects_colors["reward_500"], min_distance=3, closing_dist=3, miny=24, maxy=151,
-                                size=(8, 11), tol_s=3)
-    for instance in reward500:
-        objects.append(Reward500(*instance))
+    cauldron = find_mc_objects(obs, objects_colors["cauldron"], closing_dist=2, size=(7, 10), tol_s=2)
+    for instance in cauldron:
+        objects.append(Cauldron(*instance))
 
     helmet = find_mc_objects(obs, objects_colors["helmet"], closing_dist=1, min_distance=1, size=(7, 11),
                              tol_s=2, miny=24, maxy=151, )
@@ -215,6 +185,36 @@ def _detect_objects_asterix(objects, obs, hud=False):
     for instance in mug:
         objects.append(Mug(*instance))
 
+    reward50 = find_mc_objects(obs, objects_colors["reward_50"], min_distance=3, closing_dist=4, miny=24, maxy=151,
+                               tol_s=3, size=(6, 11))
+    for instance in reward50:
+        objects.append(Reward50(*instance))
+
+    reward100 = find_mc_objects(obs, objects_colors["reward_100"], min_distance=3, closing_dist=3, miny=24, maxy=151,
+                                size=(8, 11), tol_s=2)
+    for instance in reward100:
+        objects.append(Reward100(*instance))
+
+    reward200 = find_mc_objects(obs, objects_colors["reward_200"], min_distance=3, closing_dist=3, miny=24, maxy=151,
+                                size=(8, 11), tol_s=3)
+    for instance in reward200:
+        objects.append(Reward200(*instance))
+
+    reward300 = find_mc_objects(obs, objects_colors["reward_300"], min_distance=3, closing_dist=3, miny=24, maxy=151,
+                                size=(8, 11), tol_s=3)
+    for instance in reward300:
+        objects.append(Reward300(*instance))
+
+    reward400 = find_mc_objects(obs, objects_colors["reward_400"], min_distance=3, closing_dist=3, miny=24, maxy=151,
+                                size=(8, 11), tol_s=3)
+    for instance in reward400:
+        objects.append(Reward400(*instance))
+
+    reward500 = find_mc_objects(obs, objects_colors["reward_500"], min_distance=3, closing_dist=3, miny=24, maxy=151,
+                                size=(8, 11), tol_s=3)
+    for instance in reward500:
+        objects.append(Reward500(*instance))
+
     if hud:
         lives = find_objects(obs, objects_colors["lives"], min_distance=1, miny=160, maxy=181)
         for instance in lives:
@@ -232,5 +232,6 @@ def _detect_objects_asterix(objects, obs, hud=False):
     # shield as shield and meat (set condition noShield) (solved)
     # lamp as mug (set pars) (solved)
     # lamp as player (try new pars) (solved)
-    # lamp and reward_300 is not being recognized (try with masks?)
+    # lamp and reward_300 are not being detected at all (try with masks?)
+
     # notice: agent runs away from meat and mug

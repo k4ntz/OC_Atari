@@ -1,4 +1,5 @@
 from .game_objects import GameObject
+from ._helper_methods import _convert_number
 
 
 class Player(GameObject):
@@ -6,7 +7,7 @@ class Player(GameObject):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.rgb = 187, 187, 53
-            # self.visible = False
+            self.visible = True
             self._xy = 0, 0
             self.wh = 8, 11  # at some point 16, 11. other advanced player is (6, 11)
             self.hud = False
@@ -43,8 +44,8 @@ class Score(GameObject):
 
 
 class Lives(GameObject):
-    def __init__(self, y, *args, **kwargs):
-        super().__init__(y, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.rgb = 187, 187, 53  # same color as player
         # self.visible = True
         self._xy = 0, 0
@@ -186,9 +187,11 @@ def _init_objects_asterix_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player, Enemy, Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat, Mug]
+    objects = [Player(), Enemy(), Cauldron(), Helmet(), Shield(), Lamp(), Apple(), Fish(), Meat(), Mug(),
+               Reward50(), Reward100(), Reward200(), Reward300(), Reward400(), Reward500()]
     if hud:
-        objects.extend([Score, Lives])
+        objects.extend([Score(), Lives(), Lives()])
+        # for i in range(ram_state[83])
 
     return objects
 
@@ -206,17 +209,41 @@ def _detect_objects_asterix_raw(info, ram_state):
 
 def _detect_objects_asterix_revised(objects, ram_state, hud=False):
     objs = None  # could be Enemy, Reward, Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat or Mug
-    player, *objs, score, lives = objects
-    player = objects[0]
-    player.xy = ram_state[41], ram_state[39]
+    # player, *objs, score, lives = objects
+    # player = objects[0]
+    # player.xy = ram_state[41], ram_state[39]
 
-    score = objects[-2]
-    # score.xy =
-    
+    if hud:
+        for i in range(ram_state[83] - 1):  # 3 for two Symbols
+            lives = objects[-2 - i]
+            # hier berechne x_lives
+            lives.xy = 60 + i * 16, 169
+            lives.wh = 8, 11
+        # for i in range(2 - (ram_state[83] - 1)):
+        #     del objects[-2 - i]
+
+        score = objects[-1]
+        digits = 0
+        if _convert_number(ram_state[94]) > 9:
+            digits = 5
+        elif _convert_number(ram_state[94]) > 0:
+            digits = 4
+        elif _convert_number(ram_state[95]) > 9:
+            digits = 3
+        elif _convert_number(ram_state[95]) > 0:
+            digits = 2
+        elif _convert_number(ram_state[96]) > 0:
+            digits = 1
+        score.xy = 96 - digits * 8, 184  # correct the 96
+        score.wh = 6 + digits * 8, 7
+
+    objs = objects[1:-2]  # enemy, eatable, rewards
+
     # for x in objs:
     #     if type(objs[x]) is Cauldron:
     #         objs[objs[x]].y = objs[objs[x]].y - 2
     #         objs[objs[x]].h = objs[objs[x]].h + 2
 
+    print("ram_state:")
     print(ram_state)
-    print(objects)
+    print("objects:", objects)
