@@ -32,7 +32,7 @@ class Enemy(GameObject):
         super().__init__(*args, **kwargs)
         self.visible = True
         self._xy = 79, 57
-        self.wh = 7, 15
+        self.wh = 6, 15
         self.rgb = 227, 159, 89
         self.hud = False
 
@@ -71,8 +71,8 @@ class Bell(GameObject):
     def __init__(self, *args, **kwargs):
         super(Bell, self).__init__()
         self.visible = True
-        self._xy = 125, 173
-        self.wh = 8, 11
+        self._xy = 126, 173
+        self.wh = 6, 11
         self.rgb = 210, 164, 74
         self.hud = False
 
@@ -81,8 +81,8 @@ class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super(Score, self).__init__()
         self.visible = True
-        self._xy = 137, 183
-        self.wh = 7, 7
+        self._xy = 129, 183
+        self.wh = 15, 7
         self.rgb = 160, 171, 79
         self.hud = True
 
@@ -92,7 +92,7 @@ class Life(GameObject):
         super(Life, self).__init__()
         self.visible = True
         self._xy = 16, 183
-        self.wh = 3, 7
+        self.wh = 4, 7
         self.rgb = 160, 171, 79
         self.hud = True
 
@@ -101,8 +101,8 @@ class Time(GameObject):
     def __init__(self, *args, **kwargs):
         super(Time, self).__init__()
         self.visible = True
-        self._xy = 92, 191
-        self.wh = 3, 5
+        self._xy = 80, 191
+        self.wh = 15, 5
         self.rgb = 160, 171, 79
         self.hud = True
 
@@ -115,35 +115,15 @@ def _init_objects_kangaroo_ram(hud=True):
     objects = [Player(), Child(), Enemy(), Enemy(), Enemy(), Enemy(),
                Projectile_top(), Projectile_enemy(), Fruit(), Fruit(), Fruit(), Bell()]
 
-    if hud:
-        x = 137
-        for i in range(6):
-            score = Score()
-            score.xy = x, 183
-            objects.append(score)
-            x -= 8
-
-        x = 16
-        for i in range(8):
-            life = Life()
-            life.xy = x, 183
-            objects.append(life)
-            x += 8
-
-        x = 92
-        for i in range(4):
-            time = Time()
-            time.xy = x, 191
-            objects.append(time)
-            x -= 4
-
     return objects
 
 
 # levels: ram_state[36], total of 3 levels: 0,1 and 2
 def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
-    kp, kc, m1, m2, m3, m4, p1, p2, f1, f2, f3, bell = objects[:12]
+    objects.clear()
 
+    kp = Player()
+    objects.append(kp)
     # player
     kp.xy = ram_state[17] + 15, ram_state[16] * 8 + 5
     if ram_state[19] > 16 and ram_state[19] < 24:
@@ -153,52 +133,66 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
     else:
         kp.wh = 8, 24
 
+    kc = Child()
+    objects.append(kc)
     # kangaroo child (goal)
     kc.xy = ram_state[83] + 15, 12
 
     # enemies/monkeys
+    m1 = Enemy()
+    objects.append(m1)
     if ram_state[11] != 255:
-        m1.visible = True
         m1.xy = ram_state[15] + 16, ram_state[11] * 8 + 5
     else:
-        m1.visible = False
+        objects.remove(m1)
 
+    m2 = Enemy()
+    objects.append(m2)
     if ram_state[10] != 255:
-        m2.visible = True
         m2.xy = ram_state[14] + 16, ram_state[10] * 8 + 5
     else:
-        m2.visible = False
+        objects.remove(m2)
 
+    m3 = Enemy()
+    objects.append(m3)
     if ram_state[9] != 255:
-        m3.visible = True
         m3.xy = ram_state[13] + 16, ram_state[9] * 8 + 5
     else:
-        m3.visible = False
+        objects.remove(m3)
 
+    m4 = Enemy()
+    objects.append(m4)
     if ram_state[8] != 255:
-        m4.visible = True
         m4.xy = ram_state[12] + 16, ram_state[8] * 8 + 5
     else:
-        m4.visible = False
+        objects.remove(m4)
 
+    p1 = Projectile_top()
+    objects.append(p1)
     # falling Projectile
     if ram_state[33] != 255:
-        p1.visible = True
         p1.xy = ram_state[34] + 14, ((ram_state[33] - (22 * ram_state[36])) * 8) + 9
     else:
-        p1.visible = False
+        objects.remove(p1)
 
     # thrown by monkeys Projectile
 
     # This projectiles visual representation seems to differ from its RAM x position,
     # therefor you will see it leaving the bounding box on both left and right depending on the situation
+    p2 = Projectile_enemy()
+    objects.append(p2)
     if ram_state[25] != 255:
-        p2.visible = True
         p2.xy = ram_state[28] + 15, (ram_state[25] * 8) + 1
     else:
-        p2.visible = False
+        objects.remove(p2)
 
     # fruits
+    f1 = Fruit()
+    objects.append(f1)
+    f2 = Fruit()
+    objects.append(f2)
+    f3 = Fruit()
+    objects.append(f3)
     if ram_state[87] == ram_state[86]:
         y1 = (ram_state[84] * 8) + 4
         y2 = (ram_state[85] * 8) + 4
@@ -223,43 +217,56 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
 
     rgb = _get_fruit_type_kangaroo(ram_state[42])
     if rgb is not None:
+
         f1.rgb = _get_fruit_type_kangaroo(ram_state[42])
     else:
-        f1.visible = False
+        objects.remove(f1)
 
     rgb = _get_fruit_type_kangaroo(ram_state[43])
     if rgb is not None:
         f2.rgb = _get_fruit_type_kangaroo(ram_state[43])
     else:
-        f2.visible = False
+        objects.remove(f2)
 
     rgb = _get_fruit_type_kangaroo(ram_state[44])
     if rgb is not None:
         f3.rgb = _get_fruit_type_kangaroo(ram_state[44])
     else:
-        f3.visible = False
+        objects.remove(f3)
 
-    bell.xy = ram_state[82] + 15, 36
+    bell = Bell()
+    objects.append(bell)
+    bell.xy = ram_state[82] + 16, 36
 
     if hud:
         # score
-        for s in objects[14:18]:
-            s.visible = True
-        if ram_state[39] < 16:
-            objects[17].visible = False
-            if ram_state[39] == 0:
-                objects[16].visible = False
-                if ram_state[40] < 16:
-                    objects[15].visible = False
-                    if ram_state[40] == 0:
-                        objects[14].visible = False
-        objects[13].visible = True
-        objects[12].visible = True
+        score = Score()
+        objects.append(score)
+        if ram_state[40] != 0:
+            score.xy = 121, 183
+            score.wh = 23,7
+        if ram_state[40] >= 16:
+            score.xy = 113, 183
+            score.wh = 31,7
+        if ram_state[39] != 0:
+            score.xy = 105, 183
+            score.wh = 39,7
+        if ram_state[39] >= 16:
+            score.xy = 97, 183
+            score.wh = 47,7
 
         # lives
         for i in range(8):
-            if i+1 > ram_state[45]:
-                objects[18 + i].visible = False
+            if i < ram_state[45]:
+                life = Life()
+                life.xy = 16 + (i*8), 183
+                objects.append(life)
+            else:
+                break
+
+        time = Time()
+        objects.append(time)
+        # time.xy = 80, 191
 
     return objects
 
