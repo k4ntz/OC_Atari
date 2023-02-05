@@ -1,15 +1,15 @@
 {
-    "mean_ious": 0.9546546279117706,
+    "mean_ious": 0.7735512899798617,
     "per_class_ious": {
-        "Player": 1.0,
-        "Ball": 0.992248062015504,
-        "PlayerScore": 0.47028571428571425,
+        "Ball": 0.9566798941798942,
+        "PlayerScore": 0.40836940836940844,
         "PlayerRound": 1.0,
         "Player2Round": 1.0,
-        "Pin": 1.0
+        "Pin": 0.75
     },
     "only_in_ram": {},
     "only_in_vision": {
-        "Pin": "163/100"
+        "Pin": "558/100",
+        "Player2Round": "16/100"
     }
 }

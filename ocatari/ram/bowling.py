@@ -134,8 +134,8 @@ def _detect_objects_bowling_revised(objects, ram_state, hud=False):
             objects[5].wh = 20, 10
             objects[5].xy = 24, 7
         elif _convert_number(ram_state[36]) != 1:
-            objects[15].wh = 12, 10
-            objects[15].xy = 32, 7
+            objects[5].wh = 12, 10
+            objects[5].xy = 32, 7
 
 
 def _detect_objects_bowling_raw(info, ram_state):
