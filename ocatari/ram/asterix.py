@@ -15,7 +15,7 @@ class Player(GameObject):
 
 class Cauldron(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 167, 26, 26
         # self.visible = False
         self._xy = 0, 0
@@ -190,7 +190,7 @@ def _init_objects_asterix_ram(hud=False):
     objects = [Player()]
     # Reward50(), Reward100(), Reward200(), Reward300(), Reward400(), Reward500()]
     if hud:
-        objects.extend([Score(), Lives(), Lives(), Lives()])
+        objects.extend([Score(), Lives(), Lives()])
         # for i in range(ram_state[83])
 
     return objects
@@ -212,13 +212,13 @@ def _detect_objects_asterix_raw(info, ram_state):
 
 
 def _detect_objects_asterix_revised(objects, ram_state, hud=False):
-    del objects[:]
-    CONST = ram_state[54] % 8
 
-    # reward_class = [Reward100, Reward200, Reward300, Reward400, Reward500, Reward500, Reward500]
+    if hud:
+        del objects[4:]
+    else:
+        del objects[1:]
+    const = ram_state[54] % 8
 
-    # for i in reward_class:
-    # reward_class =
     rewards = []
     reward_lanes = []
     ctr = 0
@@ -226,45 +226,43 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
         if ram_state[73 + i]:  # set to lane number if there is reward in that lane
             reward_lanes.append(i)  # 0-7 instead actual 1-8
             x, y = ram_state[42 + i], 26 + i * 16
-            if CONST == 0:  # 50 reward
+            if const == 0:  # 50 reward
                 rewards.append(Reward50())
                 rewards[ctr].xy = x, y
-                objects.insert(0, rewards[ctr])
+                objects.append(rewards[ctr])
 
-            elif CONST == 1:  # 100 reward
-                rew = Reward100
+            elif const == 1:  # 100 reward
+                rew = Reward100()
                 rew.xy = x, y
                 rewards.append(rew)
-                objects.insert(0, rew)
-            elif CONST == 2:  # 200 reward
-                rew = Reward200
+                objects.append(rew)
+            elif const == 2:  # 200 reward
+                rew = Reward200()
                 rew.xy = x, y
                 rewards.append(rew)
-                objects.insert(0, rew)
-            elif CONST == 3:  # 300 reward
-                rew = Reward300
+                objects.append(rew)
+            elif const == 3:  # 300 reward
+                rew = Reward300()
                 rew.xy = x, y
                 rewards.append(rew)
-                objects.insert(0, rew)
-            elif CONST == 4:  # 400 reward
-                rew = Reward400
+                objects.append(rew)
+            elif const == 4:  # 400 reward
+                rew = Reward400()
                 rew.xy = x, y
                 rewards.append(rew)
-                objects.insert(0, rew)
+                objects.append(rew)
             else:  # 500 reward
-                rew = Reward500
+                rew = Reward500()
                 rew.xy = x, y
                 rewards.append(rew)
-                objects.insert(0, rew)
-
-
+                objects.append(rew)
             ctr += 1
 
     # eatable_class = [Cauldron(), Helmet(), Shield(), Lamp(), Apple(), Fish(), Meat(), Mug()]
     eatable = []
     enemy_lanes = []
     ctr = 0
-    if CONST == 0:
+    if const == 0:
         for i in range(8):
             if i in reward_lanes:
                 continue
@@ -273,42 +271,42 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
                 continue
             else:
                 x, y = ram_state[42 + i] + 1, 26 + i * 16 + 1
-                if CONST == 0:
+                if const == 0:
                     instance = Cauldron()
                     eatable.append(instance)
                     instance.xy = x, y
-                    objects.insert(0, instance)
-                elif CONST == 1:
+                    objects.append(instance)
+                elif const == 1:
                     instance = Helmet()
                     eatable.append(instance)
                     instance.xy = x, y
-                    instance.wh = 7, 11
-                    instance.rgb = 240, 128, 128
-                    objects.insert(0, instance)
-                elif CONST == 2:
+                    # instance.wh = 7, 11
+                    # instance.rgb = 240, 128, 128
+                    objects.append(instance)
+                elif const == 2:
                     eatable.append(Shield())
                     eatable[ctr].xy = x, y
-                    objects.insert(0, eatable[ctr])
-                elif CONST == 3:
+                    objects.append(eatable[ctr])
+                elif const == 3:
                     eatable.append(Lamp())
                     eatable[ctr].xy = x, y
-                    objects.insert(0, eatable[ctr])
-                elif CONST == 4:
+                    objects.append(eatable[ctr])
+                elif const == 4:
                     eatable.append(Apple())
                     eatable[ctr].xy = x, y
-                    objects.insert(0, eatable[ctr])
-                elif CONST == 5:
+                    objects.append(eatable[ctr])
+                elif const == 5:
                     eatable.append(Fish())
                     eatable[ctr].xy = x, y
-                    objects.insert(0, eatable[ctr])
-                elif CONST == 6:
+                    objects.append(eatable[ctr])
+                elif const == 6:
                     eatable.append(Meat())
                     eatable[ctr].xy = x, y
-                    objects.insert(0, eatable[ctr])
-                elif CONST == 7:
+                    objects.append(eatable[ctr])
+                elif const == 7:
                     eatable.append(Mug())
                     eatable[ctr].xy = x, y
-                    objects.insert(0, eatable[ctr])
+                    objects.append(eatable[ctr])
                 ctr += 1
 
     enemy = []
@@ -316,23 +314,19 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
     for i in enemy_lanes:
         enemy.append(Enemy())
         enemy[ctr].xy = ram_state[42 + i], 26 + i * 16
-        objects.insert(0, enemy[ctr])
+        objects.append(enemy[ctr])
         ctr += 1
 
-    # player_index = -1
-    # if hud:
-    #     player_index -= 3
-    player = Player()  # objects[player_index]
+    player = objects[0]
     player.xy = ram_state[41], 26 + ram_state[39] * 16  # 84, 90   84 26 90-26 /4 = 16
     if ram_state[71] < 82:
         player.wh = 8, 11
     else:
         player.wh = 16, 11
     player.rgb = 187, 187, 53
-    objects.insert(0, player)
 
     if hud:
-        score = Score()  # objects[-3]
+        score = objects[1]
         digits = 0
         if _convert_number(ram_state[94]) > 9:
             digits = 5
@@ -346,28 +340,21 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
             digits = 1
         score.xy = 96 - digits * 8, 184  # correct the 96
         score.wh = 6 + digits * 8, 7
-        objects.append(score)
+        # objects.insert(1, score)
 
         if ram_state[83] >= 2:
-            lives = Lives()
+            lives = objects[2]
             lives.xy = 60, 169
             lives.wh = 8, 11
-            objects.append(lives)
+        elif isinstance(objects[2], Lives):
+            del objects[2]
 
         if ram_state[83] >= 3:
-            lives = Lives()
+            lives = objects[3]
             lives.xy = 60 + 16, 169
             lives.wh = 8, 11
-            objects.append(lives)
-
-        if ram_state[83] == 4:
-            lives = Lives()
-            lives.xy = 60 + 2*16, 169
-            lives.wh = 8, 11
-            objects.append(lives)
-
-
-
+        elif isinstance(objects[3], Lives):
+            del objects[3]
 
     print("ram_state:")
     print(ram_state)
