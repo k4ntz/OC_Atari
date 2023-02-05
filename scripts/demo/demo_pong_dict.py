@@ -8,32 +8,31 @@ from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.space_invaders import objects_colors
 from ocatari.vision.pong import objects_colors
-from ocatari.utils import load_agent, parser
+from ocatari.utils import load_agent, parser, make_deterministic
 
 game_name = "Pong"
-# game_name = "SpaceInvaders"
-game_name = "Skiing"
-MODE = "vision"
 MODE = "revised"
 env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
 observation, info = env.reset()
 
 opts = parser.parse_args()
 
+
+
 if opts.path:
     agent = load_agent(opts, env.action_space.n)
-
+    print(f"Loaded agents from {opts.path}")
+env.step(2)
+make_deterministic(0, env)
 fig, axes = plt.subplots(1, 2)
 for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
-        action = random.randint(0, 2)
-    try:
-        obs, reward, terminated, truncated, info = env.step(action)
-    except ValueError:
-        import ipdb; ipdb.set_trace()
-        # obse2 = deepcopy(obse)
+        # action = random.randint(0, 2)
+        action = 2
+    obs, reward, terminated, truncated, info = env.step(action)
+    if i > 60 and i % 10 == 0:
         for ax, obs, objects_list, title in zip(axes, [obs],
                                                 [env.objects],
                                                 ["ram"] if MODE == "revised" else ["vision"]):
