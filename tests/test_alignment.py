@@ -85,7 +85,7 @@ def difference_objects(ram_list, vision_list):
     only_in_vision = []
     per_class_ious = {}
     ious = []
-    if abs(len(vision_list) - len(ram_list)) > 10:
+    if abs(len(vision_list) - len(ram_list)) > 10 and USE_IPDB:
         import ipdb; ipdb.set_trace()
     for vobj in vision_list:
         vobj._is_in_ram = False
@@ -117,6 +117,8 @@ def difference_objects(ram_list, vision_list):
             "objs_in_ram": [str(o) for o in ram_list],
             "objs_in_vision": [str(o) for o in vision_list]}
 
+
+USE_IPDB = False
 figlet = Figlet()
 report_bad = {}
 all_stats = []

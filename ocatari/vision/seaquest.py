@@ -129,5 +129,3 @@ def _detect_objects_seaquest(objects, obs, hud=False):
         coll_diver = find_objects(obs, objects_colors["collected_diver"], min_distance=10)
         for div in coll_diver:
             objects.append(CollectedDiver(*div))
-
-    print(objects)

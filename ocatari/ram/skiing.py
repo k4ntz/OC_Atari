@@ -221,7 +221,7 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
                     currobj.wh = currobj.wh[0], height-15
                     objects[offset+1].wh = objects[offset+1].wh[0], height-15
                 if currobj._ram_id != 2:
-                    raise ValueError
+                    import ipdb; ipdb.set_trace()
             offset += 1
         elif type == 5:     # mogul
             if currobj is None:
