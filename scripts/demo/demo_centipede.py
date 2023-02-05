@@ -2,6 +2,7 @@
 # like it would have been installed as a package
 import sys
 import matplotlib.pyplot as plt
+from ocatari.ram._helper_methods import bitfield_to_number
 sys.path.insert(0, '../../') # noqa
 
 from ocatari.core import OCAtari
@@ -17,11 +18,8 @@ observation, info = env.reset()
 
 for i in range(1000):
     obs, reward, terminated, truncated, info = env.step(env.action_space.sample())
-    print("\n---------------------------\n")
-    # env._env.unwrapped.ale.setRAM(112, 4)
     if i % 20 == 0:
-        # obse2 = deepcopy(obse)
-        #print(env.objects)
+        # print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210 and obj.visible:
