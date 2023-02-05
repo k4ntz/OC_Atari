@@ -131,4 +131,3 @@ def _detect_objects_carnival(objects, obs, hud=False):
         for bon in bonus:
             if bon[1] <= 32:
                 objects.append(Bonus(*bon))
-    print(objects)
