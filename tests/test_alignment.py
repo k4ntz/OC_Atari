@@ -12,7 +12,7 @@ from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.tennis import objects_colors
 from ocatari.vision.pong import objects_colors
-from ocatari.utils import load_agent, test_parser
+from ocatari.utils import load_agent, test_parser, make_deterministic
 from copy import deepcopy
 import numpy as np
 import os
@@ -120,10 +120,13 @@ def difference_objects(ram_list, vision_list):
 figlet = Figlet()
 report_bad = {}
 all_stats = []
-SAVE_IMAGE_FOLDER = "diff_images"
-os.makedirs(SAVE_IMAGE_FOLDER, exist_ok=True)
 opts = test_parser.parse_args()
+if opts.seed:
+    make_deterministic(opts.seed)
 game_name = opts.game
+SAVE_FOLDER = "reports"
+SAVE_IMAGE_FOLDER = f"{SAVE_FOLDER}/{game_name}"
+os.makedirs(SAVE_IMAGE_FOLDER, exist_ok=True)
 print(colored(figlet.renderText(f"Testing  {game_name}"), "blue"))
 MODE = "test"
 HUD = True
@@ -144,7 +147,7 @@ if opts.path:
    agent = load_agent(opts, env.action_space.n)
 
 im_reports = ""
-fig, axes = plt.subplots(1, 2)
+fig, axes = plt.subplots(1, 3, figsize=(20, 10))
 with tqdm(total=NB_SAMPLES) as pbar:
     for i in range(20*NB_SAMPLES):
         if opts.path is not None:
@@ -167,6 +170,7 @@ with tqdm(total=NB_SAMPLES) as pbar:
 
             if stats["mean_iou"] < MIN_ACCEPTABLE_IOU:
                 obse2 = deepcopy(obse)
+                obss = []
                 for ax, obs, objects_list, title in zip(axes, [obse, obse2],
                                                         [env.objects, env.objects_v],
                                                         ["ram", "vision"]):
@@ -178,12 +182,16 @@ with tqdm(total=NB_SAMPLES) as pbar:
                         # mark_point(obs, *opos[:2], color=(255, 255, 0))
                     ax.imshow(obs)
                     ax.set_title(title)
+                    obss.append(obs)
                 for ax in axes.flatten():
                     ax.set_xticks([])
                     ax.set_yticks([])
                 # plt.imshow(obse)
                 # plt.show()
                 image_n = i // 20
+                axes[2].imshow(obss[1] - obss[0])
+                axes[2].set_title("difference")
+                plt.tight_layout()
                 plt.savefig(f"{SAVE_IMAGE_FOLDER}/{game_name}_{image_n}.png")
                 im_reports += f"{image_n} (iou={stats['mean_iou']:.3f}),  "
                 report_bad[f"Image_{image_n}"] = stats
@@ -205,16 +213,16 @@ for only_in in ["only_in_ram", "only_in_vision"]:
 
 json_report_bad = json.dumps(report_bad, indent=4)
 json_report_bad = f"Details of frames with mean iou < {MIN_ACCEPTABLE_IOU}\n" + json_report_bad
-with open(f"{SAVE_IMAGE_FOLDER}/report_bad_{game_name}.json", "w") as outfile:
+with open(f"{SAVE_FOLDER}/report_bad_{game_name}.json", "w") as outfile:
     outfile.write(json_report_bad)
 json_all_stats = json.dumps(ALL_STATS, indent=4)
-with open(f"{SAVE_IMAGE_FOLDER}/all_stats_{game_name}.json", "w") as outfile:
+with open(f"{SAVE_FOLDER}/all_stats_{game_name}.json", "w") as outfile:
     outfile.write(json_all_stats)
 
 print_all_stats(ALL_STATS)
-print(f"Saved report_bad_{game_name}.json and all_stats_{game_name}.json in {SAVE_IMAGE_FOLDER}")
+print(f"Saved report_bad_{game_name}.json and all_stats_{game_name}.json in {SAVE_FOLDER}")
 
 
 if im_reports:
     print(f"Saved the following images with iou < {MIN_ACCEPTABLE_IOU}:\n" + im_reports + f"\n in {SAVE_IMAGE_FOLDER}")
-    print(f"Saved {SAVE_IMAGE_FOLDER}/report_bad_{game_name}.json for details on these images")
+    print(f"Saved {SAVE_FOLDER}/report_bad_{game_name}.json for details on these images")
