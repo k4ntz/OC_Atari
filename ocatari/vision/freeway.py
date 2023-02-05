@@ -30,7 +30,7 @@ class Score(GameObject):
 def _detect_objects_freeway(objects, obs, hud=False):
     objects.clear()
 
-    chickens = find_objects(obs, objects_colors["chicken"], min_distance=1)
+    chickens = find_objects(obs, objects_colors["chicken"], size=(7, 8), tol_s=3)
     for chicken in chickens:
         objects.append(Chicken(*chicken))
 

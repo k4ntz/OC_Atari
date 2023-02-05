@@ -17,8 +17,8 @@ import pathlib
 from termcolor import colored
 import pickle
 sys.path.insert(0, '../ocatari') # noqa
-from ocatari.core import OCAtari
-from ocatari.vision.freeway import objects_colors
+from core import OCAtari
+from vision.freeway import objects_colors
 
 
 def ransac_regression(x, y):
@@ -291,7 +291,7 @@ def do_analysis(env, dump_path, new_dump, min_correlation, maximum_x,
 
 
 if __name__ == "__main__":
-    GAME_NAME = "DemonAttack"
+    GAME_NAME = "Kangaroo"
     MODE = "vision"    # do not change
     # RENDER_MODE = "human"
     RENDER_MODE = "rgb_array"  # do not change

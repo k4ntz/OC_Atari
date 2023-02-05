@@ -1,30 +1,19 @@
 from .utils import find_objects
+from .utils import find_mc_objects
 from .game_objects import GameObject
 
-objects_colors = {"player_head": [198, 89, 179], "player_shoes": [0, 0, 0], "ball": [45, 50, 184],
-                  "background": [180, 122, 48], "player_score": [84, 92, 214], "round_player_1": [45, 50, 184],
-                  "round_player_2": [45, 50, 184], "pins": [45, 50, 184], "player_torso": [84, 92, 214]}
+objects_colors = {"ball": [45, 50, 184], "background": [180, 122, 48], "player_score": [84, 92, 214],
+                  "round_player_1": [45, 50, 184], "round_player_2": [45, 50, 184], "pins": [45, 50, 184],
+                  "player": [[0, 0, 0], [66, 72, 200], [84, 92, 214], [198, 89, 179]]}
 
 
-class PlayerShoes(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 0, 0, 0
-
-
-class PlayerTorso(GameObject):
+class Player(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 84, 92, 214
 
 
-class PlayerHead(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 198, 89, 179
-
-
-class Pins(GameObject):
+class Pin(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 45, 50, 184
@@ -64,7 +53,12 @@ def _detect_objects_bowling(objects, obs, hud=False):
     pins = find_objects(obs, objects_colors["pins"], min_distance=1)
     for p in pins:
         if p[2] < 160 and 100 < p[1] < 175 and p[3] < 5:
-            objects.append(Pins(*p))
+            objects.append(Pin(*p))
+
+    player = find_mc_objects(obs, objects_colors["player"], min_distance=1)
+    for p in player:
+        if p[1] > 100 and p[3] < 100:
+            objects.append(Player(*p))
 
     if hud:
         round_player_1 = find_objects(obs, objects_colors["round_player_1"], min_distance=None)
@@ -78,18 +72,3 @@ def _detect_objects_bowling(objects, obs, hud=False):
         for score in player_score:
             if score[1] < 20 and hud:
                 objects.append(PlayerScore(*score))
-
-    player_shoes = find_objects(obs, objects_colors["player_shoes"], min_distance=None)
-    for p in player_shoes:
-        if p[2] < 100:
-            objects.append(PlayerShoes(*p))
-
-    player_head = find_objects(obs, objects_colors["player_head"], min_distance=None)
-    for p in player_head:
-        objects.append(PlayerHead(*p))
-
-    player_torso = find_objects(obs, objects_colors["player_torso"], min_distance=None)
-    for p in player_torso:
-        if p[1] > 100:
-            objects.append(PlayerTorso(*p))
-    print(objects)
