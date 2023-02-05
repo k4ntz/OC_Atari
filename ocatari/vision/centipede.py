@@ -61,7 +61,8 @@ def _detect_objects_centipede(objects, obs, hud=False):
     for bb in centipede:
         objects.append(CentipedeSegment(*bb))
 
-    player_and_walls = find_objects(obs, objects_colors['player_and_projectile_and_wall'], min_distance=1, closing_dist=1)
+    player_and_walls = find_objects(obs, objects_colors['player_and_projectile_and_wall'],
+                                    min_distance=1, closing_dist=1)
     for bb in player_and_walls:
         if bb[3] > 4:
             if bb[2] > 3:
@@ -87,4 +88,3 @@ def _detect_objects_centipede(objects, obs, hud=False):
         ground = find_objects(obs, objects_colors['ground'], min_distance=1)
         for bb in ground:
             objects.append(Ground(*bb))
-
