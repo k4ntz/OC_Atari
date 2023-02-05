@@ -14,6 +14,10 @@ class GameObject:
         return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]})"
 
     @property
+    def category(self):
+        return self.__class__.__name__
+
+    @property
     def xy(self):
         return self._xy
 

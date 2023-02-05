@@ -45,7 +45,7 @@ class Ball(GameObject):
 class Pin(GameObject):
     def __init__(self):
         self.visible = False
-        self._xy = None, None
+        self._xy = 0, 0
         self.wh = 2, 3
         self.rgb = 45, 50, 184
         self.hud = False
@@ -134,8 +134,6 @@ def _detect_objects_bowling_revised(objects, ram_state, hud=False):
         elif _convert_number(ram_state[36]) != 1:
             objects[15].wh = 12, 10
             objects[15].xy = 32, 7
-
-    print(objects)
 
 
 def _detect_objects_bowling_raw(info, ram_state):
