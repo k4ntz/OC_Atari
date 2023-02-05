@@ -2,6 +2,8 @@ from ._helper_methods import _convert_number
 from .game_objects import GameObject
 from termcolor import colored
 
+import matplotlib.pyplot as plt
+OBS = None
 
 def print_state(state):
     print("-"*10)
@@ -221,6 +223,8 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
                     currobj.wh = currobj.wh[0], height-15
                     objects[offset+1].wh = objects[offset+1].wh[0], height-15
                 if currobj._ram_id != 2:
+                    if y == 29:  # bug fix
+                        continue
                     import ipdb; ipdb.set_trace()
             offset += 1
         elif type == 5:     # mogul
@@ -241,7 +245,7 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
                 if y <= 28:
                     currobj.wh = currobj.wh[0], height+2
         offset += 1
-
+    # print(objects)
 
 def _detect_objects_skiing_raw(info, ram_state):
     # player starts at x = 76
