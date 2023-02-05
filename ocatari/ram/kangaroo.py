@@ -244,16 +244,16 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
         objects.append(score)
         if ram_state[40] != 0:
             score.xy = 121, 183
-            score.wh = 23,7
+            score.wh = 23, 7
         if ram_state[40] >= 16:
             score.xy = 113, 183
-            score.wh = 31,7
+            score.wh = 31, 7
         if ram_state[39] != 0:
             score.xy = 105, 183
-            score.wh = 39,7
+            score.wh = 39, 7
         if ram_state[39] >= 16:
             score.xy = 97, 183
-            score.wh = 47,7
+            score.wh = 47, 7
 
         # lives
         for i in range(8):
