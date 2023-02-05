@@ -93,7 +93,7 @@ class Life(GameObject):
         self.hud = True
 
 
-def _column_to_y(column): #returns the y cord of given column
+def _column_to_y(column):  # returns the y cord of given column
     pad = 9
     return 5 + column * pad
 
@@ -237,7 +237,8 @@ def _detect_objects_centipede_revised(objects, ram_state, hud=False):
             swap = i % 2 == 0
             if swap:
                 offset_x += 4
-            objects.extend(_create_walls_from_bitfield(number_to_bitfield(ram_state[45 + i * 2 + u]), offset_x, offset_y, swap))
+            objects.extend(_create_walls_from_bitfield(number_to_bitfield(ram_state[45 + i * 2 + u]),
+                                                       offset_x, offset_y, swap))
     level_and_life_bitfield = number_to_bitfield(ram_state[109])
     if hud:
         score = ram_state[118] + ram_state[117] * 100 + ram_state[116] * 10000
@@ -270,4 +271,3 @@ def _detect_objects_centipede_raw(info, ram_state):
     # info["score"] = ram_state[118] + ram_state[117] * 100 + ram_state[116] * 10000
 
     info["relavant_ram_info"] = ram_state[45:83] + ram_state[91:115] + ram_state[116:125]
-
