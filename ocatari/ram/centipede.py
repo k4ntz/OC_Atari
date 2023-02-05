@@ -1,5 +1,5 @@
 from .game_objects import GameObject
-from ._helper_methods import bitfield_to_number, number_to_bitfield, _convert_number
+from ._helper_methods import bitfield_to_number, number_to_bitfield
 import math
 
 
