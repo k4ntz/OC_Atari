@@ -6,10 +6,10 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 ## List of covered games
 
 ### Priority 1:
-- [x]  Breakout 
+- [x]  Breakout
 - [x]  Freeway
-- [x]  Bowling 
-- [x]  Ms.  Pacman 
+- [x]  Bowling
+- [x]  Ms.Pacman
 - [x]  Pong
 - [x]  Seaquest
 - [x]  Skiing
@@ -17,21 +17,21 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [ ]  Asterix (worked on by Belal)
 - [ ]  Asteroids (worked on by Chris)
 - [x]  Demon Attack
-- [x]  Tennis
-- [ ]  Kangaroo (Worked on by Bjarne)
+- [x]  Tennis (reworking it for classes - Chris)
+- [x]  Kangaroo
 
 ### Priority 2:
-- [ ]  Berzerk (worked on by Chris)
+- [x]   Berzerk
 - [ ]  Secret Quest -> not supported by gym
 - [ ]  River Raid (worked on by Chris)
 - [ ]  Atlantis
-- [ ]  Star Raiders
+- [ ]  Star Raiders -> not supported by gym
 - [ ]  Chopper Command (worked on by Sebastian)
 - [ ]  Q*bert
 - [ ]  Assault
-- [ ]  Beam Rider
+- [ ]  Beam Rider (worked on by Bjarne)
 - [x]  Boxing
-- [ ]  Carnival
+- [x]  Carnival
 - [ ]  Centipede (worked on by Timo)
 
 ### Priority 3:
