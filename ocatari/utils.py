@@ -33,7 +33,6 @@ def make_deterministic(seed, mdp, states_dict=None):
     print(f"Set all environment deterministic to seed {seed}")
 
 
-
 class AtariNet(nn.Module):
     """ Estimator used by DQN-style algorithms for ATARI games.
         Works with DQN, M-DQN and C51.
