@@ -102,6 +102,9 @@ class OCAtari:
     def close(self, *args, **kwargs):
         return self._env.close(*args, **kwargs)
 
+    def seed(self, seed, *args, **kwargs):
+        self._env.seed(seed, *args, **kwargs)
+
     @property
     def dqn_obs(self):
         return torch.stack(list(self._state_buffer), 0).unsqueeze(0).byte()
