@@ -16,9 +16,8 @@ import ipdb # noqa
 import pathlib
 from termcolor import colored
 import pickle
-sys.path.insert(0, '../ocatari') # noqa
 from ocatari.core import OCAtari
-from ocatari.vision.freeway import objects_colors
+sys.path.insert(0, '../ocatari') # noqa
 
 
 def ransac_regression(x, y):
@@ -58,7 +57,6 @@ def generate_dataset(env, drop_constants, frames=700, skip_frames=3, manipulated
         object_infos[f"{name}_x"] = []
         object_infos[f"{name}_y"] = []
 
-
     for i in tqdm(range(frames)):
         if manipulated_ram is not None:
             rand = random.randint(40, 100)
@@ -83,8 +81,6 @@ def generate_dataset(env, drop_constants, frames=700, skip_frames=3, manipulated
 
             for obj in env.objects:
                 append_oinfo_values(obj, object_infos, objects_correctly_detected)
-
-
 
             ram = env._env.unwrapped.ale.getRAM()
             ram_saves.append(deepcopy(ram))
@@ -227,7 +223,7 @@ def do_analysis(env, dump_path, new_dump, min_correlation, maximum_x,
                         dataset2[obj_name] = np.array(dataset2[obj_name])
 
                         if len(dataset2[ram_pos]) > 0 and not (np.all(dataset2[ram_pos] == dataset2[ram_pos][0]) or
-                                np.all(dataset2[obj_name] == dataset2[obj_name][0])):
+                                                               np.all(dataset2[obj_name] == dataset2[obj_name][0])):
                             corr2 = np.corrcoef(dataset2[obj_name], dataset2[ram_pos])[1][0]
                             approved_candidates[obj_name].append({"pos": int(ram_pos),
                                                                   "corr": candidates[obj_name][ram_pos],

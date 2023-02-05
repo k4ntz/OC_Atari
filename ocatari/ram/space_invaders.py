@@ -1,5 +1,12 @@
 from .game_objects import GameObject
 
+MAX_NB_OBJS = {
+    "Player": 1,
+    "Tree": 4,
+    "Mogul": 3,
+    "Flag": 4
+}
+
 
 def _init_objects_space_invaders_ram(hud=False):
     """
