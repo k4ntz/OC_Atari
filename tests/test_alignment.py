@@ -12,6 +12,9 @@ from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.tennis import objects_colors
 from ocatari.vision.pong import objects_colors
+from ocatari.vision.bowling import objects_colors
+from ocatari.vision.breakout import objects_colors
+from ocatari.utils import load_agent, test_parser
 from ocatari.utils import load_agent, test_parser, make_deterministic
 from copy import deepcopy
 import numpy as np

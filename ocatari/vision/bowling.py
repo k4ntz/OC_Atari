@@ -24,7 +24,7 @@ class PlayerHead(GameObject):
         self.rgb = 198, 89, 179
 
 
-class Pins(GameObject):
+class Pin(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 45, 50, 184
@@ -64,7 +64,7 @@ def _detect_objects_bowling(objects, obs, hud=False):
     pins = find_objects(obs, objects_colors["pins"], min_distance=1)
     for p in pins:
         if p[2] < 160 and 100 < p[1] < 175 and p[3] < 5:
-            objects.append(Pins(*p))
+            objects.append(Pin(*p))
 
     if hud:
         round_player_1 = find_objects(obs, objects_colors["round_player_1"], min_distance=None)
