@@ -209,13 +209,31 @@ def _detect_objects_asterix_raw(info, ram_state):
 
 
 def _detect_objects_asterix_revised(objects, ram_state, hud=False):
-    del objects[0:8]
+    del objects[:-4]
     const = ram_state[54] % 8
+
+    reward_class = [Reward100, Reward200, Reward300, Reward400, Reward500]
+    rewards = []
+    reward_lanes = []
+    ctr = 0
+    for i in range(8):
+        if ram_state[73 + i]:
+            reward_lanes.append(i)  # actually values saved from 1-8, but we are handling all with 0-7
+            if const == 0:
+                rewards.append(Reward50())
+                rewards[ctr].xy = ram_state[42 + i], 26 + i * 16
+            # else:
+            #     rewards.append(reward_class[const + 1])
+            objects.insert(0, rewards[ctr])
+
+
     eatable = []
     enemy_lanes = []
     ctr = 0
     if const == 0:
         for i in range(8):
+            if i in reward_lanes:
+                continue
             if ram_state[29+i] % 2 == 1:
                 enemy_lanes.append(i)
                 continue
