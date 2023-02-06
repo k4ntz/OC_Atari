@@ -25,7 +25,6 @@ from .kangaroo import _detect_objects_kangaroo_raw, \
                       _init_objects_kangaroo_ram
 
 
-
 def init_objects(game_name, hud):
     """
     Initialize the object list for the correct game
