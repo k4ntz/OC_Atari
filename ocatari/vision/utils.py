@@ -127,7 +127,7 @@ def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
     min_distance: minimal distance between two detected objects
     """
 
-    masks = [cv2.inRange(image[miny:maxy,minx:maxx,:],
+    masks = [cv2.inRange(image[miny:maxy, minx:maxx, :],
                          np.array(color), np.array(color)) for color in colors]
     for mask in masks:
         if mask.max() == 0:
