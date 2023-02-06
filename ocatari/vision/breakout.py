@@ -54,8 +54,8 @@ def _detect_objects_breakout(objects, obs, hud=False):
             objects.append(Ball(*b))
 
     for blockRowColor in blockRow_colors.values():
-        blockRow = find_objects(obs, blockRowColor, min_distance=1)
-        for br in blockRow:
+        block_row = find_objects(obs, blockRowColor, min_distance=1)
+        for br in block_row:
             if br[3] == 6 and br[1] < 100:
                 blockrow_inst = BlockRow(*br)
                 blockrow_inst.rgb = blockRowColor

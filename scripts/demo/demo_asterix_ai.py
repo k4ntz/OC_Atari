@@ -25,8 +25,8 @@ MODE = "vision"
 env = OCAtari(game_name, mode=MODE, render_mode='human')
 observation, info = env.reset()
 
+# notice: agent runs away from meat and mug
 opts = parser.parse_args()
-
 if opts.path:
     agent = load_agent(opts, env.action_space.n)
 
@@ -38,8 +38,6 @@ for i in range(10000000):
         action = random.randint(0, 5)
     obs, reward, terminated, truncated, info = env.step(action)
     env._env.unwrapped.ale.setRAM(83, 2)
-    # if i == 1:
-    #     env._env.unwrapped.ale.setRAM(95, 9)  # does not make difference
 
     # if i % 3000 == 0 or i % 3000 < 15:
     #     # obse2 = deepcopy(obse)
@@ -66,7 +64,7 @@ for i in range(10000000):
     ########
 
     ################
-    # print ram when changing score to detect bits for kind of objects
+    # print ram when changing score to detect bits responsible for kind of objects
     ram = env._env.unwrapped.ale.getRAM()
     if i>1 and prevRam[95] != ram[95]:
         for k in range(len(ram)):
@@ -100,10 +98,7 @@ for i in range(10000000):
 
     if i > 0:
         prevRam = ram
-        ################
-
-
-
+    ################
         for ax in axes.flatten():
             ax.set_xticks([])
             ax.set_yticks([])

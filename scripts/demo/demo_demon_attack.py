@@ -15,8 +15,6 @@ HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
-
-
 for i in range(1000):
     obs, reward, terminated, truncated, info = env.step(1)  # env.step(env.action_space.sample())
     if i % 20 == 0:
