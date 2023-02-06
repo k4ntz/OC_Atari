@@ -1,0 +1,23 @@
+{
+    "mean_ious": 0.856384407759371,
+    "per_class_ious": {
+        "Player": 0.7505946764788534,
+        "Lives": 1.0,
+        "OxygenBar": 1.0,
+        "OxygenBarDepleted": 0.9983258928571429,
+        "Logo": 1.0,
+        "OxygenBarLogo": 1.0,
+        "Diver": 0.5938124664483169,
+        "Enemy": 0.5699562272076742,
+        "PlayerMissile": 1.0,
+        "CollectedDiver": 1.0
+    },
+    "only_in_ram": {},
+    "only_in_vision": {
+        "OxygenBarLogo": "67/100",
+        "Diver": "111/100",
+        "PlayerMissile": "89/100",
+        "CollectedDiver": "61/100",
+        "Enemy": "10/100"
+    }
+}
