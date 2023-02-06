@@ -137,7 +137,7 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
     elif game_name.lower() == "berzerk":
         _detect_objects_berzerk_revised(objects, ram_state, hud)
     elif game_name.lower() == "asterix":
-        _detect_objects_asterix_revised(info, ram_state, hud)
+        _detect_objects_asterix_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
