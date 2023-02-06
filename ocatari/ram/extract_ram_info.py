@@ -42,7 +42,7 @@ def init_objects(game_name, hud):
     elif game_name.lower() == "spaceinvaders":
         return _init_objects_space_invaders_ram(hud)
     elif game_name.lower() == "tennis":
-         return _init_objects_tennis_ram(hud)
+        return _init_objects_tennis_ram(hud)
     elif game_name.lower() == "bowling":
         return _init_objects_bowling_ram(hud)
     elif game_name.lower() == "demonattack":

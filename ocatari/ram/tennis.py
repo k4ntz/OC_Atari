@@ -4,6 +4,7 @@ from .game_objects import GameObject
 RAM extraction for the game TENNIS. Supported modes: raw, revised.
 """
 
+
 class Player(GameObject):
     def __init__(self):
         self._xy = 0, 0
