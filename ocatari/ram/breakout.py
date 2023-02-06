@@ -29,7 +29,7 @@ class PlayerScore(GameObject):
     def __init__(self):
         self._xy = 36, 6
         self.rgb = 142, 142, 142
-        self.wh = 44, 9
+        self.wh = 12, 10
         self.hud = True
         self.visible = True
 
@@ -37,11 +37,11 @@ class PlayerScore(GameObject):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
 
-class Lives(GameObject):
+class Live(GameObject):
     def __init__(self):
-        self._xy = 100, 6
+        self._xy = 100, 5
         self.rgb = 142, 142, 142
-        self.wh = 12, 9
+        self.wh = 12, 10
         self.hud = True
         self.visible = True
 
@@ -59,8 +59,8 @@ class BlockRow(GameObject):
 class PlayerNumber(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.xy = 136, 6
-        self.wh = 4, 9
+        self.xy = 136, 5
+        self.wh = 4, 10
         self.rgb = 142, 142, 142
         self.hud = True
         self.visible = True
@@ -78,7 +78,7 @@ def _init_objects_breakout_ram(hud=False):
     objects = [Player(), Ball()]
 
     if hud:
-        objects.extend([PlayerScore(), Lives(), PlayerNumber()])
+        objects.extend([PlayerScore(), PlayerScore(), PlayerScore(), Live(), PlayerNumber()])
 
     y = 87
     for color in blockRow_colors:
@@ -128,7 +128,7 @@ def _detect_objects_breakout_revised(objects, ram_state, hud=False):
 
     # set default coord if object does not exist
     player, ball = objects[0:2]
-    score, lives, player_num = objects[2:5]
+    score1, score2, score3, lives, player_num = objects[2:7]
 
     player.xy = ram_state[72] - 47, 189
     if ram_state[101] + 9 <= 210 and ram_state[101] != 0:  # else no ball
@@ -138,7 +138,7 @@ def _detect_objects_breakout_revised(objects, ram_state, hud=False):
         ball.visible = False
 
     if hud:
-        del objects[5:]
+        del objects[7:]
     else:
         del objects[2:]
     blocks = _calculate_blocks(ram_state)
@@ -147,25 +147,31 @@ def _detect_objects_breakout_revised(objects, ram_state, hud=False):
     if hud:
         # 1 is more thin than the other numbers
         if ram_state[57] == 1:
-            lives.xy = 104, 6
-            lives.wh = 4, 9
+            lives.xy = 104, 5
+            lives.wh = 4, 10
         elif ram_state[57] == 0:
-            lives.xy = 100, 6
-            lives.wh = 12, 9
+            lives.xy = 100, 5
+            lives.wh = 12, 10
+
+        score1.xy = 68, 5
+        score1.wh = 12, 10
+        score2.xy = 52, 5
+        score2.wh = 12, 10
+        score3.xy = 36, 5
+        score3.wh = 12, 10
 
         # 1 is more thin than the other numbers
         if _convert_number(ram_state[77]) % 10 == 1:
-            score.wh = 40, 9
-            if _convert_number(ram_state[76] == 1):
-                score.xy = 40, 6
-                score.wh = 36, 9
+            score1.wh = 4, 10
+            score1.xy = 72, 5
 
-        elif _convert_number(ram_state[76] == 1):
-            score.xy = 40, 6
-            score.wh = 40, 9
-        else:
-            score.xy = 36, 6
-            score.wh = 44, 9
+        if 9 < _convert_number(ram_state[77]) < 20:
+            score2.wh = 4, 10
+            score2.xy = 56, 5
+
+        if _convert_number(ram_state[76] == 1):
+            score3.xy = 40, 5
+            score3.wh = 4, 10
 
 
 def _calculate_blocks(ram_state):
