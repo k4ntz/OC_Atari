@@ -201,7 +201,7 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
     if hud:
         del objects[2+lives_nr-1:]
     else:
-        del objects[2:]
+        del objects[1:]
     const = ram_state[54] % 8
 
     rewards = []
