@@ -45,7 +45,7 @@ class Player2Round(GameObject):
 
 def _detect_objects_bowling(objects, obs, hud=False):
     objects.clear()
-    ball = find_objects(obs, objects_colors["ball"], min_distance=0.1)
+    ball = find_objects(obs, objects_colors["ball"], min_distance=0.1, closing_dist=1)
     for bb in ball:
         if bb[2] < 160 and 100 < bb[1] < 175 and 4 < bb[3] < 20:
             objects.append(Ball(*bb))

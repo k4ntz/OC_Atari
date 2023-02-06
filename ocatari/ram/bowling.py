@@ -27,7 +27,7 @@ class Ball(GameObject):
 class Pin(GameObject):
     def __init__(self):
         self.visible = True
-        self._xy = None, None
+        self._xy = 0, 0
         self.wh = 2, 4
         self.rgb = 45, 50, 184
         self.hud = False

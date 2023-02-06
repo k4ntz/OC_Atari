@@ -28,13 +28,19 @@ class BlockRow(GameObject):
         self.rgb = 66, 72, 200
 
 
-class Score(GameObject):
+class PlayerScore(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
 
 
 class Live(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 142, 142, 142
+
+
+class PlayerNumber(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
@@ -63,12 +69,17 @@ def _detect_objects_breakout(objects, obs, hud=False):
 
     if hud:
         # score and lives are not detected because it detects the background, which has the same color
-        score = find_objects(obs, objects_colors["score"], min_distance=1)
+        score = find_objects(obs, objects_colors["score"], min_distance=1, closing_dist=2)
         for s in score:
-            if s[2] < 160:
-                objects.append(Score(*s))
+            if s[2] < 160 and s[0] < 90:
+                objects.append(PlayerScore(*s))
 
-        live = find_objects(obs, objects_colors["lives"], min_distance=1)
+        live = find_objects(obs, objects_colors["lives"], min_distance=1, closing_dist=1)
         for l1 in live:
-            if l1[2] < 160:
+            if l1[2] < 160 and 136 > l1[0] > 97:
                 objects.append(Live(*l1))
+
+        num = find_objects(obs, objects_colors["lives"], min_distance=1, closing_dist=1)
+        for nu in num:
+            if nu[2] < 160 and nu[0] > 120:
+                objects.append(PlayerNumber(*nu))
