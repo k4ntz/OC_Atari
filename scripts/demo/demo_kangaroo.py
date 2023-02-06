@@ -30,6 +30,7 @@ for i in range(10000):
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
     if i % 10 == 0:
+        print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210 and obj.visible:

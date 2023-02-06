@@ -21,6 +21,7 @@ from .kangaroo import _detect_objects_kangaroo_raw, \
                       _detect_objects_kangaroo_revised, \
                       _init_objects_kangaroo_ram
 from .berzerk import _detect_objects_berzerk_raw, _detect_objects_berzerk_revised, _init_objects_berzerk_ram
+from .beamrider import _detect_objects_beamrider_raw, _detect_objects_beamrider_revised, _init_objects_beamrider_ram
 
 
 def init_objects(game_name, hud):
@@ -55,6 +56,8 @@ def init_objects(game_name, hud):
         return _init_objects_kangaroo_ram(hud)
     elif game_name.lower() == "berzerk":
         return _init_objects_berzerk_ram(hud)
+    elif game_name.lower() == "beamrider":
+        return _init_objects_beamrider_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
@@ -90,8 +93,10 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_carnival_raw(info, ram_state)
     elif game_name.lower() == "kangaroo":
         _detect_objects_kangaroo_raw(info, ram_state)
-    elif game_name.lower() == "kangaroo":
+    elif game_name.lower() == "berzerk":
         _detect_objects_berzerk_raw(info, ram_state)
+    elif game_name.lower() == "beamrider":
+        _detect_objects_beamrider_raw(info, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
         exit(1)
@@ -129,6 +134,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_kangaroo_revised(objects, ram_state, hud)
     elif game_name.lower() == "berzerk":
         _detect_objects_berzerk_revised(objects, ram_state, hud)
+    elif game_name.lower() == "beamrider":
+        _detect_objects_beamrider_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
