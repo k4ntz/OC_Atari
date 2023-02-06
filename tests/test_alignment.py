@@ -12,7 +12,10 @@ from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.tennis import objects_colors
 from ocatari.vision.pong import objects_colors
+from ocatari.vision.bowling import objects_colors
+from ocatari.vision.breakout import objects_colors
 from ocatari.utils import load_agent, test_parser
+from ocatari.utils import load_agent, test_parser, make_deterministic
 from copy import deepcopy
 import numpy as np
 import os
@@ -85,7 +88,7 @@ def difference_objects(ram_list, vision_list):
     only_in_vision = []
     per_class_ious = {}
     ious = []
-    if abs(len(vision_list) - len(ram_list)) > 10:
+    if abs(len(vision_list) - len(ram_list)) > 10 and USE_IPDB:
         import ipdb; ipdb.set_trace()
     for vobj in vision_list:
         vobj._is_in_ram = False
@@ -113,15 +116,22 @@ def difference_objects(ram_list, vision_list):
         if not vobj._is_in_ram:
             only_in_vision.append(str(vobj))
     return {"mean_iou": np.mean(ious), "per_class_ious": per_class_ious,
-            "only_in_ram": only_in_ram, "only_in_vision": only_in_vision}
+            "only_in_ram": only_in_ram, "only_in_vision": only_in_vision,
+            "objs_in_ram": [str(o) for o in ram_list],
+            "objs_in_vision": [str(o) for o in vision_list]}
 
+
+USE_IPDB = False
 figlet = Figlet()
 report_bad = {}
 all_stats = []
-SAVE_IMAGE_FOLDER = "diff_images"
-os.makedirs(SAVE_IMAGE_FOLDER, exist_ok=True)
 opts = test_parser.parse_args()
+if opts.seed:
+    make_deterministic(opts.seed)
 game_name = opts.game
+SAVE_FOLDER = "reports"
+SAVE_IMAGE_FOLDER = f"{SAVE_FOLDER}/{game_name}"
+os.makedirs(SAVE_IMAGE_FOLDER, exist_ok=True)
 print(colored(figlet.renderText(f"Testing  {game_name}"), "blue"))
 MODE = "test"
 HUD = True
@@ -136,54 +146,66 @@ ALL_STATS = {
              }
 MIN_ACCEPTABLE_IOU = opts.iou
 
+print(colored(f'Using {MIN_ACCEPTABLE_IOU} as iou threshold for the saved images..', "magenta"))
+
 if opts.path:
    agent = load_agent(opts, env.action_space.n)
 
 im_reports = ""
-fig, axes = plt.subplots(1, 2)
-for i in tqdm(range(NB_SAMPLES)):
-    if opts.path is not None:
-        action = agent.draw_action(env.dqn_obs)
-    else:
-        action = random.randint(0, env.action_space.n-1)
-    obse, reward, terminated, truncated, info = env.step(action)
-    stats = difference_objects(env.objects, env.objects_v)
-    ALL_STATS["mean_ious"].append(stats["mean_iou"])
-    for class_name, value in stats["per_class_ious"].items():
-        if not class_name in ALL_STATS["per_class_ious"]:
-            ALL_STATS["per_class_ious"][class_name] = []
-        ALL_STATS["per_class_ious"][class_name].append(value)
-    for only_in in ["only_in_ram", "only_in_vision"]:
-        for obj in stats[only_in]:
-            if not class_name in ALL_STATS[only_in]:
-                ALL_STATS[only_in][class_name] = 0
-            ALL_STATS[only_in][class_name] += 1
+fig, axes = plt.subplots(1, 3, figsize=(20, 10))
+with tqdm(total=NB_SAMPLES) as pbar:
+    for i in range(20*NB_SAMPLES):
+        if opts.path is not None:
+            action = agent.draw_action(env.dqn_obs)
+        else:
+            action = random.randint(0, env.action_space.n-1)
+        obse, reward, terminated, truncated, info = env.step(action)
+        if i % 20 == 0:
+            stats = difference_objects(env.objects, env.objects_v)
+            ALL_STATS["mean_ious"].append(stats["mean_iou"])
+            for class_name, value in stats["per_class_ious"].items():
+                if not class_name in ALL_STATS["per_class_ious"]:
+                    ALL_STATS["per_class_ious"][class_name] = []
+                ALL_STATS["per_class_ious"][class_name].append(value)
+            for only_in in ["only_in_ram", "only_in_vision"]:
+                for obj in stats[only_in]:
+                    if not class_name in ALL_STATS[only_in]:
+                        ALL_STATS[only_in][class_name] = 0
+                    ALL_STATS[only_in][class_name] += 1
 
-    if stats["mean_iou"] < MIN_ACCEPTABLE_IOU:
-        obse2 = deepcopy(obse)
-        for ax, obs, objects_list, title in zip(axes, [obse, obse2],
-                                                [env.objects, env.objects_v],
-                                                ["ram", "vision"]):
-            for obj in objects_list:
-                opos = obj.xywh
-                ocol = obj.rgb
-                sur_col = make_darker(ocol)
-                mark_bb(obs, opos, color=sur_col)
-                # mark_point(obs, *opos[:2], color=(255, 255, 0))
-            ax.imshow(obs)
-            ax.set_title(title)
-        for ax in axes.flatten():
-            ax.set_xticks([])
-            ax.set_yticks([])
-        # plt.imshow(obse)
-        # plt.show()
-        plt.savefig(f"{SAVE_IMAGE_FOLDER}/{game_name}_{i}.png")
-        im_reports += f"{i} (iou={stats['mean_iou']:.3f}),  "
-        report_bad[f"Image_{i}"] = stats
+            if stats["mean_iou"] < MIN_ACCEPTABLE_IOU:
+                obse2 = deepcopy(obse)
+                obss = []
+                for ax, obs, objects_list, title in zip(axes, [obse, obse2],
+                                                        [env.objects, env.objects_v],
+                                                        ["ram", "vision"]):
+                    for obj in objects_list:
+                        opos = obj.xywh
+                        ocol = obj.rgb
+                        sur_col = make_darker(ocol)
+                        mark_bb(obs, opos, color=sur_col)
+                        # mark_point(obs, *opos[:2], color=(255, 255, 0))
+                    ax.imshow(obs)
+                    ax.set_title(title)
+                    obss.append(obs)
+                for ax in axes.flatten():
+                    ax.set_xticks([])
+                    ax.set_yticks([])
+                # plt.imshow(obse)
+                # plt.show()
+                image_n = i // 20
+                axes[2].imshow(obss[1] - obss[0])
+                axes[2].set_title("difference")
+                plt.tight_layout()
+                plt.savefig(f"{SAVE_IMAGE_FOLDER}/{game_name}_{image_n}.png")
+                im_reports += f"{image_n} (iou={stats['mean_iou']:.3f}),  "
+                report_bad[f"Image_{image_n}"] = stats
+            pbar.update(1)
 
-    if terminated or truncated:
-        observation, info = env.reset()
-    # modify and display render
+        if terminated or truncated:
+            observation, info = env.reset()
+        # modify and display render
+pbar.close()
 env.close()
 
 ALL_STATS["mean_ious"] = np.mean(ALL_STATS["mean_ious"])
@@ -196,16 +218,16 @@ for only_in in ["only_in_ram", "only_in_vision"]:
 
 json_report_bad = json.dumps(report_bad, indent=4)
 json_report_bad = f"Details of frames with mean iou < {MIN_ACCEPTABLE_IOU}\n" + json_report_bad
-with open(f"{SAVE_IMAGE_FOLDER}/report_bad_{game_name}.json", "w") as outfile:
+with open(f"{SAVE_FOLDER}/report_bad_{game_name}.json", "w") as outfile:
     outfile.write(json_report_bad)
 json_all_stats = json.dumps(ALL_STATS, indent=4)
-with open(f"{SAVE_IMAGE_FOLDER}/all_stats_{game_name}.json", "w") as outfile:
+with open(f"{SAVE_FOLDER}/all_stats_{game_name}.json", "w") as outfile:
     outfile.write(json_all_stats)
 
 print_all_stats(ALL_STATS)
-print(f"Saved report_bad_{game_name}.json and all_stats_{game_name}.json in {SAVE_IMAGE_FOLDER}")
+print(f"Saved report_bad_{game_name}.json and all_stats_{game_name}.json in {SAVE_FOLDER}")
 
 
 if im_reports:
     print(f"Saved the following images with iou < {MIN_ACCEPTABLE_IOU}:\n" + im_reports + f"\n in {SAVE_IMAGE_FOLDER}")
-    print(f"Saved {SAVE_IMAGE_FOLDER}/report_bad_{game_name}.json for details on these images")
+    print(f"Saved {SAVE_FOLDER}/report_bad_{game_name}.json for details on these images")

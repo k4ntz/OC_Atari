@@ -1,0 +1,20 @@
+{
+    "mean_ious": 0.8677159400500579,
+    "per_class_ious": {
+        "Player": 1.0,
+        "PlayerScore": 0.7777777777777776,
+        "Rabbit": 0.9738348765432099,
+        "Duck": 0.9825231481481482,
+        "ExtraBullets": 0.9679232804232805,
+        "Owl": 0.9668895747599452,
+        "Wheel": 0.7185714285714286,
+        "AmmoBar": 1.0,
+        "PlayerMissile": 0.10434923969587837,
+        "FlyingDuck": 0.7976909184726523
+    },
+    "only_in_ram": {},
+    "only_in_vision": {
+        "AmmoBar": "221/100",
+        "Wheel": "39/100"
+    }
+}

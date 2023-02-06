@@ -291,7 +291,7 @@ def do_analysis(env, dump_path, new_dump, min_correlation, maximum_x,
 
 
 if __name__ == "__main__":
-    GAME_NAME = "Kangaroo"
+    GAME_NAME = "Asterix-v4"  # DemonAttack
     MODE = "vision"    # do not change
     # RENDER_MODE = "human"
     RENDER_MODE = "rgb_array"  # do not change

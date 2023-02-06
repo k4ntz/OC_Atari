@@ -10,7 +10,8 @@ from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.utils import load_agent, parser
 
 game_name = "Bowling"
-MODE = "revised"
+MODE = "vision"
+# MODE = "revised"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
@@ -26,6 +27,7 @@ for i in range(1000):
     else:
         action = random.randint(0, 4)
     obs, reward, terminated, truncated, info = env.step(action)
+    env.set_ram(33, 33)
     if i % 20 == 0:
         # obse2 = deepcopy(obse)
         print(env.objects)

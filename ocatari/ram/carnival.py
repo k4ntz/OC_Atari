@@ -235,7 +235,6 @@ def _detect_objects_carnival_revised(objects, ram_state, hud=False):
 
             objects.append(sign)
             objects.append(value)
-    print(objects)
 
 
 def _calculate_targets(ram_state, target_num, x, i):
