@@ -1,7 +1,7 @@
 from .utils import find_objects
 from .game_objects import GameObject
 
-objects_colors = {"player": [210, 210, 64], "saucer": {"1": [170, 170, 170], "2": [236, 236, 236]},
+objects_colors = {"player": [[210, 210, 64], [167, 26, 26]], "saucer": {"1": [170, 170, 170], "2": [236, 236, 236]},
                   "rejuvenator": [187, 187, 53], "sentinel": [], "blocker": [],
                   "charger": [], "bouncecraft": [], "chirper": [],
                   "player_projectile": [198, 108, 58], "torpedos": [104, 25, 154],
