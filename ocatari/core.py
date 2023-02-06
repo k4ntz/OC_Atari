@@ -16,7 +16,7 @@ import torch
 DEVICE = "cpu"
 
 
-AVAILABLE_GAMES = ["Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
+AVAILABLE_GAMES = ["Asterix", "Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
                    "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack", "Bowling",
                    "MsPacman", "Kangaroo", "Berzerk", "Carnival"]
 
