@@ -8,20 +8,22 @@ from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 # from ocatari.ram.demonAttack import ProjectileHostile
 
-game_name = "Asterix-v4"  # Breakout
+game_name = "Asterix"  # Breakout
 # game_name = "DemonAttack-v4"
 MODE = "vision"
 MODE = "revised"
 HUD = True
-env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='human')
+
+env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
 for i in range(1000):
     obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))  # env.step(env.action_space.sample())
 
-    if i % 5 == 0:
+    if i % 2 == 0:
         # obse2 = deepcopy(obse)
         print(env.objects)
+        print([o.visible for o in env.objects])
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and 0 < y < 210:  # and obj.visible:
