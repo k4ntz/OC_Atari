@@ -13,7 +13,7 @@ from ocatari.ram.demonAttack import ProjectileHostile
 game_name = "Asterix-v4"
 MODE = "vision"
 HUD = True
-env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
+env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='human')
 observation, info = env.reset()
 
 for i in range(10000000):
@@ -21,14 +21,12 @@ for i in range(10000000):
     obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))
     # env.step(env.action_space.sample())
     env._env.unwrapped.ale.setRAM(83, 2)
-    # env._env.unwrapped.ale.setRAM(39, 0)
-
-
 
     if i % 1000 == 0:
         print(i)
-    if i % 1 == 0:  # i > 3000 and and i % 3000 < 300
+    if i % 10 == 0:
         print(env.objects)
+        env._env.unwrapped.ale.setRAM(54, i//10 + 4)
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210 and obj.visible:

@@ -7,17 +7,15 @@ class Player(GameObject):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.rgb = 187, 187, 53
-            # self.visible = True
             self._xy = 0, 0
-            self.wh = 8, 11  # at some point 16, 11. other advanced player is (6, 11)
+            self.wh = 8, 11  # at some point 16, 11. advanced other player (oblix) is (6, 11)
             self.hud = False
 
 
 class Cauldron(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__()
+        super().__init__(*args, **kwargs)
         self.rgb = 167, 26, 26
-        # self.visible = False
         self._xy = 0, 0
         self.wh = 7, 10
         self.hud = False
@@ -27,7 +25,6 @@ class Enemy(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 228, 111, 111
-        # self.visible = False
         self._xy = 0, 0
         self.wh = 7, 11
         self.hud = False
@@ -36,8 +33,7 @@ class Enemy(GameObject):
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 187, 187, 53  # same color as player
-        # self.visible = True
+        self.rgb = 187, 187, 53
         self._xy = 0, 0
         self.wh = 8, 11
         self.hud = True
@@ -46,8 +42,7 @@ class Score(GameObject):
 class Lives(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 187, 187, 53  # same color as player
-        # self.visible = True
+        self.rgb = 187, 187, 53
         self._xy = 0, 0
         self.wh = 6, 7
         self.hud = True
@@ -57,7 +52,6 @@ class Helmet(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 240, 128, 128
-        # self.visible = True
         self._xy = 0, 0
         self.wh = 7, 11
         self.hud = False
@@ -67,7 +61,6 @@ class Shield(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 214, 214, 214
-        # self.visible = True
         self._xy = 0, 0
         self.wh = 5, 11
         self.hud = False
@@ -77,7 +70,6 @@ class Lamp(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 187, 53, 53
-        # self.visible = True
         self._xy = 0, 0
         self.wh = 8, 11
         self.hud = False
@@ -87,7 +79,6 @@ class Apple(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 184, 50, 50
-        # self.visible = True
         self._xy = 0, 0
         self.wh = 8, 11
         self.hud = False
@@ -97,7 +88,6 @@ class Fish(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 198, 89, 179
-        # self.visible = True
         self._xy = 0, 0
         self.wh = 8, 5
         self.hud = False
@@ -106,8 +96,7 @@ class Fish(GameObject):
 class Meat(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 184, 50, 50  # ], [214, 214, 214]]
-        # self.visible = True
+        self.rgb = 184, 50, 50
         self._xy = 0, 0
         self.wh = 5, 11
         self.hud = False
@@ -116,8 +105,7 @@ class Meat(GameObject):
 class Mug(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 184, 50, 50  # ], [214, 214, 214]]
-        # self.visible = True
+        self.rgb = 184, 50, 50
         self._xy = 0, 0
         self.wh = 7, 11
         self.hud = False
@@ -177,7 +165,6 @@ class Reward500(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 163, 57, 21
-        # self.visible = True
         self._xy = 0, 0
         self.wh = 8, 11
         self.hud = False
@@ -188,10 +175,8 @@ def _init_objects_asterix_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player()]
-    # Reward50(), Reward100(), Reward200(), Reward300(), Reward400(), Reward500()]
     if hud:
         objects.extend([Score(), Lives(), Lives()])
-        # for i in range(ram_state[83])
 
     return objects
 
@@ -212,11 +197,11 @@ def _detect_objects_asterix_raw(info, ram_state):
 
 
 def _detect_objects_asterix_revised(objects, ram_state, hud=False):
-
+    lives_nr = ram_state[83]
     if hud:
-        del objects[4:]
+        del objects[2+lives_nr-1:]
     else:
-        del objects[1:]
+        del objects[2:]
     const = ram_state[54] % 8
 
     rewards = []
@@ -227,10 +212,10 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
             reward_lanes.append(i)  # 0-7 instead actual 1-8
             x, y = ram_state[42 + i], 26 + i * 16
             if const == 0:  # 50 reward
-                rewards.append(Reward50())
-                rewards[ctr].xy = x, y
-                objects.append(rewards[ctr])
-
+                rew = Reward50()
+                rewards.append(rew)
+                rew.xy = x, y
+                objects.append(rew)
             elif const == 1:  # 100 reward
                 rew = Reward100()
                 rew.xy = x, y
@@ -258,7 +243,6 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
                 objects.append(rew)
             ctr += 1
 
-    # eatable_class = [Cauldron(), Helmet(), Shield(), Lamp(), Apple(), Fish(), Meat(), Mug()]
     eatable = []
     enemy_lanes = []
     ctr = 0
@@ -280,8 +264,6 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
                     instance = Helmet()
                     eatable.append(instance)
                     instance.xy = x, y
-                    # instance.wh = 7, 11
-                    # instance.rgb = 240, 128, 128
                     objects.append(instance)
                 elif const == 2:
                     eatable.append(Shield())
@@ -338,24 +320,19 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
             digits = 2
         elif _convert_number(ram_state[96]) > 0:
             digits = 1
-        score.xy = 96 - digits * 8, 184  # correct the 96
+        score.xy = 96 - digits * 8, 184
         score.wh = 6 + digits * 8, 7
-        # objects.insert(1, score)
 
-        if ram_state[83] >= 2:
+        if lives_nr >= 2:
             lives = objects[2]
             lives.xy = 60, 169
             lives.wh = 8, 11
         elif isinstance(objects[2], Lives):
             del objects[2]
 
-        if ram_state[83] >= 3:
+        if lives_nr >= 3:
             lives = objects[3]
             lives.xy = 60 + 16, 169
             lives.wh = 8, 11
         elif isinstance(objects[3], Lives):
             del objects[3]
-
-    print("ram_state:")
-    print(ram_state)
-    print("objects:", objects)

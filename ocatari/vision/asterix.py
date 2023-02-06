@@ -25,6 +25,7 @@ objects_colors = {'player': [187, 187, 53],
                   }
 
 
+# the given color to the multicolor classes is the most outer one, so it fits with the surrounding rectangle
 class Player(GameObject):  # player could be shown over all enemies/other objects (see Figure_4.png)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -136,8 +137,8 @@ class Reward500(GameObject):
 def _detect_objects_asterix(objects, obs, hud=False):
     objects.clear()
 
-    player = find_objects(obs, objects_colors["player"], maxy=160, tol_p=20, tol_s=(9, 1), size=(8, 11))  # correct
-    for instance in player:
+    player = find_objects(obs, objects_colors["player"], maxy=160, tol_p=20, tol_s=(9, 1), size=(8, 11))
+    for instance in player:  # parameters work for all 3 possible symbols ((wide) asterix and oblix (advanced))
         objects.append(Player(*instance))
 
     enemy = find_mc_objects(obs, objects_colors["enemy"], closing_dist=2, miny=24, maxy=151, size=(7, 11), tol_s=1)
@@ -156,7 +157,7 @@ def _detect_objects_asterix(objects, obs, hud=False):
     no_shield = True
     shield = find_objects(obs, objects_colors["shield"], closing_dist=1, size=(5, 11), tol_s=1, min_distance=2,
                           miny=24, maxy=151, )
-    for instance in shield:  # specify size(make it work)
+    for instance in shield:
         objects.append(Shield(*instance))
         no_shield = False
 
@@ -227,11 +228,5 @@ def _detect_objects_asterix(objects, obs, hud=False):
     # print(*objects, sep="\n")
     # print("\n")
 
-    # problems until now:
-    # apple in enemy when there is  (set size and tol) (solved)
-    # shield as shield and meat (set condition noShield) (solved)
-    # lamp as mug (set pars) (solved)
-    # lamp as player (try new pars) (solved)
+    # remaining problems:
     # lamp and reward_300 are not being detected at all (try with masks?)
-
-    # notice: agent runs away from meat and mug
