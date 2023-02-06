@@ -9,7 +9,7 @@ from ocatari.core import OCAtari
 Test raw/revised mode with a human render_mode and ipdb debugger
 """
 
-env = OCAtari("Carnival", mode="raw", render_mode="human")
+env = OCAtari("Tennis", mode="raw", render_mode="human")
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
