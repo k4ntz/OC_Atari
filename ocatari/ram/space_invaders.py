@@ -92,7 +92,6 @@ def _init_objects_space_invaders_ram(hud=False):
     objects = []  # Player(), Alien(), Satellite(), Shield(), Bullet(), Score(), Lives()]
     if hud:
         objects.append(Score(), Lives())
-
     return objects
 
 
