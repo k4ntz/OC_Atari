@@ -44,4 +44,14 @@ def _detect_objects_beamrider_revised(objects, ram_state, hud=True):
 
 
 def _detect_objects_beamrider_raw(info, ram_state):
+    player_x = ram_state[41]
+    enemy_x = ram_state[33:40]
+    enemy_y = ram_state[25:32]
+    projectile_x = ram_state[40]
+    projectile_y = ram_state[32]
+    # ram_state[42:49]no clue? killt player
+    # ram_state[49] projectile 0 shootable 35 already shot
+    # ram_state[0] sector
+    # ram_state[5] lives: renders up to 13
+    # ram_state[16] gamestatus: 1 = neutral, 2 = fighting, 3 = sentinel, 4 = transition
     pass

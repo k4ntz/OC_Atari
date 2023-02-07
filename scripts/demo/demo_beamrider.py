@@ -12,9 +12,11 @@ from ocatari.utils import load_agent, parser
 game_name = "BeamRider"
 MODE = "vision"
 # MODE = "revised"
-HUD = True
+HUD = False
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
+
+# env._env.unwrapped.ale.setRAM(12, 4)
 
 opts = parser.parse_args()
 # env._env.unwrapped.ale.setRAM(36, 1)
@@ -26,11 +28,12 @@ for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
-        action = random.randint(0, 1)
+        action = 1 # random.randint(0, 8)
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
-    if i % 10 == 0:
+    if i % 10 == 0 and i > 50:
         print(env.objects)
+        print(ram)
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210 and obj.visible:
