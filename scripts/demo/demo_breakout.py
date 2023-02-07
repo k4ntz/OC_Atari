@@ -12,7 +12,7 @@ from ocatari.utils import load_agent, parser
 game_name = "Breakout"
 MODE = "vision"
 MODE = "revised"
-HUD = True
+HUD = False
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 

@@ -28,19 +28,13 @@ class BlockRow(GameObject):
         self.rgb = 66, 72, 200
 
 
-class PlayerScore(GameObject):
+class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
 
 
 class Live(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 142, 142, 142
-
-
-class PlayerNumber(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
@@ -60,8 +54,8 @@ def _detect_objects_breakout(objects, obs, hud=False):
             objects.append(Ball(*b))
 
     for blockRowColor in blockRow_colors.values():
-        block_row = find_objects(obs, blockRowColor, min_distance=1)
-        for br in block_row:
+        blockRow = find_objects(obs, blockRowColor, min_distance=1)
+        for br in blockRow:
             if br[3] == 6 and br[1] < 100:
                 blockrow_inst = BlockRow(*br)
                 blockrow_inst.rgb = blockRowColor
@@ -69,17 +63,12 @@ def _detect_objects_breakout(objects, obs, hud=False):
 
     if hud:
         # score and lives are not detected because it detects the background, which has the same color
-        score = find_objects(obs, objects_colors["score"], min_distance=1, closing_dist=2)
+        score = find_objects(obs, objects_colors["score"], min_distance=1)
         for s in score:
-            if s[2] < 160 and s[0] < 90:
-                objects.append(PlayerScore(*s))
+            if s[2] < 160:
+                objects.append(Score(*s))
 
-        live = find_objects(obs, objects_colors["lives"], min_distance=1, closing_dist=1)
+        live = find_objects(obs, objects_colors["lives"], min_distance=1)
         for l1 in live:
-            if l1[2] < 160 and 136 > l1[0] > 97:
+            if l1[2] < 160:
                 objects.append(Live(*l1))
-
-        num = find_objects(obs, objects_colors["lives"], min_distance=1, closing_dist=1)
-        for nu in num:
-            if nu[2] < 160 and nu[0] > 120:
-                objects.append(PlayerNumber(*nu))

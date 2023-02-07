@@ -42,7 +42,7 @@ def find_causative_ram(game, x, y, width, height, show_plot=False):
     for i in tqdm(range(len(ram))):
         env.reset(seed=42)
         observation, reward, terminated, truncated, info = env.step(0)
-        env.unwrapped.ale.setRAM(i, -ram[i])  # 255
+        env.unwrapped.ale.setRAM(i, 5)
         observation, reward, terminated, truncated, info = env.step(0)
         obs = crop_rgb_array(observation, x, y, width, height)
         if not np.all(obs0 == obs):
@@ -57,9 +57,9 @@ def find_causative_ram(game, x, y, width, height, show_plot=False):
 
 if __name__ == "__main__":
     X = 0
-    Y = 0
-    WIDTH = 158
-    HEIGHT = 177
+    Y = 178
+    WIDTH = 160
+    HEIGHT = 7
 
-    candidates = find_causative_ram("Asterix-v4", X, Y, WIDTH, HEIGHT, show_plot=True)  # DemonAttack
+    candidates = find_causative_ram("DemonAttack", X, Y, WIDTH, HEIGHT, show_plot=True)
     print(candidates)

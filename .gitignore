@@ -9,6 +9,3 @@ scripts/general/testSkriptNr4.py
 scripts/general/testSkriptNr5.py
 *diff_images
 .venv
-*.xml
-.idea/bachelor-praktikum.iml
-reports

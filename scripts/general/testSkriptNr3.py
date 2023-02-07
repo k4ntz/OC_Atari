@@ -5,19 +5,17 @@ from matplotlib import pyplot as plt
 import sys
 # import pathlib
 sys.path.insert(0, '../../ocatari') # noqa
-from ocatari.core import OCAtari
+from core import OCAtari
 
 """
-Test vision mode with rgb_array as render_mode
+Test vision mode with rgb_array_with_bbs as render_mode
 """
 
-env = OCAtari("Asterix-v4", mode="revised", render_mode='rgb_array')  # Skiing-v4, DemonAttack-v4, SpaceInvaders-v4
+env = OCAtari("Kangaroo", mode="vision", render_mode='rgb_array')
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
-
-
-for _ in range(1000):
+for i in range(1000):
     # n: next line, c: resume execution
     if info.get('frame_number') > 400:
         ipdb.set_trace()
@@ -46,5 +44,5 @@ for _ in range(1000):
         plt.imshow(rgb_array)  # rgb_array stuff for fun
         plt.show()
         print(rgb_array)
-    time.sleep(0)
+    time.sleep(0.01)
 env.close()

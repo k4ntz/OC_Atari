@@ -29,7 +29,7 @@ warnings.filterwarnings("ignore")
 
 
 def print_all_stats(all_stats):
-    linelength = 39
+    linelength = 30
     print("Mean IOUs: ", round(all_stats['mean_ious'], 2))
     print("-"*linelength)
     print("\nPer class IOU: ")
@@ -111,7 +111,7 @@ def difference_objects(ram_list, vision_list):
         per_class_ious[name] = np.mean(li)
     for robj in ram_list:
         if not robj._is_in_image:
-            only_in_ram.append(str(robj))
+            only_in_vision.append(str(robj))
     for vobj in vision_list:
         if not vobj._is_in_ram:
             only_in_vision.append(str(vobj))

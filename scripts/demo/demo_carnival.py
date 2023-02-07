@@ -11,7 +11,7 @@ from ocatari.utils import load_agent, parser
 
 game_name = "Carnival"
 MODE = "vision"
-# MODE = "revised"
+MODE = "revised"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
@@ -28,9 +28,10 @@ for i in range(10000):
         action = random.randint(0, 1)
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
-    env.set_ram(46, 16)
+    print("ammo " + str(ram[3]))
+    print(ram[18:24])
+    print(ram[36:42])
     if i % 10 == 0:
-        print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210 and obj.visible:

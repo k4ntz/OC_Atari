@@ -1,4 +1,4 @@
-class GameObject:
+class GameObject():
     GET_COLOR = False
     GET_WH = False
 
@@ -11,7 +11,7 @@ class GameObject:
         self.visible = True
 
     def __repr__(self):
-        return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}\n"
+        return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}"
 
     @property
     def xy(self):

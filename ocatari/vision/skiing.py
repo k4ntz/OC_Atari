@@ -1,7 +1,7 @@
 from .utils import find_objects
 from .game_objects import GameObject
 
-trees_c = [[158, 208, 101], [82, 126, 45], [110, 156, 66], [72, 160, 72]]
+trees_c = [[158, 208, 101], [82, 126, 45],[110, 156, 66], [72, 160, 72]]
 moguls_c = [[192, 192, 192], [214, 214, 214]]
 flag_c = [[66, 72, 200], [184, 50, 50]]
 player_c = [214, 92, 92]

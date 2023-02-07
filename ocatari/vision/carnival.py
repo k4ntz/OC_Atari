@@ -24,7 +24,7 @@ class Player(GameObject):
         self.rgb = 66, 158, 130
 
 
-class PlayerScore(GameObject):
+class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 160, 171, 79
@@ -66,12 +66,6 @@ class Duck(GameObject):
         self.rgb = 187, 187, 53
 
 
-class FlyingDuck(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 187, 187, 53
-
-
 class ExtraBullets(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -98,13 +92,8 @@ def _detect_objects_carnival(objects, obs, hud=False):
 
     duck = find_objects(obs, targets_colors["duck"], min_distance=1)
     for d in duck:
-        if d[1] < 90:
+        if d[1] < 203:
             objects.append(Duck(*d))
-
-    flying_duck = find_objects(obs, targets_colors["duck"], min_distance=1)
-    for d in flying_duck:
-        if d[1] >= 90:
-            objects.append(FlyingDuck(*d))
 
     rabbit = find_objects(obs, targets_colors["rabbit"], min_distance=1)
     for rab in rabbit:
@@ -134,9 +123,9 @@ def _detect_objects_carnival(objects, obs, hud=False):
                     ammo_inst.rgb = ammo_bar_color
                     objects.append(ammo_inst)
 
-        score = find_objects(obs, objects_colors["score"], min_distance=1, closing_dist=5)
+        score = find_objects(obs, objects_colors["score"], min_distance=1)
         for sc in score:
-            objects.append(PlayerScore(*sc))
+            objects.append(Score(*sc))
 
         bonus = find_objects(obs, objects_colors["bonus"], min_distance=1)
         for bon in bonus:
