@@ -108,6 +108,10 @@ class OCAtari:
         self._env.seed(seed, *args, **kwargs)
 
     @property
+    def nb_actions(self):
+        return self._env.unwrapped.action_space.n
+
+    @property
     def dqn_obs(self):
         return torch.stack(list(self._state_buffer), 0).unsqueeze(0).byte()
 
