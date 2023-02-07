@@ -8,48 +8,58 @@ MAX_NB_OBJS = {
 }
 
 
-def _init_objects_space_invaders_ram(hud=False):
-    """
-    (Re)Initialize the objects
-    """
-    objects = [Player(), Alien(), Satellite(), Shield(), Bullet(), Score(), Lives()]
-    if hud:
-        objects.append(Score(), Lives)
-    return objects
-
-
 class Player(GameObject):
     def __init__(self, x, y, w, h, num, *args, **kwargs):
         super().__init__(x, y, w, h, *args, **kwargs)
         if num == 1:
-            self.rgb = 92, 186, 92
+            self.rgb = 92, 186, 92  # green
         else:
             self.rgb = 162, 134, 56  # yellow
         self.player_num = num
+        self.visible = False
+        self._xy = 0, 0
+        # self.wh =
+        self.hud = False
 
 
 class Alien(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 134, 134, 29
+        self.visible = False
+        self._xy = 0, 0
+        # self.wh =
+        self.hud = False
 
 
 class Satellite(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 151, 25, 122
+        self.visible = False
+        self._xy = 0, 0
+        # self.wh =
+        self.hud = False
 
 
 class Shield(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 181, 83, 40
+        self.visible = True  # here set on true?
+        self._xy = 0, 0
+        # self.wh =
+        self.hud = False
 
 
 class Bullet(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
+        self.visible = False
+        self._xy = 0, 0
+        # self.wh =
+        self.hud = False
 
 
 class Score(GameObject):
@@ -59,12 +69,30 @@ class Score(GameObject):
             self.rgb = 92, 186, 92
         else:
             self.rgb = 162, 134, 56
+        self.visible = True
+        self._xy = 0, 0
+        # self.wh =
+        self.hud = True
 
 
 class Lives(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 162, 134, 56
+        self.visible = False
+        self._xy = 0, 0  # 38-96; 184-195
+        self.wh = 8, 11
+        self.hud = True
+
+
+def _init_objects_space_invaders_ram(hud=False):
+    """
+    (Re)Initialize the objects
+    """
+    objects = []  # Player(), Alien(), Satellite(), Shield(), Bullet(), Score(), Lives()]
+    if hud:
+        objects.append(Score(), Lives())
+    return objects
 
 
 def _detect_objects_space_invaders_raw(info, ram_state):
@@ -87,12 +115,12 @@ def _detect_objects_space_invaders_revised(info, ram_state):
     # positions of enemies from left to right are the individual, set bits from right to left
     # rows are counted from bottom
     # the two msb-bits are to be discarded. they remain 0
-    info["row_1"] = ram_state[18]  #
-    info["row_2"] = ram_state[19]  #
-    info["row_3"] = ram_state[20]  #
-    info["row_4"] = ram_state[21]  #
-    info["row_5"] = ram_state[22]  #
-    info["row_6"] = ram_state[23]  #
+    info["row_1"] = ram_state[18]
+    info["row_2"] = ram_state[19]
+    info["row_3"] = ram_state[20]
+    info["row_4"] = ram_state[21]
+    info["row_5"] = ram_state[22]
+    info["row_6"] = ram_state[23]
     # ram[32:38] have the same value as ram[17:23] initialized. sense still not known
 
     info["visibility_players_walls"] = ram_state[24]
