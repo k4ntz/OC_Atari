@@ -8,7 +8,7 @@ RAM extraction for the game TENNIS. Supported modes: raw, revised.
 class Player(GameObject):
     def __init__(self):
         self._xy = 0, 0
-        self.wh = 14, 23
+        self.wh = 13, 23
         self.rgb = 240, 128, 128
         self.hud = False
         self.visible = True
@@ -17,7 +17,7 @@ class Player(GameObject):
 class Enemy(GameObject):
     def __init__(self):
         self._xy = 0, 0
-        self.wh = 14, 23
+        self.wh = 13, 23
         self.rgb = 117, 128, 240
         self.hud = False
         self.visible = True
@@ -106,12 +106,12 @@ def _detect_objects_tennis_revised(objects, ram_state, hud=False):
         shadow = BallShadow()
         ball.xy = ram_state[16] - 2, 189 - ram_state[54]
         shadow.xy = ram_state[16] - 2, 189 - ram_state[55]
-        if 98 < ball.y < 110:
+        if 99 < ball.y < 110:   # behind the net
             pass
         else:
             objects.append(ball)
 
-        if 98 < shadow.y < 113:
+        if 98 < shadow.y < 113 or shadow.y == ball.y:
             pass
         else:
             objects.append(shadow)
