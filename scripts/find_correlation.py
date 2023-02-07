@@ -15,7 +15,7 @@ import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
 sys.path.insert(0, '../ocatari') # noqa
-from core import OCAtari
+from ocatari.core import OCAtari
 
 
 def ransac_regression(x, y):
@@ -32,6 +32,7 @@ MIN_CORRELATION = 0.8
 
 game_name = "TennisDeterministic-v0"
 # game_name = "PongDeterministic-v0"
+game_name = "Asterix-v4"
 MODE = "vision"
 RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
@@ -39,7 +40,7 @@ env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
 observation, info = env.reset()
-object_list = ["ball", "enemy", "player", "ball_shadow"]
+object_list = ["player"]
 # object_list = ["ball", "enemy", "player"]
 # create dict of list
 objects_infos = {}
