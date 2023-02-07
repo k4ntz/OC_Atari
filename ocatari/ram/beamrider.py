@@ -54,4 +54,7 @@ def _detect_objects_beamrider_raw(info, ram_state):
     # ram_state[0] sector
     # ram_state[5] lives: renders up to 13
     # ram_state[16] gamestatus: 1 = neutral, 2 = fighting, 3 = sentinel, 4 = transition
+    # ram_state[83] torpedo amount
+    # ram_state[83] enemy amount
+    # 93-95 irgend was mit entfernung von Gegnern. 93 am weitesten entfernt 95 am nächsten
     pass
