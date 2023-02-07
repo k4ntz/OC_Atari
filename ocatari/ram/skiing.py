@@ -1,29 +1,29 @@
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
-from termcolor import colored
 
-import matplotlib.pyplot as plt     # noqa
-OBS = None
+MAX_NB_OBJECTS =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Score': 2, 'Logo': 1, 'Clock': 7,
+                       'Tree': 4, 'Mogul': 3, 'Flag': 4}
 
-
-def print_state(state):
-    print("-"*10)
-    for el in state:
-        x, y, type = el
-        coord = el[0:2]
-        attr = []
-        if y > 177 or y < 25 or x == 155:
-            attr.append("dark")
-        if type == 2:
-            print(colored(coord, "blue", attrs=attr))
-        elif type == 5:
-            print(colored(coord, "grey", attrs=attr))
-        elif type == 85:
-            print(colored(coord, "green", attrs=attr))
-        else:
-            print(colored("Error in print_state", "red"))
-            exit(1)
-    print("-"*10)
+# from termcolor import colored
+# def print_state(state):
+#     print("-"*10)
+#     for el in state:
+#         x, y, type = el
+#         coord = el[0:2]
+#         attr = []
+#         if y > 177 or y < 25 or x == 155:
+#             attr.append("dark")
+#         if type == 2:
+#             print(colored(coord, "blue", attrs=attr))
+#         elif type == 5:
+#             print(colored(coord, "grey", attrs=attr))
+#         elif type == 85:
+#             print(colored(coord, "green", attrs=attr))
+#         else:
+#             print(colored("Error in print_state", "red"))
+#             exit(1)
+#     print("-"*10)
 
 
 TREE_COLOR = {
@@ -134,8 +134,6 @@ class Tree(GameObject):
             self.wh = min(164-x, 16), min(175-y, 30)
         else:
             self._xy = x-3, y+4
-        # if abs(self._prev_xy[0] - self._xy[0]) > 10:
-        #     import ipdb; ipdb.set_trace()
         self.wh = self.wh[0], min(175-y, 30)
 
 
