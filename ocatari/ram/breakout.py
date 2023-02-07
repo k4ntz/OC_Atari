@@ -5,7 +5,8 @@ from ._helper_methods import _convert_number
 """
 RAM extraction for the game BREAKOUT. Supported modes: raw, revised.
 """
-
+# MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerScore': 3, 'Live': 1,
+#                        'PlayerNumber': 1, 'BlockRow': 9, 'Ball': 1} # blockrow could go very very high with a performing agent
 
 class Player(GameObject):
     def __init__(self):

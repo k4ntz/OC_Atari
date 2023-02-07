@@ -5,10 +5,11 @@ import random
 import matplotlib.pyplot as plt
 sys.path.insert(0, '../..') # noqa
 from ocatari.core import OCAtari
-from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.space_invaders import objects_colors
 from ocatari.vision.pong import objects_colors
-from ocatari.utils import load_agent, parser, make_deterministic
+from ocatari.utils import load_agent, parser
+from tqdm import tqdm
+
 
 parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
@@ -20,41 +21,42 @@ parser.add_argument("-hud", "--hud", action="store_true", help="Detect HUD")
 
 opts = parser.parse_args()
 
-
-env = OCAtari(opts.game, mode=opts.mode, render_mode='rgb_array', hud=opts.hud)
+env = OCAtari(opts.game, mode=opts.mode, render_mode='rgb_array',
+              hud=opts.hud)
 observation, info = env.reset()
 
 
 if opts.path:
     agent = load_agent(opts, env.action_space.n)
-    print(f"Loaded agents from {opts.path}")
 
-env.step(2)
-make_deterministic(0, env)
-ax = plt.gca()
-for i in range(10000):
+max_number_objs = {}
+for i in tqdm(range(30000)):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
-        action = random.randint(0, env.nb_actions-1)
+        action = random.randint(0, 2)
     obs, reward, terminated, truncated, info = env.step(action)
-    if i % opts.interval == 0:
-        for obs, objects_list, title in zip([obs],
-                                                [env.objects],
-                                                ["ram"] if opts.mode == "revised" else ["vision"]):
-            for obj in objects_list:
-                opos = obj.xywh
-                ocol = obj.rgb
-                sur_col = make_darker(ocol)
-                mark_bb(obs, opos, color=sur_col)
-                # mark_point(obs, *opos[:2], color=(255, 255, 0))
-        ax.set_xticks([])
-        ax.set_yticks([])
-        plt.title(f"{opts.mode}: {opts.mode} mode (frame {i})", fontsize=20)
-        plt.imshow(obs)
-        plt.show()
+
+    for obj in env.objects:
+        classname = obj.__class__.__name__
+        if classname not in max_number_objs:
+            max_number_objs[classname] = 0
+        nb_obj = sum([o.__class__.__name__ == classname for o in env.objects])
+        if nb_obj > max_number_objs[classname]:
+            max_number_objs[classname] = nb_obj
+            print(f"Found {nb_obj} for class {classname}")
 
     if terminated or truncated:
         observation, info = env.reset()
+        print("Reset")
     # modify and display render
+
 env.close()
+print(f"{opts.game} in {opts.mode} mode")
+print("Please add:")
+if opts.hud:
+    print("MAX_NB_OBJECTS_HUD = ", max_number_objs)
+else:
+    print("MAX_NB_OBJECTS = ", max_number_objs)
+folder = "ram" if opts.mode == "revised" else "vision"
+print(f"to ocatari/{folder}/{opts.game.lower()}.py")
