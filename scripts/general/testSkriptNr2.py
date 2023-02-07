@@ -1,4 +1,4 @@
-import gym
+import gymnasium as gym
 import time
 import random
 # from matplotlib import pyplot as plt
@@ -11,24 +11,28 @@ env = gym.make("BeamRider", render_mode="human")
 env.metadata['render_fps'] = 60
 observation, info = env.reset(seed=42)
 observation, reward, terminated, truncated, info = env.step(0)
+ram = env.unwrapped.ale.getRAM()
 
-# env.unwrapped.ale.setRAM(0, 5)
+
 
 for _ in range(1000):
+    # env.unwrapped.ale.setRAM(105, 0)
     # action = policy(observation)  # User-defined policy function
 
     # -------------------manipulate ram----------------------------------
-    ram = env.unwrapped.ale.getRAM()
-    target_ram_position = 74
+    
+    target_ram_position = 127
     previous_ram_at_position = ram[target_ram_position]
-    new_ram_value = 99
+    new_ram_value = 43
+    # env.unwrapped.ale.setRAM(target_ram_position, new_ram_value)
+    ram = env.unwrapped.ale.getRAM()
+
     # print(new_ram_value)
     # print(ram)
-    print(ram[target_ram_position])
     if new_ram_value > 255 or new_ram_value < 0:
         print("ram out of bounds")
         new_ram_value = 0
-    env.unwrapped.ale.setRAM(target_ram_position, new_ram_value)
+    print(ram[target_ram_position])
     # env.unwrapped.ale.setRAM(11, 10)
     # -------------------------------------------------------------------
     terminated, truncated = False, False
