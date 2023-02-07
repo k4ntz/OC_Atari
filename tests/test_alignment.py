@@ -111,7 +111,7 @@ def difference_objects(ram_list, vision_list):
         per_class_ious[name] = np.mean(li)
     for robj in ram_list:
         if not robj._is_in_image:
-            only_in_vision.append(str(robj))
+            only_in_ram.append(str(robj))
     for vobj in vision_list:
         if not vobj._is_in_ram:
             only_in_vision.append(str(vobj))
