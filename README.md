@@ -14,18 +14,16 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [x]  Seaquest
 - [x]  Skiing
 - [ ]  Space Invaders (worked on by Belal/Sebastian)
-- [ ]  Asterix (worked on by Belal)
+- [x]  Asterix
 - [ ]  Asteroids (worked on by Chris)
 - [x]  Demon Attack
-- [x]  Tennis (reworking it for classes - Chris)
+- [x]  Tennis 
 - [x]  Kangaroo
 
 ### Priority 2:
-- [x]   Berzerk
-- [ ]  Secret Quest -> not supported by gym
+- [x]  Berzerk
 - [ ]  River Raid (worked on by Chris)
 - [ ]  Atlantis
-- [ ]  Star Raiders -> not supported by gym
 - [ ]  Chopper Command (worked on by Sebastian)
 - [ ]  Q*bert
 - [ ]  Assault
