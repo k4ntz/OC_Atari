@@ -1,12 +1,18 @@
 from .game_objects import GameObject
 
 
+MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 1}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'PlayerScore': 2,
+                       'EnemyScore': 2, 'Logo': 1, 'Clock': 4}
+
+
 class Player(GameObject):
     def __init__(self):
         self._xy = 0, 0
         self.wh = 14, 46
         self.rgb = 214, 214, 214
         self.hud = False
+        self._above_10 = False
 
 
 class Enemy(GameObject):
@@ -15,6 +21,7 @@ class Enemy(GameObject):
         self.wh = 14, 46
         self.rgb = 0, 0, 0
         self.hud = False
+        self._above_10 = False
 
 
 class Logo(GameObject):
@@ -83,18 +90,21 @@ def _detect_objects_boxing_revised(objects, ram_state, hud=False):
     if hud:
         # scores
         if ram_state[19] > 10:  # enemy score
-            objects.append(EnemyScore(ten=True))
+            if not enemy._above_10:
+                objects.append(EnemyScore(ten=True))
+                enemy._above_10 = True
         else:
-            tens = EnemyScore(ten=True)
-            if tens in objects:
-                objects.remove(tens)
+            if enemy._above_10:
+                objects.remove(EnemyScore(ten=True))
+                enemy._above_10 = False
         if ram_state[18] > 10:  # player score
-            objects.append(PlayerScore(ten=True))
+            if not player._above_10:
+                objects.append(PlayerScore(ten=True))
+                player._above_10 = True
         else:
-            tens = PlayerScore(ten=True)
-            if tens in objects:
-                objects.remove(tens)
-
+            if player._above_10:
+                objects.remove(PlayerScore(ten=True))
+                player._above_10 = False
 
 def _detect_objects_boxing_raw(info, ram_state):
     """
