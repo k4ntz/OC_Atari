@@ -29,7 +29,7 @@ warnings.filterwarnings("ignore")
 
 
 def print_all_stats(all_stats):
-    linelength = 30
+    linelength = 39
     print("Mean IOUs: ", round(all_stats['mean_ious'], 2))
     print("-"*linelength)
     print("\nPer class IOU: ")
