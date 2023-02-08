@@ -21,9 +21,9 @@ for _ in range(1000):
 
     # -------------------manipulate ram----------------------------------
     
-    target_ram_position = 127
+    target_ram_position = 25
     previous_ram_at_position = ram[target_ram_position]
-    new_ram_value = 43
+    new_ram_value = 4
     # env.unwrapped.ale.setRAM(target_ram_position, new_ram_value)
     ram = env.unwrapped.ale.getRAM()
 
