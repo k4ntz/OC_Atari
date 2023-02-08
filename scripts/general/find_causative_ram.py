@@ -43,6 +43,7 @@ def find_causative_ram(game, x, y, width, height, show_plot=False):
         env.reset(seed=42)
         # observation, reward, terminated, truncated, info = env.step(0)
         env.unwrapped.ale.setRAM(i, 0)
+
         observation, reward, terminated, truncated, info = env.step(0)
         obs = crop_rgb_array(observation, x, y, width, height)
         if not np.all(obs0 == obs):
