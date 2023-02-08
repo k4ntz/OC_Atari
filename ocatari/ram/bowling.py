@@ -1,13 +1,16 @@
+import sys
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
 
 """
 RAM extraction for the game BOWLING. Supported modes: raw, revised.
 """
-
+MAX_NB_OBJECTS =  {'Player': 1, 'Ball': 1, 'Pin': 10}
+MAX_NB_OBJECTS_HUD = {'PlayerScore' : 1, 'PlayerRound' : 1, 'Player2Round' : 1}
 
 class Player(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 8, 32
@@ -17,6 +20,7 @@ class Player(GameObject):
 
 class Ball(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 22, 139
         self.wh = 4, 10
@@ -26,6 +30,7 @@ class Ball(GameObject):
 
 class Pin(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 2, 4
@@ -35,6 +40,7 @@ class Pin(GameObject):
 
 class PlayerScore(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 32, 19
         self.rgb = 84, 92, 214
@@ -47,6 +53,7 @@ class PlayerScore(GameObject):
 
 class PlayerRound(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 40, 7
         self.rgb = 45, 50, 184
@@ -56,11 +63,28 @@ class PlayerRound(GameObject):
 
 class Player2Round(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 120, 7
         self.rgb = 45, 50, 184
         self.wh = 4, 10
         self.hud = True
+
+
+# parses MAX_NB* dicts, returns default init list of objects
+def _get_max_objects(hud=False):
+
+    def fromdict(max_obj_dict):
+        objects = []
+        mod = sys.modules[__name__]
+        for k, v in max_obj_dict.items():
+            for _ in range(0, v):
+                objects.append(getattr(mod, k)())    
+        return objects
+
+    if hud:
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
 
 
 def _init_objects_bowling_ram(hud=False):

@@ -10,6 +10,7 @@ Attention: EvilOtto enemy not implemented due to not getting it spawned during d
 
 class Player(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 8, 79
         self.wh = 8, 20
@@ -19,6 +20,7 @@ class Player(GameObject):
 
 class PlayerMissile(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 1, 6
@@ -28,6 +30,7 @@ class PlayerMissile(GameObject):
 
 class Enemy(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 8, 16
@@ -37,6 +40,7 @@ class Enemy(GameObject):
 
 class EnemyMissile(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 1, 6
@@ -46,6 +50,7 @@ class EnemyMissile(GameObject):
 
 class PlayerScore(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 88, 183
         self.rgb = 232, 232, 74
@@ -58,6 +63,7 @@ class PlayerScore(GameObject):
 
 class Logo(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 63, 183
         self.rgb = 232, 232, 74
@@ -67,6 +73,7 @@ class Logo(GameObject):
 
 class RoomCleared(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 56, 183
         self.rgb = 232, 232, 74

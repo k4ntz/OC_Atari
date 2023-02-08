@@ -8,6 +8,7 @@ RAM extraction for the game SEAQUEST. Supported modes: raw, revised.
 
 class Player(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 76, 46
         self.wh = 16, 11
         self.rgb = 187, 187, 53
@@ -17,6 +18,7 @@ class Player(GameObject):
 
 class Diver(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 8, 13
         self.rgb = 66, 72, 200
@@ -26,6 +28,7 @@ class Diver(GameObject):
 
 class Enemy(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 8, 7
         self.rgb = 0, 0, 0
@@ -35,6 +38,7 @@ class Enemy(GameObject):
 
 class PlayerMissile(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 8, 1
         self.rgb = 187, 187, 53
@@ -44,6 +48,7 @@ class PlayerMissile(GameObject):
 
 class PlayerScore(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 99, 9
         self.rgb = 210, 210, 64
         self.wh = 6, 8
@@ -56,6 +61,7 @@ class PlayerScore(GameObject):
 
 class Lives(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 58, 22
         self.rgb = 210, 210, 64
         self.wh = 23, 8
@@ -65,6 +71,7 @@ class Lives(GameObject):
 
 class OxygenBar(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 49, 170
         self.rgb = 214, 214, 214
         self.wh = 63, 5
@@ -74,6 +81,7 @@ class OxygenBar(GameObject):
 
 class OxygenBarDepleted(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 49, 170
         self.rgb = 163, 57, 21
         self.wh = 63, 5
@@ -83,6 +91,7 @@ class OxygenBarDepleted(GameObject):
 
 class Logo(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 66, 191
         self.rgb = 66, 72, 200
         self.wh = 32, 7
@@ -92,6 +101,7 @@ class Logo(GameObject):
 
 class OxygenBarLogo(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 15, 170
         self.rgb = 0, 0, 0
         self.wh = 23, 5
@@ -101,6 +111,7 @@ class OxygenBarLogo(GameObject):
 
 class CollectedDiver(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.rgb = 24, 26, 167
         self.wh = 8, 9
