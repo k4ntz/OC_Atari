@@ -12,6 +12,9 @@ from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.tennis import objects_colors
 from ocatari.vision.pong import objects_colors
+from ocatari.vision.bowling import objects_colors
+from ocatari.vision.breakout import objects_colors
+from ocatari.utils import load_agent, test_parser
 from ocatari.utils import load_agent, test_parser, make_deterministic
 from copy import deepcopy
 import numpy as np
@@ -85,7 +88,7 @@ def difference_objects(ram_list, vision_list):
     only_in_vision = []
     per_class_ious = {}
     ious = []
-    if abs(len(vision_list) - len(ram_list)) > 10:
+    if abs(len(vision_list) - len(ram_list)) > 10 and USE_IPDB:
         import ipdb; ipdb.set_trace()
     for vobj in vision_list:
         vobj._is_in_ram = False
@@ -108,7 +111,7 @@ def difference_objects(ram_list, vision_list):
         per_class_ious[name] = np.mean(li)
     for robj in ram_list:
         if not robj._is_in_image:
-            only_in_vision.append(str(robj))
+            only_in_ram.append(str(robj))
     for vobj in vision_list:
         if not vobj._is_in_ram:
             only_in_vision.append(str(vobj))
@@ -117,6 +120,8 @@ def difference_objects(ram_list, vision_list):
             "objs_in_ram": [str(o) for o in ram_list],
             "objs_in_vision": [str(o) for o in vision_list]}
 
+
+USE_IPDB = False
 figlet = Figlet()
 report_bad = {}
 all_stats = []

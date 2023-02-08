@@ -1,27 +1,85 @@
 from .utils import find_objects
+from .game_objects import GameObject
 
-objects_colors = {
-    "tree1": [158, 208, 101], "tree2": [82, 126, 45],
-    "tree3": [110, 156, 66], "rock": [192, 192, 192],
-    "tree4": [72, 160, 72],
-    "rock2": [214, 214, 214], "flag": [66, 72, 200],
-    "player": [214, 92, 92], "logo": [0, 0, 0]
-}
-
-fixed_objects_pos = {
-    "logo": [65, 187, 32, 7]
-}
+trees_c = [[158, 208, 101], [82, 126, 45], [110, 156, 66], [72, 160, 72]]
+moguls_c = [[192, 192, 192], [214, 214, 214]]
+flag_c = [[66, 72, 200], [184, 50, 50]]
+player_c = [214, 92, 92]
+logo_c = [0, 0, 0]
 
 
-def _detect_objects_skiing(info, obs, fixed_objects=True):
-    objects = {}
-    for object in objects_colors:
-        found_objects = find_objects(obs, objects_colors[object])
-        objects[object] = found_objects
-    # if fixed_objects:
-    #     fixed_objects_complete = {}
-    #     for objn in fixed_objects_pos.keys():
-    #         fixed_objects_complete[objn] = [fixed_objects_pos[objn]]
-    #     objects.update(fixed_objects_complete)
-    info["objects"] = objects
-    info["objects_colors"] = objects_colors
+class Player(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 214, 92, 92
+        self.hud = False
+
+
+class Flag(GameObject):
+    def __init__(self, x, y, w, h, rgb):
+        super().__init__(x, y, w, h)
+        self.rgb = rgb
+        self.hud = False
+
+
+class Tree(GameObject):
+    def __init__(self, x, y, w, h, rgb):
+        super().__init__(x, y, w, h)
+        self.rgb = rgb
+        self.hud = False
+
+
+class Mogul(GameObject):
+    def __init__(self, x, y, w, h, rgb):
+        super().__init__(x, y, w, h)
+        self.rgb = rgb
+        self.hud = False
+
+
+class Logo(GameObject):
+    def __init__(self):
+        self._xy = 65, 187
+        self.wh = 31, 6
+        self.rgb = 0, 0, 0
+        self.hud = True
+
+
+class Clock(GameObject):
+    def __init__(self, x, y, w, h):
+        self._xy = x, y
+        self.wh = w, h
+        self.rgb = 0, 0, 0
+        self.hud = True
+
+
+class Score(GameObject):
+    def __init__(self, ten=False):
+        if ten:
+            self._xy = 67, 6
+        else:
+            self._xy = 75, 6
+        self.ten = ten
+        self.rgb = 0, 0, 0
+        self.wh = 6, 7
+        self.hud = True
+
+
+def _detect_objects_skiing(objects, obs, hud=False):
+    objects.clear()
+    player = find_objects(obs, player_c)
+    for el in player:
+        objects.append(Player(*el))
+    for col in flag_c:
+        flags = find_objects(obs, col)
+        for el in flags:
+            objects.append(Flag(*el, col))
+    for col in trees_c:
+        trees = find_objects(obs, col)
+        for el in trees:
+            objects.append(Tree(*el, col))
+    for col in moguls_c:
+        moguls = find_objects(obs, col)
+        for el in moguls:
+            objects.append(Mogul(*el, col))
+    if hud:
+        objects.append(Logo())

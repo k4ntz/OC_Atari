@@ -1,0 +1,164 @@
+Details of frames with mean iou < 0.7
+{
+    "Image_10": {
+        "mean_iou": 0.6559938684958068,
+        "per_class_ious": {
+            "Player": 0.6382978723404256,
+            "Logo": 1.0,
+            "Flag": 0.4755868544600939,
+            "Tree": 0.7207168458781362,
+            "Mogul": 0.8571428571428571
+        },
+        "only_in_ram": [],
+        "only_in_vision": [
+            "Score at (75, 6)",
+            "Score at (67, 6)",
+            "Clock at (59, 16)",
+            "Clock at (66, 17)",
+            "Clock at (68, 16)",
+            "Clock at (75, 16)",
+            "Clock at (82, 21)",
+            "Clock at (84, 16)",
+            "Clock at (91, 16)"
+        ],
+        "objs_in_ram": [
+            "Player at (25, 40)",
+            "Score at (75, 6)",
+            "Score at (67, 6)",
+            "Logo at (65, 187)",
+            "Clock at (59, 16)",
+            "Clock at (66, 17)",
+            "Clock at (68, 16)",
+            "Clock at (75, 16)",
+            "Clock at (82, 21)",
+            "Clock at (84, 16)",
+            "Clock at (91, 16)",
+            "Flag at (80, 33)",
+            "Flag at (112, 33)",
+            "Tree at (8, 46)",
+            "Tree at (13, 82)",
+            "Mogul at (60, 117)",
+            "Flag at (55, 130)",
+            "Flag at (87, 130)",
+            "Tree at (130, 150)"
+        ],
+        "objs_in_vision": [
+            "Player at (26, 39), (8, 16)",
+            "Flag at (87, 129), (5, 14)",
+            "Flag at (55, 129), (5, 14)",
+            "Flag at (116, 32), (1, 7)",
+            "Flag at (84, 32), (1, 7)",
+            "Tree at (13, 81), (16, 30)",
+            "Tree at (130, 149), (16, 29)",
+            "Tree at (8, 63), (4, 11)",
+            "Mogul at (60, 117), (16, 6)",
+            "Logo at (65, 187), (31, 6)"
+        ]
+    },
+    "Image_24": {
+        "mean_iou": 0.6869642857142858,
+        "per_class_ious": {
+            "Player": 0.6666666666666666,
+            "Logo": 1.0,
+            "Flag": 0.6,
+            "Tree": 0.6486111111111111,
+            "Mogul": 0.8571428571428571
+        },
+        "only_in_ram": [],
+        "only_in_vision": [
+            "Score at (75, 6)",
+            "Score at (67, 6)",
+            "Clock at (59, 16)",
+            "Clock at (66, 17)",
+            "Clock at (68, 16)",
+            "Clock at (75, 16)",
+            "Clock at (82, 21)",
+            "Clock at (84, 16)",
+            "Clock at (91, 16)",
+            "Tree at (120, 179)"
+        ],
+        "objs_in_ram": [
+            "Player at (73, 40)",
+            "Score at (75, 6)",
+            "Score at (67, 6)",
+            "Logo at (65, 187)",
+            "Clock at (59, 16)",
+            "Clock at (66, 17)",
+            "Clock at (68, 16)",
+            "Clock at (75, 16)",
+            "Clock at (82, 21)",
+            "Clock at (84, 16)",
+            "Clock at (91, 16)",
+            "Flag at (71, 32)",
+            "Flag at (103, 32)",
+            "Tree at (5, 39)",
+            "Tree at (135, 75)",
+            "Mogul at (56, 110)",
+            "Flag at (56, 123)",
+            "Flag at (88, 123)",
+            "Tree at (150, 143)",
+            "Tree at (120, 179)"
+        ],
+        "objs_in_vision": [
+            "Player at (74, 40), (8, 15)",
+            "Flag at (88, 123), (5, 14)",
+            "Flag at (56, 123), (5, 14)",
+            "Flag at (107, 32), (1, 1)",
+            "Flag at (75, 32), (1, 1)",
+            "Tree at (135, 75), (16, 30)",
+            "Tree at (150, 165), (2, 4)",
+            "Tree at (8, 39), (13, 30)",
+            "Mogul at (56, 111), (16, 6)",
+            "Logo at (65, 187), (31, 6)"
+        ]
+    },
+    "Image_79": {
+        "mean_iou": 0.6768692581085008,
+        "per_class_ious": {
+            "Player": 0.6363636363636364,
+            "Logo": 1.0,
+            "Tree": 0.2556224899598393,
+            "Mogul": 0.8571428571428571,
+            "Flag": 0.8666666666666667
+        },
+        "only_in_ram": [],
+        "only_in_vision": [
+            "Score at (75, 6)",
+            "Score at (67, 6)",
+            "Clock at (59, 16)",
+            "Clock at (66, 17)",
+            "Clock at (68, 16)",
+            "Clock at (75, 16)",
+            "Clock at (82, 21)",
+            "Clock at (84, 16)",
+            "Clock at (91, 16)"
+        ],
+        "objs_in_ram": [
+            "Player at (76, 40)",
+            "Score at (75, 6)",
+            "Score at (67, 6)",
+            "Logo at (65, 187)",
+            "Clock at (59, 16)",
+            "Clock at (66, 17)",
+            "Clock at (68, 16)",
+            "Clock at (75, 16)",
+            "Clock at (82, 21)",
+            "Clock at (84, 16)",
+            "Clock at (91, 16)",
+            "Tree at (149, 98)",
+            "Mogul at (61, 137)",
+            "Flag at (42, 154)",
+            "Flag at (74, 154)",
+            "Tree at (125, 174)"
+        ],
+        "objs_in_vision": [
+            "Player at (78, 41), (7, 18)",
+            "Flag at (74, 153), (5, 14)",
+            "Flag at (42, 153), (5, 14)",
+            "Tree at (149, 115), (3, 11)",
+            "Tree at (132, 173), (3, 5)",
+            "Mogul at (61, 137), (16, 6)",
+            "Logo at (65, 187), (31, 6)"
+        ]
+    }
+}

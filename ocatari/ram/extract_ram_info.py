@@ -1,4 +1,7 @@
 from termcolor import colored
+from .asterix import _detect_objects_asterix_revised, _detect_objects_asterix_raw,\
+    _init_objects_asterix_ram
+from .berzerk import _detect_objects_berzerk_raw, _detect_objects_berzerk_revised, _init_objects_berzerk_ram
 from .boxing import _detect_objects_boxing_raw, _detect_objects_boxing_revised, _init_objects_boxing_ram
 from .freeway import _detect_objects_freeway_raw, _detect_objects_freeway_revised, _init_objects_freeway_ram
 from .bowling import _detect_objects_bowling_raw, _detect_objects_bowling_revised, _init_objects_bowling_ram
@@ -9,7 +12,7 @@ from .skiing import _detect_objects_skiing_raw, _detect_objects_skiing_revised, 
 from .space_invaders import _detect_objects_space_invaders_raw, \
                             _detect_objects_space_invaders_revised, \
                             _init_objects_space_invaders_ram
-from .tennis import _detect_objects_tennis_raw, _detect_objects_tennis_revised
+from .tennis import _detect_objects_tennis_raw, _detect_objects_tennis_revised, _init_objects_tennis_ram
 from .demonAttack import _detect_objects_demon_attack_raw, \
                          _detect_objects_demon_attack_revised, \
                          _init_objects_demon_attack_ram
@@ -21,7 +24,6 @@ from .carnival import _init_objects_carnival_ram, _detect_objects_carnival_raw, 
 from .kangaroo import _detect_objects_kangaroo_raw, \
                       _detect_objects_kangaroo_revised, \
                       _init_objects_kangaroo_ram
-from .berzerk import _detect_objects_berzerk_raw, _detect_objects_berzerk_revised, _init_objects_berzerk_ram
 
 
 def init_objects(game_name, hud):
@@ -42,8 +44,8 @@ def init_objects(game_name, hud):
         return _init_objects_seaquest_ram(hud)
     elif game_name.lower() == "spaceinvaders":
         return _init_objects_space_invaders_ram(hud)
-    # elif game_name.lower() == "tennis":
-    #     _detect_objects_tennis(objects, ram_state)
+    elif game_name.lower() == "tennis":
+        return _init_objects_tennis_ram(hud)
     elif game_name.lower() == "bowling":
         return _init_objects_bowling_ram(hud)
     elif game_name.lower() == "demonattack":
@@ -58,6 +60,8 @@ def init_objects(game_name, hud):
         return _init_objects_kangaroo_ram(hud)
     elif game_name.lower() == "berzerk":
         return _init_objects_berzerk_ram(hud)
+    elif game_name.lower() == "asterix":
+        return _init_objects_asterix_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
@@ -97,6 +101,8 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_kangaroo_raw(info, ram_state)
     elif game_name.lower() == "kangaroo":
         _detect_objects_berzerk_raw(info, ram_state)
+    elif game_name.lower() == "asterix":
+        _detect_objects_asterix_raw(info, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
         exit(1)
@@ -136,6 +142,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_kangaroo_revised(objects, ram_state, hud)
     elif game_name.lower() == "berzerk":
         _detect_objects_berzerk_revised(objects, ram_state, hud)
+    elif game_name.lower() == "asterix":
+        _detect_objects_asterix_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
