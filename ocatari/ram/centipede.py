@@ -93,12 +93,21 @@ class Life(GameObject):
         self.hud = True
 
 
-def _column_to_y(column):  # returns the y cord of given column
+def _column_to_y(column):
+    """
+    converts the given column number to a y coordinate
+    """
     pad = 9
     return 5 + column * pad
 
 
-def _number_lowpass(number):  # returns a number from 0-19
+def _number_lowpass(number):
+    """
+    makes sure the given number is lower than 19 (there are only 19 columns)
+    if the given number is higher than 19 this function ignores the more significant bits
+    this is important because centipede sometimes stores additional information in the same ram field...
+    for example least significant 4 bits are for column and highest is part of score etc.
+    """
     if number < 20:
         return number
     bitfield = number_to_bitfield(number)
@@ -113,12 +122,21 @@ def _number_lowpass(number):  # returns a number from 0-19
     return bitfield_to_number(bitfield)
 
 
-def _create_walls_from_bitfield(bitmap, offset_x, offset_y, switch=False):
+def _create_walls_from_bitfield(bitfield, offset_x, offset_y, switch=False):
+    """
+    takes an 8-bit bitfield and returns a list of wall objects with the given offset
+
+    FE bitfield=11111111 would return a list of 8 wall objects all with equal spacing in x direction.
+     the first wall has xy = offset_xy
+
+    switch is important in centipede because centipede swaps between reading bits from left to right to
+     reading bits from right to left
+    """
     ret = []
     pad = 8
     swap = switch
-    for i in range(len(bitmap)):
-        if bitmap[i] == 1:
+    for i in range(len(bitfield)):
+        if bitfield[i] == 1:
             index = int(i/2)
             if swap:
                 index = 7 - index
@@ -130,6 +148,11 @@ def _create_walls_from_bitfield(bitmap, offset_x, offset_y, switch=False):
 
 
 def _create_score_objects(score):
+    """
+    takes a number and returns a list of score objects with equal spacing at the correct position
+
+    FE score=10 would return a list of 2 score objects
+    """
     ret = []
     amount = 0
     if score > 0:
@@ -146,6 +169,9 @@ def _create_score_objects(score):
 
 
 def _create_life_objects(life):
+    """
+    takes a number and returns a list of correctly positioned life objects (len=number)
+    """
     ret = []
     basex = 17
     pad = 8
