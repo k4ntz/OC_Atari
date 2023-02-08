@@ -1,3 +1,4 @@
+import sys
 from .game_objects import GameObject
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Ball': 1, 'Enemy': 1}
@@ -5,6 +6,7 @@ MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ball': 1, 'Enemy': 1, 'PlayerScore': 1, 'En
 
 class Player(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 4, 15
         self.rgb = 92, 186, 92
@@ -14,6 +16,7 @@ class Player(GameObject):
 
 class Enemy(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 4, 15
         self.rgb = 213, 130, 74
@@ -23,6 +26,7 @@ class Enemy(GameObject):
 
 class Ball(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 2, 4
         self.rgb = 236, 236, 236
@@ -31,6 +35,7 @@ class Ball(GameObject):
 
 class PlayerScore(GameObject):
     def __init__(self, ten=False):
+        super().__init__()
         if ten:
             self._xy = 100, 1
         else:
@@ -46,6 +51,7 @@ class PlayerScore(GameObject):
 
 class EnemyScore(GameObject):
     def __init__(self, ten=False):
+        super().__init__()
         if ten:
             self._xy = 20, 1
         else:
@@ -58,6 +64,20 @@ class EnemyScore(GameObject):
     def __eq__(self, o):
         return isinstance(o, EnemyScore) and self.xy == o.xy
 
+# parses MAX_NB* dicts, returns default init list of objects
+def _get_max_objects(hud=False):
+
+    def fromdict(max_obj_dict):
+        objects = []
+        mod = sys.modules[__name__]
+        for k, v in max_obj_dict.items():
+            for _ in range(0, v):
+                objects.append(getattr(mod, k)())    
+        return objects
+
+    if hud:
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
 
 def _init_objects_pong_ram(hud=False):
     """
