@@ -6,7 +6,6 @@ import math
 class Player(GameObject):
     def __init__(self):
         super(Player, self).__init__()
-        self.visible = True
         self._xy = 0, 0
         self.wh = 7, 12
         self.rgb = 184, 70, 162
@@ -16,7 +15,6 @@ class Player(GameObject):
 class Enemy(GameObject):
     def __init__(self):
         super(Enemy, self).__init__()
-        self.visible = False
         self._xy = 0, 0
         self.wh = 16, 7
         self.rgb = 213, 130, 74
@@ -26,7 +24,6 @@ class Enemy(GameObject):
 class ProjectileFriendly(GameObject):
     def __init__(self):
         super(ProjectileFriendly, self).__init__()
-        self.visible = True
         self._xy = 0, 0
         self.wh = 1, 8
         self.rgb = 212, 140, 252
@@ -36,7 +33,6 @@ class ProjectileFriendly(GameObject):
 class ProjectileHostile(GameObject):
     def __init__(self):
         super(ProjectileHostile, self).__init__()
-        self.visible = True
         self._xy = 0, 0
         self.wh = 1, 4
         self.rgb = 252, 144, 144
@@ -46,7 +42,6 @@ class ProjectileHostile(GameObject):
 class Score(GameObject):
     def __init__(self):  # TODO
         super(Score, self).__init__()
-        self.visible = True
         self._xy = 96, 7
         self.wh = 5, 9
         self.rgb = 223, 183, 85
@@ -56,7 +51,6 @@ class Score(GameObject):
 class Live(GameObject):
     def __init__(self):
         super(Live, self).__init__()
-        self.visible = True
         self._xy = 0, 0
         self.wh = 3, 5
         self.rgb = 240, 128, 128
@@ -127,57 +121,49 @@ def _init_objects_demon_attack_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Enemy(), Enemy(), Enemy(), ProjectileFriendly()]
+    objects = [Player(), ProjectileFriendly()]
     if hud:
         objects.append(Score())
-        base_x = 17
-        for i in range(3):
-            live = Live()
-            live.xy = base_x, 188
-            objects.append(live)
-            base_x += 8
 
     return objects
 
 
 def _detect_objects_demon_attack_revised(objects, ram_state, hud=False):
-    player, e1, e2, e3, proj_friendly = objects[:5]
+    player, proj_friendly = objects[:2]
+    if hud:
+        score = objects[2]
 
     player.xy = calc_x(ram_state[16], True), 174
-
-    enemies = [e1, e2, e3]
-    for i in range(3):
-        if ram_state[13 + i] == 0:
-            enemies[i].visible = False
-        else:
-            enemies[i].visible = True
-        x = calc_x(ram_state[13 + i], False)
-        if i == 2:
-            x = x + 3
-        enemies[i].xy = x, 175 - ram_state[69 + i]
 
     if 90 <= ram_state[21]:
         proj_friendly.xy = 3 + calc_x(ram_state[22]), 176 - ram_state[21]
     else:
         proj_friendly.xy = 3 + calc_x(ram_state[22]), 178 - ram_state[21]
 
-    objects_temp = [obj for obj in objects if not isinstance(obj, ProjectileHostile)]
-    objects_temp.extend(calculate_small_projectiles_from_bitmap(ram_state[37:47], 3 + calc_x(ram_state[20], False)))
-
     objects.clear()  # giga ugly but i didnt find a better solution
-    objects.extend(objects_temp)
+    objects.extend([player, proj_friendly, score])
+    objects.extend(calculate_small_projectiles_from_bitmap(ram_state[37:47], 3 + calc_x(ram_state[20], False)))
+
+    for i in range(3):
+        if not ram_state[13 + i] == 0:
+            enemy = Enemy()
+            x = calc_x(ram_state[13 + i], False)
+            if i == 2:
+                x = x + 3
+            enemy.xy = x, 175 - ram_state[69 + i]
+            objects.append(enemy)
 
     if hud:
-        if ram_state[114] < 3 and len(objects) > 8 and isinstance(objects[8], Live):
-            del objects[8]
-        if ram_state[114] < 2 and len(objects) > 7 and isinstance(objects[7], Live):
-            del objects[7]
-        if ram_state[114] < 1 and len(objects) > 6 and isinstance(objects[6], Live):
-            del objects[6]
+        base_x = 17
+        for i in range(ram_state[114]):
+            live = Live()
+            live.xy = base_x, 188
+            objects.append(live)
+            base_x += 8
 
         x, w = _get_score_x_and_width(_get_score(ram_state))
-        objects[5].xy = x, objects[5].y
-        objects[5].w = w
+        score.xy = x, score.y
+        score.w = w
 
 
 def _detect_objects_demon_attack_raw(info, ram_state):
