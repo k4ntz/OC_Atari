@@ -12,7 +12,6 @@ class Player(GameObject):
         self.wh = 16, 11
         self.rgb = 187, 187, 53
         self.hud = False
-        self.visible = True
 
 
 class Diver(GameObject):
@@ -21,7 +20,6 @@ class Diver(GameObject):
         self.wh = 8, 13
         self.rgb = 66, 72, 200
         self.hud = False
-        self.visible = True
 
 
 class Enemy(GameObject):
@@ -30,7 +28,6 @@ class Enemy(GameObject):
         self.wh = 8, 7
         self.rgb = 0, 0, 0
         self.hud = False
-        self.visible = True
 
 
 class PlayerMissile(GameObject):
@@ -39,7 +36,6 @@ class PlayerMissile(GameObject):
         self.wh = 8, 1
         self.rgb = 187, 187, 53
         self.hud = False
-        self.visible = True
 
 
 class PlayerScore(GameObject):
@@ -48,7 +44,6 @@ class PlayerScore(GameObject):
         self.rgb = 210, 210, 64
         self.wh = 6, 8
         self.hud = True
-        self.visible = True
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
@@ -60,7 +55,6 @@ class Lives(GameObject):
         self.rgb = 210, 210, 64
         self.wh = 23, 8
         self.hud = True
-        self.visible = True
 
 
 class OxygenBar(GameObject):
@@ -69,7 +63,6 @@ class OxygenBar(GameObject):
         self.rgb = 214, 214, 214
         self.wh = 63, 5
         self.hud = True
-        self.visible = True
 
 
 class OxygenBarDepleted(GameObject):
@@ -78,7 +71,6 @@ class OxygenBarDepleted(GameObject):
         self.rgb = 163, 57, 21
         self.wh = 63, 5
         self.hud = True
-        self.visible = True
 
 
 class Logo(GameObject):
@@ -87,7 +79,6 @@ class Logo(GameObject):
         self.rgb = 66, 72, 200
         self.wh = 32, 7
         self.hud = True
-        self.visible = True
 
 
 class OxygenBarLogo(GameObject):
@@ -96,7 +87,6 @@ class OxygenBarLogo(GameObject):
         self.rgb = 0, 0, 0
         self.wh = 23, 5
         self.hud = True
-        self.visible = True
 
 
 class CollectedDiver(GameObject):
@@ -105,7 +95,6 @@ class CollectedDiver(GameObject):
         self.rgb = 24, 26, 167
         self.wh = 8, 9
         self.hud = True
-        self.visible = True
 
 
 def _init_objects_seaquest_ram(hud=False):
@@ -125,10 +114,10 @@ def _detect_objects_seaquest_revised(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = ram_state[70], ram_state[97] + 32
     if hud:
-        score, lives, oxygen, oxygen_dpl = objects[1:5]
+        score = objects[1]
 
     if hud:
-        del objects[7:]
+        del objects[2:]
     else:
         del objects[1:]
     objs = _calculate_objects(ram_state)
@@ -150,32 +139,27 @@ def _detect_objects_seaquest_revised(objects, ram_state, hud=False):
             score.wh = 30, 8
 
         # lives
-        if ram_state[59] == 0:
-            lives.visible = False
-            lives.wh = 0, 0
-        else:
-            lives.visible = True
+        if ram_state[59] != 0:
+            lives = Lives()
             lives.wh = 7 + 8 * (ram_state[59] - 1), 8
+            objects.append(lives)
 
         # oxygen bar
-        if ram_state[102] == 64:
-            oxygen.wh = 63, 5
-            oxygen.visible = True
-        elif ram_state[102] == 0:
-            oxygen.visible = False
-            oxygen.wh = 0, 0
-        else:
-            oxygen.wh = ram_state[102], 5
-            oxygen.visible = True
+        if ram_state[102] != 0:
+            oxygen = OxygenBar()
+            if ram_state[102] == 64:
+                oxygen.wh = 63, 5
+            else:
+                oxygen.wh = ram_state[102], 5
+            objects.append(oxygen)
 
         # depleted oxygen bar
-        if ram_state[102] == 64:
-            oxygen_dpl.visible = False
-            oxygen.wh = 0, 0
-        else:
+        if ram_state[102] != 64:
+            oxygen_dpl = OxygenBarDepleted()
             oxygen_dpl.xy = 49 + ram_state[102], 170
             oxygen_dpl.wh = 63 - ram_state[102], 5
-            oxygen_dpl.visible = True
+            objects.append(oxygen_dpl)
+
 
         # collected divers, if you have six collected divers they blink but that is not implemented
         for i in range(ram_state[62]):
