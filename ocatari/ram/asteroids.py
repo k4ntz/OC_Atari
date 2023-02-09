@@ -12,7 +12,6 @@ class Player(GameObject):
         self.wh = 5, 10
         self.rgb = 240, 128, 128
         self.hud = False
-        self.visible = True
 
 
 class Asteroid(GameObject):
@@ -22,7 +21,6 @@ class Asteroid(GameObject):
         self.wh = 16, 28
         self.rgb = 180, 122, 48
         self.hud = False
-        self.visible = True
 
 
 class PlayerMissile(GameObject):
@@ -31,7 +29,6 @@ class PlayerMissile(GameObject):
         self.wh = 1, 2
         self.rgb = 117, 181, 239
         self.hud = False
-        self.visible = True
 
 
 class PlayerScore(GameObject):
@@ -40,7 +37,6 @@ class PlayerScore(GameObject):
         self.rgb = 184, 50, 50
         self.wh = 12, 10
         self.hud = True
-        self.visible = True
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
@@ -52,7 +48,6 @@ class Lives(GameObject):
         self.rgb = 184, 50, 50
         self.wh = 12, 10
         self.hud = True
-        self.visible = True
 
 
 asteroids_colors = {"brown": [180, 122, 48], "purple": [104, 72, 198], "yellow": [136, 146, 62],
@@ -88,7 +83,7 @@ def _detect_objects_asteroids_revised(objects, ram_state, hud=False):
 
     # 0 und 1 asteroids on left
     # 9, 10 asteroids on right
-    for i in range(1):
+    for i in range(16):
         if (ram_state[21 + i] == 0 and ram_state[3 + i] == 0) or ram_state[3 + i] == 224:
             continue
         else:

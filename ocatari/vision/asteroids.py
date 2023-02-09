@@ -16,13 +16,13 @@ class Player(GameObject):
         self.rgb = 240, 128, 128
 
 
-class Score(GameObject):
+class PlayerScore(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 184, 50, 50
 
 
-class Live(GameObject):
+class Lives(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 184, 50, 50
@@ -68,10 +68,9 @@ def _detect_objects_asteroids(objects, obs, hud=False):
         score = find_objects(obs, objects_colors["score"], min_distance=1)
         for s in score:
             if s[0] < 132 and s[1] <= 5:
-                objects.append(Score(*s))
+                objects.append(PlayerScore(*s))
 
         live = find_objects(obs, objects_colors["lives"], min_distance=1)
         for l1 in live:
             if l1[0] >= 132 and l1[1] <= 5:
-                objects.append(Live(*l1))
-    print(objects)
+                objects.append(Lives(*l1))

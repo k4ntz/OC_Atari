@@ -20,24 +20,21 @@ for i in range(1000):
     # env.set_ram(21, 255)
     ram = env._env.unwrapped.ale.getRAM()
    # env.set_ram(3, 30)
-    if i % 5 == 0:
+    if i % 25 == 0:
         # obse2 = deepcopy(obse)
         print(env.objects)
         print(ram[21])
         print(ram[39])
         for obj in env.objects:
             x, y = obj.xy
-            if x < 160 and y < 210 and obj.visible:
+            if x < 160 and y < 210:
                 opos = obj.xywh
                 ocol = obj.rgb
                 sur_col = make_darker(ocol)
                 mark_bb(obs, opos, color=sur_col)
             # mark_point(obs, *opos[:2], color=(255, 255, 0))
-
         plt.imshow(obs)
         plt.show()
-        print("image was shown")
-
     if terminated or truncated:
         observation, info = env.reset()
     # modify and display render
