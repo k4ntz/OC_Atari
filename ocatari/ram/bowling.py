@@ -8,7 +8,6 @@ RAM extraction for the game BOWLING. Supported modes: raw, revised.
 
 class Player(GameObject):
     def __init__(self):
-        self.visible = True
         self._xy = 0, 0
         self.wh = 8, 32
         self.rgb = 84, 92, 214
@@ -17,7 +16,6 @@ class Player(GameObject):
 
 class Ball(GameObject):
     def __init__(self):
-        self.visible = True
         self._xy = 22, 139
         self.wh = 4, 10
         self.rgb = 45, 50, 184
@@ -26,7 +24,6 @@ class Ball(GameObject):
 
 class Pin(GameObject):
     def __init__(self):
-        self.visible = True
         self._xy = 0, 0
         self.wh = 2, 4
         self.rgb = 45, 50, 184
@@ -35,7 +32,6 @@ class Pin(GameObject):
 
 class PlayerScore(GameObject):
     def __init__(self):
-        self.visible = True
         self._xy = 32, 19
         self.rgb = 84, 92, 214
         self.wh = 28, 15
@@ -47,7 +43,6 @@ class PlayerScore(GameObject):
 
 class PlayerRound(GameObject):
     def __init__(self):
-        self.visible = True
         self._xy = 40, 7
         self.rgb = 45, 50, 184
         self.wh = 4, 10
@@ -56,7 +51,6 @@ class PlayerRound(GameObject):
 
 class Player2Round(GameObject):
     def __init__(self):
-        self.visible = True
         self._xy = 120, 7
         self.rgb = 45, 50, 184
         self.wh = 4, 10
