@@ -307,9 +307,8 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
 
     if hud:
         score = objects[1]
-        dec_value = _convert_number(ram_state[94]) * 10000 \
-                    + _convert_number(ram_state[95]) * 100 \
-                    + _convert_number(ram_state[96])
+        dec_value = _convert_number(ram_state[94]) * 10000 + _convert_number(ram_state[95]) * 100 + _convert_number(
+            ram_state[96])
         if dec_value == 0:
             score.xy = 96, 184
             score.wh = 6, 7
