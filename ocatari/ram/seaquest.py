@@ -160,7 +160,6 @@ def _detect_objects_seaquest_revised(objects, ram_state, hud=False):
             oxygen_dpl.wh = 63 - ram_state[102], 5
             objects.append(oxygen_dpl)
 
-
         # collected divers, if you have six collected divers they blink but that is not implemented
         for i in range(ram_state[62]):
             collected = CollectedDiver()

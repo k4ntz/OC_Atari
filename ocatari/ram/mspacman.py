@@ -2,6 +2,7 @@ from .game_objects import GameObject
 from ._helper_methods import _convert_number
 import math
 
+
 class Player(GameObject):
     def __init__(self):
         super(Player, self).__init__()
