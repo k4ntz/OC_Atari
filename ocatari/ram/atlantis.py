@@ -46,6 +46,66 @@ class Generator(GameObject):
         self.hud = False
 
 
+class Bridged_Bazaar(GameObject):
+    def __init__(self):
+        super(Domed_Palace, self).__init__()
+        self.visible = True
+        self._xy = 0, 0
+        self.wh = 0, 0
+        self.rgb = 214, 214, 214
+        self.hud = False
+
+
+class Acropolis_Command_Post(GameObject):
+    def __init__(self):
+        super(Domed_Palace, self).__init__()
+        self.visible = True
+        self._xy = 0, 0
+        self.wh = 0, 0
+        self.rgb = 227, 151, 89
+        self.hud = False
+
+
+class Bandit_Bomber(GameObject):
+    def __init__(self):
+        super(Domed_Palace, self).__init__()
+        self.visible = True
+        self._xy = 0, 0
+        self.wh = 0, 0
+        self.rgb = 125, 48, 173
+        self.hud = False
+
+
+class Gorgon_Ship(GameObject):
+    def __init__(self):
+        super(Domed_Palace, self).__init__()
+        self.visible = True
+        self._xy = 0, 0
+        self.wh = 0, 0
+        self.rgb = 187, 187, 53
+        self.hud = False
+
+
+class Deathray(GameObject):
+    def __init__(self):
+        super(Domed_Palace, self).__init__()
+        self.visible = True
+        self._xy = 0, 0
+        self.wh = 0, 0
+        self.rgb = 101, 209, 174
+        self.hud = False
+
+
+class Score(GameObject):
+    def __init__(self):
+        super(Domed_Palace, self).__init__()
+        self.visible = True
+        self._xy = 0, 0
+        self.wh = 0, 0
+        self.rgb = 252, 188, 116
+        self.hud = False
+
+
 def _init_objects_atlantis_ram(hud=True):
     """
     (Re)Initialize the objects
