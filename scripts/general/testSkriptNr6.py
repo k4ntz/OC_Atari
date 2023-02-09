@@ -28,7 +28,7 @@ for ROUND in range(10000000):
         # i = index  # here the index meant to be incremented
 
         # if 9 > ROUND > 1:
-            # if not prevRam[29+i-1]%2 == 1:
+        #     if not prevRam[29+i-1]%2 == 1:
         env._env.unwrapped.ale.setRAM(i, value)  # DON'T CHANGE
 
         # don't delete these lines
@@ -68,7 +68,7 @@ for ROUND in range(10000000):
                         string = "+" + str(integer)
                     else:
                         integer = prevRam[k] - ram[k]
-                        string =  "-" + str(integer)
+                        string = "-" + str(integer)
 
                     print(str(k), '\t', string, '\t',
                           format(integer, '08b'), '\t',
