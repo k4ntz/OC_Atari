@@ -23,14 +23,14 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 ### Priority 2:
 - [x]  Berzerk
 - [ ]  River Raid (worked on by Chris)
-- [ ]  Atlantis
+- [ ]  Atlantis (worked on by Bjarne)
 - [ ]  Chopper Command (worked on by Sebastian)
 - [ ]  Q*bert
 - [ ]  Assault (worked on by Chris)
 - [ ]  Beam Rider (worked on by Bjarne)
 - [x]  Boxing
 - [x]  Carnival
-- [ ]  Centipede (worked on by Timo)
+- [x]  Centipede
 
 ### Priority 3:
 - [ ]  Montezumas Revenge
