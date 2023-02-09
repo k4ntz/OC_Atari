@@ -28,7 +28,7 @@ for i in range(10000):
         action = 0
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
-    if i % 200 == 0:
+    if i % 20 == 0 and i > 200:
         print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
