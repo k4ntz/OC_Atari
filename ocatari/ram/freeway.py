@@ -5,7 +5,6 @@ from .game_objects import GameObject
 class Chicken(GameObject):
     def __init__(self):
         super(Chicken, self).__init__()
-        self.visible = True
         self._xy = 0, 0
         self.wh = 6, 8
         self.rgb = 252, 252, 84
@@ -15,7 +14,6 @@ class Chicken(GameObject):
 class Car(GameObject):
     def __init__(self):
         super(Car, self).__init__()
-        self.visible = True
         self._xy = 0, 0
         self.wh = 7, 10
         self.rgb = 167, 26, 26
@@ -25,7 +23,6 @@ class Car(GameObject):
 class Score(GameObject):
     def __init__(self):
         super(Score, self).__init__()
-        self.visible = True
         self._xy = 49, 5
         self.wh = 6, 8
         self.rgb = 228, 111, 111
