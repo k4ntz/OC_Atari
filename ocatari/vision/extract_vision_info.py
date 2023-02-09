@@ -13,6 +13,7 @@ from .mspacman import _detect_objects_mspacman
 from .carnival import _detect_objects_carnival
 from .berzerk import _detect_objects_berzerk
 from .asterix import _detect_objects_asterix
+from .assault import _detect_objects_assault
 
 
 def detect_objects_vision(objects, obs, game_name, hud=False):
@@ -46,6 +47,8 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_berzerk(objects, obs, hud)
     elif game_name.lower() == "asterix":
         return _detect_objects_asterix(objects, obs, hud)
+    elif game_name.lower() == "assault":
+        return _detect_objects_assault(objects, obs, hud)
     else:
         print(colored("Uncovered game in vision mode", "red"))
         exit(1)

@@ -23,6 +23,7 @@ from .carnival import _init_objects_carnival_ram, _detect_objects_carnival_raw, 
 from .kangaroo import _detect_objects_kangaroo_raw, \
                       _detect_objects_kangaroo_revised, \
                       _init_objects_kangaroo_ram
+from .assault import _detect_objects_assault_raw, _detect_objects_assault_revised, _init_objects_assault_ram
 
 
 def init_objects(game_name, hud):
@@ -59,6 +60,8 @@ def init_objects(game_name, hud):
         return _init_objects_berzerk_ram(hud)
     elif game_name.lower() == "asterix":
         return _init_objects_asterix_ram(hud)
+    elif game_name.lower() == "assault":
+        return _init_objects_assault_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
@@ -98,6 +101,8 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_berzerk_raw(info, ram_state)
     elif game_name.lower() == "asterix":
         _detect_objects_asterix_raw(info, ram_state)
+    elif game_name.lower() == "assault":
+        _detect_objects_assault_raw(info, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
         exit(1)
@@ -137,6 +142,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_berzerk_revised(objects, ram_state, hud)
     elif game_name.lower() == "asterix":
         _detect_objects_asterix_revised(objects, ram_state, hud)
+    elif game_name.lower() == "assault":
+        _detect_objects_assault_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
