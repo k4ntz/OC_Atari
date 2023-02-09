@@ -124,6 +124,12 @@ def _init_objects_demon_attack_ram(hud=False):
     objects = [Player(), ProjectileFriendly()]
     if hud:
         objects.append(Score())
+        base_x = 17
+        for i in range(3):
+            live = Live()
+            live.xy = base_x, 188
+            objects.append(live)
+            base_x += 8
 
     return objects
 
