@@ -80,8 +80,7 @@ class Lives(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 162, 134, 56
         self.visible = False
-        self._xy = 0, 0  # 38-96
-                         # 184-195
+        self._xy = 0, 0  # 38-96, 184-195
         self.wh = 8, 11
         self.hud = True
 
