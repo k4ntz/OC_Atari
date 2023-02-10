@@ -90,7 +90,7 @@ def _detect_objects_atlantis(objects, obs, hud=True):
     for bb in aqua_plane:
         objects.append(Aqua_plane(*bb))
 
-    domed_palace = find_mc_objects(obs, objects_colors["domed_palace"], min_distance=1, minx=35, maxx=55, miny=110)
+    domed_palace = find_mc_objects(obs, objects_colors["domed_palace"], min_distance=1, minx=35, maxx=54, miny=110)
     for bb in domed_palace:
         objects.append(Domed_Palace(*bb))
 
