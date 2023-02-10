@@ -1,9 +1,11 @@
-from .utils import find_objects
+from .utils import find_objects, find_mc_objects
 from .game_objects import GameObject
 
 
-objects_colors = {'player': [184, 70, 162], 'enemy': [213, 130, 74], 'projectile_friendly': [212, 140, 252],
-                  'projectile_hostile': [252, 144, 144], 'live': [240, 128, 128], 'score': [223, 183, 85]}
+objects_colors = {'player': [184, 70, 162], 'enemy': [[104, 72, 198], [213, 130, 74], [214, 92, 92],
+                                                      [84, 92, 214], [92, 186, 92]],
+                  'projectile_friendly': [212, 140, 252], 'projectile_hostile': [252, 144, 144],
+                  'live': [240, 128, 128], 'score': [223, 183, 85]}
 
 
 class Player(GameObject):
@@ -49,7 +51,8 @@ def _detect_objects_demon_attack(objects, obs, hud=False):
     if len(player) >= 1:
         objects.append(Player(*player[0]))
 
-    enemy = find_objects(obs, objects_colors["enemy"], min_distance=1)
+    # enemy = find_objects(obs, objects_colors["enemy"], min_distance=1)
+    enemy = find_mc_objects(obs, objects_colors["enemy"])
     # index = 0
     for bb in enemy:
         # name = "enemy"+str(index)
