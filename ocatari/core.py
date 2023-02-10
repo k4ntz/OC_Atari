@@ -18,7 +18,7 @@ DEVICE = "cpu"
 
 AVAILABLE_GAMES = ["Asterix", "Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
                    "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack", "Bowling",
-                   "MsPacman", "Kangaroo", "Berzerk", "Carnival"]
+                   "MsPacman", "Kangaroo", "Berzerk", "Carnival", "Centipede"]
 
 
 class OCAtari:
@@ -106,6 +106,10 @@ class OCAtari:
 
     def seed(self, seed, *args, **kwargs):
         self._env.seed(seed, *args, **kwargs)
+
+    @property
+    def nb_actions(self):
+        return self._env.unwrapped.action_space.n
 
     @property
     def dqn_obs(self):

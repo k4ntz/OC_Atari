@@ -13,7 +13,6 @@ class Player(GameObject):
         self.wh = 16, 4
         self.rgb = 200, 72, 72
         self.hud = False
-        self.visible = True
 
 
 class Ball(GameObject):
@@ -22,7 +21,6 @@ class Ball(GameObject):
         self.wh = 2, 4
         self.rgb = 200, 72, 72
         self.hud = False
-        self.visible = True
 
 
 class PlayerScore(GameObject):
@@ -31,7 +29,6 @@ class PlayerScore(GameObject):
         self.rgb = 142, 142, 142
         self.wh = 12, 10
         self.hud = True
-        self.visible = True
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
@@ -43,7 +40,6 @@ class Live(GameObject):
         self.rgb = 142, 142, 142
         self.wh = 12, 10
         self.hud = True
-        self.visible = True
 
 
 class BlockRow(GameObject):
@@ -53,7 +49,6 @@ class BlockRow(GameObject):
         self.wh = 144, 6
         self.rgb = 66, 72, 200
         self.hud = False
-        self.visible = True
 
 
 class PlayerNumber(GameObject):
@@ -63,7 +58,6 @@ class PlayerNumber(GameObject):
         self.wh = 4, 10
         self.rgb = 142, 142, 142
         self.hud = True
-        self.visible = True
 
 
 blockRow_colors = {"5": [66, 72, 200], "4": [72, 160, 72],
@@ -75,19 +69,19 @@ def _init_objects_breakout_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Ball()]
+    objects = [Player()]
 
     if hud:
         objects.extend([PlayerScore(), PlayerScore(), PlayerScore(), Live(), PlayerNumber()])
 
     y = 87
+    objects.append(Ball())
     for color in blockRow_colors:
         row = BlockRow()
         row.rgb = (blockRow_colors.get(color))
         row.xy = 8, y
         objects.append(row)
         y -= 6
-
     return objects
 
 
@@ -127,20 +121,23 @@ def _detect_objects_breakout_revised(objects, ram_state, hud=False):
     """
 
     # set default coord if object does not exist
-    player, ball = objects[0:2]
-    score1, score2, score3, lives, player_num = objects[2:7]
+    player = objects[0]
+    score1, score2, score3, lives, player_num = objects[1:6]
 
+    # player
     player.xy = ram_state[72] - 47, 189
-    if ram_state[101] + 9 <= 210 and ram_state[101] != 0:  # else no ball
-        ball.xy = ram_state[99] - 49, ram_state[101] + 9
-        ball.visible = True
-    else:
-        ball.visible = False
 
     if hud:
-        del objects[7:]
+        del objects[6:]
     else:
-        del objects[2:]
+        del objects[1:]
+
+    # ball
+    if ram_state[101] + 9 <= 210 and ram_state[101] != 0:  # else no ball
+        ball = Ball()
+        ball.xy = ram_state[99] - 49, ram_state[101] + 9
+        objects.append(ball)
+
     blocks = _calculate_blocks(ram_state)
     objects.extend(blocks)
 
@@ -203,7 +200,6 @@ def _calculate_blocks(ram_state):
                 block.wh = width, 6
                 blocks.append(block)
                 start_of_new_block = True
-
     return blocks
 
 
@@ -220,4 +216,3 @@ def _detect_objects_breakout_raw(info, ram_state):
     info["block_bitmap"] = _make_block_bitmap(ram_state)
     info["lives"] = ram_state[57]
     info["score"] = _convert_number(ram_state[76]) * 100 + _convert_number(ram_state[77])
-    print(ram_state)

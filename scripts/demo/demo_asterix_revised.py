@@ -11,21 +11,21 @@ from ocatari.vision.utils import mark_bb, make_darker
 # from asterix import rev
 # asterix.
 
-game_name = "Asterix-v4"  # Breakout
+game_name = "Asterix"  # Breakout
 # game_name = "DemonAttack-v4"
 # MODE = "vision"
 MODE = "revised"
 HUD = True
-env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='human')
+
+env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
 for i in range(1000):
     obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))  # env.step(env.action_space.sample())
 
-    if i % 1 == 0 and i > 60:
+    if i % 5 == 0 and i > 60:
         # obse2 = deepcopy(obse)
         print(env.objects)
-        buffer = env.objects.pop(-1)
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and 0 < y < 210:  # and not isinstance(obj, rev):  # and obj.visible:
@@ -34,7 +34,6 @@ for i in range(1000):
                 sur_col = make_darker(ocol)
                 mark_bb(obs, opos, color=sur_col)
             # mark_point(obs, *opos[:2], color=(255, 255, 0))
-        env.objects.append(buffer)
         plt.imshow(obs)
         plt.show()
 
