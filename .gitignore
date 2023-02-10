@@ -11,4 +11,4 @@ scripts/general/testSkriptNr5.py
 .venv
 *.xml
 .idea/bachelor-praktikum.iml
-
+reports

@@ -10,15 +10,14 @@ from ocatari.utils import load_agent, parser, make_deterministic
 from tqdm import tqdm
 
 
-game_name = "Skiing"
+game_name = "Asterix"
 MODE = "vision"
 MODE = "revised"
+import ipdb;ipdb.set_trace()
 env = OCAtari(game_name, mode=MODE, render_mode='rgb_array')
 observation, info = env.reset()
 
 opts = parser.parse_args()
-
-show = False
 
 if opts.path:
     agent = load_agent(opts, env.action_space.n)
@@ -32,8 +31,8 @@ for i in tqdm(range(10000)):
     else:
         action = random.randint(0, env.action_space.n-1)
     obs, reward, terminated, truncated, info = env.step(action)
-    # if i > 60 and i % 10 == 0:
-    if show:
+    if i > 60 and i % 10 == 0:
+    # if show:
         for ax, obs, objects_list, title in zip(axes, [obs],
                                                 [env.objects],
                                                 ["ram"] if MODE == "revised" else ["vision"]):

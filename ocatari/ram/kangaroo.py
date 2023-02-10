@@ -9,7 +9,6 @@ RAM extraction for the game KANGUROO. Supported modes: raw, revised.
 class Player(GameObject):
     def __init__(self):
         super(Player, self).__init__()
-        self.visible = True
         self._xy = 78, 103
         self.wh = 8, 24
         self.rgb = 223, 183, 85
@@ -19,7 +18,6 @@ class Player(GameObject):
 class Child(GameObject):
     def __init__(self):
         super(Child, self).__init__()
-        self.visible = True
         self._xy = 78, 12
         self.wh = 8, 15
         self.rgb = 223, 183, 85
@@ -30,7 +28,6 @@ class Enemy(GameObject):
     def __init__(self, *args, **kwargs):
         super(Enemy, self).__init__()
         super().__init__(*args, **kwargs)
-        self.visible = True
         self._xy = 79, 57
         self.wh = 6, 15
         self.rgb = 227, 159, 89
@@ -40,7 +37,6 @@ class Enemy(GameObject):
 class Fruit(GameObject):
     def __init__(self, *args, **kwargs):
         super(Fruit, self).__init__()
-        self.visible = True
         self._xy = 125, 173
         self.wh = 7, 10
         self.rgb = 214, 92, 92
@@ -50,7 +46,6 @@ class Fruit(GameObject):
 class Projectile_top(GameObject):
     def __init__(self, *args, **kwargs):
         super(Projectile_top, self).__init__()
-        self.visible = True
         self._xy = 0, 0
         self.wh = 2, 3
         self.rgb = 162, 98, 33
@@ -60,7 +55,6 @@ class Projectile_top(GameObject):
 class Projectile_enemy(GameObject):
     def __init__(self, *args, **kwargs):
         super(Projectile_enemy, self).__init__()
-        self.visible = True
         self._xy = 0, 0
         self.wh = 2, 3
         self.rgb = 227, 159, 89
@@ -70,7 +64,6 @@ class Projectile_enemy(GameObject):
 class Bell(GameObject):
     def __init__(self, *args, **kwargs):
         super(Bell, self).__init__()
-        self.visible = True
         self._xy = 126, 173
         self.wh = 6, 11
         self.rgb = 210, 164, 74
@@ -80,7 +73,6 @@ class Bell(GameObject):
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super(Score, self).__init__()
-        self.visible = True
         self._xy = 129, 183
         self.wh = 15, 7
         self.rgb = 160, 171, 79
@@ -90,7 +82,6 @@ class Score(GameObject):
 class Life(GameObject):
     def __init__(self, *args, **kwargs):
         super(Life, self).__init__()
-        self.visible = True
         self._xy = 16, 183
         self.wh = 4, 7
         self.rgb = 160, 171, 79
@@ -100,7 +91,6 @@ class Life(GameObject):
 class Time(GameObject):
     def __init__(self, *args, **kwargs):
         super(Time, self).__init__()
-        self.visible = True
         self._xy = 80, 191
         self.wh = 15, 5
         self.rgb = 160, 171, 79
