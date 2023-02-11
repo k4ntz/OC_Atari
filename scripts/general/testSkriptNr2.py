@@ -14,10 +14,10 @@ observation, reward, terminated, truncated, info = env.step(3)
 
 for _ in range(10000):
     # action = policy(observation)  # User-defined policy function
-    target_ram_position = 35
-    new_ram_value = 153
+    target_ram_position = 39
+    new_ram_value = 80
     # env.unwrapped.ale.setRAM(target_ram_position, new_ram_value)
-    # env.unwrapped.ale.setRAM(48, 7)
+    # env.unwrapped.ale.setRAM(60, 104)
 
     # -------------------manipulate ram----------------------------------
     ram = env.unwrapped.ale.getRAM()
@@ -25,6 +25,9 @@ for _ in range(10000):
     # print(new_ram_value)
     # print(ram)
     print(ram[target_ram_position])
+    # for i in range(128):
+    #     if ram[i] == 3:
+    #         print(i, ram[i])
     if new_ram_value > 255 or new_ram_value < 0:
         print("ram out of bounds")
         new_ram_value = 0
