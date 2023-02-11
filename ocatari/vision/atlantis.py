@@ -21,7 +21,7 @@ class Sentry(GameObject):
         self.rgb = 111, 210, 111
 
 
-class Aqua_plane(GameObject):
+class Aqua_Plane(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 252, 144, 144
@@ -88,7 +88,7 @@ def _detect_objects_atlantis(objects, obs, hud=True):
 
     aqua_plane = find_mc_objects(obs, objects_colors["aqua_plane"], min_distance=1, minx=14, maxx=32, miny=110)
     for bb in aqua_plane:
-        objects.append(Aqua_plane(*bb))
+        objects.append(Aqua_Plane(*bb))
 
     domed_palace = find_mc_objects(obs, objects_colors["domed_palace"], min_distance=1, minx=35, maxx=54, miny=110)
     for bb in domed_palace:

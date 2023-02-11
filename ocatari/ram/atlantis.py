@@ -16,9 +16,9 @@ class Sentry(GameObject):
         self.hud = False
 
 
-class Aqua_plane(GameObject):
+class Aqua_Plane(GameObject):
     def __init__(self):
-        super(Aqua_plane, self).__init__()
+        super(Aqua_Plane, self).__init__()
         self.visible = True
         self._xy = 16, 171
         self.wh = 16, 7
@@ -90,8 +90,8 @@ class Deathray(GameObject):
     def __init__(self):
         super(Deathray, self).__init__()
         self.visible = True
-        self._xy = 0, 0
-        self.wh = 0, 0
+        self._xy = 0, 92
+        self.wh = 2, 88
         self.rgb = 101, 209, 174
         self.hud = False
 
@@ -111,14 +111,17 @@ def _init_objects_atlantis_ram(hud=True):
     (Re)Initialize the objects
     """
 
-    objects = [Sentry()]
+    objects = [Sentry(), Sentry()]
+
+    objects[1].xy = 152, 112
 
     return objects
 
+global ray_available
 
 # levels: ram_state[36], total of 3 levels: 0,1 and 2
 def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
-    objects.clear()
+    del objects[2:]
 
     if ram_state[39] != 0:
         g_s = Gorgon_Ship()
@@ -140,10 +143,40 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         g_s.xy = ram_state[36] - 7, 82
         objects.append(g_s)
 
+    if ram_state[22] < 152:
+        gen = Generator()
+        gen.xy = 82, 124
+        gen.rgb = 111, 210, 111
+        objects.append(gen)
+
+    if ram_state[23] < 152:
+        objects.append(Generator())
+
+    if ram_state[24] < 152:
+        gen = Generator()
+        gen.xy = 142, 137
+        gen.rgb = 188, 144,252
+        objects.append(gen)
+
+    if ram_state[25] < 152:
+        objects.append(Domed_Palace())
+
+    if ram_state[26] < 152:
+        objects.append(Bridged_Bazaar())
+
+    if ram_state[27] < 152:
+        objects.append(Aqua_Plane())
+
+    if ram_state[30] < 75 and ram_state[30] > 60:
+        ray = Deathray()
+        ray.xy = ram_state[36] + 1, 92
+        objects.append(ray)
+
     return objects
 
 
 def _detect_objects_atlantis_raw(info, ram_state):
 
     enemy_x = ram_state[36:40]
+    # score ram_state[33:36]
     info["ram_slice"]
