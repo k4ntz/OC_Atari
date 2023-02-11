@@ -12,10 +12,10 @@ env.metadata['render_fps'] = 60
 observation, info = env.reset(seed=42)
 observation, reward, terminated, truncated, info = env.step(3)
 
-for _ in range(1000):
+for _ in range(10000):
     # action = policy(observation)  # User-defined policy function
-    target_ram_position = 23
-    new_ram_value = 0
+    target_ram_position = 35
+    new_ram_value = 153
     # env.unwrapped.ale.setRAM(target_ram_position, new_ram_value)
     # env.unwrapped.ale.setRAM(48, 7)
 

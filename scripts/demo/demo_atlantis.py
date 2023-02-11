@@ -32,14 +32,14 @@ for i in range(10000):
     if i % 20 == 0:
         print(env.objects)
         print(ram)
-        # if prev_ram is not None:
-        #     for i in range(len(ram)):
-        #         if ram[i] != prev_ram[i]:
-        #             pad = "           "
-        #             for u in range(4 - len(str(i))):
-        #                 pad += " "
-        #             print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prev_ram[i]))
-        #     print("------------------------------------------")
+        if prev_ram is not None:
+            for i in range(len(ram)):
+                if ram[i] != prev_ram[i]:
+                    pad = "           "
+                    for u in range(4 - len(str(i))):
+                        pad += " "
+                    print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prev_ram[i]))
+            print("------------------------------------------")
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210 and obj.visible:
