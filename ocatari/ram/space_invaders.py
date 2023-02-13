@@ -9,15 +9,15 @@ from .game_objects import GameObject
 
 
 class Player(GameObject):
-    def __init__(self, x, y, w, h, num, *args, **kwargs):
-        super().__init__(x, y, w, h, *args, **kwargs)
+    def __init__(self, num, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         if num == 1:
             self.rgb = 92, 186, 92  # green
         else:
             self.rgb = 162, 134, 56  # yellow
         self.player_num = num
-        self._xy = 0, 0
-        # self.wh =
+        self._xy = 0, 185
+        self.wh = 7, 10
         self.hud = False
 
 
@@ -26,7 +26,7 @@ class Alien(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 134, 134, 29
         self._xy = 0, 0
-        # self.wh =
+        self.wh = 8, 10
         self.hud = False
 
 
@@ -73,19 +73,9 @@ class Lives(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 162, 134, 56
-        self._xy = 0, 0  # 38-96, 184-195
-        self.wh = 8, 11
+        self._xy = 84, 185
+        self.wh = 12, 10
         self.hud = True
-
-
-def _init_objects_space_invaders_ram(hud=False):
-    """
-    (Re)Initialize the objects
-    """
-    objects = []  # Player(), Alien(), Satellite(), Shield(), Bullet(), Score(), Lives()]
-    if hud:
-        objects.extend([Score(1, 4), Score(2, 84), Lives()])
-    return objects
 
 
 def _detect_objects_space_invaders_raw(info, ram_state):
@@ -154,5 +144,43 @@ def _detect_objects_space_invaders_raw(info, ram_state):
     print(ram_state)
 
 
-def _detect_objects_space_invaders_revised(info, ram_state):
-    pass
+def _init_objects_space_invaders_ram(hud=False):
+    """
+    (Re)Initialize the objects
+    """
+    objects = [Player(1)]  # , Alien()]  # , Satellite(), Shield(), Bullet()]
+    if hud:
+        objects.extend([Score(1, 4), Score(2, 84), Lives()])
+    return objects
+
+
+def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
+    player = objects[0]
+    player.xy = ram_state[28] - 1, 185
+
+    # list_1 = [Alien() for i in range(6)]
+    # aliens = [list_1 for i in range(6)]
+    #
+    # x, y = ram_state[26], ram_state[16] % 32
+    #
+    # if rev.prevRam == []:
+    #     for i in range(6):
+    #         for j in range(6):
+    #             aliens[i][j].xy = 22 + j*16, 31 + i*18   # y//10 +      x +
+    # # delete dead aliens
+    #
+    # objects.extend([y for x in aliens for y in x])
+
+    return objects
+
+
+class rev:
+    """
+    to save values temporarily
+    """
+    prevRam = []
+    lanes = {}
+
+    def __init__(self, prevRam, lanes):
+        self.prevRam = prevRam  # saving last ram
+        self.lanes = lanes  # saving current objs

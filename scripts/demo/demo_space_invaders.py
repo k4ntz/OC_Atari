@@ -12,6 +12,7 @@ from ocatari.ram.demonAttack import ProjectileHostile
 
 game_name = "SpaceInvaders-v4"
 MODE = "vision"
+MODE = "revised"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='human')
 observation, info = env.reset()
