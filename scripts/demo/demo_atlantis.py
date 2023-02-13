@@ -16,8 +16,6 @@ HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 prev_ram = None
-# env._env.unwrapped.ale.setRAM(82, 80)
-# 32-48, 64, 80
 
 opts = parser.parse_args()
 
@@ -31,17 +29,9 @@ for i in range(10000):
         action = 1
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
-    if i % 20 == 0 and i > 50:
+    if i % 20 == 0:
         print(env.objects)
         print(ram)
-        if prev_ram is not None:
-            for i in range(len(ram)):
-                if ram[i] != prev_ram[i]:
-                    pad = "           "
-                    for u in range(4 - len(str(i))):
-                        pad += " "
-                    print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prev_ram[i]))
-            print("------------------------------------------")
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210 and obj.visible:
