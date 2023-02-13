@@ -16,6 +16,16 @@ class Sentry(GameObject):
         self.hud = False
 
 
+class Projectile(GameObject):
+    def __init__(self):
+        super(Projectile, self).__init__()
+        self.visible = True
+        self._xy = 0, 0
+        self.wh = 1, 1
+        self.rgb = 184, 70, 162
+        self.hud = False
+
+
 class Aqua_Plane(GameObject):
     def __init__(self):
         super(Aqua_Plane, self).__init__()
@@ -114,6 +124,13 @@ def _init_objects_atlantis_ram(hud=True):
     objects = [Sentry(), Sentry()]
 
     objects[1].xy = 152, 112
+
+    global ray_available
+    ray_available = True
+
+    global buildings_amount
+    buildings_amount = 7
+
     global prev_x1
     global prev_x2
     global prev_x3
@@ -125,7 +142,11 @@ def _init_objects_atlantis_ram(hud=True):
 
     return objects
 
+# Determins wether or not the deathray can be used by the ships
 global ray_available
+# Saves the previous amount of buildings that are still standing
+global buildings_amount
+# Saves the previous x-values of the ships
 global prev_x1
 global prev_x2
 global prev_x3
@@ -135,11 +156,29 @@ global prev_x4
 def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
     del objects[2:]
 
+    buildings_count = 0
+
+    # 58 und 60 = orange proj
+    # pink = outpost 
+    # lila = links
+
+    if ram_state[58] != 0 and ram_state[60] != 0:
+        proj = Projectile()
+        proj.xy = ram_state[58], ram_state[60]
+
+    # The visual representation of the Sprite relative to the ram_state
+    # seems to differ depending on the ship entering on the left/right.
+    # These variables help to determin where the ship entered
     global prev_x1
     global prev_x2
     global prev_x3
     global prev_x4
 
+    global ray_available
+    global buildings_amount
+
+    # Ships from top to bottom
+    # lane 1
     if ram_state[39] != 0:
         ship = _get_ship_type(ram_state, 3, 131)
         g_s = None
@@ -159,14 +198,15 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         elif ship == 80:
             g_s = Bandit_Bomber()
             if prev_x1 < ram_state[39]:
-                g_s.xy = ram_state[39] - 8, 20
+                g_s.xy = ram_state[39] - 7, 20
             else:
-                g_s.xy = ram_state[39] - 3, 20
+                g_s.xy = ram_state[39] - 2, 20
         if g_s:
             objects.append(g_s)
 
     prev_x1 = ram_state[39]
 
+    # lane2
     if ram_state[38] != 0:
         ship = _get_ship_type(ram_state, 2, 130)
         g_s = None
@@ -186,14 +226,15 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         elif ship == 80:
             g_s = Bandit_Bomber()
             if prev_x2 < ram_state[38]:
-                g_s.xy = ram_state[38] - 8, 41
+                g_s.xy = ram_state[38] - 7, 41
             else:
-                g_s.xy = ram_state[38] - 3, 41
+                g_s.xy = ram_state[38] - 2, 41
         if g_s:
             objects.append(g_s)
 
     prev_x2 = ram_state[38]
 
+    # lane3
     if ram_state[37] != 0:
         ship = _get_ship_type(ram_state, 1, 129)
         g_s = None
@@ -213,14 +254,15 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         elif ship == 80:
             g_s = Bandit_Bomber()
             if prev_x3 < ram_state[37]:
-                g_s.xy = ram_state[37] - 8, 62
+                g_s.xy = ram_state[37] - 7, 62
             else:
-                g_s.xy = ram_state[37] - 3, 62
+                g_s.xy = ram_state[37] - 2, 62
         if g_s:
             objects.append(g_s)
 
     prev_x3 = ram_state[37]
 
+    # lane4
     if ram_state[36] != 0:
         ship = _get_ship_type(ram_state, 0, 128)
         g_s = None
@@ -240,45 +282,71 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         elif ship == 80:
             g_s = Bandit_Bomber()
             if prev_x4 < ram_state[36]:
-                g_s.xy = ram_state[36] - 8, 83
+                g_s.xy = ram_state[36] - 7, 83
             else:
-                g_s.xy = ram_state[36] - 3, 83
+                g_s.xy = ram_state[36] - 2, 83
         if g_s:
             objects.append(g_s)
 
-    prev_x4 = ram_state[36]
+    # Command-Post center buildung with gun
+    if ram_state[84] == 0:
+        objects.append(Acropolis_Command_Post())
+        buildings_count = buildings_count + 1
 
+    # Generator left
     if ram_state[22] < 152:
         gen = Generator()
         gen.xy = 82, 124
         gen.rgb = 111, 210, 111
         objects.append(gen)
+        buildings_count = buildings_count + 1
 
+    # Generator Command-Post
     if ram_state[23] < 152:
         objects.append(Generator())
+        buildings_count = buildings_count + 1
 
+    # Generator right
     if ram_state[24] < 152:
         gen = Generator()
         gen.xy = 142, 137
         gen.rgb = 188, 144,252
         objects.append(gen)
+        buildings_count = buildings_count + 1
 
+    # Domed-Palace building with dome
     if ram_state[25] < 152:
         objects.append(Domed_Palace())
+        buildings_count = buildings_count + 1
 
+    # Bridged-Bazaar rightmost building
     if ram_state[26] < 152:
         objects.append(Bridged_Bazaar())
+        buildings_count = buildings_count + 1
 
+    # Aqua-Plane leftmost building
     if ram_state[27] < 152:
         objects.append(Aqua_Plane())
+        buildings_count = buildings_count + 1
 
-    if ram_state[30] < 75 and ram_state[30] > 60:
+    # Determins if the deathray is usable
+    if ram_state[30] == 152:
+        ray_available = True
+    elif buildings_count < buildings_amount:
+        ray_available = False
+
+    # Deathray can only be shot by ships on lane 4
+    if ram_state[30] < 152 and ray_available:
         ray = Deathray()
         if prev_x4 < ram_state[36]:
             ray.xy = ram_state[36] - 1, 92
+            print(ray.xy)
         else:
             ray.xy = ram_state[36] + 1, 92
         objects.append(ray)
+
+    prev_x4 = ram_state[36]
+    buildings_amount = buildings_count
 
     return objects
 
@@ -294,6 +362,9 @@ def _get_ship_type(ram_state, hight1, height2):
 
 
 def _detect_objects_atlantis_raw(info, ram_state):
+    """
+    Raw ram-slice for playing the game with minimum requirements 
+    """
 
     enemy_x = ram_state[36:40]
     player_projectile = ram_state[58:62]

@@ -31,7 +31,7 @@ for i in range(10000):
         action = 1
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
-    if i % 10 == 0 and i > 150:
+    if i % 20 == 0 and i > 50:
         print(env.objects)
         print(ram)
         if prev_ram is not None:
