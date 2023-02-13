@@ -1,17 +1,25 @@
 from .utils import find_objects, find_mc_objects
 from .game_objects import GameObject
 
-objects_colors = {"sentry": [[252, 224, 112], [111, 210, 111], [84, 138, 210], [184, 70, 162], [187, 187, 53], [227, 151, 89]],
-                  "aqua_plane": [[111, 210, 111], [101, 111, 228], [181, 108, 224], [212, 108, 195], [210, 164, 74], [252, 144, 144]],
+objects_colors = {"sentry": [[252, 224, 112], [111, 210, 111], [84, 138, 210], [184, 70, 162],
+                             [187, 187, 53], [227, 151, 89]],
+                  "aqua_plane": [[111, 210, 111], [101, 111, 228], [181, 108, 224], [212, 108, 195],
+                                 [210, 164, 74], [252, 144, 144]],
                   "domed_palace": [[240, 170, 103], [232, 204, 99], [212, 108, 195], [128, 232, 128]],
                   "generator_1": [117, 231, 194],
-                  "generator_2": [[111, 210, 111], [232, 204, 99], [101, 111, 228], [228, 111, 111], [127, 92, 213]],  # [92, 168, 92], [111, 210, 111], 
-                  "generator_3": [188, 144,252],
-                  "bridged_bazaar": [[214, 214, 214], [101, 111, 228], [149, 111, 227], [181, 108, 224], [212, 108, 195], [228, 111, 111], [227, 151, 89]],
-                  "acropolis_command_post": [[227, 151, 89], [210, 210, 64], [210, 164, 74], [228, 111, 111], [164, 89, 208]],
-                  "bandit_bomber": [[125, 48, 173], [45, 109, 152], [127, 92, 213], [158, 208, 101], [227, 151, 89], [184, 70, 162], [187, 187, 53]],
-                  "gorgon_ship": [[125, 48, 173], [45, 109, 152], [127, 92, 213], [158, 208, 101], [227, 151, 89], [184, 70, 162], [187, 187, 53], [84, 138, 210]],
-                  "gorgon_ship_2": [[125, 48, 173], [45, 109, 152], [127, 92, 213], [158, 208, 101], [227, 151, 89], [184, 70, 162], [187, 187, 53],],
+                  "generator_2": [[111, 210, 111], [232, 204, 99], [101, 111, 228], [228, 111, 111],
+                                  [127, 92, 213]],
+                  "generator_3": [188, 144, 252],
+                  "bridged_bazaar": [[214, 214, 214], [101, 111, 228], [149, 111, 227], [181, 108, 224],
+                                     [212, 108, 195], [228, 111, 111], [227, 151, 89]],
+                  "acropolis_command_post": [[227, 151, 89], [210, 210, 64], [210, 164, 74],
+                                             [228, 111, 111], [164, 89, 208]],
+                  "bandit_bomber": [[125, 48, 173], [45, 109, 152], [127, 92, 213], [158, 208, 101],
+                                    [227, 151, 89], [184, 70, 162], [187, 187, 53]],
+                  "gorgon_ship": [[125, 48, 173], [45, 109, 152], [127, 92, 213], [158, 208, 101],
+                                  [227, 151, 89], [184, 70, 162], [187, 187, 53], [84, 138, 210]],
+                  "gorgon_ship_2": [[125, 48, 173], [45, 109, 152], [127, 92, 213], [158, 208, 101],
+                                    [227, 151, 89], [184, 70, 162], [187, 187, 53],],
                   "deathray": [[101, 209, 174], [72, 160, 72]], "score": [252, 188, 116]
                   }
 
@@ -20,6 +28,7 @@ class Sentry(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 111, 210, 111
+
 
 # No clue how the projectiles work
 class Projectile(GameObject):
@@ -69,6 +78,7 @@ class Gorgon_Ship(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 187, 187, 53
 
+
 # Not implemented in vision due to it having the same colors as the enviroment
 class Deathray(GameObject):
     def __init__(self, *args, **kwargs):
@@ -105,7 +115,7 @@ def _detect_objects_atlantis(objects, obs, hud=True):
     for bb in generator_1:
         objects.append(Generator(*bb))
 
-    generator_2 = find_mc_objects(obs, objects_colors["generator_2"], min_distance=1, minx=80, maxx=90, miny=110) 
+    generator_2 = find_mc_objects(obs, objects_colors["generator_2"], min_distance=1, minx=80, maxx=90, miny=110)
     for bb in generator_2:
         g2 = Generator(*bb)
         g2.rgb = objects_colors["generator_2"][0]
@@ -125,11 +135,11 @@ def _detect_objects_atlantis(objects, obs, hud=True):
     for bb in acropolis_command_post:
         objects.append(Acropolis_Command_Post(*bb))
 
-    bandit_bomber = find_mc_objects(obs, objects_colors["bandit_bomber"], min_distance=1, maxy=110, size=(9,7), tol_s=1)
+    bandit_bomber = find_mc_objects(obs, objects_colors["bandit_bomber"], min_distance=1, maxy=110, size=(9, 7), tol_s=1)
     for bb in bandit_bomber:
         objects.append(Bandit_Bomber(*bb))
 
-    gorgon_ship = find_mc_objects(obs, objects_colors["gorgon_ship"], min_distance=1, maxy=110, size=(15,8), tol_s=4)
+    gorgon_ship = find_mc_objects(obs, objects_colors["gorgon_ship"], min_distance=1, maxy=110, size=(15, 8), tol_s=4)
     for bb in gorgon_ship:
         objects.append(Gorgon_Ship(*bb))
 
