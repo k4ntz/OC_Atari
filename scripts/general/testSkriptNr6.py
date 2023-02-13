@@ -7,7 +7,7 @@ import random
 this test makes it easy to test several indices individually or at once and to read the BITS of changing values
 """
 
-env = OCAtari("Asterix-v4", mode="vision", render_mode='rgb_array')  # Skiing-v4, DemonAttack-v4, SpaceInvaders-v4
+env = OCAtari("SpaceInvaders-v4", mode="vision", render_mode='rgb_array')  # Skiing-v4, DemonAttack-v4, SpaceInvaders-v4
 observation, info = env.reset()
 prevRam = None
 
@@ -27,9 +27,7 @@ for ROUND in range(10000000):
         i = 68  # to test an individual index in all rounds (so the index keeps constant)
         # i = index  # here the index meant to be incremented
 
-        # if 9 > ROUND > 1:
-        #     if not prevRam[29+i-1]%2 == 1:
-        env._env.unwrapped.ale.setRAM(i, value)  # DON'T CHANGE
+        # env._env.unwrapped.ale.setRAM(i, value)  # DON'T CHANGE
 
         # don't delete these lines
         # value = (prevRam[i] + 31) % 256  # 31 = 00001111

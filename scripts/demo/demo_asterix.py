@@ -22,11 +22,8 @@ for i in range(10000000):
     # env.step(env.action_space.sample())
     env._env.unwrapped.ale.setRAM(83, 2)
 
-    if i % 1000 == 0:
-        print(i)
     if i % 10 == 0:
         print(env.objects)
-        env._env.unwrapped.ale.setRAM(54, i//10 + 4)
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210:
