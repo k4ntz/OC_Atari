@@ -131,11 +131,13 @@ def _detect_objects_atlantis(objects, obs, hud=True):
     for bb in bridged_bazaar:
         objects.append(Bridged_Bazaar(*bb))
 
-    acropolis_command_post = find_mc_objects(obs, objects_colors["acropolis_command_post"], min_distance=1, minx= 70, maxx=80, miny=110)
+    acropolis_command_post = find_mc_objects(obs, objects_colors["acropolis_command_post"], min_distance=1, minx=70,
+                                             maxx=80, miny=110)
     for bb in acropolis_command_post:
         objects.append(Acropolis_Command_Post(*bb))
 
-    bandit_bomber = find_mc_objects(obs, objects_colors["bandit_bomber"], min_distance=1, maxy=110, size=(9, 7), tol_s=1)
+    bandit_bomber = find_mc_objects(obs, objects_colors["bandit_bomber"], min_distance=1, maxy=110,
+                                    size=(9, 7), tol_s=1)
     for bb in bandit_bomber:
         objects.append(Bandit_Bomber(*bb))
 
