@@ -143,6 +143,7 @@ def _init_objects_atlantis_ram(hud=True):
 
     return objects
 
+
 # Determins wether or not the deathray can be used by the ships
 global ray_available
 # Saves the previous amount of buildings that are still standing
@@ -153,14 +154,14 @@ global prev_x2
 global prev_x3
 global prev_x4
 
-# levels: ram_state[36], total of 3 levels: 0,1 and 2
+
 def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
     del objects[2:]
 
     buildings_count = 0
 
     # 58 und 60 = orange proj
-    # pink = outpost 
+    # pink = outpost
     # lila = links
 
     # if ram_state[58] != 0 and ram_state[60] != 0:
@@ -317,7 +318,7 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
     if ram_state[24] < 152:
         gen = Generator()
         gen.xy = 142, 137
-        gen.rgb = 188, 144,252
+        gen.rgb = 188, 144, 252
         objects.append(gen)
         buildings_count = buildings_count + 1
 
@@ -375,7 +376,6 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
                 score.xy = 56, 188
             objects.append(score)
 
-
     return objects
 
 
@@ -391,7 +391,7 @@ def _get_ship_type(ram_state, hight1, height2):
 
 def _detect_objects_atlantis_raw(info, ram_state):
     """
-    Raw ram-slice for playing the game with minimum requirements 
+    Raw ram-slice for playing the game with minimum requirements
     """
 
     enemy_x = ram_state[36:40]
