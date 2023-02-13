@@ -16,6 +16,7 @@ class Sentry(GameObject):
         self.hud = False
 
 
+# No clue how the projectiles work
 class Projectile(GameObject):
     def __init__(self):
         super(Projectile, self).__init__()
@@ -110,8 +111,8 @@ class Score(GameObject):
     def __init__(self):
         super(Score, self).__init__()
         self.visible = True
-        self._xy = 0, 0
-        self.wh = 0, 0
+        self._xy = 96, 188
+        self.wh = 7, 10
         self.rgb = 252, 188, 116
         self.hud = False
 
@@ -162,9 +163,15 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
     # pink = outpost 
     # lila = links
 
-    if ram_state[58] != 0 and ram_state[60] != 0:
-        proj = Projectile()
-        proj.xy = ram_state[58], ram_state[60]
+    # if ram_state[58] != 0 and ram_state[60] != 0:
+    #     proj = Projectile()
+    #     proj.xy = ram_state[60] + 3, 210 - ram_state[58] - 5
+    #     objects.append(proj)
+
+    # if ram_state[59] != 0 and ram_state[61] != 0:
+    #     proj = Projectile()
+    #     proj.xy = ram_state[61] + 3, 210 - ram_state[59] - 16
+    #     objects.append(proj)
 
     # The visual representation of the Sprite relative to the ram_state
     # seems to differ depending on the ship entering on the left/right.
@@ -347,6 +354,27 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
 
     prev_x4 = ram_state[36]
     buildings_amount = buildings_count
+
+    if hud:
+        if ram_state[33] or ram_state[34] or ram_state[35]:
+            score = Score()
+            if ram_state[33] > 16:
+                score.wh = 15, 10
+                score.xy = 88, 188
+            if ram_state[34] > 0:
+                score.wh = 23, 10
+                score.xy = 80, 188
+            if ram_state[34] > 16:
+                score.wh = 31, 10
+                score.xy = 72, 188
+            if ram_state[35] > 0:
+                score.wh = 39, 10
+                score.xy = 64, 188
+            if ram_state[35] > 16:
+                score.wh = 47, 10
+                score.xy = 56, 188
+            objects.append(score)
+
 
     return objects
 

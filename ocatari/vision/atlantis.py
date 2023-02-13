@@ -11,6 +11,7 @@ objects_colors = {"sentry": [[252, 224, 112], [111, 210, 111], [84, 138, 210], [
                   "acropolis_command_post": [[227, 151, 89], [210, 210, 64], [210, 164, 74], [228, 111, 111], [164, 89, 208]],
                   "bandit_bomber": [[125, 48, 173], [45, 109, 152], [127, 92, 213], [158, 208, 101], [227, 151, 89], [184, 70, 162], [187, 187, 53]],
                   "gorgon_ship": [[125, 48, 173], [45, 109, 152], [127, 92, 213], [158, 208, 101], [227, 151, 89], [184, 70, 162], [187, 187, 53], [84, 138, 210]],
+                  "gorgon_ship_2": [[125, 48, 173], [45, 109, 152], [127, 92, 213], [158, 208, 101], [227, 151, 89], [184, 70, 162], [187, 187, 53],],
                   "deathray": [[101, 209, 174], [72, 160, 72]], "score": [252, 188, 116]
                   }
 
@@ -19,6 +20,12 @@ class Sentry(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 111, 210, 111
+
+# No clue how the projectiles work
+class Projectile(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 184, 70, 162
 
 
 class Aqua_Plane(GameObject):
@@ -122,7 +129,7 @@ def _detect_objects_atlantis(objects, obs, hud=True):
     for bb in bandit_bomber:
         objects.append(Bandit_Bomber(*bb))
 
-    gorgon_ship = find_mc_objects(obs, objects_colors["gorgon_ship"], min_distance=1, maxy=110, size=(15,8), tol_s=2)
+    gorgon_ship = find_mc_objects(obs, objects_colors["gorgon_ship"], min_distance=1, maxy=110, size=(15,8), tol_s=4)
     for bb in gorgon_ship:
         objects.append(Gorgon_Ship(*bb))
 

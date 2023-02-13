@@ -14,9 +14,9 @@ observation, reward, terminated, truncated, info = env.step(3)
 
 for _ in range(10000):
     # action = policy(observation)  # User-defined policy function
-    target_ram_position = 60
-    new_ram_value = 80
-    # env.unwrapped.ale.setRAM(target_ram_position, new_ram_value)
+    target_ram_position = 33
+    new_ram_value = 1
+    env.unwrapped.ale.setRAM(target_ram_position, new_ram_value)
     # env.unwrapped.ale.setRAM(61, 50)
 
     # -------------------manipulate ram----------------------------------
