@@ -27,9 +27,9 @@ class Projectile(GameObject):
         self.hud = False
 
 
-class Aqua_Plane(GameObject):
+class AquaPlane(GameObject):
     def __init__(self):
-        super(Aqua_Plane, self).__init__()
+        super(AquaPlane, self).__init__()
         self.visible = True
         self._xy = 16, 171
         self.wh = 16, 7
@@ -37,9 +37,9 @@ class Aqua_Plane(GameObject):
         self.hud = False
 
 
-class Domed_Palace(GameObject):
+class DomedPalace(GameObject):
     def __init__(self):
-        super(Domed_Palace, self).__init__()
+        super(DomedPalace, self).__init__()
         self.visible = True
         self._xy = 38, 148
         self.wh = 16, 8
@@ -57,9 +57,9 @@ class Generator(GameObject):
         self.hud = False
 
 
-class Bridged_Bazaar(GameObject):
+class BridgedBazaar(GameObject):
     def __init__(self):
-        super(Bridged_Bazaar, self).__init__()
+        super(BridgedBazaar, self).__init__()
         self.visible = True
         self._xy = 96, 159
         self.wh = 16, 8
@@ -67,9 +67,9 @@ class Bridged_Bazaar(GameObject):
         self.hud = False
 
 
-class Acropolis_Command_Post(GameObject):
+class AcropolisCommandPost(GameObject):
     def __init__(self):
-        super(Acropolis_Command_Post, self).__init__()
+        super(AcropolisCommandPost, self).__init__()
         self.visible = True
         self._xy = 72, 112
         self.wh = 8, 8
@@ -77,9 +77,9 @@ class Acropolis_Command_Post(GameObject):
         self.hud = False
 
 
-class Bandit_Bomber(GameObject):
+class BanditBomber(GameObject):
     def __init__(self):
-        super(Bandit_Bomber, self).__init__()
+        super(BanditBomber, self).__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 9, 7
@@ -87,9 +87,9 @@ class Bandit_Bomber(GameObject):
         self.hud = False
 
 
-class Gorgon_Ship(GameObject):
+class GorgonShip(GameObject):
     def __init__(self):
-        super(Gorgon_Ship, self).__init__()
+        super(GorgonShip, self).__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 15, 8
@@ -167,7 +167,6 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
 
     buildings_count = 0
 
-
     # global prev_x_p1
     # global prev_x_p2
 
@@ -212,20 +211,20 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         ship = _get_ship_type(ram_state, 3, 131)
         g_s = None
         if ship == 64:
-            g_s = Gorgon_Ship()
+            g_s = GorgonShip()
             if prev_x1 < ram_state[39]:
                 g_s.xy = ram_state[39] - 8, 19
             else:
                 g_s.xy = ram_state[39] - 7, 19
         elif ship == 32 or ship == 48:
-            g_s = Gorgon_Ship()
+            g_s = GorgonShip()
             g_s.wh = 15, 7
             if prev_x1 < ram_state[39]:
                 g_s.xy = ram_state[39] - 8, 20
             else:
                 g_s.xy = ram_state[39] - 7, 20
         elif ship == 80:
-            g_s = Bandit_Bomber()
+            g_s = BanditBomber()
             if prev_x1 < ram_state[39]:
                 g_s.xy = ram_state[39] - 7, 20
             else:
@@ -240,20 +239,20 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         ship = _get_ship_type(ram_state, 2, 130)
         g_s = None
         if ship == 64:
-            g_s = Gorgon_Ship()
+            g_s = GorgonShip()
             if prev_x2 < ram_state[38]:
                 g_s.xy = ram_state[38] - 8, 40
             else:
                 g_s.xy = ram_state[38] - 7, 40
         elif ship == 32 or ship == 48:
-            g_s = Gorgon_Ship()
+            g_s = GorgonShip()
             g_s.wh = 15, 7
             if prev_x2 < ram_state[38]:
                 g_s.xy = ram_state[38] - 8, 41
             else:
                 g_s.xy = ram_state[38] - 7, 41
         elif ship == 80:
-            g_s = Bandit_Bomber()
+            g_s = BanditBomber()
             if prev_x2 < ram_state[38]:
                 g_s.xy = ram_state[38] - 7, 41
             else:
@@ -268,20 +267,20 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         ship = _get_ship_type(ram_state, 1, 129)
         g_s = None
         if ship == 64:
-            g_s = Gorgon_Ship()
+            g_s = GorgonShip()
             if prev_x3 < ram_state[37]:
                 g_s.xy = ram_state[37] - 8, 61
             else:
                 g_s.xy = ram_state[37] - 7, 61
         elif ship == 32 or ship == 48:
-            g_s = Gorgon_Ship()
+            g_s = GorgonShip()
             g_s.wh = 15, 7
             if prev_x3 < ram_state[37]:
                 g_s.xy = ram_state[37] - 8, 62
             else:
                 g_s.xy = ram_state[37] - 7, 62
         elif ship == 80:
-            g_s = Bandit_Bomber()
+            g_s = BanditBomber()
             if prev_x3 < ram_state[37]:
                 g_s.xy = ram_state[37] - 7, 62
             else:
@@ -296,20 +295,20 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         ship = _get_ship_type(ram_state, 0, 128)
         g_s = None
         if ship == 64:
-            g_s = Gorgon_Ship()
+            g_s = GorgonShip()
             if prev_x4 < ram_state[36]:
                 g_s.xy = ram_state[36] - 8, 82
             else:
                 g_s.xy = ram_state[36] - 7, 82
         elif ship == 32 or ship == 48:
-            g_s = Gorgon_Ship()
+            g_s = GorgonShip()
             g_s.wh = 15, 7
             if prev_x4 < ram_state[36]:
                 g_s.xy = ram_state[36] - 8, 83
             else:
                 g_s.xy = ram_state[36] - 7, 83
         elif ship == 80:
-            g_s = Bandit_Bomber()
+            g_s = BanditBomber()
             if prev_x4 < ram_state[36]:
                 g_s.xy = ram_state[36] - 7, 83
             else:
@@ -319,9 +318,8 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
 
     # Command-Post center building with gun
     if ram_state[84] == 0:
-        objects.append(Acropolis_Command_Post())
-        buildings_count = buildings_count + 1
-        # buildings_count += 1
+        objects.append(AcropolisCommandPost())
+        buildings_count += 1
 
     # Generator left
     if ram_state[22] < 152:
@@ -329,12 +327,12 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         gen.xy = 82, 124
         gen.rgb = 111, 210, 111
         objects.append(gen)
-        buildings_count = buildings_count + 1
+        buildings_count += 1
 
     # Generator Command-Post
     if ram_state[23] < 152:
         objects.append(Generator())
-        buildings_count = buildings_count + 1
+        buildings_count += 1
 
     # Generator right
     if ram_state[24] < 152:
@@ -342,22 +340,22 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         gen.xy = 142, 137
         gen.rgb = 188, 144, 252
         objects.append(gen)
-        buildings_count = buildings_count + 1
+        buildings_count += 1
 
     # Domed-Palace building with dome
     if ram_state[25] < 152:
-        objects.append(Domed_Palace())
-        buildings_count = buildings_count + 1
+        objects.append(DomedPalace())
+        buildings_count += 1
 
     # Bridged-Bazaar rightmost building
     if ram_state[26] < 152:
-        objects.append(Bridged_Bazaar())
-        buildings_count = buildings_count + 1
+        objects.append(BridgedBazaar())
+        buildings_count += 1
 
     # Aqua-Plane leftmost building
     if ram_state[27] < 152:
-        objects.append(Aqua_Plane())
-        buildings_count = buildings_count + 1
+        objects.append(AquaPlane())
+        buildings_count += 1
 
     # Determines if the deathray is usable
     if ram_state[30] == 152:
@@ -379,7 +377,7 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
     buildings_amount = buildings_count
 
     if hud:
-        #Score
+        # Score
         if ram_state[33] or ram_state[34] or ram_state[35]:
             score = Score()
             if ram_state[33] >= 16:
