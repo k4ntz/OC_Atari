@@ -141,9 +141,11 @@ def _detect_objects_atlantis(objects, obs, hud=True):
     for bb in bandit_bomber:
         objects.append(BanditBomber(*bb))
 
-    gorgon_ship = find_mc_objects(obs, objects_colors["gorgon_ship"], min_distance=1, maxy=110, size=(15, 8), tol_s=5)
+    gorgon_ship = find_mc_objects(obs, objects_colors["gorgon_ship"], min_distance=1, maxy=110,
+                                  size=(15, 8), tol_s=5)
 
-    gorgon_ship2 = find_mc_objects(obs, objects_colors["gorgon_ship_2"], min_distance=1, maxy=110, size=(15, 7), tol_s=5)
+    gorgon_ship2 = find_mc_objects(obs, objects_colors["gorgon_ship_2"], min_distance=1, maxy=110,
+                                   size=(15, 7), tol_s=5)
     for bb in gorgon_ship:
         objects.append(GorgonShip(*bb))
 
@@ -161,6 +163,6 @@ def _detect_objects_atlantis(objects, obs, hud=True):
     #     objects.append(Deathray(*bb))
 
     if hud:
-        score = find_objects(obs, objects_colors["score"], min_distance=1, miny = 120, closing_dist=10)
+        score = find_objects(obs, objects_colors["score"], min_distance=1, miny=120, closing_dist=10)
         for bb in score:
             objects.append(Score(*bb))
