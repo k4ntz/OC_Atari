@@ -360,19 +360,19 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
     if hud:
         if ram_state[33] or ram_state[34] or ram_state[35]:
             score = Score()
-            if ram_state[33] > 16:
+            if ram_state[33] >= 16:
                 score.wh = 15, 10
                 score.xy = 88, 188
             if ram_state[34] > 0:
                 score.wh = 23, 10
                 score.xy = 80, 188
-            if ram_state[34] > 16:
+            if ram_state[34] >= 16:
                 score.wh = 31, 10
                 score.xy = 72, 188
             if ram_state[35] > 0:
                 score.wh = 39, 10
                 score.xy = 64, 188
-            if ram_state[35] > 16:
+            if ram_state[35] >= 16:
                 score.wh = 47, 10
                 score.xy = 56, 188
             objects.append(score)
