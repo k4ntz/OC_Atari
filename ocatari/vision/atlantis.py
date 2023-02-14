@@ -55,25 +55,25 @@ class Generator(GameObject):
         self.rgb = 117, 231, 194
 
 
-class Bridged_Bazaar(GameObject):
+class BridgedBazaar(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 214, 214, 214
 
 
-class Acropolis_Command_Post(GameObject):
+class AcropolisCommandPost(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 227, 151, 89
 
 
-class Bandit_Bomber(GameObject):
+class BanditBomber(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 125, 48, 173
 
 
-class Gorgon_Ship(GameObject):
+class GorgonShip(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 187, 187, 53
@@ -129,21 +129,21 @@ def _detect_objects_atlantis(objects, obs, hud=True):
 
     bridged_bazaar = find_mc_objects(obs, objects_colors["bridged_bazaar"], min_distance=1, minx=94, maxx=112, miny=110)
     for bb in bridged_bazaar:
-        objects.append(Bridged_Bazaar(*bb))
+        objects.append(BridgedBazaar(*bb))
 
     acropolis_command_post = find_mc_objects(obs, objects_colors["acropolis_command_post"], min_distance=1, minx=70,
                                              maxx=80, miny=110)
     for bb in acropolis_command_post:
-        objects.append(Acropolis_Command_Post(*bb))
+        objects.append(AcropolisCommandPost(*bb))
 
     bandit_bomber = find_mc_objects(obs, objects_colors["bandit_bomber"], min_distance=1, maxy=110,
                                     size=(9, 7), tol_s=1)
     for bb in bandit_bomber:
-        objects.append(Bandit_Bomber(*bb))
+        objects.append(BanditBomber(*bb))
 
     gorgon_ship = find_mc_objects(obs, objects_colors["gorgon_ship"], min_distance=1, maxy=110, size=(15, 8), tol_s=4)
     for bb in gorgon_ship:
-        objects.append(Gorgon_Ship(*bb))
+        objects.append(GorgonShip(*bb))
 
     # deathray = find_mc_objects(obs, objects_colors["deathray"], min_distance=1)
     # for bb in deathray:
