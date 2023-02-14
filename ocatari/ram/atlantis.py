@@ -9,7 +9,6 @@ RAM extraction for the game Atlantis. Supported modes: raw, revised.
 class Sentry(GameObject):
     def __init__(self):
         super(Sentry, self).__init__()
-        self.visible = True
         self._xy = 0, 124
         self.wh = 8, 8
         self.rgb = 111, 210, 111
@@ -20,7 +19,6 @@ class Sentry(GameObject):
 class Projectile(GameObject):
     def __init__(self):
         super(Projectile, self).__init__()
-        self.visible = True
         self._xy = 0, 0
         self.wh = 1, 1
         self.rgb = 184, 70, 162
@@ -30,7 +28,6 @@ class Projectile(GameObject):
 class AquaPlane(GameObject):
     def __init__(self):
         super(AquaPlane, self).__init__()
-        self.visible = True
         self._xy = 16, 171
         self.wh = 16, 7
         self.rgb = 252, 144, 144
@@ -40,7 +37,6 @@ class AquaPlane(GameObject):
 class DomedPalace(GameObject):
     def __init__(self):
         super(DomedPalace, self).__init__()
-        self.visible = True
         self._xy = 38, 148
         self.wh = 16, 8
         self.rgb = 240, 170, 103
@@ -50,7 +46,6 @@ class DomedPalace(GameObject):
 class Generator(GameObject):
     def __init__(self):
         super(Generator, self).__init__()
-        self.visible = True
         self._xy = 62, 137
         self.wh = 4, 8
         self.rgb = 117, 231, 194
@@ -60,7 +55,6 @@ class Generator(GameObject):
 class BridgedBazaar(GameObject):
     def __init__(self):
         super(BridgedBazaar, self).__init__()
-        self.visible = True
         self._xy = 96, 159
         self.wh = 16, 8
         self.rgb = 214, 214, 214
@@ -70,7 +64,6 @@ class BridgedBazaar(GameObject):
 class AcropolisCommandPost(GameObject):
     def __init__(self):
         super(AcropolisCommandPost, self).__init__()
-        self.visible = True
         self._xy = 72, 112
         self.wh = 8, 8
         self.rgb = 227, 151, 89
@@ -80,7 +73,6 @@ class AcropolisCommandPost(GameObject):
 class BanditBomber(GameObject):
     def __init__(self):
         super(BanditBomber, self).__init__()
-        self.visible = True
         self._xy = 0, 0
         self.wh = 9, 7
         self.rgb = 125, 48, 173
@@ -90,7 +82,6 @@ class BanditBomber(GameObject):
 class GorgonShip(GameObject):
     def __init__(self):
         super(GorgonShip, self).__init__()
-        self.visible = True
         self._xy = 0, 0
         self.wh = 15, 8
         self.rgb = 187, 187, 53
@@ -100,7 +91,6 @@ class GorgonShip(GameObject):
 class Deathray(GameObject):
     def __init__(self):
         super(Deathray, self).__init__()
-        self.visible = True
         self._xy = 0, 92
         self.wh = 2, 88
         self.rgb = 101, 209, 174
@@ -110,7 +100,6 @@ class Deathray(GameObject):
 class Score(GameObject):
     def __init__(self):
         super(Score, self).__init__()
-        self.visible = True
         self._xy = 96, 188
         self.wh = 7, 10
         self.rgb = 252, 188, 116
