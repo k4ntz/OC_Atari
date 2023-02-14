@@ -13,7 +13,7 @@ game_name = "Atlantis"
 MODE = "vision"
 MODE = "revised"
 HUD = True
-env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
+env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='human')
 observation, info = env.reset()
 prev_ram = None
 
@@ -27,9 +27,10 @@ for i in range(10000):
         action = agent.draw_action(env.dqn_obs)
     else:
         action = 1
-    obs, reward, terminated, truncated, info = env.step(action)
+    obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))
     ram = env._env.unwrapped.ale.getRAM()
-    if i % 20 == 0:
+    if i % 20 == 0 and i>350:
+        print("i=", i)
         print(env.objects)
         print(ram)
         for obj in env.objects:
