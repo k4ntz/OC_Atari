@@ -167,7 +167,6 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
 
     buildings_count = 0
 
-
     # global prev_x_p1
     # global prev_x_p2
 
@@ -379,7 +378,7 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
     buildings_amount = buildings_count
 
     if hud:
-        #Score
+        # Score
         if ram_state[33] or ram_state[34] or ram_state[35]:
             score = Score()
             if ram_state[33] >= 16:
