@@ -43,7 +43,7 @@ class AquaPlane(GameObject):
         self.rgb = 252, 144, 144
 
 
-class Domed_Palace(GameObject):
+class DomedPalace(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 240, 170, 103
@@ -79,7 +79,7 @@ class GorgonShip(GameObject):
         self.rgb = 187, 187, 53
 
 
-# Not implemented in vision due to it having the same colors as the enviroment
+# Not implemented in vision due to it having the same colors as the environment
 class Deathray(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -109,7 +109,7 @@ def _detect_objects_atlantis(objects, obs, hud=True):
 
     domed_palace = find_mc_objects(obs, objects_colors["domed_palace"], min_distance=1, minx=35, maxx=54, miny=110)
     for bb in domed_palace:
-        objects.append(Domed_Palace(*bb))
+        objects.append(DomedPalace(*bb))
 
     generator_1 = find_objects(obs, objects_colors["generator_1"], min_distance=1, minx=59, maxx=70, miny=110)
     for bb in generator_1:
