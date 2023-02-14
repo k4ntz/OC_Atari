@@ -19,7 +19,7 @@ objects_colors = {"sentry": [[252, 224, 112], [111, 210, 111], [84, 138, 210], [
                   "gorgon_ship": [[125, 48, 173], [45, 109, 152], [127, 92, 213], [158, 208, 101],
                                   [227, 151, 89], [184, 70, 162], [187, 187, 53], [84, 138, 210]],
                   "gorgon_ship_2": [[125, 48, 173], [45, 109, 152], [127, 92, 213], [158, 208, 101],
-                                    [227, 151, 89], [184, 70, 162], [187, 187, 53], ],
+                                    [227, 151, 89], [184, 70, 162], [187, 187, 53], [0, 0, 0]],
                   "deathray": [[101, 209, 174], [72, 160, 72]], "score": [252, 188, 116]
                   }
 
@@ -141,15 +141,21 @@ def _detect_objects_atlantis(objects, obs, hud=True):
     for bb in bandit_bomber:
         objects.append(BanditBomber(*bb))
 
-    gorgon_ship = find_mc_objects(obs, objects_colors["gorgon_ship"], min_distance=1, maxy=110, size=(15, 8), tol_s=4)
+    gorgon_ship = find_mc_objects(obs, objects_colors["gorgon_ship"], min_distance=1, maxy=110, size=(15, 8), tol_s=5)
+
+    gorgon_ship2 = find_mc_objects(obs, objects_colors["gorgon_ship_2"], min_distance=1, maxy=110, size=(15, 7), tol_s=5)
     for bb in gorgon_ship:
         objects.append(GorgonShip(*bb))
+
+    for gb in gorgon_ship2:
+        if gb not in gorgon_ship:
+            objects.append(GorgonShip(*gb))
 
     # deathray = find_mc_objects(obs, objects_colors["deathray"], min_distance=1)
     # for bb in deathray:
     #     objects.append(Deathray(*bb))
 
     if hud:
-        score = find_objects(obs, objects_colors["score"], min_distance=1, closing_dist=10)
+        score = find_objects(obs, objects_colors["score"], min_distance=1, miny = 120, closing_dist=10)
         for bb in score:
             objects.append(Score(*bb))
