@@ -144,7 +144,7 @@ def _init_objects_atlantis_ram(hud=True):
     return objects
 
 
-# Determins wether or not the deathray can be used by the ships
+# Determines whether the deathray can be used by the ships or not
 global ray_available
 # Saves the previous amount of buildings that are still standing
 global buildings_amount
@@ -176,7 +176,7 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
 
     # The visual representation of the Sprite relative to the ram_state
     # seems to differ depending on the ship entering on the left/right.
-    # These variables help to determin where the ship entered
+    # These variables help to determine where the ship entered
     global prev_x1
     global prev_x2
     global prev_x3
@@ -296,10 +296,11 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         if g_s:
             objects.append(g_s)
 
-    # Command-Post center buildung with gun
+    # Command-Post center building with gun
     if ram_state[84] == 0:
         objects.append(Acropolis_Command_Post())
         buildings_count = buildings_count + 1
+        # buildings_count += 1
 
     # Generator left
     if ram_state[22] < 152:
@@ -337,7 +338,7 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         objects.append(Aqua_Plane())
         buildings_count = buildings_count + 1
 
-    # Determins if the deathray is usable
+    # Determines if the deathray is usable
     if ram_state[30] == 152:
         ray_available = True
     elif buildings_count < buildings_amount:
@@ -379,12 +380,12 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
     return objects
 
 
-def _get_ship_type(ram_state, hight1, height2):
+def _get_ship_type(ram_state, height1, height2):
     """
-    Determins the type of ship by its sprite index
+    Determines the type of ship by its sprite index
     """
     for i in range(4):
-        if ram_state[71+i] == hight1 or ram_state[71+i] == height2:
+        if ram_state[71+i] == height1 or ram_state[71 + i] == height2:
             return ram_state[79+i]
     return 0
 
