@@ -38,7 +38,7 @@ for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
-        action = random.randint(-2, 2)
+        action = random.randint(0, 0)
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
     # import ipdb; ipdb.set_trace()
