@@ -12,9 +12,10 @@ from ocatari.ram.demonAttack import ProjectileHostile
 
 game_name = "SpaceInvaders-v4"
 MODE = "vision"
+MODE = "raw"
 MODE = "revised"
 HUD = True
-env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='human')
+env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
 for i in range(10000000):
@@ -22,12 +23,11 @@ for i in range(10000000):
     obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))
     # env.step(env.action_space.sample())
     env._env.unwrapped.ale.setRAM(83, 2)
-
-    if i % 1 == 0:
+    if i % 1 == 0:  # and i>10:
         print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
-            if x < 160 and y < 210:
+            if x < 160 and y < 20:
                 opos = obj.xywh
                 ocol = obj.rgb
                 sur_col = make_darker(ocol)
@@ -38,9 +38,7 @@ for i in range(10000000):
 
         plt.imshow(obs)
         plt.show()
-
         # ipdb.set_trace()
-
     if terminated or truncated:
         observation, info = env.reset()
     # modify and display render
