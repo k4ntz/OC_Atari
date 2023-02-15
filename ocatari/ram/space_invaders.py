@@ -83,7 +83,7 @@ def _detect_objects_space_invaders_raw(info, ram_state):
     info["x_positions"] = ram_state[26:31]
     info["walls"] = ram_state[43:69]
     info["lives"] = ram_state[73]
-    info["bullet_1_enemy_y"] = ram_state[81:89]
+    info["bullets"] = ram_state[81:89]
     info["score"] = ram_state[102:106]
     # info["aliens_y"] = ram_state[16] % 32  # taking only the first 5 bits on the right
     # # ram_state[16] has also y of frame of players with walls together
@@ -154,33 +154,83 @@ def _init_objects_space_invaders_ram(hud=False):
     return objects
 
 
+global prevRam
+
+global aliens
+aliens = [Alien() for a in range(6) for b in range(6)]
+for alien in aliens:
+    alien.rgb = 134, 134, 29
+    alien.wh = 8, 10
+
+global test
+
+global player
+
+global firstCall
+firstCall = True
+
+
 def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
-    player = objects[0]
+    global firstCall
+    global aliens
+    global player
+    global prevRam
+
+    if firstCall:  # works correctly
+        player = objects[0]
+        player.wh = 7, 10
+        player.rgb = 92, 186, 92
+        print(objects)
+        # objects.extend(alien for list in aliens for alien in list if isinstance(alien, Alien))
+        # objects.extend(aliens)
+        firstCall = False
+
+    # print("begin", objects)
+
+    # PLAYER
+    # updating player position
     player.xy = ram_state[28] - 1, 185
 
-    # list_1 = [Alien() for i in range(6)]
-    # aliens = [list_1 for i in range(6)]
-    #
-    # x, y = ram_state[26], ram_state[16] % 32
-    #
-    # if rev.prevRam == []:
-    #     for i in range(6):
-    #         for j in range(6):
-    #             aliens[i][j].xy = 22 + j*16, 31 + i*18   # y//10 +      x +
-    # # delete dead aliens
-    #
-    # objects.extend([y for x in aliens for y in x])
+    # ALIENS
+    # aliens deletion from objects:
+    min, max = 0, 0
+    check = True
+    for i in range(len(objects)):
+        if isinstance(objects[i], Alien):
+            # print("in schleife drinn")
+            if check:
+                min = i
+                check = False
+            if i >= max:
+                max = i+1
+    del objects[min:max]
 
+    # print("after deletion from objects", objects)
+
+    # aliens (permanent) deletion from array aliens:
+    for i in range(6):
+        for j in range(6):
+            if not (ram_state[18 + i] % pow(2, j+1) >= pow(2, j)):  # enemies alive are saved in given ram_state
+                aliens[i*6 + j] = None
+
+    # updating positions of aliens
+    x, y = ram_state[26], ram_state[16] % 16  # correct?
+    for i in range(6):
+        for j in range(6):
+            if aliens[i*6 + j]:
+                aliens[i*6 + j].xy = 21 + j*16, 31 + i*18  # x-1 + j*16, 31 + y//5 + i*18
+    # print(aliens)
+    # print("updating poses", objects)
+
+    # adding aliens to array objects:
+    objects.extend([x for x in aliens if isinstance(x, Alien)])
+
+    # print("extending objects", objects)
+
+    # SHIELDS
+    # updating xywh of shields
+    print(objects[3].rgb, objects[3].wh)
+    print(objects[5].rgb, objects[5].wh)
+    print(len(objects))
+    prevRam = ram_state
     return objects
-
-
-class rev:
-    """
-    to save values temporarily
-    """
-    prevRam = []
-    lanes = {}
-
-    def __init__(self, prevRam, lanes):
-        self.prevRam = prevRam  # saving last ram
-        self.lanes = lanes  # saving current objs
