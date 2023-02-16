@@ -14,6 +14,7 @@ from .centipede import _detect_objects_centipede
 from .carnival import _detect_objects_carnival
 from .berzerk import _detect_objects_berzerk
 from .asterix import _detect_objects_asterix
+from .qbert import _detect_objects_qbert
 
 
 def detect_objects_vision(objects, obs, game_name, hud=False):
@@ -49,6 +50,8 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_berzerk(objects, obs, hud)
     elif game_name.lower() == "asterix":
         return _detect_objects_asterix(objects, obs, hud)
+    elif game_name.lower() == "qbert":
+        return _detect_objects_qbert(objects, obs, hud)
     else:
         print(colored("Uncovered game in vision mode", "red"))
         exit(1)
