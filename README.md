@@ -25,7 +25,7 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [ ]  River Raid (worked on by Chris)
 - [ ]  Atlantis (worked on by Bjarne)
 - [ ]  Chopper Command (worked on by Sebastian)
-- [ ]  Q*bert
+- [ ]  Q*bert (worked on by Bjarne)
 - [ ]  Assault (worked on by Chris)
 - [ ]  Beam Rider (worked on by Bjarne)
 - [x]  Boxing
