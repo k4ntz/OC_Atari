@@ -16,6 +16,8 @@ HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
+prevRam = None
+
 opts = parser.parse_args()
 
 if opts.path:
@@ -25,10 +27,11 @@ for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
-        action = random.randint(0, 5)
+        action = 0  # random.randint(0, 5)
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
     if i % 20 == 0:
+        print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210:
@@ -38,6 +41,15 @@ for i in range(10000):
                 mark_bb(obs, opos, color=sur_col)
         plt.imshow(obs)
         plt.show()
+        if prevRam is not None:
+            for i in range(len(ram)):
+                if ram[i] != prevRam[i]:
+                    pad = "           "
+                    for u in range(4 - len(str(i))):
+                        pad += " "
+                    print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prevRam[i]))
+        print("------------------------------------------")
+    prevRam = ram
     if terminated or truncated:
         observation, info = env.reset()
 env.close()

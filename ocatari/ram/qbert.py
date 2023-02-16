@@ -71,7 +71,7 @@ class FlyingDiscs(GameObject):
 
 class Score(GameObject):
     def __init__(self):
-        super(Sam, self).__init__()
+        super(Score, self).__init__()
         self._xy = 78, 103
         self.wh = 8, 24
         self.rgb = 210, 210, 64
@@ -80,7 +80,7 @@ class Score(GameObject):
 
 class Lives(GameObject):
     def __init__(self):
-        super(FlyingDiscs, self).__init__()
+        super(Lives, self).__init__()
         self._xy = 78, 103
         self.wh = 8, 24
         self.rgb = 210, 210, 64
