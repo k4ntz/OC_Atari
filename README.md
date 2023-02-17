@@ -33,7 +33,7 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [x]  Centipede
 
 ### Priority 3:
-- [ ]  Montezumas Revenge
+- [ ]  Montezumas Revenge (worked on by Timo)
 - [ ]  Private Eye
 - [ ]  Fishing Derby
 - [ ]  Zaxxon
