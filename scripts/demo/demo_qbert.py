@@ -11,7 +11,7 @@ from ocatari.utils import load_agent, parser
 
 game_name = "Qbert"
 MODE = "vision"
-# MODE = "revised"
+MODE = "revised"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
@@ -27,10 +27,10 @@ for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
-        action = 0  # random.randint(0, 5)
+        action = 3  # random.randint(0, 5)
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
-    if i % 20 == 0:
+    if i % 5 == 0 and i > 50:
         print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
