@@ -21,7 +21,7 @@ for i in range(10000000):
     obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))
     # env.step(env.action_space.sample())
     env._env.unwrapped.ale.setRAM(83, 2)
-
+    # buffer = env.objects[-1].pop()
     if i % 10 == 0:
         print(env.objects)
         for obj in env.objects:
@@ -39,7 +39,7 @@ for i in range(10000000):
         plt.show()
 
         # ipdb.set_trace()
-
+    # env.objects.append(buffer)
     if terminated or truncated:
         observation, info = env.reset()
     # modify and display render
