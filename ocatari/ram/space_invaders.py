@@ -157,17 +157,19 @@ def _init_objects_space_invaders_ram(hud=False):
 global prevRam
 
 global aliens
-aliens = [Alien() for a in range(6) for b in range(6)]
+aliens = [Alien() for a in range(36)]  # ~ 1-dim
+# aliens = [[Alien() for a in range(6)] for b in range(6)]  # ~ 2-dim
 for alien in aliens:
     alien.rgb = 134, 134, 29
     alien.wh = 8, 10
-
-global test
 
 global player
 
 global firstCall
 firstCall = True
+
+global lives_ctr
+lives_ctr = 30
 
 
 def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
@@ -175,12 +177,23 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     global aliens
     global player
     global prevRam
+    global lives_ctr
+
+    if lives_ctr:
+        lives_ctr -= 1
+    print(lives_ctr)
+    if lives_ctr == 0:
+        objects = [x for x in objects if not isinstance(x, Lives)]
+    # if something:
+    #     objects.insert(3, Lives())
 
     if firstCall:  # works correctly
         player = objects[0]
         player.wh = 7, 10
         player.rgb = 92, 186, 92
         print(objects)
+        if not hud:
+            del objects[1:4]
         # objects.extend(alien for list in aliens for alien in list if isinstance(alien, Alien))
         # objects.extend(aliens)
         firstCall = False
@@ -190,20 +203,22 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     # PLAYER
     # updating player position
     player.xy = ram_state[28] - 1, 185
+    # handle player flickering?
 
     # ALIENS
     # aliens deletion from objects:
     min, max = 0, 0
-    check = True
+    checked = False
     for i in range(len(objects)):
         if isinstance(objects[i], Alien):
             # print("in schleife drinn")
-            if check:
+            if not checked:
                 min = i
-                check = False
+                checked = True
             if i >= max:
                 max = i+1
     del objects[min:max]
+    print("min and max:", min, max)
 
     # print("after deletion from objects", objects)
 
@@ -211,26 +226,24 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     for i in range(6):
         for j in range(6):
             if not (ram_state[18 + i] % pow(2, j+1) >= pow(2, j)):  # enemies alive are saved in given ram_state
-                aliens[i*6 + j] = None
+                aliens[(5-i)*6 + j] = None  # 5 here is max(range(6)) so we are counting lines in the other way around
 
     # updating positions of aliens
-    x, y = ram_state[26], ram_state[16] % 16  # correct?
+    x, y = ram_state[26], ram_state[16] % 16  # is %16 correct?
     for i in range(6):
         for j in range(6):
             if aliens[i*6 + j]:
-                aliens[i*6 + j].xy = 21 + j*16, 31 + i*18  # x-1 + j*16, 31 + y//5 + i*18
+                aliens[i*6 + j].xy = x-1 + j*16, 31 + y//5 + i*18  # + 22 for x
     # print(aliens)
     # print("updating poses", objects)
 
     # adding aliens to array objects:
-    objects.extend([x for x in aliens if isinstance(x, Alien)])
+    objects.extend([x for x in aliens if x is not None])
 
     # print("extending objects", objects)
 
     # SHIELDS
     # updating xywh of shields
-    print(objects[3].rgb, objects[3].wh)
-    print(objects[5].rgb, objects[5].wh)
     print(len(objects))
     prevRam = ram_state
     return objects

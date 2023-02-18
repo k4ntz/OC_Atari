@@ -23,11 +23,11 @@ for i in range(10000000):
     obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))
     # env.step(env.action_space.sample())
     env._env.unwrapped.ale.setRAM(83, 2)
-    if i % 1 == 0:  # and i>10:
+    if i % 20 == 0:  # and i>10:
         print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
-            if x < 160 and y < 20:
+            if x < 160 and y < 210:
                 opos = obj.xywh
                 ocol = obj.rgb
                 sur_col = make_darker(ocol)

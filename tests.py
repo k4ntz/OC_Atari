@@ -12,6 +12,8 @@ print(list_2)
 
 del list[0:0]
 print(list)
+
+
 # for i in range(3):
 #     for j in range(6):
 #         print(list[i] % pow(2, j+1) >= pow(2, j))
@@ -19,3 +21,19 @@ print(list)
 # for i in range(3):
 #     if list[i] == 2:
 #         del list[i]
+
+class Shield:
+    def __init__(self, *args, **kwargs):
+        self.rgb = 181, 83, 40
+        self._xy = 0, 0
+        # self.wh =
+        self.hud = False
+
+
+shield = Shield()
+print(isinstance(shield, Shield))
+
+list_3 = [x for x in list_1 if isinstance(x, int)]
+print(list_3)
+list_3 = [x for x in list_1 if not isinstance(x, int)]
+print(list_3)
