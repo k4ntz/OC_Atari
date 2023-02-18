@@ -14,8 +14,9 @@ observation, info = env.reset()
 prevRam = None
 already_figured_out = []
 for _ in range(10000000):
-    obs, reward, terminated, truncated, info = env.step(random.randint(3, 3))
+    obs, reward, terminated, truncated, info = env.step(random.randint(0, 0))
     ram = env._env.unwrapped.ale.getRAM()
+    # env.set_ram(16, _)
     if prevRam is not None:
         for i in range(len(ram)):
             if ram[i] != prevRam[i] and i not in already_figured_out:
@@ -28,9 +29,8 @@ for _ in range(10000000):
     if terminated or truncated:
         observation, info = env.reset()
     print(info)
+    print(ram)
     env.render()
-    if info.get('episode_frame_number') > 50:
-        ipdb.set_trace()
     time.sleep(0.01)
     ipdb.set_trace()
 env.close()

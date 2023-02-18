@@ -14,10 +14,8 @@ observation, info = env.reset()
 prevRam = None
 already_figured_out = []
 for i in range(1000):
-    ram_value = 16
-    for b in range(0, 126):
-        if b == 55:
-            continue
+    ram_value = 20
+    for b in range(3, 126):
         obs, reward, terminated, truncated, info = env.step(random.randint(0, 3))
         print(b - 1)
         env.set_ram(b, ram_value)

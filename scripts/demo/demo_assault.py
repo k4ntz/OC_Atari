@@ -11,7 +11,7 @@ from ocatari.utils import load_agent, parser
 
 game_name = "Assault"
 MODE = "vision"
-# MODE = "revised"
+MODE = "revised"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
@@ -25,12 +25,16 @@ for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
-        action = random.randint(1, 3)
+        action = random.randint(0, 0)
     obs, reward, terminated, truncated, info = env.step(action)
-    # env.set_ram(76, 2)
-    if i % 15 == 0:
+    ram = env._env.unwrapped.ale.getRAM()
+    # env.set_ram(33, i)
+    if i % 10 == 0:
         # obse2 = deepcopy(obse)
         print(env.objects)
+        print("MotherShip_x: " + str(ram[69]))
+        print("Enemy_app: " + str(ram[54:57]))
+        print("Enemy_color: " + str(ram[40:42]))
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210 and obj.visible:
