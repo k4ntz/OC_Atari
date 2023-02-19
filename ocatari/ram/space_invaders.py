@@ -1,4 +1,5 @@
 from .game_objects import GameObject
+import numpy as np
 
 # MAX_NB_OBJS = {  # quentin's code (for skiing?)
 #     "Player": 1,
@@ -160,7 +161,7 @@ global aliens
 aliens = [Alien() for a in range(36)]  # ~ 1-dim
 # aliens = [[Alien() for a in range(6)] for b in range(6)]  # ~ 2-dim
 for alien in aliens:
-    alien.rgb = 134, 134, 29
+    # alien.rgb = 134, 134, 29
     alien.wh = 8, 10
 
 global player
@@ -178,12 +179,16 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     global player
     global prevRam
     global lives_ctr
+    print(hex(id(objects)))
 
     if lives_ctr:
         lives_ctr -= 1
     print(lives_ctr)
     if lives_ctr == 0:
-        objects = [x for x in objects if not isinstance(x, Lives)]
+        # objects = [x for x in objects if not isinstance(x, Lives)]  #!this line was the problem
+        for i, obj in enumerate(objects):
+            if isinstance(obj, Lives):
+                objects.pop(i)
     # if something:
     #     objects.insert(3, Lives())
 
@@ -207,27 +212,32 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
 
     # ALIENS
     # aliens deletion from objects:
-    min, max = 0, 0
-    checked = False
-    for i in range(len(objects)):
-        if isinstance(objects[i], Alien):
-            # print("in schleife drinn")
-            if not checked:
-                min = i
-                checked = True
-            if i >= max:
-                max = i+1
-    del objects[min:max]
-    print("min and max:", min, max)
+    # min, max = 0, 0
+    # checked = False
+    # for i in range(len(objects)):
+    #     if isinstance(objects[i], Alien):
+    #         # print("in schleife drinn")
+    #         if not checked:
+    #             min = i
+    #             checked = True
+    #         if i >= max:
+    #             max = i+1
+    alien_poss = np.where([isinstance(a, Alien) for a in objects])[0]
+    if len(alien_poss) > 0:
+        print(alien_poss[0], alien_poss[-1])
+        del objects[alien_poss[0]:alien_poss[-1]+1]  #  faster
+    # print("min and max:", min, max)
 
     # print("after deletion from objects", objects)
-
+    print(objects)
     # aliens (permanent) deletion from array aliens:
     for i in range(6):
         for j in range(6):
             if not (ram_state[18 + i] % pow(2, j+1) >= pow(2, j)):  # enemies alive are saved in given ram_state
+                print("\n\nCoucou\n")
                 aliens[(5-i)*6 + j] = None  # 5 here is max(range(6)) so we are counting lines in the other way around
 
+    print(len([a for a in aliens if a]))
     # updating positions of aliens
     x, y = ram_state[26], ram_state[16] % 16  # is %16 correct?
     for i in range(6):
@@ -239,11 +249,13 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
 
     # adding aliens to array objects:
     objects.extend([x for x in aliens if x is not None])
+    print("lol", hex(id(objects)))
 
     # print("extending objects", objects)
 
     # SHIELDS
     # updating xywh of shields
-    print(len(objects))
+    # print(len(objects))
+    print("len(objects)", len(objects))
     prevRam = ram_state
     return objects
