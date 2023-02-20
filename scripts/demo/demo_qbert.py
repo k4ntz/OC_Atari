@@ -27,10 +27,13 @@ for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
-        action = 3  # random.randint(0, 5)
+        if i < 95:
+            action = 3  # random.randint(0, 5)
+        else:
+            action = 0
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
-    if i % 5 == 0 and i > 50:
+    if i % 10 == 0 and i > 250:
         print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
@@ -49,6 +52,7 @@ for i in range(10000):
                         pad += " "
                     print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prevRam[i]))
         print("------------------------------------------")
+        print(ram[39])
     prevRam = ram
     if terminated or truncated:
         observation, info = env.reset()

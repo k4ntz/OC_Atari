@@ -10,7 +10,7 @@ objects_colors = {"player": [181, 83, 40], "red_ball": [], "purple_ball": [146, 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 223, 183, 85
+        self.rgb = 181, 83, 40
 
 
 class PurpleBall(GameObject):
