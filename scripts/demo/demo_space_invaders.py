@@ -15,16 +15,19 @@ MODE = "vision"
 # MODE = "raw"
 MODE = "revised"
 HUD = True
-env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
+env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='human')
 observation, info = env.reset()
-
+prevRam = [_ for _ in range(256)]
+checked = False
 for i in range(10000000):
     ram = env._env.unwrapped.ale.getRAM()
     # obs, reward, terminated, truncated, info = env.step(-2)
-    obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))
+    obs, reward, terminated, truncated, info = env.step(random.randint(0, 1))
     # env.step(env.action_space.sample())
-    env._env.unwrapped.ale.setRAM(83, 2)
-    if i % 10 == 0 and i>650:
+    # env._env.unwrapped.ale.setRAM(73, 2)
+    if checked or i % 1 == 0 and i>38 and prevRam[73] != ram[73]:
+        checked = True
+        print("i =", i)
         print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
@@ -43,4 +46,5 @@ for i in range(10000000):
     if terminated or truncated:
         observation, info = env.reset()
     # modify and display render
+    prevRam = ram
 env.close()
