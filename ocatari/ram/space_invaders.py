@@ -1,6 +1,7 @@
 from .game_objects import GameObject
 import numpy as np
 
+
 # MAX_NB_OBJS = {  # quentin's code (for skiing?)
 #     "Player": 1,
 #     "Tree": 4,
@@ -54,7 +55,7 @@ class Bullet(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
         self._xy = 0, 0
-        # self.wh =
+        self.wh = 1, 9
         self.hud = False
 
 
@@ -162,7 +163,7 @@ global aliens
 
 global player
 firstCall = True
-lives_ctr = 30
+lives_ctr = 41
 global scores
 global prevRam
 prevRam = [i for i in range(256)]
@@ -180,27 +181,22 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
 
     if lives_ctr:
         lives_ctr -= 1
-    # print(lives_ctr)
-    if lives_ctr == 0:
-        # objects = [x for x in objects if not isinstance(x, Lives)]  # this line was the problem
+    else:
         for i, obj in enumerate(objects):
             if isinstance(obj, Lives):
                 objects.pop(i)
-    # if something:
-    #     objects.insert(3, Lives())
+    if not firstCall and hud:
+        if ram_state[73] != prevRam[73]:
+            lives_ctr = 41  # handle real visibility instead!
+            objects.append(Lives())
 
     if firstCall:  # works correctly
         player = objects[0]
-        player.wh = 7, 10
-        player.rgb = 92, 186, 92
-        aliens = [Alien() for a in range(36)]  # ~ 1-dim
-        for alien in aliens:
-            # alien.rgb = 134, 134, 29
-            alien.wh = 8, 10
+        aliens = [Alien() for _ in range(36)]  # ~ 1-dim
         for i in range(3):
-            objects.insert(4, Shield())
-            objects[4].xy = 42 + i*32, 157
-        bullets = [Bullet() for i in range(3)]
+            objects.insert(4, Shield())  # put them from init_.._ram!
+            objects[4].xy = 42 + i * 32, 157
+        bullets = [Bullet() for _ in range(3)]
         if not hud:
             del objects[1:4]
         else:
@@ -217,23 +213,23 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     alien_poss = np.where([isinstance(a, Alien) for a in objects])[0]
     if len(alien_poss) > 0:
         # print(alien_poss[0], alien_poss[-1])
-        del objects[alien_poss[0]:alien_poss[-1]+1]  # faster
+        del objects[alien_poss[0]:alien_poss[-1] + 1]  # faster
 
     # aliens (permanent) deletion from array aliens:
     for i in range(6):
         for j in range(6):
-            if not (ram_state[18 + i] % pow(2, j+1) >= pow(2, j)):  # enemies alive are saved in given ram_state
-                aliens[(5-i)*6 + j] = None  # 5 here is max(range(6)) so we are counting lines in the other way around
+            if not (ram_state[18 + i] % pow(2, j + 1) >= pow(2, j)):  # enemies alive are saved in given ram_state
+                aliens[(5 - i) * 6 + j] = None  # 5 = max(range(6)) so we are counting lines in the other way around
 
     # updating positions of aliens
     x, y = ram_state[26], ram_state[16] % 16  # is %16 correct?
     for i in range(6):
         for j in range(6):
-            if aliens[i*6 + j]:
+            if aliens[i * 6 + j]:
                 # if y >= 20:  # this is somehow broken! the 31 does not get added after y = 20
                 #     aliens[i*6 + j].xy = x-1 + j*16, 31 + y*2 + i*18 + 32  # + 22 for x
                 # else:
-                aliens[i*6 + j].xy = x-1 + j*16, 31 + y*2 + i*18  # + 22 for x
+                aliens[i * 6 + j].xy = x - 1 + j * 16, 31 + y * 2 + i * 18  # + 22 for x
 
     # adding aliens to array objects:
     objects.extend([x for x in aliens if x is not None])
@@ -244,13 +240,13 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
             sat_checked = False
             for obj in objects:
                 if isinstance(obj, Satellite):
-                    obj.xy = ram_state[30]-1, 12
+                    obj.xy = ram_state[30] - 1, 12
                     sat_checked = True
                 if isinstance(obj, Score):
                     objects.remove(obj)
             if not sat_checked:
                 sat_dish = Satellite()
-                sat_dish.xy = ram_state[30]-1, 12
+                sat_dish.xy = ram_state[30] - 1, 12
                 objects.append(sat_dish)
         else:
             score_in = False
@@ -268,5 +264,30 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
                 if isinstance(obj, Shield):
                     objects.remove(obj)
 
+    # BULLETS
+    # determining if bullets are visible
+    bullets_visible = [False, False, False]
+    if not firstCall:
+        for i in range(2):
+            bullets_visible[i] = True if ram_state[81 + i] != prevRam[81 + i] else False
+            # and 116 + player.wh[0] >= ram_state[83 + i] >= 34
+        bullets_visible[2] = True if ram_state[85] != prevRam[85] else False
+
+        # updating bullets poses
+        for i in range(2):  # CORRECT MY Y-POS
+            bullets[i].xy = ram_state[83 + i], ram_state[81 + i]  # - 145  # to be edited later?
+        bullets[2].xy = ram_state[87], ram_state[85]  # - 69
+
+    # appending bullets to objects
+    for i in range(3):
+        if bullets_visible[i]:
+            if not bullets[i] in objects:
+                objects.append(bullets[i])
+        else:
+            if bullets[i] in objects:
+                objects.remove(bullets[i])
+
+    # print("length of aliens", len([a for a in aliens if a]))
+    # print("len(objects):", len(objects))
     prevRam = ram_state
     return objects
