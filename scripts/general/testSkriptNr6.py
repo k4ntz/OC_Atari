@@ -7,7 +7,7 @@ import random
 this test makes it easy to test several indices individually or at once and to read the BITS of changing values
 """
 
-env = OCAtari("SpaceInvaders-v4", mode="vision", render_mode='rgb_array')  # Skiing-v4, DemonAttack-v4, SpaceInvaders-v4
+env = OCAtari("SpaceInvaders-v4", mode="revised", render_mode='rgb_array')  # Skiing-v4, DemonAttack-v4, SpaceInvaders-v4
 observation, info = env.reset()
 prevRam = None
 
@@ -56,7 +56,7 @@ for ROUND in range(10000000):
         env._env.unwrapped.ale.setRAM(83, 3)  # fasten lives (83 for asterix)
         # env._env.unwrapped.ale.setRAM(68, 1)  # fasten lives (83 for asterix)
 
-        if ROUND % 1 == 0:  # and ROUND>80:
+        if ROUND % 60 == 0:  # and ROUND>80:
             print(ram)
             for k in range(len(ram)):
                 if ram[k] != prevRam[k] and k not in already_figured_out:

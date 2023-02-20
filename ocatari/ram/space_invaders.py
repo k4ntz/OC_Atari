@@ -36,7 +36,7 @@ class Satellite(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 151, 25, 122
         self._xy = 0, 0
-        # self.wh =
+        self.wh = 7, 8
         self.hud = False
 
 
@@ -45,7 +45,7 @@ class Shield(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 181, 83, 40
         self._xy = 0, 0
-        # self.wh =
+        self.wh = 8, 18
         self.hud = False
 
 
@@ -82,12 +82,12 @@ class Lives(GameObject):
 def _detect_objects_space_invaders_raw(info, ram_state):
     info["aliens"] = ram_state[16:24]
     info["x_positions"] = ram_state[26:31]
-    info["walls"] = ram_state[43:69]
+    info["shields"] = ram_state[43:70]
     info["lives"] = ram_state[73]
     info["bullets"] = ram_state[81:89]
     info["score"] = ram_state[102:106]
     # info["aliens_y"] = ram_state[16] % 32  # taking only the first 5 bits on the right
-    # # ram_state[16] has also y of frame of players with walls together
+    # # ram_state[16] has also y of frame of players with shields together
     #
     # info["number_enemies"] = ram_state[17]  # number of alive aliens. if they are less the make the game quicker
     #
@@ -102,21 +102,21 @@ def _detect_objects_space_invaders_raw(info, ram_state):
     # info["row_6"] = ram_state[23]
     # # ram[32:38] have the same value as ram[17:23] initialized. sense still not known
     #
-    # info["visibility_players_walls"] = ram_state[24]
+    # info["visibility_players_shields"] = ram_state[24]
     #
     # info["aliens_x"] = ram_state[26]  # x of all aliens is common
-    # info["walls_x"] = ram_state[27]  # wall_left is reference
+    # info["shields_x"] = ram_state[27]  # shield_left is reference
     # info["player_green_x"] = ram_state[28]  # begins with 35. (0 < player_x < 255)
     # info["player_yellow_x"] = ram_state[29]  # begins with 117. (0 < player_x < 255)
     # info["satellite_dish_x"] = ram_state[30]
     #
     # info["graphics"] = ram_state[42]  # graphics of players being destroyed and visibility of score
     #
-    # info["walls"] = ram_state[43:69]  # the 3 walls. they are represented in the same order as in the ram(from left
-    # # to right)
-    # info["wall_left"] = ram_state[43:51]  # represented row by row in ram as single cell by another in same order
-    # info["wall_middle"] = ram_state[52:60]  # represented row by row in ram as single cell by another in same order
-    # info["wall_right"] = ram_state[61:69]  # represented row by row in ram as single cell by another in same order
+    # info["shields"] = ram_state[43:70]  # the 3 shields. they are represented in the same order as in the ram (from
+    # left to right)
+    # info["shield_left"] = ram_state[43:52]  # represented row by row in ram as single cell by another in same order
+    # info["shield_middle"] = ram_state[52:61]  # represented row by row in ram as single cell by another in same order
+    # info["shield_right"] = ram_state[61:70]  # represented row by row in ram as single cell by another in same order
     #
     # info["objects_colours"] = ram_state[71]  # colours
     # info["changing_symbols_enemies"] = ram_state[72]  # when destroyed
@@ -158,19 +158,15 @@ def _init_objects_space_invaders_ram(hud=False):
 global prevRam
 
 global aliens
-aliens = [Alien() for a in range(36)]  # ~ 1-dim
 # aliens = [[Alien() for a in range(6)] for b in range(6)]  # ~ 2-dim
-for alien in aliens:
-    # alien.rgb = 134, 134, 29
-    alien.wh = 8, 10
 
 global player
-
-global firstCall
 firstCall = True
-
-global lives_ctr
 lives_ctr = 30
+global scores
+global prevRam
+prevRam = [i for i in range(256)]
+global bullets
 
 
 def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
@@ -179,13 +175,14 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     global player
     global prevRam
     global lives_ctr
-    print(hex(id(objects)))
+    global scores
+    global bullets
 
     if lives_ctr:
         lives_ctr -= 1
-    print(lives_ctr)
+    # print(lives_ctr)
     if lives_ctr == 0:
-        # objects = [x for x in objects if not isinstance(x, Lives)]  #!this line was the problem
+        # objects = [x for x in objects if not isinstance(x, Lives)]  # this line was the problem
         for i, obj in enumerate(objects):
             if isinstance(obj, Lives):
                 objects.pop(i)
@@ -196,14 +193,19 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
         player = objects[0]
         player.wh = 7, 10
         player.rgb = 92, 186, 92
-        print(objects)
+        aliens = [Alien() for a in range(36)]  # ~ 1-dim
+        for alien in aliens:
+            # alien.rgb = 134, 134, 29
+            alien.wh = 8, 10
+        for i in range(3):
+            objects.insert(4, Shield())
+            objects[4].xy = 42 + i*32, 157
+        bullets = [Bullet() for i in range(3)]
         if not hud:
             del objects[1:4]
-        # objects.extend(alien for list in aliens for alien in list if isinstance(alien, Alien))
-        # objects.extend(aliens)
+        else:
+            scores = objects[1:3]
         firstCall = False
-
-    # print("begin", objects)
 
     # PLAYER
     # updating player position
@@ -212,50 +214,59 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
 
     # ALIENS
     # aliens deletion from objects:
-    # min, max = 0, 0
-    # checked = False
-    # for i in range(len(objects)):
-    #     if isinstance(objects[i], Alien):
-    #         # print("in schleife drinn")
-    #         if not checked:
-    #             min = i
-    #             checked = True
-    #         if i >= max:
-    #             max = i+1
     alien_poss = np.where([isinstance(a, Alien) for a in objects])[0]
     if len(alien_poss) > 0:
-        print(alien_poss[0], alien_poss[-1])
-        del objects[alien_poss[0]:alien_poss[-1]+1]  #  faster
-    # print("min and max:", min, max)
+        # print(alien_poss[0], alien_poss[-1])
+        del objects[alien_poss[0]:alien_poss[-1]+1]  # faster
 
-    # print("after deletion from objects", objects)
-    print(objects)
     # aliens (permanent) deletion from array aliens:
     for i in range(6):
         for j in range(6):
             if not (ram_state[18 + i] % pow(2, j+1) >= pow(2, j)):  # enemies alive are saved in given ram_state
-                print("\n\nCoucou\n")
                 aliens[(5-i)*6 + j] = None  # 5 here is max(range(6)) so we are counting lines in the other way around
 
-    print(len([a for a in aliens if a]))
     # updating positions of aliens
     x, y = ram_state[26], ram_state[16] % 16  # is %16 correct?
     for i in range(6):
         for j in range(6):
             if aliens[i*6 + j]:
-                aliens[i*6 + j].xy = x-1 + j*16, 31 + y//5 + i*18  # + 22 for x
-    # print(aliens)
-    # print("updating poses", objects)
+                # if y >= 20:  # this is somehow broken! the 31 does not get added after y = 20
+                #     aliens[i*6 + j].xy = x-1 + j*16, 31 + y*2 + i*18 + 32  # + 22 for x
+                # else:
+                aliens[i*6 + j].xy = x-1 + j*16, 31 + y*2 + i*18  # + 22 for x
 
     # adding aliens to array objects:
     objects.extend([x for x in aliens if x is not None])
-    print("lol", hex(id(objects)))
 
-    # print("extending objects", objects)
+    # SCORE
+    if hud and not firstCall:
+        if ram_state[30] != prevRam[30]:
+            sat_checked = False
+            for obj in objects:
+                if isinstance(obj, Satellite):
+                    obj.xy = ram_state[30]-1, 12
+                    sat_checked = True
+                if isinstance(obj, Score):
+                    objects.remove(obj)
+            if not sat_checked:
+                sat_dish = Satellite()
+                sat_dish.xy = ram_state[30]-1, 12
+                objects.append(sat_dish)
+        else:
+            score_in = False
+            for obj in objects:
+                if isinstance(obj, Score):
+                    score_in = True
+            if not score_in:
+                objects.insert(1, scores[0])
+                objects.insert(2, scores[1])
 
-    # SHIELDS
-    # updating xywh of shields
-    # print(len(objects))
-    print("len(objects)", len(objects))
+    # visibility of shields
+    for alien in aliens:
+        if alien and alien.xy[1] + alien.wh[1] >= 157:
+            for obj in objects:
+                if isinstance(obj, Shield):
+                    objects.remove(obj)
+
     prevRam = ram_state
     return objects
