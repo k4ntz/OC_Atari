@@ -72,7 +72,7 @@ def _detect_objects_space_invaders(objects, obs, hud):
 
     if hud:
         for i, obj in enumerate(["score", "score2"]):
-            scores = find_objects(obs, objects_colors[obj], closing_dist=5, maxy=30)
+            scores = find_objects(obs, objects_colors[obj], closing_dist=12, maxy=30)
             for instance in scores:
                 objects.append(Score(*instance, i + 1))
 
