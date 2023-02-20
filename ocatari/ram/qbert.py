@@ -10,7 +10,7 @@ class Player(GameObject):
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 78, 103
-        self.wh = 8, 19
+        self.wh = 8, 20
         self.rgb = 181, 83, 40
         self.hud = False
 
@@ -101,11 +101,20 @@ def _init_objects_qbert_ram(hud=True):
 def _detect_objects_qbert_revised(objects, ram_state, hud=True):
     objects.clear()
 
-    if ram_state[68] != 0 and ram_state[43] != 0:
-        # oder ram_state[33], ram_state[67] für y
+    if ram_state[67] != 0 and ram_state[43] != 0 and ram_state[67] < 190:
         player = Player()
-        player.xy = ram_state[43] - 3, ram_state[68] + 17
+        if ram_state[67] < 70:
+            player.xy = ram_state[43] - 3, ram_state[67] - 8
+        elif ram_state[67] < 100:
+            player.xy = ram_state[43] - 3, ram_state[67] - 7
+        else:
+            player.xy = ram_state[43] - 3, ram_state[67] - 6
         objects.append(player)
+
+    if ram_state[39] != 255:
+        coily = Coily()
+        coily.xy = 75, (ram_state[39] * 30) + 3
+        objects.append(coily)
 
     if hud:
         objects.append(Score())
@@ -116,6 +125,9 @@ def _detect_objects_qbert_revised(objects, ram_state, hud=True):
 
 def _detect_objects_qbert_raw(info, ram_state):
 
+    player = ram_state[43], ram_state[67]
+    enemy = ram_state[47], ram_state[46]
+
     # ram_state[126] maybe sprite 171 = jump and 201 normal
 
-    pass
+    info["ram-slice"] = player + enemy
