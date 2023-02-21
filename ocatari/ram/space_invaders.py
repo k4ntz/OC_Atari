@@ -103,15 +103,15 @@ def _detect_objects_space_invaders_raw(info, ram_state):
     # info["row_6"] = ram_state[23]
     # # ram[32:38] have the same value as ram[17:23] initialized. sense still not known
     #
-    # info["visibility_players_shields"] = ram_state[24]
+    # info["visibility_players_shields"] = ram_state[24]  # for player see 72
     #
     # info["aliens_x"] = ram_state[26]  # x of all aliens is common
     # info["shields_x"] = ram_state[27]  # shield_left is reference
     # info["player_green_x"] = ram_state[28]  # begins with 35. (0 < player_x < 255)
     # info["player_yellow_x"] = ram_state[29]  # begins with 117. (0 < player_x < 255)
-    # info["satellite_dish_x"] = ram_state[30]
+    # info["satellite_x"] = ram_state[30]
     #
-    # info["graphics"] = ram_state[42]  # graphics of players being destroyed and visibility of score
+    # info["graphics"] = ram_state[42]  # graphics of players being destroyed and setting ones to score
     #
     # info["shields"] = ram_state[43:70]  # the 3 shields. they are represented in the same order as in the ram (from
     # left to right)
@@ -150,9 +150,16 @@ def _init_objects_space_invaders_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(1)]  # , Alien()]  # , Satellite(), Shield(), Bullet()]
+    objects = [Player(1)]
+
     if hud:
         objects.extend([Score(1, 4), Score(2, 84), Lives()])
+
+    for i in range(3):
+        shield = Shield()
+        shield.xy = 42 + i * 32, 157
+        objects.append(shield)
+
     return objects
 
 
@@ -160,14 +167,17 @@ global prevRam
 
 global aliens
 # aliens = [[Alien() for a in range(6)] for b in range(6)]  # ~ 2-dim
-
+lives_ctr = 41
 global player
 firstCall = True
-lives_ctr = 41
 global scores
 global prevRam
 prevRam = [i for i in range(256)]
-global bullets
+# global bullets
+global satellite
+satellite = Satellite()
+global score_ctr
+score_ctr = 1
 
 
 def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
@@ -178,6 +188,8 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     global lives_ctr
     global scores
     global bullets
+    global satellite
+    global score_ctr
 
     if lives_ctr:
         lives_ctr -= 1
@@ -187,26 +199,32 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
                 objects.pop(i)
     if not firstCall and hud:
         if ram_state[73] != prevRam[73]:
-            lives_ctr = 41  # handle real visibility instead!
+            lives_ctr = 22  # handle real visibility instead!
             objects.append(Lives())
 
     if firstCall:  # works correctly
         player = objects[0]
         aliens = [Alien() for _ in range(36)]  # ~ 1-dim
-        for i in range(3):
-            objects.insert(4, Shield())  # put them from init_.._ram!
-            objects[4].xy = 42 + i * 32, 157
+        lives_ctr = 41
         bullets = [Bullet() for _ in range(3)]
-        if not hud:
+        if not hud and isinstance(objects[1], Score):
             del objects[1:4]
         else:
             scores = objects[1:3]
-        firstCall = False
 
     # PLAYER
     # updating player position
     player.xy = ram_state[28] - 1, 185
-    # handle player flickering?
+    # handle player flickering? not so important because it is flickering only at begin before game begins
+    # and for very short time
+    # if not firstCall and ram_state[72] != prevRam[72]:  72 might be wrong value to observe
+    #     if int(ram_state[72]) - int(prevRam[72]) == 64:  # this detection method does not work correctly
+    #         if player not in objects:
+    #             objects.append(player)
+    #     else:
+    #         for i, obj in enumerate(objects):
+    #             if isinstance(obj, Player):
+    #                 objects.pop(i)
 
     # ALIENS
     # aliens deletion from objects:
@@ -235,27 +253,29 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     objects.extend([x for x in aliens if x is not None])
 
     # SCORE
-    if hud and not firstCall:
-        if ram_state[30] != prevRam[30]:
-            sat_checked = False
-            for obj in objects:
-                if isinstance(obj, Satellite):
-                    obj.xy = ram_state[30] - 1, 12
-                    sat_checked = True
-                if isinstance(obj, Score):
-                    objects.remove(obj)
-            if not sat_checked:
-                sat_dish = Satellite()
-                sat_dish.xy = ram_state[30] - 1, 12
-                objects.append(sat_dish)
+    if not firstCall:
+        if hud:
+            if ram_state[30] != prevRam[30]:
+                score_ctr = 3
+                satellite.xy = ram_state[30] - 1, 12
+                if satellite not in objects:
+                    objects.append(satellite)
+                for i in range(2):
+                    if scores[i] in objects:
+                        objects.remove(scores[i])
+            else:
+                score_ctr -= 1
+                if score_ctr == 0:
+                    score_ctr = 1
+                    if satellite in objects:
+                        objects.remove(satellite)
+                        objects.insert(1, scores[0])
+                        objects.insert(2, scores[1])
         else:
-            score_in = False
-            for obj in objects:
-                if isinstance(obj, Score):
-                    score_in = True
-            if not score_in:
-                objects.insert(1, scores[0])
-                objects.insert(2, scores[1])
+            if ram_state[30] != prevRam[30]:
+                satellite.xy = ram_state[30] - 1, 12
+                if satellite not in objects:
+                    objects.append(satellite)
 
     # visibility of shields
     for alien in aliens:
@@ -269,9 +289,10 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     bullets_visible = [False, False, False]
     if not firstCall:
         for i in range(2):
-            bullets_visible[i] = True if ram_state[81 + i] != prevRam[81 + i] else False
+            bullets_visible[i] = True if ram_state[81 + i] != prevRam[81 + i] \
+                                         and bullets[i].xy[1]<195 else False
             # and 116 + player.wh[0] >= ram_state[83 + i] >= 34
-        bullets_visible[2] = True if ram_state[85] != prevRam[85] else False
+        bullets_visible[2] = True if ram_state[85] != prevRam[85] and bullets[2].xy[1]<195 else False
 
         # updating bullets poses
         for i in range(2):  # CORRECT MY Y-POS
@@ -286,8 +307,9 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
         else:
             if bullets[i] in objects:
                 objects.remove(bullets[i])
-
     # print("length of aliens", len([a for a in aliens if a]))
     # print("len(objects):", len(objects))
     prevRam = ram_state
+    if firstCall:
+        firstCall = False
     return objects
