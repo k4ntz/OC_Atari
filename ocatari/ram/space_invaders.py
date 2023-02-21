@@ -163,8 +163,6 @@ def _init_objects_space_invaders_ram(hud=False):
     return objects
 
 
-global prevRam
-
 global aliens
 # aliens = [[Alien() for a in range(6)] for b in range(6)]  # ~ 2-dim
 lives_ctr = 41
@@ -178,6 +176,7 @@ global satellite
 satellite = Satellite()
 global score_ctr
 score_ctr = 1
+global bullets
 
 
 def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
@@ -230,27 +229,25 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     # aliens deletion from objects:
     alien_poss = np.where([isinstance(a, Alien) for a in objects])[0]
     if len(alien_poss) > 0:
-        # print(alien_poss[0], alien_poss[-1])
+        # print(alien_poss[0], alien_poss[-1] + 1)
+        # print(alien_poss)
         del objects[alien_poss[0]:alien_poss[-1] + 1]  # faster
 
     # aliens (permanent) deletion from array aliens:
     for i in range(6):
         for j in range(6):
-            if not (ram_state[18 + i] % pow(2, j + 1) >= pow(2, j)):  # enemies alive are saved in given ram_state
-                aliens[(5 - i) * 6 + j] = None  # 5 = max(range(6)) so we are counting lines in the other way around
+            if not (ram_state[23 - i] % pow(2, j + 1) >= pow(2, j)):  # enemies alive are saved in ram_state[18:24]
+                aliens[i * 6 + j] = None  # 5 = max(range(6)) so we are counting lines in the other way around
 
     # updating positions of aliens
-    x, y = ram_state[26], ram_state[16] % 16  # is %16 correct?
+    x, y = ram_state[26], ram_state[16]
     for i in range(6):
         for j in range(6):
             if aliens[i * 6 + j]:
-                # if y >= 20:  # this is somehow broken! the 31 does not get added after y = 20
-                #     aliens[i*6 + j].xy = x-1 + j*16, 31 + y*2 + i*18 + 32  # + 22 for x
-                # else:
-                aliens[i * 6 + j].xy = x - 1 + j * 16, 31 + y * 2 + i * 18  # + 22 for x
+                aliens[i * 6 + j].xy = x - 1 + j * 16, 31 + y * 2 + i * 18
 
     # adding aliens to array objects:
-    objects.extend([x for x in aliens if x is not None])
+    objects.extend([x for x in aliens if x])
 
     # SCORE
     if not firstCall:
@@ -290,9 +287,9 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     if not firstCall:
         for i in range(2):
             bullets_visible[i] = True if ram_state[81 + i] != prevRam[81 + i] \
-                                         and bullets[i].xy[1]<195 else False
+                                         and bullets[i].xy[1] < 195 else False
             # and 116 + player.wh[0] >= ram_state[83 + i] >= 34
-        bullets_visible[2] = True if ram_state[85] != prevRam[85] and bullets[2].xy[1]<195 else False
+        bullets_visible[2] = True if ram_state[85] != prevRam[85] and bullets[2].xy[1] < 195 else False
 
         # updating bullets poses
         for i in range(2):  # CORRECT MY Y-POS
@@ -307,6 +304,7 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
         else:
             if bullets[i] in objects:
                 objects.remove(bullets[i])
+    print(len([a for a in aliens if a]) == ram_state[17])
     # print("length of aliens", len([a for a in aliens if a]))
     # print("len(objects):", len(objects))
     prevRam = ram_state
