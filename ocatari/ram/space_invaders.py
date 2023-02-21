@@ -275,8 +275,8 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
 
         # updating bullets poses
         for i in range(2):  # CORRECT MY Y-POS
-            bullets[i].xy = ram_state[83 + i], ram_state[81 + i]  # - 145  # to be edited later?
-        bullets[2].xy = ram_state[87], ram_state[85]  # - 69
+            bullets[i].xy = ram_state[83 + i] - 2, 2 * ram_state[81 + i] + 3  # - 145  # to be edited later?
+        bullets[2].xy = ram_state[87] - 2, 2 * ram_state[85] + 3  # - 69
 
     # appending bullets to objects
     for i in range(3):
