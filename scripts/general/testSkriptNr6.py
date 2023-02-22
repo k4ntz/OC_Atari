@@ -16,7 +16,7 @@ not_important = constant  # + list(range(55, 57))
 already_figured_out = not_important  # + list(range(94, 97)) \
 # + list(range(41, 50))  # + list(range(19, 27)) + list(range(29, 37))
 
-value = 1  # initial value you are testing with
+value = 1  # initial value you test with
 index = 54
 
 for ROUND in range(10000000):

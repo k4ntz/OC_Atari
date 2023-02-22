@@ -12,7 +12,6 @@ from ocatari.ram.demonAttack import ProjectileHostile
 from ocatari.utils import load_agent, parser
 
 
-
 game_name = "SpaceInvaders-v4"
 MODE = "vision"
 # MODE = "raw"
@@ -37,8 +36,8 @@ for i in range(10000000):
     obs, reward, terminated, truncated, info = env.step(action)
     # env.step(env.action_space.sample())
     # env._env.unwrapped.ale.setRAM(73, 2)
-    if i > 200 and i % 10 == 0:  # checked or i % 1 == 0 and i>38 and prevRam[73] != ram[73]:
-    # if i > 30 and i % 2 == 0:  # checked or i % 1 == 0 and i>38 and prevRam[73] != ram[73]:
+    if i > 200 and i % 90 == 0:  # checked or i % 1 == 0 and i>38 and prevRam[73] != ram[73]:
+        # if i > 30 and i % 2 == 0:  # checked or i % 1 == 0 and i>38 and prevRam[73] != ram[73]:
         checked = True
         print("i =", i)
         print(env.objects)

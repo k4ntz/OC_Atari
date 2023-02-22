@@ -9,6 +9,7 @@ from termcolor import colored
 #     "Flag": 4
 # }
 
+
 def make_bitmap(alien_states):
     emptc = 6 - int(max(alien_states)).bit_length()  # nb empty columns
     # return "\n".join([format(el, '06b')[emptc:] + "0" * emptc for el in alien_states])
@@ -17,6 +18,7 @@ def make_bitmap(alien_states):
 
 def print_bmp(bmp):
     print(colored("\n".join(bmp)[::-1], "green"))
+
 
 class Player(GameObject):
     def __init__(self, num, *args, **kwargs):
@@ -95,7 +97,7 @@ def _detect_objects_space_invaders_raw(info, ram_state):
     info["lives"] = ram_state[73]
     info["bullets"] = ram_state[81:89]
     info["score"] = ram_state[102:106]
-    # info["aliens_y"] = ram_state[16] % 32  # taking only the first 5 bits on the right
+    # info["aliens_y"] = ram_state[16]
     # # ram_state[16] has also y of frame of players with shields together
     #
     # info["number_enemies"] = ram_state[17]  # number of alive aliens. if they are less the make the game quicker
@@ -254,7 +256,7 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
             print(bitmap[i][j], end="")
             # import ipdb;ipdb.set_trace()
             if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):  # enemies alive are saved in ram_state[18:24]
-            # if  not bitmap[i][j]:  # enemies alive are saved in ram_state[18:24]
+                # if  not bitmap[i][j]:  # enemies alive are saved in ram_state[18:24]
                 print(colored("DELETED", "red"))
                 aliens[35 - (i * 6 + j)] = None  # 5 = max(range(6)) so we are counting lines in the other way around
     for i in range(6):
