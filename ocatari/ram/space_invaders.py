@@ -1,6 +1,6 @@
 from .game_objects import GameObject
 import numpy as np
-
+from termcolor import colored
 
 # MAX_NB_OBJS = {  # quentin's code (for skiing?)
 #     "Player": 1,
@@ -9,6 +9,14 @@ import numpy as np
 #     "Flag": 4
 # }
 
+def make_bitmap(alien_states):
+    emptc = 6 - int(max(alien_states)).bit_length()  # nb empty columns
+    # return "\n".join([format(el, '06b')[emptc:] + "0" * emptc for el in alien_states])
+    return [(format(el, '06b')[emptc:] + "0" * emptc) for el in alien_states]
+
+
+def print_bmp(bmp):
+    print(colored("\n".join(bmp)[::-1], "green"))
 
 class Player(GameObject):
     def __init__(self, num, *args, **kwargs):
@@ -233,18 +241,26 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
         # print(alien_poss)
         del objects[alien_poss[0]:alien_poss[-1] + 1]  # faster
 
-    # aliens (permanent) deletion from array aliens:
-    for i in range(6):
-        for j in range(6):
-            if not (ram_state[23 - i] % pow(2, j + 1) >= pow(2, j)):  # enemies alive are saved in ram_state[18:24]
-                aliens[i * 6 + j] = None  # 5 = max(range(6)) so we are counting lines in the other way around
-
     # updating positions of aliens
     x, y = ram_state[26], ram_state[16]
     for i in range(6):
         for j in range(6):
             if aliens[i * 6 + j]:
                 aliens[i * 6 + j].xy = x - 1 + j * 16, 31 + y * 2 + i * 18
+    bitmap = make_bitmap(ram_state[18:24])
+    # for i, ali in enumerate("".join(bitmap)):
+    #     if not ali and alien[i]:
+    #         alien[i] = None
+    # aliens (permanent) deletion from array aliens:
+    for i in range(6):
+        for j in range(6):
+            print(bitmap[i][j], end="")
+            # import ipdb;ipdb.set_trace()
+            if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):  # enemies alive are saved in ram_state[18:24]
+            # if  not bitmap[i][j]:  # enemies alive are saved in ram_state[18:24]
+                print(colored("DELETED", "red"))
+                aliens[35 - (i * 6 + j)] = None  # 5 = max(range(6)) so we are counting lines in the other way around
+    print_bmp(bitmap)
 
     # adding aliens to array objects:
     objects.extend([x for x in aliens if x])
@@ -280,6 +296,7 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
             for obj in objects:
                 if isinstance(obj, Shield):
                     objects.remove(obj)
+            break
 
     # BULLETS
     # determining if bullets are visible
@@ -304,6 +321,7 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
         else:
             if bullets[i] in objects:
                 objects.remove(bullets[i])
+    print(len([a for a in aliens if a]), "aliens")
     print(len([a for a in aliens if a]) == ram_state[17])
     # print("length of aliens", len([a for a in aliens if a]))
     # print("len(objects):", len(objects))
