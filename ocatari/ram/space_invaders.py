@@ -222,46 +222,25 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     # PLAYER
     # updating player position
     player.xy = ram_state[28] - 1, 185
-    # handle player flickering? not so important because it is flickering only at begin before game begins
-    # and for very short time
-    # if not firstCall and ram_state[72] != prevRam[72]:  72 might be wrong value to observe
-    #     if int(ram_state[72]) - int(prevRam[72]) == 64:  # this detection method does not work correctly
-    #         if player not in objects:
-    #             objects.append(player)
-    #     else:
-    #         for i, obj in enumerate(objects):
-    #             if isinstance(obj, Player):
-    #                 objects.pop(i)
 
     # ALIENS
     # aliens deletion from objects:
     alien_poss = np.where([isinstance(a, Alien) for a in objects])[0]
     if len(alien_poss) > 0:
-        # print(alien_poss[0], alien_poss[-1] + 1)
-        # print(alien_poss)
         del objects[alien_poss[0]:alien_poss[-1] + 1]  # faster
 
     # updating positions of aliens
     x, y = ram_state[26], ram_state[16]
 
     bitmap, emptc = make_bitmap(ram_state[18:24])
-    # for i, ali in enumerate("".join(bitmap)):
-    #     if not ali and alien[i]:
-    #         alien[i] = None
-    # aliens (permanent) deletion from array aliens:
     for i in range(6):
         for j in range(6):
-            print(bitmap[i][j], end="")
-            # import ipdb;ipdb.set_trace()
             if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):  # enemies alive are saved in ram_state[18:24]
-            # if  not bitmap[i][j]:  # enemies alive are saved in ram_state[18:24]
-                print(colored("DELETED", "red"))
                 aliens[35 - (i * 6 + j)] = None  # 5 = max(range(6)) so we are counting lines in the other way around
     for i in range(6):
         for j in range(6):
             if aliens[i * 6 + j]:
                 aliens[i * 6 + j].xy = x - 1 + (j - emptc) * 16, 31 + y * 2 + i * 18
-    print_bmp(bitmap)
 
     # adding aliens to array objects:
     objects.extend([x for x in aliens if x])
@@ -306,7 +285,6 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
         for i in range(2):
             bullets_visible[i] = True if ram_state[81 + i] != prevRam[81 + i] \
                                          and bullets[i].xy[1] < 195 else False
-            # and 116 + player.wh[0] >= ram_state[83 + i] >= 34
         bullets_visible[2] = True if ram_state[85] != prevRam[85] and bullets[2].xy[1] < 195 else False
 
         # updating bullets poses
@@ -322,10 +300,6 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
         else:
             if bullets[i] in objects:
                 objects.remove(bullets[i])
-    print(len([a for a in aliens if a]), "aliens")
-    print(len([a for a in aliens if a]) == ram_state[17])
-    # print("length of aliens", len([a for a in aliens if a]))
-    # print("len(objects):", len(objects))
     prevRam = ram_state
     if firstCall:
         firstCall = False
