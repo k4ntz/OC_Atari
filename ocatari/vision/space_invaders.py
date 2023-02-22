@@ -48,7 +48,7 @@ class Score(GameObject):
         super().__init__(x, y, w, h, *args)
         if num == 1:
             self.rgb = 92, 186, 92
-        else:  # if you don't play with multiple agent why to consider the yellow value?
+        else:
             self.rgb = 162, 134, 56
 
 
@@ -60,9 +60,8 @@ class Lives(GameObject):
 
 def _detect_objects_space_invaders(objects, obs, hud):
     objects.clear()
-    for i, obj in enumerate(["player", "player2"]):
-        # in jeder Runde von dieser for-Schleife wird nur ein Objekt erkannt?
 
+    for i, obj in enumerate(["player", "player2"]):
         players = find_objects(obs, objects_colors[obj], closing_active=False,
                                miny=180, maxy=195)
         for instance in players:
@@ -73,10 +72,7 @@ def _detect_objects_space_invaders(objects, obs, hud):
 
     if hud:
         for i, obj in enumerate(["score", "score2"]):
-            # in jeder Runde von dieser for-Schleife wird nur ein Objekt erkannt?
-
-            scores = find_objects(obs, objects_colors[obj], min_distance=10,  # closing_active=False,
-                                  maxy=30)
+            scores = find_objects(obs, objects_colors[obj], closing_dist=12, maxy=30)
             for instance in scores:
                 objects.append(Score(*instance, i + 1))
 
@@ -84,7 +80,7 @@ def _detect_objects_space_invaders(objects, obs, hud):
     for instance in aliens:
         objects.append(Alien(*instance))
 
-    shields = find_objects(obs, objects_colors["shield"], closing_dist=10)
+    shields = find_objects(obs, objects_colors["shield"], closing_dist=17, min_distance=20)
     for instance in shields:
         objects.append(Shield(*instance))
 
@@ -95,4 +91,3 @@ def _detect_objects_space_invaders(objects, obs, hud):
     bullets = find_objects(obs, objects_colors["bullet"])
     for instance in bullets:
         objects.append(Bullet(*instance))
-        # for obj in ["shield", "satellite", "bullets"]:

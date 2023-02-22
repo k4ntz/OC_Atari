@@ -43,6 +43,8 @@ for i in range(10000):
         for obs, objects_list, title in zip([obs],
                                                 [env.objects],
                                                 ["ram"] if MODE == "revised" else ["vision"]):
+            print(hex(id(objects_list)))
+            print("lol", len(objects_list))
             for obj in objects_list:
                 opos = obj.xywh
                 ocol = obj.rgb
