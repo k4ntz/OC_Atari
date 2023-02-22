@@ -12,7 +12,7 @@ from termcolor import colored
 def make_bitmap(alien_states):
     emptc = 6 - int(max(alien_states)).bit_length()  # nb empty columns
     # return "\n".join([format(el, '06b')[emptc:] + "0" * emptc for el in alien_states])
-    return [(format(el, '06b')[emptc:] + "0" * emptc) for el in alien_states]
+    return [(format(el, '06b')[emptc:] + "0" * emptc) for el in alien_states], emptc
 
 
 def print_bmp(bmp):
@@ -243,11 +243,8 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
 
     # updating positions of aliens
     x, y = ram_state[26], ram_state[16]
-    for i in range(6):
-        for j in range(6):
-            if aliens[i * 6 + j]:
-                aliens[i * 6 + j].xy = x - 1 + j * 16, 31 + y * 2 + i * 18
-    bitmap = make_bitmap(ram_state[18:24])
+
+    bitmap, emptc = make_bitmap(ram_state[18:24])
     # for i, ali in enumerate("".join(bitmap)):
     #     if not ali and alien[i]:
     #         alien[i] = None
@@ -260,6 +257,10 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
             # if  not bitmap[i][j]:  # enemies alive are saved in ram_state[18:24]
                 print(colored("DELETED", "red"))
                 aliens[35 - (i * 6 + j)] = None  # 5 = max(range(6)) so we are counting lines in the other way around
+    for i in range(6):
+        for j in range(6):
+            if aliens[i * 6 + j]:
+                aliens[i * 6 + j].xy = x - 1 + (j - emptc) * 16, 31 + y * 2 + i * 18
     print_bmp(bitmap)
 
     # adding aliens to array objects:
