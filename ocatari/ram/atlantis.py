@@ -130,10 +130,10 @@ def _init_objects_atlantis_ram(hud=True):
     prev_x3 = 0
     prev_x4 = 0
 
-    # global prev_x_p1
-    # global prev_x_p2
-    # prev_x_p1 = 0
-    # prev_x_p2 = 0
+    global prev_x_p1
+    global prev_x_p2
+    prev_x_p1 = 0
+    prev_x_p2 = 0
 
     return objects
 
@@ -147,8 +147,8 @@ global prev_x1
 global prev_x2
 global prev_x3
 global prev_x4
-# global prev_x_p1
-# global prev_x_p2
+global prev_x_p1
+global prev_x_p2
 
 
 def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
@@ -156,32 +156,32 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
 
     buildings_count = 0
 
-    # global prev_x_p1
-    # global prev_x_p2
+    global prev_x_p1
+    global prev_x_p2
 
-    # if ram_state[58] != 0 and ram_state[60] != 0:
-    #     proj = Projectile()
-    #     if prev_x_p1 < ram_state[60]:
-    #         proj.xy = ram_state[60] - 3, 210 - ram_state[58] - 6
-    #     elif prev_x_p1 == ram_state[60]:
-    #         proj.xy = ram_state[60], 210 - ram_state[58] - 6
-    #     else:
-    #         proj.xy = ram_state[60] + 3, 210 - ram_state[58] - 6
-    #     objects.append(proj)
+    if ram_state[58] != 0 and ram_state[60] != 0:
+        proj = Projectile()
+        if prev_x_p1 < ram_state[60]:
+            proj.xy = ram_state[60] - 3, 210 - ram_state[58] - 6
+        elif prev_x_p1 == ram_state[60]:
+            proj.xy = ram_state[60], 210 - ram_state[58] - 6
+        else:
+            proj.xy = ram_state[60] + 3, 210 - ram_state[58] - 6
+        objects.append(proj)
 
-    # prev_x_p1 = ram_state[60]
+    prev_x_p1 = ram_state[60]
 
-    # if ram_state[59] != 0 and ram_state[61] != 0:
-    #     proj = Projectile()
-    #     if prev_x_p1 < ram_state[61]:
-    #         proj.xy = ram_state[61] - 3, 210 - ram_state[59] - 6
-    #     elif prev_x_p1 == ram_state[61]:
-    #         proj.xy = ram_state[61], 210 - ram_state[59] - 6
-    #     else:
-    #         proj.xy = ram_state[61] + 3, 210 - ram_state[59] - 6
-    #     objects.append(proj)
+    if ram_state[59] != 0 and ram_state[61] != 0:
+        proj = Projectile()
+        if prev_x_p1 < ram_state[61]:
+            proj.xy = ram_state[61] - 3, 210 - ram_state[59] - 6
+        elif prev_x_p1 == ram_state[61]:
+            proj.xy = ram_state[61], 210 - ram_state[59] - 6
+        else:
+            proj.xy = ram_state[61] + 3, 210 - ram_state[59] - 6
+        objects.append(proj)
 
-    # prev_x_p1 = ram_state[61]
+    prev_x_p1 = ram_state[61]
 
     # The visual representation of the Sprite relative to the ram_state
     # seems to differ depending on the ship entering on the left/right.
