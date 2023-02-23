@@ -64,3 +64,7 @@ class GameObject:
     @property
     def h(self):
         return self.wh[1]
+
+    @h.setter
+    def h(self, h):
+        self.wh = self.w, h
