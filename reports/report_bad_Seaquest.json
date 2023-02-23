@@ -1,1261 +1,1673 @@
 Details of frames with mean iou < 0.8
 {
-    "Image_5": {
-        "mean_iou": 0.7581786634418214,
+    "Image_4": {
+        "mean_iou": 0.7734265734265734,
         "per_class_ious": {
-            "Player": 0.6015037593984962,
-            "Lives": 1.0,
-            "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.4000000000000001,
-            "Diver": 0.7692307692307693
-        },
-        "only_in_ram": [],
-        "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "PlayerMissile at (105, 108)",
-            "Score at (91, 9), (14, 8)"
-        ],
-        "objs_in_ram": [
-            "Player at (88, 100)",
-            "PlayerScore at (91, 9)",
-            "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (107, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (142, 141)",
-            "Enemy at (17, 117)",
-            "Enemy at (17, 69)",
-            "Diver at (36, 93)",
-            "Diver at (36, 69)",
-            "PlayerMissile at (105, 108)"
-        ],
-        "objs_in_vision": [
-            "Player at (88, 101), (25, 10)",
-            "Diver at (36, 93), (8, 10)",
-            "Diver at (36, 69), (8, 10)",
-            "Enemy at (142, 138), (8, 7)",
-            "Enemy at (17, 114), (8, 7)",
-            "Enemy at (17, 66), (8, 7)",
-            "Lives at (58, 22), (23, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (58, 5)",
-            "OxygenBarDepleted at (107, 170), (5, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
-        ]
-    },
-    "Image_6": {
-        "mean_iou": 0.7720085470085469,
-        "per_class_ious": {
-            "Player": 0.8333333333333334,
-            "Lives": 1.0,
-            "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.4000000000000001,
+            "Player": 0.6363636363636364,
             "Diver": 0.6153846153846154,
-            "PlayerMissile": 1.0
-        },
-        "only_in_ram": [],
-        "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "Score at (91, 9), (14, 8)"
-        ],
-        "objs_in_ram": [
-            "Player at (89, 99)",
-            "PlayerScore at (91, 9)",
-            "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (105, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (118, 141)",
-            "Enemy at (41, 117)",
-            "Enemy at (41, 69)",
-            "Diver at (48, 93)",
-            "Diver at (48, 69)",
-            "PlayerMissile at (127, 107)"
-        ],
-        "objs_in_vision": [
-            "PlayerMissile at (127, 107), (8, 1)",
-            "Player at (89, 100), (16, 11)",
-            "Diver at (48, 94), (8, 8)",
-            "Diver at (48, 70), (8, 8)",
-            "Enemy at (118, 138), (8, 7)",
-            "Enemy at (41, 114), (8, 7)",
-            "Enemy at (41, 66), (8, 7)",
-            "Lives at (58, 22), (23, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (56, 5)",
-            "OxygenBarDepleted at (105, 170), (7, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
-        ]
-    },
-    "Image_7": {
-        "mean_iou": 0.6766372516372517,
-        "per_class_ious": {
-            "Player": 0.8333333333333334,
             "Lives": 1.0,
-            "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.23916083916083913,
-            "Diver": 0.6648351648351649
+            "OxygenBar": 1.0
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "PlayerScore at (99, 9)"
+        ],
         "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "Score at (91, 9), (14, 8)"
+            "Score at (99, 9), (6, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (101, 95)",
-            "PlayerScore at (91, 9)",
+            "Player at (87, 45)",
+            "PlayerScore at (99, 9)",
+            "Diver at (21, 93)",
+            "Diver at (21, 69)",
             "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (103, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (95, 141)",
-            "Enemy at (64, 117)",
-            "Enemy at (3, 93)",
-            "Enemy at (64, 69)",
-            "Diver at (60, 93)",
-            "Diver at (69, 69)"
+            "OxygenBar at (49, 170)"
         ],
         "objs_in_vision": [
-            "Player at (101, 96), (16, 11)",
-            "Diver at (60, 92), (8, 11)",
-            "Diver at (69, 70), (8, 8)",
-            "Enemy at (95, 137), (8, 7)",
-            "Enemy at (64, 113), (8, 7)",
-            "Enemy at (8, 90), (3, 6)",
-            "Enemy at (64, 65), (8, 7)",
-            "Lives at (58, 22), (23, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (54, 5)",
-            "OxygenBarDepleted at (103, 170), (9, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
-        ]
-    },
-    "Image_8": {
-        "mean_iou": 0.753010878010878,
-        "per_class_ious": {
-            "Player": 0.8333333333333334,
-            "Lives": 1.0,
-            "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.2727272727272727,
-            "Diver": 0.6923076923076923,
-            "PlayerMissile": 1.0
-        },
-        "only_in_ram": [],
-        "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "Score at (91, 9), (14, 8)"
-        ],
-        "objs_in_ram": [
-            "Player at (99, 81)",
-            "PlayerScore at (91, 9)",
-            "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (101, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (71, 141)",
-            "Enemy at (88, 117)",
-            "Enemy at (88, 69)",
-            "Diver at (72, 93)",
-            "Diver at (93, 69)",
-            "PlayerMissile at (124, 89)"
-        ],
-        "objs_in_vision": [
-            "PlayerMissile at (124, 89), (8, 1)",
-            "Player at (99, 82), (16, 11)",
-            "Diver at (72, 93), (8, 10)",
-            "Diver at (93, 70), (8, 8)",
-            "Enemy at (71, 137), (8, 7)",
-            "Enemy at (88, 113), (8, 7)",
-            "Enemy at (88, 65), (8, 7)",
-            "Lives at (58, 22), (23, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (52, 5)",
-            "OxygenBarDepleted at (101, 170), (11, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
+            "Player at (87, 46), (16, 7)\n",
+            "Diver at (21, 94), (8, 8)\n",
+            "Diver at (21, 70), (8, 8)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (99, 9), (6, 8)\n",
+            "OxygenBar at (49, 170), (63, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
     "Image_9": {
-        "mean_iou": 0.7612526362526363,
+        "mean_iou": 0.7043512043512044,
         "per_class_ious": {
             "Player": 0.8333333333333334,
+            "Enemy": 0.5555555555555556,
+            "Diver": 0.34615384615384615,
+            "PlayerMissile": 1.0,
             "Lives": 1.0,
             "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.2727272727272727,
-            "Diver": 0.7417582417582418,
-            "PlayerMissile": 1.0
+            "OxygenBarDepleted": 1.0
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "PlayerScore at (99, 9)"
+        ],
         "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "Score at (91, 9), (14, 8)"
+            "Score at (99, 9), (6, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (101, 95)",
-            "PlayerScore at (91, 9)",
+            "Player at (134, 56)",
+            "PlayerScore at (99, 9)",
+            "Enemy at (58, 141)",
+            "Enemy at (101, 117)",
+            "Enemy at (101, 93)",
+            "Enemy at (101, 69)",
+            "Diver at (106, 93)",
+            "Diver at (106, 69)",
+            "PlayerMissile at (36, 64)",
             "Lives at (58, 22)",
             "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (100, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (49, 141)",
-            "Enemy at (110, 117)",
-            "Enemy at (110, 69)",
-            "Diver at (83, 93)",
-            "Diver at (115, 69)",
-            "PlayerMissile at (81, 103)"
+            "OxygenBarDepleted at (111, 170)"
         ],
         "objs_in_vision": [
-            "PlayerMissile at (81, 103), (8, 1)",
-            "Player at (101, 96), (16, 11)",
-            "Diver at (83, 92), (8, 11)",
-            "Diver at (115, 69), (8, 10)",
-            "Enemy at (49, 137), (8, 7)",
-            "Enemy at (110, 113), (8, 7)",
-            "Enemy at (110, 65), (8, 7)",
-            "Lives at (58, 22), (23, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (51, 5)",
-            "OxygenBarDepleted at (100, 170), (12, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
+            "PlayerMissile at (36, 64), (8, 1)\n",
+            "Player at (134, 57), (16, 11)\n",
+            "Diver at (108, 94), (6, 6)\n",
+            "Diver at (108, 70), (6, 6)\n",
+            "Enemy at (58, 143), (8, 7)\n",
+            "Enemy at (101, 119), (8, 7)\n",
+            "Enemy at (101, 95), (8, 7)\n",
+            "Enemy at (101, 71), (8, 7)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (99, 9), (6, 8)\n",
+            "OxygenBar at (49, 170), (62, 5)\n",
+            "OxygenBarDepleted at (111, 170), (1, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
     "Image_10": {
-        "mean_iou": 0.7862470862470862,
+        "mean_iou": 0.7206410256410256,
         "per_class_ious": {
             "Player": 0.8333333333333334,
+            "Enemy": 0.4000000000000001,
+            "Diver": 0.5865384615384616,
+            "PlayerMissile": 1.0,
             "Lives": 1.0,
             "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.4000000000000001,
-            "Diver": 0.6153846153846154,
-            "CollectedDiver": 1.0
+            "OxygenBarDepleted": 1.0
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "PlayerScore at (91, 9)"
+        ],
         "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "Score at (91, 9), (14, 8)"
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (85, 70)",
+            "Player at (123, 64)",
             "PlayerScore at (91, 9)",
+            "Enemy at (35, 141)",
+            "Enemy at (124, 117)",
+            "Enemy at (124, 93)",
+            "Diver at (129, 93)",
+            "Diver at (106, 69)",
+            "PlayerMissile at (86, 72)",
             "Lives at (58, 22)",
             "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (98, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (26, 141)",
-            "Enemy at (133, 117)",
-            "Enemy at (133, 69)",
-            "Diver at (138, 69)",
-            "CollectedDiver at (58, 178)"
+            "OxygenBarDepleted at (109, 170)"
         ],
         "objs_in_vision": [
-            "Player at (85, 71), (16, 11)",
-            "Diver at (138, 70), (8, 8)",
-            "Enemy at (26, 138), (8, 7)",
-            "Enemy at (133, 114), (8, 7)",
-            "Enemy at (133, 66), (8, 7)",
-            "Lives at (58, 22), (23, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (49, 5)",
-            "OxygenBarDepleted at (98, 170), (14, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)",
-            "CollectedDiver at (58, 178), (8, 9)"
+            "PlayerMissile at (86, 72), (8, 1)\n",
+            "Player at (123, 65), (16, 11)\n",
+            "Diver at (131, 94), (6, 7)\n",
+            "Diver at (106, 69), (8, 10)\n",
+            "Enemy at (35, 144), (8, 7)\n",
+            "Enemy at (124, 120), (8, 7)\n",
+            "Enemy at (124, 96), (8, 7)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (60, 5)\n",
+            "OxygenBarDepleted at (109, 170), (3, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ]
+    },
+    "Image_11": {
+        "mean_iou": 0.6806663806663806,
+        "per_class_ious": {
+            "Player": 0.8333333333333334,
+            "Enemy": 0.4000000000000001,
+            "Diver": 0.5463320463320464,
+            "Lives": 1.0,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0
+        },
+        "only_in_ram": [
+            "PlayerScore at (91, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (129, 69)",
+            "PlayerScore at (91, 9)",
+            "Enemy at (13, 141)",
+            "Enemy at (146, 117)",
+            "Enemy at (146, 93)",
+            "Diver at (151, 93)",
+            "Diver at (95, 69)",
+            "Lives at (58, 22)",
+            "OxygenBar at (49, 170)",
+            "OxygenBarDepleted at (108, 170)"
+        ],
+        "objs_in_vision": [
+            "Player at (129, 70), (16, 11)\n",
+            "Diver at (153, 94), (7, 7)\n",
+            "Diver at (95, 68), (8, 11)\n",
+            "Enemy at (13, 144), (8, 7)\n",
+            "Enemy at (146, 120), (8, 7)\n",
+            "Enemy at (146, 96), (8, 7)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (59, 5)\n",
+            "OxygenBarDepleted at (108, 170), (4, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
     "Image_17": {
-        "mean_iou": 0.784920207997131,
+        "mean_iou": 0.7636642110326322,
         "per_class_ious": {
             "Player": 0.8333333333333334,
+            "Enemy": 0.441786283891547,
+            "Diver": 0.7142857142857143,
+            "PlayerMissile": 1.0,
             "Lives": 1.0,
             "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.6363636363636364,
-            "Diver": 0.23076923076923078,
-            "PlayerMissile": 1.0,
-            "CollectedDiver": 1.0
+            "OxygenBarDepleted": 1.0
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "PlayerScore at (91, 9)"
+        ],
         "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "Score at (91, 9), (14, 8)"
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (69, 82)",
+            "Player at (133, 81)",
             "PlayerScore at (91, 9)",
+            "Enemy at (1, 141)",
+            "Enemy at (33, 117)",
+            "Enemy at (33, 93)",
+            "Diver at (92, 69)",
+            "PlayerMissile at (20, 89)",
             "Lives at (58, 22)",
             "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (85, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (10, 141)",
-            "Enemy at (42, 117)",
-            "Enemy at (42, 69)",
-            "Diver at (49, 117)",
-            "Diver at (49, 69)",
-            "PlayerMissile at (24, 90)",
-            "CollectedDiver at (58, 178)"
+            "OxygenBarDepleted at (96, 170)"
         ],
         "objs_in_vision": [
-            "PlayerMissile at (24, 90), (8, 1)",
-            "Player at (69, 83), (16, 11)",
-            "Diver at (51, 121), (6, 4)",
-            "Diver at (51, 73), (6, 4)",
-            "Enemy at (10, 140), (8, 11)",
-            "Enemy at (42, 116), (8, 11)",
-            "Enemy at (42, 68), (8, 11)",
-            "Lives at (58, 22), (23, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (36, 5)",
-            "OxygenBarDepleted at (85, 170), (27, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)",
-            "CollectedDiver at (58, 178), (8, 9)"
+            "PlayerMissile at (20, 89), (8, 1)\n",
+            "Player at (133, 82), (16, 11)\n",
+            "Diver at (92, 68), (8, 11)\n",
+            "Enemy at (8, 145), (1, 4)\n",
+            "Enemy at (33, 116), (8, 11)\n",
+            "Enemy at (33, 92), (8, 11)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (47, 5)\n",
+            "OxygenBarDepleted at (96, 170), (16, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
     "Image_18": {
-        "mean_iou": 0.784920207997131,
+        "mean_iou": 0.6587200678109769,
         "per_class_ious": {
             "Player": 0.8333333333333334,
+            "Enemy": 0.5454545454545454,
+            "Diver": 0.4102564102564103,
             "Lives": 1.0,
             "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.6363636363636364,
-            "Diver": 0.23076923076923078,
-            "PlayerMissile": 1.0,
-            "CollectedDiver": 1.0
+            "OxygenBarDepleted": 1.0
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "PlayerScore at (91, 9)"
+        ],
         "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "Score at (91, 9), (14, 8)"
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (55, 84)",
+            "Player at (124, 83)",
             "PlayerScore at (91, 9)",
+            "Enemy at (24, 141)",
+            "Enemy at (147, 69)",
+            "Enemy at (56, 117)",
+            "Enemy at (56, 93)",
+            "Diver at (85, 117)",
+            "Diver at (85, 93)",
+            "Diver at (80, 69)",
             "Lives at (58, 22)",
             "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (83, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (32, 141)",
-            "Enemy at (64, 117)",
-            "Enemy at (64, 69)",
-            "Diver at (107, 117)",
-            "Diver at (107, 69)",
-            "PlayerMissile at (106, 92)",
-            "CollectedDiver at (58, 178)"
+            "OxygenBarDepleted at (94, 170)"
         ],
         "objs_in_vision": [
-            "PlayerMissile at (106, 92), (8, 1)",
-            "Player at (55, 85), (16, 11)",
-            "Diver at (109, 121), (6, 4)",
-            "Diver at (109, 73), (6, 4)",
-            "Enemy at (32, 140), (8, 11)",
-            "Enemy at (64, 116), (8, 11)",
-            "Enemy at (64, 68), (8, 11)",
-            "Lives at (58, 22), (23, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (34, 5)",
-            "OxygenBarDepleted at (83, 170), (29, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)",
-            "CollectedDiver at (58, 178), (8, 9)"
+            "Player at (124, 84), (16, 11)\n",
+            "Diver at (87, 121), (6, 4)\n",
+            "Diver at (87, 97), (6, 4)\n",
+            "Diver at (80, 69), (8, 10)\n",
+            "Enemy at (147, 65), (8, 7)\n",
+            "Enemy at (24, 140), (8, 11)\n",
+            "Enemy at (56, 116), (8, 11)\n",
+            "Enemy at (56, 92), (8, 11)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (45, 5)\n",
+            "OxygenBarDepleted at (94, 170), (18, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
     "Image_19": {
-        "mean_iou": 0.6972971472971473,
+        "mean_iou": 0.6761016761016762,
         "per_class_ious": {
-            "Player": 0.8333333333333334,
+            "Enemy": 0.6363636363636364,
+            "Diver": 0.39194139194139194,
             "Lives": 1.0,
             "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.5219155844155844,
-            "Diver": 0.17948717948717952,
-            "PlayerMissile": 1.0,
-            "CollectedDiver": 1.0
+            "OxygenBarDepleted": 1.0
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "Player at (128, 71)",
+            "PlayerScore at (91, 9)"
+        ],
         "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "Score at (91, 9), (14, 8)"
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (62, 97)",
+            "Player at (128, 71)",
             "PlayerScore at (91, 9)",
+            "Enemy at (32, 141)",
+            "Enemy at (64, 117)",
+            "Enemy at (64, 93)",
+            "Diver at (107, 117)",
+            "Diver at (107, 93)",
+            "Diver at (76, 69)",
             "Lives at (58, 22)",
             "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (81, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (54, 141)",
-            "Enemy at (158, 93)",
-            "Enemy at (86, 117)",
-            "Enemy at (86, 69)",
-            "Diver at (81, 141)",
-            "Diver at (90, 117)",
-            "Diver at (90, 69)",
-            "PlayerMissile at (99, 105)",
-            "CollectedDiver at (58, 178)"
+            "OxygenBarDepleted at (94, 170)"
         ],
         "objs_in_vision": [
-            "PlayerMissile at (99, 105), (8, 1)",
-            "Player at (62, 98), (16, 11)",
-            "Diver at (83, 145), (6, 4)",
-            "Diver at (94, 121), (4, 4)",
-            "Diver at (94, 73), (4, 4)",
-            "Enemy at (158, 95), (2, 5)",
-            "Enemy at (54, 140), (8, 11)",
-            "Enemy at (86, 116), (8, 11)",
-            "Enemy at (86, 68), (8, 11)",
-            "Lives at (58, 22), (23, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (32, 5)",
-            "OxygenBarDepleted at (81, 170), (31, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)",
-            "CollectedDiver at (58, 178), (8, 9)"
+            "Diver at (109, 121), (6, 4)\n",
+            "Diver at (109, 97), (6, 4)\n",
+            "Diver at (76, 68), (8, 11)\n",
+            "Enemy at (32, 140), (8, 11)\n",
+            "Enemy at (64, 116), (8, 11)\n",
+            "Enemy at (64, 92), (8, 11)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (45, 5)\n",
+            "OxygenBarDepleted at (94, 170), (18, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ]
+    },
+    "Image_20": {
+        "mean_iou": 0.6451622596153845,
+        "per_class_ious": {
+            "Enemy": 0.6999999999999998,
+            "Diver": 0.35897435897435903,
+            "Lives": 1.0,
+            "OxygenBarDepleted": 0.984375
+        },
+        "only_in_ram": [
+            "Player at (128, 71)",
+            "PlayerScore at (91, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (128, 71)",
+            "PlayerScore at (91, 9)",
+            "Enemy at (32, 141)",
+            "Enemy at (64, 117)",
+            "Enemy at (64, 93)",
+            "Diver at (107, 117)",
+            "Diver at (107, 93)",
+            "Diver at (76, 69)",
+            "Lives at (58, 22)",
+            "OxygenBarDepleted at (49, 170)"
+        ],
+        "objs_in_vision": [
+            "Diver at (109, 121), (6, 4)\n",
+            "Diver at (109, 97), (6, 4)\n",
+            "Diver at (76, 70), (8, 8)\n",
+            "Enemy at (32, 140), (8, 10)\n",
+            "Enemy at (64, 116), (8, 10)\n",
+            "Enemy at (64, 92), (8, 10)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarDepleted at (48, 170), (64, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ]
+    },
+    "Image_23": {
+        "mean_iou": 0.709433423719138,
+        "per_class_ious": {
+            "Player": 0.6363636363636364,
+            "Diver": 0.5824175824175823,
+            "Lives": 1.0,
+            "OxygenBar": 1.0
+        },
+        "only_in_ram": [
+            "PlayerScore at (91, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (77, 45)",
+            "PlayerScore at (91, 9)",
+            "Diver at (151, 141)",
+            "Diver at (151, 117)",
+            "Diver at (151, 93)",
+            "Diver at (9, 69)",
+            "Lives at (58, 22)",
+            "OxygenBar at (49, 170)"
+        ],
+        "objs_in_vision": [
+            "Player at (77, 46), (16, 7)\n",
+            "Diver at (151, 142), (9, 8)\n",
+            "Diver at (151, 118), (9, 8)\n",
+            "Diver at (151, 94), (9, 8)\n",
+            "Diver at (9, 70), (8, 8)\n",
+            "Lives at (58, 22), (15, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (63, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ]
+    },
+    "Image_25": {
+        "mean_iou": 0.6863373554550024,
+        "per_class_ious": {
+            "Player": 0.8333333333333334,
+            "Enemy": 0.4852941176470588,
+            "Diver": 0.6153846153846154,
+            "Lives": 1.0,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0
+        },
+        "only_in_ram": [
+            "PlayerScore at (91, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (81, 58)",
+            "PlayerScore at (91, 9)",
+            "Enemy at (153, 141)",
+            "Enemy at (153, 117)",
+            "Enemy at (153, 93)",
+            "Enemy at (6, 69)",
+            "Diver at (129, 141)",
+            "Diver at (129, 117)",
+            "Diver at (129, 93)",
+            "Diver at (31, 69)",
+            "Lives at (58, 22)",
+            "OxygenBar at (49, 170)",
+            "OxygenBarDepleted at (110, 170)"
+        ],
+        "objs_in_vision": [
+            "Player at (81, 59), (16, 11)\n",
+            "Diver at (129, 142), (8, 8)\n",
+            "Diver at (129, 118), (8, 8)\n",
+            "Diver at (129, 94), (8, 8)\n",
+            "Diver at (31, 70), (8, 8)\n",
+            "Enemy at (153, 143), (7, 7)\n",
+            "Enemy at (153, 119), (7, 7)\n",
+            "Enemy at (153, 95), (7, 7)\n",
+            "Enemy at (8, 71), (6, 7)\n",
+            "Lives at (58, 22), (15, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (61, 5)\n",
+            "OxygenBarDepleted at (110, 170), (2, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ]
+    },
+    "Image_26": {
+        "mean_iou": 0.7748917748917749,
+        "per_class_ious": {
+            "Enemy": 0.5555555555555556,
+            "Diver": 0.7142857142857143,
+            "PlayerMissile": 1.0,
+            "Lives": 1.0,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0
+        },
+        "only_in_ram": [
+            "Player at (89, 52)",
+            "PlayerScore at (83, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (89, 52)",
+            "PlayerScore at (83, 9)",
+            "Enemy at (129, 141)",
+            "Enemy at (129, 117)",
+            "Enemy at (129, 93)",
+            "Diver at (117, 141)",
+            "Diver at (117, 117)",
+            "Diver at (117, 93)",
+            "Diver at (25, 69)",
+            "PlayerMissile at (150, 60)",
+            "Lives at (58, 22)",
+            "OxygenBar at (49, 170)",
+            "OxygenBarDepleted at (108, 170)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (150, 60), (8, 1)\n",
+            "Diver at (117, 140), (8, 11)\n",
+            "Diver at (117, 116), (8, 11)\n",
+            "Diver at (117, 92), (8, 11)\n",
+            "Diver at (25, 68), (8, 11)\n",
+            "Enemy at (129, 143), (8, 7)\n",
+            "Enemy at (129, 119), (8, 7)\n",
+            "Enemy at (129, 95), (8, 7)\n",
+            "Lives at (58, 22), (15, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBar at (49, 170), (59, 5)\n",
+            "OxygenBarDepleted at (108, 170), (4, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ]
+    },
+    "Image_27": {
+        "mean_iou": 0.7439903846153846,
+        "per_class_ious": {
+            "Enemy": 0.75,
+            "Diver": 0.6153846153846154,
+            "Lives": 1.0,
+            "OxygenBarDepleted": 0.984375
+        },
+        "only_in_ram": [
+            "Player at (85, 45)",
+            "PlayerScore at (83, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (85, 45)",
+            "PlayerScore at (83, 9)",
+            "Enemy at (126, 141)",
+            "Enemy at (126, 117)",
+            "Enemy at (126, 93)",
+            "Diver at (116, 141)",
+            "Diver at (116, 117)",
+            "Diver at (116, 93)",
+            "Diver at (24, 69)",
+            "Lives at (58, 22)",
+            "OxygenBarDepleted at (49, 170)"
+        ],
+        "objs_in_vision": [
+            "Diver at (116, 142), (8, 8)\n",
+            "Diver at (116, 118), (8, 8)\n",
+            "Diver at (116, 94), (8, 8)\n",
+            "Diver at (24, 70), (8, 8)\n",
+            "Enemy at (126, 142), (8, 7)\n",
+            "Enemy at (126, 118), (8, 7)\n",
+            "Enemy at (126, 94), (8, 7)\n",
+            "Lives at (58, 22), (15, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarDepleted at (48, 170), (64, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ]
+    },
+    "Image_30": {
+        "mean_iou": 0.4102564102564103,
+        "per_class_ious": {
+            "Diver": 0.11538461538461539,
+            "Lives": 1.0,
+            "OxygenBar": 1.0
+        },
+        "only_in_ram": [
+            "Player at (74, 48)",
+            "PlayerScore at (83, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (74, 48)",
+            "PlayerScore at (83, 9)",
+            "Diver at (3, 141)",
+            "Diver at (157, 117)",
+            "Diver at (157, 93)",
+            "Diver at (157, 69)",
+            "Lives at (58, 22)",
+            "OxygenBar at (49, 170)"
+        ],
+        "objs_in_vision": [
+            "Diver at (8, 142), (3, 4)\n",
+            "Diver at (157, 118), (3, 4)\n",
+            "Diver at (157, 94), (3, 4)\n",
+            "Diver at (157, 70), (3, 4)\n",
+            "Lives at (58, 22), (7, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBar at (49, 170), (63, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ]
+    },
+    "Image_31": {
+        "mean_iou": 0.7847866419294992,
+        "per_class_ious": {
+            "Player": 0.6363636363636364,
+            "Diver": 0.7142857142857143,
+            "Lives": 1.0,
+            "OxygenBar": 1.0
+        },
+        "only_in_ram": [
+            "PlayerScore at (83, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (73, 45)",
+            "PlayerScore at (83, 9)",
+            "Diver at (14, 141)",
+            "Diver at (146, 117)",
+            "Diver at (146, 93)",
+            "Diver at (146, 69)",
+            "Lives at (58, 22)",
+            "OxygenBar at (49, 170)"
+        ],
+        "objs_in_vision": [
+            "Player at (73, 46), (16, 7)\n",
+            "Diver at (14, 140), (8, 11)\n",
+            "Diver at (146, 116), (8, 11)\n",
+            "Diver at (146, 92), (8, 11)\n",
+            "Diver at (146, 68), (8, 11)\n",
+            "Lives at (58, 22), (7, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBar at (49, 170), (63, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
     "Image_33": {
-        "mean_iou": 0.7590413059163059,
+        "mean_iou": 0.6813186813186813,
         "per_class_ious": {
+            "Player": 0.9090909090909091,
+            "Enemy": 0.2727272727272727,
+            "Diver": 0.7142857142857143,
+            "PlayerMissile": 1.0,
             "Lives": 1.0,
-            "OxygenBarDepleted": 0.984375,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.5555555555555556,
-            "Diver": 0.7142857142857143
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "PlayerScore at (83, 9)"
+        ],
         "only_in_vision": [
-            "Player at (62, 45)",
-            "PlayerScore at (83, 9)",
-            "OxygenBar at (49, 170)",
-            "Score at (91, 9), (14, 8)",
-            "Score at (84, 9), (4, 8)"
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (62, 45)",
+            "Player at (79, 57)",
             "PlayerScore at (83, 9)",
+            "Enemy at (143, 117)",
+            "Enemy at (143, 93)",
+            "Enemy at (143, 69)",
+            "Enemy at (16, 141)",
+            "Diver at (36, 141)",
+            "Diver at (124, 117)",
+            "Diver at (124, 93)",
+            "Diver at (124, 69)",
+            "PlayerMissile at (37, 65)",
             "Lives at (58, 22)",
             "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (49, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (123, 141)",
-            "Enemy at (123, 117)",
-            "Enemy at (123, 93)",
-            "Enemy at (36, 69)",
-            "Diver at (114, 141)",
-            "Diver at (114, 117)",
-            "Diver at (46, 69)"
+            "OxygenBarDepleted at (110, 170)"
         ],
         "objs_in_vision": [
-            "Diver at (114, 140), (8, 11)",
-            "Diver at (114, 116), (8, 11)",
-            "Diver at (46, 68), (8, 11)",
-            "Enemy at (123, 143), (8, 7)",
-            "Enemy at (123, 119), (8, 7)",
-            "Enemy at (123, 95), (8, 7)",
-            "Enemy at (36, 71), (8, 7)",
-            "Lives at (58, 22), (15, 8)",
-            "Score at (91, 9), (14, 8)",
-            "Score at (84, 9), (4, 8)",
-            "OxygenBarDepleted at (48, 170), (64, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
+            "PlayerMissile at (37, 65), (8, 1)\n",
+            "Player at (79, 58), (16, 10)\n",
+            "Diver at (36, 140), (8, 11)\n",
+            "Diver at (124, 116), (8, 11)\n",
+            "Diver at (124, 92), (8, 11)\n",
+            "Diver at (124, 68), (8, 11)\n",
+            "Enemy at (16, 137), (8, 7)\n",
+            "Enemy at (143, 113), (8, 7)\n",
+            "Enemy at (143, 89), (8, 7)\n",
+            "Enemy at (143, 65), (8, 7)\n",
+            "Lives at (58, 22), (7, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBar at (49, 170), (61, 5)\n",
+            "OxygenBarDepleted at (110, 170), (2, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
-    "Image_36": {
-        "mean_iou": 0.6018981018981019,
+    "Image_34": {
+        "mean_iou": 0.7320841551610783,
         "per_class_ious": {
-            "Player": 0.6363636363636364,
+            "Player": 0.8333333333333334,
+            "Enemy": 0.5555555555555556,
+            "Diver": 0.6153846153846154,
+            "PlayerMissile": 1.0,
             "Lives": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Diver": 0.19230769230769232
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "PlayerScore at (83, 9)"
+        ],
         "only_in_vision": [
-            "PlayerScore at (83, 9)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (111, 170)",
-            "Score at (91, 9), (14, 8)",
-            "Score at (84, 9), (4, 8)",
-            "OxygenBar at (49, 170), (63, 5)"
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (79, 45)",
+            "Player at (90, 57)",
             "PlayerScore at (83, 9)",
+            "Enemy at (121, 117)",
+            "Enemy at (121, 93)",
+            "Enemy at (121, 69)",
+            "Enemy at (38, 141)",
+            "Diver at (47, 141)",
+            "Diver at (113, 117)",
+            "Diver at (113, 93)",
+            "Diver at (113, 69)",
+            "PlayerMissile at (77, 65)",
             "Lives at (58, 22)",
             "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (111, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Diver at (156, 141)",
-            "Diver at (4, 117)",
-            "Diver at (4, 69)"
+            "OxygenBarDepleted at (108, 170)"
         ],
         "objs_in_vision": [
-            "Player at (79, 46), (16, 7)",
-            "Diver at (156, 142), (4, 5)",
-            "Diver at (8, 118), (4, 5)",
-            "Diver at (8, 70), (4, 5)",
-            "Lives at (58, 22), (7, 8)",
-            "Score at (91, 9), (14, 8)",
-            "Score at (84, 9), (4, 8)",
-            "OxygenBar at (49, 170), (63, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
+            "PlayerMissile at (77, 65), (8, 1)\n",
+            "Player at (90, 58), (16, 11)\n",
+            "Diver at (47, 142), (8, 8)\n",
+            "Diver at (113, 118), (8, 8)\n",
+            "Diver at (113, 94), (8, 8)\n",
+            "Diver at (113, 70), (8, 8)\n",
+            "Enemy at (38, 139), (8, 7)\n",
+            "Enemy at (121, 115), (8, 7)\n",
+            "Enemy at (121, 91), (8, 7)\n",
+            "Enemy at (121, 67), (8, 7)\n",
+            "Lives at (58, 22), (7, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBar at (49, 170), (59, 5)\n",
+            "OxygenBarDepleted at (108, 170), (4, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
     "Image_39": {
-        "mean_iou": 0.7599605522682444,
+        "mean_iou": 0.6967948717948718,
         "per_class_ious": {
-            "Player": 0.8333333333333334,
-            "Lives": 1.0,
-            "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.4000000000000001,
-            "Diver": 0.6153846153846154,
-            "PlayerMissile": 1.0
+            "Player": 0.6666666666666666,
+            "Diver": 0.6057692307692307,
+            "OxygenBar": 1.0
         },
-        "only_in_ram": [],
-        "only_in_vision": [
+        "only_in_ram": [
             "PlayerScore at (83, 9)",
-            "Score at (91, 9), (14, 8)",
-            "Score at (84, 9), (4, 8)"
+            "OxygenBarDepleted at (112, 170)"
+        ],
+        "only_in_vision": [
+            "Diver at (157, 138), (3, 2)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (94, 84)",
+            "Player at (77, 54)",
             "PlayerScore at (83, 9)",
-            "Lives at (58, 22)",
+            "Diver at (153, 141)",
+            "Diver at (7, 117)",
+            "Diver at (7, 93)",
             "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (108, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (134, 141)",
-            "Enemy at (25, 117)",
-            "Enemy at (25, 69)",
-            "Diver at (120, 141)",
-            "Diver at (40, 117)",
-            "Diver at (40, 69)",
-            "PlayerMissile at (77, 92)"
+            "OxygenBarDepleted at (112, 170)"
         ],
         "objs_in_vision": [
-            "PlayerMissile at (77, 92), (8, 1)",
-            "Player at (94, 85), (16, 11)",
-            "Diver at (120, 142), (8, 8)",
-            "Diver at (40, 118), (8, 8)",
-            "Diver at (40, 70), (8, 8)",
-            "Enemy at (134, 144), (8, 7)",
-            "Enemy at (25, 120), (8, 7)",
-            "Enemy at (25, 72), (8, 7)",
-            "Lives at (58, 22), (7, 8)",
-            "Score at (91, 9), (14, 8)",
-            "Score at (84, 9), (4, 8)",
-            "OxygenBar at (49, 170), (59, 5)",
-            "OxygenBarDepleted at (108, 170), (4, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
+            "Player at (77, 57), (16, 9)\n",
+            "Diver at (153, 141), (7, 9)\n",
+            "Diver at (157, 138), (3, 2)\n",
+            "Diver at (8, 117), (7, 9)\n",
+            "Diver at (8, 93), (7, 9)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBar at (49, 170), (63, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
     "Image_40": {
-        "mean_iou": 0.6738165680473374,
+        "mean_iou": 0.7076322115384616,
         "per_class_ious": {
-            "Player": 0.8333333333333334,
-            "Lives": 1.0,
-            "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.5555555555555556,
-            "Diver": 0.08653846153846152,
-            "PlayerMissile": 1.0
-        },
-        "only_in_ram": [],
-        "only_in_vision": [
-            "PlayerScore at (83, 9)",
-            "Diver at (107, 141), (4, 6)",
-            "Diver at (56, 117), (4, 6)",
-            "Diver at (56, 69), (4, 6)",
-            "Score at (91, 9), (14, 8)",
-            "Score at (84, 9), (4, 8)"
-        ],
-        "objs_in_ram": [
-            "Player at (105, 86)",
-            "PlayerScore at (83, 9)",
-            "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (106, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (111, 141)",
-            "Enemy at (48, 117)",
-            "Enemy at (48, 69)",
-            "Diver at (107, 141)",
-            "Diver at (52, 117)",
-            "Diver at (52, 69)",
-            "PlayerMissile at (61, 94)"
-        ],
-        "objs_in_vision": [
-            "PlayerMissile at (61, 94), (8, 1)",
-            "Player at (105, 87), (16, 11)",
-            "Diver at (112, 148), (3, 3)",
-            "Diver at (107, 141), (4, 6)",
-            "Diver at (52, 124), (3, 3)",
-            "Diver at (56, 117), (4, 6)",
-            "Diver at (52, 76), (3, 3)",
-            "Diver at (56, 69), (4, 6)",
-            "Enemy at (111, 143), (8, 7)",
-            "Enemy at (48, 119), (8, 7)",
-            "Enemy at (48, 71), (8, 7)",
-            "Lives at (58, 22), (7, 8)",
-            "Score at (91, 9), (14, 8)",
-            "Score at (84, 9), (4, 8)",
-            "OxygenBar at (49, 170), (57, 5)",
-            "OxygenBarDepleted at (106, 170), (6, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
-        ]
-    },
-    "Image_43": {
-        "mean_iou": 0.7033326048951049,
-        "per_class_ious": {
-            "Lives": 1.0,
-            "OxygenBarDepleted": 0.984375,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.2727272727272727,
             "Diver": 0.6153846153846154,
-            "CollectedDiver": 1.0
+            "OxygenBarDepleted": 0.984375
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "Player at (68, 45)",
+            "PlayerScore at (83, 9)"
+        ],
         "only_in_vision": [
-            "Player at (85, 70)",
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (68, 45)",
             "PlayerScore at (83, 9)",
-            "OxygenBar at (49, 170)",
-            "Score at (91, 9), (14, 8)",
-            "Score at (84, 9), (4, 8)"
-        ],
-        "objs_in_ram": [
-            "Player at (85, 70)",
-            "PlayerScore at (83, 9)",
-            "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (49, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (73, 141)",
-            "Enemy at (144, 93)",
-            "Enemy at (86, 117)",
-            "Diver at (69, 141)",
-            "Diver at (90, 117)",
-            "CollectedDiver at (58, 178)"
+            "Diver at (150, 141)",
+            "Diver at (10, 117)",
+            "Diver at (10, 93)",
+            "OxygenBarDepleted at (49, 170)"
         ],
         "objs_in_vision": [
-            "Diver at (69, 142), (8, 8)",
-            "Diver at (90, 118), (8, 8)",
-            "Enemy at (73, 137), (8, 7)",
-            "Enemy at (86, 113), (8, 7)",
-            "Enemy at (144, 89), (8, 7)",
-            "Lives at (58, 22), (7, 8)",
-            "Score at (91, 9), (14, 8)",
-            "Score at (84, 9), (4, 8)",
-            "OxygenBarDepleted at (48, 170), (64, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)",
-            "CollectedDiver at (58, 178), (8, 9)"
-        ]
-    },
-    "Image_46": {
-        "mean_iou": 0.6888888888888889,
-        "per_class_ious": {
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Diver": 0.2222222222222222,
-            "PlayerMissile": 1.0
-        },
-        "only_in_ram": [],
-        "only_in_vision": [
-            "Player at (79, 52)",
-            "PlayerScore at (83, 9)",
-            "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (112, 170)",
-            "Score at (91, 9), (14, 8)",
-            "Score at (84, 9), (4, 8)",
-            "OxygenBar at (49, 170), (63, 5)"
-        ],
-        "objs_in_ram": [
-            "Player at (79, 52)",
-            "PlayerScore at (83, 9)",
-            "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (112, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Diver at (4, 141)",
-            "Diver at (4, 117)",
-            "PlayerMissile at (134, 60)"
-        ],
-        "objs_in_vision": [
-            "PlayerMissile at (134, 60), (8, 1)",
-            "Diver at (8, 140), (4, 7)",
-            "Diver at (8, 116), (4, 7)",
-            "Score at (91, 9), (14, 8)",
-            "Score at (84, 9), (4, 8)",
-            "OxygenBar at (49, 170), (63, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
-        ]
-    },
-    "Image_57": {
-        "mean_iou": 0.7793735800064914,
-        "per_class_ious": {
-            "Player": 0.8333333333333334,
-            "Lives": 1.0,
-            "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.5432489451476794,
-            "Diver": 0.34615384615384615,
-            "PlayerMissile": 1.0
-        },
-        "only_in_ram": [],
-        "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "Diver at (2, 69)",
-            "Score at (91, 9), (14, 8)"
-        ],
-        "objs_in_ram": [
-            "Player at (41, 60)",
-            "PlayerScore at (91, 9)",
-            "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (102, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (82, 141)",
-            "Enemy at (151, 69)",
-            "Enemy at (77, 117)",
-            "Enemy at (77, 93)",
-            "Diver at (82, 93)",
-            "Diver at (2, 69)",
-            "PlayerMissile at (27, 68)"
-        ],
-        "objs_in_vision": [
-            "PlayerMissile at (27, 68), (8, 1)",
-            "Player at (41, 61), (16, 11)",
-            "Diver at (84, 94), (6, 6)",
-            "Enemy at (82, 143), (8, 7)",
-            "Enemy at (77, 119), (8, 7)",
-            "Enemy at (77, 95), (8, 7)",
-            "Enemy at (151, 71), (9, 7)",
-            "Lives at (58, 22), (23, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (53, 5)",
-            "OxygenBarDepleted at (102, 170), (10, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
-        ]
-    },
-    "Image_58": {
-        "mean_iou": 0.7834757834757835,
-        "per_class_ious": {
-            "Player": 0.8333333333333334,
-            "Lives": 1.0,
-            "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.5555555555555556,
-            "Diver": 0.34615384615384615,
-            "PlayerMissile": 1.0
-        },
-        "only_in_ram": [],
-        "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "Score at (91, 9), (14, 8)"
-        ],
-        "objs_in_ram": [
-            "Player at (37, 75)",
-            "PlayerScore at (91, 9)",
-            "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (100, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (58, 141)",
-            "Enemy at (127, 69)",
-            "Enemy at (101, 117)",
-            "Enemy at (101, 93)",
-            "Diver at (106, 93)",
-            "PlayerMissile at (99, 83)"
-        ],
-        "objs_in_vision": [
-            "PlayerMissile at (99, 83), (8, 1)",
-            "Player at (37, 76), (16, 11)",
-            "Diver at (108, 94), (6, 6)",
-            "Enemy at (58, 143), (8, 7)",
-            "Enemy at (101, 119), (8, 7)",
-            "Enemy at (101, 95), (8, 7)",
-            "Enemy at (127, 71), (8, 7)",
-            "Lives at (58, 22), (23, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (51, 5)",
-            "OxygenBarDepleted at (100, 170), (12, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
-        ]
-    },
-    "Image_59": {
-        "mean_iou": 0.7364316239316239,
-        "per_class_ious": {
-            "Player": 0.8333333333333334,
-            "Lives": 1.0,
-            "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.4,
-            "Diver": 0.40384615384615385,
-            "PlayerMissile": 1.0
-        },
-        "only_in_ram": [],
-        "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "Score at (91, 9), (14, 8)"
-        ],
-        "objs_in_ram": [
-            "Player at (25, 70)",
-            "PlayerScore at (91, 9)",
-            "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (99, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (37, 141)",
-            "Enemy at (106, 69)",
-            "Enemy at (122, 117)",
-            "Enemy at (122, 93)",
-            "Diver at (127, 93)",
-            "PlayerMissile at (50, 78)"
-        ],
-        "objs_in_vision": [
-            "PlayerMissile at (50, 78), (8, 1)",
-            "Player at (25, 71), (16, 11)",
-            "Diver at (129, 94), (6, 7)",
-            "Enemy at (37, 144), (8, 7)",
-            "Enemy at (122, 120), (8, 7)",
-            "Enemy at (122, 96), (8, 7)",
-            "Enemy at (106, 72), (8, 7)",
-            "Lives at (58, 22), (23, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (50, 5)",
-            "OxygenBarDepleted at (99, 170), (13, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
+            "Diver at (150, 142), (8, 8)\n",
+            "Diver at (10, 118), (8, 8)\n",
+            "Diver at (10, 94), (8, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarDepleted at (48, 170), (64, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
     "Image_60": {
-        "mean_iou": 0.7834757834757835,
+        "mean_iou": 0.7403846153846154,
         "per_class_ious": {
-            "Player": 0.8333333333333334,
-            "Lives": 1.0,
-            "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.5555555555555556,
-            "Diver": 0.34615384615384615,
-            "PlayerMissile": 1.0
+            "Player": 0.75,
+            "Diver": 0.6057692307692307,
+            "OxygenBar": 1.0
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "PlayerScore at (99, 9)",
+            "OxygenBarDepleted at (112, 170)"
+        ],
         "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "Score at (91, 9), (14, 8)"
+            "Diver at (157, 66), (3, 2)\n",
+            "Score at (99, 9), (6, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (23, 57)",
-            "PlayerScore at (91, 9)",
-            "Lives at (58, 22)",
+            "Player at (82, 55)",
+            "PlayerScore at (99, 9)",
+            "Diver at (7, 93)",
+            "Diver at (153, 69)",
             "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (97, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (14, 141)",
-            "Enemy at (83, 69)",
-            "Enemy at (145, 117)",
-            "Enemy at (145, 93)",
-            "Diver at (150, 93)",
-            "PlayerMissile at (85, 65)"
+            "OxygenBarDepleted at (112, 170)"
         ],
         "objs_in_vision": [
-            "PlayerMissile at (85, 65), (8, 1)",
-            "Player at (23, 58), (16, 11)",
-            "Diver at (152, 94), (6, 6)",
-            "Enemy at (14, 143), (8, 7)",
-            "Enemy at (145, 119), (8, 7)",
-            "Enemy at (145, 95), (8, 7)",
-            "Enemy at (83, 71), (8, 7)",
-            "Lives at (58, 22), (23, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (48, 5)",
-            "OxygenBarDepleted at (97, 170), (15, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
+            "Player at (82, 57), (16, 10)\n",
+            "Diver at (8, 93), (7, 9)\n",
+            "Diver at (153, 69), (7, 9)\n",
+            "Diver at (157, 66), (3, 2)\n",
+            "Score at (99, 9), (6, 8)\n",
+            "OxygenBar at (49, 170), (63, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ]
+    },
+    "Image_62": {
+        "mean_iou": 0.7936450118334528,
+        "per_class_ious": {
+            "Player": 0.7881773399014779,
+            "Enemy": 0.7315140845070423,
+            "Diver": 0.7142857142857143,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0
+        },
+        "only_in_ram": [
+            "PlayerScore at (99, 9)",
+            "PlayerMissile at (55, 81)"
+        ],
+        "only_in_vision": [
+            "Score at (99, 9), (6, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (56, 73)",
+            "PlayerScore at (99, 9)",
+            "Enemy at (151, 69)",
+            "Enemy at (8, 141)",
+            "Enemy at (8, 117)",
+            "Enemy at (8, 93)",
+            "Diver at (32, 93)",
+            "Diver at (128, 69)",
+            "PlayerMissile at (55, 81)",
+            "OxygenBar at (49, 170)",
+            "OxygenBarDepleted at (108, 170)"
+        ],
+        "objs_in_vision": [
+            "Player at (55, 74), (17, 11)\n",
+            "Diver at (32, 92), (8, 11)\n",
+            "Diver at (128, 68), (8, 11)\n",
+            "Enemy at (8, 140), (8, 7)\n",
+            "Enemy at (8, 116), (8, 7)\n",
+            "Enemy at (8, 92), (8, 7)\n",
+            "Enemy at (151, 68), (9, 7)\n",
+            "Score at (99, 9), (6, 8)\n",
+            "OxygenBar at (49, 170), (59, 5)\n",
+            "OxygenBarDepleted at (108, 170), (4, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ]
+    },
+    "Image_64": {
+        "mean_iou": 0.7498704998704999,
+        "per_class_ious": {
+            "Player": 0.9090909090909091,
+            "Enemy": 0.5555555555555556,
+            "Diver": 0.5865384615384616,
+            "PlayerMissile": 1.0,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0
+        },
+        "only_in_ram": [
+            "PlayerScore at (91, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (67, 77)",
+            "PlayerScore at (91, 9)",
+            "Enemy at (51, 141)",
+            "Enemy at (51, 117)",
+            "Enemy at (51, 93)",
+            "Diver at (57, 93)",
+            "Diver at (129, 69)",
+            "PlayerMissile at (8, 85)",
+            "OxygenBar at (49, 170)",
+            "OxygenBarDepleted at (104, 170)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (8, 85), (8, 1)\n",
+            "Player at (67, 78), (16, 10)\n",
+            "Diver at (59, 94), (6, 7)\n",
+            "Diver at (129, 69), (8, 10)\n",
+            "Enemy at (51, 143), (8, 7)\n",
+            "Enemy at (51, 119), (8, 7)\n",
+            "Enemy at (51, 95), (8, 7)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (55, 5)\n",
+            "OxygenBarDepleted at (104, 170), (8, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ]
+    },
+    "Image_65": {
+        "mean_iou": 0.7497354497354497,
+        "per_class_ious": {
+            "Player": 0.8333333333333334,
+            "Enemy": 0.4000000000000001,
+            "Diver": 0.7142857142857143,
+            "PlayerMissile": 1.0,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0,
+            "CollectedDiver": 1.0
+        },
+        "only_in_ram": [
+            "PlayerScore at (91, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (67, 78)",
+            "PlayerScore at (91, 9)",
+            "Enemy at (72, 141)",
+            "Enemy at (72, 117)",
+            "Enemy at (72, 93)",
+            "Diver at (140, 69)",
+            "PlayerMissile at (28, 86)",
+            "OxygenBar at (49, 170)",
+            "OxygenBarDepleted at (103, 170)",
+            "CollectedDiver at (58, 178)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (28, 86), (8, 1)\n",
+            "Player at (67, 79), (16, 11)\n",
+            "Diver at (140, 68), (8, 11)\n",
+            "Enemy at (72, 144), (8, 7)\n",
+            "Enemy at (72, 120), (8, 7)\n",
+            "Enemy at (72, 96), (8, 7)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (54, 5)\n",
+            "OxygenBarDepleted at (103, 170), (9, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n",
+            "CollectedDiver at (58, 178), (8, 9)\n"
+        ]
+    },
+    "Image_66": {
+        "mean_iou": 0.772943376068376,
+        "per_class_ious": {
+            "Enemy": 0.5555555555555556,
+            "Diver": 0.7692307692307693,
+            "OxygenBarDepleted": 0.984375,
+            "CollectedDiver": 1.0
+        },
+        "only_in_ram": [
+            "Player at (67, 85)",
+            "PlayerScore at (91, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (67, 85)",
+            "PlayerScore at (91, 9)",
+            "Enemy at (75, 141)",
+            "Enemy at (75, 117)",
+            "Diver at (141, 69)",
+            "OxygenBarDepleted at (49, 170)",
+            "CollectedDiver at (58, 178)"
+        ],
+        "objs_in_vision": [
+            "Diver at (141, 69), (8, 10)\n",
+            "Enemy at (75, 143), (8, 7)\n",
+            "Enemy at (75, 119), (8, 7)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarDepleted at (48, 170), (64, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n",
+            "CollectedDiver at (58, 178), (8, 9)\n"
+        ]
+    },
+    "Image_69": {
+        "mean_iou": 0.5576923076923077,
+        "per_class_ious": {
+            "Diver": 0.11538461538461539,
+            "Lives": 1.0,
+            "OxygenBar": 1.0
+        },
+        "only_in_ram": [
+            "Player at (76, 47)",
+            "PlayerScore at (99, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (99, 9), (6, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (76, 47)",
+            "PlayerScore at (99, 9)",
+            "Diver at (3, 93)",
+            "Diver at (3, 69)",
+            "Lives at (58, 22)",
+            "OxygenBar at (49, 170)"
+        ],
+        "objs_in_vision": [
+            "Diver at (8, 94), (3, 4)\n",
+            "Diver at (8, 70), (3, 4)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (99, 9), (6, 8)\n",
+            "OxygenBar at (49, 170), (63, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ]
+    },
+    "Image_72": {
+        "mean_iou": 0.7189976689976689,
+        "per_class_ious": {
+            "Player": 0.8333333333333334,
+            "Enemy": 0.2727272727272727,
+            "Diver": 0.7692307692307693,
+            "PlayerMissile": 1.0,
+            "Lives": 1.0,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0
+        },
+        "only_in_ram": [
+            "PlayerScore at (91, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (70, 61)",
+            "PlayerScore at (91, 9)",
+            "Enemy at (143, 141)",
+            "Enemy at (16, 117)",
+            "Enemy at (16, 93)",
+            "Diver at (36, 93)",
+            "Diver at (36, 69)",
+            "PlayerMissile at (58, 69)",
+            "Lives at (58, 22)",
+            "OxygenBar at (49, 170)",
+            "OxygenBarDepleted at (109, 170)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (58, 69), (8, 1)\n",
+            "Player at (70, 62), (16, 11)\n",
+            "Diver at (36, 93), (8, 10)\n",
+            "Diver at (36, 69), (8, 10)\n",
+            "Enemy at (143, 137), (8, 7)\n",
+            "Enemy at (16, 113), (8, 7)\n",
+            "Enemy at (16, 89), (8, 7)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (60, 5)\n",
+            "OxygenBarDepleted at (109, 170), (3, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
     "Image_73": {
-        "mean_iou": 0.7952380952380952,
+        "mean_iou": 0.733986013986014,
+        "per_class_ious": {
+            "Player": 0.9090909090909091,
+            "Enemy": 0.4000000000000001,
+            "Diver": 0.6153846153846154,
+            "PlayerMissile": 1.0,
+            "Lives": 1.0,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0
+        },
+        "only_in_ram": [
+            "PlayerScore at (91, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (73, 63)",
+            "PlayerScore at (91, 9)",
+            "Enemy at (119, 141)",
+            "Enemy at (40, 117)",
+            "Enemy at (40, 93)",
+            "Diver at (48, 93)",
+            "Diver at (48, 69)",
+            "PlayerMissile at (8, 71)",
+            "Lives at (58, 22)",
+            "OxygenBar at (49, 170)",
+            "OxygenBarDepleted at (107, 170)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (8, 71), (8, 1)\n",
+            "Player at (73, 64), (16, 10)\n",
+            "Diver at (48, 94), (8, 8)\n",
+            "Diver at (48, 70), (8, 8)\n",
+            "Enemy at (119, 138), (8, 7)\n",
+            "Enemy at (40, 114), (8, 7)\n",
+            "Enemy at (40, 90), (8, 7)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (58, 5)\n",
+            "OxygenBarDepleted at (107, 170), (5, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ]
+    },
+    "Image_74": {
+        "mean_iou": 0.742074592074592,
         "per_class_ious": {
             "Player": 0.8333333333333334,
+            "Enemy": 0.2727272727272727,
+            "Diver": 0.7692307692307693,
+            "PlayerMissile": 1.0,
             "Lives": 1.0,
             "OxygenBar": 1.0,
             "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.4000000000000001,
-            "Diver": 0.7142857142857143,
-            "PlayerMissile": 1.0
+            "CollectedDiver": 1.0
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "PlayerScore at (91, 9)"
+        ],
         "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "Score at (91, 9), (14, 8)"
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (134, 96)",
+            "Player at (67, 65)",
             "PlayerScore at (91, 9)",
+            "Enemy at (98, 141)",
+            "Enemy at (61, 117)",
+            "Enemy at (61, 93)",
+            "Diver at (66, 93)",
+            "PlayerMissile at (10, 73)",
             "Lives at (58, 22)",
             "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (99, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (40, 69)",
-            "Enemy at (119, 141)",
-            "Enemy at (119, 117)",
-            "Diver at (31, 93)",
-            "PlayerMissile at (13, 104)"
+            "OxygenBarDepleted at (106, 170)",
+            "CollectedDiver at (58, 178)"
         ],
         "objs_in_vision": [
-            "PlayerMissile at (13, 104), (8, 1)",
-            "Player at (134, 97), (16, 11)",
-            "Diver at (31, 92), (8, 11)",
-            "Enemy at (119, 144), (8, 7)",
-            "Enemy at (119, 120), (8, 7)",
-            "Enemy at (40, 72), (8, 7)",
-            "Lives at (58, 22), (15, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (50, 5)",
-            "OxygenBarDepleted at (99, 170), (13, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
+            "PlayerMissile at (10, 73), (8, 1)\n",
+            "Player at (67, 66), (16, 11)\n",
+            "Diver at (66, 93), (8, 10)\n",
+            "Enemy at (98, 137), (8, 7)\n",
+            "Enemy at (61, 113), (8, 7)\n",
+            "Enemy at (61, 89), (8, 7)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (57, 5)\n",
+            "OxygenBarDepleted at (106, 170), (6, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n",
+            "CollectedDiver at (58, 178), (8, 9)\n"
+        ]
+    },
+    "Image_75": {
+        "mean_iou": 0.6963221963221964,
+        "per_class_ious": {
+            "Player": 0.8333333333333334,
+            "Enemy": 0.2727272727272727,
+            "Diver": 0.6153846153846154,
+            "Lives": 1.0,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0,
+            "CollectedDiver": 1.0
+        },
+        "only_in_ram": [
+            "PlayerScore at (91, 9)",
+            "PlayerMissile at (156, 70)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (79, 62)",
+            "PlayerScore at (91, 9)",
+            "Enemy at (73, 141)",
+            "Enemy at (86, 117)",
+            "Enemy at (86, 93)",
+            "Diver at (91, 93)",
+            "PlayerMissile at (156, 70)",
+            "Lives at (58, 22)",
+            "OxygenBar at (49, 170)",
+            "OxygenBarDepleted at (104, 170)",
+            "CollectedDiver at (58, 178)"
+        ],
+        "objs_in_vision": [
+            "Player at (79, 63), (16, 11)\n",
+            "Diver at (91, 94), (8, 8)\n",
+            "Enemy at (73, 137), (8, 7)\n",
+            "Enemy at (86, 113), (8, 7)\n",
+            "Enemy at (86, 89), (8, 7)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (55, 5)\n",
+            "OxygenBarDepleted at (104, 170), (8, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n",
+            "CollectedDiver at (58, 178), (8, 9)\n"
+        ]
+    },
+    "Image_76": {
+        "mean_iou": 0.7337291061428992,
+        "per_class_ious": {
+            "Player": 0.7881773399014779,
+            "Enemy": 0.4000000000000001,
+            "Diver": 0.6153846153846154,
+            "Lives": 1.0,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0,
+            "CollectedDiver": 1.0
+        },
+        "only_in_ram": [
+            "PlayerScore at (91, 9)",
+            "PlayerMissile at (65, 75)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (66, 67)",
+            "PlayerScore at (91, 9)",
+            "Enemy at (50, 141)",
+            "Enemy at (109, 117)",
+            "Enemy at (109, 93)",
+            "Diver at (114, 93)",
+            "PlayerMissile at (65, 75)",
+            "Lives at (58, 22)",
+            "OxygenBar at (49, 170)",
+            "OxygenBarDepleted at (102, 170)",
+            "CollectedDiver at (58, 178)"
+        ],
+        "objs_in_vision": [
+            "Player at (65, 68), (17, 11)\n",
+            "Diver at (114, 94), (8, 8)\n",
+            "Enemy at (50, 138), (8, 7)\n",
+            "Enemy at (109, 114), (8, 7)\n",
+            "Enemy at (109, 90), (8, 7)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (53, 5)\n",
+            "OxygenBarDepleted at (102, 170), (10, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n",
+            "CollectedDiver at (58, 178), (8, 9)\n"
+        ]
+    },
+    "Image_77": {
+        "mean_iou": 0.7209461899602745,
+        "per_class_ious": {
+            "Player": 0.8333333333333334,
+            "Enemy": 0.37042253521126756,
+            "Diver": 0.6153846153846154,
+            "PlayerMissile": 1.0,
+            "Lives": 1.0,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0,
+            "CollectedDiver": 1.0
+        },
+        "only_in_ram": [
+            "PlayerScore at (91, 9)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (56, 62)",
+            "PlayerScore at (91, 9)",
+            "Enemy at (26, 141)",
+            "Enemy at (155, 69)",
+            "Enemy at (133, 117)",
+            "Enemy at (133, 93)",
+            "Diver at (138, 93)",
+            "PlayerMissile at (86, 70)",
+            "Lives at (58, 22)",
+            "OxygenBar at (49, 170)",
+            "OxygenBarDepleted at (100, 170)",
+            "CollectedDiver at (58, 178)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (86, 70), (8, 1)\n",
+            "Player at (56, 63), (16, 11)\n",
+            "Diver at (138, 94), (8, 8)\n",
+            "Enemy at (26, 138), (8, 7)\n",
+            "Enemy at (133, 114), (8, 7)\n",
+            "Enemy at (133, 90), (8, 7)\n",
+            "Enemy at (155, 66), (5, 7)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (51, 5)\n",
+            "OxygenBarDepleted at (100, 170), (12, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n",
+            "CollectedDiver at (58, 178), (8, 9)\n"
+        ]
+    },
+    "Image_78": {
+        "mean_iou": 0.6096317379998594,
+        "per_class_ious": {
+            "Player": 0.3764705882352941,
+            "Enemy": 0.2775537634408602,
+            "Lives": 1.0,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0,
+            "CollectedDiver": 1.0
+        },
+        "only_in_ram": [
+            "PlayerScore at (91, 9)",
+            "PlayerMissile at (111, 60)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (94, 52)",
+            "PlayerScore at (91, 9)",
+            "Enemy at (3, 141)",
+            "Enemy at (132, 69)",
+            "Enemy at (156, 117)",
+            "Enemy at (156, 93)",
+            "PlayerMissile at (111, 60)",
+            "Lives at (58, 22)",
+            "OxygenBar at (49, 170)",
+            "OxygenBarDepleted at (98, 170)",
+            "CollectedDiver at (58, 178)"
+        ],
+        "objs_in_vision": [
+            "Player at (94, 57), (25, 7)\n",
+            "Enemy at (8, 139), (3, 6)\n",
+            "Enemy at (156, 115), (4, 6)\n",
+            "Enemy at (156, 92), (4, 5)\n",
+            "Enemy at (132, 66), (8, 7)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (49, 5)\n",
+            "OxygenBarDepleted at (98, 170), (14, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n",
+            "CollectedDiver at (58, 178), (8, 9)\n"
         ]
     },
     "Image_83": {
-        "mean_iou": 0.6605504587155964,
+        "mean_iou": 0.7668142968142968,
         "per_class_ious": {
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Diver": 0.3211009174311927,
-            "PlayerMissile": 1.0
+            "Player": 0.9090909090909091,
+            "Enemy": 0.632070707070707,
+            "Diver": 0.23076923076923078,
+            "PlayerMissile": 1.0,
+            "Lives": 1.0,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "PlayerScore at (91, 9)"
+        ],
         "only_in_vision": [
-            "Player at (79, 50)",
-            "PlayerScore at (91, 9)",
-            "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (111, 170)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (63, 5)"
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (79, 50)",
+            "Player at (84, 85)",
             "PlayerScore at (91, 9)",
+            "Enemy at (121, 141)",
+            "Enemy at (153, 117)",
+            "Enemy at (153, 93)",
+            "Enemy at (17, 69)",
+            "Diver at (113, 141)",
+            "PlayerMissile at (19, 93)",
             "Lives at (58, 22)",
             "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (111, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Diver at (5, 117)",
-            "Diver at (155, 93)",
-            "Diver at (155, 69)",
-            "PlayerMissile at (68, 58)"
+            "OxygenBarDepleted at (106, 170)"
         ],
         "objs_in_vision": [
-            "PlayerMissile at (68, 58), (8, 1)",
-            "Diver at (8, 116), (5, 8)",
-            "Diver at (155, 92), (5, 8)",
-            "Diver at (155, 68), (5, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (63, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
+            "PlayerMissile at (19, 93), (8, 1)\n",
+            "Player at (84, 86), (16, 10)\n",
+            "Diver at (115, 145), (6, 4)\n",
+            "Enemy at (17, 71), (8, 7)\n",
+            "Enemy at (121, 140), (8, 10)\n",
+            "Enemy at (153, 116), (7, 10)\n",
+            "Enemy at (153, 92), (7, 10)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (57, 5)\n",
+            "OxygenBarDepleted at (106, 170), (6, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
     "Image_84": {
-        "mean_iou": 0.7692307692307693,
+        "mean_iou": 0.7228321678321679,
         "per_class_ious": {
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Diver": 0.6153846153846154
+            "Player": 0.9090909090909091,
+            "Enemy": 0.6,
+            "Diver": 0.2596153846153846,
+            "PlayerMissile": 1.0,
+            "Lives": 1.0,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "PlayerScore at (91, 9)"
+        ],
         "only_in_vision": [
-            "Player at (86, 47)",
-            "PlayerScore at (91, 9)",
-            "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (111, 170)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (63, 5)"
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (86, 47)",
+            "Player at (82, 94)",
             "PlayerScore at (91, 9)",
+            "Enemy at (95, 141)",
+            "Enemy at (127, 117)",
+            "Enemy at (43, 69)",
+            "Diver at (49, 141)",
+            "Diver at (155, 93)",
+            "PlayerMissile at (33, 102)",
             "Lives at (58, 22)",
             "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (111, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Diver at (16, 117)",
-            "Diver at (144, 93)",
-            "Diver at (144, 69)"
+            "OxygenBarDepleted at (104, 170)"
         ],
         "objs_in_vision": [
-            "Diver at (16, 118), (8, 8)",
-            "Diver at (144, 94), (8, 8)",
-            "Diver at (144, 70), (8, 8)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (63, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
+            "PlayerMissile at (33, 102), (8, 1)\n",
+            "Player at (82, 95), (16, 10)\n",
+            "Diver at (51, 145), (6, 4)\n",
+            "Diver at (155, 94), (5, 6)\n",
+            "Enemy at (43, 72), (8, 7)\n",
+            "Enemy at (95, 140), (8, 10)\n",
+            "Enemy at (127, 116), (8, 10)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "OxygenBar at (49, 170), (55, 5)\n",
+            "OxygenBarDepleted at (104, 170), (8, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ]
+    },
+    "Image_85": {
+        "mean_iou": 0.7116312259169402,
+        "per_class_ious": {
+            "Enemy": 0.5181818181818182,
+            "Diver": 0.4725274725274725,
+            "Lives": 1.0,
+            "OxygenBar": 1.0,
+            "OxygenBarDepleted": 1.0
+        },
+        "only_in_ram": [
+            "Player at (91, 112)",
+            "PlayerScore at (83, 9)",
+            "Diver at (70, 141)"
+        ],
+        "only_in_vision": [
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "OxygenBarLogo at (91, 113), (16, 11)\n",
+            "Logo at (66, 191), (32, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (91, 112)",
+            "PlayerScore at (83, 9)",
+            "Enemy at (73, 141)",
+            "Enemy at (65, 69)",
+            "Diver at (70, 141)",
+            "Diver at (73, 117)",
+            "Diver at (146, 93)",
+            "Lives at (58, 22)",
+            "OxygenBar at (49, 170)",
+            "OxygenBarDepleted at (103, 170)"
+        ],
+        "objs_in_vision": [
+            "Diver at (75, 121), (6, 4)\n",
+            "Diver at (146, 92), (8, 11)\n",
+            "Enemy at (65, 72), (8, 7)\n",
+            "Enemy at (73, 140), (8, 11)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBar at (49, 170), (54, 5)\n",
+            "OxygenBarDepleted at (103, 170), (9, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "OxygenBarLogo at (91, 113), (16, 11)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
     "Image_86": {
-        "mean_iou": 0.7007936507936509,
+        "mean_iou": 0.6444820804195804,
         "per_class_ious": {
-            "Player": 0.6666666666666666,
-            "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.4,
-            "Diver": 0.7142857142857143
+            "Enemy": 0.5181818181818182,
+            "Diver": 0.42307692307692313,
+            "Lives": 1.0,
+            "OxygenBarDepleted": 0.984375
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "Player at (91, 112)",
+            "PlayerScore at (83, 9)",
+            "Diver at (70, 141)"
+        ],
         "only_in_vision": [
-            "PlayerScore at (91, 9)",
-            "Lives at (58, 22)",
-            "Score at (91, 9), (14, 8)"
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (83, 54)",
-            "PlayerScore at (91, 9)",
+            "Player at (91, 112)",
+            "PlayerScore at (83, 9)",
+            "Enemy at (73, 141)",
+            "Enemy at (65, 69)",
+            "Diver at (70, 141)",
+            "Diver at (73, 117)",
+            "Diver at (146, 93)",
             "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (110, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (141, 93)",
-            "Enemy at (141, 69)",
-            "Enemy at (18, 141)",
-            "Enemy at (18, 117)",
-            "Diver at (37, 117)",
-            "Diver at (123, 93)",
-            "Diver at (123, 69)"
+            "OxygenBarDepleted at (49, 170)"
         ],
         "objs_in_vision": [
-            "Player at (83, 57), (16, 9)",
-            "Diver at (37, 116), (8, 11)",
-            "Diver at (123, 92), (8, 11)",
-            "Diver at (123, 68), (8, 11)",
-            "Enemy at (18, 144), (8, 7)",
-            "Enemy at (18, 120), (8, 7)",
-            "Enemy at (141, 96), (8, 7)",
-            "Enemy at (141, 72), (8, 7)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (61, 5)",
-            "OxygenBarDepleted at (110, 170), (2, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
+            "Diver at (75, 121), (6, 4)\n",
+            "Diver at (146, 94), (8, 8)\n",
+            "Enemy at (65, 72), (8, 7)\n",
+            "Enemy at (73, 140), (8, 11)\n",
+            "Lives at (58, 22), (23, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarDepleted at (48, 170), (64, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
-    "Image_87": {
-        "mean_iou": 0.7038961038961039,
+    "Image_90": {
+        "mean_iou": 0.7692307692307693,
         "per_class_ious": {
-            "OxygenBar": 1.0,
-            "OxygenBarDepleted": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.4,
-            "Diver": 0.7142857142857143
+            "Diver": 0.6153846153846154,
+            "Lives": 1.0,
+            "OxygenBar": 1.0
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "Player at (89, 45)",
+            "PlayerScore at (83, 9)",
+            "OxygenBarDepleted at (112, 170)"
+        ],
         "only_in_vision": [
-            "Player at (78, 45)",
-            "PlayerScore at (91, 9)",
-            "Lives at (58, 22)",
-            "Score at (91, 9), (14, 8)"
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (78, 45)",
-            "PlayerScore at (91, 9)",
+            "Player at (89, 45)",
+            "PlayerScore at (83, 9)",
+            "Diver at (146, 141)",
+            "Diver at (146, 117)",
+            "Diver at (146, 93)",
             "Lives at (58, 22)",
             "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (109, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (122, 93)",
-            "Enemy at (122, 69)",
-            "Enemy at (37, 141)",
-            "Enemy at (37, 117)",
-            "Diver at (47, 117)",
-            "Diver at (113, 93)",
-            "Diver at (113, 69)"
+            "OxygenBarDepleted at (112, 170)"
         ],
         "objs_in_vision": [
-            "Diver at (47, 116), (8, 11)",
-            "Diver at (113, 92), (8, 11)",
-            "Diver at (113, 68), (8, 11)",
-            "Enemy at (37, 144), (8, 7)",
-            "Enemy at (37, 120), (8, 7)",
-            "Enemy at (122, 96), (8, 7)",
-            "Enemy at (122, 72), (8, 7)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBar at (49, 170), (60, 5)",
-            "OxygenBarDepleted at (109, 170), (3, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
-        ]
-    },
-    "Image_88": {
-        "mean_iou": 0.6430528846153847,
-        "per_class_ious": {
-            "OxygenBarDepleted": 0.984375,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Enemy": 0.4,
-            "Diver": 0.6153846153846154
-        },
-        "only_in_ram": [],
-        "only_in_vision": [
-            "Player at (78, 45)",
-            "PlayerScore at (91, 9)",
-            "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "Score at (91, 9), (14, 8)"
-        ],
-        "objs_in_ram": [
-            "Player at (78, 45)",
-            "PlayerScore at (91, 9)",
-            "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (49, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Enemy at (122, 93)",
-            "Enemy at (122, 69)",
-            "Enemy at (37, 141)",
-            "Enemy at (37, 117)",
-            "Diver at (47, 117)",
-            "Diver at (113, 93)",
-            "Diver at (113, 69)"
-        ],
-        "objs_in_vision": [
-            "Diver at (47, 118), (8, 8)",
-            "Diver at (113, 94), (8, 8)",
-            "Diver at (113, 70), (8, 8)",
-            "Enemy at (37, 144), (8, 7)",
-            "Enemy at (37, 120), (8, 7)",
-            "Enemy at (122, 96), (8, 7)",
-            "Enemy at (122, 72), (8, 7)",
-            "Score at (91, 9), (14, 8)",
-            "OxygenBarDepleted at (48, 170), (64, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
+            "Diver at (146, 142), (8, 8)\n",
+            "Diver at (146, 118), (8, 8)\n",
+            "Diver at (146, 94), (8, 8)\n",
+            "Lives at (58, 22), (15, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBar at (49, 170), (63, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     },
     "Image_95": {
-        "mean_iou": 0.7234432234432234,
+        "mean_iou": 0.7692307692307693,
         "per_class_ious": {
-            "Player": 0.8333333333333334,
+            "Diver": 0.6153846153846154,
             "Lives": 1.0,
-            "Logo": 1.0,
-            "OxygenBarLogo": 1.0,
-            "Diver": 0.11538461538461539,
-            "PlayerMissile": 1.0
+            "OxygenBar": 1.0
         },
-        "only_in_ram": [],
+        "only_in_ram": [
+            "Player at (71, 48)",
+            "PlayerScore at (83, 9)",
+            "PlayerMissile at (154, 56)"
+        ],
         "only_in_vision": [
-            "PlayerScore at (99, 9)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (112, 170)",
-            "Score at (99, 9), (6, 8)",
-            "OxygenBar at (49, 170), (63, 5)"
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ],
         "objs_in_ram": [
-            "Player at (77, 58)",
-            "PlayerScore at (99, 9)",
+            "Player at (71, 48)",
+            "PlayerScore at (83, 9)",
+            "Diver at (18, 141)",
+            "Diver at (18, 117)",
+            "Diver at (142, 93)",
+            "PlayerMissile at (154, 56)",
             "Lives at (58, 22)",
-            "OxygenBar at (49, 170)",
-            "OxygenBarDepleted at (112, 170)",
-            "Logo at (66, 191)",
-            "OxygenBarLogo at (15, 170)",
-            "Diver at (3, 93)",
-            "Diver at (157, 69)",
-            "PlayerMissile at (38, 66)"
+            "OxygenBar at (49, 170)"
         ],
         "objs_in_vision": [
-            "PlayerMissile at (38, 66), (8, 1)",
-            "Player at (77, 59), (16, 11)",
-            "Diver at (8, 94), (3, 4)",
-            "Diver at (157, 70), (3, 4)",
-            "Lives at (58, 22), (15, 8)",
-            "Score at (99, 9), (6, 8)",
-            "OxygenBar at (49, 170), (63, 5)",
-            "OxygenBarLogo at (15, 170), (23, 5)",
-            "Logo at (66, 191), (32, 7)"
+            "Diver at (18, 142), (8, 8)\n",
+            "Diver at (18, 118), (8, 8)\n",
+            "Diver at (142, 94), (8, 8)\n",
+            "Lives at (58, 22), (7, 8)\n",
+            "Score at (91, 9), (14, 8)\n",
+            "Score at (84, 9), (4, 8)\n",
+            "OxygenBar at (49, 170), (63, 5)\n",
+            "OxygenBarLogo at (15, 170), (23, 5)\n",
+            "Logo at (66, 191), (32, 7)\n"
         ]
     }
 }

@@ -11,7 +11,6 @@ from termcolor import colored
 
 def make_bitmap(alien_states):
     emptc = 6 - int(max(alien_states)).bit_length()  # nb empty columns
-    # return "\n".join([format(el, '06b')[emptc:] + "0" * emptc for el in alien_states])
     return [(format(el, '06b')[emptc:] + "0" * emptc) for el in alien_states], emptc
 
 
@@ -151,7 +150,7 @@ def _detect_objects_space_invaders_raw(info, ram_state):
     # info["score_player_yellow"] = {ram_state[103], ram_state[105]}  # score is saved in hexadecimal
     # # 200 points for destroying satellite dish
     # # x*5 points for destroying an alien from row_x
-    print(ram_state)
+    # print(ram_state)
 
 
 def _init_objects_space_invaders_ram(hud=False):
@@ -233,6 +232,8 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     x, y = ram_state[26], ram_state[16]
 
     bitmap, emptc = make_bitmap(ram_state[18:24])
+    print("-"*6)
+    print_bmp(bitmap)
     for i in range(6):
         for j in range(6):
             if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):  # enemies alive are saved in ram_state[18:24]
