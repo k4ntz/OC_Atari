@@ -1,7 +1,5 @@
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
-import numpy as np
-import math
 
 """
 RAM extraction for the game ASSAULT. Supported modes: raw, revised.
@@ -17,12 +15,21 @@ class Player(GameObject):
         self.hud = False
 
 
-class PlayerMissile(GameObject):
+class PlayerMissileVertical(GameObject):
     def __init__(self):
         self.visible = True
         self._xy = 0, 0
         self.wh = 1, 8
         self.rgb = 236, 236, 236
+        self.hud = False
+
+
+class PlayerMissileHorizontal(GameObject):
+    def __init__(self):
+        self.visible = True
+        self._xy = 0, 0
+        self.wh = 8, 1
+        self.rgb = 214, 214, 214
         self.hud = False
 
 
@@ -87,7 +94,7 @@ def _init_objects_assault_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), PlayerMissile(), Enemy(), EnemyMissile(), MotherShip()]
+    objects = [Player(), PlayerMissileVertical(), Enemy(), EnemyMissile(), MotherShip()]
     if hud:
         objects.extend([PlayerScore(), Health(), Lives()])
     return objects
@@ -95,6 +102,7 @@ def _init_objects_assault_ram(hud=False):
 
 player_x_pos = [3, 3, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 3, 3, 3, 3]
 player_x_pos_128 = [11, 11, 23, 38, 53, 68, 83, 98, 113, 128, 143, 158, 11, 11, 11, 11]
+horizontal_pos = 0
 
 
 def _detect_objects_assault_revised(objects, ram_state, hud=False):
@@ -116,6 +124,84 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
     else:
         player.xy = player_x_pos_128[ram_state[16] % 16] - x_diff, 178
     objects.append(player)
+
+    # player missile
+    missile = PlayerMissileVertical()
+    if 7 < ram_state[67] < 119:
+        val = ram_state[39]
+        x_diff = (val // 16) % 8
+        if ram_state[39] < 128:
+            x = player_x_pos[ram_state[39] % 16] - x_diff
+            if x < 0:
+                x = 160 + x
+            if ram_state[67] < 25:
+                y = ram_state[67] + 36
+            elif ram_state[67] < 32:
+                 y = ram_state[67] + 45
+            elif ram_state[67] < 50:
+                y = ram_state[67] + 53
+            else:
+                y = ram_state[67] + 64
+
+            if ram_state[67] == 47:
+                missile.wh = 1, 3
+            elif ram_state[67] == 55:
+                missile.wh = 1, 23
+                y = y - 15
+            elif ram_state[67] == 39:
+                missile.wh = 1, 18
+                y = y - 10
+            elif ram_state[67] == 31:
+                missile.wh = 1, 6
+            elif ram_state[67] == 23:
+                missile.wh = 1, 16
+                y = y - 9
+
+            missile.xy = x - 1, y
+        else:
+            x = player_x_pos_128[ram_state[39] % 16] - x_diff
+            if ram_state[67] < 23:
+                y = ram_state[67] + 36
+            elif ram_state[67] < 32:
+                 y = ram_state[67] + 45
+            elif ram_state[67] < 50:
+                y = ram_state[67] + 53
+            else:
+                y = ram_state[67] + 64
+
+            if ram_state[67] == 47:
+                missile.wh = 1, 3
+            elif ram_state[67] == 55:
+                missile.wh = 1, 23
+                y = y - 15
+            elif ram_state[67] == 39:
+                missile.wh = 1, 18
+                y = y - 10
+            elif ram_state[67] == 31:
+                missile.wh = 1, 6
+            elif ram_state[67] == 23:
+                missile.wh = 1, 16
+                y = y - 9
+
+            missile.xy = x - 1, y
+        objects.append(missile)
+
+    global horizontal_pos
+    # player missile horizontal
+    if ram_state[24] == 88:
+        mis = PlayerMissileHorizontal()
+        # print(horizontal_pos)
+        if horizontal_pos == 0 or horizontal_pos > 130 or horizontal_pos < 20:
+            horizontal_pos = player.x
+        if ram_state[26] == 128:    # shoot to the right
+            horizontal_pos = horizontal_pos + 10
+        elif ram_state[26] == 64:
+            horizontal_pos = horizontal_pos - 10
+        mis.xy = horizontal_pos, 181
+        objects.append(mis)
+    else:
+        horizontal_pos = 0
+
 
     # mother ship
     mother_ship = MotherShip()
@@ -143,16 +229,38 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
             if x_val < 0:
                 x_val = 160 + x_val
             enemy.xy = x_val, 103 - 25 * en
-
         else:
             x_val = player_x_pos_128[(ram_state[33 + en]) % 16] - x_enemy_diff
             if x_val < 0:
                 x_val = 160 + x_val
             enemy.xy = x_val, 103 - 25 * en
 
-        if ram_state[54 + en] != 0: # else enemy not visible
+        if ram_state[40] == 196:    # set enemy color
+            enemy.rgb = 72, 160, 72
+        elif ram_state[40] == 204:    # set enemy color
+            enemy.rgb = 84, 138, 210
+        elif ram_state[40] == 212:    # set enemy color
+            enemy.rgb = 105, 77, 20
+
+        if ram_state[54 + en] != 0:     # else enemy not visible
             objects.append(enemy)
 
+    if ram_state[75] == 128:
+        missile = EnemyMissile()
+
+        x_mis = ram_state[92]
+        x_mis_diff = (x_mis // 16) % 8
+        if ram_state[92] < 128:
+            x_val = player_x_pos[(ram_state[92]) % 16 - 1] - x_mis_diff
+            if x_val < 0:
+                x_val = 160 + x_val
+            missile.xy = x_val, 50
+        else:
+            x_val = player_x_pos_128[(ram_state[92]) % 16 - 1] - x_mis_diff
+            if x_val < 0:
+                x_val = 160 + x_val
+            missile.xy = x_val, 50
+        objects.append(missile)
 
     if hud:
         # score
@@ -163,9 +271,9 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
 
         # lives
         for i in range(ram_state[101] - 1):
-            l = Lives()
-            l.xy = 15 + 16 * i, 192
-            objects.append(l)
+            liv = Lives()
+            liv.xy = 15 + 16 * i, 192
+            objects.append(liv)
 
         # health
         health = Health()
@@ -221,10 +329,13 @@ def _detect_objects_assault_raw(info, ram_state):
     info["player_x"] = ram_state[16]    # start at x = 134
     info["player_missile_x"] = ram_state[39]    # start at x = 182
     info["player_missile_y"] = ram_state[67]
+    info["vertic_missile"] = ram_state[24:27]
+    info["maybe_enemy_missile"] = ram_state[75]     # enemy missile visible at 128
+    info["maybe_enemy_missile_x"] = ram_state[92]
     info["enemy_x"] = ram_state[33:36]  # 33 most down enemy
     info["enemy_app"] = ram_state[54:57]
     info["enemy_color"] = ram_state[40:42]
-    info["mother_ship_color"] = ram_state[12]   # oder 11
+    info["mother_ship_color"] = ram_state[11:13]
     info["mother_ship_x"] = ram_state[69]
     info["healt_color"] = ram_state[21]     # 198 = green, 70 = red
     info["health"] = ram_state[28:30]

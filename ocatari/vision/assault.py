@@ -7,11 +7,11 @@ objects_colors = {"player": [[162, 162, 42], [214, 214, 214], [66, 72, 200]], "b
                   "mother_ship": [[180, 122, 48], [187, 187, 53], [110, 156, 66], [72, 160, 72]],
                   "score": [195, 144, 61], "lives": [170, 170, 170]}
 
-enemy_missile_colors = {"blue": [84, 138, 210], "yellow": [187, 187, 53], "green": [92, 186, 92]}
-player_missile_colors = {"horizontal": [236, 236, 236], "vertical": [214, 214, 214]}
+enemy_missile_colors = {"blue": [84, 138, 210], "yellow": [187, 187, 53], "green": [92, 186, 92], "red": [214, 92, 92]}
+player_missile_colors = {"horizontal": [214, 214, 214], "vertical": [236, 236, 236]}
 mother_ship_colors = {"1": [[180, 122, 48], [187, 187, 53], [110, 156, 66], [72, 160, 72]],
                       "2": [[66, 114, 194], [45, 87, 176], [24, 59, 157], [24, 59, 157], [151, 25, 122],
-                            [184, 70, 162], [26, 102, 26], [50, 132, 50], [72, 160, 72]]} # [57, 128, 57]
+                            [184, 70, 162], [26, 102, 26], [50, 132, 50], [72, 160, 72]]}
 enemy_ship_colors = {"red": [[180, 122, 48], [181, 83, 40], [167, 26, 26]],
                      "green": [[72, 160, 72], [110, 156, 66], [24, 59, 157], [187, 187, 53], [180, 122, 48]],
                      "blue": [[214, 92, 92], [200, 72, 72], [162, 162, 42], [134, 134, 29],
@@ -27,7 +27,13 @@ class Player(GameObject):
         self.rgb = 214, 214, 214
 
 
-class PlayerMissile(GameObject):
+class PlayerMissileHorizontal(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 214, 214, 214
+
+
+class PlayerMissileVertical(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 236, 236, 236
@@ -81,7 +87,10 @@ def _detect_objects_assault(objects, obs, hud=False):
         player_missile = find_objects(obs, player_missile_color, min_distance=1)
         for mis in player_missile:
             if mis[2] < 8:
-                objects.append(PlayerMissile(*mis))
+                if [214, 214, 214] == player_missile_color:
+                    objects.append(PlayerMissileHorizontal(*mis))
+                else:
+                    objects.append(PlayerMissileVertical(*mis))
 
     for enemy_ship_color in enemy_ship_colors.values():
         enemy = find_mc_objects(obs, enemy_ship_color, min_distance=1)
@@ -101,6 +110,14 @@ def _detect_objects_assault(objects, obs, hud=False):
     for enemy_missile_color in enemy_missile_colors.values():
         missile = find_objects(obs, enemy_missile_color, min_distance=1)
         for mis in missile:
+            if [92, 186, 92] == enemy_missile_color:
+                missile_inst = EnemyMissile(*mis)
+                missile_inst.rgb = enemy_missile_color
+                objects.append(missile_inst)
+            if [214, 92, 92] == enemy_missile_color and mis[3] > 2:
+                missile_inst = EnemyMissile(*mis)
+                missile_inst.rgb = enemy_missile_color
+                objects.append(missile_inst)
             if mis[1] > 30 and mis[2] == 1 and mis[3] > 1:
                 missile_inst = EnemyMissile(*mis)
                 missile_inst.rgb = enemy_missile_color
