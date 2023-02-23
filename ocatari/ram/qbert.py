@@ -129,5 +129,6 @@ def _detect_objects_qbert_raw(info, ram_state):
     enemy = ram_state[47], ram_state[46]
 
     # ram_state[126] maybe sprite 171 = jump and 201 normal
+    # ram[41]: 0 ball, 7 coily
 
     info["ram-slice"] = player + enemy
