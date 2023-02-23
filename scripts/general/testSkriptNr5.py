@@ -14,7 +14,7 @@ observation, info = env.reset()
 prevRam = None
 already_figured_out = []
 for _ in range(10000000):
-    obs, reward, terminated, truncated, info = env.step(random.randint(0, 0))
+    obs, reward, terminated, truncated, info = env.step(random.randint(6, 6))
     ram = env._env.unwrapped.ale.getRAM()
     # env.set_ram(16, _)
     if prevRam is not None:

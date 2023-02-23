@@ -25,16 +25,19 @@ for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
-        action = random.randint(0, 0)
+        action = random.randint(6, 6)
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
     # env.set_ram(33, i)
-    if i % 10 == 0:
+    if ram[75] != 0:
         # obse2 = deepcopy(obse)
         print(env.objects)
         print("MotherShip_x: " + str(ram[69]))
         print("Enemy_app: " + str(ram[54:57]))
         print("Enemy_color: " + str(ram[40:42]))
+        print("missile_y: " + str(ram[67]))
+        print("enemy missile: " + str(ram[73:76]))
+        print("missile_x" + str(ram[91:94]))
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210 and obj.visible:
