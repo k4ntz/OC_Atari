@@ -6,21 +6,22 @@ sys.path.insert(0, '../..') # noqa
 from ocatari.core import OCAtari
 
 """
-Set each RAM position to a specific value.
+Use this test to set each RAM state to a chosen ram_value. This may lead to the game crashing and destroying it but
+it can also give you the meaning for the RAM states, due to the changes you can see in the human representation of the 
+game after the value is set.
 """
 
-env = OCAtari("Carnival", mode="raw", render_mode="human")
+env = OCAtari("Carnival", mode="raw", render_mode="human")  # set game
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
 for i in range(1000):
-    ram_value = 1
-    for b in range(0, 126):
-        if b == 55:
-            continue
+
+    ram_value = 1   # set here the RAM value
+
+    for b in range(0, 126):     # loop through the RAM
         obs, reward, terminated, truncated, info = env.step(random.randint(0, 0))
         print(b - 1)
-        env.set_ram(55, 20)
         env.set_ram(b, ram_value)
         env.render()
         ipdb.set_trace()
@@ -43,4 +44,3 @@ for i in range(1000):
     env.render()
     time.sleep(0.01)
 env.close()
-
