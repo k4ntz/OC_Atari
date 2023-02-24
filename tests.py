@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as np  # noqa
 
 a, b, c = 1, 2, 3
 list = [a, b, c]
@@ -7,7 +7,7 @@ print(list)
 
 list_1 = [[1, 2, 3, 4], [1, 5, 7, 8]]
 list_2 = []
-list_2.extend(alien for l in list_1 for alien in l if isinstance(alien, int))
+list_2.extend(alien for l in list_1 for alien in l if isinstance(alien, int))   # noqa
 print(list_2)
 
 del list[0:0]
