@@ -16,6 +16,7 @@ from .berzerk import _detect_objects_berzerk
 from .asterix import _detect_objects_asterix
 from .boxing import _detect_objects_boxing
 
+
 def detect_objects_vision(objects, obs, game_name, hud=False):
     if game_name.lower() == "freeway":
         return _detect_objects_freeway(objects, obs, hud)

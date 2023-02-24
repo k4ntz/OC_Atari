@@ -3,7 +3,7 @@ from .game_objects import GameObject
 
 
 objects_colors = {
-    "player": [214, 214, 214], "enemy": [0, 0, 0], 
+    "player": [214, 214, 214], "enemy": [0, 0, 0],
     "player_score": [214, 214, 214], "enemy_score": [0, 0, 0],
     "hud_objs": [20, 60, 0]
     }
@@ -11,7 +11,7 @@ objects_colors = {
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)    
+        super().__init__(*args, **kwargs)
         self.rgb = 214, 214, 214
         self.hud = False
 
@@ -71,4 +71,4 @@ def _detect_objects_boxing(objects, obs, hud=False):
             objects.append(Logo(*el))
         huds = find_objects(obs, objects_colors["hud_objs"], miny=187)
         for el in huds:
-                objects.append(Clock(*el))
+            objects.append(Clock(*el))
