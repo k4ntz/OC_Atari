@@ -51,7 +51,7 @@ class PlayerScore(GameObject):
             self._xy = 39, 5
             self.wh = 14, 7
             self._ten = True
-    
+
     def detenify(self):
         if self._ten:
             self._xy = 47, 5
@@ -70,18 +70,19 @@ class EnemyScore(GameObject):
         self.wh = 6, 7
         self.hud = True
         self._ten = False
-    
+
     def tenify(self):
         if not self._ten:
             self._xy = 103, 5
             self.wh = 14, 7
             self._ten = True
-    
+
     def detenify(self):
         if self._ten:
             self._xy = 111, 5
             self.wh = 6, 7
             self._ten = False
+
 
 def _init_objects_boxing_ram(hud=False):
     """
@@ -89,7 +90,7 @@ def _init_objects_boxing_ram(hud=False):
     """
     objects = [Player(), Enemy()]
     if hud:
-        global plscore 
+        global plscore
         plscore = PlayerScore()
         global enscore
         enscore = EnemyScore()
@@ -119,7 +120,6 @@ def _detect_objects_boxing_revised(objects, ram_state, hud=False):
             plscore.tenify()
         else:
             plscore.detenify()
-
 
 
 def _detect_objects_boxing_raw(info, ram_state):
