@@ -187,6 +187,8 @@ satellite = Satellite()
 global score_ctr
 score_ctr = 1
 global bullets
+global sat_ctr
+sat_ctr = 1
 
 
 def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
@@ -199,6 +201,7 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     global bullets
     global satellite
     global score_ctr
+    global sat_ctr
 
     if lives_ctr:
         lives_ctr -= 1
@@ -271,8 +274,15 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
         else:
             if ram_state[30] != prevRam[30]:
                 satellite.xy = ram_state[30] - 1, 12
+                sat_ctr = 3
                 if satellite not in objects:
                     objects.append(satellite)
+            else:
+                sat_ctr -= 1
+                if sat_ctr == 0:
+                    sat_ctr = 1
+                    if satellite in objects:
+                        objects.remove(satellite)
 
     # visibility of shields
     for alien in aliens:
