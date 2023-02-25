@@ -55,8 +55,8 @@ for ROUND in range(10000000):
             while index in already_figured_out:
                 index += 1
 
-        env._env.unwrapped.ale.setRAM(90, 0)  # fasten lives (83 for asterix)
-        env._env.unwrapped.ale.setRAM(106, 0)  # fasten lives (83 for asterix)
+        env._env.unwrapped.ale.setRAM(90, 0)  # fasten lives? (83 for asterix)
+        env._env.unwrapped.ale.setRAM(106, 0)
 
         if ROUND % 1 == 0 and ROUND > 80:
             # env._env.unwrapped.ale.setRAM(i, value)  # DON'T CHANGE
