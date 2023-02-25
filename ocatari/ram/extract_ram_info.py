@@ -62,6 +62,8 @@ def init_objects(game_name, hud):
         return _init_objects_berzerk_ram(hud)
     elif game_name.lower() == "asterix":
         return _init_objects_asterix_ram(hud)
+    elif game_name.lower() == "montezumarevenge":
+        return []
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
