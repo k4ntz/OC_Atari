@@ -24,19 +24,20 @@ for ROUND in range(10000000):
     obs, reward, terminated, truncated, info = env.step(random.randint(0, 2))
 
     if prevRam is not None:
-        i = 74  # to test an individual index in all rounds (so the index keeps constant)
+        i = 9  # to test an individual index in all rounds (so the index keeps constant)
         # i = index  # here the index meant to be incremented
 
         # don't delete these lines
         # value = (prevRam[i] + 31) % 256  # 31 = 00001111
         # value = (prevRam[i] + 32) % 256  # 32 = 00010000
-        value = (prevRam[i] + 33) % 256  # 33 = 00010001 (in 15 rounds you changed every bit)
+        # value = (prevRam[i] + 33) % 256  # 33 = 00010001 (in 15 rounds you changed every bit)
         # value = (prevRam[i] + 3) % 256
-        # value = (prevRam[i] + 85) % 256  # 85 = 01010101 for efficient changes (= more and fast) (2 rounds)
+        value = (prevRam[i] + 85) % 256  # 85 = 01010101 for efficient changes (= more and fast) (2 rounds)
         # value = (prevRam[i] + 1) % 256
         # value = (prevRam[i] + 16) % 256
         # value = (prevRam[i] * 2) % 256
-        value = prevRam[i] + 1 * pow(-1, ROUND % 2)  # to alternate
+        # const = 1
+        # value = prevRam[i] + const * pow(-1, ROUND % 2)  # to alternate
         # if ROUND % 2 == 0:
         #     value = prevRam[i] -1
         # else:
@@ -49,17 +50,16 @@ for ROUND in range(10000000):
         # else:
         #     value = 128 + ram[72]
 
-        if ROUND % 3 == 0:
+        if ROUND % 3 == 0:  # how often we increment index
             index += 1
             while index in already_figured_out:
                 index += 1
 
-        # env._env.unwrapped.ale.setRAM(83, 3)  # fasten lives (83 for asterix)
-        # env._env.unwrapped.ale.setRAM(68, 1)  # fasten lives (83 for asterix)
+        env._env.unwrapped.ale.setRAM(90, 0)  # fasten lives (83 for asterix)
+        env._env.unwrapped.ale.setRAM(106, 0)  # fasten lives (83 for asterix)
 
         if ROUND % 1 == 0 and ROUND > 80:
             # env._env.unwrapped.ale.setRAM(i, value)  # DON'T CHANGE
-            print(ram)
             for k in range(len(ram)):
                 if ram[k] != prevRam[k] and k not in already_figured_out:
                     string = ""
@@ -80,6 +80,7 @@ for ROUND in range(10000000):
             rgb_array = env.render()
             plt.imshow(rgb_array)  # rgb_array stuff for fun
             plt.show()
+            print(ram)
             print("------------------------------------------")
 
         if terminated or truncated:

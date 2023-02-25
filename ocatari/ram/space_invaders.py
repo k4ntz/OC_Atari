@@ -65,7 +65,7 @@ class Bullet(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
         self._xy = 0, 0
-        self.wh = 1, 9
+        self.wh = 1, 10
         self.hud = False
 
 
@@ -96,6 +96,7 @@ def _detect_objects_space_invaders_raw(info, ram_state):
     info["shields"] = ram_state[43:70]
     info["lives"] = ram_state[73]
     info["bullets"] = ram_state[81:89]
+    info["value"] = ram_state[90]  # some value changing repeatedly
     info["score"] = ram_state[102:106]
     # info["aliens_y"] = ram_state[16]
     # # ram_state[16] has also y of frame of players with shields together
@@ -174,7 +175,6 @@ def _init_objects_space_invaders_ram(hud=False):
 
 
 global aliens
-# aliens = [[Alien() for a in range(6)] for b in range(6)]  # ~ 2-dim
 lives_ctr = 41
 global player
 firstCall = True
@@ -208,10 +208,10 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
                 objects.pop(i)
     if not firstCall and hud:
         if ram_state[73] != prevRam[73]:
-            lives_ctr = 22  # handle real visibility instead!
+            lives_ctr = 22
             objects.append(Lives())
 
-    if firstCall:  # works correctly
+    if firstCall:
         player = objects[0]
         aliens = [Alien() for _ in range(36)]  # ~ 1-dim
         lives_ctr = 41
@@ -224,41 +224,22 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     # PLAYER
     # updating player position
     player.xy = ram_state[28] - 1, 185
-    # handle player flickering? not so important because it is flickering only at begin before game begins
-    # and for very short time
-    # if not firstCall and ram_state[72] != prevRam[72]:  72 might be wrong value to observe
-    #     if int(ram_state[72]) - int(prevRam[72]) == 64:  # this detection method does not work correctly
-    #         if player not in objects:
-    #             objects.append(player)
-    #     else:
-    #         for i, obj in enumerate(objects):
-    #             if isinstance(obj, Player):
-    #                 objects.pop(i)
 
     # ALIENS
     # aliens deletion from objects:
     alien_poss = np.where([isinstance(a, Alien) for a in objects])[0]
     if len(alien_poss) > 0:
-        # print(alien_poss[0], alien_poss[-1] + 1)
-        # print(alien_poss)
         del objects[alien_poss[0]:alien_poss[-1] + 1]  # faster
 
     # updating positions of aliens
     x, y = ram_state[26], ram_state[16]
 
     bitmap, emptc = make_bitmap(ram_state[18:24])
-    # for i, ali in enumerate("".join(bitmap)):
-    #     if not ali and alien[i]:
-    #         alien[i] = None
     # aliens (permanent) deletion from array aliens:
     for i in range(6):
         for j in range(6):
-            print(bitmap[i][j], end="")
-            # import ipdb;ipdb.set_trace()
-            if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):  # enemies alive are saved in ram_state[18:24]
-                # if  not bitmap[i][j]:  # enemies alive are saved in ram_state[18:24]
-                print(colored("DELETED", "red"))
-                aliens[35 - (i * 6 + j)] = None  # 5 = max(range(6)) so we are counting lines in the other way around
+            if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):
+                aliens[35 - (i * 6 + j)] = None
     for i in range(6):
         for j in range(6):
             if aliens[i * 6 + j]:
@@ -302,20 +283,22 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
             break
 
     # BULLETS
+    # updating bullets poses
+    bullets[2].xy = ram_state[87] - 2, 2 * ram_state[85] + 3  # for player
+    for i in range(2):
+        bullets[i].xy = ram_state[83 + i] - 2, 2 * ram_state[81 + i] + 3
+        if bullets[i].xy[1] < 194:
+            if bullets[i].xy[1] + bullets[i].wh[1] > 195:
+                bullets[i].wh = bullets[i].wh[0], 195 - bullets[i].xy[1] - 1
+
     # determining if bullets are visible
     bullets_visible = [False, False, False]
     if not firstCall:
         for i in range(2):
             bullets_visible[i] = True if ram_state[81 + i] != prevRam[81 + i] \
-                                         and bullets[i].xy[1] < 195 else False
-            # and 116 + player.wh[0] >= ram_state[83 + i] >= 34
-        bullets_visible[2] = True if ram_state[85] != prevRam[85] and bullets[2].xy[1] < 195 else False
-
-        # updating bullets poses
-        for i in range(2):  # CORRECT MY Y-POS
-            bullets[i].xy = ram_state[83 + i] - 2, 2 * ram_state[81 + i] + 3  # - 145  # to be edited later?
-        bullets[2].xy = ram_state[87] - 2, 2 * ram_state[85] + 3  # - 69
-
+                                         and 20 < bullets[i].xy[1] < 195 else False
+        bullets_visible[2] = True if ram_state[85] != prevRam[85] and 20 < bullets[2].xy[1] < 195 else False
+    print(ram_state)
     # appending bullets to objects
     for i in range(3):
         if bullets_visible[i]:
@@ -326,8 +309,6 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
                 objects.remove(bullets[i])
     print(len([a for a in aliens if a]), "aliens")
     print(len([a for a in aliens if a]) == ram_state[17])
-    # print("length of aliens", len([a for a in aliens if a]))
-    # print("len(objects):", len(objects))
     prevRam = ram_state
     if firstCall:
         firstCall = False
