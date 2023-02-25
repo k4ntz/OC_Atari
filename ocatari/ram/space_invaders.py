@@ -290,6 +290,8 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
         if bullets[i].xy[1] < 194:
             if bullets[i].xy[1] + bullets[i].wh[1] > 195:
                 bullets[i].wh = bullets[i].wh[0], 195 - bullets[i].xy[1] - 1
+            else:
+                bullets[i].wh = 1, 10
 
     # determining if bullets are visible
     bullets_visible = [False, False, False]
