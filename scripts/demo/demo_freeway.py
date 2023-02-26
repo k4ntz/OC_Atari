@@ -10,6 +10,7 @@ from ocatari.vision.utils import mark_bb, make_darker
 
 game_name = "Freeway"
 MODE = "revised"
+MODE = "vision"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()

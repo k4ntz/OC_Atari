@@ -18,9 +18,9 @@ class Sentry(GameObject):
 # No clue how the projectiles work
 class Projectile(GameObject):
     def __init__(self):
-        super(Projectile, self).__init__()
+        super().__init__()
         self._xy = 0, 0
-        self.wh = 1, 1
+        self.wh = 10, 10
         self.rgb = 184, 70, 162
         self.hud = False
 
@@ -134,6 +134,8 @@ def _init_objects_atlantis_ram(hud=True):
     global prev_x_p2
     prev_x_p1 = 0
     prev_x_p2 = 0
+    global vert_proj
+    vert_proj = None
 
     return objects
 
@@ -151,6 +153,26 @@ global prev_x_p1
 global prev_x_p2
 
 
+def missile_pos(rs):
+    print(rs)
+    if 182 <= rs:
+        return 201 - rs
+    elif 164 <= rs:
+        return 202 - rs
+    elif 145 <= rs:
+        return 203 - rs
+    elif 126 <= rs:
+        return 204 - rs
+    elif 114 <= rs:
+        return 205 - rs
+    elif 106 <= rs:
+        return 206 - rs
+    elif 104 <= rs:
+        return 207 - rs
+    else:
+        return 208 - rs
+
+
 def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
     del objects[2:]
 
@@ -162,27 +184,48 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
     if ram_state[58] != 0 and ram_state[60] != 0:
         proj = Projectile()
         if prev_x_p1 < ram_state[60]:
-            proj.xy = ram_state[60] - 3, 210 - ram_state[58] - 6
+            proj.xy = ram_state[60]-3, missile_pos(ram_state[58])-1
+            print("LEFT W")
         elif prev_x_p1 == ram_state[60]:
-            proj.xy = ram_state[60], 210 - ram_state[58] - 6
+            proj.xy = ram_state[60], missile_pos(ram_state[58])
+            print("CENTER W")
         else:
-            proj.xy = ram_state[60] + 3, 210 - ram_state[58] - 6
+            proj.xy = ram_state[60]+3, missile_pos(ram_state[58])-1
+            print("RIGHT W")
+        proj.rgb = (200,200,200)
         objects.append(proj)
 
     prev_x_p1 = ram_state[60]
 
     if ram_state[59] != 0 and ram_state[61] != 0:
         proj = Projectile()
-        if prev_x_p1 < ram_state[61]:
-            proj.xy = ram_state[61] - 3, 210 - ram_state[59] - 6
-        elif prev_x_p1 == ram_state[61]:
-            proj.xy = ram_state[61], 210 - ram_state[59] - 6
+        if prev_x_p2 < ram_state[61]:
+            proj.xy = ram_state[61]-3, missile_pos(ram_state[59])-1
+            print("LEFT 2")
+        elif prev_x_p2 == ram_state[61]:
+            # proj.xy = ram_state[61], int(214 - 1.0775 * ram_state[59])
+            proj.xy = ram_state[61], missile_pos(ram_state[59])
+            # if 204 - ram_state[59] <= 22:
+            #     proj.xy = ram_state[61], 210 - ram_state[59] - 9
+            # elif 204 - ram_state[59] <= 32:
+            #     proj.xy = ram_state[61], 210 - ram_state[59] - 8
+            # elif 204 - ram_state[59] <= 59:
+            #     proj.xy = ram_state[61], 210 - ram_state[59] - 7
+            # elif 204 - ram_state[59] <= 78:
+            #     proj.xy = ram_state[61], 204 - ram_state[59]
+            # elif 204 - ram_state[59] < 90:
+            #     proj.xy = ram_state[61], 210 - ram_state[59] - 5
+            # else:
+            #     proj.xy = ram_state[61], 210 - ram_state[59] - 4
+            print("CENTER 2")
         else:
-            proj.xy = ram_state[61] + 3, 210 - ram_state[59] - 6
+            proj.xy = ram_state[61]+3, missile_pos(ram_state[59])-1
+            print("RIGHT 2")
         objects.append(proj)
 
-    prev_x_p1 = ram_state[61]
+    prev_x_p2 = ram_state[61]
 
+    print('-'*20)
     # The visual representation of the Sprite relative to the ram_state
     # seems to differ depending on the ship entering on the left/right.
     # These variables help to determine where the ship entered
@@ -364,6 +407,27 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
 
     prev_x4 = ram_state[36]
     buildings_amount = buildings_count
+
+
+
+
+    # global vert_proj
+    # if ram_state[106]:
+    #     if not vert_proj:
+    #         vert_proj = Projectile()
+    #         vert_proj.rgb = (20, 200, 20)
+    #         objects.append(vert_proj)
+    #     vert_proj._xy = 73, 3 * ram_state[106] + 21 
+    # elif vert_proj:
+    #     if vert_proj in objects:  
+    #         objects.remove(vert_proj)
+    #     vert_proj = None
+    
+    # for oj in objects:
+    #     if isinstance(oj, Projectile):
+    #         xy = oj.xy
+    #         oj.xy = xy[0]-4, xy[1]-8
+
 
     if hud:
         # Score
