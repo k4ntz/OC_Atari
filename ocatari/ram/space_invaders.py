@@ -2,6 +2,7 @@ from .game_objects import GameObject
 import numpy as np
 from termcolor import colored
 
+
 # MAX_NB_OBJS = {  # quentin's code (for skiing?)
 #     "Player": 1,
 #     "Tree": 4,
@@ -189,6 +190,7 @@ score_ctr = 1
 global bullets
 global sat_ctr
 sat_ctr = 1
+global shields
 
 
 def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
@@ -202,6 +204,7 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     global satellite
     global score_ctr
     global sat_ctr
+    global shields
 
     if lives_ctr:
         lives_ctr -= 1
@@ -219,6 +222,7 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
         aliens = [Alien() for _ in range(36)]  # ~ 1-dim
         lives_ctr = 41
         bullets = [Bullet() for _ in range(3)]
+        shields = [obj for obj in objects if isinstance(obj, Shield)]
         if not hud and isinstance(objects[1], Score):
             del objects[1:4]
         else:
@@ -247,7 +251,6 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
         for j in range(6):
             if aliens[i * 6 + j]:
                 aliens[i * 6 + j].xy = x - 1 + (j - emptc) * 16, 31 + y * 2 + i * 18
-    print_bmp(bitmap)
 
     # adding aliens to array objects:
     objects.extend([x for x in aliens if x])
@@ -284,6 +287,7 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
                     if satellite in objects:
                         objects.remove(satellite)
 
+    # SHIELDS
     # visibility of shields
     for alien in aliens:
         if alien and alien.xy[1] + alien.wh[1] >= 157:
@@ -291,7 +295,20 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
                 if isinstance(obj, Shield):
                     objects.remove(obj)
             break
-
+    # fitting height of shields
+    upper_y = 0
+    lower_y = 16
+    for i in range(3):
+        for j in range(9):
+            if ram_state[43 + i * 9 + j] != 0:
+                upper_y = j * 2
+                break
+        for j in range(9):
+            if ram_state[43 + (i + 1) * 9 - (j + 1)] != 0:
+                lower_y = j * 2
+                break
+        shields[i].xy = 42 + i * 32, 157 + upper_y
+        shields[i].wh = 8, 18 - upper_y - lower_y
     # BULLETS
     # updating bullets poses
     bullets[2].xy = ram_state[87] - 2, 2 * ram_state[85] + 3  # for player
@@ -310,7 +327,6 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
             bullets_visible[i] = True if ram_state[81 + i] != prevRam[81 + i] \
                                          and 20 < bullets[i].xy[1] < 195 else False
         bullets_visible[2] = True if ram_state[85] != prevRam[85] and 20 < bullets[2].xy[1] < 195 else False
-    print(ram_state)
     # appending bullets to objects
     for i in range(3):
         if bullets_visible[i]:
@@ -319,8 +335,6 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
         else:
             if bullets[i] in objects:
                 objects.remove(bullets[i])
-    print(len([a for a in aliens if a]), "aliens")
-    print(len([a for a in aliens if a]) == ram_state[17])
     prevRam = ram_state
     if firstCall:
         firstCall = False
