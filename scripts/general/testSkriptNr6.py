@@ -1,13 +1,12 @@
 from matplotlib import pyplot as plt
 from ocatari.core import OCAtari
-import time
 import random
 
 """
 this test makes it easy to test several indices individually or at once and to read the BITS of changing values
 """
 
-env = OCAtari("SpaceInvaders-v4", mode="vision", render_mode='rgb_array')  # Skiing-v4, DemonAttack-v4, SpaceInvaders-v4
+env = OCAtari("SpaceInvaders-v4", mode="vision", render_mode='rgb_array')  # Skiing-v4, DemonAttack-v4
 observation, info = env.reset()
 prevRam = None
 
@@ -16,7 +15,7 @@ not_important = constant  # + list(range(55, 57))
 already_figured_out = not_important  # + list(range(94, 97)) \
 # + list(range(41, 50))  # + list(range(19, 27)) + list(range(29, 37))
 
-value = 1  # initial value you test with
+value = 1  # initial value you begin with
 index = 54
 
 for ROUND in range(10000000):
@@ -50,13 +49,10 @@ for ROUND in range(10000000):
         # else:
         #     value = 128 + ram[72]
 
-        if ROUND % 3 == 0:  # how often we increment index
+        if ROUND % 1 == 0:  # how often we increment index
             index += 1
             while index in already_figured_out:
                 index += 1
-
-        env._env.unwrapped.ale.setRAM(90, 0)  # fasten lives? (83 for asterix)
-        env._env.unwrapped.ale.setRAM(106, 0)
 
         if ROUND % 1 == 0 and ROUND > 80:
             # env._env.unwrapped.ale.setRAM(i, value)  # DON'T CHANGE
