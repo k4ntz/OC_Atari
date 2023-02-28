@@ -231,3 +231,26 @@ print(f"Saved report_bad_{game_name}.json and all_stats_{game_name}.json in {SAV
 if im_reports:
     print(f"Saved the following images with iou < {MIN_ACCEPTABLE_IOU}:\n" + im_reports + f"\n in {SAVE_IMAGE_FOLDER}")
     print(f"Saved {SAVE_FOLDER}/report_bad_{game_name}.json for details on these images")
+
+    
+pci = ALL_STATS['per_class_ious']
+names = [n.replace("_", " ") for n in pci.keys()]
+styler = pd.DataFrame(format_values(pci.values()), index=names).style
+styler.background_gradient(cmap="RdYlGn", vmin=0, vmax=100)
+styler.format(precision=1)
+ltx_code = styler.to_latex(
+    caption=f"Per class IOU on {game_name}",
+    clines="skip-last;data",
+    convert_css=True,
+    position_float="centering",
+    hrules=True,
+)
+
+ltx_code = ltx_code.replace("100.0", "100").replace("\n & 0 \\\\\n\\midrule", "")
+
+texf = "reports/latex"
+os.makedirs(texf, exist_ok=True)
+with open(f'{texf}/{game_name}_pcious.tex', 'w') as texfile:
+    texfile.write(ltx_code)
+
+print(f'Saved latex report in  {texf}/{game_name}_pcious.tex')
