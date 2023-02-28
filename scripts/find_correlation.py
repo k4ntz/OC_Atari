@@ -6,10 +6,6 @@ detected objects through vision in Tennis
 # appends parent path to syspath to make ocatari importable
 # like it would have been installed as a package
 import sys
-from os import path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-
-from ocatari.core import OCAtari
 import random
 import matplotlib.pyplot as plt
 from copy import deepcopy
@@ -18,6 +14,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
+sys.path.insert(0, '../ocatari') # noqa
+from ocatari.core import OCAtari
 
 
 def ransac_regression(x, y):
@@ -34,6 +32,7 @@ MIN_CORRELATION = 0.8
 
 game_name = "TennisDeterministic-v0"
 # game_name = "PongDeterministic-v0"
+game_name = "Asterix-v4"
 MODE = "vision"
 RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
@@ -41,7 +40,7 @@ env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
 observation, info = env.reset()
-object_list = ["ball", "enemy", "player", "ball_shadow"]
+object_list = ["player"]
 # object_list = ["ball", "enemy", "player"]
 # create dict of list
 objects_infos = {}
@@ -70,7 +69,9 @@ for i in tqdm(range(600)):
     # modify and display render
 env.close()
 
-import ipdb; ipdb.set_trace()
+import ipdb # noqa
+
+ipdb.set_trace()
 
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}

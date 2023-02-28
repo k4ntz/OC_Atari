@@ -10,14 +10,11 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import pickle
-from utils import load_agent, parser
 import sys
-import pathlib
-try:
-    from ocatari import OCAtari
-except:
-    sys.path.append("../..")
-    from ocatari import OCAtari
+# import pathlib
+sys.path.insert(0, '../../ocatari') # noqa
+from core import OCAtari
+from utils import load_agent, parser
 
 
 DROP_LOW = True

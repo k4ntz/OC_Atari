@@ -14,11 +14,13 @@ import torch
 
 DEVICE = "cpu"
 
+
 AVAILABLE_GAMES = ["Boxing", "Breakout", "Pong", "Seaquest",
-                   "Skiing", "SpaceInvaders", "Tennis"]
+                   "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack", "Bowling",
+                   "MsPacman", "Kangaroo", "Berzerk", "Carnival"]
 
 
-class OCAtari():
+class OCAtari:
     def __init__(self, env_name, mode="raw", hud=False, *args, **kwargs):
         """
         mode: raw/revised/vision/both
@@ -96,7 +98,20 @@ class OCAtari():
 
     def close(self, *args, **kwargs):
         return self._env.close(*args, **kwargs)
+    
+    def seed(self, seed, *args, **kwargs):
+        self._env.seed(seed, *args, **kwargs)
+
+    @property
+    def nb_actions(self):
+        return self._env.unwrapped.action_space.n
 
     @property
     def dqn_obs(self):
         return torch.stack(list(self._state_buffer), 0).unsqueeze(0).byte()
+
+    def set_ram(self, target_ram_position, new_value):
+        """
+        Directly manipulate a targeted RAM position
+        """
+        return self._env.unwrapped.ale.setRAM(target_ram_position, new_value)

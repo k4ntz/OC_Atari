@@ -11,12 +11,9 @@ import pandas as pd
 import seaborn as sns
 import pickle
 import sys
-import pathlib
-try:
-    from ocatari import OCAtari
-except:
-    sys.path.append("../..")
-    from ocatari import OCAtari
+# import pathlib
+sys.path.insert(0, '../../ocatari') # noqa
+from core import OCAtari
 
 DROP_LOW = True
 MIN_CORRELATION = 0.8
