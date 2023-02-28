@@ -1,12 +1,12 @@
 {
-    "mean_ious": 0.9994444444444445,
+    "mean_ious": 1.0,
     "per_class_ious": {
         "Player": 1.0,
         "PlayerScore": 1.0,
-        "Live": 0.9933333333333334,
+        "Live": 1.0,
         "PlayerNumber": 1.0,
-        "Ball": 1.0,
-        "BlockRow": 1.0
+        "BlockRow": 1.0,
+        "Ball": 1.0
     },
     "only_in_ram": {
         "BlockRow": "49/100"
