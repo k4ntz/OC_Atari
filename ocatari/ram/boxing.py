@@ -4,10 +4,21 @@ from .game_objects import GameObject
 class Player(GameObject):
     def __init__(self):
         super().__init__()
+<<<<<<< HEAD
+=======
+MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 1}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'PlayerScore': 2,
+                       'EnemyScore': 2, 'Logo': 1, 'Clock': 4}
+
+
+class Player(GameObject):
+    def __init__(self):
+>>>>>>> 051d87cdc9ca1d362a4c11382d9100313d43e259
         self._xy = 0, 0
         self.wh = 14, 46
         self.rgb = 214, 214, 214
         self.hud = False
+        self._above_10 = False
 
 
 class Enemy(GameObject):
@@ -17,6 +28,7 @@ class Enemy(GameObject):
         self.wh = 14, 46
         self.rgb = 0, 0, 0
         self.hud = False
+        self._above_10 = False
 
 
 class Logo(GameObject):
@@ -38,8 +50,18 @@ class Clock(GameObject):
 
 
 class PlayerScore(GameObject):
+<<<<<<< HEAD
     def __init__(self):
         super().__init__()
+=======
+    def __init__(self, ten=False):
+        super().__init__()
+        if ten:
+            self._xy = 39, 5
+        else:
+            self._xy = 47, 5
+        self.ten = ten
+>>>>>>> 051d87cdc9ca1d362a4c11382d9100313d43e259
         self.rgb = 214, 214, 214
         self._xy = 47, 5
         self.wh = 6, 7
@@ -63,9 +85,19 @@ class PlayerScore(GameObject):
 
 
 class EnemyScore(GameObject):
+<<<<<<< HEAD
     def __init__(self):
         super().__init__()
         self._xy = 111, 5
+=======
+    def __init__(self, ten=False):
+        super().__init__()
+        if ten:
+            self._xy = 103, 5
+        else:
+            self._xy = 111, 5
+        self.ten = ten
+>>>>>>> 051d87cdc9ca1d362a4c11382d9100313d43e259
         self.rgb = 0, 0, 0
         self.wh = 6, 7
         self.hud = True
@@ -110,6 +142,7 @@ def _detect_objects_boxing_revised(objects, ram_state, hud=False):
     enemy.xy = ram_state[33]+4, ram_state[35]+38
     if hud:
         # scores
+<<<<<<< HEAD
         global plscore
         global enscore
         if ram_state[19] > 10:  # enemy score
@@ -118,9 +151,36 @@ def _detect_objects_boxing_revised(objects, ram_state, hud=False):
             enscore.detenify()
         if ram_state[18] > 10:  # player score
             plscore.tenify()
+=======
+        if ram_state[19] > 10: # enemy score
+            objects.append(EnemyScore(ten=True))
+        else:
+            tens = EnemyScore(ten=True)
+            if tens in objects:
+                objects.remove(tens)
+        if ram_state[18] > 10: # player score
+            objects.append(PlayerScore(ten=True))
+>>>>>>> 051d87cdc9ca1d362a4c11382d9100313d43e259
         else:
             plscore.detenify()
 
+
+        if ram_state[19] > 10:  # enemy score
+            if not enemy._above_10:
+                objects.append(EnemyScore(ten=True))
+                enemy._above_10 = True
+        else:
+            if enemy._above_10:
+                objects.remove(EnemyScore(ten=True))
+                enemy._above_10 = False
+        if ram_state[18] > 10:  # player score
+            if not player._above_10:
+                objects.append(PlayerScore(ten=True))
+                player._above_10 = True
+        else:
+            if player._above_10:
+                objects.remove(PlayerScore(ten=True))
+                player._above_10 = False
 
 def _detect_objects_boxing_raw(info, ram_state):
     """

@@ -1,29 +1,29 @@
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
-from termcolor import colored
 
-import matplotlib.pyplot as plt     # noqa
-OBS = None
+MAX_NB_OBJECTS =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Score': 2, 'Logo': 1, 'Clock': 7,
+                       'Tree': 4, 'Mogul': 3, 'Flag': 4}
 
-
-def print_state(state):
-    print("-"*10)
-    for el in state:
-        x, y, type = el
-        coord = el[0:2]
-        attr = []
-        if y > 177 or y < 25 or x == 155:
-            attr.append("dark")
-        if type == 2:
-            print(colored(coord, "blue", attrs=attr))
-        elif type == 5:
-            print(colored(coord, "grey", attrs=attr))
-        elif type == 85:
-            print(colored(coord, "green", attrs=attr))
-        else:
-            print(colored("Error in print_state", "red"))
-            exit(1)
-    print("-"*10)
+# from termcolor import colored
+# def print_state(state):
+#     print("-"*10)
+#     for el in state:
+#         x, y, type = el
+#         coord = el[0:2]
+#         attr = []
+#         if y > 177 or y < 25 or x == 155:
+#             attr.append("dark")
+#         if type == 2:
+#             print(colored(coord, "blue", attrs=attr))
+#         elif type == 5:
+#             print(colored(coord, "grey", attrs=attr))
+#         elif type == 85:
+#             print(colored(coord, "green", attrs=attr))
+#         else:
+#             print(colored("Error in print_state", "red"))
+#             exit(1)
+#     print("-"*10)
 
 
 TREE_COLOR = {
@@ -49,6 +49,7 @@ PREV_RAM_STATE = 0
 
 class Player(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 10, 18
         self.rgb = 214, 92, 92
@@ -57,6 +58,7 @@ class Player(GameObject):
 
 class Flag(GameObject):
     def __init__(self, x, y, subtype):
+        super().__init__()
         self.rgb = FLAG_COLOR[subtype]
         self._subtype = subtype
         self._ram_id = 2
@@ -83,6 +85,7 @@ class Flag(GameObject):
 
 class Mogul(GameObject):
     def __init__(self, x, y, subtype=None):
+        super().__init__()
         self.rgb = (214, 214, 214)
         self._ram_id = 5
         self._xy = x+2, y+3
@@ -105,6 +108,7 @@ class Mogul(GameObject):
 
 class Tree(GameObject):
     def __init__(self, x, y, subtype):
+        super().__init__()
         self.rgb = TREE_COLOR[subtype]
         self._subtype = subtype
         self._ram_id = 85
@@ -126,7 +130,7 @@ class Tree(GameObject):
     @xy.setter
     def xy(self, xy):
         x, y = xy
-        if self._xy[0] == x + 2:  # bug correction
+        if self._xy[0] == x + 2: # bug correction
             x += 5
         self._prev_xy = self._xy
         if x > 158:
@@ -134,13 +138,12 @@ class Tree(GameObject):
             self.wh = min(164-x, 16), min(175-y, 30)
         else:
             self._xy = x-3, y+4
-        # if abs(self._prev_xy[0] - self._xy[0]) > 10:
-        #     import ipdb; ipdb.set_trace()
         self.wh = self.wh[0], min(175-y, 30)
 
 
 class Logo(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 65, 187
         self.wh = 31, 6
         self.rgb = 0, 0, 0
@@ -149,6 +152,7 @@ class Logo(GameObject):
 
 class Clock(GameObject):
     def __init__(self, x, y, w, h):
+        super().__init__()
         self._xy = x, y
         self.wh = w, h
         self.rgb = 0, 0, 0
@@ -157,6 +161,7 @@ class Clock(GameObject):
 
 class Score(GameObject):
     def __init__(self, ten=False):
+        super().__init__()
         if ten:
             self._xy = 67, 6
         else:

@@ -30,7 +30,7 @@ def format_values(pci_values):
     return [round(val, 1) for val in (np.array(list(pci_values)) * 100)]
 
 def print_all_stats(all_stats):
-    linelength = 30
+    linelength = 39
     print("Mean IOUs: ", round(all_stats['mean_ious'], 2))
     print("-"*linelength)
     print("\nPer class IOU: ")
@@ -232,7 +232,6 @@ print(f"Saved report_bad_{game_name}.json and all_stats_{game_name}.json in {SAV
 if im_reports:
     print(f"Saved the following images with iou < {MIN_ACCEPTABLE_IOU}:\n" + im_reports + f"\n in {SAVE_IMAGE_FOLDER}")
     print(f"Saved {SAVE_FOLDER}/report_bad_{game_name}.json for details on these images")
-
 
 pci = ALL_STATS['per_class_ious']
 names = [n.replace("_", " ") for n in pci.keys()]
