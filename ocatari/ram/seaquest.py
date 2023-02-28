@@ -190,6 +190,7 @@ def _detect_objects_seaquest_revised(objects, ram_state, hud=False):
         logo_bar = OxygenBarLogo()
         objects.append(logo_bar)
 
+
 def _calculate_objects(ram_state):
     """
     Calculate the current enemies, divers and missiles that are on the screen.
