@@ -1,23 +1,23 @@
 {
-    "mean_ious": 0.8189970574269653,
+    "mean_ious": 0.9035135651511687,
     "per_class_ious": {
-        "Player": 0.7375343525256854,
+        "Player": 0.7374347332184984,
+        "PlayerScore": 1.0,
         "Lives": 1.0,
         "OxygenBar": 1.0,
-        "OxygenBarDepleted": 0.9976773648648649,
-        "Diver": 0.6266934038673168,
-        "Enemy": 0.5959068610958609,
+        "OxygenBarDepleted": 0.9978515625,
+        "Logo": 1.0,
+        "OxygenBarLogo": 1.0,
+        "Diver": 0.7618621203895262,
         "PlayerMissile": 1.0,
-        "CollectedDiver": 1.0
+        "Enemy": 0.5980481697483133,
+        "CollectedDiver": 1.0,
+        "EnemySubmarine": 0.8333333333333334
     },
     "only_in_ram": {
-        "OxygenBarDepleted": "80/100",
-        "OxygenBar": "55/100",
-        "CollectedDiver": "19/100"
+        "OxygenBarLogo": "51/100"
     },
     "only_in_vision": {
-        "OxygenBarDepleted": "208/100",
-        "OxygenBar": "88/100",
-        "CollectedDiver": "39/100"
+        "OxygenBarLogo": "4/100"
     }
 }
