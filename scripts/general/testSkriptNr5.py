@@ -9,7 +9,7 @@ from ocatari.core import OCAtari
 Test raw/revised mode with a human render_mode and ipdb debugger.
 """
 
-env = OCAtari("Seaquest", mode="raw", render_mode="human")    # set game
+env = OCAtari("Asterix-v4", mode="raw", render_mode="human")  # Breakout
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []

@@ -3,7 +3,6 @@ from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revi
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from termcolor import colored
 from collections import deque
-from ocatari.ram import skiing
 try:
     import cv2
 except ModuleNotFoundError:
@@ -16,10 +15,16 @@ import torch
 DEVICE = "cpu"
 
 
+<<<<<<< HEAD
 AVAILABLE_GAMES = ["Asterix", "Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
                    "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack", "Bowling",
                    "MsPacman", "Kangaroo", "Berzerk", "Carnival", "Centipede"]
 
+=======
+AVAILABLE_GAMES = ["Asterix", "Berzerk", "Bowling", "Boxing", "Breakout", "Carnival", "DemonAttack", 
+                   "Freeway", "Kangaroo", "MsPacman", "Pong", "Seaquest", "Skiing", "SpaceInvaders", 
+                   "Tennis"]
+>>>>>>> 051d87cdc9ca1d362a4c11382d9100313d43e259
 
 class OCAtari:
     def __init__(self, env_name, mode="raw", hud=False, *args, **kwargs):
@@ -59,11 +64,7 @@ class OCAtari:
 
     def _step_ram(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
-        if self.mode == "revised":
-            skiing.OBS = obs
-            self.detect_objects(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
-        else:   # mode == "raw" because in raw mode we augment the info dictionary
-            self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
+        self.detect_objects(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self._fill_buffer()
         return obs, reward, truncated, terminated, info
 
@@ -103,7 +104,7 @@ class OCAtari:
 
     def close(self, *args, **kwargs):
         return self._env.close(*args, **kwargs)
-
+    
     def seed(self, seed, *args, **kwargs):
         self._env.seed(seed, *args, **kwargs)
 

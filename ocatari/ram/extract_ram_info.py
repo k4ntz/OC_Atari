@@ -84,6 +84,9 @@ def detect_objects_raw(info, ram_state, game_name):
     elif game_name.lower() == "seaquest":
         _detect_objects_seaquest_raw(info, ram_state)
     elif game_name.lower() == "spaceinvaders":
+        _detect_objects_space_invaders_revised(info, ram_state)
+    elif game_name.lower() == "tennis":
+        _detect_objects_tennis_raw(info, ram_state)
         _detect_objects_space_invaders_raw(info, ram_state)
     elif game_name.lower() == "tennis":
         _detect_objects_tennis_raw(info, ram_state)
