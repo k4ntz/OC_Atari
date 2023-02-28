@@ -1,77 +1,98 @@
-from .utils import bb_by_color, plot_bounding_boxes
+from .utils import find_objects
+from .game_objects import GameObject
 
-objects_colors = {"player_green": [50, 132, 50], "score_green": [50, 132, 50], "player_yellow": [162, 134, 56],
-                  "score_yellow": [162, 134, 56], "aliens": [134, 134, 29], "walls": [181, 83, 40],
-                  "satellite_dish": [151, 25, 122], "bullets": [142, 142, 142], "number_lives": [162, 134, 56],
-                  "ground": [80, 89, 22], "background": [0, 0, 0]}
+objects_colors = {"player": [50, 132, 50], "score": [50, 132, 50],
+                  "player2": [162, 134, 56], "score2": [162, 134, 56],
+                  "alien": [134, 134, 29], "shield": [181, 83, 40],
+                  "satellite": [151, 25, 122], "bullet": [142, 142, 142],
+                  "lives": [162, 134, 56]
+                  }
 
 
-# NOT FINISHED
-def _detect_objects_skiing(info, obs):
-    detected = {}
-    detected["bbs"] = []
-    # detection and filtering
-    for k, v in objects_colors.items():
-        bb_by_color(detected, obs, v, k)
+class Player(GameObject):
+    def __init__(self, x, y, w, h, num, *args):
+        super().__init__(x, y, w, h, *args)
+        if num == 1:
+            self.rgb = 92, 186, 92
+        else:
+            self.rgb = 162, 134, 56  # yellow
+        self.player_num = num
 
-        if k == "player_green":
-            detected['bbs'] = [bb for bb in detected['bbs'] if
-                               bb[0] > 140]
 
-        elif k == "score_green":
-            detected['bbs'] = [bb for bb in detected['bbs'] if
-                               bb[0] < 140]
+class Alien(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 134, 134, 29
 
-        elif k == "player_yellow":
-            detected['bbs'] = [bb for bb in detected['bbs'] if
-                               bb[0] > 140]
 
-        elif k == "player_yellow":
-            detected['bbs'] = [bb for bb in detected['bbs'] if
-                               bb[0] < 140]
+class Satellite(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 151, 25, 122
 
-        # aliens -_-
 
-        # special case! not finished or correct
-        elif k == "walls":
-            detected['bbs'] = [bb for bb in detected['bbs'] if
-                               bb[5] == "wall_1" and 0 < bb[1] < 60]
-            detected['bbs'] = [bb for bb in detected['bbs'] if
-                               bb[5] == "wall_2" and 60 < bb[1] < 95]
-            detected['bbs'] = [bb for bb in detected['bbs'] if
-                               bb[5] == "wall_3" and 95 < bb[1] < 150]
+class Shield(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 181, 83, 40
 
-    # detection and filtering
-    # if y < 70 then yellow is score
-    # lives could have the very similar x and y at same time
 
-    '''bb_by_color(detected, obs, objects_colors['player_green'], "player_green")
-    detected['bbs'] = [bb for bb in detected['bbs']]
-    bb_by_color(detected, obs, objects_colors['score_green'], "score_green")
-    detected['bbs'] = [bb for bb in detected['bbs']]
-    bb_by_color(detected, obs, objects_colors['player_yellow'], "player_yellow")
-    detected['bbs'] = [bb for bb in detected['bbs']]
-    bb_by_color(detected, obs, objects_colors['score_yellow'], "score_yellow")
-    detected['bbs'] = [bb for bb in detected['bbs']]
-    bb_by_color(detected, obs, objects_colors['aliens'], "aliens")
-    detected['bbs'] = [bb for bb in detected['bbs']]
-    bb_by_color(detected, obs, objects_colors['walls'], "wall_1")
-    detected['bbs'] = [bb for bb in detected['bbs']]
-    bb_by_color(detected, obs, objects_colors['walls'], "wall_2")
-    detected['bbs'] = [bb for bb in detected['bbs']]
-    bb_by_color(detected, obs, objects_colors['walls'], "wall_3")
-    detected['bbs'] = [bb for bb in detected['bbs']]
+class Bullet(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 142, 142, 142
 
-    # bb_by_color(detected, obs, objects_colors['bullets'], "bullets")
-    # detected['bbs'] = [bb for bb in detected['bbs']] # bullets have same color!
-    bb_by_color(detected, obs, objects_colors['number_lives'], "number_lives")
-    detected['bbs'] = [bb for bb in detected['bbs']]'''
 
-    if False:
-        plot_bounding_boxes(obs, detected["bbs"], objects_colors)
-    objects = {}
-    for obj in detected["bbs"]:
-        y, x, h, w, type, name = obj
-        r, g, b = objects_colors[name]
-        objects[name] = (x, y, w, h, r, g, b)
-    info["objects"] = objects
+class Score(GameObject):
+    def __init__(self, x, y, w, h, num, *args):
+        super().__init__(x, y, w, h, *args)
+        if num == 1:
+            self.rgb = 92, 186, 92
+        else:  # if you don't play with multiple agent why to consider the yellow value?
+            self.rgb = 162, 134, 56
+
+
+class Lives(GameObject):
+    def __init__(self, *args, **kwargs):  # could we add parameters x and y here?
+        super().__init__(*args, **kwargs)  # because they are constant
+        self.rgb = 162, 134, 56
+
+
+def _detect_objects_space_invaders(objects, obs, hud):
+    objects.clear()
+    for i, obj in enumerate(["player", "player2"]):
+        # in jeder Runde von dieser for-Schleife wird nur ein Objekt erkannt?
+
+        players = find_objects(obs, objects_colors[obj], closing_active=False,
+                               miny=180, maxy=195)
+        for instance in players:
+            if instance[2] < 10:  # width
+                objects.append(Player(*instance, i + 1))
+            elif hud and instance[2] > 10:
+                objects.append(Lives(*instance))
+
+    if hud:
+        for i, obj in enumerate(["score", "score2"]):
+            # in jeder Runde von dieser for-Schleife wird nur ein Objekt erkannt?
+
+            scores = find_objects(obs, objects_colors[obj], min_distance=10,  # closing_active=False,
+                                  maxy=30)
+            for instance in scores:
+                objects.append(Score(*instance, i + 1))
+
+    aliens = find_objects(obs, objects_colors["alien"])
+    for instance in aliens:
+        objects.append(Alien(*instance))
+
+    shields = find_objects(obs, objects_colors["shield"], closing_dist=10)
+    for instance in shields:
+        objects.append(Shield(*instance))
+
+    satellites = find_objects(obs, objects_colors["satellite"])
+    for instance in satellites:
+        objects.append(Satellite(*instance))
+
+    bullets = find_objects(obs, objects_colors["bullet"])
+    for instance in bullets:
+        objects.append(Bullet(*instance))
+        # for obj in ["shield", "satellite", "bullets"]:

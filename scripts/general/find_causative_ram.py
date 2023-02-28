@@ -1,13 +1,13 @@
 import gym
-import time
-import random
+# import time
+# import random
 import numpy as np
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 
 """
-this skript can be used to find score like objects in RAM
-given bb should countain the score like object
+This script can be used to find score like objects in RAM
+given bb should contain the score like object
 """
 
 
@@ -42,7 +42,7 @@ def find_causative_ram(game, x, y, width, height, show_plot=False):
     for i in tqdm(range(len(ram))):
         env.reset(seed=42)
         observation, reward, terminated, truncated, info = env.step(0)
-        env.unwrapped.ale.setRAM(i, -ram[i])
+        env.unwrapped.ale.setRAM(i, -ram[i])  # 255
         observation, reward, terminated, truncated, info = env.step(0)
         obs = crop_rgb_array(observation, x, y, width, height)
         if not np.all(obs0 == obs):
@@ -56,10 +56,10 @@ def find_causative_ram(game, x, y, width, height, show_plot=False):
 
 
 if __name__ == "__main__":
-    X = 110
+    X = 0
     Y = 0
-    WIDTH = 15
-    HEIGHT = 15
+    WIDTH = 158
+    HEIGHT = 177
 
-    candidates = find_causative_ram("Freeway", X, Y, WIDTH, HEIGHT, show_plot=True)
+    candidates = find_causative_ram("Asterix-v4", X, Y, WIDTH, HEIGHT, show_plot=True)  # DemonAttack
     print(candidates)

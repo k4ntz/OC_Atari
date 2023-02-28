@@ -7,15 +7,33 @@ import torch
 from torch import nn
 import keyboard
 
+import numpy as np
+import random
 
 parser = ArgumentParser()
 parser.add_argument("-p", "--path", type=str, help="path to the model", default=None)
+
 
 test_parser = ArgumentParser()
 test_parser.add_argument("-p", "--path", type=str, default=None,
                          help="path to the model")
 test_parser.add_argument("-g", "--game", type=str, required=True,
                          help="game to evaluate (e.g. 'Pong')")
+test_parser.add_argument("-i", "--iou", type=float, default=0.8,
+                         help="Minimum iou for image saving (e.g. 0.7)")
+test_parser.add_argument("-s", "--seed", type=float, default=None,
+                         help="If provided, set the seed")
+
+
+def make_deterministic(seed, mdp, states_dict=None):
+    random.seed(seed)
+    np.random.seed(seed)
+    mdp.seed(seed)
+    torch.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    print(f"Set all environment deterministic to seed {seed}")
+
 
 class AtariNet(nn.Module):
     """ Estimator used by DQN-style algorithms for ATARI games.
@@ -115,6 +133,9 @@ def load_agent(opt, nb_actions=None):
     if opt.path == "h":
         return HumanAgent()
     ckpt_path = Path(opt.path)
+
+def load_agent(opt, nb_actions=None):
+    ckpt_path = Path(opt.path) # noqa
     agent = AtariNet(nb_actions, distributional="C51_" in opt.path)
     ckpt = _load_checkpoint(opt.path)
     agent.load_state_dict(ckpt["estimator_state"])

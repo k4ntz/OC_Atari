@@ -1,4 +1,4 @@
-class GameObject():
+class GameObject:
     GET_COLOR = False
     GET_WH = False
 
@@ -8,6 +8,7 @@ class GameObject():
         self.wh = (0, 0)
         self._prev_xy = (0, 0)
         self.hud = False
+        self.visible = True
 
     def __repr__(self):
         return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]})"
@@ -56,6 +57,10 @@ class GameObject():
     @property
     def w(self):
         return self.wh[0]
+
+    @w.setter
+    def w(self, w):
+        self.wh = w, self.h
 
     @property
     def h(self):
