@@ -1,6 +1,8 @@
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
 
+MAX_NB_OBJECTS =  {'Chicken': 2, 'Car': 10}
+MAX_NB_OBJECTS_HUD =  {'Chicken': 2, 'Car': 10, 'Score' : 1}
 
 class Chicken(GameObject):
     def __init__(self):
