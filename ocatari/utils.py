@@ -5,10 +5,17 @@ from pathlib import Path
 
 import torch
 from torch import nn
-import keyboard
+import keyboard     # noqa
 
 import numpy as np
 import random
+
+import sys
+import select
+import tty
+import termios
+import time     # noqa
+import atexit
 
 parser = ArgumentParser()
 parser.add_argument("-p", "--path", type=str, help="path to the model", default=None)
@@ -64,6 +71,7 @@ class AtariNet(nn.Module):
             nn.Linear(64 * 7 * 7, 512), nn.ReLU(inplace=True), nn.Linear(512, out_size),
         )
 
+
     def forward(self, x):
         assert x.dtype == torch.uint8, "The model expects states of type ByteTensor"
         x = x.float().div(255)
@@ -76,6 +84,7 @@ class AtariNet(nn.Module):
             qs_probs = torch.softmax(logits, dim=2)
             return torch.mul(qs_probs, self.__support.expand_as(qs_probs)).sum(2)
         return qs
+
 
     def draw_action(self, state):
         probs = self.forward(state)
@@ -95,28 +104,29 @@ def _epsilon_greedy(obs, model, eps=0.001):
     q_val, argmax_a = model(obs).max(1)
     return argmax_a.item(), q_val
 
-import sys
-import select
-import tty
-import termios
-import time
-import atexit
 
 def isData():
     return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
 
 old_settings = termios.tcgetattr(sys.stdin)
+
+
 def restore_old_settings():
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+
+
 atexit.register(restore_old_settings)
+
 
 def isData():
     return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
+
 class HumanAgent():
     def __init__(self):
         tty.setcbreak(sys.stdin.fileno())
+
 
     def draw_action(self, state):
         if isData():
@@ -129,13 +139,15 @@ class HumanAgent():
                 return 1
         return 0
 
+
 def load_agent(opt, nb_actions=None):
     if opt.path == "h":
         return HumanAgent()
     ckpt_path = Path(opt.path)
 
+
 def load_agent(opt, nb_actions=None):
-    ckpt_path = Path(opt.path) # noqa
+    ckpt_path = Path(opt.path)  # noqa
     agent = AtariNet(nb_actions, distributional="C51_" in opt.path)
     ckpt = _load_checkpoint(opt.path)
     agent.load_state_dict(ckpt["estimator_state"])
