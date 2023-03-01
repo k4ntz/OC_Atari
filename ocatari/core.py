@@ -61,7 +61,6 @@ class OCAtari:
     def _step_ram(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
         self.detect_objects(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
-        self._fill_buffer()
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
