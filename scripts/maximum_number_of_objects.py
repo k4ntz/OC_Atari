@@ -1,9 +1,8 @@
-# appends parent path to syspath to make ocatari importable
-# like it would have been installed as a package
 import sys
 import random
 import matplotlib.pyplot as plt
-sys.path.insert(0, '../..') # noqa
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.space_invaders import objects_colors
 from ocatari.vision.pong import objects_colors
