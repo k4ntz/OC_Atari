@@ -1,3 +1,4 @@
+import sys
 from termcolor import colored
 from .asterix import _detect_objects_asterix_revised, _detect_objects_asterix_raw,\
     _init_objects_asterix_ram
@@ -24,6 +25,21 @@ from .carnival import _init_objects_carnival_ram, _detect_objects_carnival_raw, 
 from .kangaroo import _detect_objects_kangaroo_raw, \
                       _detect_objects_kangaroo_revised, \
                       _init_objects_kangaroo_ram
+
+
+# calls the respective _get_max_objects from the game modules
+def get_max_objects(game_name, hud):
+    p_module = __name__.split('.')[:-1] + [game_name.lower()]
+    game_module = '.'.join(p_module)
+    try:
+        mod = sys.modules[game_module]
+        return mod._get_max_objects(hud)
+    except KeyError:
+        print(colored(f"Game module does not exist: {game_module}", "red"))
+        exit(1)
+    except AttributeError:
+        print(colored(f"max_objects not implemented for game: {game_name}", "red"))
+        exit(1)
 
 
 def init_objects(game_name, hud):

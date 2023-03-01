@@ -1,5 +1,5 @@
 import gymnasium as gym
-from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects
+from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects, get_max_objects
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from termcolor import colored
 from collections import deque
@@ -40,6 +40,7 @@ class OCAtari:
         self.mode = mode
         self._ale = self._env.unwrapped.ale
         self.hud = hud
+        self.max_objects = []
         self.objects = init_objects(self.game_name, self.hud)
         if mode == "vision":
             self.detect_objects = detect_objects_vision
@@ -48,6 +49,7 @@ class OCAtari:
             self.detect_objects = detect_objects_raw
             self.step = self._step_ram
         elif mode == "revised":
+            self.max_objects = get_max_objects(self.game_name, self.hud)
             self.detect_objects = detect_objects_revised
             self.step = self._step_ram
         elif mode == "test":
