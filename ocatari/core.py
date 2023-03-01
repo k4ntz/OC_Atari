@@ -15,16 +15,10 @@ import torch
 DEVICE = "cpu"
 
 
-<<<<<<< HEAD
 AVAILABLE_GAMES = ["Asterix", "Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
                    "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack", "Bowling",
                    "MsPacman", "Kangaroo", "Berzerk", "Carnival", "Centipede"]
 
-=======
-AVAILABLE_GAMES = ["Asterix", "Berzerk", "Bowling", "Boxing", "Breakout", "Carnival", "DemonAttack", 
-                   "Freeway", "Kangaroo", "MsPacman", "Pong", "Seaquest", "Skiing", "SpaceInvaders", 
-                   "Tennis"]
->>>>>>> 051d87cdc9ca1d362a4c11382d9100313d43e259
 
 class OCAtari:
     def __init__(self, env_name, mode="raw", hud=False, *args, **kwargs):
