@@ -12,8 +12,8 @@ import random
 
 import sys
 import select
-import tty
-import termios
+# import tty
+# import termios
 import time     # noqa
 import atexit
 
@@ -109,14 +109,14 @@ def isData():
     return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
 
-old_settings = termios.tcgetattr(sys.stdin)
+# old_settings = termios.tcgetattr(sys.stdin)
 
 
-def restore_old_settings():
-    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+# def restore_old_settings():
+#     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
 
-atexit.register(restore_old_settings)
+# atexit.register(restore_old_settings)
 
 
 def isData():
@@ -125,7 +125,8 @@ def isData():
 
 class HumanAgent():
     def __init__(self):
-        tty.setcbreak(sys.stdin.fileno())
+        x = 0
+        # tty.setcbreak(sys.stdin.fileno())
 
 
     def draw_action(self, state):
