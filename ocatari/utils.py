@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from functools import partial
+from functools import partial   # noqa
 from gzip import GzipFile
 from pathlib import Path
 
@@ -15,7 +15,7 @@ import select
 # import tty
 # import termios
 import time     # noqa
-import atexit
+import atexit   # noqa
 
 parser = ArgumentParser()
 parser.add_argument("-p", "--path", type=str, help="path to the model", default=None)
@@ -71,7 +71,6 @@ class AtariNet(nn.Module):
             nn.Linear(64 * 7 * 7, 512), nn.ReLU(inplace=True), nn.Linear(512, out_size),
         )
 
-
     def forward(self, x):
         assert x.dtype == torch.uint8, "The model expects states of type ByteTensor"
         x = x.float().div(255)
@@ -84,7 +83,6 @@ class AtariNet(nn.Module):
             qs_probs = torch.softmax(logits, dim=2)
             return torch.mul(qs_probs, self.__support.expand_as(qs_probs)).sum(2)
         return qs
-
 
     def draw_action(self, state):
         probs = self.forward(state)
@@ -125,9 +123,8 @@ def isData():
 
 class HumanAgent():
     def __init__(self):
-        x = 0
+        x = 0   # noqa
         # tty.setcbreak(sys.stdin.fileno())
-
 
     def draw_action(self, state):
         if isData():
