@@ -11,7 +11,7 @@ from ocatari.utils import load_agent, parser
 
 game_name = "Bowling"
 MODE = "vision"
-# MODE = "revised"
+MODE = "revised"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
@@ -21,14 +21,14 @@ opts = parser.parse_args()
 if opts.path:
     agent = load_agent(opts, env.action_space.n)
 
-for i in range(1000):
+for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
         action = random.randint(0, 4)
     obs, reward, terminated, truncated, info = env.step(action)
-    env.set_ram(33, 33)
-    if i % 20 == 0:
+    env.set_ram(38, 3)
+    if i % 100 == 0:
         # obse2 = deepcopy(obse)
         print(env.objects)
         for obj in env.objects:

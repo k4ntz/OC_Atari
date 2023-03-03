@@ -16,7 +16,7 @@ DEVICE = "cpu"
 
 
 AVAILABLE_GAMES = ["Asterix", "Berzerk", "Bowling", "Boxing", "Breakout", "Carnival", "Centipede", "DemonAttack",
-                   "Freeway", "Kangaroo", "MsPacman", "Pong", "Seaquest", "Skiing", "SpaceInvaders", 
+                   "Freeway", "Kangaroo", "MsPacman", "Pong", "Seaquest", "Skiing", "SpaceInvaders",
                    "Tennis"]
 
 
@@ -60,7 +60,7 @@ class OCAtari:
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
         if self.mode == "revised":
             self.detect_objects(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
-        else: # mode == revised, there are no objects in this mode
+        else:   # mode == raw, there are no objects in this mode
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
         self._fill_buffer()
         return obs, reward, truncated, terminated, info
@@ -101,7 +101,7 @@ class OCAtari:
 
     def close(self, *args, **kwargs):
         return self._env.close(*args, **kwargs)
-    
+
     def seed(self, seed, *args, **kwargs):
         self._env.seed(seed, *args, **kwargs)
 
