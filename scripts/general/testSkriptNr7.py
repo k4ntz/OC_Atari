@@ -2,7 +2,8 @@ import time
 import random
 import ipdb
 import sys
-sys.path.insert(0, '../..') # noqa
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
 from ocatari.core import OCAtari
 
 """
