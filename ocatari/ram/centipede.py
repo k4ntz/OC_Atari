@@ -1,7 +1,11 @@
 from .game_objects import GameObject
 from ._helper_methods import bitfield_to_number, number_to_bitfield
 import math
+import sys
 
+# TODO: populate 
+MAX_NB_OBJECTS =  {}
+MAX_NB_OBJECTS_HUD = {}
 
 class CentipedeSegment(GameObject):
     def __init__(self):
@@ -92,6 +96,21 @@ class Life(GameObject):
         self.rgb = 188, 144, 252
         self.hud = True
 
+
+# parses MAX_NB* dicts, returns default init list of objects
+def _get_max_objects(hud=False):
+
+    def fromdict(max_obj_dict):
+        objects = []
+        mod = sys.modules[__name__]
+        for k, v in max_obj_dict.items():
+            for _ in range(0, v):
+                objects.append(getattr(mod, k)())    
+        return objects
+
+    if hud:
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
 
 def _column_to_y(column):
     """
