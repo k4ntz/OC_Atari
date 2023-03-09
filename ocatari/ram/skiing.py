@@ -1,3 +1,4 @@
+import sys
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
 
@@ -57,7 +58,7 @@ class Player(GameObject):
 
 
 class Flag(GameObject):
-    def __init__(self, x, y, subtype):
+    def __init__(self, x=0, y=0, subtype=0):
         super().__init__()
         self.rgb = FLAG_COLOR[subtype]
         self._subtype = subtype
@@ -84,7 +85,7 @@ class Flag(GameObject):
 
 
 class Mogul(GameObject):
-    def __init__(self, x, y, subtype=None):
+    def __init__(self, x=0, y=0, subtype=None):
         super().__init__()
         self.rgb = (214, 214, 214)
         self._ram_id = 5
@@ -107,7 +108,7 @@ class Mogul(GameObject):
 
 
 class Tree(GameObject):
-    def __init__(self, x, y, subtype):
+    def __init__(self, x=0, y=0, subtype=2):
         super().__init__()
         self.rgb = TREE_COLOR[subtype]
         self._subtype = subtype
@@ -151,7 +152,7 @@ class Logo(GameObject):
 
 
 class Clock(GameObject):
-    def __init__(self, x, y, w, h):
+    def __init__(self, x=0, y=0, w=0, h=0):
         super().__init__()
         self._xy = x, y
         self.wh = w, h
@@ -174,6 +175,20 @@ class Score(GameObject):
 
 TYPE_TO_OBJ = {2: Flag, 5: Mogul, 85: Tree}
 
+# parses MAX_NB* dicts, returns default init list of objects
+def _get_max_objects(hud=False):
+
+    def fromdict(max_obj_dict):
+        objects = []
+        mod = sys.modules[__name__]
+        for k, v in max_obj_dict.items():
+            for _ in range(0, v):
+                objects.append(getattr(mod, k)())    
+        return objects
+
+    if hud:
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
 
 def _init_objects_skiing_ram(hud=False):
     """

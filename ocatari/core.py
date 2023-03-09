@@ -1,5 +1,5 @@
 import gymnasium as gym
-from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects
+from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects, get_max_objects
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from termcolor import colored
 from collections import deque
@@ -15,16 +15,10 @@ import torch
 DEVICE = "cpu"
 
 
-<<<<<<< HEAD
 AVAILABLE_GAMES = ["Asterix", "Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
                    "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack", "Bowling",
                    "MsPacman", "Kangaroo", "Berzerk", "Carnival", "Centipede"]
 
-=======
-AVAILABLE_GAMES = ["Asterix", "Berzerk", "Bowling", "Boxing", "Breakout", "Carnival", "DemonAttack", 
-                   "Freeway", "Kangaroo", "MsPacman", "Pong", "Seaquest", "Skiing", "SpaceInvaders", 
-                   "Tennis"]
->>>>>>> 051d87cdc9ca1d362a4c11382d9100313d43e259
 
 class OCAtari:
     def __init__(self, env_name, mode="raw", hud=False, *args, **kwargs):
@@ -40,6 +34,7 @@ class OCAtari:
         self.mode = mode
         self._ale = self._env.unwrapped.ale
         self.hud = hud
+        self.max_objects = []
         self.objects = init_objects(self.game_name, self.hud)
         if mode == "vision":
             self.detect_objects = detect_objects_vision
@@ -48,6 +43,7 @@ class OCAtari:
             self.detect_objects = detect_objects_raw
             self.step = self._step_ram
         elif mode == "revised":
+            self.max_objects = get_max_objects(self.game_name, self.hud)
             self.detect_objects = detect_objects_revised
             self.step = self._step_ram
         elif mode == "test":
@@ -65,7 +61,6 @@ class OCAtari:
     def _step_ram(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
         self.detect_objects(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
-        self._fill_buffer()
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
