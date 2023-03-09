@@ -4,7 +4,7 @@ import math
 import sys
 
 MAX_NB_OBJECTS =  {"Player" :  1, "Enemy": 8, "Cauldron" : 8, "Reward50" : 8}
-MAX_NB_OBJECTS_HUD =  {"Player" :  1, "Enemy": 8, "Cauldron" : 9, "Reward50" : 8, "Score" : 1}
+MAX_NB_OBJECTS_HUD =  {"Player" :  1, "Enemy": 8, "Cauldron" : 8, "Reward50" : 8, "Score" : 1}
 
 class Player(GameObject):
     class Player(GameObject):
