@@ -3,7 +3,8 @@
 import sys
 import random
 import matplotlib.pyplot as plt
-sys.path.insert(0, '../..') # noqa
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.utils import load_agent, parser, make_deterministic

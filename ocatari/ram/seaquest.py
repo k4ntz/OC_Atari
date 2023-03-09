@@ -1,10 +1,14 @@
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
+import sys
 
 """
 RAM extraction for the game SEAQUEST. Supported modes: raw, revised.
 """
 
+# TODO: populate 
+MAX_NB_OBJECTS =  {}
+MAX_NB_OBJECTS_HUD = {}
 
 class Player(GameObject):
     def __init__(self):
@@ -123,6 +127,20 @@ class CollectedDiver(GameObject):
         self.wh = 8, 9
         self.hud = True
 
+# parses MAX_NB* dicts, returns default init list of objects
+def _get_max_objects(hud=False):
+
+    def fromdict(max_obj_dict):
+        objects = []
+        mod = sys.modules[__name__]
+        for k, v in max_obj_dict.items():
+            for _ in range(0, v):
+                objects.append(getattr(mod, k)())    
+        return objects
+
+    if hud:
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
 
 def _init_objects_seaquest_ram(hud=False):
     """
