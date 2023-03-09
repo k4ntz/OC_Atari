@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from ocatari.vision import utils
-
-sys.path.insert(0, '../..') # noqa
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.space_invaders import objects_colors
