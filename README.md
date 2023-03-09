@@ -14,28 +14,26 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [x]  Seaquest
 - [x]  Skiing
 - [ ]  Space Invaders (worked on by Belal/Sebastian)
-- [ ]  Asterix (worked on by Belal)
+- [x]  Asterix
 - [ ]  Asteroids (worked on by Chris)
 - [x]  Demon Attack
-- [x]  Tennis (reworking it for classes - Chris)
+- [x]  Tennis 
 - [x]  Kangaroo
 
 ### Priority 2:
-- [x]   Berzerk
-- [ ]  Secret Quest -> not supported by gym
+- [x]  Berzerk
 - [ ]  River Raid (worked on by Chris)
-- [ ]  Atlantis
-- [ ]  Star Raiders -> not supported by gym
+- [ ]  Atlantis (worked on by Bjarne)
 - [ ]  Chopper Command (worked on by Sebastian)
-- [ ]  Q*bert
-- [ ]  Assault
+- [ ]  Q*bert (worked on by Bjarne)
+- [ ]  Assault (worked on by Chris)
 - [ ]  Beam Rider (worked on by Bjarne)
 - [x]  Boxing
 - [x]  Carnival
-- [ ]  Centipede (worked on by Timo)
+- [x]  Centipede
 
 ### Priority 3:
-- [ ]  Montezumas Revenge
+- [ ]  Montezumas Revenge (worked on by Timo)
 - [ ]  Private Eye
 - [ ]  Fishing Derby
 - [ ]  Zaxxon
@@ -57,7 +55,11 @@ You can change the `mode` argument line 10!
 
 ##
 ```py
+<<<<<<< HEAD
+from ocatari import OCAtari
+=======
 from ocatari.core import OCAtari
+>>>>>>> 357f555bc47582bc300ba666b2fae34d64ae3d94
 import time
 import random
 env = OCAtari("Skiing")

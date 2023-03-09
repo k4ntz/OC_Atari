@@ -8,74 +8,74 @@ RAM extraction for the game CARNIVAL. Supported modes: raw, revised.
 
 class Player(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 66, 186
         self.wh = 6, 13
         self.rgb = 66, 158, 130
         self.hud = False
-        self.visible = True
 
 
 class PlayerMissile(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 6, 8
         self.rgb = 183, 194, 95
         self.hud = False
-        self.visible = True
 
 
 class Owl(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 8, 15
         self.rgb = 214, 92, 92
         self.hud = False
-        self.visible = True
 
 
 class Duck(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 8, 15
         self.rgb = 187, 187, 53
         self.hud = False
-        self.visible = True
 
 
 class FlyingDuck(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 16, 15
         self.rgb = 187, 187, 53
         self.hud = False
-        self.visible = True
 
 
 class Rabbit(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 8, 15
         self.rgb = 192, 192, 192
         self.hud = False
-        self.visible = True
 
 
 class ExtraBullets(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 8, 9
         self.rgb = 192, 192, 192
         self.hud = False
-        self.visible = True
 
 
 class PlayerScore(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 65, 2
         self.rgb = 160, 171, 79
         self.wh = 38, 7
         self.hud = True
-        self.visible = True
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
@@ -83,38 +83,38 @@ class PlayerScore(GameObject):
 
 class AmmoBar(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 203
         self.rgb = 24, 59, 157
         self.wh = 152, 5
         self.hud = True
-        self.visible = True
 
 
 class BonusSign(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 12, 29
         self.rgb = 214, 92, 92
         self.wh = 6, 9
         self.hud = True
-        self.visible = True
 
 
 class BonusValue(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 22, 29
         self.rgb = 214, 92, 92
         self.wh = 22, 9
         self.hud = True
-        self.visible = True
 
 
 class Wheel(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 70, 15
         self.rgb = 45, 87, 176
         self.wh = 28, 12
         self.hud = False
-        self.visible = True
 
 
 # Switches color at each level. Every value up to 255 encodes a different color (sometimes one that was already used).

@@ -16,9 +16,8 @@ import ipdb # noqa
 import pathlib
 from termcolor import colored
 import pickle
+from ocatari.core import OCAtari
 sys.path.insert(0, '../ocatari') # noqa
-from core import OCAtari
-from vision.freeway import objects_colors
 
 
 def ransac_regression(x, y):
@@ -40,7 +39,7 @@ def append_oinfo_values(obj, object_infos, objects_correctly_detected):
         objects_correctly_detected.append(f"{name}_y")
 
 
-def generate_dataset(env, drop_constants, frames=400, skip_frames=3, manipulated_ram=None, start_frame=0):
+def generate_dataset(env, drop_constants, frames=700, skip_frames=3, manipulated_ram=None, start_frame=0):
     """
     generates test Data in the given environment(env) for the given objects(object_list)
     """
@@ -48,7 +47,7 @@ def generate_dataset(env, drop_constants, frames=400, skip_frames=3, manipulated
     manipulated_ram_saves = []  # only if manipulated_ram is not None
     constants = {}
     prev_ram = None
-    env.step(0)
+    env.step(env.action_space.sample())
     for i in range(start_frame):
         env.step(env.action_space.sample())
 
@@ -64,18 +63,24 @@ def generate_dataset(env, drop_constants, frames=400, skip_frames=3, manipulated
             env._env.unwrapped.ale.setRAM(manipulated_ram, rand)
 
         # obs, reward, terminated, truncated, info = env.step(env._env.action_space.sample())
-        obs, reward, terminated, truncated, info = env.step(5)
+        obs, reward, terminated, truncated, info = env.step(env.action_space.sample())
 
         if info.get('frame_number') > 10 and i % skip_frames == 0:
 
             objects_correctly_detected = []
+            skip = False
+            for obj_name in object_infos.keys():
+                obj = obj_name[:-2]
+                if not any(obj == x.__class__.__name__ for x in env.objects):
+                    # object_infos[obj_name].append(0)  # not good but best workaround i could come up with
+                    print(colored(str(obj) + " not from vision detected", "red"))
+                    skip = True
+                    break
+            if skip:
+                continue
+
             for obj in env.objects:
                 append_oinfo_values(obj, object_infos, objects_correctly_detected)
-
-            for obj_name in object_infos.keys():
-                if obj_name not in objects_correctly_detected:
-                    object_infos[obj_name].append(0)  # not good but best workaround i could come up with
-                    print(colored(str(obj_name.__class__.__name__) + " not from vision detected", "red"))
 
             ram = env._env.unwrapped.ale.getRAM()
             ram_saves.append(deepcopy(ram))
@@ -207,20 +212,22 @@ def do_analysis(env, dump_path, new_dump, min_correlation, maximum_x,
         for obj_name in objects:
             print(obj_name)
             candidates[obj_name] = {k: v for k, v in candidates[obj_name].items() if abs(v) > min_correlation}
+            print(candidates[obj_name])
             approved_candidates[obj_name] = []
             if len(candidates[obj_name]) > 1:
                 for ram_pos in candidates[obj_name]:
                     env.reset()
                     dataset2 = generate_dataset(env, drop_constants,
-                                                frames=100, manipulated_ram=int(ram_pos), start_frame=start_frame)
-                    dataset2[obj_name] = np.array(dataset2[obj_name])
+                                                frames=300, manipulated_ram=int(ram_pos), start_frame=start_frame)
+                    if obj_name in dataset2:
+                        dataset2[obj_name] = np.array(dataset2[obj_name])
 
-                    if not (np.all(dataset2[ram_pos] == dataset2[ram_pos][0]) or
-                            np.all(dataset2[obj_name] == dataset2[obj_name][0])):
-                        corr2 = np.corrcoef(dataset2[obj_name], dataset2[ram_pos])[1][0]
-                        approved_candidates[obj_name].append({"pos": int(ram_pos),
-                                                              "corr": candidates[obj_name][ram_pos],
-                                                              "manipulated_corr": corr2})
+                        if len(dataset2[ram_pos]) > 0 and not (np.all(dataset2[ram_pos] == dataset2[ram_pos][0]) or
+                                                               np.all(dataset2[obj_name] == dataset2[obj_name][0])):
+                            corr2 = np.corrcoef(dataset2[obj_name], dataset2[ram_pos])[1][0]
+                            approved_candidates[obj_name].append({"pos": int(ram_pos),
+                                                                  "corr": candidates[obj_name][ram_pos],
+                                                                  "manipulated_corr": corr2})
 
                 def s(d):
                     return abs(d["manipulated_corr"])
@@ -291,6 +298,7 @@ def do_analysis(env, dump_path, new_dump, min_correlation, maximum_x,
 
 
 if __name__ == "__main__":
+    GAME_NAME = "Centipede"
     GAME_NAME = "Asterix-v4"  # DemonAttack
     MODE = "vision"    # do not change
     # RENDER_MODE = "human"
@@ -298,15 +306,15 @@ if __name__ == "__main__":
     MAXIMUM_X = 160  # right side of screen in rgb_array
     MAXIMUM_Y = 210  # bottom of screen in rgb_array
     DUMP_PATH = None  # path to dump otherwise takes standard
-    NEW_DUMP = True  # if True creates new datasets and dumps it overwriting the previous ones
+    NEW_DUMP = False  # if True creates new datasets and dumps it overwriting the previous ones
     MIN_CORRELATION = 0.8
     DROP_CONSTANTS = True  # if True does not consider not changing variables for objects
-    START_FRAME = 30  # selects the frame at which each simulation starts
+    START_FRAME = 100  # selects the frame at which each simulation starts
 
     env = OCAtari(GAME_NAME, mode=MODE, render_mode=RENDER_MODE)
     random.seed(0)
     observation, info = env.reset()
-    obs, reward, terminated, truncated, info = env.step(0)
+    obs, reward, terminated, truncated, info = env.step(env.action_space.sample())
     env.reset()
 
     do_analysis(env, drop_constants=DROP_CONSTANTS, dump_path=DUMP_PATH,

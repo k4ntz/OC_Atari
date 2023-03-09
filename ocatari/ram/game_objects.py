@@ -8,7 +8,6 @@ class GameObject:
         self.wh = (0, 0)
         self._prev_xy = (0, 0)
         self.hud = False
-        self.visible = True
 
     def __repr__(self):
         return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]})"
@@ -65,3 +64,7 @@ class GameObject:
     @property
     def h(self):
         return self.wh[1]
+
+    @h.setter
+    def h(self, h):
+        self.wh = self.w, h

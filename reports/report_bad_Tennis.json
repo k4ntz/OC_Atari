@@ -1,0 +1,718 @@
+Details of frames with mean iou < 0.8
+{
+    "Image_1": {
+        "mean_iou": 0.7228657228657228,
+        "per_class_ious": {
+            "Player": 0.6666666666666666,
+            "Enemy": 0.7267267267267268,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (57, 24)",
+            "Enemy at (47, 156)",
+            "Ball at (58, 154)",
+            "BallShadow at (58, 170)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (113, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (60, 24), (12, 23)\n",
+            "Enemy at (46, 157), (12, 23)\n",
+            "Ball at (58, 155), (2, 2)\n",
+            "BallShadow at (58, 171), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (113, 5), (6, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_5": {
+        "mean_iou": 0.7228657228657228,
+        "per_class_ious": {
+            "Player": 0.6666666666666666,
+            "Enemy": 0.7267267267267268,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (98, 18)",
+            "Enemy at (49, 164)",
+            "Ball at (51, 138)",
+            "BallShadow at (51, 150)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (106, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (101, 18), (12, 23)\n",
+            "Enemy at (48, 165), (12, 23)\n",
+            "Ball at (51, 139), (2, 2)\n",
+            "BallShadow at (51, 151), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (106, 5), (13, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_15": {
+        "mean_iou": 0.7906103286384976,
+        "per_class_ious": {
+            "Player": 0.6666666666666666,
+            "Enemy": 0.6197183098591549,
+            "PlayerScore": 1.0,
+            "EnemyScore": 0.6666666666666666,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (107, 25)",
+            "Enemy at (84, 131)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (113, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (110, 25), (12, 23)\n",
+            "Enemy at (87, 132), (12, 23)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (114, 5), (4, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_16": {
+        "mean_iou": 0.7906103286384976,
+        "per_class_ious": {
+            "Player": 0.6666666666666666,
+            "Enemy": 0.6197183098591549,
+            "PlayerScore": 1.0,
+            "EnemyScore": 0.6666666666666666,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (107, 25)",
+            "Enemy at (84, 131)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (113, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (110, 25), (12, 23)\n",
+            "Enemy at (87, 132), (12, 23)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (114, 5), (4, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_23": {
+        "mean_iou": 0.7398725255868113,
+        "per_class_ious": {
+            "Player": 0.7267267267267268,
+            "Enemy": 0.7857142857142857,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (75, 164)",
+            "Enemy at (76, 34)",
+            "Ball at (116, 146)",
+            "BallShadow at (116, 172)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (106, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (74, 165), (12, 23)\n",
+            "Enemy at (75, 34), (12, 23)\n",
+            "Ball at (116, 147), (2, 2)\n",
+            "BallShadow at (116, 173), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (106, 5), (13, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_27": {
+        "mean_iou": 0.7699530516431925,
+        "per_class_ious": {
+            "Player": 0.6197183098591549,
+            "Enemy": 0.6666666666666666,
+            "Ball": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (87, 138)",
+            "Enemy at (84, 20)",
+            "Ball at (46, 136)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (105, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (90, 139), (12, 23)\n",
+            "Enemy at (87, 20), (12, 23)\n",
+            "Ball at (46, 137), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (105, 5), (14, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_37": {
+        "mean_iou": 0.7398725255868113,
+        "per_class_ious": {
+            "Player": 0.7267267267267268,
+            "Enemy": 0.7857142857142857,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (62, 134)",
+            "Enemy at (76, 30)",
+            "Ball at (107, 132)",
+            "BallShadow at (107, 158)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (113, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (61, 135), (12, 23)\n",
+            "Enemy at (75, 30), (12, 23)\n",
+            "Ball at (107, 133), (2, 2)\n",
+            "BallShadow at (107, 159), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (113, 5), (6, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_41": {
+        "mean_iou": 0.7398725255868113,
+        "per_class_ious": {
+            "Player": 0.7267267267267268,
+            "Enemy": 0.7857142857142857,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (93, 141)",
+            "Enemy at (84, 40)",
+            "Ball at (100, 130)",
+            "BallShadow at (100, 150)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (106, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (92, 142), (12, 23)\n",
+            "Enemy at (83, 40), (12, 23)\n",
+            "Ball at (100, 131), (2, 2)\n",
+            "BallShadow at (100, 151), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (106, 5), (13, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_45": {
+        "mean_iou": 0.7161583734617442,
+        "per_class_ious": {
+            "Player": 0.6797752808988764,
+            "Enemy": 0.6666666666666666,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (71, 158)",
+            "Enemy at (67, 20)",
+            "Ball at (73, 152)",
+            "BallShadow at (73, 174)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (105, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (73, 159), (13, 23)\n",
+            "Enemy at (70, 20), (12, 23)\n",
+            "Ball at (73, 153), (2, 2)\n",
+            "BallShadow at (73, 175), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (105, 5), (14, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_47": {
+        "mean_iou": 0.7075788061703554,
+        "per_class_ious": {
+            "Player": 0.6197183098591549,
+            "Enemy": 0.6666666666666666,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (102, 164)",
+            "Enemy at (84, 66)",
+            "Ball at (53, 158)",
+            "BallShadow at (53, 184)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (105, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (105, 165), (12, 23)\n",
+            "Enemy at (87, 66), (12, 23)\n",
+            "Ball at (53, 159), (2, 2)\n",
+            "BallShadow at (53, 185), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (105, 5), (14, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_51": {
+        "mean_iou": 0.7075788061703554,
+        "per_class_ious": {
+            "Player": 0.6197183098591549,
+            "Enemy": 0.6666666666666666,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (99, 161)",
+            "Enemy at (70, 66)",
+            "Ball at (45, 118)",
+            "BallShadow at (45, 136)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (105, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (102, 162), (12, 23)\n",
+            "Enemy at (73, 66), (12, 23)\n",
+            "Ball at (45, 119), (2, 2)\n",
+            "BallShadow at (45, 137), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (105, 5), (14, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_54": {
+        "mean_iou": 0.7228657228657228,
+        "per_class_ious": {
+            "Player": 0.6666666666666666,
+            "Enemy": 0.7267267267267268,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (67, 24)",
+            "Enemy at (65, 159)",
+            "Ball at (75, 156)",
+            "BallShadow at (75, 182)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (113, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (70, 24), (12, 23)\n",
+            "Enemy at (64, 160), (12, 23)\n",
+            "Ball at (75, 157), (2, 2)\n",
+            "BallShadow at (75, 183), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (113, 5), (6, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_55": {
+        "mean_iou": 0.7398725255868113,
+        "per_class_ious": {
+            "Player": 0.7857142857142857,
+            "Enemy": 0.7267267267267268,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (64, 18)",
+            "Enemy at (76, 164)",
+            "Ball at (84, 118)",
+            "BallShadow at (84, 154)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (113, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (63, 18), (12, 23)\n",
+            "Enemy at (75, 165), (12, 23)\n",
+            "Ball at (84, 119), (2, 2)\n",
+            "BallShadow at (84, 155), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (113, 5), (6, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_59": {
+        "mean_iou": 0.7398725255868113,
+        "per_class_ious": {
+            "Player": 0.7857142857142857,
+            "Enemy": 0.7267267267267268,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (74, 24)",
+            "Enemy at (65, 159)",
+            "Ball at (75, 160)",
+            "BallShadow at (75, 182)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (106, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (73, 24), (12, 23)\n",
+            "Enemy at (64, 160), (12, 23)\n",
+            "Ball at (75, 161), (2, 2)\n",
+            "BallShadow at (75, 183), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (106, 5), (13, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_63": {
+        "mean_iou": 0.7398725255868113,
+        "per_class_ious": {
+            "Player": 0.7857142857142857,
+            "Enemy": 0.7267267267267268,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (68, 24)",
+            "Enemy at (65, 159)",
+            "Ball at (75, 156)",
+            "BallShadow at (75, 182)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (105, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (67, 24), (12, 23)\n",
+            "Enemy at (64, 160), (12, 23)\n",
+            "Ball at (75, 157), (2, 2)\n",
+            "BallShadow at (75, 183), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (105, 5), (14, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_67": {
+        "mean_iou": 0.7398725255868113,
+        "per_class_ious": {
+            "Player": 0.7857142857142857,
+            "Enemy": 0.7267267267267268,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (70, 24)",
+            "Enemy at (65, 159)",
+            "Ball at (75, 166)",
+            "BallShadow at (75, 182)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (105, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (69, 24), (12, 23)\n",
+            "Enemy at (64, 160), (12, 23)\n",
+            "Ball at (75, 167), (2, 2)\n",
+            "BallShadow at (75, 183), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (105, 5), (14, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_68": {
+        "mean_iou": 0.7262842144731909,
+        "per_class_ious": {
+            "Player": 0.6666666666666666,
+            "Enemy": 0.7506561679790026,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (72, 20)",
+            "Enemy at (69, 163)",
+            "Ball at (78, 148)",
+            "BallShadow at (78, 172)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (105, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (75, 20), (12, 23)\n",
+            "Enemy at (68, 164), (16, 23)\n",
+            "Ball at (78, 149), (2, 2)\n",
+            "BallShadow at (78, 173), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (105, 5), (14, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_72": {
+        "mean_iou": 0.7228657228657228,
+        "per_class_ious": {
+            "Player": 0.6666666666666666,
+            "Enemy": 0.7267267267267268,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (74, 29)",
+            "Enemy at (38, 163)",
+            "Ball at (48, 116)",
+            "BallShadow at (48, 128)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (113, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (77, 29), (12, 23)\n",
+            "Enemy at (37, 164), (12, 23)\n",
+            "Ball at (48, 117), (2, 2)\n",
+            "BallShadow at (48, 129), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (113, 5), (6, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_81": {
+        "mean_iou": 0.7398725255868113,
+        "per_class_ious": {
+            "Player": 0.7857142857142857,
+            "Enemy": 0.7267267267267268,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (58, 25)",
+            "Enemy at (53, 164)",
+            "Ball at (63, 120)",
+            "BallShadow at (63, 130)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (105, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (57, 25), (12, 23)\n",
+            "Enemy at (52, 165), (12, 23)\n",
+            "Ball at (63, 121), (2, 2)\n",
+            "BallShadow at (63, 131), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (105, 5), (14, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_95": {
+        "mean_iou": 0.7075788061703554,
+        "per_class_ious": {
+            "Player": 0.6197183098591549,
+            "Enemy": 0.6666666666666666,
+            "Ball": 0.3333333333333333,
+            "BallShadow": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (91, 149)",
+            "Enemy at (84, 27)",
+            "Ball at (91, 142)",
+            "BallShadow at (91, 162)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (106, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (94, 150), (12, 23)\n",
+            "Enemy at (87, 27), (12, 23)\n",
+            "Ball at (91, 143), (2, 2)\n",
+            "BallShadow at (91, 163), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (106, 5), (13, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_97": {
+        "mean_iou": 0.7699530516431925,
+        "per_class_ious": {
+            "Player": 0.6197183098591549,
+            "Enemy": 0.6666666666666666,
+            "Ball": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [
+            "BallShadow at (37, 177)"
+        ],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (87, 146)",
+            "Enemy at (84, 20)",
+            "Ball at (37, 174)",
+            "BallShadow at (37, 177)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (106, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (90, 147), (12, 23)\n",
+            "Enemy at (87, 20), (12, 23)\n",
+            "Ball at (37, 175), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (106, 5), (13, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_98": {
+        "mean_iou": 0.7699530516431925,
+        "per_class_ious": {
+            "Player": 0.6197183098591549,
+            "Enemy": 0.6666666666666666,
+            "Ball": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (87, 143)",
+            "Enemy at (84, 23)",
+            "Ball at (37, 182)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (105, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (90, 144), (12, 23)\n",
+            "Enemy at (87, 23), (12, 23)\n",
+            "Ball at (37, 183), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (105, 5), (14, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    },
+    "Image_99": {
+        "mean_iou": 0.7699530516431925,
+        "per_class_ious": {
+            "Player": 0.6197183098591549,
+            "Enemy": 0.6666666666666666,
+            "Ball": 0.3333333333333333,
+            "PlayerScore": 1.0,
+            "EnemyScore": 1.0,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (87, 143)",
+            "Enemy at (84, 23)",
+            "Ball at (37, 182)",
+            "PlayerScore at (49, 5)",
+            "EnemyScore at (105, 5)",
+            "Logo at (40, 193)"
+        ],
+        "objs_in_vision": [
+            "Player at (90, 144), (12, 23)\n",
+            "Enemy at (87, 23), (12, 23)\n",
+            "Ball at (37, 183), (2, 2)\n",
+            "Logo at (40, 193), (32, 7)\n",
+            "EnemyScore at (105, 5), (14, 7)\n",
+            "PlayerScore at (49, 5), (6, 7)\n"
+        ]
+    }
+}
