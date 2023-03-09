@@ -1,15 +1,27 @@
 {
+<<<<<<< HEAD
     "mean_ious": 0.9993939393939394,
     "per_class_ious": {
         "Player": 1.0,
         "PlayerScore": 1.0,
         "Live": 0.9933333333333333,
+=======
+    "mean_ious": 1.0,
+    "per_class_ious": {
+        "Player": 1.0,
+        "PlayerScore": 1.0,
+        "Live": 1.0,
+>>>>>>> 01374f63e35c68eda9501adf635b6b29ea27ef7a
         "PlayerNumber": 1.0,
         "BlockRow": 1.0,
         "Ball": 1.0
     },
     "only_in_ram": {
+<<<<<<< HEAD
         "BlockRow": "53/100"
+=======
+        "BlockRow": "49/100"
+>>>>>>> 01374f63e35c68eda9501adf635b6b29ea27ef7a
     },
     "only_in_vision": {}
 }

@@ -10,6 +10,7 @@ Attention: EvilOtto enemy not implemented due to not getting it spawned during d
 
 class Player(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 8, 79
         self.wh = 8, 20
@@ -19,6 +20,7 @@ class Player(GameObject):
 
 class PlayerMissile(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 1, 6
@@ -28,6 +30,7 @@ class PlayerMissile(GameObject):
 
 class Enemy(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 8, 16
@@ -37,6 +40,7 @@ class Enemy(GameObject):
 
 class EnemyMissile(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 1, 6
@@ -46,6 +50,7 @@ class EnemyMissile(GameObject):
 
 class PlayerScore(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 88, 183
         self.rgb = 232, 232, 74
@@ -58,6 +63,7 @@ class PlayerScore(GameObject):
 
 class Logo(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 63, 183
         self.rgb = 232, 232, 74
@@ -67,6 +73,7 @@ class Logo(GameObject):
 
 class RoomCleared(GameObject):
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 56, 183
         self.rgb = 232, 232, 74
@@ -78,7 +85,9 @@ def _init_objects_berzerk_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = []
+    objects = [Player(), PlayerMissile(), Enemy(), EnemyMissile()]
+    if hud:
+        objects.extend([PlayerScore(), RoomCleared(), Logo()])
     return objects
 
 
@@ -87,7 +96,6 @@ enemy_colors = {0: [210, 210, 64], 1: [210, 210, 64], 2: [198, 108, 58], 3: [198
                 5: [214, 214, 214], 6: [111, 210, 111], 7: [111, 210, 111], 8: [240, 128, 128], 9: [240, 128, 128],
                 10: [84, 160, 197], 11: [84, 160, 197], 12: [232, 204, 99], 13: [232, 204, 99], 14: [198, 89, 179],
                 15: [198, 89, 179]}
-
 prev_missile = [0, 0]
 two_prev_missile = [0, 0]
 prev_enemy_missile = [0, 0]
@@ -112,38 +120,38 @@ def _detect_objects_berzerk_revised(objects, ram_state, hud=False):
         missile = PlayerMissile()
         y = 0
         x = 0
-        missile.visible = True
+        add_missile = True
         # based on the missile direction another offset is needed
         if ram_state[21] == 1:  # shooting up
             x = ram_state[22] + 2
             y = ram_state[23] * 2 + 3
             if two_prev_missile[1] == y and prev_missile[1] == y:
-                missile.visible = False
+                add_missile = False
         elif ram_state[21] == 2:
             x = ram_state[22] + 2
             y = ram_state[23] * 2 - 1
             if two_prev_missile[1] == y and prev_missile[1] == y:
-                missile.visible = False
+                add_missile = False
         elif ram_state[21] == 4 or ram_state[21] == 5:
             x = ram_state[22] + 4
             y = ram_state[23] * 2 + 2
             if two_prev_missile[0] == x and prev_missile[0] == x:
-                missile.visible = False
+                add_missile = False
         elif ram_state[21] == 6:
             x = ram_state[22] + 4
             y = ram_state[23] * 2
             if two_prev_missile[0] == x and prev_missile[0] == x:
-                missile.visible = False
+                add_missile = False
         elif ram_state[21] == 9:
             x = ram_state[22]
             y = ram_state[23] * 2 + 4
             if two_prev_missile[0] == x and prev_missile[0] == x:
-                missile.visible = False
+                add_missile = False
         else:
             x = ram_state[22]
             y = ram_state[23] * 2
             if two_prev_missile[0] == x and prev_missile[0] == x:
-                missile.visible = False
+                add_missile = False
         missile.xy = x, y
         two_prev_missile[0] = prev_missile[0]
         two_prev_missile[1] = prev_missile[1]
@@ -153,7 +161,9 @@ def _detect_objects_berzerk_revised(objects, ram_state, hud=False):
             missile.wh = 1, 6
         else:
             missile.wh = 4, 2
-        objects.append(missile)
+
+        if add_missile:
+            objects.append(missile)
 
     # enemies
     for i in range(8):
@@ -168,25 +178,26 @@ def _detect_objects_berzerk_revised(objects, ram_state, hud=False):
         missile = EnemyMissile()
         x = ram_state[29] + 2
         y = ram_state[30] * 2
-        missile.visible = True
+        add_en_missile = True
         if ram_state[26] == 4 or ram_state[26] == 12 or ram_state[26] == 8:  # shooting up or down
             missile.wh = 1, 6
             if two_prev_enemy_missiles[1] == y:
-                missile.visible = False
+                add_en_missile = False
         else:
             missile.wh = 4, 3
             if two_prev_enemy_missiles[0] == x:
-                missile.visible = False
+                add_en_missile = False
         # initial values for the enemy missile when screen is loading
         if x == 2 and y == 0:
-            missile.visible = False
+            add_en_missile = False
         missile.xy = x, y
         two_prev_enemy_missiles[0] = prev_enemy_missile[0]
         two_prev_enemy_missiles[1] = prev_enemy_missile[1]
         prev_enemy_missile[0] = x
         prev_enemy_missile[1] = y
         missile.rgb = enemy_colors.get(ram_state[92] % 16)
-        objects.append(missile)
+        if add_en_missile:
+            objects.append(missile)
 
     if hud:
         score_value = _convert_number(ram_state[93]) * 10000 + _convert_number(ram_state[94]) * 100 + \

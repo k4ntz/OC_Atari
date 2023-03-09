@@ -1,11 +1,13 @@
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
+import sys
 
+MAX_NB_OBJECTS =  {'Chicken': 2, 'Car': 10}
+MAX_NB_OBJECTS_HUD =  {'Chicken': 2, 'Car': 10, 'Score' : 1}
 
 class Chicken(GameObject):
     def __init__(self):
         super(Chicken, self).__init__()
-        self.visible = True
         self._xy = 0, 0
         self.wh = 6, 8
         self.rgb = 252, 252, 84
@@ -15,7 +17,6 @@ class Chicken(GameObject):
 class Car(GameObject):
     def __init__(self):
         super(Car, self).__init__()
-        self.visible = True
         self._xy = 0, 0
         self.wh = 7, 10
         self.rgb = 167, 26, 26
@@ -25,7 +26,6 @@ class Car(GameObject):
 class Score(GameObject):
     def __init__(self):
         super(Score, self).__init__()
-        self.visible = True
         self._xy = 49, 5
         self.wh = 6, 8
         self.rgb = 228, 111, 111
@@ -37,6 +37,22 @@ car_colors = {"car1": [167, 26, 26], "car2": [180, 231, 117], "car3": [105, 105,
               "car7": [84, 92, 214], "car8": [184, 50, 50], "car9": [135, 183, 84],
               "car10": [210, 210, 64]
               }
+
+
+# parses MAX_NB* dicts, returns default init list of objects
+def _get_max_objects(hud=False):
+
+    def fromdict(max_obj_dict):
+        objects = []
+        mod = sys.modules[__name__]
+        for k, v in max_obj_dict.items():
+            for _ in range(0, v):
+                objects.append(getattr(mod, k)())    
+        return objects
+
+    if hud:
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
 
 
 def _init_objects_freeway_ram(hud=False):

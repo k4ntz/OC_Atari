@@ -1,4 +1,4 @@
-import gym
+import gymnasium as gym
 import time
 from matplotlib import pyplot as plt
 
@@ -26,12 +26,10 @@ for _ in range(1000):
     print("------------------------------------------")
 
     prevRam = ram
-
     rgb_array = env.render()
     plt.imshow(rgb_array)   #rgb_array stuff for fun
     plt.show()
     print(rgb_array)
-
     if terminated or truncated:
         observation, info = env.reset()
 
