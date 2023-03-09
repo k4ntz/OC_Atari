@@ -1,6 +1,7 @@
 import gymnasium as gym
 from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects
 from ocatari.vision.extract_vision_info import detect_objects_vision
+from ocatari.vision.utils import mark_bb, to_rgba
 from termcolor import colored
 from collections import deque
 try:
@@ -15,13 +16,13 @@ import torch
 DEVICE = "cpu"
 
 
-AVAILABLE_GAMES = ["Boxing", "Breakout", "Pong", "Seaquest",
+AVAILABLE_GAMES = ["Asterix", "Boxing", "Breakout", "Pong", "Seaquest",
                    "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack", "Bowling",
                    "MsPacman", "Kangaroo", "Berzerk", "Carnival"]
 
 
 class OCAtari:
-    def __init__(self, env_name, mode="raw", hud=False, *args, **kwargs):
+    def __init__(self, env_name, mode="raw", hud=False, obs_mode="dqn", *args, **kwargs):
         """
         mode: raw/revised/vision/both
         """
@@ -52,6 +53,15 @@ class OCAtari:
         else:
             print(colored("Undefined mode for information extraction", "red"))
             exit(1)
+        if obs_mode == "dqn":
+            self._fill_buffer = self._fill_buffer_dqn
+            self._reset_buffer = self._reset_buffer_dqn
+        elif obs_mode == "ori":
+            self._fill_buffer = self._fill_buffer_ori
+            self._reset_buffer = self._reset_buffer_ori
+        else:
+            print(colored("Undefined mode for observation (obs_mode), has to be one of [dqn, ori]", "red"))
+            exit(1)
         self.window = 4
         self._state_buffer = deque([], maxlen=self.window)
         self.action_space = self._env.action_space
@@ -62,7 +72,7 @@ class OCAtari:
             self.detect_objects(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         else:   # mode == "raw" because in raw mode we augment the info dictionary
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
-        # self._fill_buffer()
+        self._fill_buffer()
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
@@ -79,10 +89,16 @@ class OCAtari:
         self._fill_buffer()
         return obs, reward, truncated, terminated, info
 
-    def _reset_buffer(self):
+    def _reset_buffer_dqn(self):
         for _ in range(self.window):
             self._state_buffer.append(
                 torch.zeros(84, 84, device=DEVICE, dtype=torch.uint8)
+            )
+    
+    def _reset_buffer_ori(self):
+        for _ in range(self.window):
+            self._state_buffer.append(
+                torch.zeros(210, 160, 3, device=DEVICE, dtype=torch.uint8)
             )
 
     def reset(self, *args, **kwargs):
@@ -90,10 +106,15 @@ class OCAtari:
         self.objects = init_objects(self.game_name, self.hud)
         return self._env.reset(*args, **kwargs)
 
-    def _fill_buffer(self):
+    def _fill_buffer_dqn(self):
         state = cv2.resize(
             self._ale.getScreenGrayscale(), (84, 84), interpolation=cv2.INTER_AREA,
         )
+        self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
+                                               device=DEVICE))
+
+    def _fill_buffer_ori(self):
+        state = self._ale.getScreenRGB()
         self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
                                                device=DEVICE))
 
@@ -119,3 +140,33 @@ class OCAtari:
         Directly manipulate a targeted RAM position
         """
         return self._env.unwrapped.ale.setRAM(target_ram_position, new_value)
+    
+    def render_explanations(self):
+        coefs = [0.05, 0.1, 0.25, 0.6]
+        rendered = torch.zeros_like(self._state_buffer[0]).float()
+        for coef, state_i in zip(coefs, self._state_buffer):
+            rendered += coef * state_i
+        rendered = rendered.cpu().detach().to(int).numpy()
+        for obj in self.objects:
+            mark_bb(rendered, obj.xywh, color=obj.rgb)
+        import matplotlib.pyplot as plt
+        plt.imshow(rendered)
+        rows, cells, colors = [], [], []
+        columns = ["X, Y", "W, H", "R, G, B"]
+        for obj in self.objects:
+            rows.append(obj.category)
+            cells.append([obj.xy, obj.wh, obj.rgb])
+            colors.append(to_rgba(obj.rgb))
+        # import ipdb; ipdb.set_trace()
+        t_height = 0.03 * len(rows)
+        table = plt.table(cellText=cells,
+                          rowLabels=rows,
+                          rowColours=colors,
+                          colLabels=columns,
+                          colWidths=[.2,.2,.3],
+                          bbox=[0.1, 1.02, 0.8, t_height],
+                          loc='top')
+        table.set_fontsize(14)
+        plt.subplots_adjust(top=0.8)
+        plt.show()
+            
