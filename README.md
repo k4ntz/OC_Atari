@@ -55,11 +55,7 @@ You can change the `mode` argument line 10!
 
 ##
 ```py
-<<<<<<< HEAD
 from ocatari import OCAtari
-=======
-from ocatari.core import OCAtari
->>>>>>> 357f555bc47582bc300ba666b2fae34d64ae3d94
 import time
 import random
 env = OCAtari("Skiing")
