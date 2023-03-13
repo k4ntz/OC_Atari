@@ -138,8 +138,8 @@ def load_agent(opt, nb_actions=None):
 
 
 def load_agent(opt, nb_actions=None): # noqa
-    ckpt_path = Path(opt.path)  # noqa
+    # ckpt_path = Path(opt.path)  # assigned to but never used
     agent = AtariNet(nb_actions, distributional="C51_" in opt.path)
     ckpt = _load_checkpoint(opt.path)
-    agent.load_state_dict(ckpt["estimator_state"]) 
+    agent.load_state_dict(ckpt["estimator_state"])
     return agent
