@@ -192,7 +192,7 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         else:
             proj.xy = ram_state[60]+3, missile_pos(ram_state[58])-1
             print("RIGHT W")
-        proj.rgb = (200,200,200)
+        proj.rgb = (200, 200, 200)
         objects.append(proj)
 
     prev_x_p1 = ram_state[60]
@@ -408,26 +408,22 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
     prev_x4 = ram_state[36]
     buildings_amount = buildings_count
 
-
-
-
     # global vert_proj
     # if ram_state[106]:
     #     if not vert_proj:
     #         vert_proj = Projectile()
     #         vert_proj.rgb = (20, 200, 20)
     #         objects.append(vert_proj)
-    #     vert_proj._xy = 73, 3 * ram_state[106] + 21 
+    #     vert_proj._xy = 73, 3 * ram_state[106] + 21
     # elif vert_proj:
-    #     if vert_proj in objects:  
+    #     if vert_proj in objects:
     #         objects.remove(vert_proj)
     #     vert_proj = None
-    
+
     # for oj in objects:
     #     if isinstance(oj, Projectile):
     #         xy = oj.xy
     #         oj.xy = xy[0]-4, xy[1]-8
-
 
     if hud:
         # Score

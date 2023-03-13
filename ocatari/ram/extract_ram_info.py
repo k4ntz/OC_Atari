@@ -27,6 +27,7 @@ from .kangaroo import _detect_objects_kangaroo_raw, \
 from .atlantis import _detect_objects_atlantis_raw, \
                       _detect_objects_atlantis_revised, \
                       _init_objects_atlantis_ram
+from .asteroids import _detect_objects_asteroids_raw, _detect_objects_asteroids_revised, _init_objects_asteroids_ram
 
 
 def init_objects(game_name, hud):
@@ -67,6 +68,8 @@ def init_objects(game_name, hud):
         return _init_objects_asterix_ram(hud)
     elif game_name.lower() == "atlantis":
         return _init_objects_atlantis_ram(hud)
+    elif game_name.lower() == "asteroids":
+        return _init_objects_asteroids_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
@@ -113,6 +116,8 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_asterix_raw(info, ram_state)
     elif game_name.lower() == "atlantis":
         _detect_objects_atlantis_raw(info, ram_state)
+    elif game_name.lower() == "asteroids":
+        _detect_objects_asteroids_raw(info, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
         exit(1)
@@ -156,6 +161,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_asterix_revised(objects, ram_state, hud)
     elif game_name.lower() == "atlantis":
         _detect_objects_atlantis_revised(objects, ram_state, hud)
+    elif game_name.lower() == "asteroids":
+        _detect_objects_asteroids_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
