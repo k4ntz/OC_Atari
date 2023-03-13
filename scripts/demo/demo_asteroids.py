@@ -17,7 +17,7 @@ observation, info = env.reset()
 
 for i in range(1000):
     obs, reward, terminated, truncated, info = env.step(random.randint(0, 4))
-    # env.set_ram(21, 255)
+    env.set_ram(61, 100)
     ram = env._env.unwrapped.ale.getRAM()
    # env.set_ram(3, 30)
     if i % 25 == 0:
