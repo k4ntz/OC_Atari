@@ -1,0 +1,231 @@
+Details of frames with mean iou < 0.8
+{
+    "Image_40": {
+        "mean_iou": 0.7699829931972789,
+        "per_class_ious": {
+            "Player": 1.0,
+            "PlayerScore": 1.0,
+            "PlayerMissile": 0.10416666666666667,
+            "Rabbit": 0.5,
+            "Owl": 1.0,
+            "Wheel": 0.7857142857142857,
+            "AmmoBar": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (84, 186)",
+            "PlayerScore at (65, 0)",
+            "PlayerMissile at (82, 165)",
+            "Rabbit at (156, 47)",
+            "Owl at (77, 47)",
+            "Wheel at (70, 15)",
+            "AmmoBar at (0, 203)"
+        ],
+        "objs_in_vision": [
+            "Player at (84, 186), (6, 13)\n",
+            "PlayerMissile at (85, 165), (1, 5)\n",
+            "Rabbit at (156, 47), (4, 15)\n",
+            "Owl at (77, 47), (8, 15)\n",
+            "Wheel at (74, 15), (22, 12)\n",
+            "AmmoBar at (0, 203), (44, 5)\n",
+            "PlayerScore at (65, 0), (38, 9)\n"
+        ]
+    },
+    "Image_45": {
+        "mean_iou": 0.7015977443609022,
+        "per_class_ious": {
+            "Player": 1.0,
+            "PlayerScore": 1.0,
+            "PlayerMissile": 0.125,
+            "FlyingDuck": 0.6842105263157895,
+            "Wheel": 0.7857142857142857
+        },
+        "only_in_ram": [
+            "AmmoBar at (0, 203)",
+            "BonusSign at (12, 29)",
+            "BonusValue at (22, 29)"
+        ],
+        "only_in_vision": [
+            "Bonus at (22, 29), (22, 9)\n",
+            "Bonus at (12, 29), (6, 9)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (75, 186)",
+            "PlayerScore at (65, 0)",
+            "PlayerMissile at (73, 170)",
+            "FlyingDuck at (31, 121)",
+            "FlyingDuck at (31, 121)",
+            "FlyingDuck at (31, 121)",
+            "FlyingDuck at (31, 121)",
+            "FlyingDuck at (31, 121)",
+            "FlyingDuck at (31, 121)",
+            "Wheel at (70, 15)",
+            "AmmoBar at (0, 203)",
+            "BonusSign at (12, 29)",
+            "BonusValue at (22, 29)"
+        ],
+        "objs_in_vision": [
+            "Player at (75, 186), (6, 13)\n",
+            "PlayerMissile at (75, 170), (1, 6)\n",
+            "FlyingDuck at (32, 123), (16, 15)\n",
+            "Wheel at (74, 15), (22, 12)\n",
+            "PlayerScore at (65, 0), (38, 9)\n",
+            "Bonus at (22, 29), (22, 9)\n",
+            "Bonus at (12, 29), (6, 9)\n"
+        ]
+    },
+    "Image_46": {
+        "mean_iou": 0.7705445814689511,
+        "per_class_ious": {
+            "Player": 1.0,
+            "PlayerScore": 1.0,
+            "PlayerMissile": 0.10204081632653061,
+            "FlyingDuck": 0.7647058823529411,
+            "Wheel": 0.7857142857142857,
+            "AmmoBar": 1.0
+        },
+        "only_in_ram": [
+            "BonusSign at (12, 29)",
+            "BonusValue at (20, 29)"
+        ],
+        "only_in_vision": [
+            "Bonus at (12, 31), (30, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (76, 186)",
+            "PlayerScore at (65, 0)",
+            "PlayerMissile at (72, 84)",
+            "FlyingDuck at (21, 128)",
+            "FlyingDuck at (21, 128)",
+            "FlyingDuck at (21, 128)",
+            "FlyingDuck at (21, 128)",
+            "FlyingDuck at (21, 128)",
+            "FlyingDuck at (21, 128)",
+            "Wheel at (70, 15)",
+            "AmmoBar at (0, 203)",
+            "BonusSign at (12, 29)",
+            "BonusValue at (20, 29)"
+        ],
+        "objs_in_vision": [
+            "Player at (76, 186), (6, 13)\n",
+            "PlayerMissile at (73, 83), (1, 6)\n",
+            "FlyingDuck at (21, 130), (16, 15)\n",
+            "Wheel at (74, 15), (22, 12)\n",
+            "AmmoBar at (0, 203), (8, 5)\n",
+            "PlayerScore at (65, 0), (38, 9)\n",
+            "Bonus at (12, 31), (30, 7)\n"
+        ]
+    },
+    "Image_47": {
+        "mean_iou": 0.74781162464986,
+        "per_class_ious": {
+            "Player": 1.0,
+            "PlayerScore": 1.0,
+            "PlayerMissile": 0.10416666666666667,
+            "FlyingDuck": 0.7647058823529411,
+            "Wheel": 0.7857142857142857
+        },
+        "only_in_ram": [
+            "BonusSign at (12, 29)",
+            "BonusValue at (20, 29)"
+        ],
+        "only_in_vision": [
+            "AmmoBar at (0, 203), (4, 5)\n",
+            "Bonus at (12, 31), (30, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (89, 186)",
+            "PlayerScore at (65, 0)",
+            "PlayerMissile at (87, 175)",
+            "FlyingDuck at (21, 147)",
+            "FlyingDuck at (21, 147)",
+            "FlyingDuck at (21, 147)",
+            "FlyingDuck at (21, 147)",
+            "FlyingDuck at (21, 147)",
+            "FlyingDuck at (21, 147)",
+            "Wheel at (70, 15)",
+            "BonusSign at (12, 29)",
+            "BonusValue at (20, 29)"
+        ],
+        "objs_in_vision": [
+            "Player at (89, 186), (6, 13)\n",
+            "PlayerMissile at (90, 175), (1, 5)\n",
+            "FlyingDuck at (21, 149), (16, 15)\n",
+            "Wheel at (72, 15), (22, 12)\n",
+            "AmmoBar at (0, 203), (4, 5)\n",
+            "PlayerScore at (65, 0), (38, 9)\n",
+            "Bonus at (12, 31), (30, 7)\n"
+        ]
+    },
+    "Image_66": {
+        "mean_iou": 0.7827380952380951,
+        "per_class_ious": {
+            "Player": 1.0,
+            "PlayerScore": 1.0,
+            "PlayerMissile": 0.10416666666666667,
+            "Duck": 0.375,
+            "Owl": 1.0,
+            "Wheel": 1.0,
+            "AmmoBar": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 186)",
+            "PlayerScore at (65, 0)",
+            "PlayerMissile at (10, 34)",
+            "Duck at (3, 68)",
+            "Owl at (18, 47)",
+            "Wheel at (70, 15)",
+            "AmmoBar at (0, 203)"
+        ],
+        "objs_in_vision": [
+            "Player at (8, 186), (6, 13)\n",
+            "PlayerMissile at (14, 35), (1, 5)\n",
+            "Duck at (8, 68), (3, 15)\n",
+            "Owl at (18, 47), (8, 15)\n",
+            "Wheel at (70, 15), (28, 12)\n",
+            "AmmoBar at (0, 203), (64, 5)\n",
+            "PlayerScore at (65, 0), (38, 9)\n"
+        ]
+    },
+    "Image_73": {
+        "mean_iou": 0.7738095238095238,
+        "per_class_ious": {
+            "Player": 1.0,
+            "PlayerScore": 1.0,
+            "PlayerMissile": 0.08333333333333333,
+            "Duck": 1.0,
+            "Wheel": 0.7857142857142857
+        },
+        "only_in_ram": [
+            "AmmoBar at (0, 203)",
+            "BonusSign at (12, 29)",
+            "BonusValue at (20, 29)"
+        ],
+        "only_in_vision": [
+            "Owl at (157, 47), (3, 15)\n",
+            "Bonus at (12, 31), (30, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (63, 186)",
+            "PlayerScore at (65, 0)",
+            "PlayerMissile at (67, 79)",
+            "Duck at (24, 68)",
+            "Wheel at (70, 15)",
+            "AmmoBar at (0, 203)",
+            "BonusSign at (12, 29)",
+            "BonusValue at (20, 29)"
+        ],
+        "objs_in_vision": [
+            "Player at (63, 186), (6, 13)\n",
+            "PlayerMissile at (70, 79), (1, 4)\n",
+            "Duck at (24, 68), (8, 15)\n",
+            "Owl at (157, 47), (3, 15)\n",
+            "Wheel at (74, 15), (22, 12)\n",
+            "PlayerScore at (65, 0), (38, 9)\n",
+            "Bonus at (12, 31), (30, 7)\n"
+        ]
+    }
+}

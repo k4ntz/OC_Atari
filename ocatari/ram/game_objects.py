@@ -1,4 +1,4 @@
-class GameObject():
+class GameObject:
     GET_COLOR = False
     GET_WH = False
 
@@ -8,10 +8,13 @@ class GameObject():
         self.wh = (0, 0)
         self._prev_xy = (0, 0)
         self.hud = False
-        self.visible = True
 
     def __repr__(self):
         return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]})"
+
+    @property
+    def category(self):
+        return self.__class__.__name__
 
     @property
     def xy(self):
@@ -54,6 +57,14 @@ class GameObject():
     def w(self):
         return self.wh[0]
 
+    @w.setter
+    def w(self, w):
+        self.wh = w, self.h
+
     @property
     def h(self):
         return self.wh[1]
+
+    def is_on_top(self, other):
+        return (other.x <= self.x <= other.x + other.w) and \
+            (other.y <= self.y <= other.y + other.h) 

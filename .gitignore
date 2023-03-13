@@ -1,4 +1,13 @@
 *__pycache__*
+GitLab_README.md
+*.egg-info
+
+# folers
+build/
+dist/
+.venv
+dumps/
+tests/diff_images
 *.egg-info
 dumps/*
 env
@@ -7,4 +16,8 @@ scripts/general/testSkriptNr2.py
 scripts/general/testSkriptNr3.py
 scripts/general/testSkriptNr4.py
 scripts/general/testSkriptNr5.py
-tests/diff_images
+*diff_images
+.venv
+*.xml
+.idea/bachelor-praktikum.iml
+reports
