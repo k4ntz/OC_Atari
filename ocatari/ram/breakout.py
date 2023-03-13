@@ -6,9 +6,9 @@ from ._helper_methods import _convert_number
 RAM extraction for the game BREAKOUT. Supported modes: raw, revised.
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'BlockRow': 9} # blockrow could go very very high with a performing agent
+MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'BlockRow': 9}    # blockrow could go very very high with a performing agent
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerScore': 3, 'Live': 1,'PlayerNumber': 1,
-                      'BlockRow': 9, 'Ball': 1} # blockrow could go very very high with a performing agent
+                      'BlockRow': 9, 'Ball': 1}     # blockrow could go very very high with a performing agent
 
 
 class Player(GameObject):
@@ -116,13 +116,6 @@ def _make_block_bitmap(ram_state):
     # diff(previous_array_str, str(blocks_int))
     # previous_array_str = str(blocks_int)
     return blocks_int
-
-
-def _detect_objects_breakout_raw(info, ram_state, hud=False):
-    info["block_bitmap"] = _make_block_bitmap(ram_state)
-    info["ball"] = ram_state[99], ram_state[101]
-    info["player"] = ram_state[72] - 47, 189
-    print(ram_state)
 
 
 def _detect_objects_breakout_revised(objects, ram_state, hud=False):
