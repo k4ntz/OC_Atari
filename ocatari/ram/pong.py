@@ -1,6 +1,10 @@
 from .game_objects import GameObject
 
 
+MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Enemy': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Enemy': 1, 'PlayerScore': 1, 'EnemyScore': 2}
+
+
 class Player(GameObject):
     def __init__(self):
         self._xy = 0, 0
@@ -12,6 +16,7 @@ class Player(GameObject):
 
 class Enemy(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 4, 15
         self.rgb = 213, 130, 74
@@ -21,6 +26,7 @@ class Enemy(GameObject):
 
 class Ball(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 2, 3
         self.rgb = 236, 236, 236
@@ -29,6 +35,7 @@ class Ball(GameObject):
 
 class PlayerScore(GameObject):
     def __init__(self, ten=False):
+        super().__init__()
         if ten:
             self._xy = 100, 1
         else:
@@ -44,6 +51,7 @@ class PlayerScore(GameObject):
 
 class EnemyScore(GameObject):
     def __init__(self, ten=False):
+        super().__init__()
         if ten:
             self._xy = 20, 1
         else:
@@ -72,14 +80,30 @@ def _detect_objects_pong_revised(objects, ram_state, hud=False):
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
-    # set default coord if object does not exist
+    # set defauld coord if object does not exist
     player, ball, enemy = objects[:3]
     if ram_state[54] != 0:  # otherwise no ball
         ball.xy = ram_state[49]-49, ram_state[54]-14
     # same for enemy
-    if ram_state[50] > 18 or ram_state[50] != 0:  # otherwise no enemy
-        enemy.xy = 16, ram_state[50]-15
-    player.xy = 140, ram_state[51]-13
+    if ram_state[50] > 18:  # otherwise no enemy
+        if ram_state[50] - 15 < 34:
+            enemy.xy = 16, 34
+            enemy.wh = 4, ram_state[50]-33
+        elif ram_state[50] > 194:
+            enemy.xy = 16, ram_state[50]-15
+            enemy.wh = 4, 209 - ram_state[50]
+        else:
+            enemy.xy = 16, ram_state[50]-15
+            enemy.wh = 4, 15
+    if ram_state[51] - 13 < 34:
+        player.xy = 140, 34
+        player.wh = 4, ram_state[51]-33
+    elif ram_state[51] + 2 > 194:
+        player.xy = 140, ram_state[51]-13
+        player.wh = 4, 207 - ram_state[51]
+    else:
+        player.xy = 140, ram_state[51]-13
+        player.wh = 4, 15
     if hud:
         # scores
         if ram_state[13] > 10:  # enemy score

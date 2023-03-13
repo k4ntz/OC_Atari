@@ -1,10 +1,11 @@
 from .game_objects import GameObject
+from ._helper_methods import _convert_number
+import math
 
 
 class Player(GameObject):
     def __init__(self):
         super(Player, self).__init__()
-        self.visible = True
         self._xy = 78, 103
         self.wh = 9, 10
         self.rgb = 210, 164, 74
@@ -15,7 +16,6 @@ class Ghost(GameObject):
     def __init__(self, *args, **kwargs):
         super(Ghost, self).__init__()
         super().__init__(*args, **kwargs)
-        self.visible = True
         self._xy = 79, 57
         self.wh = 9, 10
         self.rgb = 200, 72, 72
@@ -25,7 +25,6 @@ class Ghost(GameObject):
 class Fruit(GameObject):
     def __init__(self, *args, **kwargs):
         super(Fruit, self).__init__()
-        self.visible = True
         self._xy = 125, 173
         self.wh = 9, 10
         self.rgb = 184, 50, 50
@@ -35,7 +34,6 @@ class Fruit(GameObject):
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super(Score, self).__init__()
-        self.visible = True
         self._xy = 95, 187
         self.wh = 7, 7
         self.rgb = 195, 144, 61
@@ -45,11 +43,42 @@ class Score(GameObject):
 class Life(GameObject):
     def __init__(self, *args, **kwargs):
         super(Life, self).__init__()
-        self.visible = True
         self._xy = 12, 171
-        self.wh = 9, 10
+        self.wh = 7, 10
         self.rgb = 187, 187, 53
         self.hud = True
+
+
+def _create_score_from_number(number):
+    """
+    returns a list a list with number * Score objects at the correct position
+    """
+    score = 1
+    if number > 0:
+        score = int(math.log10(number)) + 1
+
+    ret = []
+    x = 95
+    for i in range(score):
+        score = Score()
+        score.xy = x, 187
+        ret.append(score)
+        x -= 8
+    return ret
+
+
+def _create_lifes_from_number(number):
+    """
+    returns a list a list with number * Life objects at the correct position
+    """
+    ret = []
+    x = 12
+    for i in range(number):
+        life = Life()
+        life.xy = x, 173
+        ret.append(life)
+        x += 15
+    return ret
 
 
 def _init_objects_mspacman_ram(hud=False):
@@ -57,29 +86,22 @@ def _init_objects_mspacman_ram(hud=False):
     (Re)Initialize the objects
     """
 
-    objects = [Player(), Ghost(), Ghost(), Ghost(), Ghost(), Fruit()]
+    objects = [Player(), Ghost(), Ghost(), Ghost(), Ghost()]
 
     if hud:
-        x = 95
-        for i in range(6):
-            score = Score()
-            score.xy = x, 187
-            objects.append(score)
-            x -= 8
-
-        x = 12
-        for i in range(3):
-            life = Life()
-            life.xy = x, 173
-            objects.append(life)
-            x += 15
         objects.append(Fruit())
+        objects.extend(_create_score_from_number(100000))
+
+        objects.extend(_create_lifes_from_number(3))
 
     return objects
 
 
 def _detect_objects_mspacman_revised(objects, ram_state, hud=True):
-    player, g1, g2, g3, g4, fruit = objects[:6]
+    player, g1, g2, g3, g4 = objects[:5]
+    if hud:
+        fruit_hud = objects[5]
+        fruit_hud.rgb = get_fruit_rgb(ram_state[123])
 
     player.xy = ram_state[10] - 13, ram_state[16] + 1
 
@@ -92,32 +114,35 @@ def _detect_objects_mspacman_revised(objects, ram_state, hud=True):
     g4.xy = ram_state[9] - 13, ram_state[15] + 1
     # no rgb adjustment, since this colour is the default one
 
+    objects.clear()
+    objects.extend([player, g1, g2, g3, g4])
+    if hud:
+        objects.append(fruit_hud)
+
     if ram_state[11] > 0 and ram_state[17] > 0:
+        fruit = Fruit()
         fruit.xy = ram_state[11] - 13, ram_state[17] + 1
         fruit.rgb = get_fruit_rgb(ram_state[123])
-    else:
-        fruit.visible = False
+        objects.append(fruit)
 
     if hud:
-        if ram_state[122] < 16:
-            objects[11].visible = False
-            if ram_state[122] == 0:
-                objects[10].visible = False
-                if ram_state[121] < 16:
-                    objects[9].visible = False
-                    if ram_state[121] == 0:
-                        objects[8].visible = False
-                        if ram_state[120] < 16:
-                            objects[7].visible = False
+        score = _convert_number(ram_state[122]) * 10000 + _convert_number(ram_state[121]) * 100 +\
+                _convert_number(ram_state[120])
+        scores = _create_score_from_number(score)
+        objects.extend(scores)
+        # if ram_state[122] < 16:
+        #     objects[11].visible = False
+        #     if ram_state[122] == 0:
+        #         objects[10].visible = False
+        #         if ram_state[121] < 16:
+        #             objects[9].visible = False
+        #             if ram_state[121] == 0:
+        #                 objects[8].visible = False
+        #                 if ram_state[120] < 16:
+        #                     objects[7].visible = False
 
-        if ram_state[123] <= 2:
-            objects[14].visible = False
-            if ram_state[123] <= 1:
-                objects[13].visible = False
-                if ram_state[123] == 0:
-                    objects[12].visible = False
-
-        objects[15].rgb = get_fruit_rgb(ram_state[123])
+        lifes = _create_lifes_from_number(ram_state[123])
+        objects.extend(lifes)
 
 
 def _detect_objects_mspacman_raw(info, ram_state):
@@ -125,7 +150,6 @@ def _detect_objects_mspacman_raw(info, ram_state):
     returns unprocessed list with
     player_x, player_y, ghosts_position_x, enemy_position_y, fruit_x, fruit_y
     """
-
     object_info = {}
     object_info["player_x"] = ram_state[10]
     object_info["player_y"] = ram_state[16]

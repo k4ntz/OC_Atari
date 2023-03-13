@@ -1,0 +1,18 @@
+{
+    "mean_ious": 0.8575197455339356,
+    "per_class_ious": {
+        "Player": 0.7244457581091558,
+        "Enemy": 0.7320645104342729,
+        "Ball": 0.7006060606060607,
+        "BallShadow": 0.6451851851851852,
+        "PlayerScore": 1.0,
+        "EnemyScore": 0.9866666666666666,
+        "Logo": 1.0
+    },
+    "only_in_ram": {
+        "Logo": "11/100"
+    },
+    "only_in_vision": {
+        "Logo": "1/100"
+    }
+}

@@ -1,26 +1,28 @@
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
-from termcolor import colored
 
+MAX_NB_OBJECTS = {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Score': 2, 'Logo': 1, 'Clock': 7, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
 
-def print_state(state):
-    print("-"*10)
-    for el in state:
-        x, y, type = el
-        coord = el[0:2]
-        attr = []
-        if y > 177 or y < 25 or x == 155:
-            attr.append("dark")
-        if type == 2:
-            print(colored(coord, "blue", attrs=attr))
-        elif type == 5:
-            print(colored(coord, "grey", attrs=attr))
-        elif type == 85:
-            print(colored(coord, "green", attrs=attr))
-        else:
-            print(colored("Error in print_state", "red"))
-            exit(1)
-    print("-"*10)
+# from termcolor import colored
+# def print_state(state):
+#     print("-"*10)
+#     for el in state:
+#         x, y, type = el
+#         coord = el[0:2]
+#         attr = []
+#         if y > 177 or y < 25 or x == 155:
+#             attr.append("dark")
+#         if type == 2:
+#             print(colored(coord, "blue", attrs=attr))
+#         elif type == 5:
+#             print(colored(coord, "grey", attrs=attr))
+#         elif type == 85:
+#             print(colored(coord, "green", attrs=attr))
+#         else:
+#             print(colored("Error in print_state", "red"))
+#             exit(1)
+#     print("-"*10)
 
 
 TREE_COLOR = {
@@ -46,6 +48,7 @@ PREV_RAM_STATE = 0
 
 class Player(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 10, 18
         self.rgb = 214, 92, 92
@@ -54,6 +57,7 @@ class Player(GameObject):
 
 class Flag(GameObject):
     def __init__(self, x, y, subtype):
+        super().__init__()
         self.rgb = FLAG_COLOR[subtype]
         self._subtype = subtype
         self._ram_id = 2
@@ -80,6 +84,7 @@ class Flag(GameObject):
 
 class Mogul(GameObject):
     def __init__(self, x, y, subtype=None):
+        super().__init__()
         self.rgb = (214, 214, 214)
         self._ram_id = 5
         self._xy = x+2, y+3
@@ -102,6 +107,7 @@ class Mogul(GameObject):
 
 class Tree(GameObject):
     def __init__(self, x, y, subtype):
+        super().__init__()
         self.rgb = TREE_COLOR[subtype]
         self._subtype = subtype
         self._ram_id = 85
@@ -123,7 +129,7 @@ class Tree(GameObject):
     @xy.setter
     def xy(self, xy):
         x, y = xy
-        if self._xy[0] == x + 2:  # bug correction
+        if self._xy[0] == x + 2:    # bug correction
             x += 5
         self._prev_xy = self._xy
         if x > 158:
@@ -136,6 +142,7 @@ class Tree(GameObject):
 
 class Logo(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 65, 187
         self.wh = 31, 6
         self.rgb = 0, 0, 0
@@ -144,6 +151,7 @@ class Logo(GameObject):
 
 class Clock(GameObject):
     def __init__(self, x, y, w, h):
+        super().__init__()
         self._xy = x, y
         self.wh = w, h
         self.rgb = 0, 0, 0
@@ -152,6 +160,7 @@ class Clock(GameObject):
 
 class Score(GameObject):
     def __init__(self, ten=False):
+        super().__init__()
         if ten:
             self._xy = 67, 6
         else:
@@ -179,6 +188,7 @@ def _init_objects_skiing_ram(hud=False):
     return objects
 
 
+# import numpy as np
 def _detect_objects_skiing_revised(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = (ram_state[25], ram_state[26]-80)
@@ -218,8 +228,9 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
                     currobj.wh = currobj.wh[0], height-15
                     objects[offset+1].wh = objects[offset+1].wh[0], height-15
                 if currobj._ram_id != 2:
-                    import ipdb
-                    ipdb.set_trace()
+                    if y == 29:  # bug fix
+                        continue
+                    import ipdb; ipdb.set_trace()   # noqa
             offset += 1
         elif type == 5:     # mogul
             if currobj is None:
@@ -239,6 +250,7 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
                 if y <= 28:
                     currobj.wh = currobj.wh[0], height+2
         offset += 1
+    # print(objects)
 
 
 def _detect_objects_skiing_raw(info, ram_state):

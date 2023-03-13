@@ -4,10 +4,11 @@ from .game_objects import GameObject
 objects_colors = {"player": [187, 187, 53], "diver": [66, 72, 200], "background_water": [0, 28, 136],
                   "player_score": [210, 210, 64], "oxygen_bar": [214, 214, 214], "lives": [210, 210, 64],
                   "logo": [66, 72, 200], "player_missile": [187, 187, 53], "oxygen_bar_depleted": [163, 57, 21],
-                  "oxygen_logo": [0, 0, 0], "collected_diver": [24, 26, 167]}
+                  "oxygen_logo": [0, 0, 0], "collected_diver": [24, 26, 167], "enemy_missile": [66, 72, 200],
+                  "submarine": [170, 170, 170]}
 
 enemy_colors = {"green": [92, 186, 92], "orange": [198, 108, 58], "yellow": [160, 171, 79], "lightgreen": [72, 160, 72],
-                "submarine": [170, 170, 170], "pink": [198, 89, 179]}
+                "pink": [198, 89, 179]}
 
 
 class Player(GameObject):
@@ -26,6 +27,12 @@ class Enemy(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 92, 186, 92
+
+
+class EnemySubmarine(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 170, 170, 170
 
 
 class PlayerMissile(GameObject):
@@ -52,7 +59,7 @@ class OxygenBarLogo(GameObject):
         self.rgb = 0, 0, 0
 
 
-class Score(GameObject):
+class PlayerScore(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 210, 210, 64
@@ -76,6 +83,12 @@ class CollectedDiver(GameObject):
         self.rgb = 24, 26, 167
 
 
+class EnemyMissile(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 66, 72, 200
+
+
 def _detect_objects_seaquest(objects, obs, hud=False):
     objects.clear()
 
@@ -89,7 +102,9 @@ def _detect_objects_seaquest(objects, obs, hud=False):
 
     divers = find_objects(obs, objects_colors["diver"], min_distance=1)
     for d in divers:
-        if d[1] < 190 and d[2] > 2:
+        if d[1] < 190 and d[2] > 2 and d[3] < 5:
+            objects.append(EnemyMissile(*d))
+        elif d[1] < 190 and d[2] > 2:
             objects.append(Diver(*d))
 
     for enemyColor in enemy_colors.values():
@@ -99,11 +114,15 @@ def _detect_objects_seaquest(objects, obs, hud=False):
             enemy_inst.rgb = enemyColor
             objects.append(enemy_inst)
 
+    submarine = find_objects(obs, objects_colors["submarine"], min_distance=1)
+    for sub in submarine:
+        objects.append(EnemySubmarine(*sub))
+
     if hud:
-        score_lives = find_objects(obs, objects_colors["player_score"], min_distance=1)
+        score_lives = find_objects(obs, objects_colors["player_score"], min_distance=1, closing_dist=4)
         for s in score_lives:
             if s[1] < 22:
-                objects.append(Score(*s))
+                objects.append(PlayerScore(*s))
 
             if 50 > s[1] > 21:
                 objects.append(Lives(*s))
@@ -129,5 +148,3 @@ def _detect_objects_seaquest(objects, obs, hud=False):
         coll_diver = find_objects(obs, objects_colors["collected_diver"], min_distance=10)
         for div in coll_diver:
             objects.append(CollectedDiver(*div))
-
-    print(objects)

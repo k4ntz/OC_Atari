@@ -16,9 +16,8 @@ import ipdb # noqa
 import pathlib
 from termcolor import colored
 import pickle
-sys.path.insert(0, '../ocatari') # noqa
 from ocatari.core import OCAtari
-from ocatari.vision.freeway import objects_colors
+sys.path.insert(0, '../ocatari') # noqa
 
 
 def ransac_regression(x, y):
@@ -30,69 +29,74 @@ def ransac_regression(x, y):
     return ransac.estimator_.coef_.item(), ransac.estimator_.intercept_.item()
 
 
-def append_oinfo_values(obj_name, oinfo, object_infos):
-    if type(oinfo) == tuple:
-        object_infos[f"{obj_name}_x"].append(oinfo[0])
-        object_infos[f"{obj_name}_y"].append(oinfo[1])
-
-    elif type(oinfo) == list:
-        index = 0
-        for oinfoTuple in oinfo:
-            obj_name_altered = str(obj_name) +str(index)
-            index += 1
-            object_infos[f"{obj_name_altered}_x"].append(oinfoTuple[0])
-            object_infos[f"{obj_name_altered}_y"].append(oinfoTuple[1])
+def append_oinfo_values(obj, object_infos, objects_correctly_detected):
+    name = obj.__class__.__name__
+    # print(name)
+    if f"{name}_x" in object_infos.keys() and f"{name}_x" not in objects_correctly_detected:
+        object_infos[f"{name}_x"].append(obj.x)
+        object_infos[f"{name}_y"].append(obj.y)
+        objects_correctly_detected.append(f"{name}_x")
+        objects_correctly_detected.append(f"{name}_y")
 
 
-def generate_dataset(env, object_list, drop_constants, frames=400, skip_frames=3, manipulated_ram=None, ):
+def generate_dataset(env, drop_constants, frames=700, skip_frames=3, manipulated_ram=None, start_frame=0):
     """
     generates test Data in the given environment(env) for the given objects(object_list)
     """
-    object_infos = {}
-    for obj in object_list:
-        object_infos[f"{obj}_x"] = []
-        object_infos[f"{obj}_y"] = []
     ram_saves = []
     manipulated_ram_saves = []  # only if manipulated_ram is not None
     constants = {}
-    prevRam = None
-    env.step(0)
+    prev_ram = None
+    env.step(env.action_space.sample())
+    for i in range(start_frame):
+        env.step(env.action_space.sample())
+
+    object_infos = {}
+    for obj in env.objects:
+        name = obj.__class__.__name__
+        object_infos[f"{name}_x"] = []
+        object_infos[f"{name}_y"] = []
+
     for i in tqdm(range(frames)):
         if manipulated_ram is not None:
             rand = random.randint(40, 100)
             env._env.unwrapped.ale.setRAM(manipulated_ram, rand)
 
         # obs, reward, terminated, truncated, info = env.step(env._env.action_space.sample())
-        obs, reward, terminated, truncated, info = env.step(5)
+        obs, reward, terminated, truncated, info = env.step(env.action_space.sample())
 
         if info.get('frame_number') > 10 and i % skip_frames == 0:
-            SKIP = False
-            for obj_name in object_list:  # avoid state without the tracked objects
-                if obj_name not in info["objects"]:
-                    SKIP = True
-                    print(colored(str(obj_name) + " not in info"))
+
+            objects_correctly_detected = []
+            skip = False
+            for obj_name in object_infos.keys():
+                obj = obj_name[:-2]
+                if not any(obj == x.__class__.__name__ for x in env.objects):
+                    # object_infos[obj_name].append(0)  # not good but best workaround i could come up with
+                    print(colored(str(obj) + " not from vision detected", "red"))
+                    skip = True
                     break
-            if SKIP:
+            if skip:
                 continue
-            for obj_name in object_list:
-                oinfo = info["objects"][obj_name]
-                append_oinfo_values(obj_name, oinfo, object_infos)
+
+            for obj in env.objects:
+                append_oinfo_values(obj, object_infos, objects_correctly_detected)
+
             ram = env._env.unwrapped.ale.getRAM()
             ram_saves.append(deepcopy(ram))
             if manipulated_ram is not None:
                 manipulated_ram_saves.append(ram[manipulated_ram])
-            if prevRam is not None:
+            if prev_ram is not None:
                 new_constants = {}
                 for c, v in constants.items():
-                    if ram[c] == prevRam[c]:
+                    if ram[c] == prev_ram[c]:
                         new_constants.update({c: v})
                 constants = new_constants
             else:
-                for i in range(len(ram)):
-                    constants.update({i: ram[i]})
-            prevRam = ram
+                for u in range(len(ram)):
+                    constants.update({u: ram[u]})
+            prev_ram = ram
             # env.render()
-
         # modify and display render
     if manipulated_ram is not None:
         from_rams = {str(manipulated_ram): manipulated_ram_saves}
@@ -106,19 +110,21 @@ def generate_dataset(env, object_list, drop_constants, frames=400, skip_frames=3
     else:
         from_rams = {str(i): ram_saves[i] for i in range(128)}
 
+    objects = list(object_infos.keys())
     object_infos.update(from_rams)
 
-    return object_infos, constants
+    return object_infos, constants, objects
 
 
-def get_correlation(dataset, min_correlation, method="pearson"):
+def get_correlation(dataset, min_correlation, objects, method="pearson"):
     """
     methods: "spearman","kendall","pearson"
     """
     df = pd.DataFrame(dataset)
     corr = df.corr(method=method)
     # Reduce the correlation matrix
-    subset = [f"{obj}_x" for obj in object_list] + [f"{obj}_y" for obj in object_list]
+    # subset = [f"{obj}_x" for obj in env.objects] + [f"{obj}_y" for obj in object_list]
+    subset = objects
 
     # Use submatrice
     corr = corr[subset].T
@@ -164,8 +170,8 @@ def calculate_offset(vision, ram, corr, pos, maximum=160):
     return offset_string
 
 
-def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum_x,
-                maximum_y, drop_constants):
+def do_analysis(env, dump_path, new_dump, min_correlation, maximum_x,
+                maximum_y, drop_constants, start_frame=0):
     # ---------------------------test-data-dump-------------------------------
     game_name = env.game_name
     if dump_path is None:
@@ -178,53 +184,61 @@ def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum_
 
     oinfo_file = dump_path + "/object_infos"
     constants_file = dump_path + "/constants"
+    objects_file = dump_path + "/objects"
     if (not os.path.exists(oinfo_file)) or new_dump:
-        dataset, constants = generate_dataset(env, object_list, drop_constants)
+        dataset, constants, objects = generate_dataset(env, drop_constants, start_frame=start_frame)
         with open(oinfo_file, 'wb+') as f:
             pickle.dump(dataset, f)
         with open(constants_file, 'wb+') as f:
             pickle.dump(constants, f)
+        with open(objects_file, 'wb+') as f:
+            pickle.dump(objects, f)
     else:
         with open(oinfo_file, 'rb') as f:
             dataset = pickle.load(f)
         with open(constants_file, 'rb') as f:
             constants = pickle.load(f)
+        with open(objects_file, 'rb') as f:
+            objects = pickle.load(f)
 
     # -------------------------------------------------------------------------
-    corr = get_correlation(dataset, min_correlation=min_correlation)
+    corr = get_correlation(dataset, min_correlation, objects)
     dump_heatmap(corr, dump_path + "/correlation_heatmap", game_name)
     candidates = corr.T.to_dict()
 
     cand_file = dump_path + "/approved_candidates"
     if (not os.path.exists(cand_file)) or new_dump:
         approved_candidates = {}
-        for obj in object_list:
-            for xy in ["_x", "_y"]:
-                c = obj + xy
-                candidates[c] = {k: v for k, v in candidates[c].items() if abs(v) > min_correlation}
-                approved_candidates[c] = []
-                if len(candidates[c]) > 1:
-                    for ram_pos in candidates[c]:
-                        env.reset()
-                        dataset2 = generate_dataset(env, [obj], drop_constants,
-                                                    frames=100, manipulated_ram=int(ram_pos))
-                        dataset2[c] = np.array(dataset2[c])
+        for obj_name in objects:
+            print(obj_name)
+            candidates[obj_name] = {k: v for k, v in candidates[obj_name].items() if abs(v) > min_correlation}
+            print(candidates[obj_name])
+            approved_candidates[obj_name] = []
+            if len(candidates[obj_name]) > 1:
+                for ram_pos in candidates[obj_name]:
+                    env.reset()
+                    dataset2 = generate_dataset(env, drop_constants,
+                                                frames=300, manipulated_ram=int(ram_pos), start_frame=start_frame)
+                    if obj_name in dataset2:
+                        dataset2[obj_name] = np.array(dataset2[obj_name])
 
-                        if not (np.all(dataset2[ram_pos] == dataset2[ram_pos][0]) or
-                                np.all(dataset2[c] == dataset2[c][0])):
-                            corr2 = np.corrcoef(dataset2[c], dataset2[ram_pos])[1][0]
-                            approved_candidates[c].append({"pos": int(ram_pos), "corr": candidates[c][ram_pos],
-                                                           "manipulated_corr": corr2})
+                        if len(dataset2[ram_pos]) > 0 and not (np.all(dataset2[ram_pos] == dataset2[ram_pos][0]) or
+                                                               np.all(dataset2[obj_name] == dataset2[obj_name][0])):
+                            corr2 = np.corrcoef(dataset2[obj_name], dataset2[ram_pos])[1][0]
+                            approved_candidates[obj_name].append({"pos": int(ram_pos),
+                                                                  "corr": candidates[obj_name][ram_pos],
+                                                                  "manipulated_corr": corr2})
 
-                    def s(d):
-                        return abs(d["manipulated_corr"])
+                def s(d):
+                    return abs(d["manipulated_corr"])
 
-                    approved_candidates[c].sort(key=s, reverse=True)
+                approved_candidates[obj_name].sort(key=s, reverse=True)
 
-                else:
-                    for k in candidates[c]:  # is there a way to extract key value with unknown key without iterating?
-                        approved_candidates[c].append(
-                            {"pos": int(k), "corr": candidates[c][k], "manipulated_corr": None})
+            else:
+                for k in candidates[obj_name]:
+                    # is there a way to extract key value with unknown key without iterating?
+                    approved_candidates[obj_name].append(
+                        {"pos": int(k), "corr": candidates[obj_name][k], "manipulated_corr": None})
 
         with open(cand_file, 'wb+') as f:
             pickle.dump(approved_candidates, f)
@@ -235,28 +249,27 @@ def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum_
     # ---------print out constants----------
     print(constants)
     print("constants: ")
-    prevC = None
+    prev_c = None
     constant_str = ""
     for c, v in constants.items():
-        if prevC is None:
+        if prev_c is None:
             constant_str = str(c) + ": " + str(v)
 
-        elif prevC + 1 == c:
+        elif prev_c + 1 == c:
             constant_str = constant_str + ",  " + str(c) + ": " + str(v)
 
         else:
             print(constant_str)
             constant_str = str(c) + ": " + str(v)
-        prevC = c
+        prev_c = c
 
     print(constant_str)
     constant_str = "\n["
     for c, v in constants.items():
-        constant_str = constant_str + str(c) +", "
+        constant_str = constant_str + str(c) + ", "
 
-    constant_str = constant_str[:-2] +"]"
+    constant_str = constant_str[:-2] + "]"
     print(constant_str)
-
 
     # ---------print out candidates---------
     best_candidates = {}
@@ -285,28 +298,27 @@ def do_analysis(env, object_list, dump_path, new_dump, min_correlation, maximum_
 
 
 if __name__ == "__main__":
-    GAME_NAME = "DemonAttack"
+    GAME_NAME = "Centipede"
+    GAME_NAME = "Asterix-v4"  # DemonAttack
     MODE = "vision"    # do not change
     # RENDER_MODE = "human"
     RENDER_MODE = "rgb_array"  # do not change
     MAXIMUM_X = 160  # right side of screen in rgb_array
     MAXIMUM_Y = 210  # bottom of screen in rgb_array
     DUMP_PATH = None  # path to dump otherwise takes standard
-    NEW_DUMP = True  # if True creates new datasets and dumps it overwriting the previous ones
+    NEW_DUMP = False  # if True creates new datasets and dumps it overwriting the previous ones
     MIN_CORRELATION = 0.8
     DROP_CONSTANTS = True  # if True does not consider not changing variables for objects
+    START_FRAME = 100  # selects the frame at which each simulation starts
 
     env = OCAtari(GAME_NAME, mode=MODE, render_mode=RENDER_MODE)
     random.seed(0)
     observation, info = env.reset()
-    obs, reward, terminated, truncated, info = env.step(0)
+    obs, reward, terminated, truncated, info = env.step(env.action_space.sample())
     env.reset()
 
-    object_list = ["player", "enemy0", "enemy1", "enemy2"]  # "ball_shadow"
-    print("objects that will be analyzed: " + str(object_list))
-
-    do_analysis(env, object_list, drop_constants=DROP_CONSTANTS, dump_path=DUMP_PATH,
+    do_analysis(env, drop_constants=DROP_CONSTANTS, dump_path=DUMP_PATH,
                 new_dump=NEW_DUMP, min_correlation=MIN_CORRELATION,
-                maximum_x=MAXIMUM_X, maximum_y=MAXIMUM_Y)
+                maximum_x=MAXIMUM_X, maximum_y=MAXIMUM_Y, start_frame=START_FRAME)
 
     env.close()
