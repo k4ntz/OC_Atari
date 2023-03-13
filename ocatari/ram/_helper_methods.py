@@ -5,7 +5,8 @@ Set of helper methods that are used in multiple Atari games
 
 def _convert_number(number):
     """
-    The game SKIING displays the time/score in hexadecimal numbers, while the ram extraction displays it as an integer.
+    Almost every Atari Game displays the time/score in hexadecimal numbers, while the ram extraction
+    displays it as an integer.
     This results in a required conversion from the extracted ram number (in dec) to a hex number, which we then display
     as a dec number.
 
@@ -24,7 +25,11 @@ def _convert_number(number):
 
 def number_to_bitfield(n):
     """
-    convert number to 8 bit bitfield
+    Convert number to 8 bit bitfield.
+
+    Games like SpaceInvaders or Breakout use the bit representation of the number in the RAM to display or not display
+    the objects. In most cases a 1 means the objects is displayed and a 0 means the object is not displayed.
+    In SpaceInvaders the bit sequence needs to be reversed.
     """
     lst = [1 if digit == '1' else 0 for digit in bin(n)[2:]]
     buffer = [0] * (8 - len(lst))
@@ -33,6 +38,9 @@ def number_to_bitfield(n):
 
 
 def bitfield_to_number(b, flip=False):
+    """
+    Convert Bitfield to a number.
+    """
     exp = len(b)-1
     if flip:
         exp = 0

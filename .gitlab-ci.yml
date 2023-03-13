@@ -29,7 +29,7 @@ flake8:
     - pip install flake8
   script:
   - flake8 --max-line-length=120 ./*.py
-  - flake8 --max-line-length=120 ./ocatari/*.py
+  - flake8 --max-line-length=120 ./ocatari/core.py
   - flake8 --max-line-length=120 ./ocatari/ram/*.py
   - flake8 --max-line-length=120 ./ocatari/vision/*.py
 

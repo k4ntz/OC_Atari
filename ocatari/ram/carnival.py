@@ -12,7 +12,6 @@ class Player(GameObject):
         self.wh = 6, 13
         self.rgb = 66, 158, 130
         self.hud = False
-        self.visible = True
 
 
 class PlayerMissile(GameObject):
@@ -21,7 +20,6 @@ class PlayerMissile(GameObject):
         self.wh = 6, 8
         self.rgb = 183, 194, 95
         self.hud = False
-        self.visible = True
 
 
 class Owl(GameObject):
@@ -30,7 +28,6 @@ class Owl(GameObject):
         self.wh = 8, 15
         self.rgb = 214, 92, 92
         self.hud = False
-        self.visible = True
 
 
 class Duck(GameObject):
@@ -39,7 +36,6 @@ class Duck(GameObject):
         self.wh = 8, 15
         self.rgb = 187, 187, 53
         self.hud = False
-        self.visible = True
 
 
 class FlyingDuck(GameObject):
@@ -48,7 +44,6 @@ class FlyingDuck(GameObject):
         self.wh = 16, 15
         self.rgb = 187, 187, 53
         self.hud = False
-        self.visible = True
 
 
 class Rabbit(GameObject):
@@ -57,7 +52,6 @@ class Rabbit(GameObject):
         self.wh = 8, 15
         self.rgb = 192, 192, 192
         self.hud = False
-        self.visible = True
 
 
 class ExtraBullets(GameObject):
@@ -66,16 +60,14 @@ class ExtraBullets(GameObject):
         self.wh = 8, 9
         self.rgb = 192, 192, 192
         self.hud = False
-        self.visible = True
 
 
 class PlayerScore(GameObject):
     def __init__(self):
-        self._xy = 65, 2
+        self._xy = 65, 0
         self.rgb = 160, 171, 79
-        self.wh = 38, 7
+        self.wh = 38, 9
         self.hud = True
-        self.visible = True
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
@@ -87,7 +79,6 @@ class AmmoBar(GameObject):
         self.rgb = 24, 59, 157
         self.wh = 152, 5
         self.hud = True
-        self.visible = True
 
 
 class BonusSign(GameObject):
@@ -96,7 +87,6 @@ class BonusSign(GameObject):
         self.rgb = 214, 92, 92
         self.wh = 6, 9
         self.hud = True
-        self.visible = True
 
 
 class BonusValue(GameObject):
@@ -105,7 +95,6 @@ class BonusValue(GameObject):
         self.rgb = 214, 92, 92
         self.wh = 22, 9
         self.hud = True
-        self.visible = True
 
 
 class Wheel(GameObject):
@@ -114,7 +103,6 @@ class Wheel(GameObject):
         self.rgb = 45, 87, 176
         self.wh = 28, 12
         self.hud = False
-        self.visible = True
 
 
 # Switches color at each level. Every value up to 255 encodes a different color (sometimes one that was already used).
