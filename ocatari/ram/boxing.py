@@ -1,12 +1,8 @@
 from .game_objects import GameObject
 
 
-class Player(GameObject):
-    def __init__(self):
-        super().__init__()
-
-MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 1}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'PlayerScore': 2,
+MAX_NB_OBJECTS = {'Player': 1, 'Enemy': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 1, 'PlayerScore': 2,
                        'EnemyScore': 2, 'Logo': 1, 'Clock': 4}
 
 
@@ -131,26 +127,25 @@ def _detect_objects_boxing_revised(objects, ram_state, hud=False):
         # scores
         global plscore
         global enscore
-        if ram_state[19] > 10:  # enemy score
+        if ram_state[19] > 10:      # enemy score
             enscore.tenify()
         else:
             enscore.detenify()
-        if ram_state[18] > 10:  # player score
+        if ram_state[18] > 10:      # player score
             plscore.tenify()
 
-        if ram_state[19] > 10: # enemy score
+        if ram_state[19] > 10:      # enemy score
             objects.append(EnemyScore(ten=True))
         else:
             tens = EnemyScore(ten=True)
             if tens in objects:
                 objects.remove(tens)
-        if ram_state[18] > 10: # player score
+        if ram_state[18] > 10:      # player score
             objects.append(PlayerScore(ten=True))
         else:
             plscore.detenify()
 
-
-        if ram_state[19] > 10:  # enemy score
+        if ram_state[19] > 10:      # enemy score
             if not enemy._above_10:
                 objects.append(EnemyScore(ten=True))
                 enemy._above_10 = True
@@ -158,7 +153,7 @@ def _detect_objects_boxing_revised(objects, ram_state, hud=False):
             if enemy._above_10:
                 objects.remove(EnemyScore(ten=True))
                 enemy._above_10 = False
-        if ram_state[18] > 10:  # player score
+        if ram_state[18] > 10:      # player score
             if not player._above_10:
                 objects.append(PlayerScore(ten=True))
                 player._above_10 = True
@@ -166,6 +161,7 @@ def _detect_objects_boxing_revised(objects, ram_state, hud=False):
             if player._above_10:
                 objects.remove(PlayerScore(ten=True))
                 player._above_10 = False
+
 
 def _detect_objects_boxing_raw(info, ram_state):
     """

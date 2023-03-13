@@ -1,18 +1,18 @@
 from argparse import ArgumentParser
-from functools import partial   # noqa
+from functools import partial
 from gzip import GzipFile
 from pathlib import Path
 import torch
 from torch import nn
-import keyboard     # noqa
+import keyboard
 import numpy as np
 import random
 import sys
 import select
 # import tty
 # import termios
-import time     # noqa
-import atexit   # noqa
+import time
+import atexit
 
 parser = ArgumentParser()
 parser.add_argument("-p", "--path", type=str, help="path to the model", default=None)
@@ -137,8 +137,8 @@ def load_agent(opt, nb_actions=None):
     ckpt_path = Path(opt.path)
 
 
-def load_agent(opt, nb_actions=None): # noqa
-    # ckpt_path = Path(opt.path)  # assigned to but never used
+def load_agent(opt, nb_actions=None):
+    ckpt_path = Path(opt.path)
     agent = AtariNet(nb_actions, distributional="C51_" in opt.path)
     ckpt = _load_checkpoint(opt.path)
     agent.load_state_dict(ckpt["estimator_state"])
