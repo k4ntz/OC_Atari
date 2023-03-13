@@ -1,8 +1,8 @@
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Score': 2, 'Logo': 1, 'Clock': 7,
+MAX_NB_OBJECTS = {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Score': 2, 'Logo': 1, 'Clock': 7,
                        'Tree': 4, 'Mogul': 3, 'Flag': 4}
 
 # from termcolor import colored
@@ -130,7 +130,7 @@ class Tree(GameObject):
     @xy.setter
     def xy(self, xy):
         x, y = xy
-        if self._xy[0] == x + 2: # bug correction
+        if self._xy[0] == x + 2:    # bug correction
             x += 5
         self._prev_xy = self._xy
         if x > 158:
