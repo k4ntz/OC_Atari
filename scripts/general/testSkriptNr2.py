@@ -1,7 +1,7 @@
 import gymnasium as gym
 import time
 import random
-# from matplotlib import pyplot as plt
+
 """
 created by timo to set the ram and see whats changed
 """
@@ -39,9 +39,5 @@ for _ in range(10000):
         observation, info = env.reset()
 
     rgb_array = env.render()
-    """plt.imshow(rgb_array)  # rgb_array stuff for fun
-    plt.show()
-    print(rgb_array)"""
-
     time.sleep(0.01)
 env.close()

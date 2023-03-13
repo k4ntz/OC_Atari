@@ -40,7 +40,7 @@ class Logo(GameObject):
         self.rgb = 232, 232, 74
 
 
-class Score(GameObject):
+class PlayerScore(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 232, 232, 74
@@ -74,11 +74,11 @@ def _detect_objects_berzerk(objects, obs, hud=False):
                 objects.append(missile_inst)
 
     if hud:
-        logo = find_objects(obs, objects_colors["logo"], min_distance=1)
+        logo = find_objects(obs, objects_colors["logo"], min_distance=1, closing_dist=3)
         for log in logo:
             if (log[0] == 86 and log[2] == 17) or (log[0] == 63 and log[2] == 20):
                 objects.append(Logo(*log))
             elif log[0] == 56 and log[1] == 183 and log[2] == 14 and log[3] == 7:
                 objects.append(RoomCleared(*log))
             else:
-                objects.append(Score(*log))
+                objects.append(PlayerScore(*log))

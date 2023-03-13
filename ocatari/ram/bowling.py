@@ -8,7 +8,6 @@ RAM extraction for the game BOWLING. Supported modes: raw, revised.
 
 class Player(GameObject):
     def __init__(self):
-        self.visible = True
         self._xy = 0, 0
         self.wh = 8, 32
         self.rgb = 84, 92, 214
@@ -17,7 +16,6 @@ class Player(GameObject):
 
 class Ball(GameObject):
     def __init__(self):
-        self.visible = True
         self._xy = 22, 139
         self.wh = 4, 10
         self.rgb = 45, 50, 184
@@ -26,7 +24,6 @@ class Ball(GameObject):
 
 class Pin(GameObject):
     def __init__(self):
-        self.visible = True
         self._xy = 0, 0
         self.wh = 2, 4
         self.rgb = 45, 50, 184
@@ -35,7 +32,6 @@ class Pin(GameObject):
 
 class PlayerScore(GameObject):
     def __init__(self):
-        self.visible = True
         self._xy = 32, 19
         self.rgb = 84, 92, 214
         self.wh = 28, 15
@@ -47,7 +43,6 @@ class PlayerScore(GameObject):
 
 class PlayerRound(GameObject):
     def __init__(self):
-        self.visible = True
         self._xy = 40, 7
         self.rgb = 45, 50, 184
         self.wh = 4, 10
@@ -56,7 +51,6 @@ class PlayerRound(GameObject):
 
 class Player2Round(GameObject):
     def __init__(self):
-        self.visible = True
         self._xy = 120, 7
         self.rgb = 45, 50, 184
         self.wh = 4, 10
@@ -69,7 +63,7 @@ def _init_objects_bowling_ram(hud=False):
     """
     objects = [Player(), Ball()]
     if hud:
-        objects.extend([PlayerScore(), PlayerRound(), Player2Round()])
+        objects.extend([PlayerScore(), PlayerRound(), Player2Round(), PlayerScore()])
 
     for i in range(10):
         pin = Pin()
@@ -90,7 +84,7 @@ def _detect_objects_bowling_revised(objects, ram_state, hud=False):
     player.xy = ram_state[29] + 8, 139 - 2 * (ram_state[40] - 1)
 
     if hud:
-        del objects[5:]
+        del objects[6:]
     else:
         del objects[2:]
 
@@ -101,21 +95,35 @@ def _detect_objects_bowling_revised(objects, ram_state, hud=False):
             objects.append(pin)
 
     if hud:
-        # score >= 100
-        if ram_state[38] == 1:
-            objects[2].wh = 36, 15
-            objects[2].xy = 24, 19
-        # score > 199
-        elif ram_state[38] > 1:
-            objects[2].wh = 44, 15
-            objects[2].xy = 16, 19
+        # score
+        sc = _convert_number(ram_state[33])
+        # ones digit is a one
+        if sc % 10 == 1:
+            objects[2].xy = 56, 19
+            objects[2].wh = 4, 15
+        else:
+            objects[2].xy = 48, 19
+            objects[2].wh = 12, 15
 
-        # score between 10 and 19
-        elif 15 < ram_state[33] < 26:
-            objects[2].wh = 20, 15
-            objects[2].xy = 40, 19
+        # tens digit
+        if 9 < sc < 20:
+            objects[5].xy = 40, 19
+            objects[5].wh = 4, 15
+        else:
+            objects[5].xy = 32, 19
+            objects[5].wh = 12, 15
 
-        # round is wider if its not round 1 or its 10
+        if ram_state[38] != 0:
+            sc3 = PlayerScore()
+            if ram_state[38] == 1:
+                sc3.xy = 24, 19
+                sc3.wh = 4, 15
+            else:
+                sc3.xy = 16, 19
+                sc3.wh = 12, 15
+            objects.append(sc3)
+
+        # round
         if _convert_number(ram_state[36]) == 10:
             objects[3].wh = 20, 10
             objects[3].xy = 24, 7

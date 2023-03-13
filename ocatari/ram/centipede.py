@@ -186,7 +186,7 @@ def _init_objects_centipede_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Projectile(), Bug(), Ghost(), Crab()]
+    objects = [Player(), Projectile()]  # , Bug(), Ghost(), Crab()
     for i in range(9):
         objects.append(CentipedeSegment())
     if hud:
@@ -197,64 +197,35 @@ def _init_objects_centipede_ram(hud=False):
     return objects
 
 
+prev_centipede_x = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+
 def _detect_objects_centipede_revised(objects, ram_state, hud=False):
     player, projectile = objects[:2]  # bug, ghost, crab1, crab2, crab3
-    small_bugs = objects[2:5]
-    centipede = objects[5:15]
 
     player.xy = 16 + ram_state[111], int(ram_state[113] * 3.08)
     projectile.xy = 16 + ram_state[110], _number_lowpass(ram_state[112]) * 9 - 8
 
-    for i in range(len(small_bugs)):
-        b = small_bugs[i]
-        if ram_state[124 - 2 * i] == 255:
-            b.visible = False
-        else:
-            b.visible = True
-        b.xy = 16 + ram_state[123 - 2 * i], _column_to_y(19 - _number_lowpass(ram_state[124 - 2 * i]))
-    # -------------------------------------------------------------------------------------
-    # if ram_state[124] == 255:
-    #     bug.visible = False
-    # else:
-    #     bug.visible = True
-    # bug.xy = 16 + ram_state[123], _column_to_y(19 - _number_lowpass(ram_state[124]))
-    # #       ---------------
-    # if ram_state[122] == 255:
-    #     ghost.visible = False
-    # else:
-    #     bug.visible = True
-    # ghost.xy = 16 + ram_state[121], _column_to_y(19 - _number_lowpass(ram_state[122]))
-    # #       ---------------
-    # if ram_state[120] == 255:
-    #     crab1.visible = False
-    # else:
-    #     crab1.visible = True
-    # crab1.xy = 16 + ram_state[119], _column_to_y(19 - _number_lowpass(ram_state[120]))
-    # #       ---------------
-    # if ram_state[118] == 255:
-    #     crab2.visible = False
-    # else:
-    #     crab2.visible = True
-    # crab2.xy = 16 + ram_state[117], _column_to_y(19 - _number_lowpass(ram_state[118]))
-    # #       ---------------
-    # if ram_state[116] == 255:
-    #     crab3.visible = False
-    # else:
-    #     crab3.visible = True
-    # crab3.xy = 16 + ram_state[115], _column_to_y(19 - _number_lowpass(ram_state[116]))
-    # ------------------------------------------------------------------------------------
-
-    for i in range(9):
-        centipede[i].xy = 17 + ram_state[100+i], _column_to_y(19 - _number_lowpass(ram_state[91+i]))
-        if centipede[i].dx == 0:
-            centipede[i].visible = False
-        else:
-            centipede[i].visible = True
-
     objects.clear()
     objects.extend([player, projectile])
-    objects.extend(small_bugs)
-    objects.extend(centipede)
+
+    small_bugs = [Bug(), Ghost(), Crab()]
+    for i in range(3):
+        if ram_state[124 - 2 * i] != 255:
+            b = small_bugs[i]
+            b.xy = 16 + ram_state[123 - 2 * i], _column_to_y(19 - _number_lowpass(ram_state[124 - 2 * i]))
+            if b.x < 160 and b.y < 210:
+                objects.append(b)
+
+    for i in range(9):
+        x = 17 + ram_state[100 + i]
+        dx = prev_centipede_x[i] - x
+        if dx != 0:
+            centipede_segment = CentipedeSegment()
+            centipede_segment.xy = x, _column_to_y(19 - _number_lowpass(ram_state[91 + i]))
+            prev_centipede_x[i] = centipede_segment.x
+            if centipede_segment.x < 160 and centipede_segment.y < 210:
+                objects.append(centipede_segment)
 
     for i in range(19):   # way too complicated
         offset_y = _column_to_y(i) + 2
