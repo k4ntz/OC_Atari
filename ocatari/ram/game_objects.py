@@ -65,6 +65,6 @@ class GameObject:
     def h(self):
         return self.wh[1]
 
-    @h.setter
-    def h(self, h):
-        self.wh = self.w, h
+    def is_on_top(self, other):
+        return (other.x <= self.x <= other.x + other.w) and \
+            (other.y <= self.y <= other.y + other.h) 

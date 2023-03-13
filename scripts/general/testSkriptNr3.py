@@ -11,7 +11,7 @@ from ocatari.core import OCAtari
 Test vision mode with rgb_array as render_mode.
 """
 
-env = OCAtari("Breakout", mode="vision", render_mode='rgb_array')
+env = OCAtari("Atlantis", mode="raw", render_mode='human')
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []
