@@ -2,14 +2,11 @@ from argparse import ArgumentParser
 from functools import partial   # noqa
 from gzip import GzipFile
 from pathlib import Path
-
 import torch
 from torch import nn
 import keyboard     # noqa
-
 import numpy as np
 import random
-
 import sys
 import select
 # import tty
@@ -103,10 +100,6 @@ def _epsilon_greedy(obs, model, eps=0.001):
     return argmax_a.item(), q_val
 
 
-def isData():
-    return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
-
-
 # old_settings = termios.tcgetattr(sys.stdin)
 
 
@@ -144,9 +137,9 @@ def load_agent(opt, nb_actions=None):
     ckpt_path = Path(opt.path)
 
 
-def load_agent(opt, nb_actions=None):
+def load_agent(opt, nb_actions=None): # noqa
     ckpt_path = Path(opt.path)  # noqa
     agent = AtariNet(nb_actions, distributional="C51_" in opt.path)
     ckpt = _load_checkpoint(opt.path)
-    agent.load_state_dict(ckpt["estimator_state"])
+    agent.load_state_dict(ckpt["estimator_state"]) 
     return agent
