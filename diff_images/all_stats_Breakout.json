@@ -1,0 +1,12 @@
+{
+    "mean_ious": 1.0,
+    "per_class_ious": {
+        "Player": 1.0,
+        "BlockRow": 1.0,
+        "Ball": 1.0
+    },
+    "only_in_ram": {},
+    "only_in_vision": {
+        "BlockRow": "356/100"
+    }
+}
