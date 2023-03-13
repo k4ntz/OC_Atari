@@ -15,8 +15,8 @@ import torch
 DEVICE = "cpu"
 
 
-AVAILABLE_GAMES = ["Asterix", "Berzerk", "Bowling", "Boxing", "Breakout", "Carnival", "Centipede", "DemonAttack",
-                   "Freeway", "Kangaroo", "MsPacman", "Pong", "Seaquest", "Skiing", "SpaceInvaders",
+AVAILABLE_GAMES = ["Asterix", "Atlantis", "Berzerk", "Bowling", "Boxing", "Breakout", "Carnival", "Centipede",
+                   "DemonAttack", "Freeway", "Kangaroo", "MsPacman", "Pong", "Seaquest", "Skiing", "SpaceInvaders",
                    "Tennis"]
 
 
@@ -131,6 +131,6 @@ class OCAtari:
 
     def _clone_state(self):
         return self._env.env.env.ale.cloneSystemState()
-    
+
     def _restore_state(self, state):
         return self._env.env.env.ale.cloneSystemState()
