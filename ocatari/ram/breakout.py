@@ -7,8 +7,7 @@ RAM extraction for the game BREAKOUT. Supported modes: raw, revised.
 """
 
 MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'BlockRow': 9}    # blockrow could go very very high with a performing agent
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerScore': 3, 'Live': 1,'PlayerNumber': 1,
-                      'BlockRow': 9, 'Ball': 1}     # blockrow could go very very high with a performing agent
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerScore': 3, 'Live': 1, 'PlayerNumber': 1, 'BlockRow': 9, 'Ball': 1}
 
 
 class Player(GameObject):
