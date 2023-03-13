@@ -28,6 +28,7 @@ for _ in range(10000000):
                 print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prevRam[i]))
     print("------------------------------------------")
     prevRam = ram
+    print(ram[4])
 
     ipdb.set_trace()
 
