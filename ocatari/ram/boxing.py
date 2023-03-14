@@ -1,4 +1,5 @@
 from .game_objects import GameObject
+import sys 
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 1}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'PlayerScore': 2,
@@ -90,6 +91,22 @@ class EnemyScore(GameObject):
             self._ten = False
 
 
+# parses MAX_NB* dicts, returns default init list of objects
+def _get_max_objects(hud=False):
+
+    def fromdict(max_obj_dict):
+        objects = []
+        mod = sys.modules[__name__]
+        for k, v in max_obj_dict.items():
+            for _ in range(0, v):
+                objects.append(getattr(mod, k)())    
+        return objects
+
+    if hud:
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
+
+
 def _init_objects_boxing_ram(hud=False):
     """
     (Re)Initialize the objects
@@ -127,23 +144,6 @@ def _detect_objects_boxing_revised(objects, ram_state, hud=False):
         else:
             plscore.detenify()
 
-
-        if ram_state[19] > 10:  # enemy score
-            if not enemy._above_10:
-                objects.append(EnemyScore(ten=True))
-                enemy._above_10 = True
-        else:
-            if enemy._above_10:
-                objects.remove(EnemyScore(ten=True))
-                enemy._above_10 = False
-        if ram_state[18] > 10:  # player score
-            if not player._above_10:
-                objects.append(PlayerScore(ten=True))
-                player._above_10 = True
-        else:
-            if player._above_10:
-                objects.remove(PlayerScore(ten=True))
-                player._above_10 = False
 
 def _detect_objects_boxing_raw(info, ram_state):
     """
