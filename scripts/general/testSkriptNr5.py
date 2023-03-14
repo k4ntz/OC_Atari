@@ -16,7 +16,7 @@ already_figured_out = []
 for _ in range(10000000):
     obs, reward, terminated, truncated, info = env.step(random.randint(6, 6))
     ram = env._env.unwrapped.ale.getRAM()
-    # env.set_ram(16, _)
+    env.set_ram(54, 224)
     if prevRam is not None:
         for i in range(len(ram)):
             if ram[i] != prevRam[i] and i not in already_figured_out:
