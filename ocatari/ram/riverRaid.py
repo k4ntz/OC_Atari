@@ -5,7 +5,7 @@ RAM extraction for the game RIVER RAID. Supported modes: raw
 
 Revised mode does not seem feasible for this game. The problem is that for the objects like Helicopter, FuelDepot etc.
 only a relative x-Position is found in the RAM. How the exact position is calculated is unknown, it is possible that
-the size of the objects (is stored in the RAM) somehow affects the x-Position. 
+the size of the objects (is stored in the RAM) somehow affects the x-Position.
 Furthermore there was no y-Position for the Objects found in the RAM. It could be the case that their y-Position is like
 the players y-Position not stored in the RAM.
 """
@@ -117,10 +117,8 @@ def _detect_objects_riverraid_revised(objects, ram_state, hud=False):
     player.xy = ram_state[51] + 1, 145
 
     if hud:
-        objec = objects[4:]
         del objects[4:]
     else:
-        objec = objects[4:]
         del objects[1:]
 
     obj = _calculate_objects(ram_state)
@@ -183,8 +181,9 @@ def _calculate_objects(ram_state):
         else:
             continue
 
-        obj_pos = ram_state[20 + i]
+        # obj_pos = ram_state[20 + i]
         # Add here x and y-Position for the objects
+        obj_instance.xy = 0, 0
     return objects
 
 
