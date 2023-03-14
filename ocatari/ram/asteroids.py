@@ -4,13 +4,13 @@ from .game_objects import GameObject
 """
 RAM extraction for the game ASTEROIDS. Supported modes: raw
 
-Revised misses the x Position for Asteroids and Player. The RAM states for these values are found (look at raw) but
-they were not interpretable. One x Value corresponds to multiple positions on the rendered image. So either there is 
-another RAM state which separates them into quadrants or the x-axis is moving.
+Revised is missing the x-Position for Asteroids and Player. The RAM states for these values are found (look at raw) but
+they were not interpretable. One x Value corresponds to multiple positions on the rendered image. So either there is
+another RAM state which separates them into quadrants or the x-Axis is moving.
 """
 
 MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissile': 2, 'Asteroid': 50}  # Asteroid count can get really high
-MAX_NB_OBJECTS_HUD = {'Lives' : 1, 'PlayerScore' : 5}
+MAX_NB_OBJECTS_HUD = {'Lives': 1, 'PlayerScore': 5}
 
 
 class Player(GameObject):
