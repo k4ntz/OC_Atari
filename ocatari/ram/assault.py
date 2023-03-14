@@ -5,6 +5,10 @@ from .game_objects import GameObject
 RAM extraction for the game ASSAULT. Supported modes: raw, revised.
 """
 
+MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissileVertical': 1, 'PlayerMissileHorizontal': 1, 'MotherShip': 1,
+                  'Enemy': 9, 'EnemyMissile': 1}
+MAX_NB_OBJECTS_HUD = {'PlayerScore': 6, 'Lives': 3, 'Health': 1}
+
 
 class Player(GameObject):
     def __init__(self):
@@ -99,10 +103,11 @@ def _init_objects_assault_ram(hud=False):
         objects.extend([PlayerScore(), Health(), Lives()])
     return objects
 
-
+# position of objects if value 0 to 16. 17 to 32 uses these values but -1 and so on.
 player_x_pos = [3, 3, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 3, 3, 3, 3]
-player_x_pos_128 = [11, 11, 23, 38, 53, 68, 83, 98, 113, 128, 143, 158, 11, 11, 11, 11]
+player_x_pos_128 = [11, 11, 23, 38, 53, 68, 83, 98, 113, 128, 143, 158, 11, 11, 11, 11]     # after value 128 it differs
 horizontal_pos = 0
+enemy_missile_x = 0
 
 
 def _detect_objects_assault_revised(objects, ram_state, hud=False):
@@ -117,7 +122,7 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
     x_mod = ram_state[16]
     x_diff = (x_mod // 16) % 8
     if ram_state[16] < 128:
-        x = player_x_pos[ram_state[16] % 16] - x_diff
+        x = player_x_pos[ram_state[16] % 16] - x_diff   # formula for position
         if x < 0:
             x = 160 + x
         player.xy = x, 178
@@ -202,7 +207,6 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
     else:
         horizontal_pos = 0
 
-
     # mother ship
     mother_ship = MotherShip()
     x_mother = ram_state[69]
@@ -220,47 +224,123 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
     objects.append(mother_ship)
 
     # enemy
+    global enemy_missile_x
     for en in range(3):
-        enemy = Enemy()
-        x_enemy = ram_state[33 + en]
-        x_enemy_diff = (x_enemy // 16) % 8
-        if ram_state[33 + en] < 128:
-            x_val = player_x_pos[(ram_state[33 + en]) % 16] - x_enemy_diff
-            if x_val < 0:
-                x_val = 160 + x_val
-            enemy.xy = x_val, 103 - 25 * en
-        else:
-            x_val = player_x_pos_128[(ram_state[33 + en]) % 16] - x_enemy_diff
-            if x_val < 0:
-                x_val = 160 + x_val
-            enemy.xy = x_val, 103 - 25 * en
+        enemy_appearance = ram_state[54 + en]
+        if enemy_appearance == 0:   # enemy not visible in this case
+            continue
 
-        if ram_state[40] == 196:    # set enemy color
-            enemy.rgb = 72, 160, 72
-        elif ram_state[40] == 204:    # set enemy color
-            enemy.rgb = 84, 138, 210
-        elif ram_state[40] == 212:    # set enemy color
-            enemy.rgb = 105, 77, 20
+        if enemy_appearance != 96:
+            enemy = Enemy()
+            x_enemy = ram_state[33 + en]
+            x_enemy_diff = (x_enemy // 16) % 8
 
-        if ram_state[54 + en] != 0:     # else enemy not visible
+            if ram_state[33 + en] < 128:
+                x_val = player_x_pos[(ram_state[33 + en]) % 16] - x_enemy_diff
+                if x_val < 0:
+                    x_val = 160 + x_val
+
+                if ram_state[43] == 25:
+                    enemy.xy = x_val, 103 - 25 * en
+                elif ram_state[43] == 145:
+                    enemy.xy = x_val, 93 - 25 * en
+
+            else:   # take pos_128
+                x_val = player_x_pos_128[(ram_state[33 + en]) % 16] - x_enemy_diff
+                if x_val < 0:
+                    x_val = 160 + x_val
+
+                if ram_state[43] == 25:
+                    enemy.xy = x_val, 103 - 25 * en
+                elif ram_state[43] == 145:
+                    enemy.xy = x_val, 93 - 25 * en
+
+            if enemy_appearance == 160:
+                enemy.wh = 8, 8
+
+            if ram_state[40] == 196:  # set enemy color
+                enemy.rgb = 72, 160, 72
+            elif ram_state[40] == 204:  # set enemy color
+                enemy.rgb = 84, 138, 210
+            elif ram_state[40] == 212:  # set enemy color
+                enemy.rgb = 105, 77, 20
+
+        if enemy_appearance == 224 or enemy_appearance == 96:   # 96 only right part shown
+            if enemy_appearance == 224:     # 224 means two enemies are shown
+                enemy.wh = 8, 8
+            enemy2 = Enemy()
+            x_enemy2 = ram_state[36 + en]
+            x_enemy_diff2 = (x_enemy2 // 16) % 8
+
+            if ram_state[36 + en] < 128:
+                x_val2 = player_x_pos[(ram_state[36 + en]) % 16] - x_enemy_diff2
+                if x_val2 < 0:
+                    x_val2 = 160 + x_val2
+
+                if ram_state[43] == 25:
+                    enemy2.xy = x_val2, 103 - 25 * en
+                elif ram_state[43] == 145:
+                    enemy2.xy = x_val2, 93 - 25 * en
+
+            else:  # take pos_128
+                x_val2 = player_x_pos_128[(ram_state[36 + en]) % 16] - x_enemy_diff2
+                if x_val2 < 0:
+                    x_val2 = 160 + x_val2
+
+                if ram_state[43] == 25:
+                    enemy2.xy = x_val2, 103 - 25 * en
+                elif ram_state[43] == 145:
+                    enemy2.xy = x_val2, 93 - 25 * en
+
+            enemy2.wh = 8, 8
+
+            if ram_state[40] == 196:  # set enemy color
+                enemy2.rgb = 72, 160, 72
+            elif ram_state[40] == 204:  # set enemy color
+                enemy2.rgb = 84, 138, 210
+            elif ram_state[40] == 212:  # set enemy color
+                enemy2.rgb = 105, 77, 20
+
+            objects.append(enemy2)
+
+        if enemy_appearance != 96:
             objects.append(enemy)
 
+        if en == 0 and enemy_missile_x == 0 and ram_state[75] == 128 \
+                and (enemy_appearance == 192 or enemy_appearance == 160  or enemy_appearance == 224):
+            enemy_missile_x = enemy.x
+        elif en == 0 and enemy_missile_x == 0 and ram_state[75] == 128 and enemy_appearance == 96:
+            enemy_missile_x = enemy2.x
+
+    # enemy missile
     if ram_state[75] == 128:
         missile = EnemyMissile()
 
-        x_mis = ram_state[92]
-        x_mis_diff = (x_mis // 16) % 8
-        if ram_state[92] < 128:
-            x_val = player_x_pos[(ram_state[92]) % 16 - 1] - x_mis_diff
-            if x_val < 0:
-                x_val = 160 + x_val
-            missile.xy = x_val, 50
+        if ram_state[40] == 212:    # brown enemy, with red missile
+            missile.xy = enemy_missile_x + 8, 30 + ram_state[73]
+            missile.wh = 8, 7
+            missile.rgb = 214, 92, 92
+        elif ram_state[40] == 204:
+            missile.xy = enemy_missile_x + 8, 102 + ram_state[73]
+            missile.rgb = 92, 186, 92
+            missile.wh = 9, 16
+        elif ram_state[40] == 196:
+            if 55 + ram_state[110] > 166:
+                missile.xy = enemy_missile_x + 8, 166
+            else:
+                missile.xy = enemy_missile_x + 7, 55 + ram_state[110]
+            missile.rgb = 84, 138, 210
+            if missile.y + 30 > 186:
+                missile.wh = 1, 20
+            else:
+                missile.wh = 1, 30
         else:
-            x_val = player_x_pos_128[(ram_state[92]) % 16 - 1] - x_mis_diff
-            if x_val < 0:
-                x_val = 160 + x_val
-            missile.xy = x_val, 50
+            missile.xy = enemy_missile_x, 60 + ram_state[110]
+            missile.rgb = 187, 187, 53
+
         objects.append(missile)
+    else:
+        enemy_missile_x = 0
 
     if hud:
         # score
@@ -330,14 +410,14 @@ def _detect_objects_assault_raw(info, ram_state):
     info["player_missile_x"] = ram_state[39]    # start at x = 182
     info["player_missile_y"] = ram_state[67]
     info["vertic_missile"] = ram_state[24:27]
-    info["maybe_enemy_missile"] = ram_state[75]     # enemy missile visible at 128
-    info["maybe_enemy_missile_x"] = ram_state[92]
-    info["enemy_x"] = ram_state[33:36]  # 33 most down enemy
-    info["enemy_app"] = ram_state[54:57]
-    info["enemy_color"] = ram_state[40:42]
+    info["maybe_enemy_missile_visible"] = ram_state[75]     # enemy missile visible at 128
+    info["enemy_x_part_1"] = ram_state[33:36]  # 33 most downwards enemy
+    info["enemy_x_part_2"] = ram_state[36:39]
+    info["enemy_appearance"] = ram_state[54:57] # 192 = normal, 224 = split in two, 160 and 96 only one smaller part
+    info["enemy_type"] = ram_state[40]
     info["mother_ship_color"] = ram_state[11:13]
     info["mother_ship_x"] = ram_state[69]
-    info["healt_color"] = ram_state[21]     # 198 = green, 70 = red
+    info["health_color"] = ram_state[21]     # 198 = green, 70 = red
     info["health"] = ram_state[28:30]
     info["player_sprite"] = ram_state[30]
     info["lives"] = ram_state[101]
