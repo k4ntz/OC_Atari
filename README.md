@@ -21,14 +21,14 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [x]  Skiing
 - [ ]  Space Invaders (worked on by Belal/Sebastian)
 - [x]  Asterix
-- [ ]  Asteroids (worked on by Chris)
+- [ ]  Asteroids - only raw and vision (revised is missing x-Positions)
 - [x]  Demon Attack
 - [x]  Tennis 
 - [x]  Kangaroo
 
 ### Priority 2:
 - [x]  Berzerk
-- [ ]  River Raid (worked on by Chris)
+- [ ]  River Raid - only raw and vision (revised not feasible)
 - [ ]  Atlantis (worked on by Bjarne)
 - [ ]  Chopper Command (worked on by Sebastian)
 - [ ]  Q*bert (worked on by Bjarne)
