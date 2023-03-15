@@ -17,12 +17,14 @@ for i in range(1000):
 
     # -------------------manipulate ram----------------------------------
     ram = env.unwrapped.ale.getRAM()
-    target_ram_position = 16
+    env.unwrapped.ale.setRAM(75, 1)
+    target_ram_position = 76
     previous_ram_at_position = ram[target_ram_position]
-    new_ram_value = 120
-    # env.unwrapped.ale.setRAM(target_ram_position, new_ram_value)
-    # env.unwrapped.ale.setRAM(40, 120)
-    # env.unwrapped.ale.setRAM(41, 0)
+    new_ram_value = 3
+    env.unwrapped.ale.setRAM(target_ram_position, new_ram_value)
+    env.unwrapped.ale.setRAM(77, 5)
+    env.unwrapped.ale.setRAM(78, 7)
+    env.unwrapped.ale.setRAM(79, 9)
     # print(ram[14], ram[15])
     # print(ram[41])
     # print(ram[target_ram_position])
