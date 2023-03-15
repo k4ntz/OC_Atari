@@ -135,7 +135,7 @@ def _detect_objects_qbert_revised(objects, ram_state, hud=True):
     global enemy_prev_x
     res = calc_enemy_pos(ram_state[75:80])
     x, y = res[0][0]
-    if not (x == None or y == None):
+    if not (x is None or y is None):
         for i in range(len(res)):
             x, y = res[i][0]
             typ = res[i][1]
@@ -195,7 +195,7 @@ def calc_enemy_pos(slice):
     res = []
 
 
-    if last_i != None and last_i < 4 and slice[last_i + 1] + 1 == slice[last_i]:
+    if last_i is not None and last_i < 4 and slice[last_i + 1] + 1 == slice[last_i]:
         xi = calc_enemy_x(slice[last_i + 1])
         yi = ((last_i + 2) * 30) + 12
         last_i += 1
