@@ -308,7 +308,7 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
             objects.append(enemy)
 
         if en == 0 and enemy_missile_x == 0 and ram_state[75] == 128\
-                and (enemy_appearance == 192 or enemy_appearance == 160  or enemy_appearance == 224):
+                and (enemy_appearance == 192 or enemy_appearance == 160 or enemy_appearance == 224):
             enemy_missile_x = enemy.x
         elif en == 0 and enemy_missile_x == 0 and ram_state[75] == 128 and enemy_appearance == 96:
             enemy_missile_x = enemy2.x
@@ -405,7 +405,8 @@ def _detect_objects_assault_raw(info, ram_state):
     6: shoot to the left
     """
 
-    info["score"] = _convert_number(ram_state[0]) * 10000 + _convert_number(ram_state[1]) * 100 + \
+    info["score"] = _convert_number(ram_state[0]) * 10000 + \
+                    _convert_number(ram_state[1]) * 100 + \
                     _convert_number(ram_state[2])
     info["player_x"] = ram_state[16]    # start at x = 134
     info["player_missile_x"] = ram_state[39]    # start at x = 182
