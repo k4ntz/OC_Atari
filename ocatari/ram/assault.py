@@ -103,6 +103,7 @@ def _init_objects_assault_ram(hud=False):
         objects.extend([PlayerScore(), Health(), Lives()])
     return objects
 
+
 # position of objects if value 0 to 16. 17 to 32 uses these values but -1 and so on.
 player_x_pos = [3, 3, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 3, 3, 3, 3]
 player_x_pos_128 = [11, 11, 23, 38, 53, 68, 83, 98, 113, 128, 143, 158, 11, 11, 11, 11]     # after value 128 it differs
@@ -142,7 +143,7 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
             if ram_state[67] < 25:
                 y = ram_state[67] + 36
             elif ram_state[67] < 32:
-                 y = ram_state[67] + 45
+                y = ram_state[67] + 45
             elif ram_state[67] < 50:
                 y = ram_state[67] + 53
             else:
@@ -168,7 +169,7 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
             if ram_state[67] < 23:
                 y = ram_state[67] + 36
             elif ram_state[67] < 32:
-                 y = ram_state[67] + 45
+                y = ram_state[67] + 45
             elif ram_state[67] < 50:
                 y = ram_state[67] + 53
             else:
@@ -306,7 +307,7 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
         if enemy_appearance != 96:
             objects.append(enemy)
 
-        if en == 0 and enemy_missile_x == 0 and ram_state[75] == 128 \
+        if en == 0 and enemy_missile_x == 0 and ram_state[75] == 128\
                 and (enemy_appearance == 192 or enemy_appearance == 160  or enemy_appearance == 224):
             enemy_missile_x = enemy.x
         elif en == 0 and enemy_missile_x == 0 and ram_state[75] == 128 and enemy_appearance == 96:
@@ -413,7 +414,7 @@ def _detect_objects_assault_raw(info, ram_state):
     info["maybe_enemy_missile_visible"] = ram_state[75]     # enemy missile visible at 128
     info["enemy_x_part_1"] = ram_state[33:36]  # 33 most downwards enemy
     info["enemy_x_part_2"] = ram_state[36:39]
-    info["enemy_appearance"] = ram_state[54:57] # 192 = normal, 224 = split in two, 160 and 96 only one smaller part
+    info["enemy_appearance"] = ram_state[54:57]     # 192 = normal, 224 = split in two, 160 and 96 only one smaller part
     info["enemy_type"] = ram_state[40]
     info["mother_ship_color"] = ram_state[11:13]
     info["mother_ship_x"] = ram_state[69]
