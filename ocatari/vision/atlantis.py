@@ -23,7 +23,7 @@ objects_colors = {"sentry": [[252, 224, 112], [111, 210, 111], [84, 138, 210], [
                                     [227, 151, 89], [184, 70, 162], [187, 187, 53]],
                   "deathray": [[101, 209, 174], [72, 160, 72]], "score": [252, 188, 116],
                   "projectile": [[45, 109, 152], [84, 138, 210], [125, 48, 173], [127, 92, 213],
-                                 [158, 208, 101], [164, 89, 208], [184, 70, 162], [187, 187, 53], 
+                                 [158, 208, 101], [164, 89, 208], [184, 70, 162], [187, 187, 53],
                                  [227, 151, 89], [228, 11, 111], [252, 188, 116]]
                   }
 
@@ -167,7 +167,8 @@ def _detect_objects_atlantis(objects, obs, hud=True):
     # for bb in deathray:
     #     objects.append(Deathray(*bb))
     sizes = [(1, 1), (1, 2), (2, 1)]
-    projectiles = sum([find_objects(obs, col, size=si, tol_s=0) for col, si in product(objects_colors["projectile"], sizes)], [])
+    projectiles = sum([find_objects(obs, col, size=si, tol_s=0) for col,
+                       si in product(objects_colors["projectile"], sizes)], [])
 
     projobjs = [Projectile(*bb) for bb in projectiles]
     valid_projobjs = [proj for proj in projobjs if not any([proj.is_on_top(obj) for obj in objects])]

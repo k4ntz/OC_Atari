@@ -59,7 +59,7 @@ def _detect_objects_asteroids(objects, obs, hud=False):
     for missile_color in player_missile_colors.values():
         missiles = find_objects(obs, missile_color, min_distance=1)
         for mis in missiles:
-            if mis[2] <=2 and mis[3] <= 3:
+            if mis[2] <= 2 and mis[3] <= 3:
                 missile_inst = PlayerMissile(*mis)
                 missile_inst.rgb = missile_color
                 objects.append(missile_inst)
