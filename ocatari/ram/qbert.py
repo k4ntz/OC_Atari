@@ -55,7 +55,7 @@ class Sam(GameObject):
     def __init__(self):
         super(Sam, self).__init__()
         self._xy = 78, 103
-        self.wh = 8, 24
+        self.wh = 8, 18
         self.rgb = 50, 132, 50
         self.hud = False
 
@@ -102,6 +102,9 @@ def _init_objects_qbert_ram(hud=True):
     coil_prev_y = 0
     enemy_prev_x = 0
 
+    global last_i
+    last_i = None
+
     return objects
 
 
@@ -130,9 +133,18 @@ def _detect_objects_qbert_revised(objects, ram_state, hud=True):
         objects.append(coily)
 
     global enemy_prev_x
-    if ram_state[75] != enemy_prev_x:
-        if ram_state[76] == 7:
-            purple = PurpleBall()
+    res = calc_enemy_pos(ram_state[75:80])
+    x, y = res[0][0]
+    if not (x == None or y == None):
+        for i in range(len(res)):
+            x, y = res[i][0]
+            typ = res[i][1]
+            if typ == 0:
+                enemy = Sam()
+            elif typ == 7:
+                enemy = PurpleBall()
+            enemy.xy = x, y
+            objects.append(enemy)
 
     enemy_prev_x = ram_state[75]
 
@@ -155,6 +167,9 @@ def _detect_objects_qbert_raw(info, ram_state):
     info["ram-slice"] = player + enemy
 
 def calc_enemy_x(value):
+    """
+    Calculates the enemy x position from the RAM value 
+    """
     res = 0
     for i in range(value + 1):
         if i <= 1:
@@ -163,4 +178,40 @@ def calc_enemy_x(value):
             res = res + 16
         else:
             res = res + 12
+    return res
+
+
+def calc_enemy_pos(slice):
+    """
+    Converts a RAM slice of 5 into the enemy positions
+    """
+
+    global last_i
+
+    x = None
+    y = None
+    typ = 0
+
+    res = []
+
+
+    if last_i != None and last_i < 4 and slice[last_i + 1] + 1 == slice[last_i]:
+        xi = calc_enemy_x(slice[last_i + 1])
+        yi = ((last_i + 2) * 30) + 12
+        last_i += 1
+        res.append([(xi, yi), typ])
+
+    for i in range(5):
+        if slice[i] == 0:
+            break
+        if slice[i+1] == 7:
+            typ = 7
+        x = calc_enemy_x(slice[i])
+        y = ((i + 1) * 30) + 12
+        last_i = i
+        if i < 4 and slice[i] != slice[i] + 1:
+            break
+
+    res.append([(x, y), typ])
+
     return res
