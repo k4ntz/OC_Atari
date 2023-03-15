@@ -82,7 +82,6 @@ def _detect_objects_assault(objects, obs, hud=False):
         if p[1] > 170 and p[2] > 4:
             objects.append(Player(*p))
 
-
     for player_missile_color in player_missile_colors.values():
         player_missile = find_objects(obs, player_missile_color, min_distance=1)
         for mis in player_missile:
