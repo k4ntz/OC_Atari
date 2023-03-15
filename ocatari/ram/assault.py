@@ -405,7 +405,8 @@ def _detect_objects_assault_raw(info, ram_state):
     6: shoot to the left
     """
 
-    info["score"] = _convert_number(ram_state[0]) * 10000 + \
+    info["score"] = \
+                    _convert_number(ram_state[0]) * 10000 + \
                     _convert_number(ram_state[1]) * 100 + \
                     _convert_number(ram_state[2])
     info["player_x"] = ram_state[16]    # start at x = 134
