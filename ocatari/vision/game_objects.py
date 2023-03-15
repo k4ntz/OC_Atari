@@ -59,4 +59,4 @@ class GameObject:
 
     def is_on_top(self, other):
         return (other.x <= self.x <= other.x + other.w) and \
-            (other.y <= self.y <= other.y + other.h) 
+            (other.y <= self.y <= other.y + other.h)
