@@ -10,11 +10,11 @@ from .breakout import _detect_objects_breakout_raw, _detect_objects_breakout_rev
 from .pong import _detect_objects_pong_raw, _detect_objects_pong_revised, _init_objects_pong_ram
 from .seaquest import _detect_objects_seaquest_raw, _detect_objects_seaquest_revised, _init_objects_seaquest_ram
 from .skiing import _detect_objects_skiing_raw, _detect_objects_skiing_revised, _init_objects_skiing_ram
-from .space_invaders import _detect_objects_space_invaders_raw, \
+from .spaceinvaders import _detect_objects_space_invaders_raw, \
                             _detect_objects_space_invaders_revised, \
                             _init_objects_space_invaders_ram
 from .tennis import _detect_objects_tennis_raw, _detect_objects_tennis_revised, _init_objects_tennis_ram
-from .demonAttack import _detect_objects_demon_attack_raw, \
+from .demonattack import _detect_objects_demon_attack_raw, \
                          _detect_objects_demon_attack_revised, \
                          _init_objects_demon_attack_ram
 from .mspacman import _detect_objects_mspacman_raw, \
