@@ -5,6 +5,8 @@ RAM extraction for the game Atlantis. Supported modes: raw, revised.
 
 """
 
+MAX_NB_OBJECTS = {'Player': 1, 'Projectile': 2, 'Enemys': 4, 'Buildings': 7}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Projectile': 2, 'Enemys': 4, 'Buildings': 7, 'PlayerScore': 1}
 
 class Sentry(GameObject):
     def __init__(self):
