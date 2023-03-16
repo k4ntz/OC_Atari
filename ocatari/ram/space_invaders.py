@@ -2,6 +2,7 @@ from .game_objects import GameObject
 import numpy as np
 from termcolor import colored
 
+
 # MAX_NB_OBJS = {  # quentin's code (for skiing?)
 #     "Player": 1,
 #     "Tree": 4,
@@ -12,6 +13,7 @@ from termcolor import colored
 
 def make_bitmap(alien_states):
     emptc = 6 - int(max(alien_states)).bit_length()  # nb empty columns
+    # return "\n".join([format(el, '06b')[emptc:] + "0" * emptc for el in alien_states])
     return [(format(el, '06b')[emptc:] + "0" * emptc) for el in alien_states], emptc
 
 
@@ -64,7 +66,7 @@ class Bullet(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
         self._xy = 0, 0
-        self.wh = 1, 9
+        self.wh = 1, 10
         self.hud = False
 
 
@@ -95,8 +97,9 @@ def _detect_objects_space_invaders_raw(info, ram_state):
     info["shields"] = ram_state[43:70]
     info["lives"] = ram_state[73]
     info["bullets"] = ram_state[81:89]
+    info["value"] = ram_state[90]  # some value changing repeatedly
     info["score"] = ram_state[102:106]
-    # info["aliens_y"] = ram_state[16] % 32  # taking only the first 5 bits on the right
+    # info["aliens_y"] = ram_state[16]
     # # ram_state[16] has also y of frame of players with shields together
     #
     # info["number_enemies"] = ram_state[17]  # number of alive aliens. if they are less the make the game quicker
@@ -152,7 +155,7 @@ def _detect_objects_space_invaders_raw(info, ram_state):
     # info["score_player_yellow"] = {ram_state[103], ram_state[105]}  # score is saved in hexadecimal
     # # 200 points for destroying satellite dish
     # # x*5 points for destroying an alien from row_x
-    # print(ram_state)
+    print(ram_state)
 
 
 def _init_objects_space_invaders_ram(hud=False):
@@ -173,7 +176,6 @@ def _init_objects_space_invaders_ram(hud=False):
 
 
 global aliens
-# aliens = [[Alien() for a in range(6)] for b in range(6)]  # ~ 2-dim
 lives_ctr = 41
 global player
 firstCall = True
@@ -186,6 +188,9 @@ satellite = Satellite()
 global score_ctr
 score_ctr = 1
 global bullets
+global sat_ctr
+sat_ctr = 1
+global shields
 
 
 def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
@@ -198,6 +203,8 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     global bullets
     global satellite
     global score_ctr
+    global sat_ctr
+    global shields
 
     if lives_ctr:
         lives_ctr -= 1
@@ -207,14 +214,15 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
                 objects.pop(i)
     if not firstCall and hud:
         if ram_state[73] != prevRam[73]:
-            lives_ctr = 22  # handle real visibility instead!
+            lives_ctr = 22
             objects.append(Lives())
 
-    if firstCall:  # works correctly
+    if firstCall:
         player = objects[0]
         aliens = [Alien() for _ in range(36)]  # ~ 1-dim
         lives_ctr = 41
         bullets = [Bullet() for _ in range(3)]
+        shields = [obj for obj in objects if isinstance(obj, Shield)]
         if not hud and isinstance(objects[1], Score):
             del objects[1:4]
         else:
@@ -234,12 +242,11 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     x, y = ram_state[26], ram_state[16]
 
     bitmap, emptc = make_bitmap(ram_state[18:24])
-    print("-"*6)
-    print_bmp(bitmap)
+    # aliens (permanent) deletion from array aliens:
     for i in range(6):
         for j in range(6):
-            if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):  # enemies alive are saved in ram_state[18:24]
-                aliens[35 - (i * 6 + j)] = None  # 5 = max(range(6)) so we are counting lines in the other way around
+            if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):
+                aliens[35 - (i * 6 + j)] = None
     for i in range(6):
         for j in range(6):
             if aliens[i * 6 + j]:
@@ -270,9 +277,17 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
         else:
             if ram_state[30] != prevRam[30]:
                 satellite.xy = ram_state[30] - 1, 12
+                sat_ctr = 3
                 if satellite not in objects:
                     objects.append(satellite)
+            else:
+                sat_ctr -= 1
+                if sat_ctr == 0:
+                    sat_ctr = 1
+                    if satellite in objects:
+                        objects.remove(satellite)
 
+    # SHIELDS
     # visibility of shields
     for alien in aliens:
         if alien and alien.xy[1] + alien.wh[1] >= 157:
@@ -280,21 +295,38 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
                 if isinstance(obj, Shield):
                     objects.remove(obj)
             break
-
+    # fitting height of shields
+    upper_y = 0
+    lower_y = 16
+    for i in range(3):
+        for j in range(9):
+            if ram_state[43 + i * 9 + j] != 0:
+                upper_y = j * 2
+                break
+        for j in range(9):
+            if ram_state[43 + (i + 1) * 9 - (j + 1)] != 0:
+                lower_y = j * 2
+                break
+        shields[i].xy = 42 + i * 32, 157 + upper_y
+        shields[i].wh = 8, 18 - upper_y - lower_y
     # BULLETS
+    # updating bullets poses
+    bullets[2].xy = ram_state[87] - 2, 2 * ram_state[85] + 3  # for player
+    for i in range(2):
+        bullets[i].xy = ram_state[83 + i] - 2, 2 * ram_state[81 + i] + 3
+        if bullets[i].xy[1] < 194:
+            if bullets[i].xy[1] + bullets[i].wh[1] > 195:
+                bullets[i].wh = bullets[i].wh[0], 195 - bullets[i].xy[1] - 1
+            else:
+                bullets[i].wh = 1, 10
+
     # determining if bullets are visible
     bullets_visible = [False, False, False]
     if not firstCall:
         for i in range(2):
             bullets_visible[i] = True if ram_state[81 + i] != prevRam[81 + i] \
-                                         and bullets[i].xy[1] < 195 else False
-        bullets_visible[2] = True if ram_state[85] != prevRam[85] and bullets[2].xy[1] < 195 else False
-
-        # updating bullets poses
-        for i in range(2):  # CORRECT MY Y-POS
-            bullets[i].xy = ram_state[83 + i] - 2, 2 * ram_state[81 + i] + 3  # - 145  # to be edited later?
-        bullets[2].xy = ram_state[87] - 2, 2 * ram_state[85] + 3  # - 69
-
+                                         and 20 < bullets[i].xy[1] < 195 else False
+        bullets_visible[2] = True if ram_state[85] != prevRam[85] and 20 < bullets[2].xy[1] < 195 else False
     # appending bullets to objects
     for i in range(3):
         if bullets_visible[i]:
