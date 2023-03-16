@@ -211,6 +211,122 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
     return detected
 
 
+def find_rectangle_objects(image, color, max_size=None, minx=0, miny=0, maxx=160, maxy=210):
+    """
+    image: image to detect objects from
+    max_size: presupposed size (actual size will be equal or smaller)
+    tol_s: tolerance on the size
+    position: presupposed position
+    tol_p: tolerance on the position
+    min_distance: minimal distance between two detected objects
+    """
+    mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color), np.array(color))
+    contours, _ = cv2.findContours(mask.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    detected = []
+    for cnt in contours:
+        x, y, w, h = cv2.boundingRect(cnt)
+        detected.extend(find_rectangles_in_bb(mask.copy(), (x, y, w, h), max_size, minx, miny))
+
+        # smaller particles are detected but smaller than the given size (for cut particles)
+        w1, h1 = max_size
+        if w <= w1 or h <= h1:
+            x, y = x + minx, y + miny  # compensating cutoff
+            if not detected.__contains__((x, y, w, h)):
+                detected.append((x, y, w, h))
+    return detected
+
+
+def find_rectangles_in_bb(mask, bb, size, minx, miny):
+    """
+    finds the rectangles of the given size in a given bounding box of an image and returns a list of bounding boxes
+    mask: must be a copy of the mask
+    bb: the part of the image that has a contour
+    size: the size of the rectangles
+    """
+    bounding_boxes = list()
+    (offx,offy) = size
+    (x,y,w,h) = bb
+    mask = mask[y:y + h, x:x + w]
+    # np.array_equal(mask[i + a, j + b], black), when image instead of mask
+    black = 0
+
+    row = 0
+    for line in mask:
+        if row + offx > mask.shape[0]:
+            break
+        column = 0
+        for element in line:
+            if column+offx > mask.shape[1]:
+                break
+            if not element == black:
+                # searching
+                rect = True
+                for a in range(offy):
+                    for b in range(offx):
+                        if mask[row + a, column + b] == black:
+                            rect = False
+                            break
+                    if not rect:
+                        break
+
+                # delete Pixels from mask, if found, to avoid intersections
+                if rect:
+                    for a in range(offy):
+                        for b in range(offx):
+                            mask[row + a, column + b] = black
+                    bounding_boxes.append((x+minx+column, y+miny+row, offx, offy))
+            column += 1
+        row += 1
+
+    return bounding_boxes
+
+
+def find_objects_in_color_range(image, color_min, color_max, closing_active=True, size=None, tol_s=10,
+                 position=None, tol_p=2, min_distance=10, closing_dist=3,
+                 minx=0, miny=0, maxx=160, maxy=210):
+    """
+    image: image to detect objects from
+    color_min: lower bound of the color spectrum
+    color_max: upper bound of the color spectrum
+    size: presupposed size
+    tol_s: tolerance on the size
+    position: presupposed position
+    tol_p: tolerance on the position
+    min_distance: minimal distance between two detected objects
+    """
+    mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color_min), np.array(color_max))
+    if closing_active:
+        closed = closing(mask, square(closing_dist))
+        # closed = closing(closed, square(closing_dist))
+    else:
+        closed = mask
+    contours, _ = cv2.findContours(closed.copy(), cv2.RETR_EXTERNAL, 1)
+    detected = []
+    for cnt in contours:
+        x, y, w, h = cv2.boundingRect(cnt)
+        x, y = x + minx, y + miny  # compensing cuttoff
+        if size:
+            if not assert_in((w, h), size, tol_s):
+                continue
+        if position:
+            if not assert_in((x, y), position, tol_p):
+                continue
+        if min_distance:
+            too_close = False
+            for det in detected:
+                if iou(det, (x, y, w, h)) > 0.05:
+                    too_close = True
+                    break
+            if too_close:
+                continue
+        # if x < minx or x+w > maxx or y < miny or y+h > maxy:
+        #     continue
+        # detected.append((y, x, h, w))
+        detected.append((x, y, w, h))
+    return detected
+
+
+
 def make_darker(color, col_precent=0.8):
     """
     return a darker color
