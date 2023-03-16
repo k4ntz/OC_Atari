@@ -77,7 +77,7 @@ def _detect_objects_centipede(objects, obs, hud=False):
         objects.append(Bug(*bb))
 
     if hud:
-        life_and_score = find_objects(obs, objects_colors['life_and_score'], min_distance=1)
+        life_and_score = find_objects(obs, objects_colors['life_and_score'], min_distance=1, closing_dist=1)
         for bb in life_and_score:
             if bb[0] < 70:
                 objects.append(Life(*bb))
