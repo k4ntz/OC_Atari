@@ -64,9 +64,9 @@ class ExtraBullets(GameObject):
 
 class PlayerScore(GameObject):
     def __init__(self):
-        self._xy = 65, 2
+        self._xy = 65, 0
         self.rgb = 160, 171, 79
-        self.wh = 38, 7
+        self.wh = 38, 9
         self.hud = True
 
     def __eq__(self, o):
