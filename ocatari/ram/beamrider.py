@@ -139,7 +139,7 @@ def _detect_objects_beamrider_revised(objects, ram_state, hud=True):
             enemy = Saucer()
             objects.append(enemy)
             enemy.xy = _get_x_position(ram_state[33+i]), ram_state[25+i]-63
-            enemy.wh = 2,2
+            enemy.wh = 2, 2
 
     return objects
 
@@ -158,7 +158,8 @@ def _detect_objects_beamrider_raw(info, ram_state):
     # ram_state[83] torpedo amount
     # ram_state[83] enemy amount
     # 93-95 irgend was mit entfernung von Gegnern. 93 am weitesten entfernt 95 am nächsten
-    return player_x + enemy_x, enemy_y +  projectile_x, projectile_y
+    return player_x + enemy_x, enemy_y + projectile_x, projectile_y
+
 
 def _get_x_position(ramstate):
     """
