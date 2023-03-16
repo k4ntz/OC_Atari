@@ -3,7 +3,7 @@ import time
 import random
 
 """
-created by timo to set the ram and see whats changed
+set the ram and see whats changed
 """
 
 
