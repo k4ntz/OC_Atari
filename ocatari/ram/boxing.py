@@ -1,24 +1,32 @@
 from .game_objects import GameObject
 
 
+MAX_NB_OBJECTS = {'Player': 1, 'Enemy': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 1, 'PlayerScore': 2, 'EnemyScore': 2, 'Logo': 1, 'Clock': 4}
+
+
 class Player(GameObject):
     def __init__(self):
         self._xy = 0, 0
         self.wh = 14, 46
         self.rgb = 214, 214, 214
         self.hud = False
+        self._above_10 = False
 
 
 class Enemy(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 14, 46
         self.rgb = 0, 0, 0
         self.hud = False
+        self._above_10 = False
 
 
 class Logo(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 62, 189
         self.wh = 32, 7
         self.rgb = 20, 60, 0
@@ -27,6 +35,7 @@ class Logo(GameObject):
 
 class Clock(GameObject):
     def __init__(self, x, y, w, h):
+        super().__init__()
         self._xy = x, y
         self.wh = w, h
         self.rgb = 20, 60, 0
@@ -35,14 +44,29 @@ class Clock(GameObject):
 
 class PlayerScore(GameObject):
     def __init__(self, ten=False):
+        super().__init__()
         if ten:
             self._xy = 39, 5
         else:
             self._xy = 47, 5
         self.ten = ten
         self.rgb = 214, 214, 214
+        self._xy = 47, 5
         self.wh = 6, 7
         self.hud = True
+        self._ten = False
+
+    def tenify(self):
+        if not self._ten:
+            self._xy = 39, 5
+            self.wh = 14, 7
+            self._ten = True
+
+    def detenify(self):
+        if self._ten:
+            self._xy = 47, 5
+            self.wh = 6, 7
+            self._ten = False
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
@@ -50,6 +74,7 @@ class PlayerScore(GameObject):
 
 class EnemyScore(GameObject):
     def __init__(self, ten=False):
+        super().__init__()
         if ten:
             self._xy = 103, 5
         else:
@@ -58,6 +83,19 @@ class EnemyScore(GameObject):
         self.rgb = 0, 0, 0
         self.wh = 6, 7
         self.hud = True
+        self._ten = False
+
+    def tenify(self):
+        if not self._ten:
+            self._xy = 103, 5
+            self.wh = 14, 7
+            self._ten = True
+
+    def detenify(self):
+        if self._ten:
+            self._xy = 111, 5
+            self.wh = 6, 7
+            self._ten = False
 
 
 def _init_objects_boxing_ram(hud=False):
@@ -66,7 +104,11 @@ def _init_objects_boxing_ram(hud=False):
     """
     objects = [Player(), Enemy()]
     if hud:
-        objects.extend([PlayerScore(), EnemyScore(), Logo(),
+        global plscore
+        plscore = PlayerScore()
+        global enscore
+        enscore = EnemyScore()
+        objects.extend([plscore, enscore, Logo(),
                         Clock(63, 17, 6, 7), Clock(73, 18, 2, 5),
                         Clock(79, 17, 6, 7), Clock(87, 17, 6, 7)])
     return objects
@@ -79,21 +121,45 @@ def _detect_objects_boxing_revised(objects, ram_state, hud=False):
     """
     player, enemy = objects[:2]
     player.xy = ram_state[32]+5, ram_state[34]+38
-    enemy.xy = ram_state[33]+4, ram_state[35]+38, 14, 46,
+    enemy.xy = ram_state[33]+4, ram_state[35]+38
     if hud:
         # scores
-        if ram_state[19] > 10:  # enemy score
+        global plscore
+        global enscore
+        if ram_state[19] > 10:      # enemy score
+            enscore.tenify()
+        else:
+            enscore.detenify()
+        if ram_state[18] > 10:      # player score
+            plscore.tenify()
+
+        if ram_state[19] > 10:      # enemy score
             objects.append(EnemyScore(ten=True))
         else:
             tens = EnemyScore(ten=True)
             if tens in objects:
                 objects.remove(tens)
-        if ram_state[18] > 10:  # player score
+        if ram_state[18] > 10:      # player score
             objects.append(PlayerScore(ten=True))
         else:
-            tens = PlayerScore(ten=True)
-            if tens in objects:
-                objects.remove(tens)
+            plscore.detenify()
+
+        if ram_state[19] > 10:      # enemy score
+            if not enemy._above_10:
+                objects.append(EnemyScore(ten=True))
+                enemy._above_10 = True
+        else:
+            if enemy._above_10:
+                objects.remove(EnemyScore(ten=True))
+                enemy._above_10 = False
+        if ram_state[18] > 10:      # player score
+            if not player._above_10:
+                objects.append(PlayerScore(ten=True))
+                player._above_10 = True
+        else:
+            if player._above_10:
+                objects.remove(PlayerScore(ten=True))
+                player._above_10 = False
 
 
 def _detect_objects_boxing_raw(info, ram_state):

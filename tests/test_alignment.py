@@ -22,14 +22,15 @@ import os
 import json
 from termcolor import colored
 from pyfiglet import Figlet
-from tqdm import tqdm
+# from tqdm import tqdm
+from alive_progress import alive_bar
+import pandas as pd
 
-import warnings
-warnings.filterwarnings("ignore")
-
+def format_values(pci_values):
+    return [round(val, 1) for val in (np.array(list(pci_values)) * 100)]
 
 def print_all_stats(all_stats):
-    linelength = 30
+    linelength = 39
     print("Mean IOUs: ", round(all_stats['mean_ious'], 2))
     print("-"*linelength)
     print("\nPer class IOU: ")
@@ -111,7 +112,7 @@ def difference_objects(ram_list, vision_list):
         per_class_ious[name] = np.mean(li)
     for robj in ram_list:
         if not robj._is_in_image:
-            only_in_vision.append(str(robj))
+            only_in_ram.append(str(robj))
     for vobj in vision_list:
         if not vobj._is_in_ram:
             only_in_vision.append(str(vobj))
@@ -153,7 +154,7 @@ if opts.path:
 
 im_reports = ""
 fig, axes = plt.subplots(1, 3, figsize=(20, 10))
-with tqdm(total=NB_SAMPLES) as pbar:
+with alive_bar(total=NB_SAMPLES, dual_line=True, title=f"Testing {opts.game}") as pbar:
     for i in range(20*NB_SAMPLES):
         if opts.path is not None:
             action = agent.draw_action(env.dqn_obs)
@@ -200,12 +201,12 @@ with tqdm(total=NB_SAMPLES) as pbar:
                 plt.savefig(f"{SAVE_IMAGE_FOLDER}/{game_name}_{image_n}.png")
                 im_reports += f"{image_n} (iou={stats['mean_iou']:.3f}),  "
                 report_bad[f"Image_{image_n}"] = stats
-            pbar.update(1)
+            pbar()
 
         if terminated or truncated:
             observation, info = env.reset()
         # modify and display render
-pbar.close()
+# pbar.close()
 env.close()
 
 ALL_STATS["mean_ious"] = np.mean(ALL_STATS["mean_ious"])
@@ -231,3 +232,25 @@ print(f"Saved report_bad_{game_name}.json and all_stats_{game_name}.json in {SAV
 if im_reports:
     print(f"Saved the following images with iou < {MIN_ACCEPTABLE_IOU}:\n" + im_reports + f"\n in {SAVE_IMAGE_FOLDER}")
     print(f"Saved {SAVE_FOLDER}/report_bad_{game_name}.json for details on these images")
+
+pci = ALL_STATS['per_class_ious']
+names = [n.replace("_", " ") for n in pci.keys()]
+styler = pd.DataFrame(format_values(pci.values()), index=names).style
+styler.background_gradient(cmap="RdYlGn", vmin=0, vmax=100)
+styler.format(precision=1)
+ltx_code = styler.to_latex(
+    caption=f"Per class IOU on {game_name}",
+    clines="skip-last;data",
+    convert_css=True,
+    position_float="centering",
+    hrules=True,
+)
+
+ltx_code = ltx_code.replace("100.0", "100").replace("\n & 0 \\\\\n\\midrule", "")
+
+texf = "reports/latex"
+os.makedirs(texf, exist_ok=True)
+with open(f'{texf}/{game_name}_pcious.tex', 'w') as texfile:
+    texfile.write(ltx_code)
+
+print(f'Saved latex report in  {texf}/{game_name}_pcious.tex')
