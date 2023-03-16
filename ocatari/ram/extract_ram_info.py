@@ -1,4 +1,6 @@
 from termcolor import colored
+
+from . import choppercommand
 from .asterix import _detect_objects_asterix_revised, _detect_objects_asterix_raw,\
     _init_objects_asterix_ram
 from .berzerk import _detect_objects_berzerk_raw, _detect_objects_berzerk_revised, _init_objects_berzerk_ram
@@ -62,6 +64,8 @@ def init_objects(game_name, hud):
         return _init_objects_berzerk_ram(hud)
     elif game_name.lower() == "asterix":
         return _init_objects_asterix_ram(hud)
+    elif game_name.lower() == "choppercommand":
+        return choppercommand._init_objects_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
@@ -103,6 +107,8 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_berzerk_raw(info, ram_state)
     elif game_name.lower() == "asterix":
         _detect_objects_asterix_raw(info, ram_state)
+    elif game_name.lower() == "choppercommand":
+        choppercommand._detect_objects_raw(info, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
         exit(1)
@@ -144,6 +150,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_berzerk_revised(objects, ram_state, hud)
     elif game_name.lower() == "asterix":
         _detect_objects_asterix_revised(objects, ram_state, hud)
+    elif game_name.lower() == "choppercommand":
+        return choppercommand._detect_objects_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
