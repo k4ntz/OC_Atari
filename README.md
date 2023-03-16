@@ -19,7 +19,7 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [x]  Pong
 - [x]  Seaquest
 - [x]  Skiing
-- [ ]  Space Invaders (worked on by Belal/Sebastian)
+- [ ]  Space Invaders
 - [x]  Asterix
 - [ ]  Asteroids - only raw and vision (revised is missing x-Positions)
 - [x]  Demon Attack
@@ -30,10 +30,10 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [x]  Berzerk
 - [ ]  River Raid - only raw and vision (revised not feasible)
 - [x]  Atlantis
-- [ ]  Chopper Command (worked on by Sebastian)
-- [ ]  Q*bert (worked on by Bjarne)
+- [ ]  Chopper Command (vision and raw mode)
+- [ ]  Q*bert (only vision mode)
 - [x]  Assault
-- [ ]  Beam Rider (worked on by Bjarne)
+- [ ]  Beam Rider (only vision mode)
 - [x]  Boxing
 - [x]  Carnival
 - [x]  Centipede
