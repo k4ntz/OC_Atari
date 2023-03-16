@@ -25,7 +25,7 @@ class Player_Projectile(GameObject):
 class Torpedos(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 164 , 89, 208
+        self.rgb = 164, 89, 208
 
 
 class Saucer(GameObject):
@@ -49,10 +49,12 @@ class Sentinel(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 184, 50, 50
 
+
 class Blocker(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 135, 183, 84
+
 
 class Jumper(GameObject):
     def __init__(self, *args, **kwargs):
@@ -65,15 +67,18 @@ class Charger(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = None
 
+
 class Bouncecraft(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = None
 
+
 class Chriper(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = None
+
 
 class Rock(GameObject):
     def __init__(self, *args, **kwargs):
@@ -90,7 +95,7 @@ class Torpedos_Available(GameObject):
 class Enemy_Projectile(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 164 ,89, 208
+        self.rgb = 164, 89, 208
 
 
 class HUD(GameObject):
@@ -153,7 +158,7 @@ def _detect_objects_beamrider_raw(info, ram_state):
     # ram_state[83] torpedo amount
     # ram_state[83] enemy amount
     # 93-95 irgend was mit entfernung von Gegnern. 93 am weitesten entfernt 95 am nächsten
-    pass
+    return player_x + enemy_x, enemy_y +  projectile_x, projectile_y
 
 def _get_x_position(ramstate):
     """
