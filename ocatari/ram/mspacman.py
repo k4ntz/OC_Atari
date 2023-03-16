@@ -3,8 +3,9 @@ from ._helper_methods import _convert_number
 import math
 import sys
 
-MAX_NB_OBJECTS =  {}
-MAX_NB_OBJECTS_HUD = {}
+# not sure about this one TODO: validate
+MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4, 'Fruit': 1, 'Score': 3, 'Life': 2}
 
 class Player(GameObject):
     def __init__(self):

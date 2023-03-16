@@ -8,9 +8,8 @@ RAM extraction for the game BERZERK. Supported modes: raw, revised.
 Attention: EvilOtto enemy not implemented due to not getting it spawned during development.
 """
 
-# TODO: populate 
-MAX_NB_OBJECTS =  {}
-MAX_NB_OBJECTS_HUD = {}
+MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile': 1, 'PlayerScore': 1, 'Logo': 2, 'RoomCleared': 1}
 
 class Player(GameObject):
     def __init__(self):

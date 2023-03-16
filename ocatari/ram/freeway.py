@@ -3,7 +3,7 @@ from .game_objects import GameObject
 import sys
 
 MAX_NB_OBJECTS =  {'Chicken': 2, 'Car': 10}
-MAX_NB_OBJECTS_HUD =  {'Chicken': 2, 'Car': 10, 'Score' : 1}
+MAX_NB_OBJECTS_HUD =  {'Chicken': 2, 'Car': 10, 'Score' : 2}
 
 class Chicken(GameObject):
     def __init__(self):
