@@ -33,6 +33,7 @@ def init_objects(game_name, hud):
     """
     Initialize the object list for the correct game
     """
+
     if game_name.lower() == "boxing":
         return _init_objects_boxing_ram(hud)
     elif game_name.lower() == "freeway":
