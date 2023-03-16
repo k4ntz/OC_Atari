@@ -10,6 +10,7 @@ from ocatari.vision.utils import mark_bb, make_darker
 
 game_name = "Freeway"
 MODE = "revised"
+MODE = "vision"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
@@ -22,7 +23,7 @@ for i in range(1000):
         # print(env.objects)
         for obj in env.objects:
             x, y = obj.xy
-            if x < 160 and y < 210 and obj.visible:
+            if x < 160 and y < 210:
                 opos = obj.xywh
                 ocol = obj.rgb
                 sur_col = make_darker(ocol)
