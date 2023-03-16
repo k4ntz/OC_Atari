@@ -26,6 +26,12 @@ env = OCAtari("insert game name here", mode="raw/revised/vision", render_mode="h
 
 to setup the enviroment.
 
+`TestSkriptNr4` uses the OCAtari-wrapper to create the enviroment just like `TestSkriptNr3`.
+This will print all values within the current RAM-state which lie in a specified range.
+`min` sets the floor of the range and `max` the celing. Edit the `already_figured_out` variable to include all RAM-states that should not be printed even if they lie in the specified range.
+
+`TestSkriptNr5` is the same as `TestSkriptNr3` but contains a `ipdb.set_trace()` statement which will trigger right after after printing the changed RAM values. It also includes 2 `set_ram()` statements. 
+
 `testSkriptNr7` can be used to identify for which attribute each RAM state stands
 by setting the RAM values for each RAM position or an user-defined slice of the
 RAM positions. After each position ipdb stops the game and the rendered image, so
