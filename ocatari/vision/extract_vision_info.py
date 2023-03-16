@@ -19,6 +19,7 @@ from .boxing import _detect_objects_boxing
 from .atlantis import _detect_objects_atlantis
 from .asteroids import _detect_objects_asteroids
 from .riverRaid import _detect_objects_riverraid
+from .assault import _detect_objects_assault
 
 
 def detect_objects_vision(objects, obs, game_name, hud=False):
@@ -66,6 +67,8 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_asteroids(objects, obs, hud)
     elif game_name.lower() == "riverraid":
         return _detect_objects_riverraid(objects, obs, hud)
+    elif game_name.lower() == "assault":
+        return _detect_objects_assault(objects, obs, hud)
     else:
         print(colored("Uncovered game in vision mode", "red"))
         exit(1)
