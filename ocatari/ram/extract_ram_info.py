@@ -30,6 +30,7 @@ from .qbert import _detect_objects_qbert_raw, \
 from .atlantis import _detect_objects_atlantis_raw, \
                       _detect_objects_atlantis_revised, \
                       _init_objects_atlantis_ram
+from .beamrider import _detect_objects_beamrider_raw, _detect_objects_beamrider_revised, _init_objects_beamrider_ram
 from .asteroids import _detect_objects_asteroids_raw, _detect_objects_asteroids_revised, _init_objects_asteroids_ram
 from .riverRaid import _detect_objects_riverraid_raw, _detect_objects_riverraid_revised, _init_objects_riverraid_ram
 from .assault import _detect_objects_assault_raw, _detect_objects_assault_revised, _init_objects_assault_ram
@@ -69,6 +70,8 @@ def init_objects(game_name, hud):
         return _init_objects_kangaroo_ram(hud)
     elif game_name.lower() == "berzerk":
         return _init_objects_berzerk_ram(hud)
+    elif game_name.lower() == "beamrider":
+        return _init_objects_beamrider_ram(hud)
     elif game_name.lower() == "asterix":
         return _init_objects_asterix_ram(hud)
     elif game_name.lower() == "qbert":
@@ -123,8 +126,10 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_carnival_raw(info, ram_state)
     elif game_name.lower() == "kangaroo":
         _detect_objects_kangaroo_raw(info, ram_state)
-    elif game_name.lower() == "kangaroo":
+    elif game_name.lower() == "berzerk":
         _detect_objects_berzerk_raw(info, ram_state)
+    elif game_name.lower() == "beamrider":
+        _detect_objects_beamrider_raw(info, ram_state)
     elif game_name.lower() == "asterix":
         _detect_objects_asterix_raw(info, ram_state)
     elif game_name.lower() == "qbert":
@@ -176,6 +181,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_kangaroo_revised(objects, ram_state, hud)
     elif game_name.lower() == "berzerk":
         _detect_objects_berzerk_revised(objects, ram_state, hud)
+    elif game_name.lower() == "beamrider":
+        _detect_objects_beamrider_revised(objects, ram_state, hud)
     elif game_name.lower() == "asterix":
         _detect_objects_asterix_revised(objects, ram_state, hud)
     elif game_name.lower() == "qbert":
