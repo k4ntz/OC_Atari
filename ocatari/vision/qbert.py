@@ -64,27 +64,27 @@ class Lives(GameObject):
 def _detect_objects_qbert(objects, obs, hud=True):
     objects.clear()
 
-    player = find_objects(obs, objects_colors["player"], min_distance=1, size=(8,20), tol_s=5)
+    player = find_objects(obs, objects_colors["player"], min_distance=1, size=(8, 20), tol_s=5)
     for bb in player:
         objects.append(Player(*bb))
 
-    purple_ball = find_objects(obs, objects_colors["purple_ball"], min_distance=18, size=(7,7), tol_s=3)
+    purple_ball = find_objects(obs, objects_colors["purple_ball"], min_distance=18, size=(7, 7), tol_s=3)
     for bb in purple_ball:
         objects.append(PurpleBall(*bb))
 
-    green_ball = find_objects(obs, objects_colors["green_ball"], min_distance=1, size=(7,7), tol_s=3)
+    green_ball = find_objects(obs, objects_colors["green_ball"], min_distance=1, size=(7, 7), tol_s=3)
     for bb in green_ball:
         objects.append(GreenBall(*bb))
 
-    # red_ball = find_objects(obs, objects_colors["red_ball"], min_distance=1, size=(7,7), tol_s=3)
+    # red_ball = find_objects(obs, objects_colors["red_ball"], min_distance=1, size=(7, 7), tol_s=3)
     # for bb in red_ball:
     #     objects.append(RedBall(*bb))
 
-    coily = find_objects(obs, objects_colors["coily"], min_distance=1, size=(8,18), tol_s=5)
+    coily = find_objects(obs, objects_colors["coily"], min_distance=1, size=(8, 18), tol_s=5)
     for bb in coily:
         objects.append(Coily(*bb))
 
-    sam = find_objects(obs, objects_colors["sam"], min_distance=1, size=(8,18), tol_s=2)
+    sam = find_objects(obs, objects_colors["sam"], min_distance=1, size=(8, 18), tol_s=2)
     for bb in sam:
         objects.append(Sam(*bb))
 
