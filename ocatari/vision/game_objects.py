@@ -8,7 +8,6 @@ class GameObject:
         self.wh = w, h
         self._prev_xy = (0, 0)
         self.hud = False
-        self.visible = True
 
     def __repr__(self):
         return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}\n"
@@ -57,3 +56,7 @@ class GameObject:
     @property
     def h(self):
         return self.wh[1]
+
+    def is_on_top(self, other):
+        return (other.x <= self.x <= other.x + other.w) and \
+            (other.y <= self.y <= other.y + other.h)

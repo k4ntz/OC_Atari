@@ -6,6 +6,9 @@ from ._helper_methods import _convert_number
 RAM extraction for the game BREAKOUT. Supported modes: raw, revised.
 """
 
+MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'BlockRow': 9}    # blockrow could go very very high with a performing agent
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerScore': 3, 'Live': 1, 'PlayerNumber': 1, 'BlockRow': 9, 'Ball': 1}
+
 
 class Player(GameObject):
     def __init__(self):
@@ -13,7 +16,6 @@ class Player(GameObject):
         self.wh = 16, 4
         self.rgb = 200, 72, 72
         self.hud = False
-        self.visible = True
 
 
 class Ball(GameObject):
@@ -22,7 +24,6 @@ class Ball(GameObject):
         self.wh = 2, 4
         self.rgb = 200, 72, 72
         self.hud = False
-        self.visible = True
 
 
 class PlayerScore(GameObject):
@@ -31,7 +32,6 @@ class PlayerScore(GameObject):
         self.rgb = 142, 142, 142
         self.wh = 12, 10
         self.hud = True
-        self.visible = True
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
@@ -43,7 +43,6 @@ class Live(GameObject):
         self.rgb = 142, 142, 142
         self.wh = 12, 10
         self.hud = True
-        self.visible = True
 
 
 class BlockRow(GameObject):
@@ -53,7 +52,6 @@ class BlockRow(GameObject):
         self.wh = 144, 6
         self.rgb = 66, 72, 200
         self.hud = False
-        self.visible = True
 
 
 class PlayerNumber(GameObject):
@@ -63,7 +61,6 @@ class PlayerNumber(GameObject):
         self.wh = 4, 10
         self.rgb = 142, 142, 142
         self.hud = True
-        self.visible = True
 
 
 blockRow_colors = {"5": [66, 72, 200], "4": [72, 160, 72],
