@@ -19,7 +19,7 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 - [x]  Pong
 - [x]  Seaquest
 - [x]  Skiing
-- [ ]  Space Invaders
+- [x]  Space Invaders
 - [x]  Asterix
 - [ ]  Asteroids - only raw and vision (revised is missing x-Positions)
 - [x]  Demon Attack
