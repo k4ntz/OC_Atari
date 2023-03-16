@@ -1,12 +1,18 @@
 from argparse import ArgumentParser
-from functools import partial # noqa
+from functools import partial
 from gzip import GzipFile
 from pathlib import Path
-
 import torch
 from torch import nn
+import keyboard
 import numpy as np
 import random
+import sys
+import select
+# import tty
+# import termios
+import time
+import atexit
 
 parser = ArgumentParser()
 parser.add_argument("-p", "--path", type=str, help="path to the model", default=None)
@@ -94,8 +100,45 @@ def _epsilon_greedy(obs, model, eps=0.001):
     return argmax_a.item(), q_val
 
 
+# old_settings = termios.tcgetattr(sys.stdin)
+
+
+# def restore_old_settings():
+#     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+
+
+# atexit.register(restore_old_settings)
+
+
+def isData():
+    return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
+
+
+class HumanAgent():
+    def __init__(self):
+        x = 0   # noqa
+        # tty.setcbreak(sys.stdin.fileno())
+
+    def draw_action(self, state):
+        if isData():
+            c = sys.stdin.read(1)
+            if c == '\x1b':         # x1b is ESC
+                exit(0)
+            elif c == "a":
+                return 2
+            elif c == "e":
+                return 1
+        return 0
+
+
 def load_agent(opt, nb_actions=None):
-    ckpt_path = Path(opt.path) # noqa
+    if opt.path == "h":
+        return HumanAgent()
+    ckpt_path = Path(opt.path)
+
+
+def load_agent(opt, nb_actions=None):
+    ckpt_path = Path(opt.path)
     agent = AtariNet(nb_actions, distributional="C51_" in opt.path)
     ckpt = _load_checkpoint(opt.path)
     agent.load_state_dict(ckpt["estimator_state"])

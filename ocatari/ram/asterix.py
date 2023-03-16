@@ -199,7 +199,6 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
     else:
         del objects[2:]
     const = ram_state[54] % 8
-    print(len(objects))
     rewards = []
     reward_lanes = []
     ctr = 0
