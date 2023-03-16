@@ -3,14 +3,6 @@ import numpy as np
 from termcolor import colored
 
 
-# MAX_NB_OBJS = {  # quentin's code (for skiing?)
-#     "Player": 1,
-#     "Tree": 4,
-#     "Mogul": 3,
-#     "Flag": 4
-# }
-
-
 def make_bitmap(alien_states):
     emptc = 6 - int(max(alien_states)).bit_length()  # nb empty columns
     # return "\n".join([format(el, '06b')[emptc:] + "0" * emptc for el in alien_states])

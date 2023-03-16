@@ -53,8 +53,8 @@ class Score(GameObject):
 
 
 class Lives(GameObject):
-    def __init__(self, *args, **kwargs):  # could we add parameters x and y here?
-        super().__init__(*args, **kwargs)  # because they are constant
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.rgb = 162, 134, 56
 
 
