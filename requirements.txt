@@ -11,3 +11,4 @@ scikit-learn
 tqdm
 ipdb
 pyfiglet
+keyboard
