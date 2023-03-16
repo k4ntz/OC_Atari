@@ -14,9 +14,9 @@ import torch
 
 DEVICE = "cpu"
 
-AVAILABLE_GAMES = ["Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing", "Breakout",
-                   "Carnival", "Centipede", "DemonAttack", "Freeway", "Kangaroo", "MontezumaRevenge", "MsPacman",
-                   "Pong", "Qbert", "Riverraid", "Seaquest", "Skiing", "SpaceInvaders", "Tennis"]
+AVAILABLE_GAMES = ["Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
+                   "Breakout", "Carnival", "Centipede", "DemonAttack", "Freeway", "Kangaroo", "MontezumaRevenge",
+                   "MsPacman", "Pong", "Qbert", "Riverraid", "Seaquest", "Skiing", "SpaceInvaders", "Tennis"]
 
 
 class OCAtari:
