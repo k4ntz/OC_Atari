@@ -19,11 +19,16 @@ from .demonAttack import _detect_objects_demon_attack_raw, \
 from .mspacman import _detect_objects_mspacman_raw, \
                       _detect_objects_mspacman_revised, \
                       _init_objects_mspacman_ram
+from .centipede import _detect_objects_centipede_raw, _detect_objects_centipede_revised, _init_objects_centipede_ram
 from .carnival import _init_objects_carnival_ram, _detect_objects_carnival_raw, _detect_objects_carnival_revised
 from .kangaroo import _detect_objects_kangaroo_raw, \
                       _detect_objects_kangaroo_revised, \
                       _init_objects_kangaroo_ram
-from .assault import _detect_objects_assault_raw, _detect_objects_assault_revised, _init_objects_assault_ram
+from .atlantis import _detect_objects_atlantis_raw, \
+                      _detect_objects_atlantis_revised, \
+                      _init_objects_atlantis_ram
+from .asteroids import _detect_objects_asteroids_raw, _detect_objects_asteroids_revised, _init_objects_asteroids_ram
+from .riverRaid import _detect_objects_riverraid_raw, _detect_objects_riverraid_revised, _init_objects_riverraid_ram
 
 
 def init_objects(game_name, hud):
@@ -52,6 +57,8 @@ def init_objects(game_name, hud):
         return _init_objects_demon_attack_ram(hud)
     elif game_name.lower() == "mspacman":
         return _init_objects_mspacman_ram(hud)
+    elif game_name.lower() == "centipede":
+        return _init_objects_centipede_ram(hud)
     elif game_name.lower() == "carnival":
         return _init_objects_carnival_ram(hud)
     elif game_name.lower() == "kangaroo":
@@ -60,8 +67,14 @@ def init_objects(game_name, hud):
         return _init_objects_berzerk_ram(hud)
     elif game_name.lower() == "asterix":
         return _init_objects_asterix_ram(hud)
-    elif game_name.lower() == "assault":
-        return _init_objects_assault_ram(hud)
+    elif game_name.lower() == "montezumarevenge":
+        return []
+    elif game_name.lower() == "atlantis":
+        return _init_objects_atlantis_ram(hud)
+    elif game_name.lower() == "asteroids":
+        return _init_objects_asteroids_ram(hud)
+    elif game_name.lower() == "riverraid":
+        return _init_objects_riverraid_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
@@ -84,6 +97,9 @@ def detect_objects_raw(info, ram_state, game_name):
     elif game_name.lower() == "seaquest":
         _detect_objects_seaquest_raw(info, ram_state)
     elif game_name.lower() == "spaceinvaders":
+        _detect_objects_space_invaders_revised(info, ram_state)
+    elif game_name.lower() == "tennis":
+        _detect_objects_tennis_raw(info, ram_state)
         _detect_objects_space_invaders_raw(info, ram_state)
     elif game_name.lower() == "tennis":
         _detect_objects_tennis_raw(info, ram_state)
@@ -93,6 +109,8 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_demon_attack_raw(info, ram_state)
     elif game_name.lower() == "mspacman":
         _detect_objects_mspacman_raw(info, ram_state)
+    elif game_name.lower() == "centipede":
+        _detect_objects_centipede_raw(info, ram_state)
     elif game_name.lower() == "carnival":
         _detect_objects_carnival_raw(info, ram_state)
     elif game_name.lower() == "kangaroo":
@@ -101,8 +119,12 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_berzerk_raw(info, ram_state)
     elif game_name.lower() == "asterix":
         _detect_objects_asterix_raw(info, ram_state)
-    elif game_name.lower() == "assault":
-        _detect_objects_assault_raw(info, ram_state)
+    elif game_name.lower() == "atlantis":
+        _detect_objects_atlantis_raw(info, ram_state)
+    elif game_name.lower() == "asteroids":
+        _detect_objects_asteroids_raw(info, ram_state)
+    elif game_name.lower() == "riverraid":
+        _detect_objects_riverraid_raw(info, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
         exit(1)
@@ -134,6 +156,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_demon_attack_revised(objects, ram_state, hud)
     elif game_name.lower() == "mspacman":
         _detect_objects_mspacman_revised(objects, ram_state, hud)
+    elif game_name.lower() == "centipede":
+        _detect_objects_centipede_revised(objects, ram_state, hud)
     elif game_name.lower() == "carnival":
         _detect_objects_carnival_revised(objects, ram_state, hud)
     elif game_name.lower() == "kangaroo":
@@ -142,8 +166,12 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_berzerk_revised(objects, ram_state, hud)
     elif game_name.lower() == "asterix":
         _detect_objects_asterix_revised(objects, ram_state, hud)
-    elif game_name.lower() == "assault":
-        _detect_objects_assault_revised(objects, ram_state, hud)
+    elif game_name.lower() == "atlantis":
+        _detect_objects_atlantis_revised(objects, ram_state, hud)
+    elif game_name.lower() == "asteroids":
+        _detect_objects_asteroids_revised(objects, ram_state, hud)
+    elif game_name.lower() == "riverraid":
+        _detect_objects_riverraid_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)

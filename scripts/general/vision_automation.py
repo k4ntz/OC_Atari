@@ -3,12 +3,14 @@ import sys
 # import pathlib
 sys.path.insert(0, '../../ocatari') # noqa
 from ocatari import core
-from ocatari.vision.utils import plot_bounding_boxes_from_info
-from ocatari.vision.utils import find_objects, plot_bounding_boxes # noqa
+#from ocatari.vision.utils import plot_bounding_boxes_from_info
+from ocatari.vision.utils import find_objects, plot_bounding_boxes, mark_bb # noqa
 import queue
 import os
 import pathlib
-import gym
+import gymnasium as gym
+from termcolor import colored
+import numpy as np
 
 """
 trying to automate the creation of vision
@@ -22,6 +24,31 @@ objects = {}
 colors = {}
 
 callback_queue = queue.Queue() #for threading
+
+def plot_bounding_boxes_from_info(obs, info):
+    colors = info.get("objects_colors", {})
+    for name, oinf in info["objects"].items():
+        if type(oinf) == tuple:
+            _plot_bounding_boxes_from_tuple(obs, name, oinf, colors)
+
+        elif type(oinf) == list:
+            for bb in oinf:
+                _plot_bounding_boxes_from_tuple(obs, name, bb, colors)
+
+        else:
+            print(colored("the return type is not supported", "red"))
+
+
+def _plot_bounding_boxes_from_tuple(obs, name, tup, colors):
+    if len(tup) == 4:
+        color = colors.get(name, np.array([0, 0, 0]))
+        mark_bb(obs, tup, color)
+    elif len(tup) == 7:
+        bb = tup[:4]
+        color = tup[4:]
+        mark_bb(obs, bb, color)
+    else:
+        print(colored("the return type is not supported", "red"))
 
 def on_click(event):
     global index
@@ -79,22 +106,29 @@ def get_user_input():
 
 
 def generate_code(game_name):
-    code = "from .utils import find_objects\n\n\n"
-    code += "objects_colors = " + str(colors) +"\n\n"
-    code += "def _detect_objects_" + str(game_name) + "(info, obs):\n"
-    code += "    objects = {}\n"
+    code = "from .game_objects import GameObject\n"
+    code += "from .utils import find_objects\n\n\n"
+    code += "objects_colors = " + str(colors) +"\n\n\n"
+    for obj, col in colors.items():
+        code += "class " + str(obj).capitalize() + "(GameObject):\n"
+        code += "    def __init__(self, *args, **kwargs):\n"
+        code += "        super().__init__(*args, **kwargs)\n"
+        code += "        self.rgb = " + str(col) + "\n\n\n"
+    code += "\ndef _detect_objects_" + str(game_name).lower() + "(objects, obs, hud=False):\n"
+    code += "    objects.clear()\n\n"
     for obj, col in colors.items():
         code += "    " + str(obj) + " = find_objects(obs, objects_colors['"+ str(obj) + "'], min_distance=1)\n"
-        code += "    objects['" + str(obj) + "'] = " + str(obj) + "\n\n"
+        # code += "    objects['" + str(obj) + "'] = " + str(obj) + "\n\n"
+        code += "    for bb in " + str(obj) + ":\n"
+        code += "        objects.append(" + str(obj).capitalize() + "(*bb))\n\n"
 
-    code += "    info['objects_colors'] = objects_colors\n"
-    code += "    info['objects'] = objects\n\n\n"
+    code += "\n\n"
 
     return code
 
 
 def write_code_to_file(code, game_name, overwrite = False):
-    path = str(pathlib.Path().resolve()) + "/../../ocatari/vision/" + str(game_name) +".py"
+    path = str(pathlib.Path().resolve()) + "/../../ocatari/vision/" + str(game_name).lower() +".py"
 
     if not os.path.exists(path) or overwrite:
         with open(path, 'w') as f:
@@ -103,11 +137,11 @@ def write_code_to_file(code, game_name, overwrite = False):
 
 
 if __name__ == "__main__":
-    GAME_NAME = "DemonAttack"
+    GAME_NAME = "MontezumaRevenge"
     env = gym.make(GAME_NAME, render_mode='rgb_array')
     rgb_array, info = env.reset()
     rgb_array = env.render()
-    for i in range(20):
+    for i in range(100):
         env.step(0)
     rgb_array = env.render()
 

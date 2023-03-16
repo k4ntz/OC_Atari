@@ -21,7 +21,7 @@ def bb_by_color(labels, obs, color, key, closing_active=True):
 def assert_in(observed, target, tol):
     if type(tol) is int:
         tol = (tol, tol)
-    return np.all([target[i] + tol[i] > observed[i] > target[i] - tol[i] for i in range(2)])
+    return np.all([target[i] + tol[i] >= observed[i] >= target[i] - tol[i] for i in range(2)])
     # return np.all([target[i] + tol[i] >= observed[i] >= target[i] - tol[i] for i in range(2)])
 
 
@@ -50,6 +50,20 @@ def mark_point(image_array, x, y, color=(255, 0, 0), size=1, show=False, cross=T
     if show:
         plt.imshow(image_array)
         plt.show()
+
+
+def mark_around(image_array, x, y, color=(255, 0, 0), size=1, show=False, cross=True):
+    """
+    marks a point on the image at the (x,y) position and displays it
+    """
+    x, y = x - 2, y - 2
+    w, h = 4, 4
+    bottom = min(209, y + h)
+    right = min(159, x + w)
+    image_array[y:bottom, x] = color
+    image_array[y:bottom, right] = color
+    image_array[y, x:right+1] = color
+    image_array[bottom, x:right+1] = color
 
 
 def mark_bb(image_array, bb, color=(255, 0, 0), surround=True):
@@ -83,30 +97,30 @@ def plot_bounding_boxes(obs, bbs, objects_colors):
             mark_bb(obs, bb, np.array([255, 255, 255]))
 
 
-def plot_bounding_boxes_from_info(obs, info):
-    colors = info.get("objects_colors", {})
-    for name, oinf in info["objects"].items():
-        if type(oinf) == tuple:
-            _plot_bounding_boxes_from_tuple(obs, name, oinf, colors)
-
-        elif type(oinf) == list:
-            for bb in oinf:
-                _plot_bounding_boxes_from_tuple(obs, name, bb, colors)
-
-        else:
-            print(colored("the return type is not supported", "red"))
-
-
-def _plot_bounding_boxes_from_tuple(obs, name, tup, colors):
-    if len(tup) == 4:
-        color = colors.get(name, np.array([0, 0, 0]))
-        mark_bb(obs, tup, color)
-    elif len(tup) == 7:
-        bb = tup[:4]
-        color = tup[4:]
-        mark_bb(obs, bb, color)
-    else:
-        print(colored("the return type is not supported", "red"))
+# def plot_bounding_boxes_from_info(obs, info):
+#     colors = info.get("objects_colors", {})
+#     for name, oinf in info["objects"].items():
+#         if type(oinf) == tuple:
+#             _plot_bounding_boxes_from_tuple(obs, name, oinf, colors)
+#
+#         elif type(oinf) == list:
+#             for bb in oinf:
+#                 _plot_bounding_boxes_from_tuple(obs, name, bb, colors)
+#
+#         else:
+#             print(colored("the return type is not supported", "red"))
+#
+#
+# def _plot_bounding_boxes_from_tuple(obs, name, tup, colors):
+#     if len(tup) == 4:
+#         color = colors.get(name, np.array([0, 0, 0]))
+#         mark_bb(obs, tup, color)
+#     elif len(tup) == 7:
+#         bb = tup[:4]
+#         color = tup[4:]
+#         mark_bb(obs, bb, color)
+#     else:
+#         print(colored("the return type is not supported", "red"))
 
 
 def showim(im):
@@ -116,7 +130,7 @@ def showim(im):
 
 def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
                     position=None, tol_p=2, min_distance=10, closing_dist=3,
-                    minx=0, miny=0, maxx=160, maxy=210):
+                    minx=0, miny=0, maxx=160, maxy=210, all_colors=True):
     """
     image: image to detect objects from
     color: fixed color of the object
@@ -129,11 +143,13 @@ def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
 
     masks = [cv2.inRange(image[miny:maxy, minx:maxx, :],
                          np.array(color), np.array(color)) for color in colors]
-    for mask in masks:
-        if mask.max() == 0:
-            return []
-
+    if all_colors:
+        for mask in masks:
+            if mask.max() == 0:
+                return []
     mask = sum(masks)
+    # if not all_colors and mask.max():
+    #     import ipdb;ipdb.set_trace()
     if closing_active:
         closed = closing(mask, square(closing_dist))
         # closed = closing(closed, square(closing_dist))

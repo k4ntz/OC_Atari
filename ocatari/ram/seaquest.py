@@ -12,25 +12,38 @@ class Player(GameObject):
         self.wh = 16, 11
         self.rgb = 187, 187, 53
         self.hud = False
-        self.visible = True
 
 
 class Diver(GameObject):
     def __init__(self):
         self._xy = 0, 0
-        self.wh = 8, 13
+        self.wh = 8, 11
         self.rgb = 66, 72, 200
         self.hud = False
-        self.visible = True
 
 
 class Enemy(GameObject):
     def __init__(self):
         self._xy = 0, 0
         self.wh = 8, 7
-        self.rgb = 0, 0, 0
+        self.rgb = 1, 1, 1
         self.hud = False
-        self.visible = True
+
+
+class EnemySubmarine(GameObject):
+    def __init__(self):
+        self._xy = 0, 0
+        self.wh = 8, 11
+        self.rgb = 170, 170, 170
+        self.hud = False
+
+
+class EnemyMissile(GameObject):
+    def __init__(self):
+        self._xy = 0, 0
+        self.wh = 6, 4
+        self.rgb = 66, 72, 200
+        self.hud = False
 
 
 class PlayerMissile(GameObject):
@@ -39,7 +52,6 @@ class PlayerMissile(GameObject):
         self.wh = 8, 1
         self.rgb = 187, 187, 53
         self.hud = False
-        self.visible = True
 
 
 class PlayerScore(GameObject):
@@ -48,7 +60,6 @@ class PlayerScore(GameObject):
         self.rgb = 210, 210, 64
         self.wh = 6, 8
         self.hud = True
-        self.visible = True
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
@@ -60,7 +71,6 @@ class Lives(GameObject):
         self.rgb = 210, 210, 64
         self.wh = 23, 8
         self.hud = True
-        self.visible = True
 
 
 class OxygenBar(GameObject):
@@ -69,7 +79,6 @@ class OxygenBar(GameObject):
         self.rgb = 214, 214, 214
         self.wh = 63, 5
         self.hud = True
-        self.visible = True
 
 
 class OxygenBarDepleted(GameObject):
@@ -78,7 +87,6 @@ class OxygenBarDepleted(GameObject):
         self.rgb = 163, 57, 21
         self.wh = 63, 5
         self.hud = True
-        self.visible = True
 
 
 class Logo(GameObject):
@@ -87,7 +95,6 @@ class Logo(GameObject):
         self.rgb = 66, 72, 200
         self.wh = 32, 7
         self.hud = True
-        self.visible = True
 
 
 class OxygenBarLogo(GameObject):
@@ -96,7 +103,6 @@ class OxygenBarLogo(GameObject):
         self.rgb = 0, 0, 0
         self.wh = 23, 5
         self.hud = True
-        self.visible = True
 
 
 class CollectedDiver(GameObject):
@@ -105,7 +111,6 @@ class CollectedDiver(GameObject):
         self.rgb = 24, 26, 167
         self.wh = 8, 9
         self.hud = True
-        self.visible = True
 
 
 def _init_objects_seaquest_ram(hud=False):
@@ -125,10 +130,10 @@ def _detect_objects_seaquest_revised(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = ram_state[70], ram_state[97] + 32
     if hud:
-        score, lives, oxygen, oxygen_dpl = objects[1:5]
+        score = objects[1]
 
     if hud:
-        del objects[7:]
+        del objects[2:]
     else:
         del objects[1:]
     objs = _calculate_objects(ram_state)
@@ -150,38 +155,40 @@ def _detect_objects_seaquest_revised(objects, ram_state, hud=False):
             score.wh = 30, 8
 
         # lives
-        if ram_state[59] == 0:
-            lives.visible = False
-            lives.wh = 0, 0
-        else:
-            lives.visible = True
+        if ram_state[59] != 0:
+            lives = Lives()
             lives.wh = 7 + 8 * (ram_state[59] - 1), 8
+            objects.append(lives)
 
         # oxygen bar
-        if ram_state[102] == 64:
-            oxygen.wh = 63, 5
-            oxygen.visible = True
-        elif ram_state[102] == 0:
-            oxygen.visible = False
-            oxygen.wh = 0, 0
-        else:
-            oxygen.wh = ram_state[102], 5
-            oxygen.visible = True
+        if ram_state[102] != 0:
+            oxygen = OxygenBar()
+            if ram_state[102] == 64:
+                oxygen.wh = 63, 5
+            else:
+                oxygen.wh = ram_state[102], 5
+            objects.append(oxygen)
 
         # depleted oxygen bar
-        if ram_state[102] == 64:
-            oxygen_dpl.visible = False
-            oxygen.wh = 0, 0
-        else:
+        if ram_state[102] != 64:
+            oxygen_dpl = OxygenBarDepleted()
             oxygen_dpl.xy = 49 + ram_state[102], 170
             oxygen_dpl.wh = 63 - ram_state[102], 5
-            oxygen_dpl.visible = True
+            objects.append(oxygen_dpl)
 
         # collected divers, if you have six collected divers they blink but that is not implemented
         for i in range(ram_state[62]):
             collected = CollectedDiver()
             collected.xy = 58 + i * 8, 178
             objects.append(collected)
+
+        # logo
+        logo = Logo()
+        objects.append(logo)
+
+        # oxygen bar logo
+        logo_bar = OxygenBarLogo()
+        objects.append(logo_bar)
 
 
 def _calculate_objects(ram_state):
@@ -191,51 +198,70 @@ def _calculate_objects(ram_state):
     enemies = []
     divers_or_enemy_missiles = []
     missiles = []
+    is_submarine = []
+
+    for i in range(4):
+        if 3 < ram_state[89 + i] % 8 < 7:
+            is_submarine.append(True)
+        else:
+            is_submarine.append(False)
 
     # left enemy appears at variations 4, 5, 6, 7
     for i in range(4):  # for the 4 lanes, check if the left enemy appears
         if ram_state[36 + i] >= 4 and ram_state[30 + i] < 160:
-            enemy = Enemy()
-            enemy.rgb = 1, 1, 1
-            enemy.xy = ram_state[30 + i], 141 - i * 24
-            enemy.wh = 8, 7
-            enemies.append(enemy)
+            if is_submarine[i]:
+                submarine = EnemySubmarine()
+                submarine.xy = ram_state[30 + i], 141 - i * 24
+                enemies.append(submarine)
+            else:
+                enemy = Enemy()
+                enemy.xy = ram_state[30 + i], 141 - i * 24
+                enemies.append(enemy)
 
     # right enemy appears at variations 1, 3, 5, 7;
     # offset of 32 in x-position because the ram only saves the x-position of the left enemy
     for i in range(4):
         if ram_state[36 + i] % 2 == 1 and (ram_state[30 + i] + 32) % 256 < 160:
-            enemy = Enemy()
-            enemy.rgb = 1, 1, 1
-            enemy.xy = (ram_state[30 + i] + 32) % 256, 141 - i * 24
-            enemy.wh = 8, 7
-            enemies.append(enemy)
+            if is_submarine[i]:
+                submarine = EnemySubmarine()
+                submarine.xy = (ram_state[30 + i] + 32) % 256, 141 - i * 24
+                enemies.append(submarine)
+            else:
+                enemy = Enemy()
+                enemy.xy = (ram_state[30 + i] + 32) % 256, 141 - i * 24
+                enemies.append(enemy)
 
     # middle enemy appears at variations 2, 3, 6, 7
     # offset of 16 in x-position because the ram only saves the x-position of the left enemy
     for i in range(4):
         if (ram_state[36 + i] == 2 or ram_state[36 + i] == 3 or ram_state[36 + i] == 6 or ram_state[36 + i] == 7) \
                 and (ram_state[30] + 16) % 256 < 160:
-            enemy = Enemy()
-            enemy.rgb = 1, 1, 1
-            enemy.xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24
-            enemy.wh = 8, 7
-            enemies.append(enemy)
+            if is_submarine[i]:
+                submarine = EnemySubmarine()
+                submarine.xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24
+                enemies.append(submarine)
+            else:
+                enemy = Enemy()
+                enemy.xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24
+                enemies.append(enemy)
 
     # fifth lane enemy, only spawns in higher levels
     if ram_state[60] >= 2 and ram_state[118] < 160:
-        enemy = Enemy()
-        enemy.rgb = 1, 1, 1
-        enemy.xy = ram_state[118], 45
-        enemy.wh = 8, 7
-        enemies.append(enemy)
+        submarine = EnemySubmarine()
+        submarine.xy = ram_state[118], 45
+        enemies.append(submarine)
 
     # divers and enemy_missiles share a ram position
     for i in range(4):
         if 0 < ram_state[71 + i] < 160:
-            diver = Diver()
-            diver.xy = ram_state[71 + i], 141 - i * 24
-            divers_or_enemy_missiles.append(diver)
+            if is_submarine[i]:     # then its an enemy missile
+                missile = EnemyMissile()
+                missile.xy = ram_state[71 + i] + 3, 145 - i * 24
+                divers_or_enemy_missiles.append(missile)
+            else:
+                diver = Diver()
+                diver.xy = ram_state[71 + i], 141 - i * 24
+                divers_or_enemy_missiles.append(diver)
 
     # player missile
     if 0 < ram_state[103] < 160:
@@ -266,7 +292,6 @@ def _detect_objects_seaquest_raw(info, ram_state):
     _________________________________ (Underground)
 
     """
-    # player_x (start x=76, rightmost x=134, leftmost x=21), player_y (start y = 13, underground y = 108)
     player = [ram_state[70], ram_state[97]]
     divers_missile_x = ram_state[71:75]  # 71 for first lane, 72 second lane, ...   divers and enemy missiles x position
     enemy_x = ram_state[30:34]
@@ -298,3 +323,5 @@ def _detect_objects_seaquest_raw(info, ram_state):
     # 0: no enemy; 1: only right enemy displayed; 2: only middle enemy ; 3: right and middle enemy;
     # 4: only left enemy; 5: right and left enemy ; 6: middle and left enemy; 7: left, middle, right enemy;
     # 8: same as 0; 9: same as 1 -> modulo 8
+    info["is_enemy_submarine_and_diver_enemyMissile"] = ram_state[89:93]
+    info["enemy_directions"] = ram_state[89:93]

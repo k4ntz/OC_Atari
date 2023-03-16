@@ -20,9 +20,8 @@ parser.add_argument("-hud", "--hud", action="store_true", help="Detect HUD")
 
 opts = parser.parse_args()
 
-game_name = opts.game
-MODE = opts.mode
-env = OCAtari(game_name, mode=MODE, render_mode='rgb_array', hud=opts.hud)
+
+env = OCAtari(opts.game, mode=opts.mode, render_mode='rgb_array', hud=opts.hud)
 observation, info = env.reset()
 
 
@@ -42,7 +41,7 @@ for i in range(10000):
     if i % opts.interval == 0:
         for obs, objects_list, title in zip([obs],
                                                 [env.objects],
-                                                ["ram"] if MODE == "revised" else ["vision"]):
+                                                ["ram"] if opts.mode == "revised" else ["vision"]):
             for obj in objects_list:
                 opos = obj.xywh
                 ocol = obj.rgb
@@ -51,7 +50,7 @@ for i in range(10000):
                 # mark_point(obs, *opos[:2], color=(255, 255, 0))
         ax.set_xticks([])
         ax.set_yticks([])
-        plt.title(f"{game_name}: {MODE} mode (frame {i})", fontsize=20)
+        plt.title(f"{opts.mode}: {opts.mode} mode (frame {i})", fontsize=20)
         plt.imshow(obs)
         plt.show()
 
