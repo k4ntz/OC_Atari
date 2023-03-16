@@ -121,9 +121,10 @@ def _detect_objects_carnival(objects, obs, hud=False):
     for wheel_color in wheel_colors.values():
         wheel = find_objects(obs, wheel_color, min_distance=1)
         for w in wheel:
-            wheel_inst = Wheel(*w)
-            wheel_inst.rgb = wheel_color
-            objects.append(wheel_inst)
+            if w[2] > 5 and w[3] > 2:
+                wheel_inst = Wheel(*w)
+                wheel_inst.rgb = wheel_color
+                objects.append(wheel_inst)
 
     if hud:
         for ammo_bar_color in ammo_bar_colors.values():

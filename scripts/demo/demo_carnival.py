@@ -11,7 +11,7 @@ from ocatari.utils import load_agent, parser
 
 game_name = "Carnival"
 MODE = "vision"
-# MODE = "revised"
+MODE = "revised"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
