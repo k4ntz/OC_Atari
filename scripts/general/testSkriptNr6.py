@@ -41,10 +41,10 @@ for ROUND in range(10000000):
         #     value = prevRam[i] -1
         # else:
         #     value = prevRam[i] + 1
-        # value = -ram[i]
+        # value = -ram[i]  # here you invert all bits at once
         # value = 86
         # value = (prevRam[i] + 1) % 8
-        # if ram[72]%128>0:
+        # if ram[72] % 128>0:
         #     value = ram[72]
         # else:
         #     value = 128 + ram[72]
@@ -85,12 +85,12 @@ for ROUND in range(10000000):
 
         if ROUND > 1:
             print('round =', ROUND, 'ram[' + str(i) + '] =', ram[i])
-            # for k in [6, 38, 54, 83, 88, 89, 120]:  # checking bunch of specific values
+            # for k in [6, 38, 54, 83, 88, 89, 120]:  # checking set of specific values
             #     print('ram[' + str(k) + '] =', ram[k])
         else:
             print('round =', ROUND, 'i =', i)
 
-        # time.sleep(0)
+        # time.sleep(0.1)
     if ROUND > 0:
         prevRam = ram
     ram = env._env.unwrapped.ale.getRAM()
