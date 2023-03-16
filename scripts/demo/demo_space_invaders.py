@@ -8,7 +8,7 @@ sys.path.insert(0, '../../')  # noqa
 
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
-from ocatari.ram.demonAttack import ProjectileHostile
+from ocatari.ram.demonattack import ProjectileHostile
 from ocatari.utils import load_agent, parser
 
 

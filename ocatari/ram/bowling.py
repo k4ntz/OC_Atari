@@ -7,7 +7,7 @@ RAM extraction for the game BOWLING. Supported modes: raw, revised.
 """
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Ball': 1, 'Pin': 10}
-MAX_NB_OBJECTS_HUD = {'PlayerScore' : 1, 'PlayerRound' : 1, 'Player2Round' : 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Pin': 10, 'PlayerScore' : 1, 'PlayerRound' : 1, 'Player2Round' : 1}
 
 class Player(GameObject):
     def __init__(self):

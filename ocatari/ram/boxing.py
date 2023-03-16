@@ -2,8 +2,7 @@ from .game_objects import GameObject
 import sys 
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 1}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'PlayerScore': 2,
-                       'EnemyScore': 2, 'Logo': 1, 'Clock': 4}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'PlayerScore': 1, 'EnemyScore': 1, 'Logo': 1, 'Clock': 4}
 
 
 class Player(GameObject):
@@ -36,7 +35,7 @@ class Logo(GameObject):
 
 
 class Clock(GameObject):
-    def __init__(self, x, y, w, h):
+    def __init__(self, x=0, y=0, w=0, h=0):
         super().__init__()
         self._xy = x, y
         self.wh = w, h
