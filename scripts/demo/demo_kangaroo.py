@@ -12,7 +12,7 @@ from ocatari.utils import load_agent, parser
 game_name = "Kangaroo"
 MODE = "vision"
 MODE = "revised"
-HUD = False
+HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
@@ -40,12 +40,8 @@ for i in range(1000):
                 ocol = obj.rgb
                 sur_col = make_darker(ocol)
                 mark_bb(obs, opos, color=sur_col)
-            # mark_point(obs, *opos[:2], color=(255, 255, 0))
-
         plt.imshow(obs)
         plt.show()
-
     if terminated or truncated:
         observation, info = env.reset()
-    # modify and display render
 env.close()
