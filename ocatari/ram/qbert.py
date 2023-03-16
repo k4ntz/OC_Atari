@@ -41,6 +41,7 @@ class GreenBall(GameObject):
         self.rgb = 50, 132, 50
         self.hud = False
 
+
 # The purple snake that hatches from the purple ball
 class Coily(GameObject):
     def __init__(self):
@@ -49,6 +50,7 @@ class Coily(GameObject):
         self.wh = 8, 24
         self.rgb = 146, 70, 192
         self.hud = False
+
 
 # The green Object appearing
 class Sam(GameObject):
@@ -87,7 +89,6 @@ class Lives(GameObject):
         self.hud = False
 
 
-
 def _init_objects_qbert_ram(hud=True):
     """
     (Re)Initialize the objects
@@ -123,10 +124,10 @@ def _detect_objects_qbert_revised(objects, ram_state, hud=True):
     if ram_state[39] != 255:
         coily = Coily()
         # The x value switches too early in the RAM, therfore we use the
-        # y value changes as a trigger for the Position switch 
+        # y value changes as a trigger for the Position switch
         if coil_prev_y != ram_state[39]:
             coily.xy = _calc_enemy_x(ram_state[71]), (ram_state[39] * 30) + 3
-        else: # Else the position remains the same as before
+        else:  # Else the position remains the same as before
             coily.xy = coil_prev_x, (ram_state[39] * 30) + 3
         coil_prev_x = coily.x
         coil_prev_y = ram_state[39]
@@ -137,8 +138,10 @@ def _detect_objects_qbert_revised(objects, ram_state, hud=True):
     # The x value of the object are the respective RAM values at these Positions.
     # E.g: RAM 79 has value 0: The object is on the bottem left corner of the pyramid.
     #      RAM 75 has value 6: The object is one to the right of the tip of the pyramid (second row right platform)
-    # With each step an object takes they will go down one row and the next RAM position in line determins their x and y position.
-    # The big problem with this is that the RAM values stay the same even if there is no object on the specified platform anymore.
+    # With each step an object takes they will go down one row and the next RAM position in line determins their x 
+    # and y position.
+    # The big problem with this is that the RAM values stay the same even if there is no object on the specified 
+    # platform anymore.
     # (You might be able to find a RAM value carrying information when the next step is taken by an object)
     res = _calc_enemy_pos(ram_state[75:80])
     x, y = res[0][0]
@@ -152,7 +155,6 @@ def _detect_objects_qbert_revised(objects, ram_state, hud=True):
                 obj = PurpleBall()
             obj.xy = x, y
             objects.append(obj)
-
 
     if hud:
         objects.append(Score())
@@ -175,7 +177,7 @@ def _detect_objects_qbert_raw(info, ram_state):
 
 def _calc_enemy_x(value):
     """
-    Calculates the enemy x position from the RAM value 
+    Calculates the enemy x position from the RAM value
     """
     res = 0
     for i in range(value + 1):
@@ -201,7 +203,6 @@ def _calc_enemy_pos(slice):
     # typ = 0
 
     # res = []
-
 
     # if last_i is not None and last_i < 4 and slice[last_i + 1] + 1 == slice[last_i]:
     #     xi = _calc_enemy_x(slice[last_i + 1])
