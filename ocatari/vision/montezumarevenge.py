@@ -34,6 +34,7 @@ class Life(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = [210, 182, 86]
 
+
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -64,8 +65,3 @@ def _detect_objects_montezumarevenge(objects, obs, hud=False):
         scores = find_objects(obs, objects_colors['white'], maxy=25, closing_dist=1)
         for bb in scores:
             objects.append(Score(*bb))
-
-
-
-
-
