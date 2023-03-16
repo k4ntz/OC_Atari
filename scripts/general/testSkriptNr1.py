@@ -13,7 +13,7 @@ prevRam = None
 # already_figured_out = [25, 107, 104, 105, 106, 14]  # all the ram positions you already know
 # filter = [0, 29, 98, 101] + already_figured_out  # additional filter
 for _ in range(1000):
-    action = input("action-input")
+    # action = input("action-input")
     observation, reward, terminated, truncated, info = env.step(1)
 
     ram = env.unwrapped.ale.getRAM()
