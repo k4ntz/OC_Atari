@@ -15,6 +15,7 @@ from .carnival import _detect_objects_carnival
 from .berzerk import _detect_objects_berzerk
 from .beamrider import _detect_objects_beamrider
 from .asterix import _detect_objects_asterix
+from .qbert import _detect_objects_qbert
 from .montezumarevenge import _detect_objects_montezumarevenge
 from .boxing import _detect_objects_boxing
 from .atlantis import _detect_objects_atlantis
@@ -62,6 +63,8 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_beamrider(objects, obs, hud)
     elif game_name.lower() == "asterix":
         return _detect_objects_asterix(objects, obs, hud)
+    elif game_name.lower() == "qbert":
+        return _detect_objects_qbert(objects, obs, hud)
     elif game_name.lower() == "montezumarevenge":
         return _detect_objects_montezumarevenge(objects, obs, hud)
     elif game_name.lower() == "atlantis":

@@ -24,6 +24,9 @@ from .carnival import _init_objects_carnival_ram, _detect_objects_carnival_raw, 
 from .kangaroo import _detect_objects_kangaroo_raw, \
                       _detect_objects_kangaroo_revised, \
                       _init_objects_kangaroo_ram
+from .qbert import _detect_objects_qbert_raw, \
+                      _detect_objects_qbert_revised, \
+                      _init_objects_qbert_ram
 from .atlantis import _detect_objects_atlantis_raw, \
                       _detect_objects_atlantis_revised, \
                       _init_objects_atlantis_ram
@@ -71,6 +74,8 @@ def init_objects(game_name, hud):
         return _init_objects_beamrider_ram(hud)
     elif game_name.lower() == "asterix":
         return _init_objects_asterix_ram(hud)
+    elif game_name.lower() == "qbert":
+        return _init_objects_qbert_ram(hud)
     elif game_name.lower() == "montezumarevenge":
         return []
     elif game_name.lower() == "atlantis":
@@ -127,6 +132,8 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_beamrider_raw(info, ram_state)
     elif game_name.lower() == "asterix":
         _detect_objects_asterix_raw(info, ram_state)
+    elif game_name.lower() == "qbert":
+        _detect_objects_qbert_raw(info, ram_state)
     elif game_name.lower() == "atlantis":
         _detect_objects_atlantis_raw(info, ram_state)
     elif game_name.lower() == "asteroids":
@@ -178,6 +185,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_beamrider_revised(objects, ram_state, hud)
     elif game_name.lower() == "asterix":
         _detect_objects_asterix_revised(objects, ram_state, hud)
+    elif game_name.lower() == "qbert":
+        _detect_objects_qbert_revised(objects, ram_state, hud)
     elif game_name.lower() == "atlantis":
         _detect_objects_atlantis_revised(objects, ram_state, hud)
     elif game_name.lower() == "asteroids":
