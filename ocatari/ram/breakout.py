@@ -6,13 +6,11 @@ import sys
 """
 RAM extraction for the game BREAKOUT. Supported modes: raw, revised.
 """
+# might be wrong
+# blockrow could go very very high with a performing agent
+MAX_NB_OBJECTS =  {'Player': 1, 'BlockRow': 10, 'Ball': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'BlockRow': 10, 'PlayerScore': 3, 'Live': 1, 'PlayerNumber': 1}
 
-# TODO: populate 
-MAX_NB_OBJECTS =  {}
-MAX_NB_OBJECTS_HUD = {}
-
-# MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerScore': 3, 'Live': 1,
-#                        'PlayerNumber': 1, 'BlockRow': 9, 'Ball': 1} # blockrow could go very very high with a performing agent
 
 class Player(GameObject):
     def __init__(self):
