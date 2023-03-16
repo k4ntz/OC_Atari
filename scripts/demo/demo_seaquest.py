@@ -10,7 +10,7 @@ from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.utils import load_agent, parser
 
 game_name = "Seaquest"
-# MODE = "vision"
+MODE = "vision"
 MODE = "revised"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
@@ -27,8 +27,11 @@ for i in range(1000):
     else:
         action = random.randint(0, 14)
     obs, reward, terminated, truncated, info = env.step(action)
-    if i % 100 == 0:
+    ram = env._env.unwrapped.ale.getRAM()
+    if i % 50 == 0:
         # obse2 = deepcopy(obse)
+        print("Submarine: " + str(ram[89:93]))
+        print("Sprites2: " + str(ram[102:104]))
         print(env.objects)
         for obj in env.objects:
             x, y = obj.xy

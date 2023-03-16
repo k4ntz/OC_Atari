@@ -28,7 +28,7 @@ for i in range(10000):
         action = random.randint(0, 1)
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
-    print(ram[6:8])
+    # print(ram[6:8])
     # env.set_ram(15, 20)
     if i % 100 == 0:
         print(env.objects)
