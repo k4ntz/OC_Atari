@@ -34,11 +34,11 @@ from .asteroids import _detect_objects_asteroids_raw, _detect_objects_asteroids_
 from .riverRaid import _detect_objects_riverraid_raw, _detect_objects_riverraid_revised, _init_objects_riverraid_ram
 from .assault import _detect_objects_assault_raw, _detect_objects_assault_revised, _init_objects_assault_ram
 
+
 def init_objects(game_name, hud):
     """
     Initialize the object list for the correct game
     """
-
     if game_name.lower() == "boxing":
         return _init_objects_boxing_ram(hud)
     elif game_name.lower() == "freeway":
