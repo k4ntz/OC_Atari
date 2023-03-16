@@ -67,6 +67,8 @@ def init_objects(game_name, hud):
         return _init_objects_berzerk_ram(hud)
     elif game_name.lower() == "asterix":
         return _init_objects_asterix_ram(hud)
+    elif game_name.lower() == "montezumarevenge":
+        return []
     elif game_name.lower() == "atlantis":
         return _init_objects_atlantis_ram(hud)
     elif game_name.lower() == "asteroids":
