@@ -3,7 +3,6 @@ from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revi
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from termcolor import colored
 from collections import deque
-from ocatari.ram import skiing
 try:
     import cv2
 except ModuleNotFoundError:
@@ -16,9 +15,9 @@ import torch
 DEVICE = "cpu"
 
 
-AVAILABLE_GAMES = ["Asterix", "Boxing", "Breakout", "Skiing", "Pong", "Seaquest",
-                   "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack", "Bowling",
-                   "MsPacman", "Kangaroo", "Berzerk", "Carnival", "Centipede", "MontezumaRevenge"]
+AVAILABLE_GAMES = ["Asterix", "Asteroids", "Atlantis", "Berzerk", "Bowling", "Boxing", "Breakout", "Carnival",
+                   "Centipede", "DemonAttack", "Freeway", "Kangaroo", "MontezumaRevenge", "MsPacman", "Pong", "Riverraid", "Seaquest",
+                   "Skiing", "SpaceInvaders", "Tennis"]
 
 
 class OCAtari:
@@ -56,13 +55,13 @@ class OCAtari:
         self.window = 4
         self._state_buffer = deque([], maxlen=self.window)
         self.action_space = self._env.action_space
+        self._ale = self._env.unwrapped.ale
 
     def _step_ram(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
         if self.mode == "revised":
-            skiing.OBS = obs
             self.detect_objects(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
-        else:   # mode == "raw" because in raw mode we augment the info dictionary
+        else:   # mode == raw, there are no objects in this mode
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
         self._fill_buffer()
         return obs, reward, truncated, terminated, info
@@ -119,4 +118,19 @@ class OCAtari:
         """
         Directly manipulate a targeted RAM position
         """
-        return self._env.unwrapped.ale.setRAM(target_ram_position, new_value)
+        return self._ale.setRAM(target_ram_position, new_value)
+
+    def get_ram(self):
+        return self._ale.getRAM()
+
+    def get_action_meanings(self):
+        return self._env.env.env.get_action_meanings()
+
+    def _get_obs(self):
+        return self._env.env.env.unwrapped._get_obs()
+
+    def _clone_state(self):
+        return self._env.env.env.ale.cloneSystemState()
+
+    def _restore_state(self, state):
+        return self._env.env.env.ale.cloneSystemState()

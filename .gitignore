@@ -1,4 +1,13 @@
 *__pycache__*
+GitLab_README.md
+*.egg-info
+
+# folers
+build/
+dist/
+.venv
+dumps/
+tests/diff_images
 *.egg-info
 dumps/*
 env

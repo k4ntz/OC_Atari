@@ -56,3 +56,7 @@ class GameObject:
     @property
     def h(self):
         return self.wh[1]
+
+    def is_on_top(self, other):
+        return (other.x <= self.x <= other.x + other.w) and \
+            (other.y <= self.y <= other.y + other.h)

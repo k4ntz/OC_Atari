@@ -7,13 +7,13 @@ from tqdm import tqdm
 
 """
 This script can be used to find score like objects in RAM
-given bb should contain the score like object
+given bb should contain the score like object.
 """
 
 
 def crop_rgb_array(rgb_array, x, y, width, height):
     """
-    crops the given rgb_array to the given bb
+    Crops the given rgb_array to the given bb.
     """
     ret = np.ndarray(shape=(height, width, 3), dtype=int)
 
@@ -26,9 +26,9 @@ def crop_rgb_array(rgb_array, x, y, width, height):
 
 def find_causative_ram(game, x, y, width, height, show_plot=False):
     """
-    goes over the entire ram. manipulating it to observe possible changes in the given bb
+    Goes over the entire ram. Manipulating it to observe possible changes in the given bb
 
-    if something in the given bb changes, the causative ram_position will be included in the return
+    if something in the given bb changes, the causative ram_position will be included in the return.
     """
     env = gym.make(game, render_mode="rgb_array")
     env.metadata['render_fps'] = 60

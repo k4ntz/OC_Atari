@@ -11,7 +11,7 @@ import pathlib
 import shutil
 
 """
-This script can be used to get a rough idea of which ram_positions are relevant for objects
+This script can be used to get a rough idea of which ram_positions are relevant for objects.
 """
 
 

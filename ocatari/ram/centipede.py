@@ -214,7 +214,8 @@ def _detect_objects_centipede_revised(objects, ram_state, hud=False):
         if ram_state[124 - 2 * i] != 255:
             b = small_bugs[i]
             b.xy = 16 + ram_state[123 - 2 * i], _column_to_y(19 - _number_lowpass(ram_state[124 - 2 * i]))
-            objects.append(b)
+            if b.x < 160 and b.y < 210:
+                objects.append(b)
 
     for i in range(9):
         x = 17 + ram_state[100 + i]
@@ -223,7 +224,8 @@ def _detect_objects_centipede_revised(objects, ram_state, hud=False):
             centipede_segment = CentipedeSegment()
             centipede_segment.xy = x, _column_to_y(19 - _number_lowpass(ram_state[91 + i]))
             prev_centipede_x[i] = centipede_segment.x
-            objects.append(centipede_segment)
+            if centipede_segment.x < 160 and centipede_segment.y < 210:
+                objects.append(centipede_segment)
 
     for i in range(19):   # way too complicated
         offset_y = _column_to_y(i) + 2
