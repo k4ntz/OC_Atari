@@ -22,7 +22,6 @@ printEnvInfo = False             # if True, the extracted objects or the environ
 game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
 render_mode = "human"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
-seed = 42                       # resetted environment seed
 fps = 60                        # render fps
 
 # actions
