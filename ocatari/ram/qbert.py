@@ -138,9 +138,9 @@ def _detect_objects_qbert_revised(objects, ram_state, hud=True):
     # The x value of the object are the respective RAM values at these Positions.
     # E.g: RAM 79 has value 0: The object is on the bottem left corner of the pyramid.
     #      RAM 75 has value 6: The object is one to the right of the tip of the pyramid (second row right platform)
-    # With each step an object takes they will go down one row and the next RAM position in line determins their x 
+    # With each step an object takes they will go down one row and the next RAM position in line determins their x
     # and y position.
-    # The big problem with this is that the RAM values stay the same even if there is no object on the specified 
+    # The big problem with this is that the RAM values stay the same even if there is no object on the specified
     # platform anymore.
     # (You might be able to find a RAM value carrying information when the next step is taken by an object)
     res = _calc_enemy_pos(ram_state[75:80])
