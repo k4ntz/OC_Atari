@@ -3,7 +3,7 @@ import time
 from matplotlib import pyplot as plt
 
 """
-created by timo to print out the ram changes and general testing
+print out the ram changes and general testing
 """
 
 

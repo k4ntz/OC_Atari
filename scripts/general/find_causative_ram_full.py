@@ -50,7 +50,7 @@ def find_causative_ram(game, repetitions=3):
             obs, reward, terminated, truncated, info = env.step(0)
 
             count = _count_inequalities(obs0, obs)
-            if False:#count >= 60:
+            if count >= 60:
                 # I assume its too large to be an object
                 # probably
                 pass
