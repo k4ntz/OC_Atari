@@ -35,9 +35,8 @@ for _ in range(10000000):
     if terminated or truncated:
         observation, info = env.reset()
     print(info)
+    print(ram)
     env.render()
-    if info.get('episode_frame_number') > 50:
-        ipdb.set_trace()
     time.sleep(0.01)
     ipdb.set_trace()
 env.close()
