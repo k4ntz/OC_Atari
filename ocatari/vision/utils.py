@@ -229,6 +229,7 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
 
 def find_rectangle_objects(image, color, max_size=None, minx=0, miny=0, maxx=160, maxy=210):
     """
+    finds rectangle objects with a maximum size
     image: image to detect objects from
     max_size: presupposed size (actual size will be equal or smaller)
     tol_s: tolerance on the size
