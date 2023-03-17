@@ -23,8 +23,8 @@ for ROUND in range(10000000):
     obs, reward, terminated, truncated, info = env.step(random.randint(0, 2))
 
     if prevRam is not None:
-        i = 9  # to test an individual index in all rounds (so the index keeps constant)
-        # i = index  # here the index meant to be incremented
+        # i = 9  # to test an individual index in all rounds (so the index keeps constant)
+        i = index  # here the index meant to be incremented
 
         # don't delete these lines
         # value = (prevRam[i] + 31) % 256  # 31 = 00001111
@@ -49,13 +49,13 @@ for ROUND in range(10000000):
         # else:
         #     value = 128 + ram[72]
 
-        if ROUND % 1 == 0:  # how often we increment index
+        if ROUND % 4 == 0:  # how often we increment index
             index += 1
             while index in already_figured_out:
                 index += 1
 
-        if ROUND % 1 == 0 and ROUND > 80:
-            # env._env.unwrapped.ale.setRAM(i, value)  # DON'T CHANGE
+        if ROUND % 1 == 0 and ROUND > 60:
+            env._env.unwrapped.ale.setRAM(i, value)  # DON'T CHANGE
             for k in range(len(ram)):
                 if ram[k] != prevRam[k] and k not in already_figured_out:
                     string = ""
