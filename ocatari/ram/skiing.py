@@ -2,8 +2,9 @@ import sys
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
 
-MAX_NB_OBJECTS = {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Score': 2, 'Logo': 1, 'Clock': 7, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
+
+MAX_NB_OBJECTS =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4, 'Score': 2, 'Logo': 1, 'Clock': 7}
 
 # from termcolor import colored
 # def print_state(state):

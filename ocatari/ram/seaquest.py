@@ -6,9 +6,8 @@ import sys
 RAM extraction for the game SEAQUEST. Supported modes: raw, revised.
 """
 
-# TODO: populate 
-MAX_NB_OBJECTS =  {}
-MAX_NB_OBJECTS_HUD = {}
+MAX_NB_OBJECTS =  {'Player': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'EnemySubmarine': 3, 'EnemyMissile': 3}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'EnemySubmarine': 3, 'EnemyMissile': 3, 'CollectedDiver': 2, 'PlayerScore': 1, 'Lives': 1, 'OxygenBar': 1, 'OxygenBarDepleted': 1, 'Logo': 1, 'OxygenBarLogo': 1}
 
 class Player(GameObject):
     def __init__(self):
