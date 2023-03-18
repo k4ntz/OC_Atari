@@ -1,9 +1,9 @@
-import sys
 from .game_objects import GameObject
 
 
-MAX_NB_OBJECTS = {'Player': 1, 'Enemy': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 1, 'PlayerScore': 2, 'EnemyScore': 2, 'Logo': 1, 'Clock': 4}
+MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 1}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'PlayerScore': 2,
+                       'EnemyScore': 2, 'Logo': 1, 'Clock': 4}
 
 
 class Player(GameObject):
@@ -45,13 +45,8 @@ class Clock(GameObject):
 
 
 class PlayerScore(GameObject):
-    def __init__(self, ten=False):
+    def __init__(self):
         super().__init__()
-        if ten:
-            self._xy = 39, 5
-        else:
-            self._xy = 47, 5
-        self.ten = ten
         self.rgb = 214, 214, 214
         self._xy = 47, 5
         self.wh = 6, 7
@@ -75,13 +70,9 @@ class PlayerScore(GameObject):
 
 
 class EnemyScore(GameObject):
-    def __init__(self, ten=False):
+    def __init__(self):
         super().__init__()
-        if ten:
-            self._xy = 103, 5
-        else:
-            self._xy = 111, 5
-        self.ten = ten
+        self._xy = 111, 5
         self.rgb = 0, 0, 0
         self.wh = 6, 7
         self.hud = True
@@ -99,20 +90,6 @@ class EnemyScore(GameObject):
             self.wh = 6, 7
             self._ten = False
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 def _init_objects_boxing_ram(hud=False):
     """
@@ -129,6 +106,7 @@ def _init_objects_boxing_ram(hud=False):
                         Clock(79, 17, 6, 7), Clock(87, 17, 6, 7)])
     return objects
 
+
 def _detect_objects_boxing_revised(objects, ram_state, hud=False):
     """
     For all 3 objects:
@@ -141,40 +119,14 @@ def _detect_objects_boxing_revised(objects, ram_state, hud=False):
         # scores
         global plscore
         global enscore
-        if ram_state[19] > 10:      # enemy score
+        if ram_state[19] > 10:  # enemy score
             enscore.tenify()
         else:
             enscore.detenify()
-        if ram_state[18] > 10:      # player score
+        if ram_state[18] > 10:  # player score
             plscore.tenify()
-
-        if ram_state[19] > 10:      # enemy score
-            objects.append(EnemyScore(ten=True))
-        else:
-            tens = EnemyScore(ten=True)
-            if tens in objects:
-                objects.remove(tens)
-        if ram_state[18] > 10:      # player score
-            objects.append(PlayerScore(ten=True))
         else:
             plscore.detenify()
-
-        if ram_state[19] > 10:      # enemy score
-            if not enemy._above_10:
-                objects.append(EnemyScore(ten=True))
-                enemy._above_10 = True
-        else:
-            if enemy._above_10:
-                objects.remove(EnemyScore(ten=True))
-                enemy._above_10 = False
-        if ram_state[18] > 10:      # player score
-            if not player._above_10:
-                objects.append(PlayerScore(ten=True))
-                player._above_10 = True
-        else:
-            if player._above_10:
-                objects.remove(PlayerScore(ten=True))
-                player._above_10 = False
 
 
 def _detect_objects_boxing_raw(info, ram_state):
