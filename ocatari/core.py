@@ -65,7 +65,7 @@ class OCAtari:
             self.detect_objects(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         else:   # mode == raw, there are no objects in this mode
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
-        self._fill_buffer()
+        # self._fill_buffer()  (removed buffer fill in step ram)
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
