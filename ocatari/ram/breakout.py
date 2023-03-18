@@ -12,6 +12,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerScore': 3, 'Live': 1, 'PlayerNumber': 
 
 class Player(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 99, 189
         self.wh = 16, 4
         self.rgb = 200, 72, 72
@@ -20,6 +21,7 @@ class Player(GameObject):
 
 class Ball(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 2, 4
         self.rgb = 200, 72, 72
@@ -28,6 +30,7 @@ class Ball(GameObject):
 
 class PlayerScore(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 36, 6
         self.rgb = 142, 142, 142
         self.wh = 12, 10
@@ -39,6 +42,7 @@ class PlayerScore(GameObject):
 
 class Live(GameObject):
     def __init__(self):
+        super().__init__()
         self._xy = 100, 5
         self.rgb = 142, 142, 142
         self.wh = 12, 10
