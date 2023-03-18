@@ -31,11 +31,13 @@ if opts.path:
     agent = load_agent(opts, env.action_space.n)
 
 max_number_objs = {}
-for i in tqdm(range(30000)):
+pbar = tqdm(range(30000))
+for i in pbar:
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
-        action = random.randint(0, 2)
+        number_available_actions = env.action_space.n
+        action = random.randint(0, number_available_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
 
     for obj in env.objects:
@@ -45,11 +47,11 @@ for i in tqdm(range(30000)):
         nb_obj = sum([o.__class__.__name__ == classname for o in env.objects])
         if nb_obj > max_number_objs[classname]:
             max_number_objs[classname] = nb_obj
-            print(f"Found {nb_obj} for class {classname}")
+            pbar.set_description(f"Found {nb_obj} for class {classname}")
 
     if terminated or truncated:
         observation, info = env.reset()
-        print("Reset")
+        #print("Reset")
     # modify and display render
 
 env.close()

@@ -3,9 +3,8 @@ from ._helper_methods import bitfield_to_number, number_to_bitfield
 import math
 import sys
 
-# TODO: populate 
-MAX_NB_OBJECTS =  {}
-MAX_NB_OBJECTS_HUD = {}
+MAX_NB_OBJECTS =  {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9, 'Wall': 42, 'Bug': 1, 'Crab': 1}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9, 'Wall': 42, 'Score': 4, 'Life': 2, 'Bug': 1, 'Crab': 1, 'Ghost': 1}
 
 class CentipedeSegment(GameObject):
     def __init__(self):

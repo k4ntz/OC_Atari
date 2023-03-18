@@ -3,9 +3,8 @@ import numpy as np
 from termcolor import colored
 import sys
 
-# TODO: populate 
-MAX_NB_OBJECTS =  {}
-MAX_NB_OBJECTS_HUD = {}
+MAX_NB_OBJECTS =  {'Player': 1, 'Shield': 3, 'Alien': 36, 'Bullet': 3, 'Satellite': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Alien': 36, 'Bullet': 3, 'Satellite': 1, 'Score': 4, 'Lives': 2}
 
 
 def make_bitmap(alien_states):
@@ -253,7 +252,11 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     x, y = ram_state[26], ram_state[16]
 
     bitmap, emptc = make_bitmap(ram_state[18:24])
+
     # aliens (permanent) deletion from array aliens:
+    #print("-"*6)
+    #print_bmp(bitmap)
+
     for i in range(6):
         for j in range(6):
             if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):

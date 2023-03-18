@@ -6,9 +6,8 @@ RAM extraction for the game KANGUROO. Supported modes: raw, revised.
 
 """
 
-# TODO: populate 
-MAX_NB_OBJECTS =  {}
-MAX_NB_OBJECTS_HUD = {}
+MAX_NB_OBJECTS =  {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1,'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1, 'Score': 1, 'Life': 8, 'Time': 1, }
 
 class Player(GameObject):
     def __init__(self):
