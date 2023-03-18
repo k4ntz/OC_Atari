@@ -5,6 +5,7 @@ from .game_objects import GameObject
 """
 RAM extraction for the game BOWLING. Supported modes: raw, revised.
 """
+
 MAX_NB_OBJECTS =  {'Player': 1, 'Ball': 1, 'Pin': 10}
 MAX_NB_OBJECTS_HUD = {'PlayerScore' : 1, 'PlayerRound' : 1, 'Player2Round' : 1}
 
