@@ -13,6 +13,7 @@ except ModuleNotFoundError:
 import torch
 
 DEVICE = "cpu"
+
 AVAILABLE_GAMES = ["Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
                    "Breakout", "Carnival", "Centipede", "ChoppperCommand" "DemonAttack", "Freeway", "Kangaroo",
                    "MontezumaRevenge", "MsPacman", "Pong", "Qbert", "Riverraid", "Seaquest", "Skiing", "SpaceInvaders",
