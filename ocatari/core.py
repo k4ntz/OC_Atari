@@ -15,18 +15,10 @@ import torch
 
 DEVICE = "cpu"
 
-<<<<<<< HEAD
 AVAILABLE_GAMES = ["Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
                    "Breakout", "Carnival", "Centipede", "ChoppperCommand" "DemonAttack", "Freeway", "Kangaroo",
                    "MontezumaRevenge", "MsPacman", "Pong", "Qbert", "Riverraid", "Seaquest", "Skiing", "SpaceInvaders",
                    "Tennis"]
-=======
-
-AVAILABLE_GAMES = ["Asterix", "Boxing", "Breakout", "Pong", "Seaquest",
-                   "Skiing", "SpaceInvaders", "Tennis", "Freeway", "DemonAttack", "Bowling",
-                   "MsPacman", "Kangaroo", "Berzerk", "Carnival"]
->>>>>>> 6434752 (Added first draft of render_explanations in OC_Atari Core)
-
 
 class OCAtari:
     def __init__(self, env_name, mode="raw", hud=False, obs_mode="dqn", *args, **kwargs):
@@ -80,7 +72,7 @@ class OCAtari:
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
         if self.mode == "revised":
             self.detect_objects(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
-        else:   # mode == raw, there are no objects in this mode
+        else:   # mode == "raw" because in raw mode we augment the info dictionary
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
         self._fill_buffer()
         return obs, reward, truncated, terminated, info
