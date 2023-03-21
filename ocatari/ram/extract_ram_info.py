@@ -54,6 +54,21 @@ def get_max_objects(game_name, hud):
         exit(1)
 
 
+# calls the respective _get_max_objects from the game modules
+def get_max_objects(game_name, hud):
+    p_module = __name__.split('.')[:-1] + [game_name.lower()]
+    game_module = '.'.join(p_module)
+    try:
+        mod = sys.modules[game_module]
+        return mod._get_max_objects(hud)
+    except KeyError:
+        print(colored(f"Game module does not exist: {game_module}", "red"))
+        exit(1)
+    except AttributeError:
+        print(colored(f"max_objects not implemented for game: {game_name}", "red"))
+        exit(1)
+
+
 def init_objects(game_name, hud):
     """
     Initialize the object list for the correct game
