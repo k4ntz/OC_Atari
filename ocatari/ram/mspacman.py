@@ -48,7 +48,7 @@ class Life(GameObject):
     def __init__(self, *args, **kwargs):
         super(Life, self).__init__()
         self._xy = 12, 171
-        self.wh = 9, 10
+        self.wh = 7, 10
         self.rgb = 187, 187, 53
         self.hud = True
 

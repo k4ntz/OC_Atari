@@ -4,7 +4,7 @@ import time
 import ipdb
 
 """
-created by timo to print out a ram that always has values within range
+print out a ram that always has values within range
 """
 
 env = gym.make("MsPacman", render_mode="human")
