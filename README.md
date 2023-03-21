@@ -59,7 +59,6 @@ Test the `demo_pong.py` script.
 
 You can change the `mode` argument line 10!
 
-
 ### Use these trained agents:
 You can also run the demo file with an already trained agent or your own developed agent. You can use the -p flag in the command to run the demo file by an agent and let the agent play the game.
 Here is an example: 

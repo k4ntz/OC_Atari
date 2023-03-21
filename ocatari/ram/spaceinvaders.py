@@ -9,9 +9,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Alien': 36, 'Bullet': 3, 'Satel
 
 def make_bitmap(alien_states):
     emptc = 6 - int(max(alien_states)).bit_length()  # nb empty columns
-    # return "\n".join([format(el, '06b')[emptc:] + "0" * emptc for el in alien_states])
     return [(format(el, '06b')[emptc:] + "0" * emptc) for el in alien_states], emptc
-
 
 def print_bmp(bmp):
     print(colored("\n".join(bmp)[::-1], "green"))
@@ -165,7 +163,7 @@ def _detect_objects_space_invaders_raw(info, ram_state):
     # info["score_player_yellow"] = {ram_state[103], ram_state[105]}  # score is saved in hexadecimal
     # # 200 points for destroying satellite dish
     # # x*5 points for destroying an alien from row_x
-    print(ram_state)
+    # print(ram_state)
 
 
 def _init_objects_space_invaders_ram(hud=False):
@@ -224,10 +222,9 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
                 objects.pop(i)
     if not firstCall and hud:
         if ram_state[73] != prevRam[73]:
-            lives_ctr = 22
+            lives_ctr = 22  # handle real visibility instead!
             objects.append(Lives())
-
-    if firstCall:
+    if firstCall:  # works correctly
         player = objects[0]
         aliens = [Alien() for _ in range(36)]  # ~ 1-dim
         lives_ctr = 41
@@ -256,11 +253,11 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     # aliens (permanent) deletion from array aliens:
     #print("-"*6)
     #print_bmp(bitmap)
-
     for i in range(6):
         for j in range(6):
-            if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):
-                aliens[35 - (i * 6 + j)] = None
+            if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):  # enemies alive are saved in ram_state[18:24]
+                aliens[35 - (i * 6 + j)] = None  # 5 = max(range(6)) so we are counting lines in the other way around
+
     for i in range(6):
         for j in range(6):
             if aliens[i * 6 + j]:
