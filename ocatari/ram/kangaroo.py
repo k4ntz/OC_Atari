@@ -147,32 +147,24 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
 
     # enemies/monkeys
     m1 = Enemy()
-    objects.append(m1)
     if ram_state[11] != 255:
+        objects.append(m1)
         m1.xy = ram_state[15] + 16, ram_state[11] * 8 + 5
-    else:
-        objects.remove(m1)
 
     m2 = Enemy()
-    objects.append(m2)
     if ram_state[10] != 255:
+        objects.append(m2)
         m2.xy = ram_state[14] + 16, ram_state[10] * 8 + 5
-    else:
-        objects.remove(m2)
 
     m3 = Enemy()
-    objects.append(m3)
     if ram_state[9] != 255:
+        objects.append(m3)
         m3.xy = ram_state[13] + 16, ram_state[9] * 8 + 5
-    else:
-        objects.remove(m3)
 
     m4 = Enemy()
-    objects.append(m4)
     if ram_state[8] != 255:
+        objects.append(m4)
         m4.xy = ram_state[12] + 16, ram_state[8] * 8 + 5
-    else:
-        objects.remove(m4)
 
     p1 = Projectile_top()
     objects.append(p1)
@@ -274,7 +266,6 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
         time = Time()
         objects.append(time)
         # time.xy = 80, 191
-
     return objects
 
 

@@ -1,5 +1,7 @@
 import sys
 from termcolor import colored
+
+from . import choppercommand
 from .asterix import _detect_objects_asterix_revised, _detect_objects_asterix_raw,\
     _init_objects_asterix_ram
 from .berzerk import _detect_objects_berzerk_raw, _detect_objects_berzerk_revised, _init_objects_berzerk_ram
@@ -25,6 +27,31 @@ from .carnival import _init_objects_carnival_ram, _detect_objects_carnival_raw, 
 from .kangaroo import _detect_objects_kangaroo_raw, \
                       _detect_objects_kangaroo_revised, \
                       _init_objects_kangaroo_ram
+from .qbert import _detect_objects_qbert_raw, \
+                      _detect_objects_qbert_revised, \
+                      _init_objects_qbert_ram
+from .atlantis import _detect_objects_atlantis_raw, \
+                      _detect_objects_atlantis_revised, \
+                      _init_objects_atlantis_ram
+from .beamrider import _detect_objects_beamrider_raw, _detect_objects_beamrider_revised, _init_objects_beamrider_ram
+from .asteroids import _detect_objects_asteroids_raw, _detect_objects_asteroids_revised, _init_objects_asteroids_ram
+from .riverRaid import _detect_objects_riverraid_raw, _detect_objects_riverraid_revised, _init_objects_riverraid_ram
+from .assault import _detect_objects_assault_raw, _detect_objects_assault_revised, _init_objects_assault_ram
+
+
+# calls the respective _get_max_objects from the game modules
+def get_max_objects(game_name, hud):
+    p_module = __name__.split('.')[:-1] + [game_name.lower()]
+    game_module = '.'.join(p_module)
+    try:
+        mod = sys.modules[game_module]
+        return mod._get_max_objects(hud)
+    except KeyError:
+        print(colored(f"Game module does not exist: {game_module}", "red"))
+        exit(1)
+    except AttributeError:
+        print(colored(f"max_objects not implemented for game: {game_name}", "red"))
+        exit(1)
 
 
 # calls the respective _get_max_objects from the game modules
@@ -76,8 +103,24 @@ def init_objects(game_name, hud):
         return _init_objects_kangaroo_ram(hud)
     elif game_name.lower() == "berzerk":
         return _init_objects_berzerk_ram(hud)
+    elif game_name.lower() == "beamrider":
+        return _init_objects_beamrider_ram(hud)
     elif game_name.lower() == "asterix":
         return _init_objects_asterix_ram(hud)
+    elif game_name.lower() == "choppercommand":
+        return choppercommand._init_objects_ram(hud)
+    elif game_name.lower() == "qbert":
+        return _init_objects_qbert_ram(hud)
+    elif game_name.lower() == "montezumarevenge":
+        return []
+    elif game_name.lower() == "atlantis":
+        return _init_objects_atlantis_ram(hud)
+    elif game_name.lower() == "asteroids":
+        return _init_objects_asteroids_ram(hud)
+    elif game_name.lower() == "riverraid":
+        return _init_objects_riverraid_ram(hud)
+    elif game_name.lower() == "assault":
+        return _init_objects_assault_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
@@ -118,10 +161,24 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_carnival_raw(info, ram_state)
     elif game_name.lower() == "kangaroo":
         _detect_objects_kangaroo_raw(info, ram_state)
-    elif game_name.lower() == "kangaroo":
+    elif game_name.lower() == "berzerk":
         _detect_objects_berzerk_raw(info, ram_state)
+    elif game_name.lower() == "beamrider":
+        _detect_objects_beamrider_raw(info, ram_state)
     elif game_name.lower() == "asterix":
         _detect_objects_asterix_raw(info, ram_state)
+    elif game_name.lower() == "choppercommand":
+        choppercommand._detect_objects_raw(info, ram_state)
+    elif game_name.lower() == "qbert":
+        _detect_objects_qbert_raw(info, ram_state)
+    elif game_name.lower() == "atlantis":
+        _detect_objects_atlantis_raw(info, ram_state)
+    elif game_name.lower() == "asteroids":
+        _detect_objects_asteroids_raw(info, ram_state)
+    elif game_name.lower() == "riverraid":
+        _detect_objects_riverraid_raw(info, ram_state)
+    elif game_name.lower() == "assault":
+        _detect_objects_assault_raw(info, ram_state)
     else:
         print(colored("Uncovered game in raw mode", "red"))
         exit(1)
@@ -161,8 +218,22 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_kangaroo_revised(objects, ram_state, hud)
     elif game_name.lower() == "berzerk":
         _detect_objects_berzerk_revised(objects, ram_state, hud)
+    elif game_name.lower() == "beamrider":
+        _detect_objects_beamrider_revised(objects, ram_state, hud)
     elif game_name.lower() == "asterix":
         _detect_objects_asterix_revised(objects, ram_state, hud)
+    elif game_name.lower() == "choppercommand":
+        return choppercommand._detect_objects_revised(objects, ram_state, hud)
+    elif game_name.lower() == "qbert":
+        _detect_objects_qbert_revised(objects, ram_state, hud)
+    elif game_name.lower() == "atlantis":
+        _detect_objects_atlantis_revised(objects, ram_state, hud)
+    elif game_name.lower() == "asteroids":
+        _detect_objects_asteroids_revised(objects, ram_state, hud)
+    elif game_name.lower() == "riverraid":
+        _detect_objects_riverraid_revised(objects, ram_state, hud)
+    elif game_name.lower() == "assault":
+        _detect_objects_assault_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)

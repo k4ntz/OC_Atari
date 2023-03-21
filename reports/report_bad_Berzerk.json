@@ -1,0 +1,1540 @@
+Details of frames with mean iou < 0.8
+{
+    "Image_3": {
+        "mean_iou": 0.7952480782669461,
+        "per_class_ious": {
+            "Player": 0.660377358490566,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 77)",
+            "Enemy at (64, 14)",
+            "Enemy at (85, 34)",
+            "Enemy at (57, 54)",
+            "Enemy at (125, 154)",
+            "PlayerScore at (88, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (7, 75), (8, 24)\n",
+            "Enemy at (126, 154), (8, 16)\n",
+            "Enemy at (58, 54), (8, 16)\n",
+            "Enemy at (86, 34), (8, 16)\n",
+            "Enemy at (65, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n"
+        ]
+    },
+    "Image_4": {
+        "mean_iou": 0.42857142857142855,
+        "per_class_ious": {
+            "PlayerScore": 0.42857142857142855
+        },
+        "only_in_ram": [
+            "Player at (8, 132)",
+            "Enemy at (81, 34)",
+            "Enemy at (57, 54)",
+            "Enemy at (125, 154)"
+        ],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 132)",
+            "Enemy at (81, 34)",
+            "Enemy at (57, 54)",
+            "Enemy at (125, 154)",
+            "PlayerScore at (88, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerScore at (96, 183), (6, 7)\n"
+        ]
+    },
+    "Image_6": {
+        "mean_iou": 0.7908805031446541,
+        "per_class_ious": {
+            "Player": 0.660377358490566,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 81)",
+            "Enemy at (123, 14)",
+            "Enemy at (130, 34)",
+            "Enemy at (132, 54)",
+            "Enemy at (36, 74)",
+            "Enemy at (76, 94)",
+            "Enemy at (96, 154)",
+            "PlayerScore at (88, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (7, 79), (8, 24)\n",
+            "Enemy at (97, 154), (8, 16)\n",
+            "Enemy at (77, 94), (8, 16)\n",
+            "Enemy at (37, 74), (8, 16)\n",
+            "Enemy at (133, 54), (8, 16)\n",
+            "Enemy at (131, 34), (8, 16)\n",
+            "Enemy at (124, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n"
+        ]
+    },
+    "Image_8": {
+        "mean_iou": 0.7927523210542079,
+        "per_class_ious": {
+            "Player": 0.660377358490566,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 81)",
+            "Enemy at (77, 14)",
+            "Enemy at (87, 34)",
+            "Enemy at (57, 54)",
+            "Enemy at (17, 114)",
+            "Enemy at (117, 154)",
+            "PlayerScore at (88, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (7, 79), (8, 24)\n",
+            "Enemy at (118, 154), (8, 16)\n",
+            "Enemy at (18, 114), (8, 16)\n",
+            "Enemy at (58, 54), (8, 16)\n",
+            "Enemy at (88, 34), (8, 16)\n",
+            "Enemy at (78, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n"
+        ]
+    },
+    "Image_9": {
+        "mean_iou": 0.7927523210542079,
+        "per_class_ious": {
+            "Player": 0.660377358490566,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 81)",
+            "Enemy at (72, 14)",
+            "Enemy at (87, 34)",
+            "Enemy at (57, 54)",
+            "Enemy at (17, 114)",
+            "Enemy at (117, 154)",
+            "PlayerScore at (88, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (7, 79), (8, 24)\n",
+            "Enemy at (118, 154), (8, 16)\n",
+            "Enemy at (18, 114), (8, 16)\n",
+            "Enemy at (58, 54), (8, 16)\n",
+            "Enemy at (88, 34), (8, 16)\n",
+            "Enemy at (73, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n"
+        ]
+    },
+    "Image_13": {
+        "mean_iou": 0.7877415458937198,
+        "per_class_ious": {
+            "Player": 0.41304347826086957,
+            "Enemy": 0.7777777777777778,
+            "Logo": 1.0
+        },
+        "only_in_ram": [
+            "PlayerMissile at (28, 80)"
+        ],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (19, 81)",
+            "PlayerMissile at (28, 80)",
+            "Enemy at (65, 14)",
+            "Enemy at (86, 34)",
+            "Enemy at (57, 54)",
+            "Enemy at (11, 114)",
+            "Enemy at (125, 154)",
+            "Logo at (86, 183)",
+            "Logo at (63, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (18, 80), (5, 20)\n",
+            "Enemy at (126, 154), (8, 16)\n",
+            "Enemy at (12, 114), (8, 16)\n",
+            "Enemy at (58, 54), (8, 16)\n",
+            "Enemy at (87, 34), (8, 16)\n",
+            "Enemy at (66, 14), (8, 16)\n",
+            "Logo at (86, 183), (17, 7)\n",
+            "Logo at (63, 183), (20, 7)\n"
+        ]
+    },
+    "Image_20": {
+        "mean_iou": 0.6939393939393939,
+        "per_class_ious": {
+            "Player": 0.5,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [
+            "PlayerMissile at (22, 81)"
+        ],
+        "only_in_vision": [
+            "PlayerMissile at (7, 99), (4, 2)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (17, 82)",
+            "PlayerMissile at (22, 81)",
+            "Enemy at (129, 34)",
+            "Enemy at (132, 54)",
+            "Enemy at (108, 94)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (7, 99), (4, 2)\n",
+            "Player at (19, 82), (4, 20)\n",
+            "Enemy at (109, 94), (8, 16)\n",
+            "Enemy at (133, 54), (8, 16)\n",
+            "Enemy at (130, 34), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_21": {
+        "mean_iou": 0.6563852813852814,
+        "per_class_ious": {
+            "Player": 0.625,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 0.6666666666666666,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (15, 85)",
+            "PlayerMissile at (45, 122)",
+            "Enemy at (129, 34)",
+            "Enemy at (132, 54)",
+            "Enemy at (108, 92)",
+            "EnemyMissile at (92, 104)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (45, 121), (4, 2)\n",
+            "Player at (15, 85), (5, 20)\n",
+            "EnemyMissile at (92, 104), (4, 2)\n",
+            "Enemy at (109, 92), (8, 16)\n",
+            "Enemy at (133, 54), (8, 16)\n",
+            "Enemy at (130, 34), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_22": {
+        "mean_iou": 0.6563852813852814,
+        "per_class_ious": {
+            "Player": 0.625,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 0.6666666666666666,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (19, 80)",
+            "PlayerMissile at (31, 78)",
+            "Enemy at (129, 34)",
+            "Enemy at (132, 54)",
+            "Enemy at (108, 90)",
+            "EnemyMissile at (62, 104)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (19, 80), (5, 20)\n",
+            "PlayerMissile at (31, 77), (4, 2)\n",
+            "EnemyMissile at (62, 104), (4, 2)\n",
+            "Enemy at (109, 90), (8, 16)\n",
+            "Enemy at (133, 54), (8, 16)\n",
+            "Enemy at (130, 34), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_23": {
+        "mean_iou": 0.718097643097643,
+        "per_class_ious": {
+            "Player": 0.75,
+            "Enemy": 0.7518518518518519,
+            "EnemyMissile": 0.6666666666666666,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [
+            "PlayerMissile at (26, 93)"
+        ],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (20, 79)",
+            "PlayerMissile at (26, 93)",
+            "Enemy at (129, 36)",
+            "Enemy at (132, 62)",
+            "Enemy at (108, 90)",
+            "EnemyMissile at (32, 104)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (21, 79), (6, 20)\n",
+            "EnemyMissile at (32, 104), (4, 2)\n",
+            "Enemy at (109, 90), (8, 16)\n",
+            "Enemy at (133, 62), (8, 16)\n",
+            "Enemy at (130, 36), (8, 18)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_24": {
+        "mean_iou": 0.6254208754208753,
+        "per_class_ious": {
+            "Player": 0.5,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7609427609427609,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [
+            "EnemyMissile at (106, 100)"
+        ],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (18, 82)",
+            "PlayerMissile at (8, 88)",
+            "Enemy at (128, 46)",
+            "Enemy at (128, 68)",
+            "Enemy at (108, 90)",
+            "EnemyMissile at (106, 100)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (8, 87), (4, 2)\n",
+            "Player at (20, 82), (4, 20)\n",
+            "Enemy at (106, 90), (11, 16)\n",
+            "Enemy at (129, 68), (8, 16)\n",
+            "Enemy at (129, 46), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_25": {
+        "mean_iou": 0.6893939393939393,
+        "per_class_ious": {
+            "Player": 0.5,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 0.6666666666666666,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [
+            "PlayerMissile at (33, 92)"
+        ],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (25, 88)",
+            "PlayerMissile at (33, 92)",
+            "Enemy at (115, 46)",
+            "Enemy at (115, 68)",
+            "Enemy at (102, 90)",
+            "EnemyMissile at (74, 100)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (27, 88), (10, 20)\n",
+            "EnemyMissile at (74, 100), (4, 2)\n",
+            "Enemy at (103, 90), (8, 16)\n",
+            "Enemy at (116, 68), (8, 16)\n",
+            "Enemy at (116, 46), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_26": {
+        "mean_iou": 0.6626262626262626,
+        "per_class_ious": {
+            "Player": 0.45454545454545453,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 0.6666666666666666,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [
+            "PlayerMissile at (20, 87)"
+        ],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (15, 91)",
+            "PlayerMissile at (20, 87)",
+            "Enemy at (104, 46)",
+            "Enemy at (104, 68)",
+            "EnemyMissile at (44, 100)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (17, 87), (4, 24)\n",
+            "EnemyMissile at (44, 100), (4, 2)\n",
+            "Enemy at (105, 68), (8, 16)\n",
+            "Enemy at (105, 46), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_27": {
+        "mean_iou": 0.7152777777777778,
+        "per_class_ious": {
+            "Player": 0.75,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (17, 92)",
+            "PlayerMissile at (47, 72)",
+            "Enemy at (93, 68)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (17, 92), (6, 20)\n",
+            "PlayerMissile at (47, 71), (4, 2)\n",
+            "Enemy at (94, 68), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_34": {
+        "mean_iou": 0.7952480782669461,
+        "per_class_ious": {
+            "Player": 0.660377358490566,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 80)",
+            "Enemy at (73, 14)",
+            "Enemy at (86, 34)",
+            "Enemy at (57, 54)",
+            "Enemy at (125, 154)",
+            "PlayerScore at (88, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (7, 78), (8, 24)\n",
+            "Enemy at (126, 154), (8, 16)\n",
+            "Enemy at (58, 54), (8, 16)\n",
+            "Enemy at (87, 34), (8, 16)\n",
+            "Enemy at (74, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n"
+        ]
+    },
+    "Image_36": {
+        "mean_iou": 0.42857142857142855,
+        "per_class_ious": {
+            "PlayerScore": 0.42857142857142855
+        },
+        "only_in_ram": [
+            "Player at (8, 132)",
+            "Enemy at (86, 34)",
+            "Enemy at (57, 54)",
+            "Enemy at (125, 154)"
+        ],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 132)",
+            "Enemy at (86, 34)",
+            "Enemy at (57, 54)",
+            "Enemy at (125, 154)",
+            "PlayerScore at (88, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerScore at (96, 183), (6, 7)\n"
+        ]
+    },
+    "Image_37": {
+        "mean_iou": 0.7402777777777778,
+        "per_class_ious": {
+            "Player": 0.625,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (13, 80)",
+            "PlayerMissile at (38, 114)",
+            "Enemy at (26, 14)",
+            "Enemy at (10, 34)",
+            "Enemy at (38, 54)",
+            "Enemy at (109, 74)",
+            "Enemy at (95, 94)",
+            "Enemy at (27, 114)",
+            "Enemy at (30, 154)",
+            "PlayerScore at (88, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (38, 113), (4, 2)\n",
+            "Player at (14, 80), (5, 20)\n",
+            "Enemy at (31, 154), (8, 16)\n",
+            "Enemy at (28, 114), (8, 16)\n",
+            "Enemy at (96, 94), (8, 16)\n",
+            "Enemy at (110, 74), (8, 16)\n",
+            "Enemy at (39, 54), (8, 16)\n",
+            "Enemy at (11, 34), (8, 16)\n",
+            "Enemy at (27, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n"
+        ]
+    },
+    "Image_38": {
+        "mean_iou": 0.6957070707070707,
+        "per_class_ious": {
+            "Player": 0.625,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (16, 81)",
+            "PlayerMissile at (51, 86)",
+            "Enemy at (26, 14)",
+            "Enemy at (10, 34)",
+            "Enemy at (103, 74)",
+            "Enemy at (91, 94)",
+            "Enemy at (27, 114)",
+            "Enemy at (30, 154)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (51, 87), (4, 2)\n",
+            "Player at (18, 81), (5, 20)\n",
+            "Enemy at (31, 154), (8, 16)\n",
+            "Enemy at (28, 114), (8, 16)\n",
+            "Enemy at (92, 94), (8, 16)\n",
+            "Enemy at (104, 74), (8, 16)\n",
+            "Enemy at (11, 34), (8, 16)\n",
+            "Enemy at (27, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_39": {
+        "mean_iou": 0.770921778168155,
+        "per_class_ious": {
+            "Player": 0.41304347826086957,
+            "PlayerMissile": 1.0,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 1.0,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (14, 86)",
+            "PlayerMissile at (18, 59)",
+            "Enemy at (26, 14)",
+            "Enemy at (10, 34)",
+            "Enemy at (81, 94)",
+            "Enemy at (27, 114)",
+            "Enemy at (30, 154)",
+            "EnemyMissile at (11, 52)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (13, 85), (5, 20)\n",
+            "PlayerMissile at (18, 59), (1, 6)\n",
+            "Enemy at (31, 154), (8, 16)\n",
+            "Enemy at (28, 114), (8, 16)\n",
+            "Enemy at (82, 94), (8, 16)\n",
+            "EnemyMissile at (11, 52), (1, 6)\n",
+            "Enemy at (11, 34), (8, 16)\n",
+            "Enemy at (27, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_40": {
+        "mean_iou": 0.7850140056022408,
+        "per_class_ious": {
+            "Player": 0.75,
+            "Enemy": 0.6862745098039216,
+            "EnemyMissile": 1.0,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [
+            "PlayerMissile at (70, 94)"
+        ],
+        "only_in_vision": [
+            "EnemyMissile at (73, 106), (6, 4)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (18, 93)",
+            "PlayerMissile at (70, 94)",
+            "Enemy at (26, 14)",
+            "Enemy at (71, 94)",
+            "Enemy at (27, 114)",
+            "Enemy at (30, 154)",
+            "EnemyMissile at (11, 80)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (18, 93), (6, 20)\n",
+            "Enemy at (31, 154), (8, 16)\n",
+            "Enemy at (28, 114), (8, 16)\n",
+            "EnemyMissile at (73, 106), (6, 4)\n",
+            "Enemy at (72, 94), (8, 8)\n",
+            "EnemyMissile at (11, 80), (1, 6)\n",
+            "Enemy at (27, 14), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_44": {
+        "mean_iou": 0.7314814814814815,
+        "per_class_ious": {
+            "Player": 0.5,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 1.0,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (21, 91)",
+            "PlayerMissile at (15, 92)",
+            "Enemy at (26, 38)",
+            "Enemy at (12, 154)",
+            "EnemyMissile at (13, 122)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (15, 93), (4, 2)\n",
+            "Player at (21, 91), (4, 20)\n",
+            "Enemy at (13, 154), (8, 16)\n",
+            "EnemyMissile at (13, 122), (1, 6)\n",
+            "Enemy at (27, 38), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_45": {
+        "mean_iou": 0.7523148148148149,
+        "per_class_ious": {
+            "Player": 0.625,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 1.0,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (18, 88)",
+            "PlayerMissile at (36, 110)",
+            "Enemy at (26, 50)",
+            "Enemy at (12, 154)",
+            "EnemyMissile at (13, 92)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (36, 109), (4, 2)\n",
+            "Player at (19, 88), (5, 20)\n",
+            "Enemy at (13, 154), (8, 16)\n",
+            "EnemyMissile at (13, 92), (1, 6)\n",
+            "Enemy at (27, 50), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_47": {
+        "mean_iou": 0.7537235096058627,
+        "per_class_ious": {
+            "Player": 0.7112299465240641,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7388888888888889,
+            "EnemyMissile": 1.0,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (21, 84)",
+            "PlayerMissile at (85, 90)",
+            "Enemy at (26, 74)",
+            "Enemy at (12, 154)",
+            "EnemyMissile at (13, 30)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (85, 91), (4, 2)\n",
+            "Player at (20, 85), (8, 20)\n",
+            "Enemy at (13, 154), (8, 16)\n",
+            "Enemy at (27, 74), (8, 18)\n",
+            "EnemyMissile at (13, 30), (1, 6)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_52": {
+        "mean_iou": 0.7927523210542079,
+        "per_class_ious": {
+            "Player": 0.660377358490566,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 79)",
+            "Enemy at (128, 14)",
+            "Enemy at (124, 74)",
+            "Enemy at (66, 94)",
+            "Enemy at (80, 134)",
+            "Enemy at (87, 154)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (7, 77), (8, 24)\n",
+            "Enemy at (88, 154), (8, 16)\n",
+            "Enemy at (81, 134), (8, 16)\n",
+            "Enemy at (67, 94), (8, 16)\n",
+            "Enemy at (125, 74), (8, 16)\n",
+            "Enemy at (129, 14), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_57": {
+        "mean_iou": 0.7469135802469135,
+        "per_class_ious": {
+            "Player": 0.5,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7777777777777778,
+            "Logo": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (10, 79)",
+            "PlayerMissile at (20, 84)",
+            "Enemy at (120, 14)",
+            "Enemy at (129, 34)",
+            "Enemy at (36, 54)",
+            "Enemy at (76, 74)",
+            "Enemy at (118, 94)",
+            "Logo at (86, 183)",
+            "Logo at (63, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (20, 85), (4, 2)\n",
+            "Player at (12, 79), (4, 20)\n",
+            "Enemy at (119, 94), (8, 16)\n",
+            "Enemy at (77, 74), (8, 16)\n",
+            "Enemy at (37, 54), (8, 16)\n",
+            "Enemy at (130, 34), (8, 16)\n",
+            "Enemy at (121, 14), (8, 16)\n",
+            "Logo at (86, 183), (17, 7)\n",
+            "Logo at (63, 183), (20, 7)\n"
+        ]
+    },
+    "Image_61": {
+        "mean_iou": 0.7045454545454546,
+        "per_class_ious": {
+            "Player": 0.3333333333333333,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [
+            "PlayerMissile at (7, 86)"
+        ],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (9, 82)",
+            "PlayerMissile at (7, 86)",
+            "Enemy at (31, 14)",
+            "Enemy at (107, 38)",
+            "Enemy at (102, 94)",
+            "Enemy at (61, 114)",
+            "Enemy at (83, 134)",
+            "Enemy at (24, 154)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (5, 82), (8, 20)\n",
+            "Enemy at (25, 154), (8, 16)\n",
+            "Enemy at (84, 134), (8, 16)\n",
+            "Enemy at (62, 114), (8, 16)\n",
+            "Enemy at (103, 94), (8, 16)\n",
+            "Enemy at (108, 38), (8, 16)\n",
+            "Enemy at (32, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_63": {
+        "mean_iou": 0.7944444444444444,
+        "per_class_ious": {
+            "Player": 0.75,
+            "Enemy": 0.7622222222222221,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 81)",
+            "Enemy at (31, 14)",
+            "Enemy at (107, 58)",
+            "Enemy at (102, 94)",
+            "Enemy at (83, 134)",
+            "Enemy at (21, 154)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (8, 81), (6, 20)\n",
+            "Enemy at (22, 154), (8, 16)\n",
+            "Enemy at (84, 134), (8, 16)\n",
+            "Enemy at (103, 94), (8, 16)\n",
+            "Enemy at (108, 58), (8, 18)\n",
+            "Enemy at (32, 14), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_67": {
+        "mean_iou": 0.7822851153039831,
+        "per_class_ious": {
+            "Player": 0.660377358490566,
+            "Enemy": 0.7583333333333333,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 78)",
+            "Enemy at (73, 14)",
+            "Enemy at (86, 34)",
+            "Enemy at (57, 54)",
+            "Enemy at (125, 146)",
+            "PlayerScore at (88, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (7, 76), (8, 24)\n",
+            "Enemy at (126, 146), (8, 18)\n",
+            "Enemy at (58, 54), (8, 16)\n",
+            "Enemy at (87, 34), (8, 16)\n",
+            "Enemy at (74, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n"
+        ]
+    },
+    "Image_68": {
+        "mean_iou": 0.42857142857142855,
+        "per_class_ious": {
+            "PlayerScore": 0.42857142857142855
+        },
+        "only_in_ram": [
+            "Player at (8, 132)",
+            "Enemy at (86, 34)",
+            "Enemy at (57, 54)",
+            "Enemy at (125, 140)"
+        ],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 132)",
+            "Enemy at (86, 34)",
+            "Enemy at (57, 54)",
+            "Enemy at (125, 140)",
+            "PlayerScore at (88, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerScore at (96, 183), (6, 7)\n"
+        ]
+    },
+    "Image_69": {
+        "mean_iou": 0.7125603864734299,
+        "per_class_ious": {
+            "Player": 0.41304347826086957,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (18, 79)",
+            "PlayerMissile at (68, 84)",
+            "Enemy at (68, 14)",
+            "Enemy at (84, 34)",
+            "Enemy at (24, 54)",
+            "Enemy at (73, 74)",
+            "Enemy at (118, 94)",
+            "Enemy at (90, 154)",
+            "PlayerScore at (88, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (68, 85), (4, 2)\n",
+            "Player at (17, 80), (5, 20)\n",
+            "Enemy at (91, 154), (8, 16)\n",
+            "Enemy at (119, 94), (8, 16)\n",
+            "Enemy at (74, 74), (8, 16)\n",
+            "Enemy at (25, 54), (8, 16)\n",
+            "Enemy at (85, 34), (8, 16)\n",
+            "Enemy at (69, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n"
+        ]
+    },
+    "Image_70": {
+        "mean_iou": 0.7687815656565656,
+        "per_class_ious": {
+            "Player": 0.625,
+            "PlayerMissile": 1.0,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (13, 83)",
+            "PlayerMissile at (20, 133)",
+            "Enemy at (68, 14)",
+            "Enemy at (84, 34)",
+            "Enemy at (24, 62)",
+            "Enemy at (118, 94)",
+            "Enemy at (90, 154)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (20, 133), (1, 6)\n",
+            "Player at (14, 83), (5, 20)\n",
+            "Enemy at (91, 154), (8, 16)\n",
+            "Enemy at (119, 94), (8, 16)\n",
+            "Enemy at (25, 62), (8, 16)\n",
+            "Enemy at (85, 34), (8, 16)\n",
+            "Enemy at (69, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_71": {
+        "mean_iou": 0.7168121342878625,
+        "per_class_ious": {
+            "Player": 0.5533980582524272,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [
+            "PlayerMissile at (18, 167)"
+        ],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (12, 85)",
+            "PlayerMissile at (18, 167)",
+            "Enemy at (68, 14)",
+            "Enemy at (84, 34)",
+            "Enemy at (118, 94)",
+            "Enemy at (90, 154)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (10, 84), (8, 20)\n",
+            "Enemy at (91, 154), (8, 16)\n",
+            "Enemy at (119, 94), (8, 16)\n",
+            "Enemy at (85, 34), (8, 16)\n",
+            "Enemy at (69, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_72": {
+        "mean_iou": 0.7392676767676767,
+        "per_class_ious": {
+            "Player": 0.5,
+            "PlayerMissile": 1.0,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 0.6666666666666666,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (13, 87)",
+            "PlayerMissile at (16, 45)",
+            "Enemy at (68, 14)",
+            "Enemy at (84, 34)",
+            "Enemy at (118, 94)",
+            "Enemy at (79, 154)",
+            "EnemyMissile at (90, 104)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (15, 87), (4, 20)\n",
+            "PlayerMissile at (16, 45), (1, 6)\n",
+            "Enemy at (80, 154), (8, 16)\n",
+            "EnemyMissile at (90, 104), (4, 2)\n",
+            "Enemy at (119, 94), (8, 16)\n",
+            "Enemy at (85, 34), (8, 16)\n",
+            "Enemy at (69, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_73": {
+        "mean_iou": 0.7626110502616528,
+        "per_class_ious": {
+            "Player": 0.6867469879518072,
+            "PlayerMissile": 1.0,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 0.6666666666666666,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (11, 86)",
+            "PlayerMissile at (19, 163)",
+            "Enemy at (68, 14)",
+            "Enemy at (84, 34)",
+            "Enemy at (118, 94)",
+            "Enemy at (68, 154)",
+            "EnemyMissile at (62, 104)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (19, 163), (1, 6)\n",
+            "Player at (11, 87), (6, 20)\n",
+            "Enemy at (69, 154), (8, 16)\n",
+            "EnemyMissile at (62, 104), (4, 2)\n",
+            "Enemy at (119, 94), (8, 16)\n",
+            "Enemy at (85, 34), (8, 16)\n",
+            "Enemy at (69, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_74": {
+        "mean_iou": 0.6335260829413912,
+        "per_class_ious": {
+            "Player": 0.6867469879518072,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.6862745098039216,
+            "EnemyMissile": 0.6666666666666666,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [],
+        "only_in_vision": [
+            "Enemy at (59, 154), (8, 6)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (10, 87)",
+            "PlayerMissile at (26, 108)",
+            "Enemy at (65, 14)",
+            "Enemy at (84, 34)",
+            "Enemy at (118, 94)",
+            "Enemy at (58, 154)",
+            "EnemyMissile at (34, 104)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (26, 107), (4, 2)\n",
+            "Player at (10, 86), (6, 20)\n",
+            "Enemy at (59, 162), (8, 8)\n",
+            "Enemy at (59, 154), (8, 6)\n",
+            "EnemyMissile at (34, 104), (4, 2)\n",
+            "Enemy at (119, 94), (8, 16)\n",
+            "Enemy at (85, 34), (8, 16)\n",
+            "Enemy at (66, 14), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_75": {
+        "mean_iou": 0.7765199161425576,
+        "per_class_ious": {
+            "Player": 0.660377358490566,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 0.6666666666666666,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (16, 85)",
+            "Enemy at (84, 34)",
+            "Enemy at (118, 94)",
+            "EnemyMissile at (104, 104)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (15, 83), (8, 24)\n",
+            "EnemyMissile at (104, 104), (4, 2)\n",
+            "Enemy at (119, 94), (8, 16)\n",
+            "Enemy at (85, 34), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_76": {
+        "mean_iou": 0.7944444444444444,
+        "per_class_ious": {
+            "Player": 0.75,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 0.6666666666666666,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (16, 85)",
+            "Enemy at (84, 34)",
+            "Enemy at (111, 94)",
+            "EnemyMissile at (74, 104)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (16, 85), (6, 20)\n",
+            "EnemyMissile at (74, 104), (4, 2)\n",
+            "Enemy at (112, 94), (8, 16)\n",
+            "Enemy at (85, 34), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_78": {
+        "mean_iou": 0.7623456790123456,
+        "per_class_ious": {
+            "Player": 0.4166666666666667,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [
+            "PlayerMissile at (9, 92)"
+        ],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (11, 82)",
+            "PlayerMissile at (9, 92)",
+            "Enemy at (87, 14)",
+            "Enemy at (25, 34)",
+            "Enemy at (118, 74)",
+            "Enemy at (97, 94)",
+            "Enemy at (60, 114)",
+            "Enemy at (18, 134)",
+            "Enemy at (104, 154)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (7, 82), (9, 20)\n",
+            "Enemy at (105, 154), (8, 16)\n",
+            "Enemy at (19, 134), (8, 16)\n",
+            "Enemy at (61, 114), (8, 16)\n",
+            "Enemy at (98, 94), (8, 16)\n",
+            "Enemy at (119, 74), (8, 16)\n",
+            "Enemy at (26, 34), (8, 16)\n",
+            "Enemy at (88, 14), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_79": {
+        "mean_iou": 0.7277777777777777,
+        "per_class_ious": {
+            "Player": 0.5,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (12, 87)",
+            "PlayerMissile at (85, 88)",
+            "Enemy at (87, 14)",
+            "Enemy at (25, 34)",
+            "Enemy at (118, 74)",
+            "Enemy at (97, 94)",
+            "Enemy at (60, 114)",
+            "Enemy at (18, 134)",
+            "Enemy at (104, 154)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (85, 89), (4, 2)\n",
+            "Player at (12, 87), (4, 20)\n",
+            "Enemy at (105, 154), (8, 16)\n",
+            "Enemy at (19, 134), (8, 16)\n",
+            "Enemy at (61, 114), (8, 16)\n",
+            "Enemy at (98, 94), (8, 16)\n",
+            "Enemy at (119, 74), (8, 16)\n",
+            "Enemy at (26, 34), (8, 16)\n",
+            "Enemy at (88, 14), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_80": {
+        "mean_iou": 0.7335265700483091,
+        "per_class_ious": {
+            "Player": 0.41304347826086957,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7648148148148147,
+            "EnemyMissile": 1.0,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (15, 87)",
+            "PlayerMissile at (50, 60)",
+            "Enemy at (87, 14)",
+            "Enemy at (25, 34)",
+            "Enemy at (97, 94)",
+            "Enemy at (60, 114)",
+            "Enemy at (18, 134)",
+            "Enemy at (104, 154)",
+            "EnemyMissile at (19, 128)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (14, 88), (5, 20)\n",
+            "PlayerMissile at (50, 59), (4, 2)\n",
+            "Enemy at (105, 154), (8, 16)\n",
+            "Enemy at (19, 134), (8, 16)\n",
+            "EnemyMissile at (19, 128), (1, 6)\n",
+            "Enemy at (61, 114), (8, 16)\n",
+            "Enemy at (98, 94), (8, 16)\n",
+            "Enemy at (26, 34), (8, 18)\n",
+            "Enemy at (88, 14), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_81": {
+        "mean_iou": 0.7553398058252426,
+        "per_class_ious": {
+            "Player": 0.5533980582524272,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 1.0,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (16, 81)",
+            "PlayerMissile at (83, 90)",
+            "Enemy at (87, 14)",
+            "Enemy at (25, 40)",
+            "Enemy at (97, 94)",
+            "Enemy at (60, 114)",
+            "Enemy at (18, 134)",
+            "Enemy at (104, 154)",
+            "EnemyMissile at (26, 64)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (83, 91), (4, 2)\n",
+            "Player at (14, 82), (8, 20)\n",
+            "Enemy at (105, 154), (8, 16)\n",
+            "Enemy at (19, 134), (8, 16)\n",
+            "Enemy at (61, 114), (8, 16)\n",
+            "Enemy at (98, 94), (8, 16)\n",
+            "EnemyMissile at (26, 64), (1, 6)\n",
+            "Enemy at (26, 40), (8, 16)\n",
+            "Enemy at (88, 14), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_83": {
+        "mean_iou": 0.7222222222222222,
+        "per_class_ious": {
+            "Player": 0.5,
+            "PlayerMissile": 0.3333333333333333,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (11, 83)",
+            "PlayerMissile at (94, 86)",
+            "Enemy at (76, 14)",
+            "Enemy at (25, 40)",
+            "Enemy at (97, 94)",
+            "Enemy at (60, 114)",
+            "Enemy at (17, 134)",
+            "Enemy at (104, 154)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (94, 87), (4, 2)\n",
+            "Player at (13, 83), (4, 20)\n",
+            "Enemy at (105, 154), (8, 16)\n",
+            "Enemy at (18, 134), (8, 16)\n",
+            "Enemy at (61, 114), (8, 16)\n",
+            "Enemy at (98, 94), (8, 16)\n",
+            "Enemy at (26, 40), (8, 16)\n",
+            "Enemy at (77, 14), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_84": {
+        "mean_iou": 0.7770789657582111,
+        "per_class_ious": {
+            "Player": 0.660377358490566,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 0.6666666666666666,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 83)",
+            "Enemy at (67, 14)",
+            "Enemy at (25, 40)",
+            "Enemy at (97, 94)",
+            "Enemy at (60, 114)",
+            "Enemy at (17, 134)",
+            "Enemy at (104, 154)",
+            "EnemyMissile at (71, 104)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (7, 81), (8, 24)\n",
+            "Enemy at (105, 154), (8, 16)\n",
+            "Enemy at (18, 134), (8, 16)\n",
+            "Enemy at (61, 114), (8, 16)\n",
+            "EnemyMissile at (71, 104), (4, 2)\n",
+            "Enemy at (98, 94), (8, 16)\n",
+            "Enemy at (26, 40), (8, 16)\n",
+            "Enemy at (68, 14), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_85": {
+        "mean_iou": 0.7769916142557652,
+        "per_class_ious": {
+            "Player": 0.660377358490566,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 0.6666666666666666,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 83)",
+            "Enemy at (14, 40)",
+            "Enemy at (97, 88)",
+            "Enemy at (60, 114)",
+            "Enemy at (17, 134)",
+            "Enemy at (104, 154)",
+            "EnemyMissile at (41, 104)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (7, 81), (8, 24)\n",
+            "Enemy at (105, 154), (8, 16)\n",
+            "Enemy at (18, 134), (8, 16)\n",
+            "Enemy at (61, 114), (8, 16)\n",
+            "EnemyMissile at (41, 104), (4, 2)\n",
+            "Enemy at (98, 88), (8, 16)\n",
+            "Enemy at (15, 40), (8, 16)\n",
+            "PlayerScore at (80, 183), (22, 7)\n"
+        ]
+    },
+    "Image_89": {
+        "mean_iou": 0.42857142857142855,
+        "per_class_ious": {
+            "PlayerScore": 0.42857142857142855
+        },
+        "only_in_ram": [
+            "Player at (8, 132)",
+            "Enemy at (86, 34)",
+            "Enemy at (57, 54)",
+            "Enemy at (119, 154)"
+        ],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 132)",
+            "Enemy at (86, 34)",
+            "Enemy at (57, 54)",
+            "Enemy at (119, 154)",
+            "PlayerScore at (88, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerScore at (96, 183), (6, 7)\n"
+        ]
+    },
+    "Image_91": {
+        "mean_iou": 0.7927523210542079,
+        "per_class_ious": {
+            "Player": 0.660377358490566,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 78)",
+            "Enemy at (15, 54)",
+            "Enemy at (71, 74)",
+            "Enemy at (85, 94)",
+            "Enemy at (57, 114)",
+            "Enemy at (80, 140)",
+            "PlayerScore at (88, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (7, 76), (8, 24)\n",
+            "Enemy at (81, 140), (8, 16)\n",
+            "Enemy at (58, 114), (8, 16)\n",
+            "Enemy at (86, 94), (8, 16)\n",
+            "Enemy at (72, 74), (8, 16)\n",
+            "Enemy at (16, 54), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n"
+        ]
+    },
+    "Image_92": {
+        "mean_iou": 0.7983405483405484,
+        "per_class_ious": {
+            "Player": 0.75,
+            "Enemy": 0.7676767676767676,
+            "PlayerScore": 1.0
+        },
+        "only_in_ram": [
+            "EnemyMissile at (62, 84)"
+        ],
+        "only_in_vision": [],
+        "objs_in_ram": [
+            "Player at (8, 78)",
+            "Enemy at (15, 54)",
+            "Enemy at (64, 74)",
+            "Enemy at (85, 94)",
+            "Enemy at (57, 114)",
+            "Enemy at (77, 134)",
+            "EnemyMissile at (62, 84)",
+            "PlayerScore at (88, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (8, 78), (6, 20)\n",
+            "Enemy at (78, 134), (8, 16)\n",
+            "Enemy at (58, 114), (8, 16)\n",
+            "Enemy at (86, 94), (8, 16)\n",
+            "Enemy at (62, 74), (11, 16)\n",
+            "Enemy at (16, 54), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n"
+        ]
+    },
+    "Image_96": {
+        "mean_iou": 0.7809343434343434,
+        "per_class_ious": {
+            "Player": 0.5,
+            "PlayerMissile": 1.0,
+            "Enemy": 0.7777777777777778,
+            "EnemyMissile": 1.0,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (9, 74)",
+            "PlayerMissile at (18, 111)",
+            "Enemy at (9, 34)",
+            "Enemy at (37, 54)",
+            "Enemy at (45, 134)",
+            "Enemy at (117, 154)",
+            "EnemyMissile at (10, 56)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "PlayerMissile at (18, 111), (1, 6)\n",
+            "Player at (9, 74), (4, 20)\n",
+            "Enemy at (118, 154), (8, 16)\n",
+            "Enemy at (46, 134), (8, 16)\n",
+            "EnemyMissile at (10, 56), (1, 6)\n",
+            "Enemy at (38, 54), (8, 16)\n",
+            "Enemy at (10, 34), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_97": {
+        "mean_iou": 0.7346420176608855,
+        "per_class_ious": {
+            "Player": 0.660377358490566,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (8, 74)",
+            "Enemy at (9, 34)",
+            "Enemy at (37, 54)",
+            "Enemy at (33, 134)",
+            "Enemy at (108, 154)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (7, 72), (8, 24)\n",
+            "Enemy at (109, 154), (8, 16)\n",
+            "Enemy at (34, 134), (8, 16)\n",
+            "Enemy at (38, 54), (8, 16)\n",
+            "Enemy at (10, 34), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    },
+    "Image_98": {
+        "mean_iou": 0.7439393939393939,
+        "per_class_ious": {
+            "Player": 0.75,
+            "Enemy": 0.7777777777777778,
+            "PlayerScore": 0.6363636363636364
+        },
+        "only_in_ram": [],
+        "only_in_vision": [
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ],
+        "objs_in_ram": [
+            "Player at (8, 74)",
+            "Enemy at (9, 34)",
+            "Enemy at (37, 54)",
+            "Enemy at (96, 154)",
+            "PlayerScore at (80, 183)"
+        ],
+        "objs_in_vision": [
+            "Player at (8, 74), (6, 20)\n",
+            "Enemy at (97, 154), (8, 16)\n",
+            "Enemy at (38, 54), (8, 16)\n",
+            "Enemy at (10, 34), (8, 16)\n",
+            "PlayerScore at (88, 183), (14, 7)\n",
+            "PlayerScore at (81, 183), (4, 7)\n"
+        ]
+    }
+}

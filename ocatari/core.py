@@ -15,12 +15,10 @@ import torch
 
 DEVICE = "cpu"
 
-
-AVAILABLE_GAMES = ['Asterix', 'Berzerk', 'Bowling', 'Boxing', 'Breakout', 
-                   'Carnival', 'Centipede', 'DemonAttack', 'Freeway', 
-                   'Kangaroo', 'MsPacman', 'Pong', 'Seaquest', 'Skiing', 
-                   'SpaceInvaders', 'Tennis']
-
+AVAILABLE_GAMES = ["Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
+                   "Breakout", "Carnival", "Centipede", "ChoppperCommand" "DemonAttack", "Freeway", "Kangaroo",
+                   "MontezumaRevenge", "MsPacman", "Pong", "Qbert", "Riverraid", "Seaquest", "Skiing", "SpaceInvaders",
+                   "Tennis"]
 
 class OCAtari:
     def __init__(self, env_name, mode="raw", hud=False, obs_mode="dqn", *args, **kwargs):
@@ -68,6 +66,7 @@ class OCAtari:
         self.window = 4
         self._state_buffer = deque([], maxlen=self.window)
         self.action_space = self._env.action_space
+        self._ale = self._env.unwrapped.ale
 
     def _step_ram(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
@@ -125,7 +124,7 @@ class OCAtari:
 
     def close(self, *args, **kwargs):
         return self._env.close(*args, **kwargs)
-    
+
     def seed(self, seed, *args, **kwargs):
         self._env.seed(seed, *args, **kwargs)
 
@@ -142,6 +141,21 @@ class OCAtari:
         Directly manipulate a targeted RAM position
         """
         return self._env.unwrapped.ale.setRAM(target_ram_position, new_value)
+
+    def get_ram(self):
+        return self._ale.getRAM()
+
+    def get_action_meanings(self):
+        return self._env.env.env.get_action_meanings()
+
+    def _get_obs(self):
+        return self._env.env.env.unwrapped._get_obs()
+
+    def _clone_state(self):
+        return self._env.env.env.ale.cloneSystemState()
+
+    def _restore_state(self, state):
+        return self._env.env.env.ale.cloneSystemState()
     
     def render_explanations(self):
         coefs = [0.05, 0.1, 0.25, 0.6]
@@ -171,4 +185,4 @@ class OCAtari:
         table.set_fontsize(14)
         plt.subplots_adjust(top=0.8)
         plt.show()
-            
+        

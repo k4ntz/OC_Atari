@@ -7,19 +7,28 @@ sys.path.insert(0, '../../') # noqa
 
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
+from ocatari.utils import load_agent, parser
 
 game_name = "Kangaroo"
 MODE = "vision"
 MODE = "revised"
-HUD = False
+HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
-env._env.unwrapped.ale.setRAM(36, 1)
+opts = parser.parse_args()
+
+if opts.path:
+    agent = load_agent(opts, env.action_space.n)
+
+# env._env.unwrapped.ale.setRAM(36, 1)
 
 for i in range(1000):
-
-    obs, reward, terminated, truncated, info = env.step(6)  # env.step(6) for easy movement
+    if opts.path is not None:
+        action = agent.draw_action(env.dqn_obs)
+    else:
+        action = 6
+    obs, reward, terminated, truncated, info = env.step(action)  # env.step(6) for easy movement
 
     if i%10 == 0 and i > 50:
         # obse2 = deepcopy(obse)
@@ -31,12 +40,8 @@ for i in range(1000):
                 ocol = obj.rgb
                 sur_col = make_darker(ocol)
                 mark_bb(obs, opos, color=sur_col)
-            # mark_point(obs, *opos[:2], color=(255, 255, 0))
-
         plt.imshow(obs)
         plt.show()
-
     if terminated or truncated:
         observation, info = env.reset()
-    # modify and display render
 env.close()

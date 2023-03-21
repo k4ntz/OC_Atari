@@ -1,29 +1,20 @@
 # appends parent path to syspath to make ocatari importable
 # like it would have been installed as a package
 import sys
-from os import path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-
 import random
 import matplotlib.pyplot as plt
+sys.path.insert(0, '../../') # noqa
+
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
-from ocatari.vision.tennis import objects_colors
-# from ocatari.vision.pong import objects_colors
 from ocatari.utils import load_agent, parser
 
-game_name = "SpaceInvaders"
-game_name = "Pong"
-# game_name = "Boxing"
-# game_name = "Tennis"
-# game_name = "Skiing"
+game_name = "Assault"
 MODE = "vision"
-# MODE = "revised"
-HUD=True
+MODE = "revised"
+HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
-prevRam = None
-already_figured_out = []
 
 opts = parser.parse_args()
 
@@ -34,15 +25,24 @@ for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
-        action = random.randint(0, 5)
+        action = random.randint(6, 6)
     obs, reward, terminated, truncated, info = env.step(action)
-    if info.get('frame_number') > 0 and i % 100 == 0:
+    ram = env._env.unwrapped.ale.getRAM()
+    if i % 50 == 0:
+        print(env.objects)
+        print("Enemy_app: " + str(ram[54:57]))
+        print("enemy_type " + str(ram[40:42]))
+        print("enemy_x " + str(ram[33:36]))
+        print("enemy_x_2 " + str(ram[36:39]))
         for obj in env.objects:
-            opos = obj.xywh
-            ocol = obj.rgb
-            sur_col = make_darker(ocol)
-            mark_bb(obs, opos, color=sur_col)
+            x, y = obj.xy
+            if x < 160 and y < 210 and obj.visible:
+                opos = obj.xywh
+                ocol = obj.rgb
+                sur_col = make_darker(ocol)
+                mark_bb(obs, opos, color=sur_col)
             # mark_point(obs, *opos[:2], color=(255, 255, 0))
+
         plt.imshow(obs)
         plt.show()
 

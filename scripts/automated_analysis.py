@@ -298,16 +298,14 @@ def do_analysis(env, dump_path, new_dump, min_correlation, maximum_x,
 
 
 if __name__ == "__main__":
-    GAME_NAME = "Centipede"
-    GAME_NAME = "Asterix-v4"  # DemonAttack
+    GAME_NAME = "Asterix-v4"
     MODE = "vision"    # do not change
-    # RENDER_MODE = "human"
     RENDER_MODE = "rgb_array"  # do not change
     MAXIMUM_X = 160  # right side of screen in rgb_array
     MAXIMUM_Y = 210  # bottom of screen in rgb_array
     DUMP_PATH = None  # path to dump otherwise takes standard
     NEW_DUMP = False  # if True creates new datasets and dumps it overwriting the previous ones
-    MIN_CORRELATION = 0.8
+    MIN_CORRELATION = 0.8  # the minimal correlation required for a ram value to be relevant for an object
     DROP_CONSTANTS = True  # if True does not consider not changing variables for objects
     START_FRAME = 100  # selects the frame at which each simulation starts
 

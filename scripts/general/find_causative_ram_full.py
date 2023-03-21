@@ -24,7 +24,7 @@ def _count_inequalities(obs0, obs):
     return counter
 
 
-def find_causative_ram(game, repetitions=3, show_plot=False):
+def find_causative_ram(game, repetitions=3):
     """
     goes over the entire ram. manipulating it to observe possible changes in the given bb
 
@@ -91,9 +91,9 @@ def _check_path(game_name):
 
 
 if __name__ == "__main__":
-    game = "Centipede"
+    game = "MontezumaRevenge"
     dump_path = _check_path(game)
-    candidates, fig_list1 = find_causative_ram(game, show_plot=True)
+    candidates, fig_list1 = find_causative_ram(game)
 
     for i in range(len(fig_list1)):
         dump_path_new = dump_path + "possible_objects" + str(i) + ".png"

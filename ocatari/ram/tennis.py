@@ -6,6 +6,7 @@ from .game_objects import GameObject
 RAM extraction for the game TENNIS. Supported modes: raw, revised.
 """
 
+
 MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 1, 'Ball': 1, 'BallShadow': 1}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'Ball': 1, 'BallShadow': 1, 'PlayerScore': 1, 'EnemyScore': 1, 'Logo': 1}
 
