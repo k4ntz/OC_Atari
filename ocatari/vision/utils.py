@@ -242,14 +242,14 @@ def find_rectangle_objects(image, color, max_size=None, minx=0, miny=0, maxx=160
     detected = []
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
-        detected.extend(find_rectangles_in_bb(mask.copy(), (x, y, w, h), max_size, minx, miny))
-
         # smaller particles are detected but smaller than the given size (for cut particles)
         w1, h1 = max_size
         if w <= w1 or h <= h1:
             x, y = x + minx, y + miny  # compensating cutoff
             if not detected.__contains__((x, y, w, h)):
                 detected.append((x, y, w, h))
+        else:
+            detected.extend(find_rectangles_in_bb(mask.copy(), (x, y, w, h), max_size, minx, miny))
     return detected
 
 
@@ -280,9 +280,12 @@ def find_rectangles_in_bb(mask, bb, size, minx, miny):
                 rect = True
                 for a in range(offy):
                     for b in range(offx):
-                        if mask[row + a, column + b] == black:
-                            rect = False
-                            break
+                        try:
+                            if mask[row + a, column + b] == black:
+                                rect = False
+                                break
+                        except IndexError:
+                            import ipdb; ipdb.set_trace()
                     if not rect:
                         break
 
