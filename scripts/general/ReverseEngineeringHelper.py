@@ -14,26 +14,28 @@ from ocatari.vision.utils import make_darker, mark_bb
 
 
 # running this file will start the game in multiple different ways given by the following variables:
-useOCAtari = False                # if True, running this file will execute the OCAtari code
+useOCAtari = True                # if True, running this file will execute the OCAtari code
 printEnvInfo = False             # if True, the extracted objects or the environment info will be printed
+
+# OCAtari modes
+mode = "vision"                    # raw, revised, vision, test
+mode = "revised"                    # raw, revised, vision, test
+HUD = True                      # if True, the returned objects are only the necessary ones
 
 # gym[atari]/gymnasium
 game_name = "ChopperCommand-v4"            # game name, e.g.: ChopperCommand-v4, Pong, Boxing or ...
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
 seed = 42                       # resetting environment seed
-fps = 60                        # render fps
+fps = 30                        # render fps
 
-# OCAtari modes
-mode = "vision"                    # raw, revised, vision, test
-HUD = True                      # if True, the returned objects are only the necessary ones
 
 # actions
 # possible action inputs given by a run with showInputs = True
 performActions = 30000         # number of actions that will be performed until the environment shuts down automatically
 INPUTS = ['NOOP', 'FIRE', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'UPRIGHT', 'UPLEFT', 'DOWNRIGHT', 'DOWNLEFT', 'UPFIRE',
           'RIGHTFIRE', 'LEFTFIRE', 'DOWNFIRE', 'UPRIGHTFIRE', 'UPLEFTFIRE', 'DOWNRIGHTFIRE', 'DOWNLEFTFIRE']
-playGame = False                # if True, enables inputs if you want to play
+playGame = True                # if True, enables inputs if you want to play
 key_map = {                     # the inputs mapped to the possible basic actions
 'f': 'FIRE',                    # -> every other action should be a combination of them
 'up': 'UP',
@@ -321,9 +323,12 @@ def on_press(key):
 
         # other inputs
         key_name = str(key)
-        key_name = key_name.removeprefix("Key.")
-        key_name = key_name.removeprefix("\'")
-        key_name = key_name.removesuffix("\'")
+        if key_name.startswith("Key."):
+            key_name = key_name[4:]
+        if "\'" in key_name:
+            key_name = key_name.replace("\'", "")
+        # key_name = key_name.removeprefix("\'")
+        # key_name = key_name.removesuffix("\'")
 
         # ipdb
         if key_name == 'i':
@@ -344,9 +349,13 @@ def on_release(key):
     if not interrupted:
         # changing inputs
         key_name = str(key)
-        key_name = key_name.removeprefix("Key.")
-        key_name = key_name.removeprefix("\'")
-        key_name = key_name.removesuffix("\'")
+        if key_name.startswith("Key."):
+            key_name = key_name[4:]
+        if "\'" in key_name:
+            key_name = key_name.replace("\'", "")
+        # key_name = key_name.removeprefix("Key.")
+        # key_name = key_name.removeprefix("\'")
+        # key_name = key_name.removesuffix("\'")
 
         if key_name in key_map.keys():
             # print("released")
