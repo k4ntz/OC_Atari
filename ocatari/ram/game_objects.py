@@ -7,6 +7,7 @@ class GameObject:
         self._xy = (0, 0)
         self.wh = (0, 0)
         self._prev_xy = (0, 0)
+        self._orientation = 0
         self.hud = False
 
     def __repr__(self):
@@ -64,6 +65,14 @@ class GameObject:
     @property
     def h(self):
         return self.wh[1]
+
+    @property
+    def orientation(self):
+        return self._orientation
+
+    @orientation.setter
+    def orientation(self, o):
+        self._orientation = o
 
     def is_on_top(self, other):
         return (other.x <= self.x <= other.x + other.w) and \
