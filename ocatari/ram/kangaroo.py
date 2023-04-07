@@ -46,6 +46,15 @@ class Fruit(GameObject):
         self.hud = False
 
 
+class Scale(GameObject):
+    def __init__(self, x, y, *args, **kwargs):
+        super(Scale, self).__init__(*args, **kwargs)
+        self._xy = x, y
+        self.wh = 8, 35
+        self.rgb = 162, 98, 33
+        self.hud = False
+
+
 class Projectile_top(GameObject):
     def __init__(self, *args, **kwargs):
         super(Projectile_top, self).__init__()
@@ -266,6 +275,7 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
         time = Time()
         objects.append(time)
         # time.xy = 80, 191
+        add_platforms(ram_state[40], objects)
     return objects
 
 
@@ -298,3 +308,13 @@ def _get_fruit_type_kangaroo(ram_state):
             return 214, 92, 92
     else:
         return None
+
+def add_platforms(lvl_value, objects):
+    if lvl_value < 23:
+        objects.append(Scale(132, 132))
+        objects.append(Scale(20, 85))
+        objects.append(Scale(132, 37))
+    elif lvl_value < 46:
+        pass
+    else:
+        objects.append(Scale(20, 36))
