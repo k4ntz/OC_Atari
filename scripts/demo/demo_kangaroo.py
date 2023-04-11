@@ -34,7 +34,7 @@ for i in range(1000):
         action = 6
     obs, reward, terminated, truncated, info = env.step(action)  # env.step(6) for easy movement
 
-    if i%10 == 0 and i > 50:
+    if i%10 == 0 and i > 60:
         # obse2 = deepcopy(obse)
         print(env.objects)
         for obj in env.objects:
