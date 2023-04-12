@@ -6,8 +6,8 @@ RAM extraction for the game KANGUROO. Supported modes: raw, revised.
 
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1,'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1, 'Score': 1, 'Life': 8, 'Time': 1, }
+MAX_NB_OBJECTS =  {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Platform': 4, 'Scale': 3, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Platform': 4, 'Scale': 3, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1, 'Score': 1, 'Life': 8, 'Time': 1}
 
 class Player(GameObject):
     def __init__(self):
@@ -43,6 +43,24 @@ class Fruit(GameObject):
         self._xy = 125, 173
         self.wh = 7, 10
         self.rgb = 214, 92, 92
+        self.hud = False
+
+
+class Scale(GameObject):
+    def __init__(self, x, y, w=8, h=35, *args, **kwargs):
+        super(Scale, self).__init__(*args, **kwargs)
+        self._xy = x, y
+        self.wh = w, h
+        self.rgb = 162, 98, 33
+        self.hud = False
+
+
+class Platform(GameObject):
+    def __init__(self, x, y, w=8, h=4, *args, **kwargs):
+        super(Platform, self).__init__(*args, **kwargs)
+        self._xy = x, y
+        self.wh = w, h
+        self.rgb = 162, 98, 33
         self.hud = False
 
 
@@ -266,6 +284,7 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
         time = Time()
         objects.append(time)
         # time.xy = 80, 191
+    add_platforms(ram_state[40], objects)
     return objects
 
 
@@ -298,3 +317,59 @@ def _get_fruit_type_kangaroo(ram_state):
             return 214, 92, 92
     else:
         return None
+
+def add_platforms(lvl_value, objects):
+    objects.append(Platform(16, 172, w=128))  # base platform
+    objects.append(Platform(16, 28, w=128))  # top platform
+    if lvl_value < 23:
+        objects.append(Scale(132, 132))
+        objects.append(Platform(16, 76, w=128))
+        objects.append(Scale(20, 85))
+        objects.append(Platform(16, 124, w=128))
+        objects.append(Scale(132, 37))
+    elif lvl_value < 46:
+        objects.append(Platform(16, 124, w=28))
+        objects.append(Platform(52, 124, w=92))
+        objects.append(Platform(16, 76, w=60))
+        objects.append(Platform(84, 76, w=60))
+        objects.append(Scale(120, 132, h=4))
+        objects.append(Scale(24, 116, h=4))
+        objects.append(Scale(128, 36, h=4))
+        objects.append(Platform(28, 164, w=24))
+        objects.append(Platform(112, 84, w=24))
+        objects.append(Platform(120, 44, w=24))
+        objects.append(Platform(48, 156, w=32))
+        objects.append(Platform(76, 148, w=32))
+        objects.append(Platform(104, 140, w=32))
+        objects.append(Platform(16, 108, w=32))
+        objects.append(Platform(56, 100, w=20))
+        objects.append(Platform(56, 100, w=20))
+        objects.append(Platform(84, 92, w=20))
+        objects.append(Platform(64, 60, w=20))
+        objects.append(Platform(92, 52, w=20))
+        objects.append(Platform(28, 68, w=28))
+    else:
+        objects.append(Scale(20, 36, h=28))
+        objects.append(Scale(20, 148, h=4))
+        objects.append(Scale(36, 116, h=20))
+        objects.append(Scale(104, 36, h=20))
+        objects.append(Scale(120, 68, h=4))
+        objects.append(Scale(132, 84, h=4))
+        objects.append(Platform(88, 140, w=16))
+        objects.append(Platform(64, 148, w=16))
+        objects.append(Platform(100, 116, w=16))
+        objects.append(Platform(48, 100, w=16))
+        objects.append(Platform(76, 52, w=16))
+        objects.append(Platform(80, 36, w=16))
+        objects.append(Platform(104, 132, w=20))
+        objects.append(Platform(84, 156, w=20))
+        objects.append(Platform(124, 124, w=20))
+        objects.append(Platform(52, 84, w=20))
+        objects.append(Platform(108, 164, w=36))
+        objects.append(Platform(16, 108, w=80))
+        objects.append(Platform(16, 92, w=28))
+        objects.append(Platform(76, 92, w=68))
+        objects.append(Platform(16, 140, w=32))
+        objects.append(Platform(96, 60, w=36))
+        objects.append(Platform(100, 76, w=44))
+        objects.append(Platform(60, 44, w=12))

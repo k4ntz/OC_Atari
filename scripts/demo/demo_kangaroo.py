@@ -8,6 +8,8 @@ sys.path.insert(0, '../../') # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.utils import load_agent, parser
+import pickle
+
 
 game_name = "Kangaroo"
 MODE = "vision"
@@ -22,6 +24,8 @@ if opts.path:
     agent = load_agent(opts, env.action_space.n)
 
 # env._env.unwrapped.ale.setRAM(36, 1)
+snapshot = pickle.load(open("lvl3.pkl", "rb"))
+env._env.env.env.ale.restoreState(snapshot)
 
 for i in range(1000):
     if opts.path is not None:
@@ -30,7 +34,7 @@ for i in range(1000):
         action = 6
     obs, reward, terminated, truncated, info = env.step(action)  # env.step(6) for easy movement
 
-    if i%10 == 0 and i > 50:
+    if i%10 == 0 and i > 60:
         # obse2 = deepcopy(obse)
         print(env.objects)
         for obj in env.objects:
@@ -40,7 +44,8 @@ for i in range(1000):
                 ocol = obj.rgb
                 sur_col = make_darker(ocol)
                 mark_bb(obs, opos, color=sur_col)
-        plt.imshow(obs)
+        _, ax = plt.subplots(1, 1, figsize=(13, 20))
+        ax.imshow(obs)
         plt.show()
     if terminated or truncated:
         observation, info = env.reset()

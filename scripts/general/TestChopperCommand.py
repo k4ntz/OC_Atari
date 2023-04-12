@@ -20,9 +20,11 @@ printEnvInfo = False             # if True, the extracted objects or the environ
 
 # gym[atari]/gymnasium
 game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
-render_mode = "human"           # render_mode => "rgb_array" is advised, when playing
+game_name = "Kangaroo-v4"    # game name ChopperCommand-v4
+render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
 fps = 60                        # render fps
+seed = 0
 
 # actions
 # possible action inputs given by a run with showInputs = True
@@ -68,12 +70,14 @@ pause = False
 end = False
 interrupted = False
 
+fig = plt.gcf()
+fig.set_size_inches(10.5, 18.5)
+
 
 def withgym():
     """
     Sets up the gym environment and runs the game
     """
-
     # set up environment
     env = gym.make(game_name, render_mode=render_mode)
     env.reset(seed=seed)
@@ -92,6 +96,18 @@ def withocatari():
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
 
     run(oc)
+
+
+# def repeat_upsample(rgb_array, k=4, l=4, err=[]):
+#     # repeat kinda crashes if k/l are zero
+#     if rgb_array is None:
+#         raise ValueError("The rgb_array is None, probably mushroom_rl bug")
+#     if k <= 0 or l <= 0:
+#         if not err:
+#             print("Number of repeats must be larger than 0, k: {}, l: {}, returning default array!".format(k, l))
+#             err.append('logged')
+#         return rgb_array
+#     return np.repeat(np.repeat(rgb_array, k, axis=0), l, axis=1)
 
 
 def run(env):
@@ -222,6 +238,7 @@ def run(env):
         if showImage and image is not None:
             if manager is not None:
                 manager.remove()  # remove the last plot to avoid stacking plots
+            # import ipdb; ipdb.set_trace()
             manager = plt.imshow(image)  # wrap the array as an image
             plt.pause(0.001)  # pause the interaction for a bit, so that the plot is drawn
             plt.pause(slowDownPlot)
