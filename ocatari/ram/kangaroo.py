@@ -6,8 +6,8 @@ RAM extraction for the game KANGUROO. Supported modes: raw, revised.
 
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1,'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1, 'Score': 1, 'Life': 8, 'Time': 1, }
+MAX_NB_OBJECTS =  {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Platform': 4, 'Scale': 3, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Platform': 4, 'Scale': 3, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1, 'Score': 1, 'Life': 8, 'Time': 1}
 
 class Player(GameObject):
     def __init__(self):
@@ -284,7 +284,7 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
         time = Time()
         objects.append(time)
         # time.xy = 80, 191
-        add_platforms(ram_state[40], objects)
+    add_platforms(ram_state[40], objects)
     return objects
 
 
