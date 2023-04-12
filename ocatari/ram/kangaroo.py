@@ -47,7 +47,7 @@ class Fruit(GameObject):
 
 
 class Scale(GameObject):
-    def __init__(self, x, y, w=8, h=35, *args, **kwargs):
+    def __init__(self, x=0, y=0, w=8, h=35, *args, **kwargs):
         super(Scale, self).__init__(*args, **kwargs)
         self._xy = x, y
         self.wh = w, h
@@ -56,7 +56,7 @@ class Scale(GameObject):
 
 
 class Platform(GameObject):
-    def __init__(self, x, y, w=8, h=4, *args, **kwargs):
+    def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
         super(Platform, self).__init__(*args, **kwargs)
         self._xy = x, y
         self.wh = w, h
