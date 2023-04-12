@@ -269,7 +269,7 @@ def find_rectangles_in_bb(mask, bb, size, minx, miny):
 
     row = 0
     for line in mask:
-        if row + offx > mask.shape[0]:
+        if row + offy > mask.shape[0]:
             break
         column = 0
         for element in line:
