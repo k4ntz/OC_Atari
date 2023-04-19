@@ -8,6 +8,7 @@ RAM extraction for the game KANGUROO. Supported modes: raw, revised.
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Platform': 4, 'Scale': 3, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Platform': 4, 'Scale': 3, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1, 'Score': 1, 'Life': 8, 'Time': 1}
+obj_tracker = {}
 
 class Player(GameObject):
     def __init__(self):
@@ -50,6 +51,7 @@ class Scale(GameObject):
     def __init__(self, x=0, y=0, w=8, h=35, *args, **kwargs):
         super(Scale, self).__init__(*args, **kwargs)
         self._xy = x, y
+        self._prev_xy = x, y
         self.wh = w, h
         self.rgb = 162, 98, 33
         self.hud = False
@@ -59,6 +61,7 @@ class Platform(GameObject):
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
         super(Platform, self).__init__(*args, **kwargs)
         self._xy = x, y
+        self._prev_xy = x, y
         self.wh = w, h
         self.rgb = 162, 98, 33
         self.hud = False
@@ -147,9 +150,11 @@ def _init_objects_kangaroo_ram(hud=True):
 def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
     objects.clear()
 
-    kp = Player()
-    objects.append(kp)
     # player
+    if not "kp" in obj_tracker.keys():
+        obj_tracker["kp"] = Player()
+    kp = obj_tracker["kp"]
+    objects.append(kp)
     kp.xy = ram_state[17] + 15, ram_state[16] * 8 + 5
     if ram_state[19] > 16 and ram_state[19] < 24:
         kp.wh = 8, 13
@@ -158,45 +163,55 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
     else:
         kp.wh = 8, 24
 
-    kc = Child()
-    objects.append(kc)
     # kangaroo child (goal)
+    if not "kc" in obj_tracker.keys():
+        obj_tracker["kc"] = Child()
+    kc = obj_tracker["kc"]
+    objects.append(kc)
     kc.xy = ram_state[83] + 15, 12
 
     # enemies/monkeys
-    m1 = Enemy()
+    if not "m1" in obj_tracker.keys():
+        obj_tracker["m1"] = Enemy()
+    m1 = obj_tracker["m1"]
     if ram_state[11] != 255:
         objects.append(m1)
         m1.xy = ram_state[15] + 16, ram_state[11] * 8 + 5
-
-    m2 = Enemy()
+    if not "m2" in obj_tracker.keys():
+        obj_tracker["m2"] = Enemy()
+    m2 = obj_tracker["m2"]
     if ram_state[10] != 255:
         objects.append(m2)
         m2.xy = ram_state[14] + 16, ram_state[10] * 8 + 5
-
-    m3 = Enemy()
+    if not "m3" in obj_tracker.keys():
+        obj_tracker["m3"] = Enemy()
+    m3 = obj_tracker["m3"]
     if ram_state[9] != 255:
         objects.append(m3)
         m3.xy = ram_state[13] + 16, ram_state[9] * 8 + 5
-
-    m4 = Enemy()
+    if not "m4" in obj_tracker.keys():
+        obj_tracker["m4"] = Enemy()
+    m4 = obj_tracker["m4"]
     if ram_state[8] != 255:
         objects.append(m4)
         m4.xy = ram_state[12] + 16, ram_state[8] * 8 + 5
 
-    p1 = Projectile_top()
-    objects.append(p1)
     # falling Projectile
+    if not "p1" in obj_tracker.keys():
+        obj_tracker["p1"] = Projectile_top()
+    p1 = obj_tracker["p1"]
+    objects.append(p1)
     if ram_state[33] != 255:
         p1.xy = ram_state[34] + 14, ((ram_state[33] - (22 * ram_state[36])) * 8) + 9
     else:
         objects.remove(p1)
 
     # thrown by monkeys Projectile
-
     # This projectiles visual representation seems to differ from its RAM x position,
     # therefor you will see it leaving the bounding box on both left and right depending on the situation
-    p2 = Projectile_enemy()
+    if not "p2" in obj_tracker.keys():
+        obj_tracker["p2"] = Projectile_enemy()
+    p2 = obj_tracker["p2"]
     objects.append(p2)
     if ram_state[25] != 255:
         p2.xy = ram_state[28] + 15, (ram_state[25] * 8) + 1
@@ -204,11 +219,17 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
         objects.remove(p2)
 
     # fruits
-    f1 = Fruit()
+    if not "f1" in obj_tracker.keys():
+        obj_tracker["f1"] = Fruit()
+    f1 = obj_tracker["f1"]
     objects.append(f1)
-    f2 = Fruit()
+    if not "f2" in obj_tracker.keys():
+        obj_tracker["f2"] = Fruit()
+    f2 = obj_tracker["f2"]
     objects.append(f2)
-    f3 = Fruit()
+    if not "f3" in obj_tracker.keys():
+        obj_tracker["f3"] = Fruit()
+    f3 = obj_tracker["f3"]
     objects.append(f3)
     if ram_state[87] == ram_state[86]:
         y1 = (ram_state[84] * 8) + 4
@@ -251,7 +272,10 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
     else:
         objects.remove(f3)
 
-    bell = Bell()
+    # bell
+    if not "bell" in obj_tracker.keys():
+        obj_tracker["bell"] = Bell()
+    bell = obj_tracker["bell"]
     objects.append(bell)
     bell.xy = ram_state[82] + 16, 36
 
