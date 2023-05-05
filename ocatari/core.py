@@ -35,7 +35,7 @@ class OCAtari:
         self._ale = self._env.unwrapped.ale
         self.hud = hud
         self.max_objects = []
-        self.objects = init_objects(self.game_name, self.hud)
+        self._objects = init_objects(self.game_name, self.hud)
         if mode == "vision":
             self.detect_objects = detect_objects_vision
             self.step = self._step_vision
@@ -71,7 +71,7 @@ class OCAtari:
     def _step_ram(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
         if self.mode == "revised":
-            self.detect_objects(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
+            self.detect_objects(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         else:   # mode == "raw" because in raw mode we augment the info dictionary
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
         self._fill_buffer()
@@ -79,13 +79,13 @@ class OCAtari:
 
     def _step_vision(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
-        self.detect_objects(self.objects, obs, self.game_name, self.hud)
+        self.detect_objects(self._objects, obs, self.game_name, self.hud)
         self._fill_buffer()
         return obs, reward, truncated, terminated, info
 
     def _step_test(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
-        self.detect_objects_r(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
+        self.detect_objects_r(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self.detect_objects_v(self.objects_v, obs, self.game_name, self.hud)
         self._fill_buffer()
         return obs, reward, truncated, terminated, info
@@ -104,7 +104,7 @@ class OCAtari:
 
     def reset(self, *args, **kwargs):
         self._reset_buffer()
-        self.objects = init_objects(self.game_name, self.hud)
+        self._objects = init_objects(self.game_name, self.hud)
         return self._env.reset(*args, **kwargs)
 
     def _fill_buffer_dqn(self):
@@ -156,6 +156,10 @@ class OCAtari:
 
     def _restore_state(self, state):
         return self._env.env.env.ale.cloneSystemState()
+
+    @property
+    def objects(self):
+        return [obj for obj in self._objects if obj]
     
     def render_explanations(self):
         coefs = [0.05, 0.1, 0.25, 0.6]
