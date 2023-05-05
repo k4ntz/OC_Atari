@@ -1,6 +1,6 @@
-from .utils import find_objects
+from .utils import find_objects, find_mc_objects
 from .game_objects import GameObject
-from .utils import find_mc_objects
+
 
 objects_colors = {"player": [[162, 162, 42], [214, 214, 214], [66, 72, 200]], "background": [0, 0, 0],
                   "enemy": [[180, 122, 48], [181, 83, 40], [167, 26, 26]],

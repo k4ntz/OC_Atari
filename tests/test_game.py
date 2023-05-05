@@ -13,7 +13,7 @@ from ocatari.utils import load_agent, parser, make_deterministic
 
 parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
-parser.add_argument("-i", "--interval", type=str, default=10,
+parser.add_argument("-i", "--interval", type=int, default=10,
                     help="The frame interval (default 10)")
 parser.add_argument("-m", "--mode", choices=["vision", "revised"],
                     default="revised", help="The frame interval")
@@ -40,6 +40,7 @@ for i in range(10000):
         action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
     if i % opts.interval == 0:
+        print(env.objects)
         for obs, objects_list, title in zip([obs],
                                                 [env.objects],
                                                 ["ram"] if opts.mode == "revised" else ["vision"]):
