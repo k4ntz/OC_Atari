@@ -194,6 +194,7 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
     position: presupposed position
     tol_p: tolerance on the position
     min_distance: minimal distance between two detected objects
+    closing_dist: distance between color instances of the same object
     """
     mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color), np.array(color))
     if closing_active:

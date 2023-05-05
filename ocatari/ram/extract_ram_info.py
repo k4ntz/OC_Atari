@@ -37,7 +37,7 @@ from .beamrider import _detect_objects_beamrider_raw, _detect_objects_beamrider_
 from .asteroids import _detect_objects_asteroids_raw, _detect_objects_asteroids_revised, _init_objects_asteroids_ram
 from .riverRaid import _detect_objects_riverraid_raw, _detect_objects_riverraid_revised, _init_objects_riverraid_ram
 from .assault import _detect_objects_assault_raw, _detect_objects_assault_revised, _init_objects_assault_ram
-
+from .roadrunner import _init_objects_roadrunner_ram, _detect_objects_roadrunner_revised
 
 # calls the respective _get_max_objects from the game modules
 def get_max_objects(game_name, hud):
@@ -75,6 +75,8 @@ def init_objects(game_name, hud):
     """
     if game_name.lower() == "boxing":
         return _init_objects_boxing_ram(hud)
+    elif game_name.lower() == "roadrunner":
+        return _init_objects_roadrunner_ram(hud)
     elif game_name.lower() == "freeway":
         return _init_objects_freeway_ram(hud)
     elif game_name.lower() == "breakout":

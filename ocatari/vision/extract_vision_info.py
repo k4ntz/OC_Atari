@@ -23,7 +23,7 @@ from .atlantis import _detect_objects_atlantis
 from .asteroids import _detect_objects_asteroids
 from .riverRaid import _detect_objects_riverraid
 from .assault import _detect_objects_assault
-
+from .roadrunner import _detect_objects_roadrunner
 
 def detect_objects_vision(objects, obs, game_name, hud=False):
     if game_name.lower() == "atlantis":
@@ -34,6 +34,8 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_bowling(objects, obs, hud)
     elif game_name.lower() == "boxing":
         return _detect_objects_boxing(objects, obs, hud)
+    elif game_name.lower() == "roadrunner":
+        return _detect_objects_roadrunner(objects, obs, hud)
     elif game_name.lower() == "pong":
         return _detect_objects_pong(objects, obs, hud)
     elif game_name.lower() == "seaquest":

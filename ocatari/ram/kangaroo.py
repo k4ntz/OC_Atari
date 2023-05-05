@@ -165,22 +165,22 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
 
     # enemies/monkeys
     m1 = Enemy()
-    if ram_state[11] != 255:
+    if ram_state[11] < 23:
         objects.append(m1)
         m1.xy = ram_state[15] + 16, ram_state[11] * 8 + 5
 
     m2 = Enemy()
-    if ram_state[10] != 255:
+    if ram_state[10] < 23:
         objects.append(m2)
         m2.xy = ram_state[14] + 16, ram_state[10] * 8 + 5
 
     m3 = Enemy()
-    if ram_state[9] != 255:
+    if ram_state[9] < 23:
         objects.append(m3)
         m3.xy = ram_state[13] + 16, ram_state[9] * 8 + 5
 
     m4 = Enemy()
-    if ram_state[8] != 255:
+    if ram_state[8] < 23:
         objects.append(m4)
         m4.xy = ram_state[12] + 16, ram_state[8] * 8 + 5
 
