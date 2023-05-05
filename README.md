@@ -1,12 +1,10 @@
 # OC_Atari
 
-Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://github.com/mila-iqia/atari-representation-learning) that uses the state of the ram and reverse engineering to provide object centric representation of the screen. The project supports three different modes for the covered games.
-
-**Raw mode**: Annotates the info dictionary with a list of important RAM values (take a look at the comments to see which value represents which variable) and additional information like current score or time.
+Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://github.com/mila-iqia/atari-representation-learning) that uses the state of the ram and reverse engineering to provide object centric representation of the screen. The project supports two different modes for the covered games.
 
 **Vision mode:** Return a list of objects currently on the screen with their X, Y, Width, Height, R, G, B Values. 
 
-**Revised mode:** Uses the object values stored in the RAM to detect the objects currently on the screen.
+**Ram/Revised mode:** Uses the object values stored in the RAM to detect the objects currently on the screen.
 
 
 ## List of covered games
