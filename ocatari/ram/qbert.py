@@ -1,9 +1,14 @@
 from .game_objects import GameObject
+import numpy as np
+import sys
 
 """
 RAM extraction for the game Q*BERT. Supported modes: raw, revised.
 
 """
+
+MAX_NB_OBJECTS =  {'Player': 1, 'PurpleBall': 1, 'RedBall': 1, 'GreenBall': 1, 'Coily': 1, 'Sam': 1, 'FlyingDiscs': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'PurpleBall': 1, 'RedBall': 1, 'GreenBall': 1, 'Coily': 1, 'Sam': 1, 'FlyingDiscs': 1, 'Score': 1, 'Lives': 1}
 
 
 class Player(GameObject):
@@ -89,6 +94,21 @@ class Lives(GameObject):
         self.hud = False
 
 
+# parses MAX_NB* dicts, returns default init list of objects
+def _get_max_objects(hud=False):
+
+    def fromdict(max_obj_dict):
+        objects = []
+        mod = sys.modules[__name__]
+        for k, v in max_obj_dict.items():
+            for _ in range(0, v):
+                objects.append(getattr(mod, k)())    
+        return objects
+
+    if hud:
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
+
 def _init_objects_qbert_ram(hud=True):
     """
     (Re)Initialize the objects
@@ -102,7 +122,11 @@ def _init_objects_qbert_ram(hud=True):
     coil_prev_y = 0
 
     global last_i
-    last_i = None
+    last_i = -1
+    global purple_i
+    purple_i = -1
+    global last_74
+    last_74 = 0
 
     return objects
 
@@ -143,18 +167,47 @@ def _detect_objects_qbert_revised(objects, ram_state, hud=True):
     # The big problem with this is that the RAM values stay the same even if there is no object on the specified
     # platform anymore.
     # (You might be able to find a RAM value carrying information when the next step is taken by an object)
-    res = _calc_enemy_pos(ram_state[75:80])
-    x, y = res[0][0]
-    if not (x is None or y is None):
-        for i in range(len(res)):
-            x, y = res[i][0]
-            typ = res[i][1]
-            if typ == 0:
-                obj = Sam()
-            elif typ == 7:
-                obj = PurpleBall()
-            obj.xy = x, y
+    # res = _calc_enemy_pos(ram_state[75:80])
+    # x, y = None, None  # res[0][0]
+    # if not (x is None or y is None):
+    #     for i in range(len(res)):
+    #         x, y = res[i][0]
+    #         typ = res[i][1]
+    #         if typ == 0:
+    #             obj = Sam()
+    #         elif typ == 7:
+    #             obj = PurpleBall()
+    #         obj.xy = x, y
+    #         objects.append(obj)
+    global last_i
+    global last_74
+    global purple_i
+
+    if ram_state[74]:
+        if last_74 != ram_state[74]:
+            last_74 = ram_state[74]
+            if last_i >= 0:
+                last_i = last_i + 1
+            if purple_i >= 0:
+                purple_i = purple_i + 1
+        if ram_state[39] == 255:
+            if ram_state[76] == 7 and purple_i < 0:
+                purple_i = 0
+            if purple_i >= 0 and purple_i < 5:
+                ball = PurpleBall()
+                ball.xy = _calc_enemy_x(ram_state[75 + purple_i]), ((purple_i + 1) * 30) + 12 - purple_i
+                objects.append(ball)
+        elif purple_i > 4:
+            purple_i = -1
+        if ram_state[105] == 6:
+            last_i = 0
+        if last_i >= 0 and last_i < 5:
+            obj = Sam()
+            obj.xy = _calc_enemy_x(ram_state[75 + last_i]), ((last_i + 1) * 30) + 12 - last_i
             objects.append(obj)
+        elif last_i > 4:
+            last_i = -1
+        
 
     if hud:
         objects.append(Score())
@@ -168,6 +221,8 @@ def _detect_objects_qbert_raw(info, ram_state):
     player = ram_state[43], ram_state[67]
     enemy = ram_state[47], ram_state[46]
 
+    # 69 105
+    # ram[56] timer
     # ram_state[126] maybe sprite 171 = jump and 201 normal
     # ram[41]: 0 ball, 7 coily
     # ram[75:80]: enemy spawn
@@ -188,40 +243,3 @@ def _calc_enemy_x(value):
         else:
             res = res + 12
     return res
-
-
-# function really not working
-def _calc_enemy_pos(slice):
-    """
-    Converts a RAM slice of 5 into the enemy positions
-    """
-
-    # global last_i
-
-    # x = None
-    # y = None
-    # typ = 0
-
-    # res = []
-
-    # if last_i is not None and last_i < 4 and slice[last_i + 1] + 1 == slice[last_i]:
-    #     xi = _calc_enemy_x(slice[last_i + 1])
-    #     yi = ((last_i + 2) * 30) + 12
-    #     last_i += 1
-    #     res.append([(xi, yi), typ])
-
-    # for i in range(5):
-    #     if slice[i] == 0:
-    #         break
-    #     if slice[i+1] == 7:
-    #         typ = 7
-    #     x = _calc_enemy_x(slice[i])
-    #     y = ((i + 1) * 30) + 12
-    #     last_i = i
-    #     if i < 4 and slice[i] != slice[i] + 1:
-    #         break
-
-    # res.append([(x, y), typ])
-
-    # return res
-    pass
