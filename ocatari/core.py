@@ -16,7 +16,7 @@ import torch
 DEVICE = "cpu"
 
 AVAILABLE_GAMES = ["Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
-                   "Breakout", "Carnival", "Centipede", "ChoppperCommand" "DemonAttack", "Freeway", "Kangaroo",
+                   "Breakout", "Carnival", "Centipede", "ChoppperCommand" "DemonAttack", "Freeway", "FishingDerby", "Kangaroo",
                    "MontezumaRevenge", "MsPacman", "Pong", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders",
                    "Tennis"]
 
