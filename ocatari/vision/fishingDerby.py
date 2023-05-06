@@ -37,7 +37,7 @@ class PlayerTwoFishingPole(GameObject):
         self.rgb = 0, 0, 0
 
 
-class ScorePlayerOne:
+class ScorePlayerOne(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 167, 26, 26
@@ -81,8 +81,9 @@ def _detect_objects_fishingDerby(objects, obs, hud=True):
                 objects.append(player_two_fishing_pole)
 
     if hud:
-        for score in find_objects(obs, objects_colors["player 2 fishing pole"]):
-            if score[0] < 80:
-                objects.append(ScorePlayerOne(*score))
-            else:
-                objects.append(ScorePlayerTwo(*score))
+        for score in find_objects(obs, objects_colors["score"], closing_dist=1):
+            if score[1] < 20:
+                if score[0] < 80:
+                    objects.append(ScorePlayerOne(*score))
+                else:
+                    objects.append(ScorePlayerTwo(*score))
