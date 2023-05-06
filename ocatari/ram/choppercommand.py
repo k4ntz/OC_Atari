@@ -270,39 +270,46 @@ def _detect_objects_revised(objects, ram_state, hud):
     # shot
     # continuos 1-bit in 49,52,55,58,61,64 => new shot
     # in 45 might contain the color gradient
+    # shot_lines = [ram_state[52], ram_state[55], ram_state[58], ram_state[61], ram_state[64]]
+    # b_shot_line = number_to_bitfield(ram_state[49])
     shot_lines = [ram_state[52], ram_state[55], ram_state[58], ram_state[61], ram_state[64]]
-    b_shot_line = number_to_bitfield(ram_state[49])
+    b_shot_line = number_to_bitfield(ram_state[52])
+    for i in range(6):
+        del b_shot_line[2]
+    i = 0
     for shot_line in shot_lines:
         b_shot_line.extend(number_to_bitfield(shot_line))
+
+    for i in range(4):
+        tmp = b_shot_line[10+i]
+        b_shot_line[10+i] = b_shot_line[17-i]
+        b_shot_line[17-i] = tmp
+        tmp = b_shot_line[34+i]
+        b_shot_line[34+i] = b_shot_line[41-i]
+        b_shot_line[41-i] = tmp
+
+
+    for i in range(4):
+        del b_shot_line[22]
+
 
     # [0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,0]
 
     b_shot_line.append(0)   # to see if there is a shot at the end
-    bool_shot = False
-    shot = None
-    pixel = 0
-    for i in b_shot_line:
-        if i == 1:
-            if bool_shot:
-                # increases shot size
-                x, _ = player.xy
-                x += 67
-                w = pixel-x+16
-                h = 1
-                shot.wh = (w, h)
-            else:
-                # starts shot
-                shot = Shot()
-                x = pixel
-                _, y = player.xy
-                y += 5
-                shot.xy = (x, y)
-            bool_shot = True
-        else:
-            if bool_shot:
-                objects.append(shot)
-            bool_shot = False
-        pixel += 1
+    x = 8
+    w = 0
+
+    for s in b_shot_line:
+        if s:
+            w = w + 4
+        elif w > 0:
+            shot = Shot()
+            y = player.y
+            shot.xy = x-w, y + 5
+            shot.wh = w, 1
+            objects.append(shot)
+            w = 0
+        x = x + 4
 
     # score
     # x: value 35+i*8
