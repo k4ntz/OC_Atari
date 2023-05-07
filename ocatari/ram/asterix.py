@@ -237,7 +237,6 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
     lanes = objects[offset:]
     const = ram_state[54] % 8
     reward_lanes = []
-    print(ram_state[11:17])
     for i in range(8):
         if ram_state[18-i] == 11:
             objects[offset + i] = None
