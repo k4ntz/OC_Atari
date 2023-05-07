@@ -74,6 +74,11 @@ class GameObject:
     def orientation(self, o):
         self._orientation = o
 
+    @property
+    def center(self):
+        return self._xy[0] + self.wh[0]/2, self._xy[1] + self.wh[1]/2
+
     def is_on_top(self, other):
         return (other.x <= self.x <= other.x + other.w) and \
-            (other.y <= self.y <= other.y + other.h)
+            (other.y <= self.y <= other.y + other.h) 
+
