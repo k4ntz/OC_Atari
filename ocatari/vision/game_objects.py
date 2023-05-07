@@ -13,6 +13,10 @@ class GameObject:
         return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}"
 
     @property
+    def category(self):
+        return self.__class__.__name__
+
+    @property
     def xy(self):
         return self._xy
 
@@ -56,6 +60,10 @@ class GameObject:
     @property
     def h(self):
         return self.wh[1]
+
+    @property
+    def center(self):
+        return self._xy[0] + self.wh[0]/2, self._xy[1] + self.wh[1]/2
 
     def is_on_top(self, other):
         return (other.x <= self.x <= other.x + other.w) and \
