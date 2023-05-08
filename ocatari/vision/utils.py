@@ -4,6 +4,7 @@ from skimage.morphology import (disk, square)  # noqa
 from skimage.morphology import (erosion, dilation, opening, closing, white_tophat, skeletonize)  # noqa
 import matplotlib.pyplot as plt
 from termcolor import colored
+from collections import Counter
 
 
 # to be removed
@@ -182,6 +183,18 @@ def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
         detected.append((x, y, w, h))
     return detected
 
+def color_analysis(image, position, exclude=None):
+    """
+    Returns the counter
+    """
+    x, y, w, h = position
+    subpart = image[y:y+h, x:x+w, :]
+    w,h,c = subpart.shape
+    subpart = list(map(tuple, subpart.reshape(w*h, c)))
+    if exclude:
+        for excolor in exclude:
+            subpart = [el for el in subpart if el != tuple(excolor)]
+    return Counter(subpart)
 
 def find_objects(image, color, closing_active=True, size=None, tol_s=10,
                  position=None, tol_p=2, min_distance=10, closing_dist=3,
@@ -226,6 +239,7 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
         # detected.append((y, x, h, w))
         detected.append((x, y, w, h))
     return detected
+
 
 
 def find_rectangle_objects(image, color, max_size=None, minx=0, miny=0, maxx=160, maxy=210):

@@ -47,11 +47,13 @@ def get_max_objects(game_name, hud):
     try:
         mod = sys.modules[game_module]
         return mod._get_max_objects(hud)
-    except KeyError:
+    except KeyError as err:
         print(colored(f"Game module does not exist: {game_module}", "red"))
+        print("->", str(err))
         exit(1)
-    except AttributeError:
+    except AttributeError as err:
         print(colored(f"max_objects not implemented for game: {game_name}", "red"))
+        print("->", str(err))
         exit(1)
 
 
