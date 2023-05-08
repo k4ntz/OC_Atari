@@ -40,7 +40,12 @@ for i in range(10000):
         action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
     if i % opts.interval == 0:
-        print(env.objects)
+        # print(env.objects)
+        lis = []
+        for obj in env.objects:
+            if obj.category.lower() == "cube":
+                lis.append(obj.xy)
+        print(lis)
         for obs, objects_list, title in zip([obs],
                                                 [env.objects],
                                                 ["ram"] if opts.mode == "revised" else ["vision"]):
