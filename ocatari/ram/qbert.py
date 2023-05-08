@@ -166,7 +166,6 @@ def _init_objects_qbert_ram(hud=True):
     """
     (Re)Initialize the objects
     """
-    import ipdb; ipdb.set_trace()
     objects = [Player()]
     for pos in _cubes_pos:
         cub = Cube()
@@ -193,18 +192,18 @@ def _init_objects_qbert_ram(hud=True):
 
 
 def _detect_objects_qbert_revised(objects, ram_state, hud=True):
-    # objects.clear()
-    return
+    player = objects[0]
+    cubes = objects[1:22]
+    for cube, ccinf in zip(cubes, _cubes_cinfo):
+        cube.rgb = _cube_conversion[ram_state[ccinf]//2]
 
     if ram_state[67] != 0 and ram_state[43] != 0 and ram_state[67] < 190:
-        player = Player()
         if ram_state[67] < 70:
             player.xy = ram_state[43] - 3, ram_state[67] - 8
         elif ram_state[67] < 100:
             player.xy = ram_state[43] - 3, ram_state[67] - 7
         else:
             player.xy = ram_state[43] - 3, ram_state[67] - 6
-        objects.append(player)
 
     global coil_prev_x, coil_prev_y
     if ram_state[39] != 255:
