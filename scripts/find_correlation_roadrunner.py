@@ -34,7 +34,7 @@ DROP_LOW = True
 MIN_CORRELATION = 0.8
 
 NB_SAMPLES = 600
-game_name = "Atlantis-v4"
+game_name = "RoadRunner-v4"
 MODE = "vision"
 RENDER_MODE = "human"
 # RENDER_MODE = "rgb_array"
@@ -42,52 +42,59 @@ env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
 observation, info = env.reset()
-object_list = ["Projectile"]
-# object_list = ["ball", "enemy", "player"]
+# object_list = ["Projectile"]
+object_list = ["Player", "Enemy"]
 # create dict of list
 objects_infos = {}
 subset = []
-# for n in ["diag", "vert"]:
-for n in ["vert"]:
-    for obj in object_list:
-        objects_infos[f"{obj}_{n}_x"] = []
-        objects_infos[f"{obj}_{n}_y"] = []
-        subset.append(f"{obj}_{n}_x")
-        subset.append(f"{obj}_{n}_y")
+for obj in object_list:
+    objects_infos[f"{obj}_x"] = []
+    objects_infos[f"{obj}_y"] = []
+    subset.append(f"{obj}_x")
+    subset.append(f"{obj}_y")
 ram_saves = []
 actions = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 for i in tqdm(range(NB_SAMPLES)):
     # obs, reward, terminated, truncated, info = env.step(random.randint(0, env.action_space.n-1))
-    action = actions[i%len(actions)]
+    # action = actions[i%len(actions)]
+    prob = random.random()
+    if prob > 0.9:
+        action = 2 # UP
+    elif prob > 0.8:
+        action = 5 # DOWN
+    else:
+        action = 4 # RIGHT
     # if i % 5: # reset for pressing
     #     action = 0
     obs, reward, terminated, truncated, info = env.step(action)
-    if info.get('frame_number') > 10 and i % 1 == 0:
+    if info.get('frame_number') > 10 and i % 5 == 0:
         SKIP = False
+        # print(env.objects)
         print(env.objects)
         for obj_name in object_list:  # avoid state without the tracked objects
-            if str(env.objects).count(obj_name) != 1 or not str(env.objects).count("Projectile at (75,") == 1:
+            if str(env.objects).count(obj_name) != 1:
                 SKIP = True
                 break
-        if str(env.objects).count("Projectile at (75,") == 0:
-            print(env._env.unwrapped.ale.getRAM()[106])
+        # if str(env.objects).count("Projectile at (75,") == 0:
+        #     print(env._env.unwrapped.ale.getRAM()[106])
         if SKIP:# or env.objects[-2].y < env.objects[-1].y:
             continue
         for obj in env.objects:
-            if obj_name in str(obj):
-                if obj.xy[0] == 75:
-                    objects_infos[f"{obj_name}_vert_x"].append(obj.xy[0])
-                    objects_infos[f"{obj_name}_vert_y"].append(obj.xy[1])
-                else:
-                    objects_infos[f"{obj_name}_diag_x"].append(obj.xy[0])
-                    objects_infos[f"{obj_name}_diag_y"].append(obj.xy[1])
-                # n += 1
+            objname = obj.category
+            if objname in object_list:
+                objects_infos[f"{objname}_x"].append(obj.xy[0])
+                objects_infos[f"{objname}_y"].append(obj.xy[1])
+            # n += 1
         ram = env._env.unwrapped.ale.getRAM()
         ram_saves.append(deepcopy(ram))
         # env.render()
 
     # modify and display render
 env.close()
+
+
+import ipdb; ipdb.set_trace()
 
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
@@ -116,7 +123,7 @@ corr.drop(subset, axis=1, inplace=True)
 
 if DROP_LOW:
     # corr = corr[corr.columns[[corr.abs().max() > MIN_CORRELATION]]]
-    corr = corr.loc[:, (corr.abs() > 0.3).any()]
+    corr = corr.loc[:, (corr.abs() > MIN_CORRELATION).any()]
 
 # if METHOD == "pearson":
 ax = sns.heatmap(corr, vmin=-1, vmax=1, annot=True, cmap=sns.diverging_palette(20, 220, n=200))

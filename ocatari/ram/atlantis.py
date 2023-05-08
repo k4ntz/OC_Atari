@@ -156,7 +156,6 @@ global prev_x_p2
 
 
 def missile_pos(rs):
-    print(rs)
     if 182 <= rs:
         return 201 - rs
     elif 164 <= rs:
@@ -187,13 +186,10 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         proj = Projectile()
         if prev_x_p1 < ram_state[60]:
             proj.xy = ram_state[60]-3, missile_pos(ram_state[58])-1
-            print("LEFT W")
         elif prev_x_p1 == ram_state[60]:
             proj.xy = ram_state[60], missile_pos(ram_state[58])
-            print("CENTER W")
         else:
             proj.xy = ram_state[60]+3, missile_pos(ram_state[58])-1
-            print("RIGHT W")
         proj.rgb = (200, 200, 200)
         objects.append(proj)
 
