@@ -15,14 +15,14 @@ parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
 parser.add_argument("-i", "--interval", type=int, default=10,
                     help="The frame interval (default 10)")
-parser.add_argument("-m", "--mode", choices=["vision", "revised"],
-                    default="revised", help="The frame interval")
+# parser.add_argument("-m", "--mode", choices=["vision", "revised"],
+#                     default="revised", help="The frame interval")
 parser.add_argument("-hud", "--hud", action="store_true", help="Detect HUD")
 
 opts = parser.parse_args()
 
 
-env = OCAtari(opts.game, mode=opts.mode, render_mode='rgb_array', hud=opts.hud)
+env = OCAtari(opts.game, mode="test", render_mode='rgb_array', hud=opts.hud)
 observation, info = env.reset()
 
 
@@ -33,7 +33,7 @@ if opts.path:
 
 env.step(2)
 make_deterministic(0, env)
-ax = plt.gca()
+fig, axes = plt.subplots(1, 2)
 for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
@@ -41,20 +41,20 @@ for i in range(10000):
         action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
     if i % opts.interval == 0:
-        print(env.objects)
-        for obs, objects_list, title in zip([obs],
-                                                [env.objects],
-                                                ["ram"] if opts.mode == "revised" else ["vision"]):
+        print("-"*50)
+        for objects_list, title, ax in zip([env.objects, env.objects_v], ["ram", "vision"], axes):
+            print(sorted(objects_list, key=lambda o: str(o)))
             for obj in objects_list:
                 opos = obj.xywh
                 ocol = obj.rgb
                 sur_col = make_darker(ocol)
                 mark_bb(obs, opos, color=sur_col)
                 # mark_point(obs, *opos[:2], color=(255, 255, 0))
-        ax.set_xticks([])
-        ax.set_yticks([])
-        plt.title(f"{opts.mode}: {opts.mode} mode (frame {i})", fontsize=20)
-        plt.imshow(obs)
+            ax.set_xticks([])
+            ax.set_yticks([])
+            ax.imshow(obs)
+            ax.set_title(title)
+        plt.suptitle(f"frame {i}", fontsize=20)
         plt.show()
 
     if terminated or truncated:

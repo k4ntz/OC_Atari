@@ -117,7 +117,7 @@ def _init_objects_boxing_ram(hud=False):
         global enscore
         enscore = EnemyScore()
         objects.extend([plscore, enscore, Logo(),
-                        Clock(63, 17, 6, 7), Clock(73, 18, 2, 5),
+                        Clock(63, 17, 6, 7), Clock(73, 18, 2, 2), Clock(73, 21, 2, 2),
                         Clock(79, 17, 6, 7), Clock(87, 17, 6, 7)])
     return objects
 
