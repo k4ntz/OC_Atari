@@ -19,6 +19,7 @@ class DetectionScores():
         self.true_pos = {}
         self.false_pos = {}
         self.false_neg = {}
+        self.iou = None
 
     def update(self, det_dict):
         for cat, (TP, FP, FN) in det_dict.items():
@@ -44,6 +45,8 @@ class DetectionScores():
         prec, rec = self.cat_precisions, self.cat_recalls
         f_scores = {}
         for cat in prec.keys():
+            if prec[cat] == 0 and rec[cat] == 0:
+                import ipdb; ipdb.set_trace()
             f_scores[cat] = 2 * prec[cat] * rec[cat] / (prec[cat] + rec[cat])
         return f_scores
 
@@ -69,7 +72,8 @@ class DetectionScores():
     
     @property
     def dict_summary(self):
-        return {"precision": self.mean_precision, "recall": self.mean_recall, "f-score": self.mean_f_score}
+        return {"precision": self.mean_precision, "recall": self.mean_recall, "f-score": self.mean_f_score,
+                "iou": self.iou}
     
 
 def print_all_stats(all_stats):

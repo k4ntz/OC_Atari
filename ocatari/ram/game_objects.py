@@ -11,7 +11,7 @@ class GameObject:
         self.hud = False
 
     def __repr__(self):
-        return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]})"
+        return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}"
 
     @property
     def category(self):
