@@ -157,7 +157,7 @@ def _detect_objects_breakout_revised(objects, ram_state, hud=False):
         del objects[1:]
 
     # ball
-    if ram_state[101] + 9 <= 210 and ram_state[101] != 0:  # else no ball
+    if ram_state[101] + 9 <= 196 and ram_state[101] != 0:  # else no ball
         ball = Ball()
         ball.xy = ram_state[99] - 49, ram_state[101] + 9
         objects.append(ball)
@@ -217,7 +217,7 @@ def _calculate_blocks(ram_state):
             if bitmap[row, column] == 1:
                 width += 8
 
-            if (bitmap[row, column] == 0 or column == 17) and row_empty is False:
+            if (bitmap[row, column] == 0 or column == 17) and row_empty is False and start_of_new_block is False:
                 block = BlockRow()
                 block.rgb = blockRow_colors.get(str(row))  # uses the blockRow color dictionary
                 block.xy = x, 57 + 6 * row
