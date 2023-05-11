@@ -38,6 +38,7 @@ from .asteroids import _detect_objects_asteroids_raw, _detect_objects_asteroids_
 from .riverRaid import _detect_objects_riverraid_raw, _detect_objects_riverraid_revised, _init_objects_riverraid_ram
 from .assault import _detect_objects_assault_raw, _detect_objects_assault_revised, _init_objects_assault_ram
 from .roadrunner import _init_objects_roadrunner_ram, _detect_objects_roadrunner_revised
+from .alien import _init_objects_alien_ram, _detect_objects_alien_revised
 
 
 # calls the respective _get_max_objects from the game modules
@@ -111,6 +112,8 @@ def init_objects(game_name, hud):
         return _init_objects_riverraid_ram(hud)
     elif game_name.lower() == "assault":
         return _init_objects_assault_ram(hud)
+    elif game_name.lower() == "alien":
+        return _init_objects_alien_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
