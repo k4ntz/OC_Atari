@@ -25,6 +25,7 @@ from .riverRaid import _detect_objects_riverraid
 from .assault import _detect_objects_assault
 from .roadrunner import _detect_objects_roadrunner
 from .alien import _detect_objects_alien
+from .frostbite import _detect_objects_frostbite
 def detect_objects_vision(objects, obs, game_name, hud=False):
     if game_name.lower() == "atlantis":
         return _detect_objects_atlantis(objects, obs, hud)
@@ -82,6 +83,8 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_assault(objects, obs, hud)
     elif game_name.lower() == "alien":
         return _detect_objects_alien(objects, obs, hud)
+    elif game_name.lower() == "frostbite":
+        return _detect_objects_frostbite(objects, obs, hud)
     else:
         print(colored("Uncovered game in vision mode", "red"))
         exit(1)
