@@ -1,8 +1,8 @@
 from .game_objects import GameObject
 import sys
 
-MAX_NB_OBJECTS = {}
-MAX_NB_OBJECTS_HUD = {}
+MAX_NB_OBJECTS = {"Player1FishingHook":1 , "Player2FishingHook":1, "Fish": 50, "Shark":1}
+MAX_NB_OBJECTS_HUD = {"Player1FishingHook":1 , "Player2FishingHook":1, "Fish": 50, "Shark":1, "ScoreP1":1, "ScoreP2":1}
 
 
 def _get_max_objects(hud=False):
