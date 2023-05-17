@@ -24,6 +24,10 @@ if opts.path:
     agent = load_agent(opts, env.action_space.n)
 
 for i in range(10000):
+    # for j in range(5):
+    #     env._env.unwrapped.ale.setRAM(75+j, 3)
+
+    env._env.unwrapped.ale.setRAM(36, 1)
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
@@ -34,7 +38,18 @@ for i in range(10000):
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
     if i % 10 == 0 and i > 50:
-        print(env.objects)
+        # print(env.objects)
+        print(ram[105])
+        # print(ram[75:80])
+        # if prevRam is not None:
+        #     for i in range(len(ram)):
+        #         if ram[i] != prevRam[i]:
+        #             pad = "           "
+        #             for u in range(4 - len(str(i))):
+        #                 pad += " "
+        #             print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prevRam[i]))
+        # print("------------------------------------------")
+        # prevRam = ram
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210:
@@ -44,7 +59,6 @@ for i in range(10000):
                 mark_bb(obs, opos, color=sur_col)
         plt.imshow(obs)
         plt.show()
-    prevRam = ram
     if terminated or truncated:
         observation, info = env.reset()
 env.close()

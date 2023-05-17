@@ -131,15 +131,15 @@ class HumanAgent():
         return 0
 
 
-def load_agent(opt, nb_actions=None):
-    if opt.path == "h":
-        return HumanAgent()
-    ckpt_path = Path(opt.path)
+# def load_agent(opt, nb_actions=None):
+#     if opt.path == "h":
+#         return HumanAgent()
+#     ckpt_path = Path(opt.path)
 
 
 def load_agent(opt, nb_actions=None):
     ckpt_path = Path(opt.path)
-    agent = AtariNet(nb_actions, distributional="C51_" in opt.path)
+    agent = AtariNet(nb_actions, distributional="c51" in opt.path)
     ckpt = _load_checkpoint(opt.path)
     agent.load_state_dict(ckpt["estimator_state"])
     return agent

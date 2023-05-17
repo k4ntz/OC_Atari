@@ -26,6 +26,8 @@ from .assault import _detect_objects_assault
 from .roadrunner import _detect_objects_roadrunner
 from .fishingDerby import _detect_objects_fishingDerby
 
+from .alien import _detect_objects_alien
+from .frostbite import _detect_objects_frostbite
 def detect_objects_vision(objects, obs, game_name, hud=False):
     if game_name.lower() == "atlantis":
         return _detect_objects_atlantis(objects, obs, hud)
@@ -81,6 +83,10 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_riverraid(objects, obs, hud)
     elif game_name.lower() == "assault":
         return _detect_objects_assault(objects, obs, hud)
+    elif game_name.lower() == "alien":
+        return _detect_objects_alien(objects, obs, hud)
+    elif game_name.lower() == "frostbite":
+        return _detect_objects_frostbite(objects, obs, hud)
     elif game_name.lower() == "fishingderby":
         return _detect_objects_fishingDerby(objects, obs, hud)
     else:

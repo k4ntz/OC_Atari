@@ -49,10 +49,12 @@ class PlayerNumber(GameObject):
 def _detect_objects_breakout(objects, obs, hud=False):
     objects.clear()
 
-    player = find_objects(obs, objects_colors["player"], min_distance=1)
+    player = find_objects(obs, objects_colors["player"], min_distance=1, maxx=151)
     for p in player:
         if p[3] == 4 and p[2] > 4:
-            objects.append(Player(*p))
+            player = Player(*p)
+            player.wh = 16, 4
+            objects.append(player)
 
     ball = find_objects(obs, objects_colors["ball"], min_distance=1)
     for b in ball:
