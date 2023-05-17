@@ -103,18 +103,18 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
         objects[1] = enemy
     if enemy is not None:
         enemy.xy = ram_state[81], ram_state[5] + 98
-    if hud:
-        # scores
-        global plscore
-        global enscore
-        if ram_state[19] > 10:  # enemy score
-            enscore.tenify()
-        else:
-            enscore.detenify()
-        if ram_state[18] > 10:  # player score
-            plscore.tenify()
-        else:
-            plscore.detenify()
+    # if hud:
+    #     # scores
+    #     global plscore
+    #     global enscore
+    #     if ram_state[19] > 10:  # enemy score
+    #         enscore.tenify()
+    #     else:
+    #         enscore.detenify()
+    #     if ram_state[18] > 10:  # player score
+    #         plscore.tenify()
+    #     else:
+    #         plscore.detenify()
 
 
 def _detect_objects_roadrunner_raw(info, ram_state):

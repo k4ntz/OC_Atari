@@ -10,6 +10,9 @@ from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.space_invaders import objects_colors
 from ocatari.vision.pong import objects_colors
 from ocatari.utils import load_agent, parser, make_deterministic
+from copy import deepcopy
+from PIL import Image
+import cv2 
 
 parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
@@ -33,16 +36,19 @@ if opts.path:
 
 env.step(2)
 make_deterministic(0, env)
-fig, axes = plt.subplots(1, 2)
+
+
 for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
         action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
-    if i % opts.interval == 0:
+    obs2 = deepcopy(obs)
+    if i > 160 and i % opts.interval == 0:
+        fig, axes = plt.subplots(1, 2)
         print("-"*50)
-        for objects_list, title, ax in zip([env.objects, env.objects_v], ["ram", "vision"], axes):
+        for objects_list, title, ax, obs in zip([env.objects, env.objects_v], ["ram", "vision"], axes, [obs, obs2]):
             print(sorted(objects_list, key=lambda o: str(o)))
             for obj in objects_list:
                 opos = obj.xywh
@@ -54,7 +60,10 @@ for i in range(10000):
             ax.set_yticks([])
             ax.imshow(obs)
             ax.set_title(title)
-        plt.suptitle(f"frame {i}", fontsize=20)
+            im = Image.fromarray(obs)
+            cv2.imwrite(f"frames/{title}_frame_{i}.png", obs, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+            # im.save()
+        fig.suptitle(f"frame {i}", fontsize=20)
         plt.show()
 
     if terminated or truncated:

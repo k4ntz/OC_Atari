@@ -10,6 +10,7 @@ RAM extraction for the game Q*BERT. Supported modes: raw, revised.
 MAX_NB_OBJECTS =  {'Player': 1, 'Cube': 21, 'Disk':2, 'PurpleBall': 1, 'RedBall': 1, 'GreenBall': 1, 'Coily': 1, 'Sam': 1, 'FlyingDiscs': 1}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Cube': 21, 'Disk':2, 'PurpleBall': 1, 'RedBall': 1, 'GreenBall': 1, 'Coily': 1, 'Sam': 1, 'FlyingDiscs': 1, 'Score': 1, 'Lives': 1}
 
+
 _cube_conversion = {0: (0, 0, 0), 1: (74, 74, 74), 2: (111, 111, 111), 3: (142, 142, 142), 4: (170, 170, 170), 5: (192, 192, 192), 
                     6: (214, 214, 214), 7: (236, 236, 236), 8: (72, 72, 0), 9: (105, 105, 15), 10: (134, 134, 29), 11: (162, 162, 42), 
                     12: (187, 187, 53), 13: (210, 210, 64), 14: (232, 232, 74), 15: (252, 252, 84), 16: (124, 44, 0), 17: (144, 72, 17), 
@@ -36,7 +37,7 @@ _cube_conversion = {0: (0, 0, 0), 1: (74, 74, 74), 2: (111, 111, 111), 3: (142, 
 
 _cubes_cinfo=[        21,               # row of 1
                     52,  54,            # row of 2
-                83,  85,  87,           # row of 3
+                 83, 85,  87,           # row of 3
                98, 100, 102, 104,       # row of 4
               1,  3,   5,   7,  9,      # row of 5
             32, 34, 36,  38,  40, 42]   # row of 6
