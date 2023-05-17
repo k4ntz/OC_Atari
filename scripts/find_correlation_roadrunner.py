@@ -25,53 +25,70 @@ def ransac_regression(x, y):
     ransac = RANSACRegressor(estimator=LinearRegression(),
                              min_samples=50, max_trials=100,
                              loss='absolute_error', random_state=42,
-                             residual_threshold=10)
+                             residual_threshold=10) 
     ransac.fit(np.array(x).reshape(-1, 1), y)
     return ransac.estimator_.coef_.item(), ransac.estimator_.intercept_.item()
 
 
 DROP_LOW = True
-MIN_CORRELATION = 0.6
+MIN_CORRELATION = 0.7 #0.8
 
-NB_SAMPLES = 600
-game_name = "Asterix-v4"
+NB_SAMPLES = 1500# 600 before
+game_name = "RoadRunner" #RoadRunner-v4
 MODE = "vision"
-RENDER_MODE = "rgb_array"
-env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
+RENDER_MODE = "human"
+# RENDER_MODE = "rgb_array"
+env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE,hud=True)
 random.seed(0)
 
 observation, info = env.reset()
-object_list = ["Projectile"]
-# object_list = ["ball", "enemy", "player"]
+# object_list = ["Projectile"]
+object_list = ["Birdseeds"]
 # create dict of list
-objects_infos = {
-    f"in_lane_0": [],
-    f"in_lane_1": [],
-    f"in_lane_2": [],
-    f"in_lane_3": [],
-    f"in_lane_4": [],
-    f"in_lane_5": [],
-    f"in_lane_6": [],
-    f"in_lane_7": [],
-                 }
-subset = list(objects_infos.keys())
-
+objects_infos = {}
+subset = []
+for obj in object_list:
+    objects_infos[f"{obj}_x"] = []
+    objects_infos[f"{obj}_y"] = []
+    subset.append(f"{obj}_x")
+    subset.append(f"{obj}_y")
 ram_saves = []
+actions = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 for i in tqdm(range(NB_SAMPLES)):
     # obs, reward, terminated, truncated, info = env.step(random.randint(0, env.action_space.n-1))
-    action = random.randint(0, env.nb_actions-1)
+    # action = actions[i%len(actions)]
+    prob = random.random()
+    if prob > 0.9:
+        action = 2 # UP
+    elif prob > 0.8:
+        action = 5 # DOWN
+    else:
+        action = 4 # 4-RIGHT 3- Left, Truck at (56, 129), (16, 18), Cactus at (125, 55), (8, 8), Cactus at (129, 46), (8, 8)]
+    # if i % 5: # reset for pressing
+    #     action = 0
 
     obs, reward, terminated, truncated, info = env.step(action)
-    for i in range(8):
-        start = (i+1)*16+10
-        lane = obs[start:start+12,:,]
-        for line in lane: # remove asterix
-            for el in line:
-                if el.tolist() == [187, 187, 53]:
-                    el[0], el[1], el[2] = 0, 0, 0
-        objects_infos[f"in_lane_{i}"].append(int(lane.sum() > 0))
-    ram = env._env.unwrapped.ale.getRAM()
-    ram_saves.append(deepcopy(ram))
+    if info.get('frame_number') > 10 and i % 1 == 0:
+        SKIP = False
+        # print(env.objects)
+        print(env.objects)
+        for obj_name in object_list:  # avoid state without the tracked objects
+            if str(env.objects).count(obj_name) != 1:
+                SKIP = True
+                break
+        # if str(env.objects).count("Projectile at (75,") == 0:
+        #     print(env._env.unwrapped.ale.getRAM()[106])
+        if SKIP:# or env.objects[-2].y < env.objects[-1].y:
+            continue
+        for obj in env.objects:
+            objname = obj.category
+            if objname in object_list:
+                objects_infos[f"{objname}_x"].append(obj.xy[0])
+                objects_infos[f"{objname}_y"].append(obj.xy[1])
+            # n += 1
+        ram = env._env.unwrapped.ale.getRAM()
+        ram_saves.append(deepcopy(ram))
         # env.render()
 
     # modify and display render
@@ -80,7 +97,6 @@ env.close()
 
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
-
 objects_infos.update(from_rams)
 df = pd.DataFrame(objects_infos)
 
@@ -94,7 +110,7 @@ df = pd.DataFrame(objects_infos)
 # find correlation
 METHOD = "spearman"
 # METHOD = "kendall"
-# METHOD = "pearson"
+METHOD = "pearson"
 corr = df.corr(method=METHOD)
 # Reduce the correlation matrix
 # subset = objects_infos
@@ -102,7 +118,6 @@ corr = df.corr(method=METHOD)
 
 # Use submatrice
 corr = corr[subset].T
-import ipdb;ipdb.set_trace()
 corr.drop(subset, axis=1, inplace=True)
 
 if DROP_LOW:
@@ -141,4 +156,3 @@ for el in corrT:
         plt.xlabel(idx)
         plt.ylabel(el)
         plt.show()
-

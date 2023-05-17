@@ -68,7 +68,7 @@ def _detect_objects_boxing(objects, obs, hud=False):
     if hud:
         huds = find_objects(obs, objects_colors["hud_objs"], closing_active=False, maxy=25)
         for el in huds:
-            objects.append(Logo(*el))
+            objects.append(Clock(*el))
         huds = find_objects(obs, objects_colors["hud_objs"], miny=187)
         for el in huds:
-            objects.append(Clock(*el))
+            objects.append(Logo(*el))

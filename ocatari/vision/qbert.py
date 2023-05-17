@@ -1,4 +1,4 @@
-from .utils import find_objects
+from .utils import find_objects, color_analysis
 from .game_objects import GameObject
 
 objects_colors = {"player": [181, 83, 40], "red_ball": [], "purple_ball": [146, 70, 192],
@@ -6,12 +6,24 @@ objects_colors = {"player": [181, 83, 40], "red_ball": [], "purple_ball": [146, 
                   "green_ball": [50, 132, 50], "score": [210, 210, 64], "lives": [210, 210, 64]
                   }
 
+cubes_colors = [[45, 87, 176], [210, 210, 64], [192, 192, 192], [111, 111, 111]]
+
+
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 181, 83, 40
 
+class Cube(GameObject):
+    def __init__(self, color, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = color
+
+class Disk(GameObject):
+    def __init__(self, color, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = color
 
 class PurpleBall(GameObject):
     def __init__(self, *args, **kwargs):
@@ -64,9 +76,22 @@ class Lives(GameObject):
 def _detect_objects_qbert(objects, obs, hud=True):
     objects.clear()
 
-    player = find_objects(obs, objects_colors["player"], min_distance=1, size=(8, 20), tol_s=5)
+    player = find_objects(obs, objects_colors["player"], min_distance=1)
+    # player = find_objects(obs, objects_colors["player"], min_distance=1, size=(8, 20), tol_s=5)
     for bb in player:
         objects.append(Player(*bb))
+    
+    for ccolor in cubes_colors:
+        cubes = find_objects(obs, ccolor, min_distance=1, miny=30)
+        for bb in cubes:
+            objects.append(Cube(ccolor, *bb))
+
+    disk_poses = [(12, 138, 8, 2), (140, 138, 8, 2)] # x,y,w,h
+    for disk_pos in disk_poses:
+        cntr = color_analysis(obs, disk_pos, exclude=None)
+        dcolor = cntr.most_common()[0][0]
+        if tuple(dcolor) != (0, 0, 0):
+            objects.append(Disk(dcolor, *disk_pos))
 
     purple_ball = find_objects(obs, objects_colors["purple_ball"], min_distance=18, size=(7, 7), tol_s=3)
     for bb in purple_ball:

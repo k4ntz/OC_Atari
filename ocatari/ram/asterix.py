@@ -6,14 +6,15 @@ import sys
 MAX_NB_OBJECTS =  {"Player" :  1, "Enemy": 8, "Cauldron" : 8, "Reward50" : 8}
 MAX_NB_OBJECTS_HUD =  {"Player" :  1, "Enemy": 8, "Cauldron" : 8, "Reward50" : 8, "Score" : 1}
 
+
+
 class Player(GameObject):
-    class Player(GameObject):
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.rgb = 187, 187, 53
-            self._xy = 0, 0
-            self.wh = 8, 11  # at some point 16, 11. advanced other player (obelix) is (6, 11)
-            self.hud = False
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 187, 187, 53
+        self._xy = 0, 0
+        self.wh = 8, 11  # at some point 16, 11. advanced other player (obelix) is (6, 11)
+        self.hud = False
 
 
 class Cauldron(GameObject):
@@ -193,6 +194,7 @@ def _init_objects_asterix_ram(hud=False):
     if hud:
         objects.extend([Score(), Lives(), Lives()])
 
+    objects += [None for i in range(8)]
     return objects
 
 
@@ -210,119 +212,83 @@ def _detect_objects_asterix_raw(info, ram_state):
     # ram_state[7]
     # not known what they are for exactly
 
-
 def _detect_objects_asterix_revised(objects, ram_state, hud=False):
-    lives_nr = ram_state[83]
-    if hud:
-        del objects[1 + lives_nr - 1:]
-    else:
-        del objects[1:]
-    const = ram_state[54] % 8
-    rewards = []
-    reward_lanes = []
-    ctr = 0
-    for i in range(8):
-        if ram_state[73 + i]:  # set to lane number if there is reward in that lane
-            reward_lanes.append(i)  # 0-7 instead actual 1-8
-            x, y = ram_state[42 + i], 26 + i * 16
-            if const == 0:  # 50 reward
-                rew = Reward50()
-                rewards.append(rew)
-                rew.xy = x, y
-                objects.append(rew)
-            elif const == 1:  # 100 reward
-                rew = Reward100()
-                rew.xy = x, y
-                rewards.append(rew)
-                objects.append(rew)
-            elif const == 2:  # 200 reward
-                rew = Reward200()
-                rew.xy = x, y
-                rewards.append(rew)
-                objects.append(rew)
-            elif const == 3:  # 300 reward
-                rew = Reward300()
-                rew.xy = x, y
-                rewards.append(rew)
-                objects.append(rew)
-            elif const == 4:  # 400 reward
-                rew = Reward400()
-                rew.xy = x, y
-                rewards.append(rew)
-                objects.append(rew)
-            else:  # 500 reward
-                rew = Reward500()
-                rew.xy = x, y
-                rewards.append(rew)
-                objects.append(rew)
-            ctr += 1
-
-    eatable = []
-    enemy_lanes = []
-    ctr = 0
-    for i in range(8):
-        if i in reward_lanes:
-            continue
-        if ram_state[29 + i] % 2 == 1:
-            enemy_lanes.append(i)
-            continue
-        else:
-            x, y = ram_state[42 + i] + 1, 26 + i * 16 + 1
-            if const == 0:
-                instance = Cauldron()
-                eatable.append(instance)
-                instance.xy = x, y
-                objects.append(instance)
-            elif const == 1:
-                instance = Helmet()
-                eatable.append(instance)
-                instance.xy = x, y
-                objects.append(instance)
-            elif const == 2:
-                eatable.append(Shield())
-                eatable[ctr].xy = x, y
-                objects.append(eatable[ctr])
-            elif const == 3:
-                eatable.append(Lamp())
-                eatable[ctr].xy = x, y
-                objects.append(eatable[ctr])
-            elif const == 4:
-                eatable.append(Apple())
-                eatable[ctr].xy = x, y
-                objects.append(eatable[ctr])
-            elif const == 5:
-                eatable.append(Fish())
-                eatable[ctr].xy = x, y
-                objects.append(eatable[ctr])
-            elif const == 6:
-                eatable.append(Meat())
-                eatable[ctr].xy = x, y
-                objects.append(eatable[ctr])
-            elif const == 7:
-                eatable.append(Mug())
-                eatable[ctr].xy = x, y
-                objects.append(eatable[ctr])
-            ctr += 1
-
-    enemy = []
-    ctr = 0
-    for i in enemy_lanes:
-        enemy.append(Enemy())
-        enemy[ctr].xy = ram_state[42 + i], 26 + i * 16
-        objects.append(enemy[ctr])
-        ctr += 1
-
+    # player
     player = objects[0]
-    player.xy = ram_state[41], 26 + ram_state[39] * 16  # 84, 90   84 26 90-26 /4 = 16
+    player.xy = ram_state[41], 26 + ram_state[39] * 16
     if ram_state[71] < 82:
         if ram_state[54] < 5:  # asterix playing
             player.wh = 8, 11
         else:  # obelix playing
             player.wh = 6, 11
-    else:  # player is wide(is dying)
+    else:  # player is wide (is dying)
         player.wh = 16, 11
     player.rgb = 187, 187, 53
 
+
+    lives_nr = ram_state[83]
+    reward_class = (Reward50, Reward100, Reward200, Reward300, Reward400, Reward500)  # , Reward500, Reward500)
+    eatable_class = (Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat, Mug)
+    # get lanes
+    if hud:
+        offset = 1 + lives_nr
+    else:
+        offset = 1
+    lanes = objects[offset:]
+    const = ram_state[54] % 8
+    reward_lanes = []
+    for i in range(8):
+        if ram_state[18-i] == 11:
+            objects[offset + i] = None
+        elif ram_state[73 + i]:  # set to lane number if there is reward in that lane
+            reward_lanes.append(i)  # 0-7 instead actual 1-8
+            if type(lanes[i]) not in reward_class:
+                if const == 0:  # 50 reward
+                    rew = Reward50()
+                elif const == 1:  # 100 reward
+                    rew = Reward100()
+                elif const == 2:  # 200 reward
+                    rew = Reward200()
+                elif const == 3:  # 300 reward
+                    rew = Reward300()
+                elif const == 4:  # 400 reward
+                    rew = Reward400()
+                else:  # 500 reward
+                    rew = Reward500()
+                objects[offset + i] = rew
+            else:
+                rew = lanes[i]
+            rew.xy = ram_state[42 + i], 26 + i * 16
+        elif ram_state[29 + i] % 2 == 1:
+            if not isinstance(lanes[i], Enemy):
+                en = Enemy()
+                objects[offset + i] = en
+            else:
+                en = lanes[i]
+            en.xy = ram_state[42 + i], 26 + i * 16
+        else:
+            if type(lanes[i]) not in eatable_class:
+                if const == 0:
+                    instance = Cauldron()
+                elif const == 1:
+                    instance = Helmet()
+                elif const == 2:
+                    instance = Shield()
+                elif const == 3:
+                    instance = Lamp()
+                elif const == 4:
+                    instance = Apple()
+                elif const == 5:
+                    instance = Fish()
+                elif const == 6:
+                    instance = Meat()
+                elif const == 7:
+                    instance = Mug()
+                objects[offset + i] = instance
+            else:
+                instance = lanes[i]
+            instance.xy = ram_state[42 + i] + 1, 26 + i * 16 + 1
+    
     if hud:
         score = objects[1]
         dec_value = _convert_number(ram_state[94]) * 10000 + _convert_number(ram_state[95]) * 100 + _convert_number(
@@ -341,11 +307,9 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
             lives.wh = 8, 11
         elif isinstance(objects[2], Lives):
             del objects[2]
-
         if lives_nr >= 3:
             lives = objects[3]
             lives.xy = 60 + 16, 169
             lives.wh = 8, 11
         elif isinstance(objects[3], Lives):
             del objects[3]
-    # print(len(objects))
