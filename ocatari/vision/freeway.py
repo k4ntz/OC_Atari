@@ -35,9 +35,10 @@ def _detect_objects_freeway(objects, obs, hud=False):
         objects.append(Chicken(*chicken))
 
     for carcolor in car_colors.values():
-        car = find_objects(obs, carcolor, min_distance=1)
+        car = find_objects(obs, carcolor, min_distance=1, miny=20, maxy=184)
         if len(car) >= 1:
-            car_inst = Car(*car[0])
+            x, y, w, h = car[0]
+            car_inst = Car(x, y-1, w, h+2)
             car_inst.rgb = carcolor
             objects.append(car_inst)
 
