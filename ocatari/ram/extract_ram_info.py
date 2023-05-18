@@ -40,6 +40,7 @@ from .assault import _detect_objects_assault_raw, _detect_objects_assault_revise
 from .roadrunner import _init_objects_roadrunner_ram, _detect_objects_roadrunner_revised
 from .alien import _init_objects_alien_ram, _detect_objects_alien_revised
 from .frostbite import _init_objects_frostbite_ram, _detect_objects_frostbite_revised
+from .fishingderby import _init_objects_fishingDerby_ram, _detect_objects_fishingDerby_revised
 
 
 # calls the respective _get_max_objects from the game modules
@@ -117,6 +118,8 @@ def init_objects(game_name, hud):
         return _init_objects_alien_ram(hud)
     elif game_name.lower() == "frostbite":
         return _init_objects_frostbite_ram(hud)
+    elif game_name.lower() == "fishingderby":
+        return _init_objects_fishingDerby_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
@@ -234,6 +237,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_roadrunner_revised(objects, ram_state, hud)
     elif game_name.lower() == "frostbite":
         _detect_objects_frostbite_revised(objects, ram_state, hud)
+    elif game_name.lower() == "fishingderby":
+        _detect_objects_fishingDerby_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)

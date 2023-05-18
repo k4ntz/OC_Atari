@@ -15,8 +15,8 @@ import torch
 
 DEVICE = "cpu"
 
-AVAILABLE_GAMES = ["Alien","Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
-                   "Breakout", "Carnival", "Centipede", "ChoppperCommand" "DemonAttack", "Freeway","Frostbite", "Kangaroo",
+AVAILABLE_GAMES = ["Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
+                   "Breakout", "Carnival", "Centipede", "ChoppperCommand" "DemonAttack", "FishingDerby", "Freeway", "Frostbite", "Kangaroo",
                    "MontezumaRevenge", "MsPacman", "Pong", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders",
                    "Tennis"]
 
@@ -160,7 +160,7 @@ class OCAtari:
     @property
     def objects(self):
         return [obj for obj in self._objects if obj]
-    
+
     def render_explanations(self):
         coefs = [0.05, 0.1, 0.25, 0.6]
         rendered = torch.zeros_like(self._state_buffer[0]).float()
