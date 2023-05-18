@@ -14,6 +14,7 @@ from copy import deepcopy
 from PIL import Image
 import cv2 
 
+
 parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
 parser.add_argument("-i", "--interval", type=int, default=10,
@@ -45,10 +46,10 @@ for i in range(10000):
         action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
     obs2 = deepcopy(obs)
-    if i > 160 and i % opts.interval == 0:
+    if i % opts.interval == 0:
         fig, axes = plt.subplots(1, 2)
         print("-"*50)
-        for objects_list, title, ax, obs in zip([env.objects, env.objects_v], ["ram", "vision"], axes, [obs, obs2]):
+        for obs, objects_list, title, ax in zip([obs, obs2], [env.objects, env.objects_v], ["ram", "vision"], axes):
             print(sorted(objects_list, key=lambda o: str(o)))
             for obj in objects_list:
                 opos = obj.xywh

@@ -198,7 +198,8 @@ def _init_objects_skiing_ram(hud=False):
     objects = [Player()]
     if hud:
         objects.extend([Score(), Score(ten=True), Logo(),
-                        Clock(59, 16, 6, 7), Clock(66, 17, 1, 5),
+                        Clock(59, 16, 6, 7), Clock(66, 17, 1, 2),
+                        Clock(66, 20, 1, 2),
                         Clock(68, 16, 6, 7), Clock(75, 16, 6, 7),
                         Clock(82, 21, 1, 2), Clock(84, 16, 6, 7),
                         Clock(91, 16, 6, 7)])
@@ -212,7 +213,7 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
     player.orientation = ram_state[15]
     # info["speed"] = ram_state[14] or ram[20] both seem to have very similar behavior
     # info["time"] = _time_skiing(ram_state)
-    offset = 1 if not hud else 11
+    offset = 1 if not hud else 12
     # xs = ram_state[62:70]
     # ys = 178-ram_state[86:94]
     # types = ram_state[70:78]

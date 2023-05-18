@@ -23,8 +23,7 @@ useOCAtari = True                # if True, running this file will execute the O
 printEnvInfo = False             # if True, the extracted objects or the environment info will be printed
 
 # gym[atari]/gymnasium
-game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
-game_name = "Kangaroo-v4"    # game name ChopperCommand-v4
+game_name = "FishingDerby-v4"    # game name ChopperCommand-v4
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
 fps = 60                        # render fps
