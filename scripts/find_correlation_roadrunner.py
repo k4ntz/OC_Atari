@@ -25,25 +25,25 @@ def ransac_regression(x, y):
     ransac = RANSACRegressor(estimator=LinearRegression(),
                              min_samples=50, max_trials=100,
                              loss='absolute_error', random_state=42,
-                             residual_threshold=10)
+                             residual_threshold=10) 
     ransac.fit(np.array(x).reshape(-1, 1), y)
     return ransac.estimator_.coef_.item(), ransac.estimator_.intercept_.item()
 
 
 DROP_LOW = True
-MIN_CORRELATION = 0.8
+MIN_CORRELATION = 0.7 #0.8
 
-NB_SAMPLES = 600
-game_name = "RoadRunner-v4"
+NB_SAMPLES = 1500# 600 before
+game_name = "RoadRunner" #RoadRunner-v4
 MODE = "vision"
 RENDER_MODE = "human"
 # RENDER_MODE = "rgb_array"
-env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
+env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE,hud=True)
 random.seed(0)
 
 observation, info = env.reset()
 # object_list = ["Projectile"]
-object_list = ["Player", "Enemy"]
+object_list = ["Birdseeds"]
 # create dict of list
 objects_infos = {}
 subset = []
@@ -64,11 +64,12 @@ for i in tqdm(range(NB_SAMPLES)):
     elif prob > 0.8:
         action = 5 # DOWN
     else:
-        action = 4 # RIGHT
+        action = 4 # 4-RIGHT 3- Left, Truck at (56, 129), (16, 18), Cactus at (125, 55), (8, 8), Cactus at (129, 46), (8, 8)]
     # if i % 5: # reset for pressing
     #     action = 0
+
     obs, reward, terminated, truncated, info = env.step(action)
-    if info.get('frame_number') > 10 and i % 5 == 0:
+    if info.get('frame_number') > 10 and i % 1 == 0:
         SKIP = False
         # print(env.objects)
         print(env.objects)
@@ -93,8 +94,6 @@ for i in tqdm(range(NB_SAMPLES)):
     # modify and display render
 env.close()
 
-
-import ipdb; ipdb.set_trace()
 
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
@@ -157,4 +156,3 @@ for el in corrT:
         plt.xlabel(idx)
         plt.ylabel(el)
         plt.show()
-

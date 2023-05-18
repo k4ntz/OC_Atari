@@ -10,6 +10,7 @@ from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.space_invaders import objects_colors
 from ocatari.vision.pong import objects_colors
 from ocatari.utils import load_agent, parser, make_deterministic
+import time
 
 parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
@@ -34,7 +35,7 @@ if opts.path:
 env.step(2)
 make_deterministic(0, env)
 ax = plt.gca()
-for i in range(10000):
+for i in range(100000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
