@@ -34,11 +34,17 @@ class DetectionScores():
     
     @property
     def cat_precisions(self):
-        return {cat: self.true_pos[cat]/(self.true_pos[cat]+self.false_pos[cat]) for cat in self.true_pos}
+        try:
+            return {cat: self.true_pos[cat]/(self.true_pos[cat]+self.false_pos[cat]) for cat in self.true_pos}
+        except ZeroDivisionError:
+            import ipdb; ipdb.set_trace()
 
     @property
     def cat_recalls(self):
-        return {cat: self.true_pos[cat]/(self.true_pos[cat]+self.false_neg[cat]) for cat in self.true_pos}
+        try:
+            return {cat: self.true_pos[cat]/(self.true_pos[cat]+self.false_neg[cat]) for cat in self.true_pos}
+        except ZeroDivisionError:
+            import ipdb; ipdb.set_trace()
     
     @property
     def cat_f_scores(self):
