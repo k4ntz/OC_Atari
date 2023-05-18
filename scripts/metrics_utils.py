@@ -46,8 +46,9 @@ class DetectionScores():
         f_scores = {}
         for cat in prec.keys():
             if prec[cat] == 0 and rec[cat] == 0:
-                import ipdb; ipdb.set_trace()
-            f_scores[cat] = 2 * prec[cat] * rec[cat] / (prec[cat] + rec[cat])
+                f_scores[cat] = 0
+            else:
+                f_scores[cat] = 2 * prec[cat] * rec[cat] / (prec[cat] + rec[cat])
         return f_scores
 
     @property
