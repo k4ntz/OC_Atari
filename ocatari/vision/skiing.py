@@ -82,4 +82,8 @@ def _detect_objects_skiing(objects, obs, hud=False):
         for el in moguls:
             objects.append(Mogul(*el, col))
     if hud:
-        objects.append(Logo())
+        objects.extend([Score(), Score(ten=True), Logo(),
+                        Clock(59, 16, 6, 7), Clock(66, 17, 1, 5),
+                        Clock(68, 16, 6, 7), Clock(75, 16, 6, 7),
+                        Clock(82, 21, 1, 2), Clock(84, 16, 6, 7),
+                        Clock(91, 16, 6, 7)])
