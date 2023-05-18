@@ -31,7 +31,7 @@ class ScorePlayerTwo(GameObject):
         self.rgb = 167, 26, 26
 
 
-class PlayerTwoFishingPole(GameObject):
+class PlayerTwoFishingHook(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 0, 0, 0
@@ -46,7 +46,7 @@ class ScorePlayerOne(GameObject):
 def _detect_objects_fishingDerby(objects, obs, hud=True):
     objects.clear()
 
-    for shark in find_objects(obs, objects_colors["shark"], closing_dist=1):
+    for shark in find_objects(obs, objects_colors["shark"], closing_dist=1, minx=28):
         shark_instance = Shark(*shark)
         if shark_instance.wh[1] < 20 and shark_instance.wh[1] > 5 and shark_instance.y > 50:
             objects.append(Shark(*shark))
@@ -63,7 +63,7 @@ def _detect_objects_fishingDerby(objects, obs, hud=True):
 
     notp2FishingPole = [[90, 80], [70, 130], [90, 77], [80, 77]]
     for p2_fishing_pole in find_objects(obs, objects_colors["player 2 fishing pole"]):
-        player_two_fishing_pole = PlayerTwoFishingPole(*p2_fishing_pole)
+        player_two_fishing_pole = PlayerTwoFishingHook(*p2_fishing_pole)
         if player_two_fishing_pole.y > 75 and player_two_fishing_pole.x > 80:
             fishing_pole = True
             for coordinates in notp2FishingPole:

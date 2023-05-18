@@ -375,12 +375,12 @@ def on_press(key):
         if key == keyboard.Key.esc:
             end = True
         
+        global env
         if pause and key == keyboard.Key.space:
-            inp = input('please enter new target value')
-            if inp in [str(i) for i in range(10)]:
-                target_val = int(inp)
-                print(f"Changed target_val to {target_val}")
-        
+            ram_pos = int(input('please enter ram pos'))
+            print(f"Currently as : {env.get_ram()[ram_pos]}")
+            new_val = int(input('please enter new target value'))
+            env.set_ram(ram_pos, new_val)
 
         # changing inputs
         key_name = str(key)
@@ -388,7 +388,6 @@ def on_press(key):
         key_name = key_name.removeprefix("\'")
         key_name = key_name.removesuffix("\'")
         if pause and key_name.lower() == "s":
-            global env
             snapshot = env._env.env.env.ale.cloneState()
             filename = input('give_filename')
             pickle.dump(snapshot, open(filename, "wb"))
