@@ -69,6 +69,14 @@ class CarsAheadSign(GameObject):
         self.rgb = 0, 0, 0
         self.hud = True
 
+class ExitSign(GameObject):
+    def __init__(self):
+        super().__init__()
+        self._xy = 0, 0
+        self.wh = (16, 15)
+        self.rgb = 0, 0, 0
+        self.hud = True
+
 class Bird(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -81,7 +89,7 @@ class PlayerScore(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 0,0,0
-        self._xy = 83,182
+        self._xy = 0,0
         self.wh=(7,5)
         self.hud = True
 # parses MAX_NB* dicts, returns default init list of objects
@@ -106,7 +114,7 @@ def _init_objects_roadrunner_ram(hud=False):
     """
     objects = [Player(), Enemy(), Truck(),Birdseeds(),Birdseeds(),Birdseeds(),Birdseeds()]
     if hud:
-        objects.extend([ThisWaySign(),Bird(),Bird(),Cactus(),Cactus(),PlayerScore()])
+        objects.extend([ThisWaySign(),Bird(),Bird(),Cactus(),Cactus(), PlayerScore(), PlayerScore(), PlayerScore()])
     # if hud:
     #     global plscore
     #     plscore = PlayerScore()
@@ -142,42 +150,33 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
         truck.xy=ram_state[42],157 if (ram_state[43]==1) else 127
     objects[3]=None
     # BirdSeeds
-    pos_init=ram_state[89]-23
+    pos_init=ram_state[89]
+    dist1=[-30,-67,-49,18,-59,-22,18,-67]
+    dist2=[-30,95,-47,20,-56,-20,20,94]
+    loc=ram_state[90]-1
     if ram_state[36]==31: #bottom seed
         seed1=Birdseeds()
-        if ram_state[90]==6:
-            seed1.xy=correction(pos_init-60),166
-        else:
-            pass
+        seed1.xy=correction(pos_init+dist1[loc]+3*dist2[loc]),165
         objects[3]=seed1
     else:
         objects[3]=None
     if ram_state[37]==31: #second bottom seed
         seed2=Birdseeds()
-        if ram_state[90]==6:
-            seed2.xy=correction(pos_init-40),152
-        else:
-            pass
+        seed2.xy=correction(pos_init+dist1[loc]+2*dist2[loc]),151
         objects[4]=seed2
     else:
         objects[4]=None
 
     if ram_state[38]==31: #second top seed
         seed3=Birdseeds()
-        if ram_state[90]==6:
-            seed3.xy=correction(pos_init-20),138
-        else:
-            pass
+        seed3.xy=correction(pos_init+dist1[loc]+dist2[loc]),137
         objects[5]=seed3
     else:
         objects[5]=None    
 
     if ram_state[39]==31: #top seed
         seed4=Birdseeds()
-        if ram_state[90]==6:
-            seed4.xy=correction(pos_init),124
-        else:
-            pass
+        seed4.xy=correction(pos_init+dist1[loc]),124
         objects[6]=seed4
     else:
         objects[6]=None
@@ -189,16 +188,20 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
         else:
             if ram_state[69]==0:
                 twss=ThisWaySign()
-                twss.xy=ram_state[82], 74
+                twss.xy=ram_state[82], 73
                 objects[7]=twss
             elif ram_state[69]==1:
                 bs=BirdseedSign()
-                bs.xy=ram_state[82], 74
+                bs.xy=ram_state[82], 73
                 objects[7]=bs
             elif ram_state[69]==2:
                 bs=CarsAheadSign()
-                bs.xy=ram_state[82], 74
+                bs.xy=ram_state[82], 73
                 objects[7]=bs
+            elif ram_state[69]==16:
+                es=ExitSign()
+                es.xy=ram_state[82], 73
+                objects[7]=es
             else:
                 objects[7]=None
 
@@ -217,30 +220,44 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
             objects[8]=bird1
         #cactus
         u_cac=Cactus()
-        u_cac.xy=ram_state[24],47
+        u_cac.xy=ram_state[24],46
         l_cac=Cactus()
         l_cac.xy=ram_state[83],55
         objects[10]=u_cac
         objects[11]=l_cac
 
 
-        if ram_state[50]==0:
-            objects[12]=None
+        ps1=PlayerScore()
+        ps2=PlayerScore()
+        ps3=PlayerScore()
+        if ram_state[12]==2:
+            ps1.xy=80, 182
+            ps1.wh=(1, 5)
+            ps2.xy=83, 182
+            ps2.wh=(3, 5)
+            ps3.xy=87, 182
+            ps3.wh=(3, 5)
+        elif ram_state[12]==1:
+            ps1=None
+            ps2=None
+            ps3=None
         else:
-            ps=PlayerScore()
-            objects[12]=ps
+            ps1.xy=80, 182
+            ps1.wh=(3, 5)
+            ps2.xy=83, 182
+            ps2.wh=(3, 5)
+            ps3.xy=87, 182
+            ps3.wh=(3, 5)
+        objects[12]=ps1; objects[13]=ps2; objects[14]=ps3
+
+
 
         # player score info 
         # PlayerScore at (87, 182), (3, 5), PlayerScore at (83, 182), (3, 5), PlayerScore at (80, 182), (1, 5)
 
 def correction(pos):
-    # if pos>=150:
-    #     pos=8+(150-pos)
-    # elif pos<=8:
-    #     pos=150-pos
-    # else:
-    #     pass
-    return pos
+    pos-=2
+    return pos % 160
 
 def _detect_objects_roadrunner_raw(info, ram_state):
     """
