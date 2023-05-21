@@ -22,6 +22,8 @@ parser.add_argument("-i", "--interval", type=int, default=10,
 # parser.add_argument("-m", "--mode", choices=["vision", "revised"],
 #                     default="revised", help="The frame interval")
 parser.add_argument("-hud", "--hud", action="store_true", help="Detect HUD")
+parser.add_argument("-dqn", "--dqn", action="store_true", help="Use DQN agent")
+
 
 opts = parser.parse_args()
 
@@ -29,10 +31,9 @@ opts = parser.parse_args()
 env = OCAtari(opts.game, mode="test", render_mode='rgb_array', hud=opts.hud)
 observation, info = env.reset()
 
-
-if opts.path:
-    agent = load_agent(opts, env.action_space.n)
-    print(f"Loaded agents from {opts.path}")
+if opts.dqn:
+    opts.path = f"models/{opts.game}/dqn.gz"
+    dqn_agent = load_agent(opts, env.action_space.n)
 
 
 env.step(2)
@@ -40,17 +41,20 @@ make_deterministic(0, env)
 
 
 for i in range(10000):
-    if opts.path is not None:
-        action = agent.draw_action(env.dqn_obs)
+    if opts.dqn:
+        action = dqn_agent.draw_action(env.dqn_obs)
     else:
         action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
     obs2 = deepcopy(obs)
+    if env._env.unwrapped.ale.getRAM()[59]:
+        print("Falling")
     if i % opts.interval == 0:
         fig, axes = plt.subplots(1, 2)
         print("-"*50)
         for obs, objects_list, title, ax in zip([obs, obs2], [env.objects, env.objects_v], ["ram", "vision"], axes):
-            print(sorted(objects_list, key=lambda o: str(o)))
+            toprint = sorted(objects_list, key=lambda o: str(o))
+            print([o for o in toprint if "Centi" not in str(o)])
             for obj in objects_list:
                 opos = obj.xywh
                 ocol = obj.rgb

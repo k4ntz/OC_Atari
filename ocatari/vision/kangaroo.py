@@ -174,6 +174,6 @@ def _detect_objects_kangaroo(objects, obs, hud=True):
         for bb in time:
             objects.append(Time(*bb))
 
-        score = find_objects(obs, objects_colors["hud"], min_distance=1, minx=120, maxx=150)
+        score = find_objects(obs, objects_colors["hud"], closing_dist=6, minx=100, maxx=150)
         for bb in score:
             objects.append(Score(*bb))

@@ -81,12 +81,15 @@ def mark_bb(image_array, bb, color=(255, 0, 0), surround=True):
             y, h = bb[1] - 1, bb[3] + 1
         else:
             y, h = bb[1], bb[3]
-    bottom = min(209, y + h)
-    right = min(159, x + w)
-    image_array[y:bottom + 1, x] = color
-    image_array[y:bottom + 1, right] = color
-    image_array[y, x:right + 1] = color
-    image_array[bottom, x:right + 1] = color
+    bottom = min(208, y + h)
+    right = min(158, x + w)
+    try:
+        image_array[y:bottom + 1, x] = color
+        image_array[y:bottom + 1, right] = color
+        image_array[y, x:right + 1] = color
+        image_array[bottom, x:right + 1] = color
+    except IndexError:
+        import ipdb; ipdb.set_trace()
 
 
 def plot_bounding_boxes(obs, bbs, objects_colors):

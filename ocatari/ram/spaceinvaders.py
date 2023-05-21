@@ -185,7 +185,6 @@ def _init_objects_space_invaders_ram(hud=False):
 
 global aliens
 lives_ctr = 41
-global player
 firstCall = True
 global scores
 global prevRam
@@ -204,7 +203,6 @@ global shields
 def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     global firstCall
     global aliens
-    global player
     global prevRam
     global lives_ctr
     global scores
@@ -213,6 +211,7 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
     global score_ctr
     global sat_ctr
     global shields
+    player = objects[0]
 
     if lives_ctr:
         lives_ctr -= 1
@@ -257,6 +256,8 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
         for j in range(6):
             if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):  # enemies alive are saved in ram_state[18:24]
                 aliens[35 - (i * 6 + j)] = None  # 5 = max(range(6)) so we are counting lines in the other way around
+            elif not aliens[35 - (i * 6 + j)] and int(bitmap[i][j]):
+                aliens[35 - (i * 6 + j)] = Alien() # 5 = max(range(6)) so we are counting lines in the other way around
 
     for i in range(6):
         for j in range(6):
@@ -297,7 +298,6 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
                     sat_ctr = 1
                     if satellite in objects:
                         objects.remove(satellite)
-
     # SHIELDS
     # visibility of shields
     for alien in aliens:
@@ -330,7 +330,6 @@ def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
                 bullets[i].wh = bullets[i].wh[0], 195 - bullets[i].xy[1] - 1
             else:
                 bullets[i].wh = 1, 10
-
     # determining if bullets are visible
     bullets_visible = [False, False, False]
     if not firstCall:

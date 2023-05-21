@@ -3,8 +3,9 @@ from ._helper_methods import bitfield_to_number, number_to_bitfield
 import math
 import sys
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9, 'Wall': 42, 'Bug': 1, 'Crab': 1}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9, 'Wall': 42, 'Score': 4, 'Life': 2, 'Bug': 1, 'Crab': 1, 'Ghost': 1}
+MAX_NB_OBJECTS =  {'Player': 1, 'Mushroom': 1, 'CentipedeSegment': 9, 'Wall': 42, 'Bug': 1, 'Crab': 1}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Mushroom': 1, 'CentipedeSegment': 9, 'Wall': 42, 'Score': 4, 'Life': 2, 'Bug': 1, 'Crab': 1, 'Ghost': 1}
+
 
 class CentipedeSegment(GameObject):
     def __init__(self):
@@ -24,9 +25,9 @@ class Player(GameObject):
         self.hud = False
 
 
-class Projectile(GameObject):
+class Mushroom(GameObject):
     def __init__(self):
-        super(Projectile, self).__init__()
+        super(Mushroom, self).__init__()
         self._xy = 0, 0
         self.wh = 1, 8
         self.rgb = 181, 83, 40
@@ -204,7 +205,7 @@ def _init_objects_centipede_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Projectile()]  # , Bug(), Ghost(), Crab()
+    objects = [Player(), Mushroom()]  # , Bug(), Ghost(), Crab()
     for i in range(9):
         objects.append(CentipedeSegment())
     if hud:

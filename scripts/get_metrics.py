@@ -100,7 +100,6 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
                             if not class_name in ALL_STATS[only_in]:
                                 ALL_STATS[only_in][class_name] = 0
                             ALL_STATS[only_in][class_name] += 1
-
                     if stats["mean_iou"] < MIN_ACCEPTABLE_IOU:
                         obse2 = deepcopy(obse)
                         obss = []
@@ -126,6 +125,7 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
                         axes[2].set_title("difference")
                         plt.tight_layout()
                         plt.savefig(f"{SAVE_IMAGE_FOLDER}/{game_name}_{meth_name}_{image_n}.png")
+                        plt.show()
                         im_reports += f"{image_n} (iou={stats['mean_iou']:.3f}),  "
                         report_bad[f"Image_{image_n}"] = stats
                     pbar.update(1)
