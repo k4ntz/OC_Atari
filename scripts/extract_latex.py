@@ -1,5 +1,6 @@
 import pandas as pd
 import pickle
+from termcolor import colored
 
 pkl_report_file = "reports/all_games_report.pkl"
 latex_report_file = "reports/all_games_report.tex"
@@ -8,6 +9,9 @@ with open(pkl_report_file, "rb") as savefile:
 
 
 df = df[~df.index.duplicated(keep='last')]
+
+nb_games = len(df)
+print(colored(f"{nb_games} out of 35 done !"))
 
 # df.fillna("N/A", inplace=True)
 dfT = df.T
@@ -37,5 +41,7 @@ ltx_code = ltx_code.replace("lrrrrrrrrrrr", "l|rrrr|rrrr|rrrr").replace(
 
 with open(latex_report_file, 'w') as texfile:
     texfile.write(ltx_code)
+
+
 
 print(f"Saved latex in {latex_report_file}")

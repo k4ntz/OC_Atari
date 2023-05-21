@@ -54,14 +54,16 @@ class OCAtari:
         else:
             print(colored("Undefined mode for information extraction", "red"))
             exit(1)
+        self._fill_buffer = lambda *args, **kwargs:None
+        self._reset_buffer = lambda *args, **kwargs:None
         if obs_mode == "dqn":
             self._fill_buffer = self._fill_buffer_dqn
             self._reset_buffer = self._reset_buffer_dqn
         elif obs_mode == "ori":
             self._fill_buffer = self._fill_buffer_ori
             self._reset_buffer = self._reset_buffer_ori
-        else:
-            print(colored("Undefined mode for observation (obs_mode), has to be one of [dqn, ori]", "red"))
+        elif obs_mode is not None:
+            print(colored("Undefined mode for observation (obs_mode), has to be one of ['dqn', 'ori', None]", "red"))
             exit(1)
         self.window = 4
         self._state_buffer = deque([], maxlen=self.window)
