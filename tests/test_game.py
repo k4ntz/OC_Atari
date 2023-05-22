@@ -41,22 +41,24 @@ for i in range(100000):
     else:
         action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
-    if i % opts.interval == 0:
-        print(env.objects)
-        for obs, objects_list, title in zip([obs],
-                                                [env.objects],
-                                                ["ram"] if opts.mode == "revised" else ["vision"]):
-            for obj in objects_list:
-                opos = obj.xywh
-                ocol = obj.rgb
-                sur_col = make_darker(ocol)
-                mark_bb(obs, opos, color=sur_col)
-                # mark_point(obs, *opos[:2], color=(255, 255, 0))
-        ax.set_xticks([])
-        ax.set_yticks([])
-        plt.title(f"{opts.mode}: {opts.mode} mode (frame {i})", fontsize=20)
-        plt.imshow(obs)
-        plt.show()
+    # print(env.objects)
+    # if i % opts.interval == 0:
+    if "PurpleBall" in str(env.objects):
+        print(env.get_ram()[118])
+        # for obs, objects_list, title in zip([obs],
+        #                                         [env.objects],
+        #                                         ["ram"] if opts.mode == "revised" else ["vision"]):
+        #     for obj in objects_list:
+        #         opos = obj.xywh
+        #         ocol = obj.rgb
+        #         sur_col = make_darker(ocol)
+        #         mark_bb(obs, opos, color=sur_col)
+        #         # mark_point(obs, *opos[:2], color=(255, 255, 0))
+        # ax.set_xticks([])
+        # ax.set_yticks([])
+        # plt.title(f"{opts.mode}: {opts.mode} mode (frame {i})", fontsize=20)
+        # plt.imshow(obs)
+        # plt.show()
 
     if terminated or truncated:
         observation, info = env.reset()
