@@ -53,6 +53,12 @@ class ThisWaySign(GameObject):
         self.rgb = 0, 0, 0
         self.hud = True
 
+class ExitSign(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 0, 0, 0
+        self.hud = True
+
 class Bird(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -74,14 +80,14 @@ def _detect_objects_roadrunner(objects, obs, hud=False):
     enemy = find_mc_objects(obs, enemycolors, size=(8, 28), tol_s=8, miny=37, min_distance=1)
     if enemy:
         objects.append(Enemy(*enemy[0]))
-    birdseeds = find_objects(obs, objects_colors["birdseeds"], closing_dist=5, size=(5,3), tol_s=2)
+    birdseeds = find_objects(obs, objects_colors["birdseeds"], closing_dist=5,size=(5,3), tol_s=2)
     for seed in birdseeds:
         objects.append(Birdseeds(*seed))
     trucks = find_mc_objects(obs, truckcolors, size=(16, 18), tol_s=2, min_distance=1)
     for truck in trucks:
         objects.append(Truck(*truck))
     if hud:
-        cactus = find_objects(obs, objects_colors["cactus"], closing_active=False, size=(8, 8), tol_s=4)
+        cactus = find_objects(obs, objects_colors["cactus"], closing_active=False, size=(8, 8),tol_s=4)
         for cac in cactus:
             objects.append(Cactus(*cac))
         twss= find_objects(obs, objects_colors["thiswaysign"], closing_active=False, size=(16, 15), tol_s=3, miny=25, maxy=107)

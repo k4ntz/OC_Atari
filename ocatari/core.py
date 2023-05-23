@@ -15,8 +15,8 @@ import torch
 
 DEVICE = "cpu"
 
-AVAILABLE_GAMES = ["Alien","Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
-                   "Breakout", "Carnival", "Centipede", "ChoppperCommand" "DemonAttack", "Freeway", "Kangaroo",
+AVAILABLE_GAMES = ["Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
+                   "Breakout", "Carnival", "Centipede", "ChoppperCommand" "DemonAttack", "FishingDerby", "Freeway", "Frostbite", "Kangaroo",
                    "MontezumaRevenge", "MsPacman", "Pong", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders",
                    "Tennis"]
 
@@ -54,14 +54,16 @@ class OCAtari:
         else:
             print(colored("Undefined mode for information extraction", "red"))
             exit(1)
+        self._fill_buffer = lambda *args, **kwargs:None
+        self._reset_buffer = lambda *args, **kwargs:None
         if obs_mode == "dqn":
             self._fill_buffer = self._fill_buffer_dqn
             self._reset_buffer = self._reset_buffer_dqn
         elif obs_mode == "ori":
             self._fill_buffer = self._fill_buffer_ori
             self._reset_buffer = self._reset_buffer_ori
-        else:
-            print(colored("Undefined mode for observation (obs_mode), has to be one of [dqn, ori]", "red"))
+        elif obs_mode is not None:
+            print(colored("Undefined mode for observation (obs_mode), has to be one of ['dqn', 'ori', None]", "red"))
             exit(1)
         self.window = 4
         self._state_buffer = deque([], maxlen=self.window)
@@ -160,7 +162,7 @@ class OCAtari:
     @property
     def objects(self):
         return [obj for obj in self._objects if obj]
-    
+
     def render_explanations(self):
         coefs = [0.05, 0.1, 0.25, 0.6]
         rendered = torch.zeros_like(self._state_buffer[0]).float()

@@ -2,7 +2,7 @@ from .game_objects import GameObject
 import sys
 
 """
-RAM extraction for the game KANGUROO. Supported modes: raw, revised.
+RAM extraction for the game KANGAROO. Supported modes: raw, revised.
 
 """
 
@@ -120,9 +120,9 @@ class Time(GameObject):
         self.rgb = 160, 171, 79
         self.hud = True
 
+
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
-
     def fromdict(max_obj_dict):
         objects = []
         mod = sys.modules[__name__]
@@ -135,153 +135,101 @@ def _get_max_objects(hud=False):
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
 
+
 def _init_objects_kangaroo_ram(hud=True):
     """
     (Re)Initialize the objects
     """
-
     objects = [Player(), Child(), Enemy(), Enemy(), Enemy(), Enemy(),
-               Projectile_top(), Projectile_enemy(), Fruit(), Fruit(), Fruit(), Bell()]
-
+               Projectile_top(), Projectile_enemy(), Fruit(), Fruit(), Fruit(), Bell(), 
+               Platform(16, 172, w=128), Platform(16, 28, w=128)]
+    manage_platforms(0, objects)
+    global prevval
+    prevval = 0
+    if hud:
+        objects.extend([Score(), Time(), Life(), Life()])
     return objects
 
 
-# levels: ram_state[36], total of 3 levels: 0,1 and 2
 def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
-    objects.clear()
-
     # player
-    if not "kp" in obj_tracker.keys():
-        obj_tracker["kp"] = Player()
-    kp = obj_tracker["kp"]
-    objects.append(kp)
-    kp.xy = ram_state[17] + 15, ram_state[16] * 8 + 5
+    player = objects[0]
+    player.xy = ram_state[17] + 15, ram_state[16] * 8 + 5
     if ram_state[19] > 16 and ram_state[19] < 24:
-        kp.wh = 8, 13
+        player.wh = 8, 13
     elif ram_state[19] == 31:
-        kp.wh = 8, 15
+        player.wh = 8, 15
     else:
-        kp.wh = 8, 24
+        player.wh = 8, 24
 
     # kangaroo child (goal)
-    if not "kc" in obj_tracker.keys():
-        obj_tracker["kc"] = Child()
-    kc = obj_tracker["kc"]
-    objects.append(kc)
-    kc.xy = ram_state[83] + 15, 12
+    child = objects[1]
+    child.xy = ram_state[83] + 15, 12
+    enemies = objects[2:6]
+    for i, en in enumerate(enemies):
+        if ram_state[11-i] != 255 and ram_state[11-i] != 127:
+            if en is None:
+                en = Enemy()
+                objects[2+i] = en
+            en.xy = ram_state[15-i] + 16, ram_state[11-i] * 8 + 5
+        elif en is not None:
+            objects[2+i] = None
 
-    if not "m1" in obj_tracker.keys():
-        obj_tracker["m1"] = Enemy()
-    m1 = obj_tracker["m1"]
-    if ram_state[11] != 255:
-        objects.append(m1)
-        m1.xy = ram_state[15] + 16, ram_state[11] * 8 + 5
-    if not "m2" in obj_tracker.keys():
-        obj_tracker["m2"] = Enemy()
-    m2 = obj_tracker["m2"]
-    if ram_state[10] != 255:
-        objects.append(m2)
-        m2.xy = ram_state[14] + 16, ram_state[10] * 8 + 5
-    if not "m3" in obj_tracker.keys():
-        obj_tracker["m3"] = Enemy()
-    m3 = obj_tracker["m3"]
-    if ram_state[9] != 255:
-        objects.append(m3)
-        m3.xy = ram_state[13] + 16, ram_state[9] * 8 + 5
-    if not "m4" in obj_tracker.keys():
-        obj_tracker["m4"] = Enemy()
-    m4 = obj_tracker["m4"]
-    if ram_state[8] != 255:
-        objects.append(m4)
-        m4.xy = ram_state[12] + 16, ram_state[8] * 8 + 5
-
-    # falling Projectile
-    if not "p1" in obj_tracker.keys():
-        obj_tracker["p1"] = Projectile_top()
-    p1 = obj_tracker["p1"]
-    objects.append(p1)
+    # # falling Projectile
+    proj1 = objects[6]
     if ram_state[33] != 255:
-        p1.xy = ram_state[34] + 14, ((ram_state[33] - (22 * ram_state[36])) * 8) + 9
+        if proj1 is None:
+            proj1 = Projectile_top()
+            objects[6] = proj1
+        proj1.xy = ram_state[34] + 14, ((ram_state[33] - (22 * ram_state[36])) * 8) + 9
     else:
-        objects.remove(p1)
-
+        objects[6] = None
     # thrown by monkeys Projectile
     # This projectiles visual representation seems to differ from its RAM x position,
     # therefor you will see it leaving the bounding box on both left and right depending on the situation
-    if not "p2" in obj_tracker.keys():
-        obj_tracker["p2"] = Projectile_enemy()
-    p2 = obj_tracker["p2"]
-    objects.append(p2)
+    proj2 = objects[7]
     if ram_state[25] != 255:
-        p2.xy = ram_state[28] + 15, (ram_state[25] * 8) + 1
+        if proj2 is None:
+            proj2 = Projectile_enemy()
+            objects[7] = proj2
+        proj2.xy = ram_state[28] + 15, (ram_state[25] * 8) + 1
     else:
-        objects.remove(p2)
+        objects[7] = None
 
-    # fruits
-    if not "f1" in obj_tracker.keys():
-        obj_tracker["f1"] = Fruit()
-    f1 = obj_tracker["f1"]
-    objects.append(f1)
-    if not "f2" in obj_tracker.keys():
-        obj_tracker["f2"] = Fruit()
-    f2 = obj_tracker["f2"]
-    objects.append(f2)
-    if not "f3" in obj_tracker.keys():
-        obj_tracker["f3"] = Fruit()
-    f3 = obj_tracker["f3"]
-    objects.append(f3)
-    if ram_state[87] == ram_state[86]:
-        y1 = (ram_state[84] * 8) + 4
-        y2 = (ram_state[85] * 8) + 4
-        y3 = (ram_state[86] * 8) + 4
-    else:
-        y1 = (ram_state[85] * 8) + 4  # top
-        y2 = (ram_state[86] * 8) + 4  # mid
-        y3 = (ram_state[87] * 8) + 4  # low
-
-    if ram_state[92] == ram_state[91]:
-        x1 = ram_state[89] + 15
-        x2 = ram_state[90] + 15
-        x3 = ram_state[91] + 15
-    else:
-        x1 = ram_state[90] + 15
-        x2 = ram_state[91] + 15
-        x3 = ram_state[92] + 15
-
-    f1.xy = x1, y1  # top
-    f2.xy = x2, y2  # mid
-    f3.xy = x3, y3  # low
-
-    rgb = _get_fruit_type_kangaroo(ram_state[42])
-    if rgb is not None:
-
-        f1.rgb = _get_fruit_type_kangaroo(ram_state[42])
-    else:
-        objects.remove(f1)
-
-    rgb = _get_fruit_type_kangaroo(ram_state[43])
-    if rgb is not None:
-        f2.rgb = _get_fruit_type_kangaroo(ram_state[43])
-    else:
-        objects.remove(f2)
-
-    rgb = _get_fruit_type_kangaroo(ram_state[44])
-    if rgb is not None:
-        f3.rgb = _get_fruit_type_kangaroo(ram_state[44])
-    else:
-        objects.remove(f3)
+    # # fruits
+    fruits = objects[8: 11]
+    for i, frt in enumerate(fruits):
+        rgb = _get_fruit_type_kangaroo(ram_state[42+i])
+        if rgb is not None:
+            if frt is None:
+                frt = Fruit()
+                objects[8+i] = frt
+            frt.rgb = rgb
+            if ram_state[87] == ram_state[86]:
+                y = (ram_state[84+i] * 8) + 4
+            else:
+                y = (ram_state[85+i] * 8) + 4  
+            if ram_state[92] == ram_state[91]:
+                x = ram_state[89+i] + 15
+            else:
+                x = ram_state[90+i] + 15
+            frt.xy = x, y 
+        else:
+            objects[8+i] = None
 
     # bell
-    if not "bell" in obj_tracker.keys():
-        obj_tracker["bell"] = Bell()
-    bell = obj_tracker["bell"]
-    objects.append(bell)
+    bell = objects[11]
     bell.xy = ram_state[82] + 16, 36
+    # potential lvl change
+    curlvlval = ram_state[36]
+    global prevval
+    if prevval != curlvlval:
+        manage_platforms(curlvlval, objects) # ram_state[40]
+    prevval = curlvlval
 
     if hud:
         # score
-        score = Score()
-        objects.append(score)
+        score = objects[37]
         if ram_state[40] != 0:
             score.xy = 121, 183
             score.wh = 23, 7
@@ -295,20 +243,21 @@ def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
             score.xy = 97, 183
             score.wh = 47, 7
 
-        # lives
-        for i in range(8):
-            if i < ram_state[45]:
-                life = Life()
-                life.xy = 16 + (i*8), 183
-                objects.append(life)
-            else:
-                break
+        time = objects[38]
+        time.xy = 80, 191
 
-        time = Time()
-        objects.append(time)
-        # time.xy = 80, 191
-    add_platforms(ram_state[40], objects)
-    return objects
+        # lives
+        for i in range(2):
+            life = objects[39+i]
+            if i < ram_state[45]:
+                if objects[39+i] is None:
+                    life = Life()
+                    objects[39+i] = life
+                life.xy = 16 + (i*8), 183
+            elif life is not None:
+                objects[39+i] = None
+
+    # return objects
 
 
 def _detect_objects_kangaroo_raw(info, ram_state):
@@ -341,58 +290,23 @@ def _get_fruit_type_kangaroo(ram_state):
     else:
         return None
 
-def add_platforms(lvl_value, objects):
-    objects.append(Platform(16, 172, w=128))  # base platform
-    objects.append(Platform(16, 28, w=128))  # top platform
-    if lvl_value < 23:
-        objects.append(Scale(132, 132))
-        objects.append(Platform(16, 76, w=128))
-        objects.append(Scale(20, 85))
-        objects.append(Platform(16, 124, w=128))
-        objects.append(Scale(132, 37))
-    elif lvl_value < 46:
-        objects.append(Platform(16, 124, w=28))
-        objects.append(Platform(52, 124, w=92))
-        objects.append(Platform(16, 76, w=60))
-        objects.append(Platform(84, 76, w=60))
-        objects.append(Scale(120, 132, h=4))
-        objects.append(Scale(24, 116, h=4))
-        objects.append(Scale(128, 36, h=4))
-        objects.append(Platform(28, 164, w=24))
-        objects.append(Platform(112, 84, w=24))
-        objects.append(Platform(120, 44, w=24))
-        objects.append(Platform(48, 156, w=32))
-        objects.append(Platform(76, 148, w=32))
-        objects.append(Platform(104, 140, w=32))
-        objects.append(Platform(16, 108, w=32))
-        objects.append(Platform(56, 100, w=20))
-        objects.append(Platform(56, 100, w=20))
-        objects.append(Platform(84, 92, w=20))
-        objects.append(Platform(64, 60, w=20))
-        objects.append(Platform(92, 52, w=20))
-        objects.append(Platform(28, 68, w=28))
-    else:
-        objects.append(Scale(20, 36, h=28))
-        objects.append(Scale(20, 148, h=4))
-        objects.append(Scale(36, 116, h=20))
-        objects.append(Scale(104, 36, h=20))
-        objects.append(Scale(120, 68, h=4))
-        objects.append(Scale(132, 84, h=4))
-        objects.append(Platform(88, 140, w=16))
-        objects.append(Platform(64, 148, w=16))
-        objects.append(Platform(100, 116, w=16))
-        objects.append(Platform(48, 100, w=16))
-        objects.append(Platform(76, 52, w=16))
-        objects.append(Platform(80, 36, w=16))
-        objects.append(Platform(104, 132, w=20))
-        objects.append(Platform(84, 156, w=20))
-        objects.append(Platform(124, 124, w=20))
-        objects.append(Platform(52, 84, w=20))
-        objects.append(Platform(108, 164, w=36))
-        objects.append(Platform(16, 108, w=80))
-        objects.append(Platform(16, 92, w=28))
-        objects.append(Platform(76, 92, w=68))
-        objects.append(Platform(16, 140, w=32))
-        objects.append(Platform(96, 60, w=36))
-        objects.append(Platform(100, 76, w=44))
-        objects.append(Platform(60, 44, w=12))
+def manage_platforms(current_lvl_val, objects):
+    # base platform and top platform are always there
+    changing_platforms = objects[13:]
+    # levels: ram_state[36], total of 3 levels: 0, 1 and 2
+    if current_lvl_val == 0:
+        objects[13:37] = [Scale(132, 132), Platform(16, 76, w=128), Scale(20, 85), Platform(16, 124, w=128), Scale(132, 37)] + [None] * 19
+    elif current_lvl_val == 1:
+        objects[13:37] = [Platform(16, 124, w=28), Platform(52, 124, w=92), Platform(16, 76, w=60), 
+                        Platform(84, 76, w=60), Scale(120, 132, h=4), Scale(24, 116, h=4), Scale(128, 36, h=4), 
+                        Platform(28, 164, w=24), Platform(112, 84, w=24), Platform(120, 44, w=24), Platform(48, 156, w=32), 
+                        Platform(76, 148, w=32), Platform(104, 140, w=32), Platform(16, 108, w=32), Platform(56, 100, w=20), 
+                        Platform(56, 100, w=20), Platform(84, 92, w=20), Platform(64, 60, w=20), Platform(92, 52, w=20), 
+                        Platform(28, 68, w=28)] +  [None] * 4 # len 20
+    else: # current_lvl_val == 2
+        objects[13:37] = [Scale(20, 36, h=28), Scale(20, 148, h=4), Scale(36, 116, h=20), Scale(104, 36, h=20), Scale(120, 68, h=4), 
+                        Scale(132, 84, h=4), Platform(88, 140, w=16), Platform(64, 148, w=16), Platform(100, 116, w=16), 
+                        Platform(48, 100, w=16), Platform(76, 52, w=16), Platform(80, 36, w=16), Platform(104, 132, w=20), 
+                        Platform(84, 156, w=20), Platform(124, 124, w=20), Platform(52, 84, w=20), Platform(108, 164, w=36), 
+                        Platform(16, 108, w=80), Platform(16, 92, w=28), Platform(76, 92, w=68), Platform(16, 140, w=32), 
+                        Platform(96, 60, w=36), Platform(100, 76, w=44), Platform(60, 44, w=12)] # 24

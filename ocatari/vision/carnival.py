@@ -24,40 +24,16 @@ class Player(GameObject):
         self.rgb = 66, 158, 130
 
 
-class PlayerScore(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 160, 171, 79
-
-
-class AmmoBar(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 24, 59, 157
-
-
 class PlayerMissile(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 183, 194, 95
 
 
-class Bonus(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 214, 92, 92
-
-
 class Owl(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 214, 92, 92
-
-
-class Rabbit(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 192, 192, 192
 
 
 class Duck(GameObject):
@@ -72,10 +48,39 @@ class FlyingDuck(GameObject):
         self.rgb = 187, 187, 53
 
 
+class Rabbit(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 192, 192, 192
+
+
 class ExtraBullets(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 192, 192, 192
+
+
+class PlayerScore(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 160, 171, 79
+
+
+class AmmoBar(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 24, 59, 157
+
+
+class BonusSign(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 214, 92, 92
+
+class BonusValue(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 214, 92, 92
 
 
 class Wheel(GameObject):
@@ -142,4 +147,7 @@ def _detect_objects_carnival(objects, obs, hud=False):
         bonus = find_objects(obs, objects_colors["bonus"], min_distance=1)
         for bon in bonus:
             if bon[1] <= 32:
-                objects.append(Bonus(*bon))
+                if bon[2] < 10:
+                    objects.append(BonusSign(*bon))
+                else:
+                    objects.append(BonusValue(*bon))

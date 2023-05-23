@@ -3,7 +3,8 @@ from .utils import find_objects
 
 
 objects_colors = {'centipede': [184, 70, 162], 'player_and_projectile_and_wall': [181, 83, 40],
-                  'bug': [146, 70, 192], 'life_and_score': [188, 144, 252], 'ground': [110, 156, 66]}
+                #   'bug': [146, 70, 192], 'life_and_score': [188, 144, 252], 'ground': [110, 156, 66]}
+                  'bug': [84, 138, 210], 'life_and_score': [188, 144, 252], 'ground': [110, 156, 66]}
 
 
 class CentipedeSegment(GameObject):
@@ -18,7 +19,7 @@ class Player(GameObject):
         self.rgb = [181, 83, 40]
 
 
-class Projectile(GameObject):
+class Mushroom(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = [181, 83, 40]
@@ -59,7 +60,10 @@ def _detect_objects_centipede(objects, obs, hud=False):
 
     centipede = find_objects(obs, objects_colors['centipede'], min_distance=1)
     for bb in centipede:
-        objects.append(CentipedeSegment(*bb))
+        x, y, w, h = bb
+        nb_segs = w // 3
+        for i in range(nb_segs):
+            objects.append(CentipedeSegment(x+i*3, y, 3, h))
 
     player_and_walls = find_objects(obs, objects_colors['player_and_projectile_and_wall'],
                                     min_distance=1, closing_dist=1)
@@ -68,7 +72,7 @@ def _detect_objects_centipede(objects, obs, hud=False):
             if bb[2] > 3:
                 objects.append(Player(*bb))
             else:
-                objects.append(Projectile(*bb))
+                objects.append(Mushroom(*bb))
         else:
             objects.append(Wall(*bb))
 
