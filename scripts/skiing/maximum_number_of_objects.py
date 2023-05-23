@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
 from ocatari.core import OCAtari
-from ocatari.vision.space_invaders import objects_colors
+from ocatari.vision.spaceinvaders import objects_colors
 from ocatari.vision.pong import objects_colors
 from ocatari.utils import load_agent, parser
 

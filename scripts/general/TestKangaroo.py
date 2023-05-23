@@ -26,7 +26,7 @@ printEnvInfo = False             # if True, the extracted objects or the environ
 game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
 game_name = "Kangaroo-v4"    # game name ChopperCommand-v4
 game_name = "Centipede-v4"    # game name ChopperCommand-v4
-game_name = "Qbert-v4"    # game name ChopperCommand-v4
+game_name = "Riverraid-v4"    # game name ChopperCommand-v4
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
 fps = 60                        # render fps
