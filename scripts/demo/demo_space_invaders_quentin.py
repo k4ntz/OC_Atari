@@ -6,7 +6,7 @@ from ocatari.core import OCAtari
 import random
 import matplotlib.pyplot as plt
 from ocatari.vision.utils import mark_bb, make_darker
-from ocatari.vision.space_invaders import objects_colors
+from ocatari.vision.spaceinvaders import objects_colors
 from ocatari.utils import load_agent, parser
 
 game_name = "SpaceInvaders-v4"

@@ -1,8 +1,9 @@
 from .game_objects import GameObject
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "Birdseeds": 1, "Truck": 6}
+MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "BirdSeeds": 1, "Truck": 6}
 MAX_NB_OBJECTS_HUD = {'Cactus': 6, 'ThisWaySign': 1}# 'Score': 1}
+
 
 class Player(GameObject):
     def __init__(self):
@@ -11,6 +12,7 @@ class Player(GameObject):
         self.wh = (8, 32)
         self.rgb = 101, 111, 228
         self.hud = False
+
 
 class Enemy(GameObject):
     def __init__(self):
@@ -21,7 +23,7 @@ class Enemy(GameObject):
         self.hud = False
 
 
-class Birdseeds(GameObject):
+class BirdSeeds(GameObject):
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -47,6 +49,7 @@ class Cactus(GameObject):
         self.rgb = 187, 187, 53
         self.hud = True
 
+
 class ThisWaySign(GameObject):
     def __init__(self):
         super().__init__()
@@ -54,13 +57,17 @@ class ThisWaySign(GameObject):
         self.wh = (16, 15)
         self.rgb = 0, 0, 0
         self.hud = True
-class BirdseedSign(GameObject):
+
+
+class BirdSeedSign(GameObject):
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
         self.wh = (16, 15)
         self.rgb = 0, 0, 0
         self.hud = True
+
+
 class CarsAheadSign(GameObject):
     def __init__(self):
         super().__init__()
@@ -68,6 +75,7 @@ class CarsAheadSign(GameObject):
         self.wh = (16, 15)
         self.rgb = 0, 0, 0
         self.hud = True
+
 
 class ExitSign(GameObject):
     def __init__(self):
@@ -77,6 +85,7 @@ class ExitSign(GameObject):
         self.rgb = 0, 0, 0
         self.hud = True
 
+
 class Bird(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -85,6 +94,7 @@ class Bird(GameObject):
         self.wh=(6,8)
         self.hud = True
 
+
 class PlayerScore(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -92,6 +102,8 @@ class PlayerScore(GameObject):
         self._xy = 0,0
         self.wh=(7,5)
         self.hud = True
+
+
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
 
@@ -112,7 +124,7 @@ def _init_objects_roadrunner_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Enemy(), Truck(),Birdseeds(),Birdseeds(),Birdseeds(),Birdseeds()]
+    objects = [Player(), Enemy(), Truck(),BirdSeeds(),BirdSeeds(),BirdSeeds(),BirdSeeds()]
     if hud:
         objects.extend([ThisWaySign(),Bird(),Bird(),Cactus(),Cactus(), PlayerScore(), PlayerScore(), PlayerScore()])
     # if hud:
@@ -155,27 +167,27 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
     dist2=[-30,95,-47,20,-56,-20,20,94]
     loc=ram_state[90]-1
     if ram_state[36]==31: #bottom seed
-        seed1=Birdseeds()
+        seed1=BirdSeeds()
         seed1.xy=correction(pos_init+dist1[loc]+3*dist2[loc]),165
         objects[3]=seed1
     else:
         objects[3]=None
     if ram_state[37]==31: #second bottom seed
-        seed2=Birdseeds()
+        seed2=BirdSeeds()
         seed2.xy=correction(pos_init+dist1[loc]+2*dist2[loc]),151
         objects[4]=seed2
     else:
         objects[4]=None
 
     if ram_state[38]==31: #second top seed
-        seed3=Birdseeds()
+        seed3=BirdSeeds()
         seed3.xy=correction(pos_init+dist1[loc]+dist2[loc]),137
         objects[5]=seed3
     else:
         objects[5]=None    
 
     if ram_state[39]==31: #top seed
-        seed4=Birdseeds()
+        seed4=BirdSeeds()
         seed4.xy=correction(pos_init+dist1[loc]),124
         objects[6]=seed4
     else:
@@ -191,7 +203,7 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
                 twss.xy=ram_state[82], 73
                 objects[7]=twss
             elif ram_state[69]==1:
-                bs=BirdseedSign()
+                bs=BirdSeedSign()
                 bs.xy=ram_state[82], 73
                 objects[7]=bs
             elif ram_state[69]==2:
@@ -294,7 +306,7 @@ def _detect_objects_roadrunner_raw(info, ram_state):
 #     info["objects"] = objects
 
     # if ram_state[36]==31: #bottom seed
-    #     seed1=Birdseeds()
+    #     seed1=BirdSeeds()
     #     if ram_state[90]==1:
     #         seed1.xy=correction(pos_init-60),166
     #     else:
@@ -303,7 +315,7 @@ def _detect_objects_roadrunner_raw(info, ram_state):
     # else:
     #     objects[3]=None
     # if ram_state[37]==31: #second bottom seed
-    #     seed2=Birdseeds()
+    #     seed2=BirdSeeds()
     #     if ram_state[90]==1:
     #         seed2.xy=correction(pos_init-40),152
     #     else:
@@ -313,7 +325,7 @@ def _detect_objects_roadrunner_raw(info, ram_state):
     #     objects[4]=None
 
     # if ram_state[38]==31: #second top seed
-    #     seed3=Birdseeds()
+    #     seed3=BirdSeeds()
     #     if ram_state[90]==1:
     #         seed3.xy=correction(pos_init-20),138
     #     else:
@@ -323,7 +335,7 @@ def _detect_objects_roadrunner_raw(info, ram_state):
     #     objects[5]=None    
 
     # if ram_state[39]==31: #top seed
-    #     seed4=Birdseeds()
+    #     seed4=BirdSeeds()
     #     if ram_state[90]==1:
     #         seed4.xy=correction(pos_init),124
     #     else:
