@@ -43,6 +43,6 @@ def _detect_objects_freeway(objects, obs, hud=False):
             objects.append(car_inst)
 
     if hud:
-        scores = find_objects(obs, objects_colors["score"], min_distance=1)
+        scores = find_objects(obs, objects_colors["score"], min_distance=1, maxy=14)
         for score in scores:
             objects.append(Score(*score))
