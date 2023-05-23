@@ -32,6 +32,25 @@ class Fruit(GameObject):
         self.rgb = 214, 92, 92
 
 
+class Scale(GameObject):
+    def __init__(self, x=0, y=0, w=8, h=35, *args, **kwargs):
+        super(Scale, self).__init__(x, y, w, h, *args, **kwargs)
+        self._xy = x, y
+        self._prev_xy = x, y
+        self.wh = w, h
+        self.rgb = 162, 98, 33
+        self.hud = False
+
+
+class Platform(GameObject):
+    def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
+        super(Platform, self).__init__(x, y, w, h, *args, **kwargs)
+        self._xy = x, y
+        self._prev_xy = x, y
+        self.wh = w, h
+        self.rgb = 162, 98, 33
+        self.hud = False
+
 # The color of this object matches with the walls, floors and ladders, it can therefore not be detected Properly
 class Projectile_top(GameObject):
     def __init__(self, *args, **kwargs):
@@ -136,6 +155,15 @@ def _detect_objects_kangaroo(objects, obs, hud=True):
     for bb in proj:
         p = Projectile_top(*bb)
         objects.append(p)
+    
+    objects.append(Platform(16, 172, w=128))  # base platform
+    objects.append(Platform(16, 28, w=128))  # top platform
+    # if lvl_value < 23:
+    objects.append(Scale(132, 132))
+    objects.append(Platform(16, 76, w=128))
+    objects.append(Scale(20, 85))
+    objects.append(Platform(16, 124, w=128))
+    objects.append(Scale(132, 37))
 
     if hud:
         life = find_objects(obs, objects_colors["hud"], min_distance=1, minx=10, maxx=40)
@@ -146,6 +174,6 @@ def _detect_objects_kangaroo(objects, obs, hud=True):
         for bb in time:
             objects.append(Time(*bb))
 
-        score = find_objects(obs, objects_colors["hud"], min_distance=1, minx=120, maxx=150)
+        score = find_objects(obs, objects_colors["hud"], closing_dist=6, minx=100, maxx=150)
         for bb in score:
             objects.append(Score(*bb))

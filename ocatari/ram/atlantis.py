@@ -22,7 +22,7 @@ class Projectile(GameObject):
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
-        self.wh = 10, 10
+        self.wh = 1, 1
         self.rgb = 184, 70, 162
         self.hud = False
 

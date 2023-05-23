@@ -17,7 +17,7 @@ from sklearn.linear_model import RANSACRegressor, LinearRegression
 sys.path.insert(0, '../ocatari') # noqa
 from ocatari.core import OCAtari
 from alive_progress import alive_bar
-
+from ocatari.utils import load_agent
 
 
 
@@ -33,8 +33,8 @@ def ransac_regression(x, y):
 DROP_LOW = True
 MIN_CORRELATION = 0.7 #0.8
 
-NB_SAMPLES = 1500# 600 before
-game_name = "RoadRunner" #RoadRunner-v4
+NB_SAMPLES = 600 # 600 before
+game_name = "FishingDerby" #RoadRunner-v4
 MODE = "vision"
 RENDER_MODE = "human"
 # RENDER_MODE = "rgb_array"
@@ -43,28 +43,42 @@ random.seed(0)
 
 observation, info = env.reset()
 # object_list = ["Projectile"]
-object_list = ["Birdseeds"]
+object_list = ["Fish"]
 # create dict of list
 objects_infos = {}
 subset = []
 for obj in object_list:
-    objects_infos[f"{obj}_x"] = []
-    objects_infos[f"{obj}_y"] = []
-    subset.append(f"{obj}_x")
-    subset.append(f"{obj}_y")
+    for poi in range(6):
+        objects_infos[f"{obj}_{poi}_x"] = []
+        objects_infos[f"{obj}_{poi}_y"] = []
+        subset.append(f"{obj}_{poi}_x")
+        subset.append(f"{obj}_{poi}_y")
 ram_saves = []
-actions = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+actions = [5] * 40 + [2] * 40
+
+class Dummy():
+    def __init__(self) -> None:
+        pass
+
+opts = Dummy()
+
+opts.path = "models/FishingDerby/dqn.gz"
+ 
+if opts.path:
+    agent = load_agent(opts, env.action_space.n)
+    print(f"Loaded agents from {opts.path}")
 
 for i in tqdm(range(NB_SAMPLES)):
     # obs, reward, terminated, truncated, info = env.step(random.randint(0, env.action_space.n-1))
+    action = agent.draw_action(env.dqn_obs)
     # action = actions[i%len(actions)]
-    prob = random.random()
-    if prob > 0.9:
-        action = 2 # UP
-    elif prob > 0.8:
-        action = 5 # DOWN
-    else:
-        action = 4 # 4-RIGHT 3- Left, Truck at (56, 129), (16, 18), Cactus at (125, 55), (8, 8), Cactus at (129, 46), (8, 8)]
+    # prob = random.random()
+    # if prob > 0.9:
+    #     action = 2 # UP
+    # elif prob > 0.8:
+    #     action = 5 # DOWN
+    # else:
+    #     action = 4 # 4-RIGHT 3- Left, Truck at (56, 129), (16, 18), Cactus at (125, 55), (8, 8), Cactus at (129, 46), (8, 8)]
     # if i % 5: # reset for pressing
     #     action = 0
 
@@ -74,18 +88,20 @@ for i in tqdm(range(NB_SAMPLES)):
         # print(env.objects)
         print(env.objects)
         for obj_name in object_list:  # avoid state without the tracked objects
-            if str(env.objects).count(obj_name) != 1:
+            if str(env.objects).count(f"{obj_name} at") != 6:
                 SKIP = True
                 break
         # if str(env.objects).count("Projectile at (75,") == 0:
         #     print(env._env.unwrapped.ale.getRAM()[106])
         if SKIP:# or env.objects[-2].y < env.objects[-1].y:
             continue
+        poi = 0
         for obj in env.objects:
             objname = obj.category
             if objname in object_list:
-                objects_infos[f"{objname}_x"].append(obj.xy[0])
-                objects_infos[f"{objname}_y"].append(obj.xy[1])
+                objects_infos[f"{objname}_{poi}_x"].append(obj.xy[0])
+                objects_infos[f"{objname}_{poi}_y"].append(obj.xy[1])
+                poi += 1
             # n += 1
         ram = env._env.unwrapped.ale.getRAM()
         ram_saves.append(deepcopy(ram))
@@ -94,7 +110,10 @@ for i in tqdm(range(NB_SAMPLES)):
     # modify and display render
 env.close()
 
+if len(ram_saves) == 0:
+    print("No data point was taken")
 
+import ipdb; ipdb.set_trace()
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
 objects_infos.update(from_rams)
@@ -110,7 +129,7 @@ df = pd.DataFrame(objects_infos)
 # find correlation
 METHOD = "spearman"
 # METHOD = "kendall"
-METHOD = "pearson"
+# METHOD = "pearson"
 corr = df.corr(method=METHOD)
 # Reduce the correlation matrix
 # subset = objects_infos
@@ -141,6 +160,7 @@ plt.show()
 
 # import ipdb;ipdb.set_trace()
 
+# find relation
 
 corrT = corr.T
 for el in corrT:
