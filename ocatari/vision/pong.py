@@ -44,17 +44,20 @@ class EnemyScore(GameObject):
 def _detect_objects_pong(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
-    enemy = find_objects(obs, objects_colors["enemy"], min_distance=1)
+    enemy = find_objects(obs, objects_colors["enemy"], min_distance=1, miny=30)
     for el in enemy:
         if el[1] > 30:
             objects.append(Enemy(*el))
-        elif hud:
+    if hud:
+        enemy_score = find_objects(obs, objects_colors["enemy"], min_distance=1, closing_active=False, maxy=30)
+        for el in enemy_score:
             objects.append(EnemyScore(*el))
-    player = find_objects(obs, objects_colors["player"], min_distance=1)
+    player = find_objects(obs, objects_colors["player"], min_distance=1, miny=30)
     for el in player:
-        if el[1] > 30:
-            objects.append(Player(*el))
-        elif hud:
+        objects.append(Player(*el))
+    if hud:
+        playerscore = find_objects(obs, objects_colors["player"], min_distance=1, closing_active=False, maxy=30)
+        for el in playerscore:
             objects.append(PlayerScore(*el))
     ball = find_objects(obs, objects_colors["ball"], min_distance=None)
     for el in ball:

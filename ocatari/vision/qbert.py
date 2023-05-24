@@ -1,10 +1,12 @@
 from .utils import find_objects, color_analysis
 from .game_objects import GameObject
 
+
 objects_colors = {"player": [181, 83, 40], "red_ball": [], "purple_ball": [146, 70, 192],
                   "coily": [146, 70, 192], "flying_discs": [], "sam": [50, 132, 50],
                   "green_ball": [50, 132, 50], "score": [210, 210, 64], "lives": [210, 210, 64]
                   }
+
 
 cubes_colors = [[45, 87, 176], [210, 210, 64], [192, 192, 192], [111, 111, 111]]
 
@@ -15,15 +17,18 @@ class Player(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 181, 83, 40
 
+
 class Cube(GameObject):
     def __init__(self, color, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = color
 
+
 class Disk(GameObject):
     def __init__(self, color, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = color
+
 
 class PurpleBall(GameObject):
     def __init__(self, *args, **kwargs):

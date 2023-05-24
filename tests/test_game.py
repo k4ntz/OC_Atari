@@ -7,7 +7,7 @@ from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
-from ocatari.vision.space_invaders import objects_colors
+from ocatari.vision.spaceinvaders import objects_colors
 from ocatari.vision.pong import objects_colors
 from ocatari.utils import load_agent, parser, make_deterministic
 import time
@@ -57,6 +57,7 @@ for i in range(100000):
         plt.title(f"{opts.mode}: {opts.mode} mode (frame {i})", fontsize=20)
         plt.imshow(obs)
         plt.show()
+
 
     if terminated or truncated:
         observation, info = env.reset()
