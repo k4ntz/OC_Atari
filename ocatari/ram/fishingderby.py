@@ -10,6 +10,11 @@ class Fish(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 232, 232, 74
 
+class Shark(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 232, 232, 74
+
 
 class PlayerOneFishHook(GameObject):
     def __init__(self, *args, **kwargs):
@@ -41,7 +46,7 @@ def _get_max_objects(hud=False):
 
 
 def _init_objects_fishingDerby_ram(hud=False):
-    objects = [PlayerOneFishHook(), PlayerTwoFishingHook()]
+    objects = [PlayerOneFishHook(), PlayerTwoFishingHook(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(), Shark()]
     return objects
 
 
@@ -49,6 +54,10 @@ def _detect_objects_fishingDerby_revised(objects, ram_state, hud=False):
     p1h, p2h = objects[0:2]
     p1h.xy = ram_state[32] - 1, p1h.xy[1]
     p2h.xy = ram_state[33] - 1, p2h.xy[1]
+    for i in range(6):
+        objects[2+i].xy = ram_state[74-i], 97 - 16*i
+    objects[8].xy = ram_state[75] ,  79
+
 
 
 def _detect_objects_fishingDerby_raw(info, ram_state):

@@ -2,8 +2,8 @@ from .utils import find_objects
 from .game_objects import GameObject
 
 objects_colors = {"shark": [0, 0, 0], "fish": [232, 232, 74],
-                  "player 1 fish hook": [232, 232, 74],
-                  "score": [167, 26, 26], "player 2 fishing pole": [0, 0, 0],
+                  "player 1 fishing hook": [232, 232, 74],
+                  "score": [167, 26, 26], "player 2 fishing hook": [0, 0, 0],
                   }
 
 
@@ -19,7 +19,7 @@ class Fish(GameObject):
         self.rgb = 232, 232, 74
 
 
-class PlayerOneFishHook(GameObject):
+class PlayerOneFishingHook(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 232, 232, 74
@@ -56,13 +56,13 @@ def _detect_objects_fishingDerby(objects, obs, hud=True):
         if fish_instance.y > 90 and fish_instance.y < 190:
             objects.append(fish_instance)
 
-    for p1_fish_hook in find_objects(obs, objects_colors["player 1 fish hook"], closing_dist=1):
-        p1_fish_hook_instance = PlayerOneFishHook(*p1_fish_hook)
+    for p1_fish_hook in find_objects(obs, objects_colors["player 1 fishing hook"], closing_dist=1):
+        p1_fish_hook_instance = PlayerOneFishingHook(*p1_fish_hook)
         if p1_fish_hook_instance.y < 80 and p1_fish_hook_instance.x > 25:
             objects.append(p1_fish_hook_instance)
 
     notp2FishingPole = [[90, 80], [70, 130], [90, 77], [80, 77]]
-    for p2_fishing_pole in find_objects(obs, objects_colors["player 2 fishing pole"]):
+    for p2_fishing_pole in find_objects(obs, objects_colors["player 2 fishing hook"]):
         player_two_fishing_pole = PlayerTwoFishingHook(*p2_fishing_pole)
         if player_two_fishing_pole.y > 75 and player_two_fishing_pole.x > 80:
             fishing_pole = True
