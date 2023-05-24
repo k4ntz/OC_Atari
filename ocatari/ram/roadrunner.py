@@ -219,13 +219,19 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
             bird2.xy=55,16; objects[9]=bird2
             objects[8]=bird1
         #cactus
-        u_cac=Cactus()
-        u_cac.xy=ram_state[24],46
-        l_cac=Cactus()
-        l_cac.xy=ram_state[83],55
-        objects[10]=u_cac
-        objects[11]=l_cac
+        if ram_state[24]<8 or ram_state[24]>147:
+            objects[10]=None
+        else:
+            u_cac=Cactus()
+            u_cac.xy=ram_state[24],46
+            objects[10]=u_cac
 
+        if ram_state[83]<8 or ram_state[83]>147:
+            objects[11]=None
+        else:
+            l_cac=Cactus()
+            l_cac.xy=ram_state[83],55
+            objects[11]=l_cac
 
         ps1=PlayerScore()
         ps2=PlayerScore()
