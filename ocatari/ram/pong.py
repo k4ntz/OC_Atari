@@ -39,12 +39,13 @@ class PlayerScore(GameObject):
     def __init__(self, ten=False):
         super().__init__()
         if ten:
-            self._xy = 100, 1
+            self._xy = 104, 1
+            self.wh = 4, 20
         else:
             self._xy = 116, 1
+            self.wh = 12, 20
         self.ten = ten
         self.rgb = 92, 186, 92
-        self.wh = 12, 20
         self.hud = True
 
     def __eq__(self, o):
@@ -55,12 +56,13 @@ class EnemyScore(GameObject):
     def __init__(self, ten=False):
         super().__init__()
         if ten:
-            self._xy = 20, 1
+            self._xy = 24, 1
+            self.wh = 4, 20
         else:
             self._xy = 36, 1
+            self.wh = 12, 20
         self.ten = ten
         self.rgb = 213, 130, 74
-        self.wh = 12, 20
         self.hud = True
 
     def __eq__(self, o):
@@ -122,7 +124,7 @@ def _detect_objects_pong_revised(objects, ram_state, hud=False):
         player.wh = 4, 15
     if hud:
         # scores
-        if ram_state[13] > 10:  # enemy score
+        if ram_state[13] >= 10:  # enemy score
             if not enemy._above_10:
                 objects.append(EnemyScore(ten=True))
                 enemy._above_10 = True
@@ -130,7 +132,7 @@ def _detect_objects_pong_revised(objects, ram_state, hud=False):
             if enemy._above_10:
                 objects.remove(EnemyScore(ten=True))
                 enemy._above_10 = False
-        if ram_state[14] > 10:  # player score
+        if ram_state[14] >= 10:  # player score
             if not player._above_10:
                 objects.append(PlayerScore(ten=True))
                 player._above_10 = True

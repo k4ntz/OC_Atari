@@ -58,7 +58,7 @@ class Lives(GameObject):
         self.rgb = 162, 134, 56
 
 
-def _detect_objects_space_invaders(objects, obs, hud):
+def _detect_objects_spaceinvaders(objects, obs, hud):
     objects.clear()
 
     for i, obj in enumerate(["player", "player2"]):
