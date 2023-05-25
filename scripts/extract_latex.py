@@ -22,7 +22,7 @@ df = df.round(1)
 
 
 styler = df.style
-styler.background_gradient(cmap="RdYlGn", vmin=0, vmax=100)
+styler.background_gradient(cmap='Spectral', vmin=0, vmax=100)
 styler.format(precision=1, na_rep="N/A")
 styler.highlight_null("gray")
 ltx_code = styler.to_latex(

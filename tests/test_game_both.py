@@ -14,7 +14,6 @@ from copy import deepcopy
 from PIL import Image
 import cv2 
 
-
 parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
 parser.add_argument("-i", "--interval", type=int, default=10,
@@ -40,21 +39,20 @@ env.step(2)
 make_deterministic(0, env)
 
 
-for i in range(10000):
+for i in range(100000):
     if opts.dqn:
         action = dqn_agent.draw_action(env.dqn_obs)
     else:
         action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
     obs2 = deepcopy(obs)
-    if env._env.unwrapped.ale.getRAM()[59]:
-        print("Falling")
     if i % opts.interval == 0:
         fig, axes = plt.subplots(1, 2)
         print("-"*50)
         for obs, objects_list, title, ax in zip([obs, obs2], [env.objects, env.objects_v], ["ram", "vision"], axes):
-            toprint = sorted(objects_list, key=lambda o: str(o))
-            print([o for o in toprint if "Centi" not in str(o)])
+            # toprint = sorted(objects_list, key=lambda o: str(o))
+            # print([o for o in toprint if "Fuel" in str(o)])
+            print(objects_list)
             for obj in objects_list:
                 opos = obj.xywh
                 ocol = obj.rgb
