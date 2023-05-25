@@ -2,8 +2,8 @@ from .utils import find_objects
 from .game_objects import GameObject
 
 objects_colors = {"shark": [0, 0, 0], "fish": [232, 232, 74],
-                  "player 1 fishing hook": [232, 232, 74],
-                  "score": [167, 26, 26], "player 2 fishing hook": [0, 0, 0],
+                  "player 1 fishing string": [232, 232, 74],
+                  "score": [167, 26, 26], "player 2 fishing string": [0, 0, 0],
                   }
 
 
@@ -21,7 +21,7 @@ class Fish(GameObject):
         self.hooked = False
 
 
-class PlayerOneFishingHook(GameObject):
+class PlayerOneFishingString(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 232, 232, 74
@@ -34,7 +34,7 @@ class ScorePlayerTwo(GameObject):
         self.rgb = 167, 26, 26
 
 
-class PlayerTwoFishingHook(GameObject):
+class PlayerTwoFishingString(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 0, 0, 0
@@ -66,16 +66,16 @@ def _detect_objects_fishingDerby(objects, obs, hud=True):
         if 90 < fish_instance.y < 190:
             objects.append(fish_instance)
 
-    for p1_fish_hook in find_objects(obs, objects_colors["player 1 fishing hook"], closing_dist=1):
-        p1_fish_hook = PlayerOneFishingHook(*p1_fish_hook)
+    for p1_fish_hook in find_objects(obs, objects_colors["player 1 fishing string"], closing_dist=1):
+        p1_fish_hook = PlayerOneFishingString(*p1_fish_hook)
         if p1_fish_hook.y < 80 and p1_fish_hook.x > 25:
             p1_fish_hook.hook_position = p1_fish_hook.x + p1_fish_hook.w, \
                                          p1_fish_hook.y + p1_fish_hook.wh[1]
             objects.append(p1_fish_hook)
 
-    for p2_fishing_pole in find_objects(obs, objects_colors["player 2 fishing hook"], miny=75, minx=30, maxx=130,
+    for p2_fishing_pole in find_objects(obs, objects_colors["player 2 fishing string"], miny=75, minx=30, maxx=130,
                                         maxy=188, closing_dist=1):
-        p2_fish_hook = PlayerTwoFishingHook(*p2_fishing_pole)
+        p2_fish_hook = PlayerTwoFishingString(*p2_fishing_pole)
         if 80 > p2_fish_hook.y > 75:
             p2_fish_hook.hook_position = p2_fish_hook.x + p2_fish_hook.w, \
                                                     p2_fish_hook.y + p2_fish_hook.wh[1]
