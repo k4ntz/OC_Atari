@@ -125,7 +125,7 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
                         axes[2].set_title("difference")
                         plt.tight_layout()
                         plt.savefig(f"{SAVE_IMAGE_FOLDER}/{game_name}_{meth_name}_{image_n}.png")
-                        plt.show()
+                        # plt.show()
                         im_reports += f"{image_n} (iou={stats['mean_iou']:.3f}),  "
                         report_bad[f"Image_{image_n}"] = stats
                     pbar.update(1)
