@@ -40,6 +40,45 @@ class Truck(GameObject):
         self.rgb = 198, 108, 58
         self.hud = False
 
+class RoadCrack(GameObject):
+    def __init__(self):
+        super().__init__()
+        self._xy = 0, 0
+        self.rgb =181, 83,40
+        self.hud = False
+        self.wh = (14,32)
+
+class AcmeMine(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 255,255,255#84,92,214
+        self.hud = False
+        self._xy = 0, 0
+        self.wh = (4,3)
+
+class Turret(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 66,72,200
+        self.hud = False
+        self._xy = 0, 0
+        self.wh = (12, 8)
+
+class TurretBall(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 198,108,58
+        self.hud = False
+        self._xy = 0, 0
+        self.wh = (4,4)
+
+class Stone(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 181,83,40
+        self.hud = False
+        self._xy = 0, 0
+        self.wh = (8, 11)
 
 class Cactus(GameObject):
     def __init__(self):
@@ -50,45 +89,17 @@ class Cactus(GameObject):
         self.hud = True
 
 
-class ThisWaySign(GameObject):
+class Sign(GameObject):
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
         self.wh = (16, 15)
         self.rgb = 0, 0, 0
         self.hud = True
-
-
-class BirdSeedSign(GameObject):
-    def __init__(self):
-        super().__init__()
-        self._xy = 0, 0
-        self.wh = (16, 15)
-        self.rgb = 0, 0, 0
-        self.hud = True
-
-
-class CarsAheadSign(GameObject):
-    def __init__(self):
-        super().__init__()
-        self._xy = 0, 0
-        self.wh = (16, 15)
-        self.rgb = 0, 0, 0
-        self.hud = True
-
-
-class ExitSign(GameObject):
-    def __init__(self):
-        super().__init__()
-        self._xy = 0, 0
-        self.wh = (16, 15)
-        self.rgb = 0, 0, 0
-        self.hud = True
-
 
 class Bird(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 252,188,116
         self._xy = 0, 0
         self.wh=(6,8)
@@ -96,8 +107,8 @@ class Bird(GameObject):
 
 
 class PlayerScore(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 0,0,0
         self._xy = 0,0
         self.wh=(7,5)
@@ -124,9 +135,9 @@ def _init_objects_roadrunner_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Enemy(), Truck(),BirdSeeds(),BirdSeeds(),BirdSeeds(),BirdSeeds()]
+    objects = [Player(), Enemy(), Truck(),BirdSeeds(),BirdSeeds(),BirdSeeds(),BirdSeeds(), RoadCrack(), AcmeMine()]
     if hud:
-        objects.extend([ThisWaySign(),Bird(),Bird(),Cactus(),Cactus(), PlayerScore(), PlayerScore(), PlayerScore()])
+        objects.extend([Sign(),Bird(),Bird(),Cactus(),Cactus(), PlayerScore(), PlayerScore(), PlayerScore()])
     # if hud:
     #     global plscore
     #     plscore = PlayerScore()
@@ -145,7 +156,7 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
     """
     player, enemy,truck = objects[:3]
     player.xy = ram_state[80], ram_state[3] + 95
-    if ram_state[81] > 145: # Removing the enemy
+    if ram_state[81] > 150: # Removing the enemy
         objects[1] = None
     elif enemy is None:
         enemy = Enemy()
@@ -192,70 +203,84 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
         objects[6]=seed4
     else:
         objects[6]=None
+    
+    # RoadCrack
+    if ram_state[82]>150 or ram_state[82]<=8:
+        objects[7]=None
+    else:
+        if ram_state[69]<=18 and ram_state[69]>=5:
+            rc=RoadCrack()
+            rc.xy=ram_state[82]-5, 125
+            objects[7]=rc
+        else:
+            objects[7]=None
+
+    #AcmeMine
+    if ram_state[89]>150 or ram_state[89]<=8:
+        objects[8]=None
+    else:
+            am=AcmeMine()
+            if ram_state[55]==0:
+                am.xy=ram_state[89]-4, 147
+                objects[8]=am
+            elif ram_state[55]==1:
+                am.xy=ram_state[89]-4, 131
+                objects[8]=am
+            else:
+                objects[8]=None
+
 
     if hud:
         #Signs
         if ram_state[82]>145 or ram_state[82]<=0:
             pass
         else:
-            if ram_state[69]==0:
-                twss=ThisWaySign()
+            if ram_state[69]==0 or ram_state[69]==1 or ram_state[69]==2 or ram_state[69]==16:
+                twss=Sign()
                 twss.xy=ram_state[82], 73
-                objects[7]=twss
-            elif ram_state[69]==1:
-                bs=BirdSeedSign()
-                bs.xy=ram_state[82], 73
-                objects[7]=bs
-            elif ram_state[69]==2:
-                bs=CarsAheadSign()
-                bs.xy=ram_state[82], 73
-                objects[7]=bs
-            elif ram_state[69]==16:
-                es=ExitSign()
-                es.xy=ram_state[82], 73
-                objects[7]=es
+                objects[9]=twss
             else:
-                objects[7]=None
+                objects[9]=None
 
         #birds
         if ram_state[68]==32:
-            objects[8]=None; objects[9]=None
+            objects[10]=None; objects[11]=None
         elif ram_state[68]==33:
             bird1=Bird()
-            bird1.xy=55,16; objects[9]=None
-            objects[8]=bird1
+            bird1.xy=55,16; objects[11]=None
+            objects[10]=bird1
         elif ram_state[68]==34:
             bird1=Bird()
             bird1.xy=63,16
             bird2=Bird()
-            bird2.xy=55,16; objects[9]=bird2
-            objects[8]=bird1
+            bird2.xy=55,16; objects[11]=bird2
+            objects[10]=bird1
         #cactus
         if ram_state[24]<8 or ram_state[24]>147:
-            objects[10]=None
+            objects[12]=None
         else:
             u_cac=Cactus()
             u_cac.xy=ram_state[24],46
-            objects[10]=u_cac
+            objects[12]=u_cac
 
         if ram_state[83]<8 or ram_state[83]>147:
-            objects[11]=None
+            objects[13]=None
         else:
             l_cac=Cactus()
             l_cac.xy=ram_state[83],55
-            objects[11]=l_cac
+            objects[13]=l_cac
 
         ps1=PlayerScore()
         ps2=PlayerScore()
         ps3=PlayerScore()
-        if ram_state[12]==2:
+        if ram_state[13]==2:
             ps1.xy=80, 182
             ps1.wh=(1, 5)
             ps2.xy=83, 182
             ps2.wh=(3, 5)
             ps3.xy=87, 182
             ps3.wh=(3, 5)
-        elif ram_state[12]==1:
+        elif ram_state[14]==1:
             ps1=None
             ps2=None
             ps3=None
@@ -266,7 +291,7 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
             ps2.wh=(3, 5)
             ps3.xy=87, 182
             ps3.wh=(3, 5)
-        objects[12]=ps1; objects[13]=ps2; objects[14]=ps3
+        objects[14]=ps1; objects[15]=ps2; objects[16]=ps3
 
 
 
