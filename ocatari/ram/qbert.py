@@ -338,13 +338,10 @@ def _calc_enemy_pos(slice):
     Converts a RAM slice of 5 into the enemy positions
     """
     global last_i
-
     x = None
     y = None
     typ = 0
-
     res = []
-
     if last_i is not None and last_i < 4 and slice[last_i + 1] + 1 == slice[last_i]:
         xi = _calc_enemy_x(slice[last_i + 1])
         yi = ((last_i + 2) * 30) + 12

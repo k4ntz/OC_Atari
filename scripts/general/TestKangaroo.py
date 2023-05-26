@@ -108,7 +108,7 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    snapshot = pickle.load(open("lvl2.pkl", "rb"))
+    # snapshot = pickle.load(open("lvl2.pkl", "rb"))
     # env._env.env.env.ale.restoreState(snapshot)
 
     run(oc)
@@ -307,9 +307,9 @@ def run(env):
     # close the environment at the end
     env.close()
     listener.stop()
-    save_fn = "mode_change_kangaroo.pkl"
-    pickle.dump((all_rams, target_vals), open(save_fn, "wb"))
-    print(f"Saved in {save_fn}")
+    # save_fn = "mode_change_kangaroo.pkl"
+    # pickle.dump((all_rams, target_vals), open(save_fn, "wb"))
+    # print(f"Saved in {save_fn}")
 
 
 def get_unwrapped(env):
