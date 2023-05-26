@@ -84,28 +84,30 @@ def _detect_objects_fishingDerby_revised(objects, ram_state, hud=False):
     p1s, p2s = objects[0:2]
     coeff_1 = 1
     coeff_2 = 1
+    p1s.xy = int(31 + (ram_state[21] - 4) * 4.092), p1s.xy[1]
+    p2s.xy = int(128 - (ram_state[22] - 4) * 4.092), p2s.xy[1]
+
     if ram_state[30] == 16:
+        p1s.xy = p1s.xy[0] - ram_state[34], p1s.xy[1]
         coeff_1 = -1
+
     if ram_state[31] == 16:
+        p2s.xy = p2s.xy[0] - ram_state[35], p2s.xy[1]
         coeff_2 = -1
-    p1s.xy = int(min(31 + (ram_state[21] - 4) * 4 + coeff_1 * ram_state[34], 31 + (ram_state[21] - 4) * 4)), p1s.xy[
-        1]
-    print("coeff2 = "+str(coeff_2))
-    print(ram_state[30])
-    p2s.xy = int(min(123 - (ram_state[22] - 4) * 4 + coeff_2 * ram_state[35], 123 - (ram_state[22] - 4) * 4)), \
-        p2s.xy[1]
-    p1s.hook_position = int(32 + (ram_state[21] - 4) * 4 + coeff_1 * ram_state[34]), int(ram_state[65] * 2.6 + 79)
-    p2s.hook_position = int(123 - (ram_state[22] - 4) * 4 + coeff_2 * ram_state[35]), int(
-        ram_state[66] * 2.6 + 79)
+
+    p1s.hook_position = int(32 + (ram_state[21] - 4) * 4.092 + coeff_1 * ram_state[34]), int(ram_state[65] * 2.276 + 82)
+    print("ram_state22 = " + str(ram_state[22]))
+    p2s.hook_position = int(128 - (ram_state[22] - 4) * 4.092 + coeff_2 * ram_state[35]), int(
+        ram_state[66] * 2.276 + 82)
     p1s.wh = ram_state[34], abs(p1s.xy[1] - p1s.hook_position[1])
     p2s.wh = ram_state[35], abs(p2s.xy[1] - p2s.hook_position[1])
+
     # Considering that the first fish is the one at the top layer and
     fishes_hooked = []
     if ram_state[112] != 0:
         fishes_hooked.append([6 - ram_state[112]])
     if ram_state[113] != 0:
         fishes_hooked.append(6 - ram_state[113])
-        print("fish number " + str(5 - ram_state[112]) + "is hooked")
 
     for i in range(6):
         if i in fishes_hooked:
@@ -118,10 +120,9 @@ def _detect_objects_fishingDerby_revised(objects, ram_state, hud=False):
             if 6 - ram_state[112] == i:
                 # it means the fish was caught by the player 1 thus its position is
                 # the position of p1's hook + half the height of a fish
-                objects[2 + i].xy = ram_state[74 - i], p1s.hook_position[1] + 2
+                objects[2 + i].xy = ram_state[74 - i], p1s.hook_position[1] - 4
             else:
-                print("we're here")
-                objects[2 + i].xy = ram_state[74 - i], p2s.hook_position[1] + 2
+                objects[2 + i].xy = ram_state[74 - i], p2s.hook_position[1] - 4
 
     objects[8].previous_pos = objects[8].xy[0]
     objects[8].xy = ram_state[75], 79
