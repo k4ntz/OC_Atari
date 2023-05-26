@@ -31,9 +31,9 @@ def ransac_regression(x, y):
 
 
 DROP_LOW = True
-MIN_CORRELATION = 0.8
+MIN_CORRELATION = 0.5
 
-NB_SAMPLES = 600
+NB_SAMPLES = 3000
 game_name = "Qbert-v4"
 MODE = "vision"
 RENDER_MODE = "human"
@@ -43,15 +43,13 @@ random.seed(0)
 
 observation, info = env.reset()
 # object_list = ["Projectile"]
-object_list = ["Player"]
+object_list = ["Ball"]
 # create dict of list
 objects_infos = {}
 subset = []
 for obj in object_list:
-    objects_infos[f"{obj}_x"] = []
-    objects_infos[f"{obj}_y"] = []
-    subset.append(f"{obj}_x")
-    subset.append(f"{obj}_y")
+    objects_infos[f"{obj}"] = []
+    subset.append(f"{obj}")
 ram_saves = []
 actions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 class Options(object):
@@ -61,39 +59,45 @@ opts.path = "models/QBert/c51.gz"
 dqn_agent = load_agent(opts, env.action_space.n)
 
 
-for i in tqdm(range(NB_SAMPLES)):
+# for i in tqdm(range(NB_SAMPLES)):
+for i in range(NB_SAMPLES):
     # obs, reward, terminated, truncated, info = env.step(random.randint(0, env.action_space.n-1))
     action = dqn_agent.draw_action(env.dqn_obs)
-    # prob = random.random()
-    # if prob > 0.9:
-    #     action = 2 # UP
-    # elif prob > 0.8:
-    #     action = 5 # DOWN
-    # else:
-    #     action = 4 # RIGHT
-    # if i % 5: # reset for pressing
-    #     action = 0
     obs, reward, terminated, truncated, info = env.step(action)
+    ram = env._env.unwrapped.ale.getRAM()
+    # print(ram[75:80])
+    print(ram[103])
+    # if i == 300:
+    #     print("SET")
+    # env.set_ram(105, 0)
+    if i and i % 400 == 0:
+        env.set_ram(103, 2)
     if info.get('frame_number') > 10 and i % 5 == 0:
         SKIP = False
         # print(env.objects)
-        print(env.objects)
+        # print(env.objects)
         for obj_name in object_list:  # avoid state without the tracked objects
-            if str(env.objects).count(obj_name) != 1:
-                SKIP = True
-                break
+            # if str(env.objects).count("PurpleBall") == 1:
+            #     objects_infos[f"Ball"].append(1)
+            if str(env.objects).count("GreenBall") == 1:
+                # print("True")
+                objects_infos[f"Ball"].append(2)
+            else:
+                objects_infos[f"Ball"].append(0)
+                # SKIP = True
+                # break
         # if str(env.objects).count("Projectile at (75,") == 0:
         #     print(env._env.unwrapped.ale.getRAM()[106])
         if SKIP:# or env.objects[-2].y < env.objects[-1].y:
             continue
-        for obj in env.objects:
-            objname = obj.category
-            if objname in object_list:
-                objects_infos[f"{objname}_x"].append(obj.xy[0])
-                objects_infos[f"{objname}_y"].append(obj.xy[1])
-            # n += 1
-        ram = env._env.unwrapped.ale.getRAM()
         ram_saves.append(deepcopy(ram))
+        # for obj in env.objects:
+        #     objname = obj.category
+        #     if objname in object_list:
+        #         objects_infos[f"{objname}_x"].append(obj.xy[0])
+        #         objects_infos[f"{objname}_y"].append(obj.xy[1])
+            # n += 1
+        
         # env.render()
 
     # modify and display render
