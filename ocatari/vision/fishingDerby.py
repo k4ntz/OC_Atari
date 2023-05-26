@@ -1,9 +1,9 @@
-from .utils import find_objects
 from .game_objects import GameObject
+from .utils import find_objects
 
 objects_colors = {"shark": [0, 0, 0], "fish": [232, 232, 74],
                   "player 1 fishing string": [232, 232, 74],
-                  "score": [167, 26, 26], "player 2 fishing string": [0, 0, 0],
+                  "score": [167, 26, 26], "player 2 fishing string": [0, 0, 0]
                   }
 
 
@@ -78,7 +78,7 @@ def _detect_objects_fishingDerby(objects, obs, hud=True):
         p2_fish_hook = PlayerTwoFishingString(*p2_fishing_pole)
         if 80 > p2_fish_hook.y > 75:
             p2_fish_hook.hook_position = p2_fish_hook.x + p2_fish_hook.w, \
-                                                    p2_fish_hook.y + p2_fish_hook.wh[1]
+                                         p2_fish_hook.y + p2_fish_hook.wh[1]
             objects.append(p2_fish_hook)
 
     if hud:
