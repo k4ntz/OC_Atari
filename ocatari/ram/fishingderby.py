@@ -84,23 +84,27 @@ def _detect_objects_fishingDerby_revised(objects, ram_state, hud=False):
     p1s, p2s = objects[0:2]
     coeff_1 = 1
     coeff_2 = 1
-    p1s.xy = int(31 + (ram_state[21] - 4) * 4.092), p1s.xy[1]
-    p2s.xy = int(128 - (ram_state[22] - 4) * 4.092), p2s.xy[1]
-
-    if ram_state[30] == 16:
+    p1s.xy = int(20 + (-14.294117647058826 + 0.23529411764705885 * ram_state[21] + 0.9411764705882354 * ram_state[23])), \
+        p1s.xy[1]
+    p2s.xy = int(144 - (-0.97 * ram_state[24] + 141.52)), p2s.xy[1]
+    print(ram_state[30], ram_state[34])
+    if ram_state[30] == 240:
         p1s.xy = p1s.xy[0] - ram_state[34], p1s.xy[1]
-        coeff_1 = -1
+        coeff_1 = -coeff_1
 
     if ram_state[31] == 16:
         p2s.xy = p2s.xy[0] - ram_state[35], p2s.xy[1]
-        coeff_2 = -1
+        coeff_2 = -coeff_2
 
-    p1s.hook_position = int(32 + (ram_state[21] - 4) * 4.092 + coeff_1 * ram_state[34]), int(ram_state[65] * 2.276 + 82)
-    print("ram_state22 = " + str(ram_state[22]))
-    p2s.hook_position = int(128 - (ram_state[22] - 4) * 4.092 + coeff_2 * ram_state[35]), int(
+    p1s.hook_position = \
+        int(15.5 + (-14.294117647058826 + 0.23529411764705885 * ram_state[21] + 0.9411764705882354 * ram_state[
+            23]) + coeff_1 * ram_state[34]), \
+            int(ram_state[65] * 2.276 + 82)
+    p2s.hook_position = int(144 - (-0.97 * ram_state[24] + 141.52) + coeff_2 * ram_state[35]), int(
         ram_state[66] * 2.276 + 82)
-    p1s.wh = ram_state[34], abs(p1s.xy[1] - p1s.hook_position[1])
-    p2s.wh = ram_state[35], abs(p2s.xy[1] - p2s.hook_position[1])
+
+    p1s.wh = int(ram_state[34] * abs(coeff_1)), abs(p1s.xy[1] - p1s.hook_position[1])
+    p2s.wh = int(ram_state[35] * abs(coeff_1)), abs(p2s.xy[1] - p2s.hook_position[1])
 
     # Considering that the first fish is the one at the top layer and
     fishes_hooked = []
