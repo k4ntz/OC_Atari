@@ -24,7 +24,7 @@ class Shark(GameObject):
         self.previous_pos = 0
 
 
-class PlayerOneFishString(GameObject):
+class PlayerOneFishingString(GameObject):
     # ram_state[15] gives what input was played by player 1
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -70,11 +70,11 @@ def _get_max_objects(hud=False):
 
 def _init_objects_fishingDerby_ram(hud=False):
     if hud:
-        objects = [PlayerOneFishString(), PlayerTwoFishingString(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
+        objects = [PlayerOneFishingString(), PlayerTwoFishingString(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
                    Shark(),
                    ScorePlayerOne(), ScorePlayerTwo()]
     else:
-        objects = [PlayerOneFishString(), PlayerTwoFishingString(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
+        objects = [PlayerOneFishingString(), PlayerTwoFishingString(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
                    Shark()]
     return objects
 
