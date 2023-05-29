@@ -71,12 +71,6 @@ class Lives(GameObject):
         self.rgb = 210, 210, 64
 
 
-class Logo(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 66, 72, 200
-
-
 class CollectedDiver(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -139,11 +133,6 @@ def _detect_objects_seaquest(objects, obs, hud=False):
         for ox_logo in oxygen_logo:
             if ox_logo[0] > 0:
                 objects.append(OxygenBarLogo(*ox_logo))
-
-        logo = find_objects(obs, objects_colors["logo"], min_distance=1)
-        for log in logo:
-            if log[1] > 190:
-                objects.append(Logo(*log))
 
         coll_diver = find_objects(obs, objects_colors["collected_diver"], min_distance=10)
         for div in coll_diver:

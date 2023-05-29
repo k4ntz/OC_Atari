@@ -12,8 +12,8 @@ the players y-Position not stored in the RAM.
 
 # MAX_NB_OBJECTS = {"Player": 1, "PlayerMissile": 1, "Bridge": 1, "Tanker": 6, "FuelDepot": 6,
 #                   "Helicopter": 6, "Jet": 6}
-MAX_NB_OBJECTS = {'PlayerScore': 6, 'Lives': 1, 'Logo': 1}
-MAX_NB_OBJECTS_HUD = {'PlayerScore': 6, 'Lives': 1, 'Logo': 1}
+MAX_NB_OBJECTS = {'PlayerScore': 6, 'Lives': 1}
+MAX_NB_OBJECTS_HUD = {'PlayerScore': 6, 'Lives': 1}
 
 
 class _DescendingObject(GameObject):
@@ -110,14 +110,6 @@ class Lives(GameObject):
         self.hud = True
 
 
-class Logo(GameObject):
-    def __init__(self):
-        self._xy = 72, 193
-        self.rgb = 232, 232, 74
-        self.wh = 32, 7
-        self.hud = True
-
-
 _ram_to_class = [None, None, None, None, Jet, Helicopter, None, Tanker, Bridge, None, FuelDepot] # 9th would be houseandtree
 global cntr, prev70
 
@@ -146,7 +138,7 @@ def _init_objects_riverraid_ram(hud=False):
     global cntr, prev70
     cntr, prev70 = 0, None
     if hud:
-        objects.extend([PlayerScore(), Lives(), Logo()])
+        objects.extend([PlayerScore(), Lives()])
 
     # objects.extend([Bridge(), Jet(), Helicopter(), Tanker(), FuelDepot()])
     return objects
