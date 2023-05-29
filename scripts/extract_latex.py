@@ -7,6 +7,7 @@ latex_report_file = "reports/all_games_report.tex"
 with open(pkl_report_file, "rb") as savefile:
     df = pickle.load(savefile)
 
+import ipdb; ipdb.set_trace()
 
 df = df[~df.index.duplicated(keep='last')]
 

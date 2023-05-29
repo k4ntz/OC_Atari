@@ -135,8 +135,7 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
                 # modify and display render
         # pbar.close()
         env.close()
-
-        ALL_STATS["mean_ious"] = np.mean(ALL_STATS["mean_ious"])
+        ALL_STATS["mean_ious"] = np.nanmean(ALL_STATS["mean_ious"])
         for class_name, value in ALL_STATS["per_class_ious"].items():
             ALL_STATS["per_class_ious"][class_name] = np.mean(value)
         for only_in in ["only_in_ram", "only_in_vision"]:
