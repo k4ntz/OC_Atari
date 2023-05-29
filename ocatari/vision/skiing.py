@@ -36,14 +36,6 @@ class Mogul(GameObject):
         self.hud = False
 
 
-class Logo(GameObject):
-    def __init__(self):
-        self._xy = 65, 187
-        self.wh = 31, 6
-        self.rgb = 0, 0, 0
-        self.hud = True
-
-
 class Clock(GameObject):
     def __init__(self, x, y, w, h):
         self._xy = x, y
@@ -78,7 +70,6 @@ def _detect_objects_skiing(objects, obs, hud=False):
         for el in moguls:
             objects.append(Mogul(*el, col))
     if hud:
-        objects.append(Logo())
         scores = find_objects(obs, (0, 0, 0), miny=4, maxy=14, minx=50, maxx=100, closing_active=False) 
         for sc in scores:
             objects.append(Score(*sc))

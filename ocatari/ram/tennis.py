@@ -8,7 +8,7 @@ RAM extraction for the game TENNIS. Supported modes: raw, revised.
 
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 1, 'Ball': 1, 'BallShadow': 1}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'Ball': 1, 'BallShadow': 1, 'PlayerScore': 1, 'EnemyScore': 1, 'Logo': 1}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'Ball': 1, 'BallShadow': 1, 'PlayerScore': 1, 'EnemyScore': 1}
 
 
 class Player(GameObject):
@@ -76,16 +76,6 @@ class EnemyScore(GameObject):
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
-
-class Logo(GameObject):
-    def __init__(self):
-        super().__init__()
-        self._xy = 40, 193
-        self.rgb = 240, 128, 128
-        self.wh = 32, 7
-        self.hud = True
-        self.visible = True
-
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
 
@@ -109,7 +99,7 @@ def _init_objects_tennis_ram(hud=False):
     objects = [Player(), Enemy(), Ball(), BallShadow()]
 
     if hud:
-        objects.extend([PlayerScore(), EnemyScore(), Logo()])
+        objects.extend([PlayerScore(), EnemyScore()])
 
     return objects
 
@@ -211,9 +201,6 @@ def _detect_objects_tennis_revised(objects, ram_state, hud=False):
             objects.append(player_score)
         if add_emy:
             objects.append(enemy_score)
-
-        log = Logo()
-        objects.append(log)
 
 
 def _old_detect_objects_tennis_revised(info, ram_state):

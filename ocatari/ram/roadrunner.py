@@ -2,7 +2,7 @@ from .game_objects import GameObject
 import sys 
 
 MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "BirdSeeds": 1, "Truck": 6}
-MAX_NB_OBJECTS_HUD = {'Cactus': 6, 'ThisWaySign': 1}# 'Score': 1}
+MAX_NB_OBJECTS_HUD = {'Cactus': 6, 'Sign': 1}# 'Score': 1}
 
 
 class Player(GameObject):
@@ -138,14 +138,6 @@ def _init_objects_roadrunner_ram(hud=False):
     objects = [Player(), Enemy(), Truck(),BirdSeeds(),BirdSeeds(),BirdSeeds(),BirdSeeds(), RoadCrack(), AcmeMine()]
     if hud:
         objects.extend([Sign(),Bird(),Bird(),Cactus(),Cactus(), PlayerScore(), PlayerScore(), PlayerScore()])
-    # if hud:
-    #     global plscore
-    #     plscore = PlayerScore()
-    #     global enscore
-    #     enscore = EnemyScore()
-    #     objects.extend([plscore, enscore, Logo(),
-    #                     Clock(63, 17, 6, 7), Clock(73, 18, 2, 5),
-    #                     Clock(79, 17, 6, 7), Clock(87, 17, 6, 7)])
     return objects
 
 
@@ -270,6 +262,7 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
             l_cac.xy=ram_state[83],55
             objects[13]=l_cac
 
+        print(ram_state[13:15])
         ps1=PlayerScore()
         ps2=PlayerScore()
         ps3=PlayerScore()

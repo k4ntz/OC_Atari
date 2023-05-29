@@ -10,21 +10,21 @@ class Fish(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 232, 232, 74
         self.xy = 0, 0
-        self.wh = 8, 8
+        self.wh = 8, 10
         self.hooked: bool = False
 
 
 class Shark(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 232, 232, 74
+        self.rgb = 0, 0, 0
         self.xy = 0, 0
-        self.wh = 35, 17
+        self.wh = 35, 13
         self.is_going_left_to_right = True  # is the shark going from left to right
         self.previous_pos = 0
 
 
-class PlayerOneFishingString(GameObject):
+class PlayerOneHook(GameObject):
     # ram_state[15] gives what input was played by player 1
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -44,7 +44,7 @@ class ScorePlayerOne(GameObject):
         self.value = 0
 
 
-class PlayerTwoFishingString(GameObject):
+class PlayerTwoHook(GameObject):
     # to deactivate player two -> turn ram_state[0] to 1
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -70,11 +70,11 @@ def _get_max_objects(hud=False):
 
 def _init_objects_fishingDerby_ram(hud=False):
     if hud:
-        objects = [PlayerOneFishingString(), PlayerTwoFishingString(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
+        objects = [PlayerOneHook(), PlayerTwoHook(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
                    Shark(),
                    ScorePlayerOne(), ScorePlayerTwo()]
     else:
-        objects = [PlayerOneFishingString(), PlayerTwoFishingString(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
+        objects = [PlayerOneHook(), PlayerTwoHook(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
                    Shark()]
     return objects
 
@@ -127,9 +127,15 @@ def _detect_objects_fishingDerby_revised(objects, ram_state, hud=False):
             else:
                 objects[2 + i].xy = ram_state[74 - i], p2s.hook_position[1] - 4
 
-    objects[8].previous_pos = objects[8].xy[0]
-    objects[8].xy = ram_state[75], 79
-    objects[8].is_right_to_left = objects[8].xy[0] - objects[8].previous_pos > 0
+    # shark
+    if ram_state[103] == 80:
+        objects[8] = None
+    else:
+        if objects[8] is None:
+            objects[8] = Shark()
+        objects[8].previous_pos = objects[8].xy[0]
+        objects[8].xy = ram_state[75], 80
+        objects[8].is_right_to_left = objects[8].xy[0] - objects[8].previous_pos > 0
     if hud:
         objects[9].value = ram_state[61]
         objects[9].value = ram_state[62]

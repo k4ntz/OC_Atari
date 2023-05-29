@@ -38,6 +38,8 @@ if opts.dqn:
 env.step(2)
 make_deterministic(0, env)
 
+actions = [3] * 40 + [4] * 40 + [5] * 50 + [6] * 40
+
 
 for i in range(100000):
     if opts.dqn:
@@ -50,9 +52,9 @@ for i in range(100000):
         fig, axes = plt.subplots(1, 2)
         print("-"*50)
         for obs, objects_list, title, ax in zip([obs, obs2], [env.objects, env.objects_v], ["ram", "vision"], axes):
-            # toprint = sorted(objects_list, key=lambda o: str(o))
+            toprint = sorted(objects_list, key=lambda o: str(o))
             # print([o for o in toprint if "Fuel" in str(o)])
-            print(objects_list)
+            print(toprint)
             for obj in objects_list:
                 opos = obj.xywh
                 ocol = obj.rgb
