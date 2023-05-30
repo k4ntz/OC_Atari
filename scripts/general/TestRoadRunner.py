@@ -107,8 +107,8 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/roadrunner_level4.pkl", "rb"))
-    # env._env.env.env.ale.restoreState(snapshot)
+    snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/roadrunner_level5.pkl", "rb"))
+    env._env.env.env.ale.restoreState(snapshot)
 
     run(oc)
 
