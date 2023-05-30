@@ -135,7 +135,7 @@ def _init_objects_roadrunner_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Enemy(), Truck(),BirdSeeds(),BirdSeeds(),BirdSeeds(),BirdSeeds(), RoadCrack(), AcmeMine()]
+    objects = [Player(), Enemy(), Truck(),BirdSeeds(),BirdSeeds(),BirdSeeds(),BirdSeeds(), RoadCrack(), AcmeMine(),TurretBall()]
     if hud:
         objects.extend([Sign(),Bird(),Bird(),Cactus(),Cactus(), PlayerScore(), PlayerScore(), PlayerScore()])
     # if hud:
@@ -228,7 +228,16 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
                 objects[8]=am
             else:
                 objects[8]=None
-
+    #TurretBall
+    if ram_state[42]>150 or ram_state[42]<=8:
+        objects[9]=None
+    else:
+            if objects[2] is None:
+                tb=TurretBall()
+                tb.xy=ram_state[42]-2,128
+                objects[9]=tb
+            else:
+                objects[9]=None
 
     if hud:
         #Signs

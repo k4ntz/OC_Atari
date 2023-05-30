@@ -155,7 +155,7 @@ def _detect_objects_roadrunner(objects, obs, hud=False):
     roadcracks = find_mc_objects(obs, roadcrackcolors, size=(14,32), tol_s=5, miny=122, maxy=157)
     for r in roadcracks:
             objects.append(RoadCrack(*r))
-    if roadcracks is None:
+    if len(roadcracks)==0:
         turrets = find_mc_objects(obs, turretcolors, size=(12,8), tol_s=3, miny=110, maxy=157)
         for t in turrets:
             objects.append(Turret(*t))
