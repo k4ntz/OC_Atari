@@ -55,3 +55,22 @@ def bitfield_to_number(b, flip=False):
             exp = exp - 1
 
     return res
+
+def get_iou(obj1, obj2):
+    # determine the (x, y)-coordinates of the intersection rectangle
+    xA = max(obj1.x, obj2.x)
+    yA = max(obj1.y, obj2.y)
+    xB = min(obj1.x+obj1.w, obj2.x+obj2.w)
+    yB = min(obj1.y+obj1.h, obj2.y+obj2.h)
+    # compute the area of intersection rectangle
+    interArea = max(0, xB - xA) * max(0, yB - yA)
+    # compute the area of both the prediction and ground-truth
+    # rectangles
+    boxAArea = (obj1.w) * (obj1.h)
+    boxBArea = (obj2.w) * (obj2.h)
+    # compute the intersection over union by taking the intersection
+    # area and dividing it by the sum of prediction + ground-truth
+    # areas - the interesection area
+    iou = interArea / float(boxAArea + boxBArea - interArea)
+    # return the intersection over union value
+    return iou
