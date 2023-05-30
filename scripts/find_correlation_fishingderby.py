@@ -14,6 +14,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
+from time import sleep
+
 
 sys.path.insert(0, '../ocatari')  # noqa
 from ocatari.core import OCAtari
@@ -30,10 +32,10 @@ def ransac_regression(x, y):
 
 
 DROP_LOW = True
-MIN_CORRELATION = 0.7  # 0.8
+MIN_CORRELATION = 0.8  # 0.8
 
 NB_SAMPLES = 600  # 600 before
-game_name = "FishingDerby-v4"  # RoadRunner-v4
+game_name = "FishingDerbyNoFrameskip-v4"  # RoadRunner-v4
 MODE = "vision"
 RENDER_MODE = "human"
 # RENDER_MODE = "rgb_array"
@@ -42,17 +44,19 @@ random.seed(0)
 
 observation, info = env.reset()
 # object_list = ["Projectile"]
-object_list = ["FishingPolePlayerTwo"]
+object_list = ["PlayerOneHook"]
 # create dict of list
 objects_infos = {}
 subset = []
 for obj in object_list:
-    objects_infos[f"{obj}_w"] = []
+    # objects_infos[f"{obj}"] = []
+    # subset.append(f"{obj}")
+    objects_infos[f"{obj}_x"] = []
     objects_infos[f"{obj}_y"] = []
-    subset.append(f"{obj}_w")
+    subset.append(f"{obj}_x")
     subset.append(f"{obj}_y")
 ram_saves = []
-actions = [3] * 40 + [4] * 40
+actions = [3] * 40 + [4] * 40 + [5] * 50 + [6] * 40
 
 
 class Dummy():
@@ -67,7 +71,7 @@ opts.path = "models/FishingDerby/dqn.gz"
 if opts.path:
     agent = load_agent(opts, env.action_space.n)
     print(f"Loaded agents from {opts.path}")
-
+j = 0
 for i in tqdm(range(NB_SAMPLES)):
     # obs, reward, terminated, truncated, info = env.step(random.randint(0, env.action_space.n-1))
     # action = agent.draw_action(env.dqn_obs)
@@ -82,26 +86,27 @@ for i in tqdm(range(NB_SAMPLES)):
     # if i % 5: # reset for pressing
     #     action = 0
 
+    ram = env._env.unwrapped.ale.getRAM()
+    # if ram[68] in [207, 208]:
+    #     print(j)
     obs, reward, terminated, truncated, info = env.step(action)
-    if info.get('frame_number') > 10 and i % 1 == 0:
+    # if info.get('frame_number') > 10 and i % 1 == 0:
+    if True:
         SKIP = False
         # print(env.objects)
-        print(env.objects)
+        # print(env.objects)
+        # plt.imshow(obs)
+        # plt.show()
         for obj_name in object_list:  # avoid state without the tracked objects
-             if str(env.objects).count(f"{obj_name} at") != 1:
+            if str(env.objects).count(f"{obj_name} at") != 1:
                 SKIP = True
-                break
-        # if str(env.objects).count("Projectile at (75,") == 0:
-        #     print(env._env.unwrapped.ale.getRAM()[106])
         if SKIP:# or env.objects[-2].y < env.objects[-1].y:
             continue
         for obj in env.objects:
             objname = obj.category
             if objname in object_list:
-                objects_infos[f"{objname}_w"].append(obj.wh[0])
-                objects_infos[f"{objname}_y"].append(obj.wh[1])
-            # n += 1
-        ram = env._env.unwrapped.ale.getRAM()
+                objects_infos[f"{objname}_x"].append(obj.xy[0])
+                objects_infos[f"{objname}_y"].append(obj.xy[1])
         ram_saves.append(deepcopy(ram))
         # env.render()
 
@@ -111,10 +116,9 @@ env.close()
 if len(ram_saves) == 0:
     print("No data point was taken")
 
-# import ipdb; ipdb.set_trace()
+import ipdb; ipdb.set_trace()
 ram_saves = np.array(ram_saves).T
-list_important_ram = [21, 23]
-from_rams = {str(i): ram_saves[i] for i in list_important_ram if not np.all(ram_saves[i] == ram_saves[i][0])}
+from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
 objects_infos.update(from_rams)
 df = pd.DataFrame(objects_infos)
 
@@ -129,7 +133,7 @@ df = pd.DataFrame(objects_infos)
 # find correlation
 METHOD = "spearman"
 # METHOD = "kendall"
-# METHOD = "pearson"
+METHOD = "pearson"
 corr = df.corr(method=METHOD)
 # Reduce the correlation matrix
 # subset = objects_infos
@@ -169,7 +173,7 @@ for el in corrT:
     for idx in range(len(keys)):
         maxval = corrT[el].abs()[keys[idx]]
         #idx = corrT[el].abs()
-        if maxval > 0.7:
+        if maxval > 0.8:
             x, y = df[keys[idx]], df[el]
             # a, b = np.polyfit(x, y, deg=1)
             a, b = ransac_regression(x, y)
