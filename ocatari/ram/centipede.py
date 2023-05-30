@@ -3,69 +3,91 @@ from ._helper_methods import bitfield_to_number, number_to_bitfield
 import math
 import sys
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Mushroom': 1, 'CentipedeSegment': 9, 'Wall': 42, 'Bug': 1, 'Crab': 1}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Mushroom': 1, 'CentipedeSegment': 9, 'Wall': 42, 'Score': 4, 'Life': 2, 'Bug': 1, 'Crab': 1, 'Ghost': 1}
+MAX_NB_OBJECTS =  {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9, 'Mushroom': 42, 'Spider': 1, 'Flea': 1}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9, 'Mushroom': 42, 'Score': 4, 'Life': 2, 'Spider': 1, 'Flea': 1, 'Scorpion': 1}
+
+base_colors = [(181, 83, 40), (45, 50, 184), (187, 187, 53), (184, 70, 162), 
+               (184, 50, 50), (146, 70, 192), (110, 156, 66), (84, 138, 210)]
+
+ground_colors = [(110, 156, 66), (66, 114, 194), (198, 108, 58), (66, 72, 200), 
+                 (162, 162, 42), (184, 70, 162), (200, 72, 72), (146, 70, 192)]
 
 
-class CentipedeSegment(GameObject):
+class CCGameObject(GameObject): # color changing game object
+    def __init__(self):
+        super(CCGameObject, self).__init__()
+    
+    def _update_color(self, lvl):
+        self.rgb = base_colors[(lvl+self._offset) % 8]
+
+
+
+class CentipedeSegment(CCGameObject):
     def __init__(self):
         super(CentipedeSegment, self).__init__()
         self._xy = 0, 0
         self.wh = 3, 6
+        self._offset = 3
         self.rgb = 184, 70, 162
         self.hud = False
 
 
-class Player(GameObject):
+class Player(CCGameObject):
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 0, 0
         self.wh = 4, 8
+        self._offset = 0
         self.rgb = 181, 83, 40
         self.hud = False
 
 
-class Mushroom(GameObject):
+class Projectile(GameObject):
+    def __init__(self):
+        super(Projectile, self).__init__()
+        self._xy = 0, 0
+        self.wh = 1, 8
+        self._offset = 0
+        self.rgb = 181, 83, 40
+        self.hud = False
+
+
+class Mushroom(CCGameObject):
     def __init__(self):
         super(Mushroom, self).__init__()
         self._xy = 0, 0
-        self.wh = 1, 8
-        self.rgb = 181, 83, 40
-        self.hud = False
-
-
-class Wall(GameObject):
-    def __init__(self):
-        super(Wall, self).__init__()
-        self._xy = 0, 0
         self.wh = 4, 3
+        self._offset = 0
         self.rgb = 181, 83, 40
         self.hud = False
 
 
-class Bug(GameObject):
+class Spider(CCGameObject):
     def __init__(self):
-        super(Bug, self).__init__()
+        super(Spider, self).__init__()
         self._xy = 0, 0
         self.wh = 8, 6
+        self._offset = 5
         self.rgb = 146, 70, 192
         self.hud = False
 
 
-class Crab(GameObject):  # i have no clue what it is supposed to be ...
+class Flea(CCGameObject):  # i have no clue what it is supposed to be ...
     def __init__(self):     # some ball thingy with legs
-        super(Crab, self).__init__()
+        super(Flea, self).__init__()
         self._xy = 0, 0
         self.wh = 4, 6
-        self.rgb = 45, 50, 185
+        self._offset = 1
+        self.rgb = 45, 50, 184
         self.hud = False
 
 
-class Ghost(GameObject):
+class Scorpion(CCGameObject):
     def __init__(self):
-        super(Ghost, self).__init__()
+        super(Scorpion, self).__init__()
         self._xy = 0, 0
         self.wh = 8, 6
+        self._offset = 7
         self.rgb = 84, 138, 210
         self.hud = False
 
@@ -82,17 +104,20 @@ class Score(GameObject):
 class Ground(GameObject):
     def __init__(self):
         super(Ground, self).__init__()
-        self._xy = 96, 7
-        self.wh = 5, 9
+        self._xy = 16, 183
+        self.wh = 128, 2
         self.rgb = 110, 156, 66
         self.hud = True
+    
+    def _update_color(self, lvl):
+        self.rgb = ground_colors[(lvl) % 8]
 
 
 class Life(GameObject):
     def __init__(self):
         super(Life, self).__init__()
         self._xy = 0, 0
-        self.wh = 3, 5
+        self.wh = 4, 7
         self.rgb = 188, 144, 252
         self.hud = True
 
@@ -159,7 +184,7 @@ def _create_walls_from_bitfield(bitfield, offset_x, offset_y, switch=False):
             index = int(i/2)
             if swap:
                 index = 7 - index
-            w = Wall()
+            w = Mushroom()
             w.xy = offset_x + index * pad, offset_y
             ret.append(w)
         swap = not swap
@@ -192,11 +217,11 @@ def _create_life_objects(life):
     takes a number and returns a list of correctly positioned life objects (len=number)
     """
     ret = []
-    basex = 17
+    basex = 16
     pad = 8
     for i in range(life):
         s = Life()
-        s.xy = basex + i * pad, 188
+        s.xy = basex + i * pad, 187
         ret.append(s)
     return ret
 
@@ -205,14 +230,14 @@ def _init_objects_centipede_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Mushroom()]  # , Bug(), Ghost(), Crab()
+    objects = [Player(), Projectile()]  # , Spider(), Ghost(), Flea()
     for i in range(9):
         objects.append(CentipedeSegment())
     if hud:
         # objects.append(Score())
         objects.extend(_create_score_objects(0))
         objects.extend(_create_life_objects(2))
-
+        objects.append(Ground())
     return objects
 
 
@@ -221,14 +246,25 @@ prev_centipede_x = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 def _detect_objects_centipede_revised(objects, ram_state, hud=False):
     player, projectile = objects[:2]  # bug, ghost, crab1, crab2, crab3
+    ground = objects[-1]
 
-    player.xy = 16 + ram_state[111], int(ram_state[113] * 3.08)
-    projectile.xy = 16 + ram_state[110], _number_lowpass(ram_state[112]) * 9 - 8
+    if ram_state[35] != 22:
+        player = None
+    else:
+        if player is None:
+            player = Player()
+        player.xy = 16 + ram_state[111], 3 * ram_state[113] + 4
+    if _number_lowpass(ram_state[112]) * 9 == 0:
+        projectile = None
+    else:
+        if projectile is None:
+            projectile = Projectile()
+        projectile.xy = 16 + ram_state[110], _number_lowpass(ram_state[112]) * 9 - 8
 
     objects.clear()
     objects.extend([player, projectile])
 
-    small_bugs = [Bug(), Ghost(), Crab()]
+    small_bugs = [Spider(), Scorpion(), Flea()]
     for i in range(3):
         if ram_state[124 - 2 * i] != 255:
             b = small_bugs[i]
@@ -255,12 +291,18 @@ def _detect_objects_centipede_revised(objects, ram_state, hud=False):
                 offset_x += 4
             objects.extend(_create_walls_from_bitfield(number_to_bitfield(ram_state[45 + i * 2 + u]),
                                                        offset_x, offset_y, swap))
-    level_and_life_bitfield = number_to_bitfield(ram_state[109])
+    lvl = ram_state[109] % 8
+    for obj in objects:
+        if isinstance(obj, CCGameObject):
+            obj._update_color(lvl)
     if hud:
+        ground._update_color(lvl)
         score = ram_state[118] + ram_state[117] * 100 + ram_state[116] * 10000
         objects.extend(_create_score_objects(score))
-        life = level_and_life_bitfield[1] * 4 + level_and_life_bitfield[2] * 2 + level_and_life_bitfield[3]
+        # life = level_and_life_bitfield[1] * 4 + level_and_life_bitfield[2] * 2 + level_and_life_bitfield[3]
+        life = int(ram_state[109]).bit_length() - 4
         objects.extend(_create_life_objects(life))
+        objects.append(ground)
 
 
 def _detect_objects_centipede_raw(info, ram_state):

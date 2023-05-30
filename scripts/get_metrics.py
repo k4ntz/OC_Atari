@@ -218,6 +218,8 @@ stats = stats.round(1)
 if already is not None:
     stats = pd.concat([already, stats]).sort_index()
 
+stats.groupby(stats.index).aggregate(max)
+
 with open(pkl_report_file, "wb") as savefile:
     pickle.dump(stats, savefile)
 print(f"Updated {pkl_report_file}")
