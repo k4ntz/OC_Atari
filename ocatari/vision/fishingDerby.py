@@ -21,7 +21,7 @@ class Fish(GameObject):
         self.hooked = False
 
 
-class PlayerOneFishingString(GameObject):
+class PlayerOneHook(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 232, 232, 74
@@ -34,7 +34,7 @@ class ScorePlayerTwo(GameObject):
         self.rgb = 167, 26, 26
 
 
-class PlayerTwoFishingString(GameObject):
+class PlayerTwoHook(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 0, 0, 0
@@ -51,15 +51,11 @@ def _detect_objects_fishingDerby(objects, obs, hud=True):
     objects.clear()
 
     count_shark = 0
-    for shark in find_objects(obs, objects_colors["shark"], closing_dist=1, minx=30, maxx=126, miny=75, maxy=96):
+    for shark in find_objects(obs, objects_colors["shark"], closing_dist=1, minx=28, maxx=131, miny=75, maxy=96):
         shark_instance = Shark(*shark)
-        if 82 > shark_instance.y > 78 and 11 < shark_instance.h < 14:
+        if 82 > shark_instance.y > 78 and 11 < shark_instance.h < 14 and shark_instance.w > 10:
             objects.append(shark_instance)
             count_shark += 1
-    if count_shark == 0:
-        for shark in find_objects(obs, objects_colors["shark"], closing_dist=1, minx=30, maxx=126, miny=75, maxy=96):
-            shark_instance = Shark(*shark)
-            objects.append(shark_instance)
 
     for fish in find_objects(obs, objects_colors["fish"], closing_dist=8):
         fish_instance = Fish(*fish)
@@ -67,7 +63,7 @@ def _detect_objects_fishingDerby(objects, obs, hud=True):
             objects.append(fish_instance)
 
     for p1_fish_hook in find_objects(obs, objects_colors["player 1 fishing string"], closing_dist=1):
-        p1_fish_hook = PlayerOneFishingString(*p1_fish_hook)
+        p1_fish_hook = PlayerOneHook(*p1_fish_hook)
         if p1_fish_hook.y < 80 and p1_fish_hook.x > 25:
             p1_fish_hook.hook_position = p1_fish_hook.x + p1_fish_hook.w, \
                                          p1_fish_hook.y + p1_fish_hook.wh[1]
@@ -75,7 +71,7 @@ def _detect_objects_fishingDerby(objects, obs, hud=True):
 
     for p2_fishing_pole in find_objects(obs, objects_colors["player 2 fishing string"], miny=75, minx=30, maxx=130,
                                         maxy=188, closing_dist=1):
-        p2_fish_hook = PlayerTwoFishingString(*p2_fishing_pole)
+        p2_fish_hook = PlayerTwoHook(*p2_fishing_pole)
         if 80 > p2_fish_hook.y > 75:
             p2_fish_hook.hook_position = p2_fish_hook.x + p2_fish_hook.w, \
                                          p2_fish_hook.y + p2_fish_hook.wh[1]

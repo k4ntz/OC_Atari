@@ -2,7 +2,7 @@ from .game_objects import GameObject
 import sys 
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 1}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'PlayerScore': 1, 'EnemyScore': 1, 'Logo': 1, 'Clock': 4}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'PlayerScore': 1, 'EnemyScore': 1, 'Clock': 4}
 
 
 class Player(GameObject):
@@ -23,15 +23,6 @@ class Enemy(GameObject):
         self.rgb = 0, 0, 0
         self.hud = False
         self._above_10 = False
-
-
-class Logo(GameObject):
-    def __init__(self):
-        super().__init__()
-        self._xy = 62, 189
-        self.wh = 32, 7
-        self.rgb = 20, 60, 0
-        self.hud = True
 
 
 class Clock(GameObject):
@@ -116,7 +107,7 @@ def _init_objects_boxing_ram(hud=False):
         plscore = PlayerScore()
         global enscore
         enscore = EnemyScore()
-        objects.extend([plscore, enscore, Logo(),
+        objects.extend([plscore, enscore,
                         Clock(63, 17, 6, 7), Clock(73, 18, 2, 2), Clock(73, 21, 2, 2),
                         Clock(79, 17, 6, 7), Clock(87, 17, 6, 7)])
     return objects

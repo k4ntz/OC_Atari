@@ -176,12 +176,13 @@ def _detect_objects_berzerk_revised(objects, ram_state, hud=False):
             objects.append(missile)
 
     # enemies
-    for i in range(8):
-        if ram_state[65 + i] != 0 and ram_state[56 + i] != 127:
-            enemy = Enemy()
-            enemy.xy = ram_state[65 + i] + 5, (ram_state[56 + i] * 2) + 4
-            enemy.rgb = enemy_colors.get(ram_state[92] % 16)
-            objects.append(enemy)
+    if ram_state[56] != 127:
+        for i in range(8):
+            if ram_state[65 + i] != 0 and ram_state[56 + i] != 127:
+                enemy = Enemy()
+                enemy.xy = ram_state[65 + i] + 5, (ram_state[56 + i] * 2) + 4
+                enemy.rgb = enemy_colors.get(ram_state[92] % 16)
+                objects.append(enemy)
 
     # enemy missile
     if ram_state[29] != 0 and ram_state[30] != 0:

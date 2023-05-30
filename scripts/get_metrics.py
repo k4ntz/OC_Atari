@@ -135,8 +135,7 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
                 # modify and display render
         # pbar.close()
         env.close()
-
-        ALL_STATS["mean_ious"] = np.mean(ALL_STATS["mean_ious"])
+        ALL_STATS["mean_ious"] = np.nanmean(ALL_STATS["mean_ious"])
         for class_name, value in ALL_STATS["per_class_ious"].items():
             ALL_STATS["per_class_ious"][class_name] = np.mean(value)
         for only_in in ["only_in_ram", "only_in_vision"]:
@@ -171,6 +170,9 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
         dfs.append(pd.DataFrame.from_dict(format_values(ious), orient="index", columns=["IOU"]))
         df_finals.append(ft.reduce(lambda left, right: pd.DataFrame.join(left, right), dfs))
         det_scores.iou = ALL_STATS["mean_ious"]
+        print(f"\nPrecision: {format_values(det_scores.cat_precisions)}")
+        print(f"\nRecalls: {format_values(det_scores.cat_recalls)}")
+        print(f"\nF-Scores: {format_values(det_scores.cat_f_scores)}")
         detections_scores.append(det_scores)
     else:
         df_finals.append(pd.DataFrame(columns=['Precision', 'Recall', 'F-score', 'IOU']))

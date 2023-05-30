@@ -15,17 +15,21 @@ playercolors = [[162, 98,33], [198,108,58], [142,142,142],[162,162,42]]
 logocolors = [[214,214,214], [184, 50, 50], [180,122,48],[210,210,64],[110,156,66],[45,50,184]]
 c_house_colors=[[142,142,142],[0,0,0]]
 frostbite=[[84,138,210],[66,114,194],[45,87,176],[24,59,157]]
+
+
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 198,108,58
         self.hud = False
 
+
 class GreenFish(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 111,210,111
         self.hud = False
+
 
 class FrostBite(GameObject):
     def __init__(self, *args, **kwargs):
@@ -40,11 +44,13 @@ class WhitePlate(GameObject):
         self.rgb = 214,214,214
         self.hud = False
 
+
 class BluePlate(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 84,138,210
         self.hud = False
+
 
 class Bird(GameObject):
     def __init__(self, *args, **kwargs):
@@ -52,16 +58,20 @@ class Bird(GameObject):
         self.rgb = 132,144,252
         self.hud = False
 
+
 class Bear(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 0,0,0
         self.hud = False
+
+
 class Crab(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 23,130,74
         self.hud = False
+
 
 class Clam(GameObject):
     def __init__(self, *args, **kwargs):
@@ -75,17 +85,12 @@ class House(GameObject):
         self.rgb = 142,142,142
         self.hud = False
 
+
 class CompletedHouse(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 0,0,0
         self.hud = False
-
-class Logo(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 214,214,214
-        self.hud = True
 
 
 class LifeCount(GameObject):
@@ -100,6 +105,7 @@ class Score(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb =132,144,252
         self.hud = True
+
 
 class Degree(GameObject):
     def __init__(self, *args, **kwargs):
@@ -161,9 +167,6 @@ def _detect_objects_frostbite(objects, obs, hud=False):
     
 
     if hud:
-        logo = find_mc_objects(obs, logocolors, size=(50, 8), tol_s=3)
-        if logo:
-            objects.append(Logo(*logo[0]))
         lifecount = find_objects(obs, objects_colors["hud_objs"], closing_dist=5, minx=50, miny=19, maxx=75,maxy=32,size=(6,8), tol_s=2)
         for l in lifecount:
             objects.append(LifeCount(*l))

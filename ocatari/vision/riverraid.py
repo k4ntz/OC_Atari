@@ -67,12 +67,6 @@ class Lives(GameObject):
         self.rgb = 232, 232, 74
 
 
-class Logo(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 232, 232, 74
-
-
 def _detect_objects_riverraid(objects, obs, hud=False):
     objects.clear()
 
@@ -110,11 +104,6 @@ def _detect_objects_riverraid(objects, obs, hud=False):
         objects.append(Bridge(*br))
 
     if hud:
-        logo = find_objects(obs, objects_colors["logo"], min_distance=1)
-        for log in logo:
-            if log[1] > 190 and log[0] > 70:
-                objects.append(Logo(*log))
-
         lives = find_objects(obs, objects_colors["lives"], min_distance=1)
         for liv in lives:
             if liv[1] > 190 and liv[0] < 62:

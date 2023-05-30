@@ -23,13 +23,6 @@ class Enemy(GameObject):
         self.hud = False
 
 
-class Logo(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 20, 60, 0
-        self.hud = True
-
-
 class Clock(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -69,6 +62,3 @@ def _detect_objects_boxing(objects, obs, hud=False):
         huds = find_objects(obs, objects_colors["hud_objs"], closing_active=False, maxy=25)
         for el in huds:
             objects.append(Clock(*el))
-        huds = find_objects(obs, objects_colors["hud_objs"], miny=187)
-        for el in huds:
-            objects.append(Logo(*el))
