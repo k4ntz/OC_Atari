@@ -81,7 +81,7 @@ class Lives(GameObject):
 def _detect_objects_qbert(objects, obs, hud=True):
     objects.clear()
 
-    player = find_objects(obs, objects_colors["player"], closing_dist=5, min_distance=1)
+    player = find_objects(obs, objects_colors["player"], closing_dist=5, min_distance=1, size=(8,20), tol_s=5)
     # player = find_objects(obs, objects_colors["player"], min_distance=1, size=(8, 20), tol_s=5)
     for bb in player:
         objects.append(Player(*bb))
