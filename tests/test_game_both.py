@@ -48,28 +48,30 @@ for i in range(100000):
         action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
     obs2 = deepcopy(obs)
-    if i % opts.interval == 0:
-        fig, axes = plt.subplots(1, 2)
-        print("-"*50)
-        for obs, objects_list, title, ax in zip([obs, obs2], [env.objects, env.objects_v], ["ram", "vision"], axes):
-            toprint = sorted(objects_list, key=lambda o: str(o))
-            # print([o for o in toprint if "Fuel" in str(o)])
-            print(toprint)
-            for obj in objects_list:
-                opos = obj.xywh
-                ocol = obj.rgb
-                sur_col = make_darker(ocol)
-                mark_bb(obs, opos, color=sur_col)
-                # mark_point(obs, *opos[:2], color=(255, 255, 0))
-            ax.set_xticks([])
-            ax.set_yticks([])
-            ax.imshow(obs)
-            ax.set_title(title)
-            im = Image.fromarray(obs)
-            cv2.imwrite(f"frames/{title}_frame_{i}.png", obs, [cv2.IMWRITE_PNG_COMPRESSION, 0])
-            # im.save()
-        fig.suptitle(f"frame {i}", fontsize=20)
-        plt.show()
+    if i > 450 and i % opts.interval == 0:
+        if str(env.objects).count("Flea at") != str(env.objects_v).count("Flea at"):
+            import ipdb; ipdb.set_trace()
+        # fig, axes = plt.subplots(1, 2)
+        # print("-"*50)
+        # for obs, objects_list, title, ax in zip([obs, obs2], [env.objects, env.objects_v], ["ram", "vision"], axes):
+        #     toprint = sorted(objects_list, key=lambda o: str(o))
+        #     # print([o for o in toprint if "Fuel" in str(o)])
+        #     print(toprint)
+        #     for obj in objects_list:
+        #         opos = obj.xywh
+        #         ocol = obj.rgb
+        #         sur_col = make_darker(ocol)
+        #         mark_bb(obs, opos, color=sur_col)
+        #         # mark_point(obs, *opos[:2], color=(255, 255, 0))
+        #     ax.set_xticks([])
+        #     ax.set_yticks([])
+        #     ax.imshow(obs)
+        #     ax.set_title(title)
+        #     im = Image.fromarray(obs)
+        #     cv2.imwrite(f"frames/{title}_frame_{i}.png", obs, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+        #     # im.save()
+        # fig.suptitle(f"frame {i}", fontsize=20)
+        # plt.show()
 
     if terminated or truncated:
         observation, info = env.reset()

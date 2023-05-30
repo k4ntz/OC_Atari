@@ -17,62 +17,73 @@ from sklearn.linear_model import RANSACRegressor, LinearRegression
 sys.path.insert(0, '../ocatari') # noqa
 from ocatari.core import OCAtari
 from alive_progress import alive_bar
-
-
+from ocatari.utils import parser, load_agent, make_deterministic
+import pickle
+from time import sleep
 
 
 def ransac_regression(x, y):
     ransac = RANSACRegressor(estimator=LinearRegression(),
-                             min_samples=50, max_trials=100,
+                             min_samples=15, max_trials=100,
                              loss='absolute_error', random_state=42,
                              residual_threshold=10)
     ransac.fit(np.array(x).reshape(-1, 1), y)
     return ransac.estimator_.coef_.item(), ransac.estimator_.intercept_.item()
 
 
+
+parser.add_argument("-dqn", "--dqn", action="store_true", help="Use DQN agent")
+
+
+opts = parser.parse_args()
+
+
 DROP_LOW = True
 MIN_CORRELATION = 0.6
 
-NB_SAMPLES = 600
-game_name = "Asterix-v4"
+NB_SAMPLES = 1000
+game_name = "Centipede"
 MODE = "vision"
-RENDER_MODE = "rgb_array"
+RENDER_MODE = "human"
+# RENDER_MODE = "rgb_array"
 env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
+make_deterministic(0, env)
+
 observation, info = env.reset()
-object_list = ["Projectile"]
+object_list = ["Player"]
 # object_list = ["ball", "enemy", "player"]
 # create dict of list
 objects_infos = {
-    f"in_lane_0": [],
-    f"in_lane_1": [],
-    f"in_lane_2": [],
-    f"in_lane_3": [],
-    f"in_lane_4": [],
-    f"in_lane_5": [],
-    f"in_lane_6": [],
-    f"in_lane_7": [],
+    "player": []
                  }
 subset = list(objects_infos.keys())
+
+if opts.dqn:
+    opts.game = game_name
+    opts.path = f"models/{opts.game}/dqn.gz"
+    dqn_agent = load_agent(opts, env.action_space.n)
+
+
 
 ram_saves = []
 for i in tqdm(range(NB_SAMPLES)):
     # obs, reward, terminated, truncated, info = env.step(random.randint(0, env.action_space.n-1))
-    action = random.randint(0, env.nb_actions-1)
-
+    action = dqn_agent.draw_action(env.dqn_obs)
+    # action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
-    for i in range(8):
-        start = (i+1)*16+10
-        lane = obs[start:start+12,:,]
-        for line in lane: # remove asterix
-            for el in line:
-                if el.tolist() == [187, 187, 53]:
-                    el[0], el[1], el[2] = 0, 0, 0
-        objects_infos[f"in_lane_{i}"].append(int(lane.sum() > 0))
     ram = env._env.unwrapped.ale.getRAM()
-    ram_saves.append(deepcopy(ram))
-        # env.render()
+    if ram[35] != 22:
+        sleep(0.5)
+    if i % 5 == 0:
+        if str(env.objects).count("Player at") == 1:
+            objects_infos["player"].append(1)
+        elif str(env.objects).count("Player at") == 0:
+            objects_infos["player"].append(0)
+        else:
+            continue
+        ram_saves.append(deepcopy(ram))        
 
     # modify and display render
 env.close()
@@ -84,11 +95,11 @@ from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i]
 objects_infos.update(from_rams)
 df = pd.DataFrame(objects_infos)
 
-# df["sum"] = df["Projectile_1_y"] + df["Projectile_2_y"]
-# df["diff"] = df["Projectile_1_y"] - df["Projectile_2_y"]
-# subset.append("sum")
-# subset.append("diff")
-# print(np.array(objects_infos['Projectile_1_y']) > np.array(objects_infos['Projectile_2_y']))
+
+
+
+pickle.dump(df, open("centipede2.pkl", "wb"))
+# df = pickle.load(open("centipede2.pkl", "rb"))
 
 
 # find correlation
@@ -129,16 +140,17 @@ plt.show()
 
 corrT = corr.T
 for el in corrT:
-    maxval = corrT[el].abs().max()
-    idx = corrT[el].abs().idxmax()
-    if maxval > 0.9:
-        x, y = df[idx], df[el]
-        # a, b = np.polyfit(x, y, deg=1)
-        a, b = ransac_regression(x, y)
-        plt.scatter(x, y, marker="x")
-        plt.plot(x, a * x + b, color="k", lw=2.5)
-        print(f"{el} = {a:.2f} x ram[{idx}] + {b:.2f} ")
-        plt.xlabel(idx)
-        plt.ylabel(el)
-        plt.show()
-
+    keys = corrT[el].keys()
+    for idx in range(len(keys)):
+        maxval = corrT[el].abs()[keys[idx]]
+        #idx = corrT[el].abs()
+        if maxval >= 0.6:
+            x, y = df[keys[idx]], df[el]
+            # a, b = np.polyfit(x, y, deg=1)
+            a, b = ransac_regression(x, y)
+            plt.scatter(x, y, marker="x", alpha=10/len(x))
+            plt.plot(x, a * x + b, color="k", lw=2.5)
+            print(f"{el} = ({a:.2f} * ram_state[{keys[idx]}] + {b:.2f}) ")
+            plt.xlabel(keys[idx])
+            plt.ylabel(el)
+            plt.show()

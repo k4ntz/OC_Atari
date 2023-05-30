@@ -27,7 +27,7 @@ game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
 game_name = "MsPacman-v4"    # game name ChopperCommand-v4
 # game_name = "Centipede-v4"    # game name ChopperCommand-v4
 game_name = "RiverraidNoFrameskip-v4"    # game name ChopperCommand-v4
-game_name = "Riverraid-v4"    # game name ChopperCommand-v4
+game_name = "Centipede-v4"    # game name ChopperCommand-v4
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
 fps = 60                        # render fps
@@ -53,8 +53,8 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 
 # OCAtari modes
-mode = "revised"                    # raw, revised, vision, test
-HUD = False                      # if True, the returned objects contain only the necessary information to play the game
+mode = "vision"                    # raw, revised, vision, test
+HUD = True                      # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
 showInputs = False              # if True, prints the number and the description of the possible inputs (actions)
@@ -391,11 +391,11 @@ def on_press(key):
         key_name = key_name.removeprefix("Key.")
         key_name = key_name.removeprefix("\'")
         key_name = key_name.removesuffix("\'")
-        if pause and key_name.lower() == "s":
-            snapshot = env._env.env.env.ale.cloneState()
-            filename = input('give_filename')
-            pickle.dump(snapshot, open(filename, "wb"))
-            print(f"Saved state under {filename}")
+        # if pause and key_name.lower() == "s":
+        #     snapshot = env._env.env.env.ale.cloneState()
+        #     filename = input('give_filename')
+        #     pickle.dump(snapshot, open(filename, "wb"))
+        #     print(f"Saved state under {filename}")
 
         if key_name in key_map.keys():
             input_action = key_map[key_name]
