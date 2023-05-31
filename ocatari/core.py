@@ -32,7 +32,6 @@ class OCAtari:
         self._env = gym.make(env_name, *args, **kwargs)
         self.game_name = env_name.split("-")[0].split("No")[0].split("Deterministic")[0]
         self.mode = mode
-        self._ale = self._env.unwrapped.ale
         self.hud = hud
         self.max_objects = []
         self._objects = init_objects(self.game_name, self.hud)
@@ -68,7 +67,11 @@ class OCAtari:
         self.window = 4
         self._state_buffer = deque([], maxlen=self.window)
         self.action_space = self._env.action_space
-        self._ale = self._env.unwrapped.ale
+
+
+    @property
+    def _ale(self):
+        return self._env.unwrapped.ale
 
     def _step_ram(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
