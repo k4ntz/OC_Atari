@@ -1,4 +1,4 @@
-gymnasium[atari, accept-rom-license]
+gymnasium
 rtpt
 stable_baselines3[extra]>=2.0.0a10
 ocatari @ git+https://github.com/k4ntz/OC_Atari.git@agents

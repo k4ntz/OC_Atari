@@ -26,6 +26,8 @@ setup(
         "termcolor",
         "pandas",
         "scikit-learn",
-        "ipdb"
+        "ipdb",
+        "pyfiglet",
+        "keyboard"
     ]
 )

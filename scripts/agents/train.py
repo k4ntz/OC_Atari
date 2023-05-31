@@ -59,7 +59,7 @@ def main():
     eval_frequency = 250_000
     rtpt_frequency = 50_000
     log_path = Path("baseline_logs", exp_name)
-    ckpt_path = Path("baseline_ckpts", exp_name)
+    ckpt_path = Path("baseline_checkpoints", exp_name)
     log_path.mkdir(parents=True, exist_ok=True)
     ckpt_path.mkdir(parents=True, exist_ok=True)
 
