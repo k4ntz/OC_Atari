@@ -1,4 +1,5 @@
 import gymnasium as gym
+import numpy as np
 from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects, get_max_objects
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
@@ -194,4 +195,71 @@ class OCAtari:
         table.set_fontsize(14)
         plt.subplots_adjust(top=0.8)
         plt.show()
-        
+
+
+class PositionHistoryGymWrapper(gym.Env):
+
+    def __init__(self, ocatari_env : OCAtari) -> None:
+        super().__init__()
+        if ocatari_env.mode != "revised":
+            print("ram only supported for env wrapper for now")
+            exit()
+        self.ocatari_env = ocatari_env
+        self.reference_list = self._init_ref_vector()
+        self.current_vector = np.zeros(4 * len(self.reference_list), dtype=np.float32)
+
+
+    @property
+    def observation_space(self):
+        vl = len(self.reference_list) * 4
+        return gym.spaces.Box(low=-2**63, high=2**63 - 2, shape=(vl, ), dtype=np.float32)
+
+
+    @property
+    def action_space(self):
+        return self.ocatari_env.action_space
+
+
+    def step(self, *args, **kwargs):
+        _, reward, truncated, terminated, info = self.ocatari_env.step(*args, **kwargs)
+        self._obj2vec()
+        return self.current_vector, reward, truncated, terminated, info
+
+
+    def reset(self, *args, **kwargs):
+        _, info = self.ocatari_env.reset(*args, **kwargs)
+        self._obj2vec()
+        return self.current_vector, info
+
+
+    def render(self, *args, **kwargs):
+        return self.ocatari_env.render(*args, **kwargs)
+
+
+    def close(self, *args, **kwargs):
+        return self.ocatari_env.close(*args, **kwargs)
+
+
+    def _init_ref_vector(self):
+        reference_list = []
+        obj_counter = {}
+        for o in self.ocatari_env.max_objects:
+            if o.category not in obj_counter.keys():
+                obj_counter[o.category] = 0
+            obj_counter[o.category] += 1
+        for k in list(obj_counter.keys()):
+            reference_list.extend([k for i in range(obj_counter[k])])
+        return reference_list
+
+
+    def _obj2vec(self):
+        temp_ref_list = self.reference_list.copy()
+        for o in self.ocatari_env.objects: # populate out_vector with object instance
+            idx = temp_ref_list.index(o.category) #at position of first category occurance
+            start = idx * 4
+            flat = [item for sublist in o.h_coords for item in sublist]
+            self.current_vector[start:start + 4] = flat #write the slice
+            temp_ref_list[idx] = "" #remove reference from reference list
+        for i, d in enumerate(temp_ref_list):
+            if d != "": #fill not populated category instances wiht 0.0's
+                self.current_vector[i*4:i*4+4] = [0.0, 0.0, 0.0, 0.0] #np.zeros(4, dtype=np.float32)
