@@ -54,7 +54,7 @@ def main():
     env_str = opts.game +"Deterministic-v4"
     exp_name = opts.game + "-s" + str(opts.seed)
     n_envs = opts.cores
-    training_timestamps = 2_000_000
+    training_timestamps = 10_000_000
     checkpoint_frequency = 500_000
     eval_frequency = 250_000
     rtpt_frequency = 50_000
