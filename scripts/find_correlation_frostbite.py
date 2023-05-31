@@ -12,6 +12,7 @@ from copy import deepcopy
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
+import pickle
 import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
 sys.path.insert(0, '../ocatari') # noqa
@@ -33,7 +34,7 @@ def ransac_regression(x, y):
 DROP_LOW = True
 MIN_CORRELATION = 0.7 #0.8
 
-NB_SAMPLES = 3000# 600 before
+NB_SAMPLES = 600# 600 before
 game_name = "Frostbite" #RoadRunner-v4
 MODE = "vision"
 RENDER_MODE = "human"
@@ -42,8 +43,10 @@ env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE,hud=True)
 random.seed(0)
 
 observation, info = env.reset()
+snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/frostbite_level3_end.pkl", "rb"))
+env._env.env.env.ale.restoreState(snapshot)
 # object_list = ["Projectile"]
-object_list = ["Frostbite"]
+object_list = ["BluePlate"]
 # create dict of list
 objects_infos = {}
 subset = []
@@ -60,11 +63,11 @@ for i in tqdm(range(NB_SAMPLES)):
     # action = actions[i%len(actions)]
     prob = random.random()
     if prob > 0.9:
-        action = 2 # UP
+        action = 1 # UP
     elif prob > 0.8:
-        action = 3 # DOWN
+        action = 2 # DOWN
     elif prob>0.7:
-        action = 2
+        action = 4
     elif prob>0.6:
         action=3 # 4-RIGHT 3- Left, Truck at (56, 129), (16, 18), Cactus at (125, 55), (8, 8), Cactus at (129, 46), (8, 8)]
     # if i % 5: # reset for pressing
