@@ -93,6 +93,16 @@ class Sword(GameObject):
         self.hud = False
 
 
+class Ruby(GameObject):
+    def __init__(self, *args, **kwargs):
+        super(Ruby, self).__init__()
+        super().__init__(*args, **kwargs)
+        self._xy = 89, 166
+        self.wh = 7, 12
+        self.rgb = 213, 130, 74
+        self.hud = False
+
+
 class Barrier(GameObject):
     def __init__(self, *args, **kwargs):
         super(Barrier, self).__init__()
@@ -120,16 +130,6 @@ class Rope(GameObject):
         self._xy = 112, 96
         self.wh = 1, 39
         self.rgb = 232, 204, 99
-        self.hud = False
-
-
-class Ruby(GameObject):
-    def __init__(self, *args, **kwargs):
-        super(Ruby, self).__init__()
-        super().__init__(*args, **kwargs)
-        self._xy = 89, 166
-        self.wh = 7, 12
-        self.rgb = 213, 130, 74
         self.hud = False
 
 

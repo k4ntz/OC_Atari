@@ -27,7 +27,8 @@ game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
 game_name = "MsPacman-v4"    # game name ChopperCommand-v4
 # game_name = "Centipede-v4"    # game name ChopperCommand-v4
 game_name = "RiverraidNoFrameskip-v4"    # game name ChopperCommand-v4
-game_name = "Centipede-v4"    # game name ChopperCommand-v4
+# game_name = "Centipede-v4"    # game name ChopperCommand-v4
+game_name = "MontezumaRevenge-v4"    # game name ChopperCommand-v4
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
 fps = 60                        # render fps
@@ -109,7 +110,7 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    # snapshot = pickle.load(open("with_anurage.pkl", "rb"))
+    # snapshot = pickle.load(open("riverraid.pkl", "rb"))
     # env._env.env.env.ale.restoreState(snapshot)
 
     run(oc)
@@ -391,11 +392,11 @@ def on_press(key):
         key_name = key_name.removeprefix("Key.")
         key_name = key_name.removeprefix("\'")
         key_name = key_name.removesuffix("\'")
-        # if pause and key_name.lower() == "s":
-        #     snapshot = env._env.env.env.ale.cloneState()
-        #     filename = input('give_filename')
-        #     pickle.dump(snapshot, open(filename, "wb"))
-        #     print(f"Saved state under {filename}")
+        if pause and key_name.lower() == "s":
+            snapshot = env._env.env.env.ale.cloneState()
+            filename = input('give_filename')
+            pickle.dump(snapshot, open(filename, "wb"))
+            print(f"Saved state under {filename}")
 
         if key_name in key_map.keys():
             input_action = key_map[key_name]
