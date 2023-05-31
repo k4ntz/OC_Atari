@@ -228,7 +228,7 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
     elif game_name.lower() == "qbert":
         _detect_objects_qbert_revised(objects, ram_state, hud)
     elif game_name.lower() == "montezumarevenge":
-        return _detect_objects_montezumarevenge_revised(hud)
+        return _detect_objects_montezumarevenge_revised(objects, ram_state, hud)
     elif game_name.lower() == "atlantis":
         _detect_objects_atlantis_revised(objects, ram_state, hud)
     elif game_name.lower() == "asteroids":

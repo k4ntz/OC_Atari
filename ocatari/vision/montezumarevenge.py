@@ -10,6 +10,12 @@ objects_colors = {'white': [236, 236, 236], 'yellow': [232, 204, 99], 'orange': 
                   'lifecolors': [[200, 72, 72], [210, 182, 86]]}
 
 
+class Player(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = [228, 111, 111]
+
+
 #  ---- enemies -----
 class Skull(GameObject):
     def __init__(self, *args, **kwargs):
@@ -60,12 +66,6 @@ class Ruby(GameObject):
 
 
 #  ---- others -----
-class Player(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = [228, 111, 111]
-
-
 class Barrier(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

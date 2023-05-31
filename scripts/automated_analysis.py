@@ -177,10 +177,10 @@ def do_analysis(env, dump_path, new_dump, min_correlation, maximum_x,
     if dump_path is None:
         dump_path = str(pathlib.Path().resolve()) + "/../dumps/automated_analysis_dump/"
     if not os.path.exists(dump_path):
-        os.mkdir(dump_path)
+        os.makedirs(dump_path)
     dump_path = dump_path + game_name
     if not os.path.exists(dump_path):
-        os.mkdir(dump_path)
+        os.makedirs(dump_path)
 
     oinfo_file = dump_path + "/object_infos"
     constants_file = dump_path + "/constants"
@@ -298,13 +298,13 @@ def do_analysis(env, dump_path, new_dump, min_correlation, maximum_x,
 
 
 if __name__ == "__main__":
-    GAME_NAME = "Asterix-v4"
+    GAME_NAME = "Riverraid-v4"
     MODE = "vision"    # do not change
     RENDER_MODE = "rgb_array"  # do not change
     MAXIMUM_X = 160  # right side of screen in rgb_array
     MAXIMUM_Y = 210  # bottom of screen in rgb_array
     DUMP_PATH = None  # path to dump otherwise takes standard
-    NEW_DUMP = False  # if True creates new datasets and dumps it overwriting the previous ones
+    NEW_DUMP = True  # if True creates new datasets and dumps it overwriting the previous ones
     MIN_CORRELATION = 0.8  # the minimal correlation required for a ram value to be relevant for an object
     DROP_CONSTANTS = True  # if True does not consider not changing variables for objects
     START_FRAME = 100  # selects the frame at which each simulation starts
