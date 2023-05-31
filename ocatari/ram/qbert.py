@@ -79,7 +79,7 @@ class PurpleBall(GameObject):
     def __init__(self):
         super(PurpleBall, self).__init__()
         self._xy = 78, 103
-        self.wh = 8, 24
+        self.wh = 7, 9
         self.rgb = 146, 70, 192
         self.hud = False
 
@@ -88,7 +88,7 @@ class RedBall(GameObject):
     def __init__(self):
         super(RedBall, self).__init__()
         self._xy = 78, 103
-        self.wh = 8, 24
+        self.wh = 7, 9
         self.rgb = 223, 183, 85
         self.hud = False
 
@@ -97,7 +97,7 @@ class GreenBall(GameObject):
     def __init__(self):
         super(GreenBall, self).__init__()
         self._xy = 78, 103
-        self.wh = 8, 24
+        self.wh = 7, 9
         self.rgb = 50, 132, 50
         self.hud = False
 
@@ -107,7 +107,7 @@ class Coily(GameObject):
     def __init__(self):
         super(Coily, self).__init__()
         self._xy = 78, 103
-        self.wh = 8, 24
+        self.wh = 8, 21
         self.rgb = 146, 70, 192
         self.hud = False
 
@@ -137,7 +137,7 @@ class Score(GameObject):
         self._xy = 34, 6
         self.wh = 37, 7
         self.rgb = 210, 210, 64
-        self.hud = False
+        self.hud = True
 
 
 class Lives(GameObject):
@@ -146,7 +146,7 @@ class Lives(GameObject):
         self._xy = 33, 16
         self.wh = 24, 12
         self.rgb = 210, 210, 64
-        self.hud = False
+        self.hud = True
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -188,9 +188,20 @@ def _init_objects_qbert_ram(hud=True):
     last_i = -1
     global purple_i
     purple_i = -1
+    global green_i
+    green_i = -1
     global last_74
     last_74 = 0
-    objects.extend([None] * 3) # Coily, ball, sam
+    global last_lives
+    last_lives = 2
+    global last_105
+    last_105 = 0
+    global last_103
+    last_103 = 0
+
+    objects.extend([None] * 4) # Coily, pruple_ball, green_ball, sam
+    if hud:
+        objects.extend([None] *2)
     return objects
 
 
@@ -233,13 +244,45 @@ def _detect_objects_qbert_revised(objects, ram_state, hud=True):
         # The x value switches too early in the RAM, therfore we use the
         # y value changes as a trigger for the Position switch
         if coil_prev_y != ram_state[39]:
-            coily.xy = _calc_enemy_x(ram_state[71]), (ram_state[39] * 30) + 3
+            if ram_state[56] > 8:
+                coily.xy = _calc_enemy_x(ram_state[71]), (ram_state[39] * 30) + 6
+                coily.wh = 8, 21
+            elif ram_state[56] > 6:
+                coily.xy = _calc_enemy_x(ram_state[71]), (ram_state[39] * 30) + 9
+                coily.wh = 8, 18
+            elif ram_state[56] > 3:
+                coily.xy = _calc_enemy_x(ram_state[71]), (ram_state[39] * 30) + 11
+                coily.wh = 8, 16
+            elif ram_state[56] == 1:
+                coily.xy = _calc_enemy_x(ram_state[71]), (ram_state[39] * 30) + 6
+                coily.wh = 8, 21
+            else:
+                coily.xy = _calc_enemy_x(ram_state[71]), (ram_state[39] * 30) + 9
+                coily.wh = 8, 18
         else:  # Else the position remains the same as before
-            coily.xy = coil_prev_x, (ram_state[39] * 30) + 3
-        coil_prev_x = coily.x
+            if ram_state[56] > 8:
+                coily.xy = coil_prev_x, (ram_state[39] * 30) + 6
+                coily.wh = 8, 21
+            elif ram_state[56] > 6:
+                coily.xy = coil_prev_x, (ram_state[39] * 30) + 9
+                coily.wh = 8, 18
+            elif ram_state[56] > 3:
+                coily.xy = coil_prev_x, (ram_state[39] * 30) + 11
+                coily.wh = 8, 16
+            elif ram_state[56] == 1:
+                coily.xy = coil_prev_x, (ram_state[39] * 30) + 6
+                coily.wh = 8, 21
+            else:
+                coily.xy = coil_prev_x, (ram_state[39] * 30) + 9
+                coily.wh = 8, 18
+        x, _ = coily.xy
+        coil_prev_x = x
         coil_prev_y = ram_state[39]
     else:
         objects[24] = None
+        coil_prev_x = 0
+        coil_prev_y = 0
+
 
     # The object y values are not part of the RAM, instead the game
     # interprets the RAM position 75 as the highest  y position an object can be at and 79 as the lowest.
@@ -251,56 +294,120 @@ def _detect_objects_qbert_revised(objects, ram_state, hud=True):
     # The big problem with this is that the RAM values stay the same even if there is no object on the specified
     # platform anymore.
     # (You might be able to find a RAM value carrying information when the next step is taken by an object)
-    res = _calc_enemy_pos(ram_state[75:80])
-    x, y = None, None  # res[0][0]
-    enemies = []
-    if not (x is None or y is None):
-        for i in range(len(res)):
-            x, y = res[i][0]
-            typ = res[i][1]
-            if typ == 0:
-                obj = Sam()
-            elif typ == 7:
-                obj = PurpleBall()
-            obj.xy = x, y
-            enemies.append(obj)
-    print(enemies)
+
     global last_i
-    global last_74
     global purple_i
+    global green_i
+    global last_74
+    global last_105
+    global last_103
+    global last_lives
 
 
-    ball, sam = objects[25], objects[26]
-    if ram_state[74]:
+    purple_ball, green_ball, sam = objects[25], objects[26], objects[27]
+
+    # if ram_state[59] == 255:
+    if last_lives != ram_state[8]:
+        green_i = -1
+        purple_i = -1
+        last_i = -1
+        last_lives = ram_state[8]
+        last_74 = ram_state[74]
+        objects[25], objects[26], objects[27] = None, None, None
+    elif ram_state[74]:
         if last_74 != ram_state[74]:
             last_74 = ram_state[74]
             if last_i >= 0:
                 last_i = last_i + 1
             if purple_i >= 0:
                 purple_i = purple_i + 1
-        if ram_state[39] == 255:
-            if ram_state[76] == 7 and purple_i < 0:
-                purple_i = 0
-            if purple_i >= 0 and purple_i < 5:
-                if ball is None:
-                    ball = PurpleBall()
-                    objects[25] = ball
-                ball.xy = _calc_enemy_x(ram_state[75 + purple_i]), ((purple_i + 1) * 30) + 12 - purple_i
+            if green_i >= 0:
+                green_i = green_i + 1
+
+        if last_103 != ram_state[103]:
+            if ram_state[103] == 17:
+                green_i = 0
+            last_103 = ram_state[103]
+        elif green_i > 4:
+            green_i = -1
+        if green_i >= 0 and green_i < 5:
+            if green_ball is None:
+                green_ball = GreenBall()
+                objects[26] = green_ball
+            if player is not None:
+                b_x, b_y = _calc_enemy_x(ram_state[75 + green_i]), ((green_i + 1) * 30) + 7 - green_i
+                p_x, p_y = player.xy
+                if (b_x - p_x) < 9 and (b_x - p_x) > -9 and (b_y - p_y) < 9 and (b_y - p_y) > -9:
+                    objects[27] = None
+                    green_i = -1
+            if ram_state[56] < 7:
+                green_ball.xy = _calc_enemy_x(ram_state[75 + green_i]) + 1, ((green_i + 1) * 30) + 23 - green_i
+                green_ball.wh = 7, 6
             else:
-                objects[25] = None
+                green_ball.xy = _calc_enemy_x(ram_state[75 + green_i]) + 1, ((green_i + 1) * 30) + 9 - green_i
+                green_ball.wh = 7, 9
+        else:
+            objects[26] = None
+
+        if ram_state[119] != 0:
+            objects[25] = None
+            purple_i = -1
+        elif ram_state[119] == 0 and purple_i < 0 and objects[24] is None:
+            purple_i = 0
         elif purple_i > 4:
             purple_i = -1
-        if ram_state[105] == 6:
-            last_i = 0
+        if purple_i >= 0 and purple_i < 5:
+            if green_i != purple_i:
+                if purple_ball is None:
+                    purple_ball = PurpleBall()
+                    objects[25] = purple_ball
+                if ram_state[56] < 7:
+                    purple_ball.xy = _calc_enemy_x(ram_state[75 + purple_i]) + 1, ((purple_i + 1) * 30) + 23 - purple_i
+                    purple_ball.wh = 7, 6
+                else:
+                    purple_ball.xy = _calc_enemy_x(ram_state[75 + purple_i]) + 1, ((purple_i + 1) * 30) + 9 - purple_i
+                    purple_ball.wh = 7, 9
+            else:
+                purple_i = -1
+        else:
+            objects[25] = None
+        
+        if last_105 != ram_state[105]:
+            if ram_state[105] == 6:
+                last_i = 0
+            last_105 = ram_state[105]
         if last_i >= 0 and last_i < 5:
             if sam is None:
                 sam = Sam()
-                objects[26] = sam
+                objects[27] = sam
+            if player is not None:
+                s_x, s_y = _calc_enemy_x(ram_state[75 + last_i]), ((last_i + 1) * 30) + 12 - last_i
+                p_x, p_y = player.xy
+                if (s_x - p_x) < 7 and (s_x - p_x) > -7 and (s_y - p_y) < 7 and (s_y - p_y) > -7:
+                    objects[27] = None
+                    last_i = -1
             sam.xy = _calc_enemy_x(ram_state[75 + last_i]), ((last_i + 1) * 30) + 12 - last_i
         else:
-            objects[26] = None
+            objects[27] = None
         if last_i > 4:
             last_i = -1
+        
+    if hud:
+        score, lives = objects[28], objects[29]
+        score = Score()
+        objects[28] = score
+        if ram_state[8] == 2:
+            lives = Lives()
+        elif ram_state[8] == 1:
+            lives = Lives()
+            lives.wh = 16, 12
+        elif ram_state[8] == 0:
+            lives = Lives()
+            lives.wh = 8, 12
+        else:
+            lives = None
+        objects[29] = lives
+
 
 
     return objects
@@ -334,35 +441,35 @@ def _calc_enemy_x(value):
     return res
 
 
-def _calc_enemy_pos(slice):
-    """
-    Converts a RAM slice of 5 into the enemy positions
-    """
-    global last_i
+# def _calc_enemy_pos(slice):
+#     """
+#     Converts a RAM slice of 5 into the enemy positions
+#     """
+#     global last_i
 
-    x = None
-    y = None
-    typ = 0
+#     x = None
+#     y = None
+#     typ = 0
 
-    res = []
+#     res = []
 
-    if last_i is not None and last_i < 4 and slice[last_i + 1] + 1 == slice[last_i]:
-        xi = _calc_enemy_x(slice[last_i + 1])
-        yi = ((last_i + 2) * 30) + 12
-        last_i += 1
-        res.append([(xi, yi), typ])
+#     if last_i is not None and last_i < 4 and slice[last_i + 1] + 1 == slice[last_i]:
+#         xi = _calc_enemy_x(slice[last_i + 1])
+#         yi = ((last_i + 2) * 30) + 12
+#         last_i += 1
+#         res.append([(xi, yi), typ])
 
-    for i in range(5):
-        if slice[i] == 0:
-            break
-        if slice[i+1] == 7:
-            typ = 7
-        x = _calc_enemy_x(slice[i])
-        y = ((i + 1) * 30) + 12
-        last_i = i
-        if i < 4 and slice[i] != slice[i] + 1:
-            break
+#     for i in range(5):
+#         if slice[i] == 0:
+#             break
+#         if slice[i+1] == 7:
+#             typ = 7
+#         x = _calc_enemy_x(slice[i])
+#         y = ((i + 1) * 30) + 12
+#         last_i = i
+#         if i < 4 and slice[i] != slice[i] + 1:
+#             break
 
-    res.append([(x, y), typ])
+#     res.append([(x, y), typ])
 
-    return res
+#     return res
