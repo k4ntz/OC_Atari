@@ -100,7 +100,7 @@ class LifeCount(GameObject):
         self.hud = True
 
 
-class Score(GameObject):
+class PlayerScore(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb =132,144,252
@@ -114,11 +114,11 @@ class Degree(GameObject):
         self.hud = True
 
 
-class PlayerScore(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 0,0,0
-        self.hud = True
+# class PlayerScore(GameObject):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.rgb = 0,0,0
+#         self.hud = True
 
 def _detect_objects_frostbite(objects, obs, hud=False):
     # detection and filtering
@@ -127,22 +127,25 @@ def _detect_objects_frostbite(objects, obs, hud=False):
     player = find_mc_objects(obs, playercolors, size=(8, 17), tol_s=3)
     if player:
         objects.append(Player(*player[0]))
-    blueplate = find_objects(obs, objects_colors["BluePlate"], closing_dist=5, size=(24,7), tol_s=2)
+    blueplate = find_objects(obs, objects_colors["BluePlate"], closing_active=False, size=(20,7), tol_s=6)
     for b in blueplate:
         objects.append(BluePlate(*b))
-    whiteplate = find_objects(obs, objects_colors["WhitePlate"], closing_dist=5, size=(20,7), tol_s=6)
+    whiteplate = find_objects(obs, objects_colors["WhitePlate"], closing_active=False, size=(20,7), maxy=185,tol_s=6)
     for w in whiteplate:
         objects.append(WhitePlate(*w))
     bird = find_objects(obs, objects_colors["Bird"], closing_dist=5, size=(8,7), tol_s=2)
     for b in bird:
         objects.append(Bird(*b))
+    flag=find_objects(obs,[0,0,0],miny=43,maxy=56,minx=120,maxx=133)
     house = find_objects(obs, objects_colors["house"], minx=84, miny=42,maxx=155,maxy=64)
-    for h in house:
-        objects.append(House(*h))
-    c_house = find_mc_objects(obs, c_house_colors, size=(34, 20), tol_s=5)
-    if c_house:
-        objects.append(CompletedHouse(*c_house[0]))
-    f_bite = find_mc_objects(obs, playercolors, size=(8, 17), tol_s=3)
+    if len(flag)==0:
+        for h in house:
+            objects.append(House(*h))
+    if len(flag)!=0:
+        c_house = find_mc_objects(obs, c_house_colors, size=(34, 20), tol_s=5)
+        if c_house:
+            objects.append(CompletedHouse(*c_house[0]))
+    f_bite = find_mc_objects(obs, frostbite, size=(8, 17), tol_s=3)
     if f_bite:
         objects.append(FrostBite(*f_bite[0]))
     g_fish = find_objects(obs, objects_colors["greenfish"], size=(8,6),tol_s=2)
@@ -157,22 +160,15 @@ def _detect_objects_frostbite(objects, obs, hud=False):
     bear = find_objects(obs, objects_colors["bear"], miny=13,maxy=75,size=(14,15),tol_s=5)
     for b in bear:
         objects.append(Bear(*b))
-        
-    # if the colour is blue the one in the background then make it white and then call the find_objects function
-    # mask=(obs==[45,50,184]).all(axis=2)
-    # obs[mask]=[0,28,136]
-
-    # mask=(obs==[132,144,252]).all(axis=2)
-    # obs[mask]=[214,214,214]
     
 
     if hud:
         lifecount = find_objects(obs, objects_colors["hud_objs"], closing_dist=5, minx=50, miny=19, maxx=75,maxy=32,size=(6,8), tol_s=2)
         for l in lifecount:
             objects.append(LifeCount(*l))
-        score = find_objects(obs, objects_colors["hud_objs"], closing_dist=5, minx=45, miny=8, maxx=75,maxy=18,size=(6,8), tol_s=2)
+        score = find_objects(obs, objects_colors["hud_objs"], closing_active=False, minx=45, miny=8, maxx=75,maxy=18,size=(6,8), tol_s=2)
         for s in score:
-            objects.append(Score(*s))
+            objects.append(PlayerScore(*s))
         degrees = find_objects(obs, objects_colors["hud_objs"], closing_dist=2, minx=19, miny=19, maxx=37,maxy=30,size=(6,8), tol_s=2)
         for d in degrees:
             objects.append(Degree(*d))

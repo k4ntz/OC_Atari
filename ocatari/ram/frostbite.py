@@ -124,7 +124,7 @@ class Degree(GameObject):
 class PlayerScore(GameObject):
     def __init__(self):
         super().__init__()
-        self.rgb = 0,0,0
+        self.rgb =132,144,252
         self.hud = True
         self.wh = (8, 18)
         self._xy = 0, 0
@@ -151,27 +151,181 @@ def _init_objects_frostbite_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player()]
-    # if hud:
-    #     global plscore
-    #     plscore = PlayerScore()
-    #     global enscore
-    #     enscore = EnemyScore()
-    #     objects.extend([plscore, enscore,
-    #                     Clock(63, 17, 6, 7), Clock(73, 18, 2, 5),
-    #                     Clock(79, 17, 6, 7), Clock(87, 17, 6, 7)])
+    objects.extend([Bird()]*4)
+    objects.extend([Bear()])
+    objects.extend([None]*24) #for the plates
+    objects.extend([None]*12) #for bird clams and crabs
+    objects.extend([House(),CompletedHouse()])
+    if hud:
+        objects.extend([LifeCount(),Degree(),Degree(),PlayerScore(),PlayerScore(),PlayerScore(),PlayerScore()])
     return objects
-
 
 def _detect_objects_frostbite_revised(objects, ram_state, hud=False):
     """
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
-    player,= objects[:1]
+    player,bird1,bird2,bird3,bird4= objects[:5]
     player.xy =  ram_state[102] -1,ram_state[100]+30
-    if hud:
-        pass
+    # Tackling enemies/birds here
+    if ram_state[84]>7 and ram_state[84]<155:
+        bird1=Bird()
+        bird1.xy=ram_state[84],160
+        objects[1]=bird1
+    else:
+        objects[1]=None
+    if ram_state[85]>7 and ram_state[85]<155:
+        bird2=Bird()
+        bird2.xy=ram_state[85],134
+        objects[2]=bird2
+    else:
+        objects[2]=None
+    if ram_state[86]>7 and ram_state[86]<155:
+        bird3=Bird()
+        bird3.xy=ram_state[86],108
+        objects[3]=bird3
+    else:
+        objects[3]=None
+    if ram_state[87]>7 and ram_state[86]<155:
+        bird4=Bird()
+        bird4.xy=ram_state[87],82
+        objects[4]=bird4
+    else:
+        objects[4]=None
+        # Adding the bear
+    if ram_state[104]==140:
+        objects[5]=None
+    else:
+        bear=Bear()
+        bear.xy=ram_state[104]+3,58
+        objects[5]=bear
+    
+    # Adding the Plates
+    num_plates=3 if ram_state[30]==8 else 6
+    start_loc=9 if ram_state[30]==8 else 13
+    plate_diff=32 if ram_state[30]==8 else 16
+    size_plates=(24,7) if ram_state[30]==8 else (16,7)
+    ram_list=[31,32,33,34]
+    pos_list=[174,148,122,96]
+    which_plate=[43,44,45,46]
+    for i in range(num_plates*4):
+        temp=whichPlate(ram_state[which_plate[int(i/num_plates)]])
+        temp.xy=correction(ram_state[ram_list[int(i/num_plates)]]+int(i%num_plates)*plate_diff-start_loc),pos_list[int(i/num_plates)]
+        temp.wh=size_plates
+        objects[6+i]=temp
+    
+    # House 
+    position_list=[(112,51),(112,51),(112,51),(112,51),(112,47),(112,47),(112,47),(112,47),(112,42),(112,42),(112,42),(112,42),(112,39),(112,39),(112,35)]
+    size_list=[(8,4),(16,4),(24,4),(32,4),(32,8),(32,8),(32,8),(32,8),(32,13),(32,13),(32,13),(32,13),(32,16),(32,16),(32,20)]
+    if ram_state[77]==255 or ram_state[77]==15:
+        objects[42]=None
+    else:
+        h=House()
+        h.xy=position_list[ram_state[77]]
+        h.wh=size_list[ram_state[77]]
+        objects[42]=h
 
+    # Completed House
+    if ram_state[77]==15:
+        c=CompletedHouse()
+        c.xy=112,35
+        c.wh=32,20
+        objects[43]=c
+    else:
+        objects[43]=None
+    # for i in range(num_plates):
+    #     temp=whichPlate(ram_state[30])# put index of ram state which decides when the plate is blue
+    #     temp.xy=correction(ram_state[31]+i*plate_diff-start_loc),174
+    #     temp.wh=size_plates
+    #     objects[6+i]=temp
+    # #Second bottom most
+    # for i in range(num_plates):
+    #     temp=whichPlate(ram_state[30])# put index of ram state which decides when the plate is blue
+    #     temp.xy=correction(ram_state[32]+i*plate_diff-start_loc),148
+    #     temp.wh=size_plates
+    #     objects[6+num_plates+i]=temp
+    # #Second top most
+    # for i in range(num_plates):
+    #     temp=whichPlate(ram_state[30])# put index of ram state which decides when the plate is blue
+    #     temp.xy=correction(ram_state[33]+i*plate_diff-start_loc),122
+    #     temp.wh=size_plates
+    #     objects[6+num_plates*2+i]=temp
+    # #top most
+    # for i in range(num_plates):
+    #     temp=whichPlate(ram_state[30])# put index of ram state which decides when the plate is blue
+    #     temp.xy=correction(ram_state[34]+i*plate_diff-start_loc),96
+    #     temp.wh=size_plates
+    #     objects[6+num_plates*3+i]=temp
+
+
+    if hud:
+        # LifeCount
+        if ram_state[76]!=0:
+            l=LifeCount()
+            l.xy=63,22
+            l.wh=(6,10)
+            objects[44]=l
+        else:
+            objects[44]=None
+        # Time or degrees
+        if ram_state[101]<=9:
+            d1=Degree()
+            d1.xy=31,22
+            d1.wh=(6,8)
+            objects[45]=None
+            objects[46]=d1
+        else:
+            d1=Degree()
+            d1.xy=31,22
+            d1.wh=(6,8)
+            d2=Degree()
+            d2.xy=23,22
+            d2.wh=(6,8)
+            objects[45]=d2
+            objects[46]=d1
+        
+        # Player Score
+        if ram_state[73]==0 and ram_state[74]==0:
+            p=PlayerScore()
+            p.xy=63,10
+            p.wh=(6,8)
+            objects[50]=p
+            objects[49]=None ; objects[48]=None ; objects[47]=None 
+        elif ram_state[73]==0 and ram_state[74]!=0:
+            p1=PlayerScore()
+            p1.xy=63,10
+            p1.wh=(6,8)
+            objects[50]=p1
+            p2=PlayerScore()
+            p2.xy=55,10
+            p2.wh=(6,8)
+            objects[49]=p2
+            objects[48]=None; objects[47]=None
+        elif ram_state[72]==0 and ram_state[73]!=0:
+            p1=PlayerScore()
+            p1.xy=63,10
+            p1.wh=(6,8)
+            objects[50]=p1
+            p2=PlayerScore()
+            p2.xy=55,10
+            p2.wh=(6,8)
+            objects[49]=p2
+            p3=PlayerScore()
+            p3.xy=48,10
+            p3.wh=(6,8)
+            objects[48]=p3
+            objects[47]=None
+
+
+def whichPlate(pos):
+    # Make decision whether to return Whiteplate or BluepLate
+    if pos==12:
+        return WhitePlate()
+    else:
+        return BluePlate()
+
+def correction(pos):
+    return pos%160
 
 def _detect_objects_frostbite_raw(info, ram_state):
     """
