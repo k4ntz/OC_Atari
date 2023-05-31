@@ -15,7 +15,6 @@ RUN pip install -r requirements.txt
 RUN pip install opencv-python-headless
 
 COPY train.py train.py
-CMD ["cd", "experiments"]
-
-WORKDIR workdir
+RUN mkdir "baseline_logs"
+RUN mkdir "baseline_checkpoints"
 ENTRYPOINT ["python3", "-u" , "train.py"]
