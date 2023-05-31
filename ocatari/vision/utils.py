@@ -12,6 +12,20 @@ def bbs_extend(labels, key: str, stationary=False):
     labels['bbs'].extend([(*bb, "S" if stationary else "M", key) for bb in labels[key]])
 
 
+def most_common_color(image, exclude_black=True):
+    """
+    returning the most common color in the image
+
+    exclude_black: If True, exclude the black color from the taken into account
+    """
+    a2D = image.reshape(-1, image.shape[-1])
+    col_range = (256, 256, 256) # generically : a2D.max(0)+1
+    a1D = np.ravel_multi_index(a2D.T, col_range)
+    if exclude_black:
+        return np.unravel_index(np.bincount(a1D)[1:].argmax()+1, col_range) # removing first el
+    return np.unravel_index(np.bincount(a1D).argmax(), col_range)
+
+
 # to be removed
 def bb_by_color(labels, obs, color, key, closing_active=True):
     print(colored("\n\n\n PLEASE DON'T USE, USE 'find_objects' instead\n\n\n", "red"))
