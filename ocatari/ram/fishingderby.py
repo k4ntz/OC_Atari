@@ -84,21 +84,20 @@ def _detect_objects_fishingDerby_revised(objects, ram_state, hud=False):
     p1s, p2s = objects[0:2]
     coeff_1 = 1
     coeff_2 = 1
-    p1s.xy = 3 + ram_state[23], p1s.xy[1]
-    p2s.xy = 3 + ram_state[24], p2s.xy[1]
+
     if ram_state[30] == 16:
-        p1s.xy = p1s.xy[0] - ram_state[34], p1s.xy[1]
-        coeff_1 = -coeff_1 # orientation of the rope till the hook (right or left)
+        coeff_1 = -coeff_1  # orientation of the rope till the hook (right or left)
 
     if ram_state[31] == 16:
-        p2s.xy = p2s.xy[0] - ram_state[35], p2s.xy[1]
         coeff_2 = -coeff_2
 
-    p1s.hook_position = -2 + ram_state[23] + coeff_1 * ram_state[34], ram_state[65] * 2 + 82
-    p2s.hook_position = 2 + ram_state[24] + coeff_2 * ram_state[35], ram_state[66] * 2 + 82
+    p1s.xy = -2 + ram_state[23] + coeff_1 * ram_state[34] + int(coeff_1 == 1) * 3, int(ram_state[65] * 2.3) + 78
+    p2s.xy = 2 + ram_state[24] + coeff_2 * ram_state[35] + int(coeff_2 == 1) * 3, int(ram_state[66] * 2.3) + 78
+    p1s.hook_position = -2 + ram_state[23] + coeff_1 * ram_state[34], int(ram_state[65] * 2.3) + 81
+    p2s.hook_position = 2 + ram_state[24] + coeff_2 * ram_state[35], int(ram_state[66] * 2.3) + 81
 
-    p1s.wh = int(ram_state[34] * abs(coeff_1)), abs(p1s.xy[1] - p1s.hook_position[1])
-    p2s.wh = int(ram_state[35] * abs(coeff_1)), abs(p2s.xy[1] - p2s.hook_position[1])
+    p1s.wh = 3, 3
+    p2s.wh = 3, 3
 
     # Considering that the first fish is the one at the top layer and
     fishes_hooked = []
