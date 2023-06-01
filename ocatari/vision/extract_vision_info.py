@@ -7,7 +7,7 @@ from .bowling import _detect_objects_bowling
 from .demonAttack import _detect_objects_demon_attack
 from .breakout import _detect_objects_breakout
 from .tennis import _detect_objects_tennis
-from .space_invaders import _detect_objects_space_invaders
+from .spaceinvaders import _detect_objects_spaceinvaders
 from .kangaroo import _detect_objects_kangaroo
 from .mspacman import _detect_objects_mspacman
 from .centipede import _detect_objects_centipede
@@ -21,7 +21,7 @@ from .montezumarevenge import _detect_objects_montezumarevenge
 from .boxing import _detect_objects_boxing
 from .atlantis import _detect_objects_atlantis
 from .asteroids import _detect_objects_asteroids
-from .riverRaid import _detect_objects_riverraid
+from .riverraid import _detect_objects_riverraid
 from .assault import _detect_objects_assault
 from .roadrunner import _detect_objects_roadrunner
 from .fishingDerby import _detect_objects_fishingDerby
@@ -52,7 +52,7 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
     elif game_name.lower() == "kangaroo":
         return _detect_objects_kangaroo(objects, obs, hud)
     elif game_name.lower() == "spaceinvaders":
-        return _detect_objects_space_invaders(objects, obs, hud)
+        return _detect_objects_spaceinvaders(objects, obs, hud)
     elif game_name.lower() == "demonattack":
         return _detect_objects_demon_attack(objects, obs, hud)
     elif game_name.lower() == "breakout":

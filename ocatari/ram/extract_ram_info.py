@@ -12,9 +12,9 @@ from .breakout import _detect_objects_breakout_raw, _detect_objects_breakout_rev
 from .pong import _detect_objects_pong_raw, _detect_objects_pong_revised, _init_objects_pong_ram
 from .seaquest import _detect_objects_seaquest_raw, _detect_objects_seaquest_revised, _init_objects_seaquest_ram
 from .skiing import _detect_objects_skiing_raw, _detect_objects_skiing_revised, _init_objects_skiing_ram
-from .spaceinvaders import _detect_objects_space_invaders_raw, \
-                            _detect_objects_space_invaders_revised, \
-                            _init_objects_space_invaders_ram
+from .spaceinvaders import _detect_objects_spaceinvaders_raw, \
+                            _detect_objects_spaceinvaders_revised, \
+                            _init_objects_spaceinvaders_ram
 from .tennis import _detect_objects_tennis_raw, _detect_objects_tennis_revised, _init_objects_tennis_ram
 from .demonattack import _detect_objects_demon_attack_raw, \
                          _detect_objects_demon_attack_revised, \
@@ -35,7 +35,7 @@ from .atlantis import _detect_objects_atlantis_raw, \
                       _init_objects_atlantis_ram
 from .beamrider import _detect_objects_beamrider_raw, _detect_objects_beamrider_revised, _init_objects_beamrider_ram
 from .asteroids import _detect_objects_asteroids_raw, _detect_objects_asteroids_revised, _init_objects_asteroids_ram
-from .riverRaid import _detect_objects_riverraid_raw, _detect_objects_riverraid_revised, _init_objects_riverraid_ram
+from .riverraid import _detect_objects_riverraid_raw, _detect_objects_riverraid_revised, _init_objects_riverraid_ram
 from .assault import _detect_objects_assault_raw, _detect_objects_assault_revised, _init_objects_assault_ram
 from .roadrunner import _init_objects_roadrunner_ram, _detect_objects_roadrunner_revised
 from .alien import _init_objects_alien_ram, _detect_objects_alien_revised
@@ -79,7 +79,7 @@ def init_objects(game_name, hud):
     elif game_name.lower() == "seaquest":
         return _init_objects_seaquest_ram(hud)
     elif game_name.lower() == "spaceinvaders":
-        return _init_objects_space_invaders_ram(hud)
+        return _init_objects_spaceinvaders_ram(hud)
     elif game_name.lower() == "tennis":
         return _init_objects_tennis_ram(hud)
     elif game_name.lower() == "bowling":
@@ -142,10 +142,10 @@ def detect_objects_raw(info, ram_state, game_name):
     elif game_name.lower() == "seaquest":
         _detect_objects_seaquest_raw(info, ram_state)
     elif game_name.lower() == "spaceinvaders":
-        _detect_objects_space_invaders_revised(info, ram_state)
+        _detect_objects_spaceinvaders_revised(info, ram_state)
     elif game_name.lower() == "tennis":
         _detect_objects_tennis_raw(info, ram_state)
-        _detect_objects_space_invaders_raw(info, ram_state)
+        _detect_objects_spaceinvaders_raw(info, ram_state)
     elif game_name.lower() == "tennis":
         _detect_objects_tennis_raw(info, ram_state)
     elif game_name.lower() == "bowling":
@@ -200,7 +200,7 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
     elif game_name.lower() == "seaquest":
         _detect_objects_seaquest_revised(objects, ram_state, hud)
     elif game_name.lower() == "spaceinvaders":
-        _detect_objects_space_invaders_revised(objects, ram_state, hud)
+        _detect_objects_spaceinvaders_revised(objects, ram_state, hud)
     elif game_name.lower() == "tennis":
         _detect_objects_tennis_revised(objects, ram_state, hud)
     elif game_name.lower() == "bowling":

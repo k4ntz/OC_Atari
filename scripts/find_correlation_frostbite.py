@@ -17,7 +17,7 @@ from sklearn.linear_model import RANSACRegressor, LinearRegression
 sys.path.insert(0, '../ocatari') # noqa
 from ocatari.core import OCAtari
 from alive_progress import alive_bar
-from ocatari.utils import load_agent, make_deterministic
+
 
 
 
@@ -25,86 +25,76 @@ def ransac_regression(x, y):
     ransac = RANSACRegressor(estimator=LinearRegression(),
                              min_samples=50, max_trials=100,
                              loss='absolute_error', random_state=42,
-                             residual_threshold=10)
+                             residual_threshold=10) 
     ransac.fit(np.array(x).reshape(-1, 1), y)
     return ransac.estimator_.coef_.item(), ransac.estimator_.intercept_.item()
 
 
 DROP_LOW = True
-MIN_CORRELATION = 0.5
+MIN_CORRELATION = 0.7 #0.8
 
-NB_SAMPLES = 600
-game_name = "Riverraid-v4"
+NB_SAMPLES = 3000# 600 before
+game_name = "Frostbite" #RoadRunner-v4
 MODE = "vision"
 RENDER_MODE = "human"
 # RENDER_MODE = "rgb_array"
-env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
+env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE,hud=True)
 random.seed(0)
 
 observation, info = env.reset()
 # object_list = ["Projectile"]
-object_list = ["Fuel"]
+object_list = ["Frostbite"]
 # create dict of list
 objects_infos = {}
 subset = []
 for obj in object_list:
-    objects_infos[f"{obj}"] = []
-    subset.append(f"{obj}")
+    objects_infos[f"{obj}_x"] = []
+    objects_infos[f"{obj}_y"] = []
+    subset.append(f"{obj}_x")
+    subset.append(f"{obj}_y")
 ram_saves = []
-actions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-class Options(object):
-    pass
-opts = Options()
-opts.path = "models/Riverraid/dqn.gz"
-dqn_agent = load_agent(opts, env.action_space.n)
+actions = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-
-# for i in tqdm(range(NB_SAMPLES)):
-for i in range(NB_SAMPLES):
+for i in tqdm(range(NB_SAMPLES)):
     # obs, reward, terminated, truncated, info = env.step(random.randint(0, env.action_space.n-1))
-    action = dqn_agent.draw_action(env.dqn_obs)
+    # action = actions[i%len(actions)]
+    prob = random.random()
+    if prob > 0.9:
+        action = 2 # UP
+    elif prob > 0.8:
+        action = 3 # DOWN
+    elif prob>0.7:
+        action = 2
+    elif prob>0.6:
+        action=3 # 4-RIGHT 3- Left, Truck at (56, 129), (16, 18), Cactus at (125, 55), (8, 8), Cactus at (129, 46), (8, 8)]
+    # if i % 5: # reset for pressing
+    #     action = 0
+
     obs, reward, terminated, truncated, info = env.step(action)
-    ram = env._env.unwrapped.ale.getRAM()
-    # print(ram[75:80])
-    print(ram[103])
-    # if i == 300:
-    #     print("SET")
-    # env.set_ram(105, 0)
-    if i and i % 400 == 0:
-        env.set_ram(103, 2)
-    if info.get('frame_number') > 10 and i % 5 == 0:
+    if info.get('frame_number') > 10 and i % 1 == 0:
         SKIP = False
         # print(env.objects)
-        # print(env.objects)
         for obj_name in object_list:  # avoid state without the tracked objects
-            # if str(env.objects).count("PurpleBall") == 1:
-            #     objects_infos[f"Ball"].append(1)
-            if str(env.objects).count("GreenBall") == 1:
-                # print("True")
-                objects_infos[f"Ball"].append(2)
-            else:
-                objects_infos[f"Ball"].append(0)
-                # SKIP = True
-                # break
+            if str(env.objects).count(obj_name) != 1:
+                SKIP = True
+                break
         # if str(env.objects).count("Projectile at (75,") == 0:
         #     print(env._env.unwrapped.ale.getRAM()[106])
         if SKIP:# or env.objects[-2].y < env.objects[-1].y:
             continue
-        ram_saves.append(deepcopy(ram))
-        # for obj in env.objects:
-        #     objname = obj.category
-        #     if objname in object_list:
-        #         objects_infos[f"{objname}_x"].append(obj.xy[0])
-        #         objects_infos[f"{objname}_y"].append(obj.xy[1])
+        for obj in env.objects:
+            objname = obj.category
+            if objname in object_list:
+                objects_infos[f"{objname}_x"].append(obj.xy[0])
+                objects_infos[f"{objname}_y"].append(obj.xy[1])
             # n += 1
-        
+        ram = env._env.unwrapped.ale.getRAM()
+        ram_saves.append(deepcopy(ram))
         # env.render()
 
     # modify and display render
 env.close()
 
-
-import ipdb; ipdb.set_trace()
 
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
@@ -167,4 +157,3 @@ for el in corrT:
         plt.xlabel(idx)
         plt.ylabel(el)
         plt.show()
-

@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, '../../ocatari') # noqa
 from core import OCAtari
 from vision.utils import mark_bb, make_darker
-from vision.space_invaders import objects_colors
+from vision.spaceinvaders import objects_colors
 # from ocatari.vision.pong import objects_colors
 from utils import load_agent, parser
 from tqdm import tqdm

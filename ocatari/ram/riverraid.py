@@ -1,5 +1,5 @@
 from .game_objects import GameObject
-
+import sys
 """
 RAM extraction for the game RIVER RAID. Supported modes: raw
 
@@ -10,9 +10,21 @@ Furthermore there was no y-Position for the Objects found in the RAM. It could b
 the players y-Position not stored in the RAM.
 """
 
-MAX_NB_OBJECTS = {"Player": 1, "PlayerMissile": 1, "Bridge": 1, "Tanker": 6, "FuelDepot": 6,
-                  "Helicopter": 6, "Jet": 6}
+# MAX_NB_OBJECTS = {"Player": 1, "PlayerMissile": 1, "Bridge": 1, "Tanker": 6, "FuelDepot": 6,
+#                   "Helicopter": 6, "Jet": 6}
+MAX_NB_OBJECTS = {'PlayerScore': 6, 'Lives': 1, 'Logo': 1}
 MAX_NB_OBJECTS_HUD = {'PlayerScore': 6, 'Lives': 1, 'Logo': 1}
+
+
+class _DescendingObject(GameObject):
+    _offset = None
+    
+    def __init__(self, xfr):
+        super().__init__()
+        self._xy = self._offset + 15 * xfr, 0
+    
+    def _update_xy(self, xfr, offset): # xfr
+        self._xy = self._offset + 15 * xfr, self._xy[1] + offset
 
 
 class Player(GameObject):
@@ -31,42 +43,50 @@ class PlayerMissile(GameObject):
         self.hud = False
 
 
-class Helicopter(GameObject):
-    def __init__(self):
-        self._xy = 0, 0
-        self.wh = 8, 7
+class Helicopter(_DescendingObject):
+    _offset = 6
+    def __init__(self, xfr):
+        super().__init__(xfr)
+        self.wh = 8, 10
         self.rgb = 0, 64, 48
         self.hud = False
+    
+    def _update_xy(self, xfr, offset): # xfr
+        self._xy = self._offset + 15 * xfr, self._xy[1] + 2 * offset
 
 
-class Tanker(GameObject):
-    def __init__(self):
-        self._xy = 0, 0
-        self.wh = 12, 2
+class Tanker(_DescendingObject):
+    _offset = 12
+    def __init__(self, xfr):
+        super().__init__(xfr)
+        self.wh = 16, 8
         self.rgb = 84, 160, 197
         self.hud = False
 
 
-class Jet(GameObject):
-    def __init__(self):
-        self._xy = 0, 0
+class Jet(_DescendingObject):
+    _offset = 12
+    def __init__(self, xfr):
+        super().__init__(xfr)
         self.wh = 10, 10
         self.rgb = 117, 181, 239
         self.hud = False
 
 
-class Bridge(GameObject):
-    def __init__(self):
-        self._xy = 0, 0
+class Bridge(_DescendingObject):
+    _offset = 12
+    def __init__(self, xfr):
+        super().__init__(xfr)
         self.wh = 10, 10
         self.rgb = 134, 134, 29
         self.hud = False
 
 
-class FuelDepot(GameObject):
-    def __init__(self):
-        self._xy = 0, 0
-        self.wh = 10, 10
+class FuelDepot(_DescendingObject):
+    _offset = 1
+    def __init__(self, xfr):
+        super().__init__(xfr)
+        self.wh = 7, 24
         self.rgb = 210, 91, 94
         self.hud = False
 
@@ -98,100 +118,121 @@ class Logo(GameObject):
         self.hud = True
 
 
+_ram_to_class = [None, None, None, None, Jet, Helicopter, None, Tanker, Bridge, None, FuelDepot] # 9th would be houseandtree
+global cntr, prev70
+
+
+# parses MAX_NB* dicts, returns default init list of objects
+def _get_max_objects(hud=False):
+
+    def fromdict(max_obj_dict):
+        objects = []
+        mod = sys.modules[__name__]
+        for k, v in max_obj_dict.items():
+            for _ in range(0, v):
+                objects.append(getattr(mod, k)())    
+        return objects
+
+    if hud:
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
+
+
 def _init_objects_riverraid_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player()]
-
+    objects = [None] * 8 # Player, missile and 6 objects
+    global cntr, prev70
+    cntr, prev70 = 0, None
     if hud:
         objects.extend([PlayerScore(), Lives(), Logo()])
 
-    objects.extend([Bridge(), Jet(), Helicopter(), Tanker(), FuelDepot()])
+    # objects.extend([Bridge(), Jet(), Helicopter(), Tanker(), FuelDepot()])
     return objects
 
 
 def _detect_objects_riverraid_revised(objects, ram_state, hud=False):
-    player = objects[0]
+    # player = objects[0]
+    # if ram_state[70]:
+    #     objects[0] = None
+    # elif player is None:
+    #     player = Player()
+    #     objects[0] = player
+    #     player.xy = ram_state[51] + 1, 145
+    # else:
+    #     player.xy = ram_state[51] + 1, 145
 
-    player.xy = ram_state[51] + 1, 145
-
-    if hud:
-        del objects[4:]
-    else:
-        del objects[1:]
-
-    obj = _calculate_objects(ram_state)
-    objects.extend(obj)
-
-    if hud:
-        score, lives = objects[1:3]
-        score_value = riverraid_score(ram_state)
-        if score_value >= 10:
-            sc = PlayerScore()
-            score.xy = 89, 165
-            score.wh = 6, 8
-            objects.append(sc)
-
-        if score_value >= 100:
-            sc = PlayerScore()
-            sc.xy = 81, 165
-            sc.wh = 6, 8
-            objects.append(sc)
-
-        if score_value >= 1000:
-            sc = PlayerScore()
-            sc.xy = 73, 165
-            sc.wh = 6, 8
-            objects.append(sc)
-
-        if score_value >= 10000:
-            sc = PlayerScore()
-            sc.xy = 65, 165
-            sc.wh = 6, 8
-            objects.append(sc)
-
-        if score_value >= 100000:
-            sc = PlayerScore()
-            sc.xy = 57, 165
-            sc.wh = 6, 8
-            objects.append(sc)
-
-
-def _calculate_objects(ram_state):
-    objects = []
-
-    # player missile
-    if ram_state[117] != 0 and 162 - ram_state[50] >= 0:  # else not firing
-        missile = PlayerMissile()
-        missile.xy = ram_state[117] - 1, 162 - ram_state[50]
-        objects.append(missile)
-
-    # objects
+    # missile = objects[1]
+    # # player missile
+    # if ram_state[117] != 0 and 162 - ram_state[50] >= 0:  # else not firing
+    #     if missile is None:
+    #         missile = PlayerMissile()
+    #         objects[1] = missile
+    #     missile.xy = ram_state[117] - 1, 162 - ram_state[50]
+    # elif missile is not None:
+    #     objects[1] = None
+    
+    global cntr, prev70
+    framskips = (cntr - ram_state[2]) % 256
+    if ram_state[70] == 0 or ram_state[70] != prev70:
+        speed = 1
+    else: # hasn't fired yet
+        speed = 0
+    # print(framskips)
+    # print(ram_state[70])
+    if prev70 == 0 and ram_state[70]:
+        objects[2:8] = [None] * 6
     for i in range(6):
+        eobj = objects[2+i]
         obj_type = ram_state[32 + i]
-        if obj_type == 4:
-            obj_instance = Jet()
-        elif obj_type == 5:
-            obj_instance = Helicopter()
-        elif obj_type == 7:
-            obj_instance = Tanker()
-        elif obj_type == 8:
-            obj_instance = Bridge()
-        else:
-            continue
+        obj_class = _ram_to_class[obj_type]
+        if obj_class is not None:
+            if not isinstance(eobj, obj_class):
+                if i < 5 and isinstance(objects[3+i], obj_class): # moving down
+                    eobj = objects[3+i]
+                    objects[3+i] = None
+                    eobj._update_xy(ram_state[20+i], framskips * speed)
+                elif eobj is None:
+                    eobj = obj_class(ram_state[20+i])
+                objects[2+i] = eobj
+            else:
+                eobj._update_xy(ram_state[20+i], framskips * speed)
 
-        # obj_pos = ram_state[20 + i]
-        # Add here x and y-Position for the objects
-        obj_instance.xy = 0, 0
-    return objects
+
+    # if hud:
+    #     score, lives, _ = objects[9:12]
+    #     score_value = riverraid_score(ram_state)
+    #     if score_value >= 10:
+    #         score.xy = 89, 165
+    #         score.wh = 6, 8
+
+    #     if score_value >= 100:
+    #         score.xy = 81, 165
+    #         score.wh = 6, 8
+
+    #     if score_value >= 1000:
+    #         score.xy = 73, 165
+    #         score.wh = 6, 8
+
+    #     if score_value >= 10000:
+    #         score.xy = 65, 165
+    #         score.wh = 6, 8
+    cntr = ram_state[2]
+    prev70 = ram_state[70]
+
+    #     if score_value >= 100000:
+    #         score.xy = 57, 165
+    #         score.wh = 6, 8
+
+
+
 
 
 def _detect_objects_riverraid_raw(info, ram_state):
     # for all the objects: the lowest RAM state so 20 for object position always references the object that is the next
     # object to leave the screen. So when a helicopter is passed and gets off the screen all other objects will move
     # one RAM position down.
-
     info["objects_pos"] = ram_state[20:26]  # only a relative position from 1 to 8. 1 equals to left side and 8 to the
     # right side. However there is an offset or something to move the objects a little bit
     info["object_size"] = ram_state[26:32]

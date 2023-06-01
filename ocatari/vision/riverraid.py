@@ -7,7 +7,7 @@ objects_colors = {"player": [232, 232, 74], "logo": [232, 232, 74], "background_
                   "score": [232, 232, 74], "player_missile": [232, 232, 74],
                   "helicopter": [[0, 64, 48], [0, 0, 148], [210, 164, 74]],
                   "house": [[214, 214, 214], [0, 0, 0]],
-                  "tanker": [[84, 160, 197], [163, 57, 21]],
+                  "tanker": [[84, 160, 197], [163, 57, 21], [0, 0, 0]],
                   "fuel_depot": [[214, 92, 92], [214, 214, 214]],
                   "jet": [[117, 204, 235], [117, 181, 239], [117, 128, 240]],
                   "bridge": [[187, 187, 53], [105, 105, 15], [134, 134, 29], [124, 44, 0]]}
@@ -76,23 +76,23 @@ class Logo(GameObject):
 def _detect_objects_riverraid(objects, obs, hud=False):
     objects.clear()
 
-    player = find_objects(obs, objects_colors["player"], min_distance=1)
-    for p in player:
-        if p[1] < 160 and p[2] > 2 and p[3] > 10:
-            objects.append(Player(*p))
+    # player = find_objects(obs, objects_colors["player"], min_distance=1)
+    # for p in player:
+    #     if p[1] < 160 and p[2] > 2 and p[3] > 10:
+    #         objects.append(Player(*p))
 
-    player_missile = find_objects(obs, objects_colors["player_missile"], min_distance=1)
-    for missile in player_missile:
-        if missile[2] < 2 and 1 < missile[3] < 10 and missile[1] < 160:
-            objects.append(PlayerMissile(*missile))
+    # player_missile = find_objects(obs, objects_colors["player_missile"], min_distance=1)
+    # for missile in player_missile:
+    #     if missile[2] < 2 and 1 < missile[3] < 10 and missile[1] < 160:
+    #         objects.append(PlayerMissile(*missile))
 
     helicopter = find_mc_objects(obs, objects_colors["helicopter"], min_distance=1)
     for heli in helicopter:
         objects.append(Helicopter(*heli))
 
-    tanker = find_mc_objects(obs, objects_colors["tanker"], min_distance=1)
+    tanker = find_mc_objects(obs, objects_colors["tanker"], min_distance=1, minx=10, miny=3, maxy=162)
     for tank in tanker:
-        if tank[0] > 0 and tank[1] < 175:
+        if tank[3] > 3:
             objects.append(Tanker(*tank))
 
     jet = find_mc_objects(obs, objects_colors["jet"], min_distance=1)
@@ -101,7 +101,8 @@ def _detect_objects_riverraid(objects, obs, hud=False):
 
     fuel_depot = find_mc_objects(obs, objects_colors["fuel_depot"], min_distance=1)
     for fuel in fuel_depot:
-        if fuel[3] > fuel[2]:
+        # if True:
+        if fuel[2] < 8:
             objects.append(FuelDepot(*fuel))
 
     bridge = find_mc_objects(obs, objects_colors["bridge"], min_distance=1)

@@ -1,60 +1,141 @@
 from .game_objects import GameObject
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "Birdseeds": 1, "Truck": 6}
-MAX_NB_OBJECTS_HUD = {'Cactus': 6, 'ThisWaySign': 1}# 'Score': 1}
+MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1}
+MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
 
 class Player(GameObject):
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
-        self.wh = (8, 32)
-        self.rgb = 101, 111, 228
+        self.wh = (8, 17)
+        self.rgb = 198,108,58
         self.hud = False
 
 
-class Enemy(GameObject):
+class GreenFish(GameObject):
     def __init__(self):
         super().__init__()
-        self._xy = 0, 0
-        self.wh = (7, 29)
-        self.rgb = 198, 108, 58
+        self.rgb = 111,210,111
+        self.wh = (8, 6)
         self.hud = False
+        self._xy = 0, 0
 
-
-class Birdseeds(GameObject):
+class FrostBite(GameObject):
     def __init__(self):
         super().__init__()
-        self._xy = 0, 0
-        self.wh = (5, 3)
-        self.rgb = 84, 92, 214
+        self.rgb = 84,38,210
         self.hud = False
+        self.wh = (8, 17)
+        self._xy = 0, 0
 
 
-class Truck(GameObject):
+class WhitePlate(GameObject):
     def __init__(self):
         super().__init__()
-        self._xy = 0, 0
-        self.wh = (16, 18)
-        self.rgb = 198, 108, 58
+        self.rgb = 214,214,214
         self.hud = False
+        self.wh = (24, 7)
+        self._xy = 0, 0
 
-
-class Cactus(GameObject):
+class BluePlate(GameObject):
     def __init__(self):
         super().__init__()
-        self._xy = 0, 0
-        self.wh = (8, 8)
-        self.rgb = 187, 187, 53
+        self.rgb = 84,138,210
         self.hud = False
+        self.wh = (24, 7)
+        self._xy = 0, 0
 
-class ThisWaySign(GameObject):
+class Bird(GameObject):
     def __init__(self):
         super().__init__()
-        self._xy = 0, 0
-        self.wh = (16, 15)
-        self.rgb = 0, 0, 0
+        self.rgb = 132,144,252
         self.hud = False
+        self.wh = (8, 7)
+        self._xy = 0, 0
+
+class Bear(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 0,0,0
+        self.hud = False
+        self.wh = (14, 15)
+        self._xy = 0, 0
+
+class Crab(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 23,130,74
+        self.hud = False
+        self.wh = (8, 18)
+        self._xy = 0, 0
+
+class Clam(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 210,210,64
+        self.hud = False
+        self._xy = 0, 0
+        self.wh=(2,3)
+
+class House(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 142,142,142
+        self.hud = False
+        self.wh = (8, 18)
+        self._xy = 0, 0
+
+class CompletedHouse(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 0,0,0
+        self.hud = False
+        self.wh = (34,20)
+        self._xy = 0, 0
+
+class Logo(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 214,214,214
+        self.hud = True
+        self.wh = (50,8)
+        self._xy = 20,191
+
+
+class LifeCount(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb =132,144,252
+        self.hud = True
+        self.wh = (8, 18)
+        self._xy = 0, 0
+
+
+class Score(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb =132,144,252
+        self.hud = True
+        self.wh = (8, 18)
+        self._xy = 0, 0
+
+class Degree(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb =132,144,252
+        self.hud = True
+        self.wh = (8, 18)
+        self._xy = 0, 0
+
+
+class PlayerScore(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 0,0,0
+        self.hud = True
+        self.wh = (8, 18)
+        self._xy = 0, 0
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -77,7 +158,9 @@ def _init_objects_frostbite_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Enemy()]
+    objects = [Player()]
+    if hud:
+        objects.append(Logo())
     # if hud:
     #     global plscore
     #     plscore = PlayerScore()
@@ -94,15 +177,8 @@ def _detect_objects_frostbite_revised(objects, ram_state, hud=False):
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
-    player, enemy = objects[:2]
-    player.xy = ram_state[80], ram_state[3] + 95
-    if ram_state[81] > 145: # Removing the enemy
-        objects[1] = None
-    elif enemy is None:
-        enemy = Enemy()
-        objects[1] = enemy
-    if enemy is not None:
-        enemy.xy = ram_state[81], ram_state[5] + 98
+    player,= objects[:1]
+    player.xy =  ram_state[102] -1,ram_state[100]+30
     if hud:
         pass
 

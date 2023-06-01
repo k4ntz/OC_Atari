@@ -1,7 +1,7 @@
 import random
 import time
 from copy import deepcopy
-
+count=0
 import gymnasium as gym
 import ipdb
 
@@ -23,12 +23,9 @@ useOCAtari = True                # if True, running this file will execute the O
 printEnvInfo = False             # if True, the extracted objects or the environment info will be printed
 
 # gym[atari]/gymnasium
-game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
-game_name = "MsPacman-v4"    # game name ChopperCommand-v4
-# game_name = "Centipede-v4"    # game name ChopperCommand-v4
-game_name = "RiverraidNoFrameskip-v4"    # game name ChopperCommand-v4
-game_name = "Riverraid-v4"    # game name ChopperCommand-v4
-render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
+# game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
+game_name = "Frostbite-v4"    # game name ChopperCommand-v4
+render_mode = "human"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
 fps = 60                        # render fps
 seed = 0
@@ -54,12 +51,12 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 # OCAtari modes
 mode = "revised"                    # raw, revised, vision, test
-HUD = False                      # if True, the returned objects contain only the necessary information to play the game
+HUD = True                      # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
-showInputs = False              # if True, prints the number and the description of the possible inputs (actions)
+showInputs = True              # if True, prints the number and the description of the possible inputs (actions)
 showActions = False             # if True, prints the action that will be done
-showRAM = False                 # if True, prints the RAM to the console
+showRAM = False         # if True, prints the RAM to the console  
 # render_mode=="rgb_array" only
 printRGB = False                # if True, prints the rgb array
 showImage = True                # if True, plots the rgb array
@@ -68,7 +65,7 @@ showImage = True                # if True, plots the rgb array
 manipulateRAM = False          # if True, you can set the RAM by an index
 setRAMIndex = 52                 # the index of the ram that will be set
 setRAMValue = 255                # the value of the ram that will be set (if negative, then it counts up)
-showDelta = False               # shows any other changes that occured by changing the ram (dependent on env.step)
+showDelta = False             # shows any other changes that occured by changing the ram (dependent on env.step)
 slowDownPlot = 0.0001              # pause per iteration
 lastRAM = np.zeros(128)
 
@@ -109,8 +106,8 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    snapshot = pickle.load(open("riverraid.pkl", "rb"))
-    env._env.env.env.ale.restoreState(snapshot)
+    # snapshot = pickle.load(open("lvl3.pkl", "rb"))
+    # env._env.env.env.ale.restoreState(snapshot)
 
     run(oc)
 
@@ -192,8 +189,6 @@ def run(env):
         if showActions:
             print(action_name)
             # print(action)
-        
-        
 
         # do a step with the given action
         observation, reward, terminated, truncated, info = env.step(action)
@@ -201,7 +196,8 @@ def run(env):
         #     reward -= 10
         # previous_lives = info["lives"]
         # print(reward)
-        # player = env.objects[0]
+        player = env.objects[0]
+        print(distance_to_joey(player))
         # returns if the environment is in the terminal state (end) -> terminated, truncated
         if terminated or truncated:
             observation, info = env.reset()
@@ -215,6 +211,17 @@ def run(env):
             target_vals.append(target_val)
         if showRAM:
             print(ram)
+            # ram_change=np.array(ram.shape)
+            # count=0
+            # for i in range(len(all_rams)-1):
+            #     if count==0:
+            #         ram_change=all_rams[i]==all_rams[i+1]
+            #     else:
+            #         ram_change=ram_change == (all_rams[i]==all_rams[i+1])
+            #     count+=1
+            # print(np.where(ram_change==False))
+        
+                
 
         # adjust the RAM as you like to see what it changes in the rendering (functional behavior of the RAM is
         # not important and therefore must not be part of the project, but the changes that are visually displayed)
@@ -310,9 +317,9 @@ def run(env):
     # close the environment at the end
     env.close()
     listener.stop()
-    # save_fn = "mode_change_kangaroo.pkl"
-    # pickle.dump((all_rams, target_vals), open(save_fn, "wb"))
-    # print(f"Saved in {save_fn}")
+    save_fn = "mode_change_kangaroo.pkl"
+    pickle.dump((all_rams, target_vals), open(save_fn, "wb"))
+    print(f"Saved in {save_fn}")
 
 
 def get_unwrapped(env):
@@ -385,11 +392,13 @@ def on_press(key):
             print(f"Currently as : {env.get_ram()[ram_pos]}")
             new_val = int(input('please enter new target value'))
             env.set_ram(ram_pos, new_val)
+        
 
         # changing inputs
         key_name = str(key)
-        key_name = key_name.replace("Key.", "")
-        key_name = key_name.replace("\'", "")
+        key_name = remove_prefix(key_name,"Key.")
+        key_name = remove_prefix(key_name,"\'")
+        key_name = remove_suffix(key_name,"\'")
         if pause and key_name.lower() == "s":
             snapshot = env._env.env.env.ale.cloneState()
             filename = input('give_filename')
@@ -405,8 +414,9 @@ def on_press(key):
 def on_release(key):
     # changing inputs
     key_name = str(key)
-    key_name = key_name.replace("Key.", "")
-    key_name = key_name.replace("\'", "")
+    key_name = remove_prefix(key_name,"Key.")
+    key_name = remove_prefix(key_name,"\'")
+    key_name = remove_suffix(key_name,"\'")
 
     if key_name in key_map.keys():
         # print("released")
@@ -470,7 +480,15 @@ def get_action_name(my_set=None):
     # hat man nichts gefunden, so muss man auf den default zurückgreifen
     return default_action
 
+def remove_suffix(input_string, suffix):
+    if suffix and input_string.endswith(suffix):
+        return input_string[:-len(suffix)]
+    return input_string
 
+def remove_prefix(input_string, prefix):
+    if prefix and input_string.startswith(prefix):
+        return input_string[len(prefix):]
+    return input_string
 if useOCAtari:
     withocatari()
 else:

@@ -164,6 +164,7 @@ def _get_max_objects(hud=False):
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
 
+
 def _init_objects_qbert_ram(hud=True):
     """
     (Re)Initialize the objects

@@ -33,12 +33,6 @@ class FrostBite(GameObject):
         self.rgb = 84,38,210
         self.hud = False
 
-class Enemy(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 198, 108, 58
-        self.hud = False
-
 
 class WhitePlate(GameObject):
     def __init__(self, *args, **kwargs):
@@ -130,7 +124,7 @@ def _detect_objects_frostbite(objects, obs, hud=False):
     blueplate = find_objects(obs, objects_colors["BluePlate"], closing_dist=5, size=(24,7), tol_s=2)
     for b in blueplate:
         objects.append(BluePlate(*b))
-    whiteplate = find_objects(obs, objects_colors["WhitePlate"], closing_dist=5, size=(24,7), tol_s=2)
+    whiteplate = find_objects(obs, objects_colors["WhitePlate"], closing_dist=5, size=(20,7), tol_s=6)
     for w in whiteplate:
         objects.append(WhitePlate(*w))
     bird = find_objects(obs, objects_colors["Bird"], closing_dist=5, size=(8,7), tol_s=2)

@@ -13,6 +13,7 @@ enemycolors = [[198, 108, 58], [181, 83, 40], [213, 130, 74]]
 truckcolors = [[252, 224, 112], [198, 108, 58], [213, 130, 74], [181, 83, 40]]
 birdcolors=[[132,144,252],[252,188,116]]
 
+
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -27,7 +28,7 @@ class Enemy(GameObject):
         self.hud = False
 
 
-class Birdseeds(GameObject):
+class BirdSeeds(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 84, 92, 214
@@ -47,11 +48,13 @@ class Cactus(GameObject):
         self.rgb =187, 187, 53
         self.hud = True
 
+
 class ThisWaySign(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 0, 0, 0
         self.hud = True
+
 
 class ExitSign(GameObject):
     def __init__(self, *args, **kwargs):
@@ -59,17 +62,20 @@ class ExitSign(GameObject):
         self.rgb = 0, 0, 0
         self.hud = True
 
+
 class Bird(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 252,188,116
         self.hud = True
 
+
 class PlayerScore(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 0,0,0
         self.hud = True
+
 
 def _detect_objects_roadrunner(objects, obs, hud=False):
     # detection and filtering
@@ -82,7 +88,7 @@ def _detect_objects_roadrunner(objects, obs, hud=False):
         objects.append(Enemy(*enemy[0]))
     birdseeds = find_objects(obs, objects_colors["birdseeds"], closing_dist=5,size=(5,3), tol_s=2)
     for seed in birdseeds:
-        objects.append(Birdseeds(*seed))
+        objects.append(BirdSeeds(*seed))
     trucks = find_mc_objects(obs, truckcolors, size=(16, 18), tol_s=2, min_distance=1)
     for truck in trucks:
         objects.append(Truck(*truck))

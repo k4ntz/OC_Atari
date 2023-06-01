@@ -18,12 +18,12 @@ sys.path.insert(0, '../ocatari') # noqa
 from ocatari.core import OCAtari
 from alive_progress import alive_bar
 from ocatari.utils import load_agent, make_deterministic
-
+import pickle
 
 
 def ransac_regression(x, y):
     ransac = RANSACRegressor(estimator=LinearRegression(),
-                             min_samples=50, max_trials=100,
+                             min_samples=6, max_trials=100,
                              loss='absolute_error', random_state=42,
                              residual_threshold=10)
     ransac.fit(np.array(x).reshape(-1, 1), y)
@@ -31,9 +31,9 @@ def ransac_regression(x, y):
 
 
 DROP_LOW = True
-MIN_CORRELATION = 0.5
+MIN_CORRELATION = 0.4
 
-NB_SAMPLES = 600
+NB_SAMPLES = 420
 game_name = "Riverraid-v4"
 MODE = "vision"
 RENDER_MODE = "human"
@@ -41,15 +41,24 @@ RENDER_MODE = "human"
 env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
+make_deterministic(0, env)
+
 observation, info = env.reset()
 # object_list = ["Projectile"]
 object_list = ["Fuel"]
 # create dict of list
 objects_infos = {}
 subset = []
-for obj in object_list:
-    objects_infos[f"{obj}"] = []
-    subset.append(f"{obj}")
+# for obj in object_list:
+#     objects_infos[f"{obj}_x"] = []
+#     objects_infos[f"{obj}_y"] = []
+#     subset.append(f"{obj}_x")
+#     subset.append(f"{obj}_y")
+for i in range(1):
+    objects_infos[f"fuel_x"] = []
+    subset.append(f"fuel_x")
+    objects_infos[f"fuel_y"] = []
+    subset.append(f"fuel_y")
 ram_saves = []
 actions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 class Options(object):
@@ -58,53 +67,54 @@ opts = Options()
 opts.path = "models/Riverraid/dqn.gz"
 dqn_agent = load_agent(opts, env.action_space.n)
 
+snapshot = pickle.load(open("riverraid.pkl", "rb"))
+env._env.env.env.ale.restoreState(snapshot)
 
-# for i in tqdm(range(NB_SAMPLES)):
-for i in range(NB_SAMPLES):
+for i in tqdm(range(NB_SAMPLES)):
     # obs, reward, terminated, truncated, info = env.step(random.randint(0, env.action_space.n-1))
     action = dqn_agent.draw_action(env.dqn_obs)
+    # action = 0
+    # if i % 120 == 0:
+    #     action = 1
+    # for i, val in enumerate([0, 0, 0, 0, 0, 7]):
+    #     env.set_ram(32+i, val)
     obs, reward, terminated, truncated, info = env.step(action)
-    ram = env._env.unwrapped.ale.getRAM()
-    # print(ram[75:80])
-    print(ram[103])
-    # if i == 300:
-    #     print("SET")
-    # env.set_ram(105, 0)
-    if i and i % 400 == 0:
-        env.set_ram(103, 2)
-    if info.get('frame_number') > 10 and i % 5 == 0:
-        SKIP = False
-        # print(env.objects)
-        # print(env.objects)
-        for obj_name in object_list:  # avoid state without the tracked objects
-            # if str(env.objects).count("PurpleBall") == 1:
-            #     objects_infos[f"Ball"].append(1)
-            if str(env.objects).count("GreenBall") == 1:
-                # print("True")
-                objects_infos[f"Ball"].append(2)
-            else:
-                objects_infos[f"Ball"].append(0)
-                # SKIP = True
-                # break
-        # if str(env.objects).count("Projectile at (75,") == 0:
-        #     print(env._env.unwrapped.ale.getRAM()[106])
-        if SKIP:# or env.objects[-2].y < env.objects[-1].y:
-            continue
-        ram_saves.append(deepcopy(ram))
-        # for obj in env.objects:
-        #     objname = obj.category
-        #     if objname in object_list:
-        #         objects_infos[f"{objname}_x"].append(obj.xy[0])
-        #         objects_infos[f"{objname}_y"].append(obj.xy[1])
-            # n += 1
+    # print(env.get_ram()[21], info.get('frame_number'))
+    SKIP = True
+    if i > 200 and i % 1 == 0:
         
-        # env.render()
+        if str(env.objects).count("Jet") == 1:
+            for obj in env.objects:
+                if obj.category == "Jet":
+                    objects_infos[f"fuel_x"].append(obj.xy[0])
+                    objects_infos[f"fuel_y"].append(obj.xy[1])
+                    ram = env._env.unwrapped.ale.getRAM()
+                    ram_saves.append(deepcopy(ram))
+                    break
+        # if str(env.objects).count("Fuel") < 3:
+        #     SKIP = False
+        # if SKIP:
+        #     prevy = None
+        #     continue
+        # sortedy = sorted(env.objects, key=lambda o:o.xy[1])
+        # print(sortedy)
+        # for i, obj in enumerate(sortedy):
+        #     if "Fuel" in obj.category and (env.get_ram()[37] == 10):
+        #         print(True)
+        #         objects_infos[f"fuel_x"].append(obj.xy[0])
+        #         objects_infos[f"fuel_y"].append(obj.xy[1])
+        #         ram = env._env.unwrapped.ale.getRAM()
+        #         ram_saves.append(deepcopy(ram))
+        #         break
+            # n += 1
+        env.render()
 
     # modify and display render
 env.close()
 
+# import ipdb; ipdb.set_trace()
 
-import ipdb; ipdb.set_trace()
+print(len(ram_saves))
 
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
@@ -155,16 +165,17 @@ plt.show()
 
 corrT = corr.T
 for el in corrT:
-    maxval = corrT[el].abs().max()
-    idx = corrT[el].abs().idxmax()
-    if maxval > 0.9:
-        x, y = df[idx], df[el]
-        # a, b = np.polyfit(x, y, deg=1)
-        a, b = ransac_regression(x, y)
-        plt.scatter(x, y, marker="x")
-        plt.plot(x, a * x + b, color="k", lw=2.5)
-        print(f"{el} = {a:.2f} x ram[{idx}] + {b:.2f} ")
-        plt.xlabel(idx)
-        plt.ylabel(el)
-        plt.show()
+    for idx, val in corrT[el].items():
+        # maxval = corrT[el].abs().max()
+        # idx = corrT[el].abs().idxmax()
+        if abs(val) > 0.4:
+            x, y = df[idx], df[el]
+            # a, b = np.polyfit(x, y, deg=1)
+            a, b = ransac_regression(x, y)
+            plt.scatter(x, y, marker="x")
+            plt.plot(x, a * x + b, color="k", lw=2.5)
+            print(f"{el} = {a:.2f} x ram[{idx}] + {b:.2f} ")
+            plt.xlabel(idx)
+            plt.ylabel(el)
+            plt.show()
 
