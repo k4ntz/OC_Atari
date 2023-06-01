@@ -8,7 +8,7 @@ objects_colors = {
     "WhitePlate": [214,214,214], "BluePlate": [84,138,210],
     "Bird": [132,144,252],
     "hud_objs": [132,144,252], "house":[142,142,142], "greenfish":[111,210,111],
-    "crab": [23,130,74], "clam":[210,210,64], "bear":[111,111,111]
+    "crab": [213,130,74], "clam":[210,210,64], "bear":[111,111,111]
     }
 
 playercolors = [[162, 98,33], [198,108,58], [142,142,142],[162,162,42]]
@@ -69,7 +69,7 @@ class Bear(GameObject):
 class Crab(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 23,130,74
+        self.rgb = 213,130,74
         self.hud = False
 
 
@@ -145,9 +145,9 @@ def _detect_objects_frostbite(objects, obs, hud=False):
         c_house = find_mc_objects(obs, c_house_colors, size=(34, 20), tol_s=5)
         if c_house:
             objects.append(CompletedHouse(*c_house[0]))
-    f_bite = find_mc_objects(obs, frostbite, size=(8, 17), tol_s=3)
-    if f_bite:
-        objects.append(FrostBite(*f_bite[0]))
+    # f_bite = find_mc_objects(obs, frostbite, size=(8, 17), tol_s=3)
+    # if f_bite:
+    #     objects.append(FrostBite(*f_bite[0]))
     g_fish = find_objects(obs, objects_colors["greenfish"], size=(8,6),tol_s=2)
     for g in g_fish:
         objects.append(GreenFish(*g))
