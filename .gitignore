@@ -16,6 +16,9 @@ scripts/general/testSkriptNr2.py
 scripts/general/testSkriptNr3.py
 scripts/general/testSkriptNr4.py
 scripts/general/testSkriptNr5.py
+scripts/agents/baseline_checkpoints
+scripts/agents/baseline_logs
+
 *diff_images
 .venv
 *.xml

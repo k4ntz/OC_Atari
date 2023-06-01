@@ -26,12 +26,18 @@ class OCAtari:
         """
         mode: raw/revised/vision/both
         """
-        if env_name[:4] not in [gn[:4] for gn in AVAILABLE_GAMES]:
+        if "ALE/" in env_name: #case if v5 specified
+            to_check = env_name[4:8]
+            game_name = env_name.split("/")[1].split("-")[0].split("No")[0].split("Deterministic")[0]
+        else:
+            to_check = env_name[:4]
+            game_name = env_name.split("-")[0].split("No")[0].split("Deterministic")[0]
+        if to_check[:4] not in [gn[:4] for gn in AVAILABLE_GAMES]:
             print(colored("Game not available in OCAtari", "red"))
             print("Available games: ", AVAILABLE_GAMES)
             exit(1)
         self._env = gym.make(env_name, *args, **kwargs)
-        self.game_name = env_name.split("-")[0].split("No")[0].split("Deterministic")[0]
+        self.game_name = game_name
         self.mode = mode
         self.hud = hud
         self.max_objects = []
