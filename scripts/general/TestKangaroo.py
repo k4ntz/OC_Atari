@@ -24,9 +24,10 @@ printEnvInfo = False             # if True, the extracted objects or the environ
 
 # gym[atari]/gymnasium
 game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
-game_name = "Kangaroo-v4"    # game name ChopperCommand-v4
-game_name = "Centipede-v4"    # game name ChopperCommand-v4
-game_name = "Qbert-v4"    # game name ChopperCommand-v4
+game_name = "MsPacman-v4"    # game name ChopperCommand-v4
+# game_name = "Centipede-v4"    # game name ChopperCommand-v4
+game_name = "RiverraidNoFrameskip-v4"    # game name ChopperCommand-v4
+game_name = "Riverraid-v4"    # game name ChopperCommand-v4
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
 fps = 60                        # render fps
@@ -53,7 +54,7 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 # OCAtari modes
 mode = "revised"                    # raw, revised, vision, test
-HUD = True                      # if True, the returned objects contain only the necessary information to play the game
+HUD = False                      # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
 showInputs = False              # if True, prints the number and the description of the possible inputs (actions)
@@ -108,8 +109,8 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    # snapshot = pickle.load(open("lvl2.pkl", "rb"))
-    # env._env.env.env.ale.restoreState(snapshot)
+    snapshot = pickle.load(open("riverraid.pkl", "rb"))
+    env._env.env.env.ale.restoreState(snapshot)
 
     run(oc)
 
@@ -191,6 +192,8 @@ def run(env):
         if showActions:
             print(action_name)
             # print(action)
+        
+        
 
         # do a step with the given action
         observation, reward, terminated, truncated, info = env.step(action)
@@ -198,7 +201,7 @@ def run(env):
         #     reward -= 10
         # previous_lives = info["lives"]
         # print(reward)
-        player = env.objects[0]
+        # player = env.objects[0]
         # returns if the environment is in the terminal state (end) -> terminated, truncated
         if terminated or truncated:
             observation, info = env.reset()
@@ -385,9 +388,8 @@ def on_press(key):
 
         # changing inputs
         key_name = str(key)
-        key_name = key_name.removeprefix("Key.")
-        key_name = key_name.removeprefix("\'")
-        key_name = key_name.removesuffix("\'")
+        key_name = key_name.replace("Key.", "")
+        key_name = key_name.replace("\'", "")
         if pause and key_name.lower() == "s":
             snapshot = env._env.env.env.ale.cloneState()
             filename = input('give_filename')
@@ -403,9 +405,8 @@ def on_press(key):
 def on_release(key):
     # changing inputs
     key_name = str(key)
-    key_name = key_name.removeprefix("Key.")
-    key_name = key_name.removeprefix("\'")
-    key_name = key_name.removesuffix("\'")
+    key_name = key_name.replace("Key.", "")
+    key_name = key_name.replace("\'", "")
 
     if key_name in key_map.keys():
         # print("released")

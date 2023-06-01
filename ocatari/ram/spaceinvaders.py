@@ -99,7 +99,7 @@ def _get_max_objects(hud=False):
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
 
-def _detect_objects_space_invaders_raw(info, ram_state):
+def _detect_objects_spaceinvaders_raw(info, ram_state):
     info["aliens"] = ram_state[16:24]
     info["x_positions"] = ram_state[26:31]
     info["shields"] = ram_state[43:70]
@@ -166,7 +166,7 @@ def _detect_objects_space_invaders_raw(info, ram_state):
     # print(ram_state)
 
 
-def _init_objects_space_invaders_ram(hud=False):
+def _init_objects_spaceinvaders_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -200,7 +200,7 @@ sat_ctr = 1
 global shields
 
 
-def _detect_objects_space_invaders_revised(objects, ram_state, hud=False):
+def _detect_objects_spaceinvaders_revised(objects, ram_state, hud=False):
     global firstCall
     global aliens
     global prevRam

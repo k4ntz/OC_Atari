@@ -33,8 +33,8 @@ def ransac_regression(x, y):
 DROP_LOW = True
 MIN_CORRELATION = 0.5
 
-NB_SAMPLES = 3000
-game_name = "Qbert-v4"
+NB_SAMPLES = 600
+game_name = "Riverraid-v4"
 MODE = "vision"
 RENDER_MODE = "human"
 # RENDER_MODE = "rgb_array"
@@ -43,7 +43,7 @@ random.seed(0)
 
 observation, info = env.reset()
 # object_list = ["Projectile"]
-object_list = ["Ball"]
+object_list = ["Fuel"]
 # create dict of list
 objects_infos = {}
 subset = []
@@ -55,7 +55,7 @@ actions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 class Options(object):
     pass
 opts = Options()
-opts.path = "models/QBert/c51.gz"
+opts.path = "models/Riverraid/dqn.gz"
 dqn_agent = load_agent(opts, env.action_space.n)
 
 
