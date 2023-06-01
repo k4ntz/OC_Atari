@@ -54,6 +54,14 @@ class GameObject:
     def y(self):
         return self._xy[1]
 
+    @x.setter
+    def x(self, x):
+        self._xy = x, self.xy[1]
+    
+    @y.setter
+    def y(self, y):
+        self._xy = self.xy[0], y
+
     @property
     def w(self):
         return self.wh[0]
@@ -65,6 +73,10 @@ class GameObject:
     @property
     def h(self):
         return self.wh[1]
+    
+    @h.setter
+    def h(self, h):
+        self.wh = self.w, h
 
     @property
     def orientation(self):
