@@ -148,15 +148,14 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
     """
     player, enemy,truck = objects[:3]
     player.xy = ram_state[80], ram_state[3] + 95
-    if ram_state[81] > 150: # Removing the enemy
+    if ram_state[81] > 147: # Removing the enemy
         objects[1] = None
-    elif enemy is None:
+    else:
         enemy = Enemy()
-        objects[1] = enemy
-    if enemy is not None:
         enemy.xy = ram_state[81], ram_state[5] + 98
+        objects[1] = enemy
     
-    if ram_state[43]==0: # Removing the enemy
+    if ram_state[43]==0: # Removing the truck
         objects[2] = None
     elif truck is None:
         truck = Truck()
@@ -197,15 +196,16 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
         objects[6]=None
     
     # RoadCrack
-    if ram_state[82]>150 or ram_state[82]<=8:
-        objects[7]=None
-    else:
-        if ram_state[69]<=18 and ram_state[69]>=5:
-            rc=RoadCrack()
-            rc.xy=ram_state[82]-5, 125
-            objects[7]=rc
-        else:
-            objects[7]=None
+    # if ram_state[82]>150 or ram_state[82]<=8:
+    #     objects[7]=None
+    # else:
+    #     if ram_state[69]<=18 and ram_state[69]>=6:
+    #         rc=RoadCrack()
+    #         rc.xy=ram_state[82]-5, 125
+    #         objects[7]=rc
+    #     else:
+    #         objects[7]=None
+    objects[7]=None # Roadcrack is appearing in first level even though it shouldn't Removing currently, Will work later on
 
     #AcmeMine
     if ram_state[89]>150 or ram_state[89]<=8:
@@ -232,7 +232,7 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
                 objects[9]=None
 
     if hud:
-        #Signs
+        #Signs 
         if ram_state[82]>145 or ram_state[82]<=0:
             pass
         else:
@@ -270,8 +270,6 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
             l_cac=Cactus()
             l_cac.xy=ram_state[83],55
             objects[13]=l_cac
-
-        print(ram_state[13:15])
         ps1=PlayerScore()
         ps2=PlayerScore()
         ps3=PlayerScore()

@@ -65,9 +65,9 @@ class Bear(GameObject):
 class Crab(GameObject):
     def __init__(self):
         super().__init__()
-        self.rgb = 23,130,74
+        self.rgb = 213,130,74
         self.hud = False
-        self.wh = (8, 18)
+        self.wh = (8, 7)
         self._xy = 0, 0
 
 class Clam(GameObject):
@@ -76,7 +76,7 @@ class Clam(GameObject):
         self.rgb = 210,210,64
         self.hud = False
         self._xy = 0, 0
-        self.wh=(2,3)
+        self.wh=(8, 7)
 
 class House(GameObject):
     def __init__(self):
@@ -165,34 +165,75 @@ def _detect_objects_frostbite_revised(objects, ram_state, hud=False):
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
+    # 106 ram_state is somewhat controlling the y of the player when it's dying by sinking
     player,bird1,bird2,bird3,bird4= objects[:5]
-    player.xy =  ram_state[102] -1,ram_state[100]+30
+    if ram_state[101]!=0:
+        player.xy =  ram_state[102] -1,ram_state[100]+30
+        objects[0]=player
+    else:
+        f=FrostBite()
+        f.xy=ram_state[102]-1,ram_state[100]+30
+        objects[0]=f
     # Tackling enemies/birds here
-    if ram_state[84]>7 and ram_state[84]<155:
-        bird1=Bird()
-        bird1.xy=ram_state[84],160
-        objects[1]=bird1
+    if ram_state[35]<30 and ram_state[36]<30 and ram_state[37]<30 and ram_state[38]<30:
+        if ram_state[84]>7 and ram_state[84]<155:
+            bird1=WhatObject(ram_state[39])
+            bird1.xy=ram_state[84],160
+            bird1.wh=(8,7) if ram_state[35]!=26 else (7,6)
+            objects[1]=bird1
+        else:
+            objects[1]=None
+        if ram_state[85]>7 and ram_state[85]<155:
+            bird2=WhatObject(ram_state[40])
+            bird2.xy=ram_state[85],134
+            bird2.wh=(8,7) if ram_state[36]!=26 else (7,6)
+            objects[2]=bird2
+        else:
+            objects[2]=None
+        if ram_state[86]>7 and ram_state[86]<155:
+            bird3=WhatObject(ram_state[41])
+            bird3.xy=ram_state[86],108
+            bird3.wh=(8,7) if ram_state[37]!=26 else (7,6)
+            objects[3]=bird3
+        else:
+            objects[3]=None
+        if ram_state[87]>7 and ram_state[86]<155:
+            bird4=WhatObject(ram_state[42])
+            bird4.xy=ram_state[87],82
+            bird4.wh=(8,7) if ram_state[38]!=26 else (7,6)
+            objects[4]=bird4
+        else:
+            objects[4]=None
     else:
-        objects[1]=None
-    if ram_state[85]>7 and ram_state[85]<155:
-        bird2=Bird()
-        bird2.xy=ram_state[85],134
-        objects[2]=bird2
-    else:
-        objects[2]=None
-    if ram_state[86]>7 and ram_state[86]<155:
-        bird3=Bird()
-        bird3.xy=ram_state[86],108
-        objects[3]=bird3
-    else:
-        objects[3]=None
-    if ram_state[87]>7 and ram_state[86]<155:
-        bird4=Bird()
-        bird4.xy=ram_state[87],82
-        objects[4]=bird4
-    else:
-        objects[4]=None
-        # Adding the bear
+        objects[1]=None; objects[2]=None; objects[3]=None;objects[4]=None
+
+        ram_state_list=[84,85,86,87]
+        object_list=[39,40,41,42]
+        wh_list=[35,36,37,38]
+        y_list=[160,134,108,82]
+        for i in range(4):
+            if ram_state[ram_state_list[i]]>7 and ram_state[ram_state_list[i]]<155:
+                if ram_state[ram_state_list[i]]<35 or ram_state[ram_state_list[i]]>120:
+                    bird1=WhatObject(ram_state[object_list[i]])
+                    bird1.xy=ram_state[ram_state_list[i]],y_list[i]
+                    bird1.wh=(8,7) if ram_state[wh_list[i]]!=26 else (7,6)
+                    objects[30+2*i]=bird1
+                    objects[31+2*i]=None
+                else:
+                    bird1=WhatObject(ram_state[object_list[i]])
+                    bird1.xy=ram_state[ram_state_list[i]],y_list[i]
+                    bird1.wh=(8,7) if ram_state[wh_list[i]]!=26 else (7,6)
+                    bird2=WhatObject(ram_state[object_list[i]])
+                    bird2.xy=ram_state[ram_state_list[i]]+33,y_list[i]
+                    bird2.wh=(8,7) if ram_state[wh_list[i]]!=26 else (7,6)
+                    objects[30+2*i]=bird1
+                    objects[31+2*i]=bird2
+            else:
+                objects[30+2*i]=None
+                objects[31+2*i]=None 
+
+
+    # Adding the bear
     if ram_state[104]==140:
         objects[5]=None
     else:
@@ -233,30 +274,6 @@ def _detect_objects_frostbite_revised(objects, ram_state, hud=False):
         objects[43]=c
     else:
         objects[43]=None
-    # for i in range(num_plates):
-    #     temp=whichPlate(ram_state[30])# put index of ram state which decides when the plate is blue
-    #     temp.xy=correction(ram_state[31]+i*plate_diff-start_loc),174
-    #     temp.wh=size_plates
-    #     objects[6+i]=temp
-    # #Second bottom most
-    # for i in range(num_plates):
-    #     temp=whichPlate(ram_state[30])# put index of ram state which decides when the plate is blue
-    #     temp.xy=correction(ram_state[32]+i*plate_diff-start_loc),148
-    #     temp.wh=size_plates
-    #     objects[6+num_plates+i]=temp
-    # #Second top most
-    # for i in range(num_plates):
-    #     temp=whichPlate(ram_state[30])# put index of ram state which decides when the plate is blue
-    #     temp.xy=correction(ram_state[33]+i*plate_diff-start_loc),122
-    #     temp.wh=size_plates
-    #     objects[6+num_plates*2+i]=temp
-    # #top most
-    # for i in range(num_plates):
-    #     temp=whichPlate(ram_state[30])# put index of ram state which decides when the plate is blue
-    #     temp.xy=correction(ram_state[34]+i*plate_diff-start_loc),96
-    #     temp.wh=size_plates
-    #     objects[6+num_plates*3+i]=temp
-
 
     if hud:
         # LifeCount
@@ -326,6 +343,16 @@ def whichPlate(pos):
 
 def correction(pos):
     return pos%160
+
+def WhatObject(pos):
+    if pos==143:
+        return Bird()
+    elif pos==56:
+        return Crab()
+    elif pos==202:
+        return GreenFish()
+    elif pos==26:
+        return Clam()
 
 def _detect_objects_frostbite_raw(info, ram_state):
     """
