@@ -1,8 +1,8 @@
 from .game_objects import GameObject
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1}
-MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
+MAX_NB_OBJECTS = {"Player": 1, "Bird": 8, "Crab":8, "Clam":8,"GreenFish":8,"WhitePlate":24, "BluePlate":24,"Bear":1, "House":1,"CompletedHouse":1,"FrostBite":1}
+MAX_NB_OBJECTS_HUD = {"LifeCount":1, "PlayerScore":4, "Degree":2}# 'Score': 1}
 
 class Player(GameObject):
     def __init__(self):
@@ -104,13 +104,13 @@ class LifeCount(GameObject):
         self._xy = 0, 0
 
 
-class Score(GameObject):
-    def __init__(self):
-        super().__init__()
-        self.rgb =132,144,252
-        self.hud = True
-        self.wh = (8, 18)
-        self._xy = 0, 0
+# class Score(GameObject):
+#     def __init__(self):
+#         super().__init__()
+#         self.rgb =132,144,252
+#         self.hud = True
+#         self.wh = (8, 18)
+#         self._xy = 0, 0
 
 class Degree(GameObject):
     def __init__(self):
@@ -155,7 +155,7 @@ def _init_objects_frostbite_ram(hud=False):
     objects.extend([Bear()])
     objects.extend([None]*24) #for the plates
     objects.extend([None]*12) #for bird clams and crabs
-    objects.extend([House(),CompletedHouse()])
+    objects.extend([House(),CompletedHouse(),None]) # None was frostbite before
     if hud:
         objects.extend([LifeCount(),Degree(),Degree(),PlayerScore(),PlayerScore(),PlayerScore(),PlayerScore()])
     return objects
@@ -167,13 +167,14 @@ def _detect_objects_frostbite_revised(objects, ram_state, hud=False):
     """
     # 106 ram_state is somewhat controlling the y of the player when it's dying by sinking
     player,bird1,bird2,bird3,bird4= objects[:5]
-    if ram_state[101]!=0:
-        player.xy =  ram_state[102] -1,ram_state[100]+30
-        objects[0]=player
-    else:
-        f=FrostBite()
-        f.xy=ram_state[102]-1,ram_state[100]+30
-        objects[0]=f
+    player.xy =  ram_state[102] -1,ram_state[100]+30
+    objects[0]=player
+    # if ram_state[101]==0:
+    #     f=FrostBite()
+    #     f.xy=ram_state[102]-1,ram_state[100]+30
+    #     objects[44]=f
+    # else:
+    #     objects[44]=None
     # Tackling enemies/birds here
     if ram_state[35]<30 and ram_state[36]<30 and ram_state[37]<30 and ram_state[38]<30:
         if ram_state[84]>7 and ram_state[84]<155:
@@ -281,16 +282,16 @@ def _detect_objects_frostbite_revised(objects, ram_state, hud=False):
             l=LifeCount()
             l.xy=63,22
             l.wh=(6,10)
-            objects[44]=l
+            objects[45]=l
         else:
-            objects[44]=None
+            objects[45]=None
         # Time or degrees
         if ram_state[101]<=9:
             d1=Degree()
             d1.xy=31,22
             d1.wh=(6,8)
-            objects[45]=None
-            objects[46]=d1
+            objects[46]=None
+            objects[47]=d1
         else:
             d1=Degree()
             d1.xy=31,22
@@ -298,40 +299,40 @@ def _detect_objects_frostbite_revised(objects, ram_state, hud=False):
             d2=Degree()
             d2.xy=23,22
             d2.wh=(6,8)
-            objects[45]=d2
-            objects[46]=d1
+            objects[46]=d2
+            objects[47]=d1
         
         # Player Score
         if ram_state[73]==0 and ram_state[74]==0:
             p=PlayerScore()
             p.xy=63,10
             p.wh=(6,8)
-            objects[50]=p
-            objects[49]=None ; objects[48]=None ; objects[47]=None 
+            objects[51]=p
+            objects[50]=None ; objects[49]=None ; objects[48]=None 
         elif ram_state[73]==0 and ram_state[74]!=0:
             p1=PlayerScore()
             p1.xy=63,10
             p1.wh=(6,8)
-            objects[50]=p1
+            objects[51]=p1
             p2=PlayerScore()
             p2.xy=55,10
             p2.wh=(6,8)
-            objects[49]=p2
-            objects[48]=None; objects[47]=None
+            objects[50]=p2
+            objects[49]=None; objects[48]=None
         elif ram_state[72]==0 and ram_state[73]!=0:
             p1=PlayerScore()
             p1.xy=63,10
             p1.wh=(6,8)
-            objects[50]=p1
+            objects[51]=p1
             p2=PlayerScore()
             p2.xy=55,10
             p2.wh=(6,8)
-            objects[49]=p2
+            objects[50]=p2
             p3=PlayerScore()
             p3.xy=48,10
             p3.wh=(6,8)
-            objects[48]=p3
-            objects[47]=None
+            objects[49]=p3
+            objects[48]=None
 
 
 def whichPlate(pos):

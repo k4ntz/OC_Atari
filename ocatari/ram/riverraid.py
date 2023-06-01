@@ -30,8 +30,8 @@ class _DescendingObject(GameObject):
         super().__init__()
         self._xy = 15 * xfr - x_off, -5 -self.wh[1]
     
-    def _update_xy(self, xfr, x_off, y_off): # xfr
-        self._xy = 15 * xfr - x_off, self._xy[1] + y_off
+    def _update_xy(self, xfr, x_off, yfr, y_off): # xfr
+        self._xy = 15 * xfr - x_off, yfr * 32 + y_off - self._offset
 
 
 class Player(GameObject):
@@ -51,11 +51,11 @@ class PlayerMissile(GameObject):
 
 
 class Helicopter(_DescendingObject):
-    _offset = 6
+    _offset = 16
     fh = 10  # final height
     def __init__(self, xfr, x_off):
         super().__init__(xfr, x_off)
-        self.wh = 8, 1
+        self.wh = 8, 10
         self.rgb = 0, 64, 48
         self.hud = False
         self.xy = self.xy[0], self.xy[1] - self.wh[1]
@@ -67,27 +67,28 @@ class Helicopter(_DescendingObject):
 
 
 class Tanker(_DescendingObject):
-    _offset = 12
+    _offset = 13
     fh = 8
     def __init__(self, xfr, x_off):
         super().__init__(xfr, x_off)
-        self.wh = 16, 1
+        self.wh = 16, 8
         self.rgb = 84, 160, 197
         self.hud = False
 
 
 class Jet(_DescendingObject):
-    _offset = 12
-    fh = 10
+    _offset = 15
+    fh = 6
     def __init__(self, xfr, x_off):
         super().__init__(xfr, x_off)
-        self.wh = 10, 1
+        self.wh = 8, 6
         self.rgb = 117, 181, 239
         self.hud = False
 
 
 class Bridge(_DescendingObject):
-    _offset = 12
+    _offset = 17
+    fh = 18
     def __init__(self, xfr, x_off):
         super().__init__(xfr, x_off)
         self.wh = 32, 18
@@ -96,11 +97,11 @@ class Bridge(_DescendingObject):
 
 
 class FuelDepot(_DescendingObject):
-    _offset = 8
+    _offset = 23
     fh = 24
     def __init__(self, xfr, x_off):
         super().__init__(xfr, x_off)
-        self.wh = 7, 1
+        self.wh = 7, 24
         self.rgb = 210, 91, 94
         self.hud = False
         self.xy = self.xy[0], self.xy[1] - self.wh[1]
@@ -126,7 +127,7 @@ class Lives(GameObject):
 
 
 _ram_to_class = [None, None, None, None, Jet, Helicopter, Helicopter, Tanker, Bridge, None, FuelDepot] # 9th would be houseandtree
-global cntr, prev70, enemies
+global cntr, prev11, prev70, enemies
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -149,10 +150,10 @@ def _init_objects_riverraid_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    global cntr, prev70, enemies
+    global cntr, prev11, prev70, enemies
     enemies = [None] * 6
     objects = [None] * 2 + enemies # Player, missile and 6 objects
-    cntr, prev70 = 0, None
+    cntr, prev11, prev70 = 0, 0, None
     if hud:
         objects.extend([PlayerScore(), Lives()])
 
@@ -161,28 +162,27 @@ def _init_objects_riverraid_ram(hud=False):
 
 
 def _detect_objects_riverraid_revised(objects, ram_state, hud=False):
-    # player = objects[0]
-    # if ram_state[70]:
-    #     objects[0] = None
-    # elif player is None:
-    #     player = Player()
-    #     objects[0] = player
-    #     player.xy = ram_state[51] + 1, 145
-    # else:
-    #     player.xy = ram_state[51] + 1, 145
+    player = objects[0]
+    if ram_state[70] or ram_state[58] == 0:
+        objects[0] = None
+    elif player is None:
+        player = Player()
+        objects[0] = player
+        player.xy = ram_state[51] + 1, 145
+    else:
+        player.xy = ram_state[51] + 1, 145
 
-    # missile = objects[1]
-    # # player missile
-    # if ram_state[117] != 0 and 162 - ram_state[50] >= 0:  # else not firing
-    #     if missile is None:
-    #         missile = PlayerMissile()
-    #         objects[1] = missile
-    #     missile.xy = ram_state[117] - 1, 162 - ram_state[50]
-    # elif missile is not None:
-    #     objects[1] = None
+    missile = objects[1]
+    # player missile
+    if ram_state[117] != 0 and 162 - ram_state[50] >= 0:  # else not firing
+        if missile is None:
+            missile = PlayerMissile()
+            objects[1] = missile
+        missile.xy = ram_state[117] - 1, 162 - ram_state[50]
+    elif missile is not None:
+        objects[1] = None
     
-    global cntr, prev70, enemies
-    framskips = (cntr - ram_state[2]) % 256
+    global cntr, prev11, prev70, enemies
     if ram_state[70] == 0 or ram_state[70] != prev70:
         speed = 1
     else: # hasn't fired yet
@@ -191,64 +191,72 @@ def _detect_objects_riverraid_revised(objects, ram_state, hud=False):
     # print(ram_state[70])
     # if prev70 == 0 and ram_state[70]:
     #     objects[2:8] = [None] * 6
-    print(ram_state[11])
+    # print(ram_state[11])
+    if ram_state[11] < prev11: # every object drop
+        enemies = enemies[1:] + [None]
+        
     for i in range(6):
-        eobj = enemies[i]
+        en = enemies[i]
         obj_type = ram_state[32 + i]
         obj_class = _ram_to_class[obj_type]
-        x_off = twos_comp(ram_state[26 + i]//16) - 6
-        # print(x_off)
         orientation = (ram_state[26 + i]%16)//8
+        x_off = twos_comp(ram_state[26 + i]//16) - 6
+        if (obj_type == 7 and orientation == 1) or obj_type in [4, 8]: # tanker or bridge
+            x_off -= 1
+        y_off = ram_state[11]
         xanchor = ram_state[20+i]
         if obj_class is not None:
-            if "Tanker" in str(obj_class) and i < 4:
-                print("t:", i)
-            # if not isinstance(eobj, obj_class):
-            #     if i < 5 and isinstance(enemies[1+i], obj_class): # moving down
-            #         eobj = enemies[1+i]
-            #         enemies[1+i] = None
-            #         eobj._update_xy(xanchor, x_off, 1)
-            #     elif eobj is None:
-            #         eobj = obj_class(xanchor, x_off)
-            #     enemies[i] = eobj
-            # else: # i == 5
-            #     if eobj.y == 0 and eobj.h < eobj.fh:
-            #         eobj.h += 1
-            #         # print(f"update h {eobj}")
-            #     elif eobj.y < 0 or eobj.h == eobj.fh:
-            #         # print(f"update y {eobj}")
-            #         eobj._update_xy(xanchor, x_off, 1)
-            # if eobj.y + eobj.h >= 162:
-            #     eobj.h = 162 - eobj.y
+            if en is None:
+                en = obj_class(xanchor, x_off)
+                enemies[i] = en
+            en.orientation = orientation
+            en._update_xy(xanchor, x_off, 5-i, y_off)
+            if en.y <= 2:
+                computed_y = en.y - 2
+                en._xy = en._xy[0], 2
+                en.h = en.fh + computed_y
+                if en.h <= 0:
+                    enemies[i] = None
+            else:
+                en.h = en.fh
+            if en.y + en.h >= 162:
+                en.h = 163 - en.y
+        elif en is not None:
+            enemies[i] = None
     for i, en in enumerate(enemies):
         if en is not None:
             if 0 <= en.y < 161:
                 objects[2+i] = en
-    # print(enemies, objects)
-    # if hud:
-    #     score, lives, _ = objects[9:12]
-    #     score_value = riverraid_score(ram_state)
-    #     if score_value >= 10:
-    #         score.xy = 89, 165
-    #         score.wh = 6, 8
-
-    #     if score_value >= 100:
-    #         score.xy = 81, 165
-    #         score.wh = 6, 8
-
-    #     if score_value >= 1000:
-    #         score.xy = 73, 165
-    #         score.wh = 6, 8
-
-    #     if score_value >= 10000:
-    #         score.xy = 65, 165
-    #         score.wh = 6, 8
+                continue
+        objects[2+i] = None
+    if hud:
+        score, lives = objects[8:10]
+        if ram_state[64] > 24:
+            objects[9] = None
+        elif lives is None:
+            objects[8] = Lives()
+        score_value = riverraid_score(ram_state)
+        if score_value >= 100000:
+            score.xy = 57, 165
+            score.wh = 46, 8
+        elif score_value >= 10000:
+            score.xy = 65, 165
+            score.wh = 38, 8
+        elif score_value >= 1000:
+            score.xy = 73, 165
+            score.wh = 30, 8
+        elif score_value >= 100:
+            score.xy = 81, 165
+            score.wh = 22, 8
+        elif score_value >= 10:
+            score.xy = 89, 165
+            score.wh = 14, 8
+        else:
+            score.xy = 97, 165
+            score.wh = 6, 8
     cntr = ram_state[2]
     prev70 = ram_state[70]
-
-    #     if score_value >= 100000:
-    #         score.xy = 57, 165
-    #         score.wh = 6, 8
+    prev11 = ram_state[11]
 
 
 

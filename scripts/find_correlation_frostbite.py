@@ -43,7 +43,7 @@ env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE,hud=True)
 random.seed(0)
 
 observation, info = env.reset()
-snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/frostbite_level3_end.pkl", "rb"))
+snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/frostbite_frost.pkl", "rb"))
 env._env.env.env.ale.restoreState(snapshot)
 # object_list = ["Projectile"]
 object_list = ["BluePlate"]
