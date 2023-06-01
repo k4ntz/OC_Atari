@@ -1,6 +1,6 @@
 import sys
 from os import path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
+sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) # noqa
 from ocatari.core import OCAtari, PositionHistoryGymWrapper
 import gymnasium as gym
 from stable_baselines3.common.env_checker import check_env
@@ -40,7 +40,7 @@ def make_env(game: str, rank: int, seed: int = 0) -> Callable:
     set_random_seed(seed)
     return _init
 
-
+# TODO: doublecheck evaluation, atm eval always on env seed0
 def main():
     parser.add_argument("-g", "--game", type=str, required=True,
                         help="game to train (e.g. 'Pong')")
@@ -51,12 +51,15 @@ def main():
     opts = parser.parse_args()
 
 
-    env_str = opts.game +"Deterministic-v4"
+    env_str = "ALE/" + opts.game +"-v5"
     exp_name = opts.game + "-s" + str(opts.seed)
     n_envs = opts.cores
+    n_eval_envs = 4
+    n_eval_episodes = 20
+    eval_env_seed = opts.seed * 42 #different seeds for eval
     training_timestamps = 10_000_000
     checkpoint_frequency = 500_000
-    eval_frequency = 250_000
+    eval_frequency = 200_000
     rtpt_frequency = 50_000
     log_path = Path("baseline_logs", exp_name)
     ckpt_path = Path("baseline_checkpoints", exp_name)
@@ -67,12 +70,12 @@ def main():
     env = PositionHistoryGymWrapper(OCAtari(env_str, mode="revised", hud=False, obs_mode=None))
     check_env(env)
     del env
-    eval_env = SubprocVecEnv([make_env(game=env_str, rank=0, seed=opts.seed)], start_method="fork")
+    eval_env = SubprocVecEnv([make_env(game=env_str, rank=i, seed=eval_env_seed) for i in range(n_eval_envs)], start_method="fork")
 
     rtpt_iters = training_timestamps // rtpt_frequency
     eval_callback = EvalCallback(
         eval_env,
-        n_eval_episodes=5,
+        n_eval_episodes=n_eval_episodes,
         best_model_save_path=str(ckpt_path),
         log_path=str(ckpt_path),
         eval_freq=max(eval_frequency // n_envs, 1),
