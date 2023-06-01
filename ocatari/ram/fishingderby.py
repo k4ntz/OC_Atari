@@ -91,8 +91,8 @@ def _detect_objects_fishingDerby_revised(objects, ram_state, hud=False):
     if ram_state[31] == 16:
         coeff_2 = -coeff_2
 
-    p1s.xy = -2 + ram_state[23] + coeff_1 * ram_state[34] + int(coeff_1 == 1) * 3, int(ram_state[65] * 2.3) + 78
-    p2s.xy = 2 + ram_state[24] + coeff_2 * ram_state[35] + int(coeff_2 == 1) * 3, int(ram_state[66] * 2.3) + 78
+    p1s.xy = -2 + ram_state[23] + coeff_1 * ram_state[34] + int(coeff_1 > 0) * 3, int(ram_state[65] * 2.3) + 78
+    p2s.xy = 2 + ram_state[24] + coeff_2 * ram_state[35] + int(coeff_2 > 0) * 3, int(ram_state[66] * 2.3) + 78
     p1s.hook_position = -2 + ram_state[23] + coeff_1 * ram_state[34], int(ram_state[65] * 2.3) + 81
     p2s.hook_position = 2 + ram_state[24] + coeff_2 * ram_state[35], int(ram_state[66] * 2.3) + 81
 
