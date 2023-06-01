@@ -30,6 +30,12 @@ class RtptCallback(BaseCallback):
         return True
 
 
+def linear_schedule(initial_value: float) -> Callable[[float], float]:
+    def func(progress_remaining: float) -> float:
+        return progress_remaining * initial_value
+    return func
+
+
 def make_env(game: str, rank: int, seed: int = 0) -> Callable:
     def _init() -> gym.Env:
         env = PositionHistoryGymWrapper(OCAtari(game, mode="revised", hud=False, obs_mode=None))
@@ -39,6 +45,9 @@ def make_env(game: str, rank: int, seed: int = 0) -> Callable:
 
     set_random_seed(seed)
     return _init
+
+
+
 
 # TODO: doublecheck evaluation, atm eval always on env seed0
 def main():
@@ -55,12 +64,12 @@ def main():
     exp_name = opts.game + "-s" + str(opts.seed)
     n_envs = opts.cores
     n_eval_envs = 4
-    n_eval_episodes = 20
-    eval_env_seed = opts.seed * 42 #different seeds for eval
-    training_timestamps = 10_000_000
-    checkpoint_frequency = 500_000
-    eval_frequency = 200_000
-    rtpt_frequency = 50_000
+    n_eval_episodes = 4
+    eval_env_seed = (opts.seed + 42) * 2 #different seeds for eval
+    training_timestamps = 20_000_000
+    checkpoint_frequency = 1_000_000
+    eval_frequency = 500_000
+    rtpt_frequency = 100_000
     log_path = Path("baseline_logs", exp_name)
     ckpt_path = Path("baseline_checkpoints", exp_name)
     log_path.mkdir(parents=True, exist_ok=True)
@@ -100,10 +109,27 @@ def main():
     cb_list = CallbackList([checkpoint_callback, eval_callback, n_callback])
     env = SubprocVecEnv([make_env(game=env_str, rank=i, seed=opts.seed) for i in range(n_envs)], start_method="fork")
 
-    policy_kwargs = dict(normalize_images=False)
+   
 
     new_logger = configure(str(log_path), ["stdout", "tensorboard"])
-    model = PPO("MlpPolicy", env=env, verbose=1, policy_kwargs=policy_kwargs)
+
+    # atari hyperparameters from the ppo paper:
+    # https://arxiv.org/abs/1707.06347
+    adam_step_size = 0.00025
+    clipping_eps = 0.1
+    model = PPO(
+        "MlpPolicy",
+        n_steps=128,
+        learning_rate=linear_schedule(adam_step_size),
+        n_epochs=3,
+        batch_size=32*8,
+        gamma=0.99,
+        gae_lambda=0.95,
+        clip_range=linear_schedule(clipping_eps),
+        vf_coef=1,
+        ent_coef=0.001,
+        env=env,
+        verbose=1)
     #model = DQN.load("pong_baseline")
     #model.set_env(env)
     #model.load_replay_buffer("pong_baseline_rb")
