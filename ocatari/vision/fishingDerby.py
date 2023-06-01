@@ -67,9 +67,13 @@ def _detect_objects_fishingDerby(objects, obs, hud=True):
         x, y, w, h = p1_fish_hook
         if y < 80 and x > 25:
             if np.shape(find_objects(obs, objects_colors["player 1 fishing string"], minx=x + w - 3, maxx=x + w, miny=y + h - 3, maxy=y + h))[0] != 0:
-                objects.append(PlayerOneHook(x=x + w - 2, y=y + h - 1, w=4, h=4))
+                p1_hook = PlayerOneHook(x=x + w - 2, y=y + h - 2, w=4, h=4)
+                p1_hook.hook_position = x + w, y +h
+                objects.append(p1_hook)
             else:
-                objects.append(PlayerOneHook(x=x - 2, y=y + h - 1, w=4, h=4))
+                p1_hook = PlayerOneHook(x=x - 2, y=y + h - 2, w=4, h=4)
+                p1_hook.hook_position = x, y + h
+                objects.append(p1_hook)
 
     for p2_fish_hook in find_objects(obs, objects_colors["player 2 fishing string"], miny=75, minx=30, maxx=130,
                                      maxy=188, closing_dist=1):
