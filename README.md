@@ -8,45 +8,36 @@ Object-Centric Atari is a Wrapper, based on the [ATARI ARI project](https://gith
 
 
 ## List of covered games
-
-### Priority 1:
-- [x]  Breakout
-- [x]  Freeway
-- [x]  Bowling
-- [x]  Ms.Pacman
-- [x]  Pong
-- [x]  Seaquest
-- [x]  Skiing
-- [x]  Space Invaders
-- [x]  Asterix
-- [ ]  Asteroids - only raw and vision (revised is missing x-Positions)
-- [x]  Demon Attack
-- [x]  Tennis 
-- [x]  Kangaroo
-
-### Priority 2:
-- [x]  Berzerk
-- [ ]  River Raid - only raw and vision (revised not feasible)
-- [x]  Atlantis
-- [ ]  Chopper Command (vision and raw mode)
-- [ ]  Q*bert (only vision mode)
-- [x]  Assault
-- [ ]  Beam Rider (only vision mode)
-- [x]  Boxing
-- [x]  Carnival
-- [x]  Centipede
-
-### Priority 3:
-- [ ]  Montezumas Revenge (only vision)
-- [ ]  Private Eye
-- [ ]  Fishing Derby
-- [ ]  Zaxxon
-- [ ]  Wizard of Wor
-
-### Priority 4:
-- [ ]  Crazy Climber
-- [ ]  Video Pinball
-- [ ]  Alien
+- [ ] Alien (only vision)
+- [X] Assault
+- [X] Asterix
+- [ ] Asteroids  (only vision)
+- [X] Atlantis
+- [ ] BeamRider  (only vision)
+- [X] Berzerk
+- [X] Bowling
+- [X] Boxing
+- [X] Breakout
+- [X] Carnival
+- [X] Centipede
+- [ ] Chopper Command  (only vision)
+- [ ] DemonAttack  (only vision)
+- [ ] Fishing Derby  (only vision)
+- [X] Freeway
+- [ ] Frostbite  (only vision)
+- [X] Kangaroo
+- [X] MontezumaRevenge
+- [X] MsPacman
+- [ ] Pitfall  (only vision)
+- [X] Pong
+- [ ] PrivateEye  (only vision)
+- [ ] Q\*Bert  (only vision)
+- [ ] RiverRaid  (only vision)
+- [ ] RoadRunner  (only vision)
+- [X] Seaquest
+- [X] Skiing
+- [X] Space Invaders
+- [X] Tennis
 
 ## Install
 `python setup.py install` or `python setup.py develop`
