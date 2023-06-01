@@ -28,7 +28,7 @@ game_name = "MsPacman-v4"    # game name ChopperCommand-v4
 # game_name = "Centipede-v4"    # game name ChopperCommand-v4
 game_name = "RiverraidNoFrameskip-v4"    # game name ChopperCommand-v4
 # game_name = "Centipede-v4"    # game name ChopperCommand-v4
-game_name = "MontezumaRevenge-v4"    # game name ChopperCommand-v4
+# game_name = "MontezumaRevenge-v4"    # game name ChopperCommand-v4
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
 fps = 60                        # render fps
@@ -54,7 +54,7 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 
 # OCAtari modes
-mode = "vision"                    # raw, revised, vision, test
+mode = "revised"                    # raw, revised, vision, test
 HUD = True                      # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
@@ -110,8 +110,8 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    # snapshot = pickle.load(open("riverraid.pkl", "rb"))
-    # env._env.env.env.ale.restoreState(snapshot)
+    snapshot = pickle.load(open("riverplane.pkl", "rb"))
+    env._env.env.env.ale.restoreState(snapshot)
 
     run(oc)
 

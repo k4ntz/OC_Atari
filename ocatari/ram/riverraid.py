@@ -16,15 +16,22 @@ MAX_NB_OBJECTS = {'PlayerScore': 6, 'Lives': 1}
 MAX_NB_OBJECTS_HUD = {'PlayerScore': 6, 'Lives': 1}
 
 
+def twos_comp(val):
+    """compute the 2's complement of int value val in 4 bits"""
+    if (val & (1 << 3)) != 0: # if sign bit is set e.g., 4bit: -8 -> 7
+        val = val - (1 << 4)        # compute negative value
+    return val      
+
+
 class _DescendingObject(GameObject):
     _offset = None
     
-    def __init__(self, xfr):
+    def __init__(self, xfr, x_off):
         super().__init__()
-        self._xy = self._offset + 15 * xfr, 0
+        self._xy = 15 * xfr - x_off, -5 -self.wh[1]
     
-    def _update_xy(self, xfr, offset): # xfr
-        self._xy = self._offset + 15 * xfr, self._xy[1] + offset
+    def _update_xy(self, xfr, x_off, y_off): # xfr
+        self._xy = 15 * xfr - x_off, self._xy[1] + y_off
 
 
 class Player(GameObject):
@@ -45,50 +52,58 @@ class PlayerMissile(GameObject):
 
 class Helicopter(_DescendingObject):
     _offset = 6
-    def __init__(self, xfr):
-        super().__init__(xfr)
-        self.wh = 8, 10
+    fh = 10  # final height
+    def __init__(self, xfr, x_off):
+        super().__init__(xfr, x_off)
+        self.wh = 8, 1
         self.rgb = 0, 64, 48
         self.hud = False
+        self.xy = self.xy[0], self.xy[1] - self.wh[1]
     
-    def _update_xy(self, xfr, offset): # xfr
-        self._xy = self._offset + 15 * xfr, self._xy[1] + 2 * offset
+    # def _update_xy(self, xfr, x_off, y_off): # xfr
+    #     self._xy = 15 * xfr - x_off, self._xy[1] + y_off
+    # def _update_xy(self, xfr, offset): # xfr
+    #     self._xy = self._offset + 15 * xfr, self._xy[1] + 2 * offset
 
 
 class Tanker(_DescendingObject):
     _offset = 12
-    def __init__(self, xfr):
-        super().__init__(xfr)
-        self.wh = 16, 8
+    fh = 8
+    def __init__(self, xfr, x_off):
+        super().__init__(xfr, x_off)
+        self.wh = 16, 1
         self.rgb = 84, 160, 197
         self.hud = False
 
 
 class Jet(_DescendingObject):
     _offset = 12
-    def __init__(self, xfr):
-        super().__init__(xfr)
-        self.wh = 10, 10
+    fh = 10
+    def __init__(self, xfr, x_off):
+        super().__init__(xfr, x_off)
+        self.wh = 10, 1
         self.rgb = 117, 181, 239
         self.hud = False
 
 
 class Bridge(_DescendingObject):
     _offset = 12
-    def __init__(self, xfr):
-        super().__init__(xfr)
-        self.wh = 10, 10
+    def __init__(self, xfr, x_off):
+        super().__init__(xfr, x_off)
+        self.wh = 32, 18
         self.rgb = 134, 134, 29
         self.hud = False
 
 
 class FuelDepot(_DescendingObject):
-    _offset = 1
-    def __init__(self, xfr):
-        super().__init__(xfr)
-        self.wh = 7, 24
+    _offset = 8
+    fh = 24
+    def __init__(self, xfr, x_off):
+        super().__init__(xfr, x_off)
+        self.wh = 7, 1
         self.rgb = 210, 91, 94
         self.hud = False
+        self.xy = self.xy[0], self.xy[1] - self.wh[1]
 
 
 class PlayerScore(GameObject):
@@ -110,8 +125,8 @@ class Lives(GameObject):
         self.hud = True
 
 
-_ram_to_class = [None, None, None, None, Jet, Helicopter, None, Tanker, Bridge, None, FuelDepot] # 9th would be houseandtree
-global cntr, prev70
+_ram_to_class = [None, None, None, None, Jet, Helicopter, Helicopter, Tanker, Bridge, None, FuelDepot] # 9th would be houseandtree
+global cntr, prev70, enemies
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -134,8 +149,9 @@ def _init_objects_riverraid_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [None] * 8 # Player, missile and 6 objects
-    global cntr, prev70
+    global cntr, prev70, enemies
+    enemies = [None] * 6
+    objects = [None] * 2 + enemies # Player, missile and 6 objects
     cntr, prev70 = 0, None
     if hud:
         objects.extend([PlayerScore(), Lives()])
@@ -165,7 +181,7 @@ def _detect_objects_riverraid_revised(objects, ram_state, hud=False):
     # elif missile is not None:
     #     objects[1] = None
     
-    global cntr, prev70
+    global cntr, prev70, enemies
     framskips = (cntr - ram_state[2]) % 256
     if ram_state[70] == 0 or ram_state[70] != prev70:
         speed = 1
@@ -173,25 +189,42 @@ def _detect_objects_riverraid_revised(objects, ram_state, hud=False):
         speed = 0
     # print(framskips)
     # print(ram_state[70])
-    if prev70 == 0 and ram_state[70]:
-        objects[2:8] = [None] * 6
+    # if prev70 == 0 and ram_state[70]:
+    #     objects[2:8] = [None] * 6
+    print(ram_state[11])
     for i in range(6):
-        eobj = objects[2+i]
+        eobj = enemies[i]
         obj_type = ram_state[32 + i]
         obj_class = _ram_to_class[obj_type]
+        x_off = twos_comp(ram_state[26 + i]//16) - 6
+        # print(x_off)
+        orientation = (ram_state[26 + i]%16)//8
+        xanchor = ram_state[20+i]
         if obj_class is not None:
-            if not isinstance(eobj, obj_class):
-                if i < 5 and isinstance(objects[3+i], obj_class): # moving down
-                    eobj = objects[3+i]
-                    objects[3+i] = None
-                    eobj._update_xy(ram_state[20+i], framskips * speed)
-                elif eobj is None:
-                    eobj = obj_class(ram_state[20+i])
-                objects[2+i] = eobj
-            else:
-                eobj._update_xy(ram_state[20+i], framskips * speed)
-
-
+            if "Tanker" in str(obj_class) and i < 4:
+                print("t:", i)
+            # if not isinstance(eobj, obj_class):
+            #     if i < 5 and isinstance(enemies[1+i], obj_class): # moving down
+            #         eobj = enemies[1+i]
+            #         enemies[1+i] = None
+            #         eobj._update_xy(xanchor, x_off, 1)
+            #     elif eobj is None:
+            #         eobj = obj_class(xanchor, x_off)
+            #     enemies[i] = eobj
+            # else: # i == 5
+            #     if eobj.y == 0 and eobj.h < eobj.fh:
+            #         eobj.h += 1
+            #         # print(f"update h {eobj}")
+            #     elif eobj.y < 0 or eobj.h == eobj.fh:
+            #         # print(f"update y {eobj}")
+            #         eobj._update_xy(xanchor, x_off, 1)
+            # if eobj.y + eobj.h >= 162:
+            #     eobj.h = 162 - eobj.y
+    for i, en in enumerate(enemies):
+        if en is not None:
+            if 0 <= en.y < 161:
+                objects[2+i] = en
+    # print(enemies, objects)
     # if hud:
     #     score, lives, _ = objects[9:12]
     #     score_value = riverraid_score(ram_state)
@@ -227,7 +260,7 @@ def _detect_objects_riverraid_raw(info, ram_state):
     # one RAM position down.
     info["objects_pos"] = ram_state[20:26]  # only a relative position from 1 to 8. 1 equals to left side and 8 to the
     # right side. However there is an offset or something to move the objects a little bit
-    info["object_size"] = ram_state[26:32]
+    info["object_size"] = ram_state[26:32] # size, orientation and offset
     info["object_type"] = ram_state[32:38]  # 10 = fuel depot, 6 = helicopter (normal), 7 = boat, 9 = house tree right,
     # 1, 2 and 3 = destroyed, 0 invisible, 8 = bridge, 4 = jet, 5 = helicopter
     info["grass_layout"] = ram_state[14:20]
