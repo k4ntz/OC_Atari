@@ -50,7 +50,7 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 
 # OCAtari modes
-mode = "revised"                    # raw, revised, vision, test
+mode = "vision"                    # raw, revised, vision, test
 HUD = True                      # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
@@ -106,7 +106,7 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/frostbite_frost.pkl", "rb"))
+    snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/frostbite_level3.pkl", "rb"))
     env._env.env.env.ale.restoreState(snapshot)
     run(oc)
 
