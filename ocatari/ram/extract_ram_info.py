@@ -43,7 +43,7 @@ from .frostbite import _init_objects_frostbite_ram, _detect_objects_frostbite_re
 from .fishingderby import _init_objects_fishingDerby_ram, _detect_objects_fishingDerby_revised
 from .montezumarevenge import _init_objects_montezumarevenge_ram, _detect_objects_montezumarevenge_revised
 from .choppercommand import _init_objects_ram, _detect_objects_revised, _detect_objects_raw
-
+from .hero import _init_objects_hero_ram, _detect_objects_hero_revised
 
 # calls the respective _get_max_objects from the game modules
 def get_max_objects(game_name, hud):
@@ -122,6 +122,8 @@ def init_objects(game_name, hud):
         return _init_objects_frostbite_ram(hud)
     elif game_name.lower() == "fishingderby":
         return _init_objects_fishingDerby_ram(hud)
+    elif game_name.lower() == "hero":
+        return _init_objects_hero_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
@@ -243,6 +245,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_frostbite_revised(objects, ram_state, hud)
     elif game_name.lower() == "fishingderby":
         _detect_objects_fishingDerby_revised(objects, ram_state, hud)
+    elif game_name.lower() == "hero":
+        _detect_objects_hero_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
