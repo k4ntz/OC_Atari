@@ -52,12 +52,12 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 # OCAtari modes
 mode = "revised"                    # raw, revised, vision, test
-HUD = True                      # if True, the returned objects contain only the necessary information to play the game
+HUD = True                     # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
 showInputs = False              # if True, prints the number and the description of the possible inputs (actions)
-showActions = False             # if True, prints the action that will be done
-showRAM = True          # if True, prints the RAM to the console  
+showActions = False            # if True, prints the action that will be done
+showRAM = False          # if True, prints the RAM to the console  
 # render_mode=="rgb_array" only
 printRGB = False                # if True, prints the rgb array
 showImage = True                # if True, plots the rgb array
@@ -107,8 +107,8 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    # snapshot = pickle.load(open("lvl3.pkl", "rb"))
-    # env._env.env.env.ale.restoreState(snapshot)
+    snapshot = pickle.load(open("roadrunner_level6.pkl", "rb"))
+    env._env.env.env.ale.restoreState(snapshot)
 
     run(oc)
 
@@ -197,8 +197,8 @@ def run(env):
         #     reward -= 10
         # previous_lives = info["lives"]
         # print(reward)
-        player = env.objects[0]
-        print(distance_to_joey(player))
+        # player = env.objects[0]
+        # print(distance_to_joey(player))
         # returns if the environment is in the terminal state (end) -> terminated, truncated
         if terminated or truncated:
             observation, info = env.reset()

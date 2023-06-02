@@ -78,14 +78,6 @@ def _init_objects_alien_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player(), Enemy(), Truck()]
-    # if hud:
-    #     global plscore
-    #     plscore = PlayerScore()
-    #     global enscore
-    #     enscore = EnemyScore()
-    #     objects.extend([plscore, enscore, Logo(),
-    #                     Clock(63, 17, 6, 7), Clock(73, 18, 2, 5),
-    #                     Clock(79, 17, 6, 7), Clock(87, 17, 6, 7)])
     return objects
 
 

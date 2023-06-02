@@ -7,6 +7,7 @@ latex_report_file = "reports/all_games_report.tex"
 with open(pkl_report_file, "rb") as savefile:
     df = pickle.load(savefile)
 
+import ipdb; ipdb.set_trace()
 
 df = df[~df.index.duplicated(keep='last')]
 
@@ -37,7 +38,8 @@ ltx_code = styler.to_latex(
 ltx_code = ltx_code.replace("100.0", "100").replace("\n & 0 \\\\\n\\midrule", "")
 ltx_code = ltx_code.replace("lrrrrrrrrrrr", "l|rrrr|rrrr|rrrr").replace(
         "multicolumn{4}{c}{Random}", "multicolumn{4}{c|}{Random}").replace(
-    "multicolumn{4}{c}{DQN}", "multicolumn{4}{c|}{DQN}").replace("mean", "\\bottomrule\nmean")
+    "multicolumn{4}{c}{DQN}", "multicolumn{4}{c|}{DQN}").replace("mean", "\\bottomrule\nmean").replace(
+        "ChopperCommand", "ChopperC.").replace("SpaceInvaders", "SpaceInv.").replace("MontezumaRevenge", "MontezumaR.")
 
 with open(latex_report_file, 'w') as texfile:
     texfile.write(ltx_code)

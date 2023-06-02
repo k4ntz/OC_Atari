@@ -28,6 +28,7 @@ import functools as ft
 
 from metrics_utils import *
 import pickle
+import sys, inspect
 
 
 figlet = Figlet()
@@ -50,6 +51,16 @@ NB_SAMPLES = 500
 MIN_ACCEPTABLE_IOU = 0.5
 
 print(colored(f'Using {MIN_ACCEPTABLE_IOU} as iou threshold for the saved images..', "magenta"))
+
+
+
+ONLYBOTHDEFINEDOBJECTS = True
+if ONLYBOTHDEFINEDOBJECTS:
+    classes = []
+    for mode in ["ram", "vision"]:
+        mod_path = f"ocatari.{mode}.{game_name.lower()}"
+        classes.append([el[0] for el in inspect.getmembers(sys.modules[mod_path], inspect.isclass)])
+    classes_in_both = set.intersection(set(classes[0]) & set(classes[1]))
 
 
 class RandomAgent():
@@ -88,7 +99,13 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
                 action = agent.draw_action(env.dqn_obs)
                 obse, reward, terminated, truncated, info = env.step(action)
                 if i % 20 == 0:
-                    stats = difference_objects(env.objects, env.objects_v)
+                    if ONLYBOTHDEFINEDOBJECTS:
+                        robjects = [e for e in env.objects if e.__class__.__name__ in classes_in_both]
+                        vobjects = [e for e in env.objects_v if e.__class__.__name__ in classes_in_both]
+                    else:
+                        robjects = env.objects
+                        vobjects = env.objects_v
+                    stats = difference_objects(robjects, vobjects)
                     det_scores.update(stats["dets"])
                     ALL_STATS["mean_ious"].append(stats["mean_iou"])
                     for class_name, value in stats["per_class_ious"].items():
@@ -104,7 +121,7 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
                         obse2 = deepcopy(obse)
                         obss = []
                         for ax, obs, objects_list, title in zip(axes, [obse, obse2],
-                                                                [env.objects, env.objects_v],
+                                                                [robjects, vobjects],
                                                                 ["ram", "vision"]):
                             for obj in objects_list:
                                 opos = obj.xywh
@@ -135,8 +152,7 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
                 # modify and display render
         # pbar.close()
         env.close()
-
-        ALL_STATS["mean_ious"] = np.mean(ALL_STATS["mean_ious"])
+        ALL_STATS["mean_ious"] = np.nanmean(ALL_STATS["mean_ious"])
         for class_name, value in ALL_STATS["per_class_ious"].items():
             ALL_STATS["per_class_ious"][class_name] = np.mean(value)
         for only_in in ["only_in_ram", "only_in_vision"]:
@@ -171,6 +187,9 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
         dfs.append(pd.DataFrame.from_dict(format_values(ious), orient="index", columns=["IOU"]))
         df_finals.append(ft.reduce(lambda left, right: pd.DataFrame.join(left, right), dfs))
         det_scores.iou = ALL_STATS["mean_ious"]
+        print(f"\nPrecision: {format_values(det_scores.cat_precisions)}")
+        print(f"\nRecalls: {format_values(det_scores.cat_recalls)}")
+        print(f"\nF-Scores: {format_values(det_scores.cat_f_scores)}")
         detections_scores.append(det_scores)
     else:
         df_finals.append(pd.DataFrame(columns=['Precision', 'Recall', 'F-score', 'IOU']))
@@ -215,6 +234,8 @@ stats = pd.concat(base_dfs, axis=1, keys=["Random", "DQN", "C51"])
 stats = stats.round(1)
 if already is not None:
     stats = pd.concat([already, stats]).sort_index()
+
+stats.groupby(stats.index).aggregate(max)
 
 with open(pkl_report_file, "wb") as savefile:
     pickle.dump(stats, savefile)

@@ -36,12 +36,6 @@ class BallShadow(GameObject):
         self.rgb = 74, 74, 74
 
 
-class Logo(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 240, 128, 128
-
-
 class EnemyScore(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -76,11 +70,6 @@ def _detect_objects_tennis(objects, obs, hud):
         objects.append(BallShadow(*b))
 
     if hud:
-        logo = find_objects(obs, objects_colors["logo"], min_distance=1)
-        for log in logo:
-            if log[1] > 185:
-                objects.append(Logo(*log))
-
         enemy_score = find_objects(obs, objects_colors["enemy_score"], min_distance=1, closing_dist=5)
         for enscr in enemy_score:
             if enscr[1] < 14:

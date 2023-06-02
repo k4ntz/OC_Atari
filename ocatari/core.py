@@ -15,8 +15,8 @@ import torch
 
 DEVICE = "cpu"
 
-AVAILABLE_GAMES = ["Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
-                   "Breakout", "Carnival", "Centipede", "ChoppperCommand" "DemonAttack", "FishingDerby", "Freeway", "Frostbite", "Kangaroo",
+AVAILABLE_GAMES = ["Alien", "Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
+                   "Breakout", "Carnival", "Centipede", "ChoppperCommand", "DemonAttack", "FishingDerby", "Freeway", "Frostbite", "Kangaroo",
                    "MontezumaRevenge", "MsPacman", "Pong", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders",
                    "Tennis"]
 
@@ -191,4 +191,4 @@ class OCAtari:
         table.set_fontsize(14)
         plt.subplots_adjust(top=0.8)
         plt.show()
-        
+

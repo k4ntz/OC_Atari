@@ -41,6 +41,8 @@ from .roadrunner import _init_objects_roadrunner_ram, _detect_objects_roadrunner
 from .alien import _init_objects_alien_ram, _detect_objects_alien_revised
 from .frostbite import _init_objects_frostbite_ram, _detect_objects_frostbite_revised
 from .fishingderby import _init_objects_fishingDerby_ram, _detect_objects_fishingDerby_revised
+from .montezumarevenge import _init_objects_montezumarevenge_ram, _detect_objects_montezumarevenge_revised
+from .choppercommand import _init_objects_ram, _detect_objects_revised, _detect_objects_raw
 
 
 # calls the respective _get_max_objects from the game modules
@@ -105,7 +107,7 @@ def init_objects(game_name, hud):
     elif game_name.lower() == "qbert":
         return _init_objects_qbert_ram(hud)
     elif game_name.lower() == "montezumarevenge":
-        return []
+        return _init_objects_montezumarevenge_ram(hud)
     elif game_name.lower() == "atlantis":
         return _init_objects_atlantis_ram(hud)
     elif game_name.lower() == "asteroids":
@@ -167,7 +169,7 @@ def detect_objects_raw(info, ram_state, game_name):
     elif game_name.lower() == "asterix":
         _detect_objects_asterix_raw(info, ram_state)
     elif game_name.lower() == "choppercommand":
-        choppercommand._detect_objects_raw(info, ram_state)
+        _detect_objects_raw(info, ram_state)
     elif game_name.lower() == "qbert":
         _detect_objects_qbert_raw(info, ram_state)
     elif game_name.lower() == "atlantis":
@@ -222,9 +224,11 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
     elif game_name.lower() == "asterix":
         _detect_objects_asterix_revised(objects, ram_state, hud)
     elif game_name.lower() == "choppercommand":
-        return choppercommand._detect_objects_revised(objects, ram_state, hud)
+        _detect_objects_revised(objects, ram_state, hud)
     elif game_name.lower() == "qbert":
         _detect_objects_qbert_revised(objects, ram_state, hud)
+    elif game_name.lower() == "montezumarevenge":
+        return _detect_objects_montezumarevenge_revised(objects, ram_state, hud)
     elif game_name.lower() == "atlantis":
         _detect_objects_atlantis_revised(objects, ram_state, hud)
     elif game_name.lower() == "asteroids":
