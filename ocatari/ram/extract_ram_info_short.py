@@ -15,6 +15,7 @@ def get_max_objects(game_name, hud):
         print(colored(f"_get_max_objects not implemented for game: {game_name}", "red"))
         exit(1)
 
+
 def init_objects(game_name, hud):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)

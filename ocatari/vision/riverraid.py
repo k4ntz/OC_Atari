@@ -67,24 +67,18 @@ class Lives(GameObject):
         self.rgb = 232, 232, 74
 
 
-class Logo(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 232, 232, 74
-
-
 def _detect_objects_riverraid(objects, obs, hud=False):
     objects.clear()
 
-    # player = find_objects(obs, objects_colors["player"], min_distance=1)
-    # for p in player:
-    #     if p[1] < 160 and p[2] > 2 and p[3] > 10:
-    #         objects.append(Player(*p))
+    player = find_objects(obs, objects_colors["player"], min_distance=1)
+    for p in player:
+        if p[1] < 160 and p[2] > 2 and p[3] > 10:
+            objects.append(Player(*p))
 
-    # player_missile = find_objects(obs, objects_colors["player_missile"], min_distance=1)
-    # for missile in player_missile:
-    #     if missile[2] < 2 and 1 < missile[3] < 10 and missile[1] < 160:
-    #         objects.append(PlayerMissile(*missile))
+    player_missile = find_objects(obs, objects_colors["player_missile"], min_distance=1)
+    for missile in player_missile:
+        if missile[2] < 2 and 1 < missile[3] < 10 and missile[1] < 160:
+            objects.append(PlayerMissile(*missile))
 
     helicopter = find_mc_objects(obs, objects_colors["helicopter"], min_distance=1)
     for heli in helicopter:
@@ -110,17 +104,12 @@ def _detect_objects_riverraid(objects, obs, hud=False):
         objects.append(Bridge(*br))
 
     if hud:
-        logo = find_objects(obs, objects_colors["logo"], min_distance=1)
-        for log in logo:
-            if log[1] > 190 and log[0] > 70:
-                objects.append(Logo(*log))
-
         lives = find_objects(obs, objects_colors["lives"], min_distance=1)
         for liv in lives:
             if liv[1] > 190 and liv[0] < 62:
                 objects.append(Lives(*liv))
 
-        score = find_objects(obs, objects_colors["score"], min_distance=1, closing_dist=1)
+        score = find_objects(obs, objects_colors["score"], miny=163, maxy=175, min_distance=1, closing_dist=6)
         for sc in score:
             if 160 < sc[1] < 190:
                 objects.append(PlayerScore(*sc))

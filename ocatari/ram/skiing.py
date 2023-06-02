@@ -4,7 +4,7 @@ from .game_objects import GameObject
 
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4, 'Score': 2, 'Logo': 1, 'Clock': 7}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4, 'Score': 2, 'Clock': 7}
 
 # from termcolor import colored
 # def print_state(state):
@@ -143,15 +143,6 @@ class Tree(GameObject):
         self.wh = self.wh[0], min(175-y, 30)
 
 
-class Logo(GameObject):
-    def __init__(self):
-        super().__init__()
-        self._xy = 65, 187
-        self.wh = 31, 6
-        self.rgb = 0, 0, 0
-        self.hud = True
-
-
 class Clock(GameObject):
     def __init__(self, x=0, y=0, w=0, h=0):
         super().__init__()
@@ -197,7 +188,7 @@ def _init_objects_skiing_ram(hud=False):
     """
     objects = [Player()]
     if hud:
-        objects.extend([Score(), Score(ten=True), Logo(),
+        objects.extend([Score(), Score(ten=True),
                         Clock(59, 16, 6, 7), Clock(66, 17, 1, 2),
                         Clock(66, 20, 1, 2),
                         Clock(68, 16, 6, 7), Clock(75, 16, 6, 7),
@@ -213,7 +204,7 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
     player.orientation = ram_state[15]
     # info["speed"] = ram_state[14] or ram[20] both seem to have very similar behavior
     # info["time"] = _time_skiing(ram_state)
-    offset = 1 if not hud else 12
+    offset = 1 if not hud else 11
     # xs = ram_state[62:70]
     # ys = 178-ram_state[86:94]
     # types = ram_state[70:78]

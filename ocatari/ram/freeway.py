@@ -29,7 +29,7 @@ class Score(GameObject):
         self._xy = 49, 5
         self.wh = 6, 8
         self.rgb = 228, 111, 111
-        self.hud = False
+        self.hud = True
 
 
 car_colors = {"car1": [167, 26, 26], "car2": [180, 231, 117], "car3": [105, 105, 15],

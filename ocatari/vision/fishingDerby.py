@@ -1,9 +1,10 @@
-from .utils import find_objects
+import numpy as np
 from .game_objects import GameObject
+from .utils import find_objects
 
 objects_colors = {"shark": [0, 0, 0], "fish": [232, 232, 74],
                   "player 1 fishing string": [232, 232, 74],
-                  "score": [167, 26, 26], "player 2 fishing string": [0, 0, 0],
+                  "score": [167, 26, 26], "player 2 fishing string": [0, 0, 0]
                   }
 
 
@@ -21,7 +22,7 @@ class Fish(GameObject):
         self.hooked = False
 
 
-class PlayerOneFishingString(GameObject):
+class PlayerOneHook(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 232, 232, 74
@@ -34,7 +35,7 @@ class ScorePlayerTwo(GameObject):
         self.rgb = 167, 26, 26
 
 
-class PlayerTwoFishingString(GameObject):
+class PlayerTwoHook(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 0, 0, 0
@@ -51,15 +52,11 @@ def _detect_objects_fishingDerby(objects, obs, hud=True):
     objects.clear()
 
     count_shark = 0
-    for shark in find_objects(obs, objects_colors["shark"], closing_dist=1, minx=30, maxx=126, miny=75, maxy=96):
+    for shark in find_objects(obs, objects_colors["shark"], closing_dist=1, minx=28, maxx=131, miny=75, maxy=96):
         shark_instance = Shark(*shark)
-        if 82 > shark_instance.y > 78 and 11 < shark_instance.h < 14:
+        if 82 > shark_instance.y > 78 and 11 < shark_instance.h < 14 and shark_instance.w > 10:
             objects.append(shark_instance)
             count_shark += 1
-    if count_shark == 0:
-        for shark in find_objects(obs, objects_colors["shark"], closing_dist=1, minx=30, maxx=126, miny=75, maxy=96):
-            shark_instance = Shark(*shark)
-            objects.append(shark_instance)
 
     for fish in find_objects(obs, objects_colors["fish"], closing_dist=8):
         fish_instance = Fish(*fish)
@@ -67,19 +64,25 @@ def _detect_objects_fishingDerby(objects, obs, hud=True):
             objects.append(fish_instance)
 
     for p1_fish_hook in find_objects(obs, objects_colors["player 1 fishing string"], closing_dist=1):
-        p1_fish_hook = PlayerOneFishingString(*p1_fish_hook)
-        if p1_fish_hook.y < 80 and p1_fish_hook.x > 25:
-            p1_fish_hook.hook_position = p1_fish_hook.x + p1_fish_hook.w, \
-                                         p1_fish_hook.y + p1_fish_hook.wh[1]
-            objects.append(p1_fish_hook)
+        x, y, w, h = p1_fish_hook
+        if y < 80 and x > 25:
+            if np.shape(find_objects(obs, objects_colors["player 1 fishing string"], minx=x + w - 3, maxx=x + w, miny=y + h - 3, maxy=y + h))[0] != 0:
+                p1_hook = PlayerOneHook(x=x + w - 2, y=y + h - 2, w=4, h=4)
+                p1_hook.hook_position = x + w, y +h
+                objects.append(p1_hook)
+            else:
+                p1_hook = PlayerOneHook(x=x - 2, y=y + h - 2, w=4, h=4)
+                p1_hook.hook_position = x, y + h
+                objects.append(p1_hook)
 
-    for p2_fishing_pole in find_objects(obs, objects_colors["player 2 fishing string"], miny=75, minx=30, maxx=130,
-                                        maxy=188, closing_dist=1):
-        p2_fish_hook = PlayerTwoFishingString(*p2_fishing_pole)
-        if 80 > p2_fish_hook.y > 75:
-            p2_fish_hook.hook_position = p2_fish_hook.x + p2_fish_hook.w, \
-                                                    p2_fish_hook.y + p2_fish_hook.wh[1]
-            objects.append(p2_fish_hook)
+    for p2_fish_hook in find_objects(obs, objects_colors["player 2 fishing string"], miny=75, minx=30, maxx=130,
+                                     maxy=188, closing_dist=1):
+        x, y, w, h = p2_fish_hook
+        if 80 > y > 75:
+            if len(find_objects(obs, objects_colors["player 2 fishing string"], minx=x + w - 3, maxx=x + w, miny=y + h - 3, maxy=y + h)) != 0:
+                objects.append(PlayerTwoHook(x=x + w - 2, y=y + h - 2, w=4, h=4))
+            else:
+                objects.append(PlayerTwoHook(x=x - 2, y=y + h - 2, w=4, h=4))
 
     if hud:
         for score in find_objects(obs, objects_colors["score"], closing_dist=1):

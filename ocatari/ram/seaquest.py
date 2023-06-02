@@ -101,15 +101,6 @@ class OxygenBarDepleted(GameObject):
         self.hud = True
 
 
-class Logo(GameObject):
-    def __init__(self):
-        super().__init__()
-        self._xy = 66, 191
-        self.rgb = 66, 72, 200
-        self.wh = 32, 7
-        self.hud = True
-
-
 class OxygenBarLogo(GameObject):
     def __init__(self):
         super().__init__()
@@ -149,7 +140,7 @@ def _init_objects_seaquest_ram(hud=False):
     objects = [Player()]
 
     if hud:
-        objects.extend([PlayerScore(), Lives(), OxygenBar(), OxygenBarDepleted(), Logo(), OxygenBarLogo()])
+        objects.extend([PlayerScore(), Lives(), OxygenBar(), OxygenBarDepleted(), OxygenBarLogo()])
 
     return objects
 
@@ -209,10 +200,6 @@ def _detect_objects_seaquest_revised(objects, ram_state, hud=False):
             collected = CollectedDiver()
             collected.xy = 58 + i * 8, 178
             objects.append(collected)
-
-        # logo
-        logo = Logo()
-        objects.append(logo)
 
         # oxygen bar logo
         logo_bar = OxygenBarLogo()

@@ -20,14 +20,14 @@ HELP_TEXT = plt.text(0, -10.2, default_help, fontsize=20)
 
 
 useOCAtari = True                # if True, running this file will execute the OCAtari code
-printEnvInfo = False             # if True, the extracted objects or the environment info will be printed
+printEnvInfo = True            # if True, the extracted objects or the environment info will be printed
 
 # gym[atari]/gymnasium
 # game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
 game_name = "Frostbite-v4"    # game name ChopperCommand-v4
 render_mode = "human"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
-fps = 60                        # render fps
+fps = 10                        # render fps
 seed = 0
 
 # actions
@@ -50,13 +50,13 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 
 # OCAtari modes
-mode = "revised"                    # raw, revised, vision, test
+mode = "vision"                    # raw, revised, vision, test
 HUD = True                      # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
 showInputs = True              # if True, prints the number and the description of the possible inputs (actions)
 showActions = False             # if True, prints the action that will be done
-showRAM = False         # if True, prints the RAM to the console  
+showRAM = True       # if True, prints the RAM to the console  
 # render_mode=="rgb_array" only
 printRGB = False                # if True, prints the rgb array
 showImage = True                # if True, plots the rgb array
@@ -106,9 +106,8 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    # snapshot = pickle.load(open("lvl3.pkl", "rb"))
-    # env._env.env.env.ale.restoreState(snapshot)
-
+    snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/frostbite_level3.pkl", "rb"))
+    env._env.env.env.ale.restoreState(snapshot)
     run(oc)
 
 
@@ -197,7 +196,7 @@ def run(env):
         # previous_lives = info["lives"]
         # print(reward)
         player = env.objects[0]
-        print(distance_to_joey(player))
+        # print(distance_to_joey(player))
         # returns if the environment is in the terminal state (end) -> terminated, truncated
         if terminated or truncated:
             observation, info = env.reset()

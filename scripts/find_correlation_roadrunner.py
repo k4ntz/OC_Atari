@@ -17,7 +17,7 @@ from sklearn.linear_model import RANSACRegressor, LinearRegression
 sys.path.insert(0, '../ocatari') # noqa
 from ocatari.core import OCAtari
 from alive_progress import alive_bar
-
+import pickle
 
 
 
@@ -33,17 +33,18 @@ def ransac_regression(x, y):
 DROP_LOW = True
 MIN_CORRELATION = 0.7 #0.8
 
-NB_SAMPLES = 1500# 600 before
+NB_SAMPLES = 600# 600 before
 game_name = "RoadRunner" #RoadRunner-v4
 MODE = "vision"
 RENDER_MODE = "human"
 # RENDER_MODE = "rgb_array"
 env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE,hud=True)
 random.seed(0)
-
 observation, info = env.reset()
+# snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/roadrunner_level2.pkl", "rb"))
+# env._env.env.env.ale.restoreState(snapshot)
 # object_list = ["Projectile"]
-object_list = ["Birdseeds"]
+object_list = ["Sign"]
 # create dict of list
 objects_infos = {}
 subset = []
@@ -60,9 +61,9 @@ for i in tqdm(range(NB_SAMPLES)):
     # action = actions[i%len(actions)]
     prob = random.random()
     if prob > 0.9:
-        action = 2 # UP
+        action = 1 #fire
     elif prob > 0.8:
-        action = 5 # DOWN
+        action = 2 
     else:
         action = 4 # 4-RIGHT 3- Left, Truck at (56, 129), (16, 18), Cactus at (125, 55), (8, 8), Cactus at (129, 46), (8, 8)]
     # if i % 5: # reset for pressing
