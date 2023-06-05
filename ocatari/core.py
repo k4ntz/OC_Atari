@@ -23,7 +23,7 @@ AVAILABLE_GAMES = ["Alien", "Assault", "Asterix", "Asteroids", "Atlantis", "Beam
                    "Frostbite", "Hero", "Kangaroo",
                    "MontezumaRevenge", "MsPacman", "Pong", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing",
                    "SpaceInvaders",
-                   "Tennis"]
+                   "Tennis","Yarsrevenge"]
 
 
 class OCAtari:
