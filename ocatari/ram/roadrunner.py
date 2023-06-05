@@ -147,26 +147,31 @@ def _detect_objects_roadrunner_revised(objects, ram_state, hud=False):
     (x, y, w, h, r, g, b)
     """
     player, enemy,truck = objects[:3]
-    
-    if ram_state[22]==1:
-        player.xy=ram_state[80],ram_state[3]+102
-    elif ram_state[22]==3:
-        player.xy=ram_state[80], ram_state[3]+85
+    if ram_state[80] < 150:
+        if player is None:
+            player = Player()
+            objects[0] = player
+        if ram_state[22]==1:
+            player.xy=ram_state[80],ram_state[3]+102
+        elif ram_state[22]==3:
+            player.xy=ram_state[80], ram_state[3]+85
+        else:
+            player.xy = ram_state[80], ram_state[3] + 95
+        player.wh=(8,24) if ram_state[41]==6 else (8,32)
     else:
-        player.xy = ram_state[80], ram_state[3] + 95
-    player.wh=(8,24) if ram_state[71]==3 else (8,32)
-
+        objects[0] = None
 
 
     if ram_state[81] > 143: # Removing the enemy
         objects[1] = None
     else:
-        enemy_1=Enemy()
+        if enemy is None: # Setting back the enemy
+            enemy = Enemy()
         if ram_state[22]==1:
-            enemy_1.xy = ram_state[81], ram_state[5] -30
+            enemy.xy = ram_state[81], ram_state[5] -30
         else:
-            enemy_1.xy = ram_state[81], ram_state[5] + 98
-        objects[1]=enemy_1
+            enemy.xy = ram_state[81], ram_state[5] + 98
+        objects[1] = enemy
     if ram_state[43]==0: # Removing the truck
         objects[2] = None
     elif truck is None:
