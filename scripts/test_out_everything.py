@@ -31,7 +31,7 @@ def ransac_regression(x, y):
 
 
 
-game_name = "RiverraidNoFrameskip-v4"
+game_name = "RoadRunnerNoFrameskip-v4"
 MODE = "vision"
 RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
@@ -39,9 +39,9 @@ env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
 
-
-ONE_CHANGE = True
-initial_ram_n = 51
+INTERACTIVE = False
+ONE_CHANGE = False
+initial_ram_n = 30
 
 
 make_deterministic(0, env)
@@ -70,11 +70,18 @@ actions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 class Options(object):
     pass
 opts = Options()
-opts.path = "models/Riverraid/dqn.gz"
+opts.path = "models/RoadRunner/dqn.gz"
 dqn_agent = load_agent(opts, env.action_space.n)
 
-snapshot = pickle.load(open("riverplane.pkl", "rb"))
-env._env.env.env.ale.restoreState(snapshot)
+snapshot = None
+
+# snapshot = pickle.load(open("riverplane.pkl", "rb"))
+# env._env.env.env.ale.restoreState(snapshot)
+
+if snapshot is None:
+    for _ in range(20):
+        resulting_obs, _, _, _, _ = env.step(random.randint(0, env.nb_actions-1))
+        snapshot = env._env.env.env.ale.cloneState()
 
 base_next_obs, _, _, _, _ = env.step(0)
 base_objects = deepcopy(env.objects)
@@ -96,7 +103,10 @@ ram_n = initial_ram_n-1
 while ram_n < 128:
     ram_n += 1
     askinput = True
+    already_seen_frames = []
+    shown = 0
     for i in range(255):
+        already_seen = False
         env._env.env.env.ale.restoreState(snapshot)
         original_ram = env.get_ram()[ram_n]
         env.set_ram(ram_n, i)
@@ -104,11 +114,25 @@ while ram_n < 128:
         im_diff = resulting_obs - base_next_obs
         nb_diff = np.sum(resulting_obs != base_next_obs) // 3
         if 0 < nb_diff < 200:
-            print(nb_diff)
-            if ONE_CHANGE:
-                print(f"{ram_n} set to {i} (instead of {original_ram})")
-                show_ims([base_next_obs, resulting_obs, im_diff], i)
-                break
+            if not INTERACTIVE:
+                if ONE_CHANGE:
+                    print(f"{ram_n} set to {i} (instead of {original_ram})")
+                    show_ims([base_next_obs, resulting_obs, im_diff], i)
+                    break
+                else:
+                    for frame in already_seen_frames:
+                        nb_diff = np.sum(resulting_obs != frame)
+                        if nb_diff == 0:
+                            already_seen = True
+                    if not already_seen:
+                        already_seen_frames.append(deepcopy(resulting_obs))
+                        print(f"{ram_n} set to {i} (instead of {original_ram})")
+                        show_ims([base_next_obs, resulting_obs, im_diff], i)
+                        shown += 1
+                    if shown and shown % 5 == 0:
+                        ans = input("Loop on the same ram_state ? (y/n)")
+                        if ans == "n":
+                            break
             else:
                 if binary_mode:
                     print(f"{ram_n} set to {get_bin(i)} (instead of {get_bin(original_ram)})")

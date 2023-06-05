@@ -26,7 +26,7 @@ printEnvInfo = False             # if True, the extracted objects or the environ
 game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
 game_name = "MsPacman-v4"    # game name ChopperCommand-v4
 # game_name = "Centipede-v4"    # game name ChopperCommand-v4
-game_name = "RiverraidNoFrameskip-v4"    # game name ChopperCommand-v4
+game_name = "RoadRunner-v4"    # game name ChopperCommand-v4
 # game_name = "Centipede-v4"    # game name ChopperCommand-v4
 # game_name = "MontezumaRevenge-v4"    # game name ChopperCommand-v4
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
@@ -110,8 +110,8 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    snapshot = pickle.load(open("riverplane.pkl", "rb"))
-    env._env.env.env.ale.restoreState(snapshot)
+    # snapshot = pickle.load(open("riverplane.pkl", "rb"))
+    # env._env.env.env.ale.restoreState(snapshot)
 
     run(oc)
 
