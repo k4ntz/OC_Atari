@@ -1,4 +1,5 @@
 from termcolor import colored
+from .hero import _detect_objects_hero
 from .pong import _detect_objects_pong
 from .skiing import _detect_objects_skiing
 from .freeway import _detect_objects_freeway
@@ -25,7 +26,6 @@ from .riverraid import _detect_objects_riverraid
 from .assault import _detect_objects_assault
 from .roadrunner import _detect_objects_roadrunner
 from .fishingDerby import _detect_objects_fishingDerby
-
 from .alien import _detect_objects_alien
 from .frostbite import _detect_objects_frostbite
 from .pitfall import _detect_objects_pitfall
@@ -90,6 +90,8 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_frostbite(objects, obs, hud)
     elif game_name.lower() == "fishingderby":
         return _detect_objects_fishingDerby(objects, obs, hud)
+    elif game_name.lower() == "hero":
+        return _detect_objects_hero(objects, obs, hud)
     elif game_name.lower() == "pitfall":
         return _detect_objects_pitfall(objects, obs, hud)
     else:

@@ -1,6 +1,5 @@
 # Object-Centric Atari
 
----
 Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, ...
 
 Inspired by thw work of Anand et. al., we present OCAtari, an improved, extended and object-centric version of their [ATARI ARI project](https://github.com/mila-iqia/atari-representation-learning). 
@@ -15,7 +14,15 @@ to provide object centric representation of the screen. It provides code for ben
 
 --- 
 
-## List of covered games
+### Structure of this repository
+This repository is structured into multiple folder:
+* [dataset_generation](dataset_generation/) -- includes all scripts needed to generate object-centric datasets for Atari game
+* [models](models/) -- includes all models needed to reproduce our results as well as to test out the environments
+* [ocatari](ocatari/) -- the actual wrapper
+* [scripts](scripts/) -- A huge amount of scripts to help and test while implementing, extending or using OCAtari. 
+Most are used to reverse engineer the RAM state, like searching for correlations within the RAM state.
+
+###  List of covered games
 - [ ] Alien (only vision)
 - [X] Assault
 - [X] Asterix
@@ -80,6 +87,7 @@ Here is an example:
 
 `python3.8 demo_pong.py -p models/Pong/model_50000000.gz`
 
+More information can be found in this [ReadMe](scripts/demo/README%20Demos.md)
 ### Extract the objects from a state 
 
 With `env.objects` one can access the list of objects found in the current state. Note that these lists can differ depending on the mode you used initiating the environment
