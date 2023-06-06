@@ -124,7 +124,7 @@ def _detect_objects_roadrunner(objects, obs, hud=False):
     enemy = find_mc_objects(obs, enemycolors, size=(8, 28), tol_s=8, miny=37, min_distance=1)
     if enemy:
         objects.append(Enemy(*enemy[0]))
-    birdseeds = find_objects(obs, objects_colors["birdseeds"], closing_dist=5,size=(5,3), tol_s=1)
+    birdseeds = find_objects(obs, objects_colors["birdseeds"], closing_dist=4,size=(5,3), tol_s=1)
     for seed in birdseeds:
         objects.append(BirdSeeds(*seed))
     trucks = find_mc_objects(obs, truckcolors, size=(16, 18), tol_s=2, min_distance=1)
@@ -211,6 +211,7 @@ def _detect_objects_roadrunner(objects, obs, hud=False):
         birds = find_mc_objects(obs, birdcolors, size=(6, 8), tol_s=2)
         for b in birds:
             objects.append(Bird(*b))
-        pss= find_objects(obs, objects_colors["PlayerScore"],closing_active= False, size=(3, 5), tol_s=2, minx=8, maxx=150,miny=178, maxy=190)
-        for p in pss:
-            objects.append(PlayerScore(*p))
+        # Removing player score since they are ot really needed and they create problems in some levels
+        # pss= find_objects(obs, objects_colors["PlayerScore"],closing_active= False, size=(3, 5), tol_s=2, minx=8, maxx=150,miny=178, maxy=190)
+        # for p in pss:
+        #     objects.append(PlayerScore(*p))
