@@ -17,7 +17,7 @@ from ocatari.utils import load_agent, make_deterministic
 import pickle
 
 
-game_name = "RoadRunnerNoFrameskip-v4"
+game_name = "RiverraidNoFrameskip-v4"
 MODE = "vision"
 RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
@@ -25,8 +25,8 @@ env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
 
-INTERACTIVE = False
-initial_ram_n = 25
+INTERACTIVE = True
+initial_ram_n = 27
 
 
 make_deterministic(0, env)
@@ -42,7 +42,7 @@ opts = Options()
 opts.path = "models/Riverraid/dqn.gz"
 dqn_agent = load_agent(opts, env.action_space.n)
 
-snapshot = pickle.load(open("doublecrack.pkl", "rb"))
+snapshot = pickle.load(open("riverraid.pkl", "rb"))
 env._env.env.env.ale.restoreState(snapshot)
 
 base_next_obs, _, _, _, _ = env.step(0)

@@ -43,7 +43,7 @@ class OCAtari:
             self.detect_objects = detect_objects_raw
             self.step = self._step_ram
         elif mode == "revised":
-            self.max_objects = get_max_objects(self.game_name, self.hud)
+            # self.max_objects = get_max_objects(self.game_name, self.hud)
             self.detect_objects = detect_objects_revised
             self.step = self._step_ram
         elif mode == "test":
