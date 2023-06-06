@@ -20,7 +20,7 @@ HELP_TEXT = plt.text(0, -10.2, default_help, fontsize=20)
 
 
 useOCAtari = True                # if True, running this file will execute the OCAtari code
-printEnvInfo = False             # if True, the extracted objects or the environment info will be printed
+printEnvInfo = True          # if True, the extracted objects or the environment info will be printed
 
 # gym[atari]/gymnasium
 # game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
@@ -51,13 +51,13 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 
 # OCAtari modes
-mode = "revised"                    # raw, revised, vision, test
+mode = "vision"                    # raw, revised, vision, test
 HUD = True                     # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
 showInputs = False              # if True, prints the number and the description of the possible inputs (actions)
 showActions = False            # if True, prints the action that will be done
-showRAM = True          # if True, prints the RAM to the console  
+showRAM = False         # if True, prints the RAM to the console  
 # render_mode=="rgb_array" only
 printRGB = False                # if True, prints the rgb array
 showImage = True                # if True, plots the rgb array
@@ -107,7 +107,7 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/roadrunner_level3.pkl", "rb"))
+    snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/player.pkl", "rb"))
     env._env.env.env.ale.restoreState(snapshot)
 
     run(oc)
@@ -116,7 +116,7 @@ def withocatari():
 def distance_to_joey(player):
     max_dist = 344
     if player.y > 130:
-        return 1 - (120 * 3 - player.x)/max_dist
+        return 1 - (120 * 3 - player.x)/max_dist 
     elif player.y > 70:
         return 1 - (120 + player.x)/max_dist
     elif player.y > 25:
@@ -141,14 +141,14 @@ def run(env):
     # key input handling
     listener = keyboard.Listener(on_press=on_press, on_release=on_release)
     listener.start()
-
+    env.set_ram(81, 130)
     global pause, lastRAM
     if playGame:
         # remove all inputs that are bound to plotting
         for x in key_map:
             # print(plt.rcParams.items())
             for key in plt.rcParams:
-                # e.g. "keymap.enter"
+                # e.g. "keymap.enter" 
                 if key.startswith("keymap"):
                     li = plt.rcParams[key]
                     if x in li:
