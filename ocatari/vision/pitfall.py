@@ -5,13 +5,15 @@ import matplotlib as plt
 
 
 objects_colors = {
-        "logs":[105,105,15], "smallpit": [0,0,0], "scorpion":[236,236,236], "rope":[72,72,0]
+        "logs":[105,105,15], "smallpit": [0,0,0], "scorpion":[236,236,236], "rope":[72,72,0], "waterhole": [45,109,152],
+        "crocodile":[20,60,0], "hud_objs":[214,214,214]
     }
 
 playercolors = [[105,105,15],[228,111,111],[92,186,92],[53,95,24]]
-wallcolors = [[167,26,26],[0,0,0],[142,142,142]]
-c_house_colors=[[142,142,142],[0,0,0]]
-frostbite=[[84,138,210],[66,114,194],[45,87,176],[24,59,157]]
+wallcolors = [[167,26,26],[142,142,142],[0,0,0]]
+snakecolors=[[167,26,26],[0,0,0],[111,111,111]]
+goldenbarcolors=[[252,252,84],[236,236,236]]
+firecolors=[[236,200,96],[252,188,116],[72,72,0]]
 
 
 class Player(GameObject):
@@ -38,6 +40,12 @@ class StairPit(GameObject):
         self.rgb = 0,0,0
         self.hud = False
 
+class Pit(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 252,188,116
+        self.hud = False
+
 class Scorpion(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -50,34 +58,76 @@ class Rope(GameObject):
         self.rgb = 72,72,0
         self.hud = False
 
+class Snake(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 167,26,26
+        self.hud = False
+
+class Tarpit(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 0,0,0
+        self.hud = False
+
+class Waterhole(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 45,109,152
+        self.hud = False
+
+class Crocodile(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 20,60,0
+        self.hud = False
+
+class GoldenBar(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 252,252,84
+        self.hud = False
+
+class Fire(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 236,200,96
+        self.hud = False
+
+class LifeCount(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb =214,214,214
+        self.hud = True
+
 class PlayerScore(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb =132,144,252
+        self.rgb =214,214,214
         self.hud = True
 
-
-class Degree(GameObject):
+class Timer(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb =132,144,252
+        self.rgb =214,214,214
         self.hud = True
 
 def _detect_objects_pitfall(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
+    # Rope and wall is not working 
 
     player = find_mc_objects(obs, playercolors, size=(7, 20), tol_s=4)
     if player:
         objects.append(Player(*player[0]))
 
-    wall = find_mc_objects(obs, wallcolors, size=(7, 35), tol_s=2, closing_active=False)
+    wall = find_mc_objects(obs, wallcolors, size=(7, 35), tol_s=2,miny=140,maxy=190,closing_active=False)
     for w in wall:
         objects.append(Wall(*w))
-    logs=find_objects(obs,objects_colors["logs"],size=(6,14),tol_s=2,maxy=130,miny=114)
+    logs=find_objects(obs,objects_colors["logs"],size=(6,14),tol_s=2,maxy=132,miny=114)
     for l in logs:
         objects.append(Logs(*l))
-    sp=find_objects(obs,objects_colors["smallpit"],size=(8,6),tol_s=4,maxy=130,miny=114)
+    sp=find_objects(obs,objects_colors["smallpit"],size=(8,6),tol_s=2,maxy=130,miny=114)
     for s in sp:
         objects.append(StairPit(*s))
 
@@ -85,10 +135,46 @@ def _detect_objects_pitfall(objects, obs, hud=False):
     for s in sc:
         objects.append(Scorpion(*s))
 
-    rope=find_objects(obs,objects_colors["rope"],size=(10,10),tol_s=10,maxy=114,miny=64,minx=52,maxx=107)
-    for r in rope:
-        objects.append(Rope(*s))
+    # rope=find_objects(obs,objects_colors["rope"],size=(15,15),tol_s=8,maxy=114,miny=64,minx=52,maxx=107,closing_dist=2)
+    # for r in rope:
+    #     objects.append(Rope(*s))
+    
+    snake=find_mc_objects(obs,snakecolors,size=(8,14),tol_s=2,maxy=132,miny=114)
+    for s in snake:
+        objects.append(Snake(*s))
+    
+    tp=find_objects(obs,objects_colors["smallpit"],size=(64,10),tol_s=8,maxy=130,miny=114)#same color as small pit
+    for s in tp:
+        objects.append(Tarpit(*s))
+    
+    pp=find_objects(obs,objects_colors["smallpit"],size=(12,6),tol_s=1,maxy=130,miny=114)#same color as small pit
+    for p in pp:
+        objects.append(Pit(*p))
+    
+    wh=find_objects(obs,objects_colors["waterhole"],size=(64,10),tol_s=8,maxy=130,miny=114)
+    for w in wh:
+        objects.append(Waterhole(*w))
+    
+    gold=find_mc_objects(obs,goldenbarcolors,size=(7,13),tol_s=3,maxy=132,miny=114,closing_dist=4)
+    for g in gold:
+        objects.append(GoldenBar(*g))
+
+    sc=find_objects(obs,objects_colors["crocodile"],size=(8,8),tol_s=2,maxy=132,miny=114)
+    for c in sc:
+        objects.append(Crocodile(*c))
+    
+    fire=find_mc_objects(obs,firecolors,size=(8,14),tol_s=3,maxy=132,miny=114,closing_dist=4)
+    for f in fire:
+        objects.append(Fire(*f))
     
 
     if hud:
-        pass
+        lc=find_objects(obs,objects_colors["hud_objs"],size=(1,8),tol_s=1,maxy=30,miny=20,minx=15,maxx=26,closing_active=False)
+        for l in lc:
+            objects.append(LifeCount(*l))
+        ps=find_objects(obs,objects_colors["hud_objs"],size=(6,8),tol_s=1,maxy=18,miny=7,minx=16,maxx=70,closing_active=False)
+        for p in ps:
+            objects.append(PlayerScore(*p))
+        ts=find_objects(obs,objects_colors["hud_objs"],size=(6,8),tol_s=3,maxy=30,miny=20,minx=28,maxx=69,closing_active=False)
+        for t in ts:
+            objects.append(Timer(*t))
