@@ -1,4 +1,5 @@
 import numpy as np
+
 from .game_objects import GameObject
 from .utils import find_objects
 
@@ -52,13 +53,13 @@ def _detect_objects_fishingderby(objects, obs, hud=True):
     objects.clear()
 
     count_shark = 0
-    for shark in find_objects(obs, objects_colors["shark"], closing_dist=1, minx=28, maxx=131, miny=75, maxy=96):
+    for shark in find_objects(obs, objects_colors["shark"], closing_dist=1, minx=28, maxx=131, miny=80, maxy=93):
         shark_instance = Shark(*shark)
-        if 82 > shark_instance.y > 78 and 11 < shark_instance.h < 14 and shark_instance.w > 10:
+        if shark_instance.w > 20:
             objects.append(shark_instance)
             count_shark += 1
 
-    for fish in find_objects(obs, objects_colors["fish"], closing_dist=8):
+    for fish in find_objects(obs, objects_colors["fish"], closing_dist=8, miny=85):
         fish_instance = Fish(*fish)
         if 90 < fish_instance.y < 190:
             objects.append(fish_instance)
@@ -66,9 +67,10 @@ def _detect_objects_fishingderby(objects, obs, hud=True):
     for p1_fish_hook in find_objects(obs, objects_colors["player 1 fishing string"], closing_dist=1):
         x, y, w, h = p1_fish_hook
         if y < 80 and x > 25:
-            if np.shape(find_objects(obs, objects_colors["player 1 fishing string"], minx=x + w - 3, maxx=x + w, miny=y + h - 3, maxy=y + h))[0] != 0:
+            if np.shape(find_objects(obs, objects_colors["player 1 fishing string"], minx=x + w - 3, maxx=x + w,
+                                     miny=y + h - 3, maxy=y + h))[0] != 0:
                 p1_hook = PlayerOneHook(x=x + w - 2, y=y + h - 2, w=4, h=4)
-                p1_hook.hook_position = x + w, y +h
+                p1_hook.hook_position = x + w, y + h
                 objects.append(p1_hook)
             else:
                 p1_hook = PlayerOneHook(x=x - 2, y=y + h - 2, w=4, h=4)
@@ -78,8 +80,9 @@ def _detect_objects_fishingderby(objects, obs, hud=True):
     for p2_fish_hook in find_objects(obs, objects_colors["player 2 fishing string"], miny=75, minx=30, maxx=130,
                                      maxy=188, closing_dist=1):
         x, y, w, h = p2_fish_hook
-        if 80 > y > 75:
-            if len(find_objects(obs, objects_colors["player 2 fishing string"], minx=x + w - 3, maxx=x + w, miny=y + h - 3, maxy=y + h)) != 0:
+        if 80 > y:
+            if len(find_objects(obs, objects_colors["player 2 fishing string"], minx=x + w - 3, maxx=min(x + w, 131),
+                                miny=y + h - 3, maxy=y + h)) != 0:
                 objects.append(PlayerTwoHook(x=x + w - 2, y=y + h - 2, w=4, h=4))
             else:
                 objects.append(PlayerTwoHook(x=x - 2, y=y + h - 2, w=4, h=4))
