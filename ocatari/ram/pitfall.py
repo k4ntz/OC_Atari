@@ -1,8 +1,8 @@
 from .game_objects import GameObject
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1}
-MAX_NB_OBJECTS_HUD = {}
+MAX_NB_OBJECTS = {"Player": 1,"Wall":1,"Logs":5,"Stairpit":4,"Pit":3,"Scorpion":1,"Rope":1,"Snake":1,"Tarpit":1,"Waterhole":1,"Crocodile":1,"GoldenBar":1,"Fire":1}
+MAX_NB_OBJECTS_HUD = {"LifeCount":3,"PlayerScore":6,"Timer":5}
 
 class Player(GameObject):
     def __init__(self):
@@ -12,6 +12,125 @@ class Player(GameObject):
         self.rgb = 53,95,24
         self.hud = False
 
+class Wall(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(7,35)
+        self.rgb = 167,26,26
+        self.hud = False
+
+class Logs(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(6,14)
+        self.rgb = 105,105,15
+        self.hud = False
+
+class StairPit(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(8,6)
+        self.rgb = 0,0,0
+        self.hud = False
+
+class Pit(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(12,6)
+        self.rgb = 252,188,116
+        self.hud = False
+
+class Scorpion(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(7,10)
+        self.rgb = 236,236,236
+        self.hud = False
+
+class Rope(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(15,15)
+        self.rgb = 72,72,0
+        self.hud = False
+
+class Snake(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(8,14)
+        self.rgb = 167,26,26
+        self.hud = False
+
+class Tarpit(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(64,10)
+        self.rgb = 0,0,0
+        self.hud = False
+
+class Waterhole(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(64,10)
+        self.rgb = 45,109,152
+        self.hud = False
+
+class Crocodile(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(8,8)
+        self.rgb = 20,60,0
+        self.hud = False
+
+class GoldenBar(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(7,13)
+        self.rgb = 252,252,84
+        self.hud = False
+
+class Fire(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(8,14)
+        self.rgb = 236,200,96
+        self.hud = False
+
+class LifeCount(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(1,8)
+        self.rgb =214,214,214
+        self.hud = True
+
+class PlayerScore(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(6,8)
+        self.rgb =214,214,214
+        self.hud = True
+
+class Timer(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(6,8)
+        self.rgb =214,214,214
+        self.hud = True
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
