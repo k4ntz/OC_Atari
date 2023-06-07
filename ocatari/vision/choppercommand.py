@@ -114,19 +114,6 @@ def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     # most = Player, bomb, Score, Life1, Life2
-    if hud:
-        score = find_objects(obs, object_colors["most"], size=(6, 7), miny=16, maxy=23, min_distance=2,
-                             closing_active=False)
-        life = list()
-        for i in range(15):
-            life.extend(find_objects(obs, object_colors["most"], size=(8, 9), minx=33+8*i, maxx=33+8*(i+1),
-                                     miny=24, maxy=33))
-
-        for bb in score:
-            objects.append(Score(*bb))
-        for bb in life:
-            objects.append(Life(*bb))
-
     player = find_objects(obs, object_colors["most"], size=(16, 9), minx=PlayArea.minx, maxx=PlayArea.maxx,
                           miny=PlayArea.miny, maxy=PlayArea.maxy)
     bomb = find_objects(obs, object_colors["most"], size=(2, 2), minx=PlayArea.minx, maxx=PlayArea.maxx,
@@ -180,3 +167,16 @@ def _detect_objects(objects, obs, hud=False):
 
     for bb in mini_truck:
         objects.append(MiniTruck(*bb))
+
+    if hud:
+        score = find_objects(obs, object_colors["most"], size=(6, 7), miny=16, maxy=23, min_distance=2,
+                             closing_active=False)
+        life = list()
+        for i in range(15):
+            life.extend(find_objects(obs, object_colors["most"], size=(8, 9), minx=33+8*i, maxx=33+8*(i+1),
+                                     miny=24, maxy=33))
+
+        for bb in score:
+            objects.append(Score(*bb))
+        for bb in life:
+            objects.append(Life(*bb))
