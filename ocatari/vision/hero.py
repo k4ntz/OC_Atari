@@ -26,14 +26,12 @@ X_MAX_GAMEZONE = 150
 class Wall(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 144, 72, 17
         self.destructible: bool = False
 
 
 class LavaWall(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 144, 72, 17
         self.destructible: bool = False
 
 
@@ -46,7 +44,6 @@ class EnemyType(Enum):
 class Enemy(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 144, 72, 17
         self.type: EnemyType
 
 
@@ -141,8 +138,8 @@ def _detect_objects_hero(objects, obs, hud=True):
     for snake in find_objects(obs, objects_colors["snake"][0], miny=Y_MIN_GAMEZONE,
                               maxy=Y_MAX_GAMEZONE, minx=X_MIN_GAMEZONE):
         snake_instance = Snake(*snake)
-        for snake_head in find_objects(obs, objects_colors["snake"][1], miny=snake_instance.y -4,
-                              maxy=snake_instance.y + 4, minx=X_MIN_GAMEZONE):
+        for snake_head in find_objects(obs, objects_colors["snake"][1], miny=snake_instance.y - 4,
+                                       maxy=snake_instance.y + 4, minx=X_MIN_GAMEZONE):
             snake_instance.xy = snake_instance.x, snake_head[1]
         objects.append(snake_instance)
 
@@ -190,18 +187,20 @@ def _detect_objects_hero(objects, obs, hud=True):
             life_instance.xy = life_instance.x, life_instance.y - 5
             objects.append(life_instance)
 
-        for bomb in find_objects(obs, objects_colors["bomb"], miny=170, minx=X_MIN_GAMEZONE):
+        for bomb in find_objects(obs, objects_colors["bomb"], miny=170, minx=X_MIN_GAMEZONE, closing_dist=7):
             bomb_instance = BombStock(*bomb)
+            bomb_instance.value = len(find_objects(obs, objects_colors["bomb"], miny=1, minx=X_MIN_GAMEZONE))
             bomb_instance.xy = bomb_instance.x, bomb_instance.y - 5
             bomb_instance.wh = bomb_instance.w, bomb_instance.h + 5
             objects.append(bomb_instance)
 
-        power_instance = PowerBar()
+        power_instance = PowerBar(0, 0, 0, 0)
         for power in find_objects(obs, objects_colors["powerbar full"], miny=Y_MAX_GAMEZONE,
                                   minx=X_MIN_GAMEZONE):
             x, y, w, h = power
             power_instance.xy = x, y
             power_instance.wh = w, h
+
         for power in find_objects(obs, objects_colors["powerbar depleted"], miny=Y_MAX_GAMEZONE,
                                   minx=X_MIN_GAMEZONE):
             x, y, w, h = power
