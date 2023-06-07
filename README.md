@@ -2,7 +2,7 @@
 
 Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, ...
 
-Inspired by thw work of Anand et. al., we present OCAtari, an improved, extended and object-centric version of their [ATARI ARI project](https://github.com/mila-iqia/atari-representation-learning). 
+Inspired by thw work of [Anand et. al.](https://arxiv.org/abs/1906.08226), we present OCAtari, an improved, extended and object-centric version of their [ATARI ARI project](https://github.com/mila-iqia/atari-representation-learning). 
 The [Arcade Learning Environment](https://github.com/mgbellemare/Arcade-Learning-Environment) allows us to read the RAM state at any time of a game. 
 This repository is a wrapper for the well known [Gynmasium project](https://github.com/Farama-Foundation/Gymnasium) , that uses the state of the ram and reverse engineering 
 to provide object centric representation of the screen. It provides code for benchmarking, testing and generating object-centric representations of states.
@@ -35,20 +35,19 @@ Most are used to reverse engineer the RAM state, like searching for correlations
 - [X] Breakout
 - [X] Carnival
 - [X] Centipede
-- [ ] Chopper Command  (only vision)
+- [X] Chopper Command 
 - [ ] DemonAttack  (only vision)
 - [ ] Fishing Derby  (only vision)
 - [X] Freeway
-- [ ] Frostbite  (only vision)
+- [X] Frostbite 
 - [X] Kangaroo
 - [X] MontezumaRevenge
 - [X] MsPacman
 - [ ] Pitfall  (only vision)
 - [X] Pong
-- [ ] PrivateEye  (only vision)
-- [ ] Q\*Bert  (only vision)
-- [ ] RiverRaid  (only vision)
-- [ ] RoadRunner  (only vision)
+- [X] Q\*Bert  
+- [X] RiverRaid  
+- [X] RoadRunner  
 - [X] Seaquest
 - [X] Skiing
 - [X] Space Invaders
