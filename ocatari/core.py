@@ -27,7 +27,7 @@ AVAILABLE_GAMES = ["Alien", "Assault", "Asterix", "Asteroids", "Atlantis", "Beam
 
 
 class OCAtari:
-    def __init__(self, env_name, mode="raw", hud=False, obs_mode="dqn", *args, **kwargs):
+    def __init__(self, env_name, mode="revised", hud=False, obs_mode="dqn", *args, **kwargs):
         """
         mode: raw/revised/vision/both
         """
@@ -49,7 +49,7 @@ class OCAtari:
             self.detect_objects = detect_objects_raw
             self.step = self._step_ram
         elif mode == "revised":
-            self.max_objects = get_max_objects(self.game_name, self.hud)
+            # self.max_objects = get_max_objects(self.game_name, self.hud)
             self.detect_objects = detect_objects_revised
             self.step = self._step_ram
         elif mode == "test":
@@ -197,3 +197,11 @@ class OCAtari:
         table.set_fontsize(14)
         plt.subplots_adjust(top=0.8)
         plt.show()
+
+
+    def aggregated_render(self, coefs=[0.05, 0.1, 0.25, 0.6]):
+        rendered = torch.zeros_like(self._state_buffer[0]).float()
+        for coef, state_i in zip(coefs, self._state_buffer):
+            rendered += coef * state_i
+        rendered = rendered.cpu().detach().to(int).numpy()
+        return rendered
