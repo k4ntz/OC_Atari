@@ -8,9 +8,11 @@ objects_colors = {"brown walls": [[144, 72, 17], [162, 98, 33], [180, 122, 48]],
                   "blue walls": [[24, 59, 157], [45, 87, 176], [66, 114, 194]],
                   "grey walls": [[74, 74, 74], [111, 111, 111], [142, 142, 142]],
                   "lava wall": [167, 26, 26],
-                  "enemy": [[210, 164, 74], [195, 144, 61], [180, 122, 48]], "player": [84, 138, 210],
+                  "enemy": [[210, 164, 74], [195, 144, 61], [180, 122, 48]], "snake": [[111, 210, 111], [50, 132, 50]],
+                  "player": [84, 138, 210],
                   "bomb": [184, 50, 50], "laser beam": [200, 72, 72], "end NPC": [92, 186, 92], "lamp": [142, 142, 142],
-                  "powerbar full": [232, 232, 74], "powerbar depleted": [167, 26, 26], "life": [45, 87, 176], }
+                  "powerbar full": [232, 232, 74], "powerbar depleted": [167, 26, 26], "life": [45, 87, 176],
+                  "score": [214, 214, 214]}
 
 Y_MIN_GAMEZONE = 20
 Y_MAX_GAMEZONE = 138
@@ -46,6 +48,11 @@ class Enemy(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 144, 72, 17
         self.type: EnemyType
+
+
+class Snake(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 
 class Player(GameObject):
@@ -131,6 +138,14 @@ def _detect_objects_hero(objects, obs, hud=True):
         w, h = max(list_of_x) - x, max(list_of_y) - y
         objects.append(Enemy(x, y, w, h))
 
+    for snake in find_objects(obs, objects_colors["snake"][0], miny=Y_MIN_GAMEZONE,
+                              maxy=Y_MAX_GAMEZONE, minx=X_MIN_GAMEZONE):
+        snake_instance = Snake(*snake)
+        for snake_head in find_objects(obs, objects_colors["snake"][1], miny=snake_instance.y -4,
+                              maxy=snake_instance.y + 4, minx=X_MIN_GAMEZONE):
+            snake_instance.xy = snake_instance.x, snake_head[1]
+        objects.append(snake_instance)
+
     for player in find_objects(obs, objects_colors["player"], miny=Y_MIN_GAMEZONE, maxy=Y_MAX_GAMEZONE,
                                minx=X_MIN_GAMEZONE):
         player_instance = Player(*player)
@@ -193,6 +208,10 @@ def _detect_objects_hero(objects, obs, hud=True):
             power_instance.wh = power_instance.w + w, h
             power_instance.value = w / power_instance.w
         objects.append(power_instance)
+
+        for score in find_objects(obs, objects_colors["score"], miny=Y_MAX_GAMEZONE,
+                                  minx=X_MIN_GAMEZONE, closing_dist=8):
+            objects.append(score)
     # for wall in find_objects(obs, objects_colors["wall"]):
     #     objects.append(Wall(*wall))
     return objects
