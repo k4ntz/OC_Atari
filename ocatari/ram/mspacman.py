@@ -146,8 +146,11 @@ def _detect_objects_mspacman_revised(objects, ram_state, hud=True):
     if hud:
         score = _convert_number(ram_state[122]) * 10000 + _convert_number(ram_state[121]) * 100 +\
                 _convert_number(ram_state[120])
-        scores = _create_score_from_number(score)
-        objects.extend(scores)
+        sc = Score()
+        nb_digits = len(str(score))
+        sc.xy = 103 - 8 * nb_digits, 187
+        sc.wh = nb_digits * 8 - 1, 7
+        objects.append(sc)
         # if ram_state[122] < 16:
         #     objects[11].visible = False
         #     if ram_state[122] == 0:

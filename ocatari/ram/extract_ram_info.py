@@ -40,7 +40,7 @@ from .assault import _detect_objects_assault_raw, _detect_objects_assault_revise
 from .roadrunner import _init_objects_roadrunner_ram, _detect_objects_roadrunner_revised
 from .alien import _init_objects_alien_ram, _detect_objects_alien_revised
 from .frostbite import _init_objects_frostbite_ram, _detect_objects_frostbite_revised
-from .fishingderby import _init_objects_fishingDerby_ram, _detect_objects_fishingDerby_revised
+from .fishingderby import _init_objects_fishingderby_ram, _detect_objects_fishingderby_revised
 from .montezumarevenge import _init_objects_montezumarevenge_ram, _detect_objects_montezumarevenge_revised
 from .choppercommand import _init_objects_ram, _detect_objects_revised, _detect_objects_raw
 from .hero import _init_objects_hero_ram, _detect_objects_hero_revised
@@ -122,7 +122,7 @@ def init_objects(game_name, hud):
     elif game_name.lower() == "frostbite":
         return _init_objects_frostbite_ram(hud)
     elif game_name.lower() == "fishingderby":
-        return _init_objects_fishingDerby_ram(hud)
+        return _init_objects_fishingderby_ram(hud)
     elif game_name.lower() == "hero":
         return _init_objects_hero_ram(hud)
     elif game_name.lower() == "pitfall":
@@ -247,7 +247,7 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
     elif game_name.lower() == "frostbite":
         _detect_objects_frostbite_revised(objects, ram_state, hud)
     elif game_name.lower() == "fishingderby":
-        _detect_objects_fishingDerby_revised(objects, ram_state, hud)
+        _detect_objects_fishingderby_revised(objects, ram_state, hud)
     elif game_name.lower() == "hero":
         _detect_objects_hero_revised(objects, ram_state, hud)
     elif game_name.lower() == "pitfall":

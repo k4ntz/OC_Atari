@@ -62,7 +62,7 @@ def _detect_objects_mspacman(objects, obs, hud=True):
                 fru.rgb = objects_colors["fruit"][i]
                 objects.append(fru)
 
-        score = find_objects(obs, objects_colors["score"], min_distance=1)
+        score = find_objects(obs, objects_colors["score"], closing_dist=5, min_distance=1)
         for s in score:
             objects.append(Score(*s))
 

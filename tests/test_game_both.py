@@ -27,7 +27,7 @@ parser.add_argument("-dqn", "--dqn", action="store_true", help="Use DQN agent")
 opts = parser.parse_args()
 
 
-env = OCAtari(opts.game, mode="test", render_mode='human', hud=opts.hud)
+env = OCAtari(opts.game, mode="test", render_mode='rgb_array', hud=opts.hud)
 observation, info = env.reset()
 
 if opts.dqn:
@@ -37,7 +37,6 @@ if opts.dqn:
 
 make_deterministic(0, env)
 
-actions = [3] * 40 + [4] * 40 + [5] * 50 + [6] * 40
 
 for i in range(100000):
     try:
@@ -47,7 +46,7 @@ for i in range(100000):
             action = random.randint(0, env.nb_actions-1)
         obs, reward, terminated, truncated, info = env.step(action)
         obs2 = deepcopy(obs)
-        if i >= 500 and i % opts.interval == 0:
+        if i >= 10 and i % opts.interval == 0:
             print(f"{i=}")
             fig, axes = plt.subplots(1, 2)
             for obs, objects_list, title, ax in zip([obs, obs2], [env.objects, env.objects_v], ["ram", "vision"], axes):
