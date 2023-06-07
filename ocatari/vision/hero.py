@@ -180,7 +180,6 @@ def _detect_objects_hero(objects, obs, hud=True):
             objects.append(lamp_instance)
 
     if hud:
-        print("vision not yet implemented with HUD")
         for life in find_objects(obs, objects_colors["player"], miny=Y_MAX_GAMEZONE,
                                  minx=X_MIN_GAMEZONE):
             life_instance = Life(*life)
