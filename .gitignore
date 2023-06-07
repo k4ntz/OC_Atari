@@ -9,6 +9,7 @@ dist/
 dumps/
 tests/diff_images
 *.egg-info
+*.ipynb_checkpoints
 dumps/*
 env
 scripts/general/testSkriptNr1.py
@@ -18,6 +19,7 @@ scripts/general/testSkriptNr4.py
 scripts/general/testSkriptNr5.py
 scripts/agents/baseline_checkpoints
 scripts/agents/baseline_logs
+scripts/agents/logs
 
 *diff_images
 .venv
