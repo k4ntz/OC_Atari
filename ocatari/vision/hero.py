@@ -9,7 +9,7 @@ objects_colors = {"brown walls": [[144, 72, 17], [162, 98, 33], [180, 122, 48]],
                   "grey walls": [[74, 74, 74], [111, 111, 111], [142, 142, 142]],
                   "lava wall": [167, 26, 26],
                   "enemy": [[210, 164, 74], [195, 144, 61], [180, 122, 48]], "player": [84, 138, 210],
-                  "bomb": [184, 50, 50], "laser beam": [200, 72, 72], "end NPC": [92, 186, 92],
+                  "bomb": [184, 50, 50], "laser beam": [200, 72, 72], "end NPC": [92, 186, 92], "lamp": [142, 142, 142],
                   "powerbar full": [232, 232, 74], "powerbar depleted": [167, 26, 26], "life": [45, 87, 176], }
 
 Y_MIN_GAMEZONE = 20
@@ -70,6 +70,27 @@ class EndNPC(GameObject):
         super().__init__(*args, **kwargs)
 
 
+class Lamp(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class PowerBar(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.value = 1
+
+
+class BombStock(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class Life(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
 def _detect_objects_hero(objects, obs, hud=True):
     objects.clear()
     possible_wall_colors = ["brown", "green", "blue", "grey"]
@@ -121,7 +142,7 @@ def _detect_objects_hero(objects, obs, hud=True):
                                                 min(10 + player_instance.y, Y_MAX_GAMEZONE)),
                                        minx=max(player_instance.x - 10, X_MIN_GAMEZONE),
                                        maxx=min(player_instance.x + 10, X_MAX_GAMEZONE)):
-            if laser_beam[2] > 3:
+            if laser_beam[2] > 6:
                 objects.append(LaserBeam(*laser_beam))
 
         for bomb in find_objects(obs, objects_colors["bomb"], miny=Y_MIN_GAMEZONE, maxy=Y_MAX_GAMEZONE,
@@ -139,8 +160,39 @@ def _detect_objects_hero(objects, obs, hud=True):
         end_npc_instance.xy = end_npc_instance.x, end_npc_instance.y - 5
         end_npc_instance.wh = 7, end_npc_instance.h + 5 + 3
         objects.append(end_npc_instance)
+
+    for lamp in find_objects(obs, objects_colors["lamp"], miny=Y_MIN_GAMEZONE, maxy=Y_MAX_GAMEZONE,
+                             minx=X_MIN_GAMEZONE):
+        lamp_instance = Lamp(*lamp)
+        if lamp.h < 10:
+            objects.append(lamp_instance)
+
     if hud:
         print("vision not yet implemented with HUD")
+        for life in find_objects(obs, objects_colors["player"], miny=Y_MAX_GAMEZONE,
+                                 minx=X_MIN_GAMEZONE):
+            life_instance = Life(*life)
+            life_instance.xy = life_instance.x, life_instance.y - 5
+            objects.append(life_instance)
+
+        for bomb in find_objects(obs, objects_colors["bomb"], miny=170, minx=X_MIN_GAMEZONE):
+            bomb_instance = BombStock(*bomb)
+            bomb_instance.xy = bomb_instance.x, bomb_instance.y - 5
+            bomb_instance.wh = bomb_instance.w, bomb_instance.h + 5
+            objects.append(bomb_instance)
+
+        power_instance = PowerBar()
+        for power in find_objects(obs, objects_colors["powerbar full"], miny=Y_MAX_GAMEZONE,
+                                  minx=X_MIN_GAMEZONE):
+            x, y, w, h = power
+            power_instance.xy = x, y
+            power_instance.wh = w, h
+        for power in find_objects(obs, objects_colors["powerbar depleted"], miny=Y_MAX_GAMEZONE,
+                                  minx=X_MIN_GAMEZONE):
+            x, y, w, h = power
+            power_instance.wh = power_instance.w + w, h
+            power_instance.value = w / power_instance.w
+        objects.append(power_instance)
     # for wall in find_objects(obs, objects_colors["wall"]):
     #     objects.append(Wall(*wall))
     return objects
