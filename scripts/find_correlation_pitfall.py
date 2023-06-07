@@ -34,7 +34,7 @@ def ransac_regression(x, y):
 DROP_LOW = True
 MIN_CORRELATION = 0.7 #0.8
 
-NB_SAMPLES = 600# 600 before
+NB_SAMPLES = 1000# 600 before
 game_name = "Pitfall" #RoadRunner-v4
 MODE = "vision"
 RENDER_MODE = "human"
@@ -43,10 +43,10 @@ env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE,hud=True)
 random.seed(0)
 
 observation, info = env.reset()
-# snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/frostbite_frost.pkl", "rb"))
-# env._env.env.env.ale.restoreState(snapshot)
+snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_3.pkl", "rb"))
+env._env.env.env.ale.restoreState(snapshot)
 # object_list = ["Projectile"]
-object_list = ["Player"]
+object_list = ["TarPit"]
 # create dict of list
 objects_infos = {}
 subset = []

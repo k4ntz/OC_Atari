@@ -1,9 +1,7 @@
 # ODA: An object-centric dataset for Atari
 
-
-<!-- #region -->
 ## Using generate_dataset.py
-`generate_dataset.py`is the main script for generating object-centric datasets for Atari games. The list of supported games can be found in the OCAtari ReadMe. Games which only supports vision mode should use the `generate_dataset_visi.py`script instead. All parameters and settings are identical and can be used with both scripts. 
+`generate_dataset.py`is the main script for generating object-centric datasets for Atari games. The list of supported games can be found in the OCAtari ReadMe. Games which only supports vision mode should use the `generate_dataset_vision.py`script instead. All parameters and settings are identical and can be used with both scripts. 
 
 
 ### Requirements
@@ -20,7 +18,7 @@ To run the scripts, it is also necessary to go through the installation process 
 * `-dqn`: Should the default dqn model (../models/{game}/dqn.gz) be used or a different model (in this case a path has to be provided)
 
 Example: `generate_dataset.py -g Pong`
-<!-- #endregion -->
+
 
 ## Information within the datasets
 The data set consists primarily of a csv file. In addition to a sequential **index**, this file contains the respective image as a list of pixels, called **OBS**. This list can be reformerd into into a numpy array by
@@ -29,10 +27,6 @@ and can thus be processed further. An image in the form of a png is also stored 
 
 
 ## Reproducing ODA
-The ODA provided with the paper, is a small dataset of 10,000 samples per supported game. To reproduce the exact dataset you have to set the generation process to deterministic `make_deterministic(42, env)`. We used the seed `42`.
+The ODA mentioned within the paper, is a small dataset of 10,000 samples per supported game. To reproduce the exact dataset you have to set the generation process to deterministic `make_deterministic(42, env)` and start the dataset generation. We used the seed `42`.
 
-The easiest way is to run the `datasets_on_all.sh`script, generating the exact dataset.
-
-```python
-
-```
+The easiest way is to generate the dataset for all supported games, run the `datasets_on_all.sh`script, generating the exact dataset.

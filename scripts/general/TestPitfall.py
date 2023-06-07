@@ -20,7 +20,7 @@ HELP_TEXT = plt.text(0, -10.2, default_help, fontsize=20)
 
 
 useOCAtari = True                # if True, running this file will execute the OCAtari code
-printEnvInfo = True          # if True, the extracted objects or the environment info will be printed
+printEnvInfo = False        # if True, the extracted objects or the environment info will be printed
 
 # gym[atari]/gymnasium
 # game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
@@ -57,7 +57,7 @@ HUD = True                     # if True, the returned objects contain only the 
 # get valuable information for reversed engineering purposes
 showInputs = False              # if True, prints the number and the description of the possible inputs (actions)
 showActions = False            # if True, prints the action that will be done
-showRAM = False         # if True, prints the RAM to the console  
+showRAM = True         # if True, prints the RAM to the console  
 # render_mode=="rgb_array" only
 printRGB = False                # if True, prints the rgb array
 showImage = True                # if True, plots the rgb array
@@ -107,8 +107,8 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/player.pkl", "rb"))
-    # env._env.env.env.ale.restoreState(snapshot)
+    snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_3.pkl", "rb"))
+    env._env.env.env.ale.restoreState(snapshot)
 
     run(oc)
 
