@@ -176,7 +176,7 @@ def _detect_objects_hero(objects, obs, hud=True):
     for lamp in find_objects(obs, objects_colors["lamp"], miny=Y_MIN_GAMEZONE, maxy=Y_MAX_GAMEZONE,
                              minx=X_MIN_GAMEZONE):
         lamp_instance = Lamp(*lamp)
-        if lamp.h < 10:
+        if lamp_instance.h < 10:
             objects.append(lamp_instance)
 
     if hud:
