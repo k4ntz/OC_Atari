@@ -31,7 +31,7 @@ def ransac_regression(x, y):
 
 
 
-game_name = "RoadRunnerNoFrameskip-v4"
+game_name = "KangarooNoFrameskip-v4"
 MODE = "vision"
 RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
@@ -41,7 +41,7 @@ random.seed(0)
 
 INTERACTIVE = False
 ONE_CHANGE = False
-initial_ram_n = 30
+initial_ram_n = 36
 
 
 make_deterministic(0, env)
@@ -50,33 +50,18 @@ get_bin = lambda x: format(int(x), 'b').zfill(8)
 
 
 observation, info = env.reset()
-# object_list = ["Projectile"]
-object_list = ["Fuel"]
-# create dict of list
-objects_infos = {}
-subset = []
-# for obj in object_list:
-#     objects_infos[f"{obj}_x"] = []
-#     objects_infos[f"{obj}_y"] = []
-#     subset.append(f"{obj}_x")
-#     subset.append(f"{obj}_y")
-for i in range(1):
-    objects_infos[f"fuel_x"] = []
-    subset.append(f"fuel_x")
-    objects_infos[f"fuel_y"] = []
-    subset.append(f"fuel_y")
-ram_saves = []
-actions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 class Options(object):
     pass
+
 opts = Options()
-opts.path = "models/RoadRunner/dqn.gz"
+opts.path = "models/Kangaroo/dqn.gz"
 dqn_agent = load_agent(opts, env.action_space.n)
 
 snapshot = None
 
-# snapshot = pickle.load(open("riverplane.pkl", "rb"))
-# env._env.env.env.ale.restoreState(snapshot)
+snapshot = pickle.load(open("kangstarted.pkl", "rb"))
+env._env.env.env.ale.restoreState(snapshot)
 
 if snapshot is None:
     for _ in range(20):

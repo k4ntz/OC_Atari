@@ -26,7 +26,7 @@ printEnvInfo = False             # if True, the extracted objects or the environ
 game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
 game_name = "MsPacman-v4"    # game name ChopperCommand-v4
 # game_name = "Centipede-v4"    # game name ChopperCommand-v4
-game_name = "RoadRunner-v4"    # game name ChopperCommand-v4
+game_name = "SpaceInvaders-v4"    # game name ChopperCommand-v4
 # game_name = "Centipede-v4"    # game name ChopperCommand-v4
 # game_name = "MontezumaRevenge-v4"    # game name ChopperCommand-v4
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing

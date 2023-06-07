@@ -179,7 +179,6 @@ def _init_objects_spaceinvaders_ram(hud=False):
         shield = Shield()
         shield.xy = 42 + i * 32, 157
         objects.append(shield)
-
     return objects
 
 
