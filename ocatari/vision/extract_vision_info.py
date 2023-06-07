@@ -25,7 +25,7 @@ from .asteroids import _detect_objects_asteroids
 from .riverraid import _detect_objects_riverraid
 from .assault import _detect_objects_assault
 from .roadrunner import _detect_objects_roadrunner
-from .fishingderby import _detect_objects_fishingDerby
+from .fishingderby import _detect_objects_fishingderby
 from .alien import _detect_objects_alien
 from .frostbite import _detect_objects_frostbite
 from .pitfall import _detect_objects_pitfall
