@@ -150,12 +150,14 @@ def _init_objects_ram(hud):
     global truck_4
     global truck_x
     global last_68
+    global last_y
     last_30 = 96
     last_31 = 96
     last_32 = 96
     truck_4 = 0
     truck_x = 10
     last_68 = 0
+    last_y = 0
 
     return objects
 
@@ -220,6 +222,7 @@ def _detect_objects_revised(objects, ram_state, hud):
     global truck_4
     global truck_x
     global last_68
+    global last_y
 
     # player
     player = objects[0]
@@ -231,14 +234,22 @@ def _detect_objects_revised(objects, ram_state, hud):
     # player.direction = number_to_bitfield(ram_state[66])[7]
     # player.dying = 97 <= ram_state[97] <= 127
 
+    # mini_player
+    mini_player = objects[1]
+    b_mini_x = number_to_bitfield(ram_state[71])[:3]
+    mini_x = 74+bitfield_to_number(b_mini_x)
+    b_mini_y = number_to_bitfield(ram_state[72])[1:4]
+    mini_y = 184-bitfield_to_number(b_mini_y)
+    mini_player.xy = mini_x, mini_y
+
     if ram_state[2] != 240:
         bomb = Bomb()
         objects[10] = bomb
         if ram_state[94] != 240 and ram_state[95] != 240:
-            bomb.xy = ram_state[70] - 1, 167 - ram_state[94] + 2
+            bomb.xy = ram_state[70] + 1, 167 - ram_state[94] + 2
             bomb2 = Bomb()
             objects[11] = bomb2
-            bomb2.xy = ram_state[70] - 1, 167 - ram_state[95] - 2
+            bomb2.xy = ram_state[70] + 1, 167 - ram_state[95] - 2
             bomb.wh = 2,1
             bomb2.wh = 2,1
         elif ram_state[94] != 240:
@@ -257,14 +268,6 @@ def _detect_objects_revised(objects, ram_state, hud):
     else:
         objects[10] = None
         objects[11] = None
-
-    # mini_player
-    mini_player = objects[1]
-    b_mini_x = number_to_bitfield(ram_state[71])[:3]
-    mini_x = 74+bitfield_to_number(b_mini_x)
-    b_mini_y = number_to_bitfield(ram_state[72])[1:4]
-    mini_y = 184-bitfield_to_number(b_mini_y)
-    mini_player.xy = mini_x, mini_y
 
     mid_mid_group = number_to_bitfield(ram_state[7])[2:8]
     # [68] counts down and [67] counts 1 up after [68] reaching 0 and jumping to 159 (one frame width)
@@ -351,9 +354,15 @@ def _detect_objects_revised(objects, ram_state, hud):
         _, h = enemy.wh
         objects[4] = enemy
         if (int(ram_state[18]) + int(ram_state[68])) < 160:
-            enemy.xy = ram_state[18] + ram_state[68], 167 - ram_state[22] - h
+            if ram_state[66]:
+                enemy.xy = ram_state[18] + ram_state[68], 167 - ram_state[22] - h
+            else:
+                enemy.xy = ram_state[18] + ram_state[68] - 2, 167 - ram_state[22] - h
         else:
-            enemy.xy = ram_state[18] - (160 - ram_state[68]), 167 - ram_state[22] - h
+            if ram_state[66]:
+                enemy.xy = ram_state[18] - (160 - ram_state[68]), 167 - ram_state[22] - h
+            else:
+                enemy.xy = ram_state[18] - (160 - ram_state[68]) - 2, 167 - ram_state[22] - h
     else:
         objects[4] = None
 
@@ -368,9 +377,15 @@ def _detect_objects_revised(objects, ram_state, hud):
         _, h = enemy.wh
         objects[5] = enemy
         if (int(ram_state[19]) + int(ram_state[68])) < 160:
-            enemy.xy = ram_state[19] + ram_state[68], 167 - ram_state[23] - h
+            if ram_state[66]:
+                enemy.xy = ram_state[19] + ram_state[68], 167 - ram_state[23] - h
+            else:
+                enemy.xy = ram_state[19] + ram_state[68] - 2, 167 - ram_state[23] - h
         else:
-            enemy.xy = ram_state[19] - (160 - ram_state[68]), 167 - ram_state[23] - h
+            if ram_state[66]:
+                enemy.xy = ram_state[19] - (160 - ram_state[68]), 167 - ram_state[23] - h
+            else:
+                enemy.xy = ram_state[19] - (160 - ram_state[68]) - 2, 167 - ram_state[23] - h
     else:
         objects[5] = None
 
@@ -385,9 +400,15 @@ def _detect_objects_revised(objects, ram_state, hud):
         _, h = enemy.wh
         objects[6] = enemy
         if (int(ram_state[20]) + int(ram_state[68])) < 160:
-            enemy.xy = ram_state[20] + ram_state[68], 167 - ram_state[24] - h
+            if ram_state[66]:
+                enemy.xy = ram_state[20] + ram_state[68], 167 - ram_state[24] - h
+            else:
+                enemy.xy = ram_state[20] + ram_state[68] - 2, 167 - ram_state[24] - h
         else:
-            enemy.xy = ram_state[20] - (160 - ram_state[68]), 167 - ram_state[24] - h
+            if ram_state[66]:
+                enemy.xy = ram_state[20] - (160 - ram_state[68]), 167 - ram_state[24] - h
+            else:
+                enemy.xy = ram_state[20] - (160 - ram_state[68]) - 2, 167 - ram_state[24] - h
     else:
         objects[6] = None
 
@@ -443,24 +464,30 @@ def _detect_objects_revised(objects, ram_state, hud):
             w = w + 4
         elif w > 0:
             shot = Shot()
-            y = player.y
-            shot.xy = x-w, y + 5
+            shot.xy = x-w, player.y + 5
             shot.wh = w, 1
             objects[3] = shot
             w = 0
         x = x + 4
 
-    # Minitrucks
+    if ram_state[97] <= 100 and ram_state[97] >= 95:
+        truck_x = 10
+
     if ceil((ram_state[68]+1)/20) != ceil((last_68+1)/20):
-        if truck_x == 15:
-            truck_x = 0
+        if ram_state[66]:
+            truck_x = (truck_x + 1)%15
         else:
-            truck_x += 1
+            truck_x = (truck_x - 1)%15
+
+    # Minitrucks and mid air lane
 
     if ram_state[5]:
         t_lane = ram_state[5]&56
         t_lane = t_lane >> 3
-        x, y = 115 - truck_x, 185
+        if ram_state[66]:
+            x = 115 - truck_x + 1
+        else:
+            x = 115 - truck_x
         lane_2 = ram_state[5]&7
         if lane_2 and x + lane_2 - 3 <= 103:
                 m_enemy = MiniEnemy()
@@ -473,26 +500,26 @@ def _detect_objects_revised(objects, ram_state, hud):
             if t_lane == 7 or t_lane == 6:
                 m_truck1 = MiniTruck()
                 objects[18] = m_truck1
-                m_truck1.xy = x, y
+                m_truck1.xy = x, 185
                 if x <= 101:
                     m_truck2 = MiniTruck()
                     objects[19] = m_truck2
-                    m_truck2.xy = x+2, y
+                    m_truck2.xy = x+2, 185
             elif t_lane == 5:
                 m_truck1 = MiniTruck()
                 objects[18] = m_truck1
-                m_truck1.xy = x, y
+                m_truck1.xy = x, 185
                 if x <= 101:
                     objects[19] = None
             elif (t_lane == 4 or t_lane == 2) and x <= 101:
                 m_truck1 = MiniTruck()
                 objects[18] = m_truck1
-                m_truck1.xy = x+2, y
+                m_truck1.xy = x+2, 185
                 objects[19] = None
             elif t_lane == 3:
                 m_truck1 = MiniTruck()
                 objects[18] = m_truck1
-                m_truck1.xy = x, y
+                m_truck1.xy = x, 185
                 if x <= 101:
                     objects[19] = None
         else:
@@ -503,7 +530,10 @@ def _detect_objects_revised(objects, ram_state, hud):
     if ram_state[6]:
         t_lane = ram_state[6]&56
         t_lane = t_lane >> 3
-        x, y = 99 - truck_x, 185
+        if ram_state[66]:
+            x = 99 - truck_x + 1
+        else:
+            x = 99 - truck_x
         lane_2 = ram_state[6]&7
         if lane_2:
             m_enemy = MiniEnemy()
@@ -519,51 +549,51 @@ def _detect_objects_revised(objects, ram_state, hud):
             objects[12] = m_truck1
             objects[13] = m_truck2
             objects[14] = m_truck3
-            m_truck1.xy = x, y
-            m_truck2.xy = x+2, y
-            m_truck3.xy = x+4, y
+            m_truck1.xy = x, 185
+            m_truck2.xy = x+2, 185
+            m_truck3.xy = x+4, 185
         elif t_lane == 6:
             m_truck1 = MiniTruck()
             m_truck2 = MiniTruck()
             objects[12] = m_truck1
             objects[13] = m_truck2
             objects[14] = None
-            m_truck1.xy = x, y
-            m_truck2.xy = x+2, y
+            m_truck1.xy = x, 185
+            m_truck2.xy = x+2, 185
         elif t_lane == 5:
             m_truck1 = MiniTruck()
             m_truck2 = MiniTruck()
             objects[12] = m_truck1
             objects[13] = m_truck2
             objects[14] = None
-            m_truck1.xy = x, y
-            m_truck2.xy = x+4, y
+            m_truck1.xy = x, 185
+            m_truck2.xy = x+4, 185
         elif t_lane == 4:
             m_truck1 = MiniTruck()
             m_truck2 = MiniTruck()
             objects[12] = m_truck1
             objects[13] = m_truck2
             objects[14] = None
-            m_truck1.xy = x+2, y
-            m_truck2.xy = x+4, y
+            m_truck1.xy = x+2, 185
+            m_truck2.xy = x+4, 185
         elif t_lane == 3:
             m_truck1 = MiniTruck()
             objects[12] = m_truck1
             objects[13] = None
             objects[14] = None
-            m_truck1.xy = x, y
+            m_truck1.xy = x, 185
         elif t_lane == 2:
             m_truck1 = MiniTruck()
             objects[12] = m_truck1
             objects[13] = None
             objects[14] = None
-            m_truck1.xy = x+2, y
+            m_truck1.xy = x+2, 185
         elif t_lane == 1:
             m_truck1 = MiniTruck()
             objects[12] = m_truck1
             objects[13] = None
             objects[14] = None
-            m_truck1.xy = x+4, y
+            m_truck1.xy = x+4, 185
     else:
         objects[12] = None
         objects[13] = None
@@ -573,7 +603,10 @@ def _detect_objects_revised(objects, ram_state, hud):
     if ram_state[7]:
         t_lane = ram_state[7]&56
         t_lane = t_lane >> 3
-        x, y = 83 - truck_x, 185
+        if ram_state[66]:
+            x = 83 - truck_x + 1
+        else:
+            x = 83 - truck_x
         lane_2 = ram_state[7]&7
         if lane_2:
             m_enemy = MiniEnemy()
@@ -589,51 +622,51 @@ def _detect_objects_revised(objects, ram_state, hud):
             objects[15] = m_truck1
             objects[16] = m_truck2
             objects[17] = m_truck3
-            m_truck1.xy = x, y
-            m_truck2.xy = x+2, y
-            m_truck3.xy = x+4, y
+            m_truck1.xy = x, 185
+            m_truck2.xy = x+2, 185
+            m_truck3.xy = x+4, 185
         elif t_lane == 6:
             m_truck1 = MiniTruck()
             m_truck2 = MiniTruck()
             objects[15] = m_truck1
             objects[16] = m_truck2
             objects[17] = None
-            m_truck1.xy = x, y
-            m_truck2.xy = x+2, y
+            m_truck1.xy = x, 185
+            m_truck2.xy = x+2, 185
         elif t_lane == 5:
             m_truck1 = MiniTruck()
             m_truck2 = MiniTruck()
             objects[15] = m_truck1
             objects[16] = m_truck2
             objects[17] = None
-            m_truck1.xy = x, y
-            m_truck2.xy = x+4, y
+            m_truck1.xy = x, 185
+            m_truck2.xy = x+4, 185
         elif t_lane == 4:
             m_truck1 = MiniTruck()
             m_truck2 = MiniTruck()
             objects[15] = m_truck1
             objects[16] = m_truck2
             objects[17] = None
-            m_truck1.xy = x+2, y
-            m_truck2.xy = x+4, y
+            m_truck1.xy = x+2, 185
+            m_truck2.xy = x+4, 185
         elif t_lane == 3:
             m_truck1 = MiniTruck()
             objects[15] = m_truck1
             objects[16] = None
             objects[17] = None
-            m_truck1.xy = x, y
+            m_truck1.xy = x, 185
         elif t_lane == 2:
             m_truck1 = MiniTruck()
             objects[15] = m_truck1
             objects[16] = None
             objects[17] = None
-            m_truck1.xy = x+2, y
+            m_truck1.xy = x+2, 185
         elif t_lane == 1:
             m_truck1 = MiniTruck()
             objects[15] = m_truck1
             objects[16] = None
             objects[17] = None
-            m_truck1.xy = x+4, y
+            m_truck1.xy = x+4, 185
     else:
         objects[15] = None
         objects[16] = None
@@ -643,7 +676,10 @@ def _detect_objects_revised(objects, ram_state, hud):
     if ram_state[8]:
         t_lane = ram_state[8]&56
         t_lane = t_lane >> 3
-        x, y = 67 - truck_x, 185
+        if ram_state[66]:
+            x = 67 - truck_x + 1
+        else:
+            x = 67 - truck_x
         lane_2 = ram_state[8]&7
         if lane_2 and x + lane_2 - 4 >= 55:
             m_enemy = MiniEnemy()
@@ -656,22 +692,22 @@ def _detect_objects_revised(objects, ram_state, hud):
             if x >= 56:
                 m_truck1 = MiniTruck()
                 objects[18] = m_truck1
-                m_truck1.xy = x, y
+                m_truck1.xy = x, 185
             if x + 2 >= 56:
                 m_truck2 = MiniTruck()
                 objects[19] = m_truck2
-                m_truck2.xy = x+2, y
-            m_truck3.xy = x+4, y
+                m_truck2.xy = x+2, 185
+            m_truck3.xy = x+4, 185
         elif t_lane == 6:
             objects[20] = None
             if x >= 56:
                 m_truck1 = MiniTruck()
                 objects[18] = m_truck1
-                m_truck1.xy = x, y
+                m_truck1.xy = x, 185
             if x + 2 >= 56:
                 m_truck2 = MiniTruck()
                 objects[19] = m_truck2
-                m_truck2.xy = x+2, y
+                m_truck2.xy = x+2, 185
         elif t_lane == 5:
             m_truck2 = MiniTruck()
             objects[19] = None
@@ -679,8 +715,8 @@ def _detect_objects_revised(objects, ram_state, hud):
             if x >= 56:
                 m_truck1 = MiniTruck()
                 objects[18] = m_truck1
-                m_truck1.xy = x, y
-            m_truck2.xy = x+4, y
+                m_truck1.xy = x, 185
+            m_truck2.xy = x+4, 185
         elif t_lane == 4:
             m_truck2 = MiniTruck()
             objects[18] = None
@@ -688,42 +724,42 @@ def _detect_objects_revised(objects, ram_state, hud):
             if x + 2 >= 56:
                 m_truck1 = MiniTruck()
                 objects[19] = m_truck1
-                m_truck1.xy = x+2, y
-            m_truck2.xy = x+4, y
+                m_truck1.xy = x+2, 185
+            m_truck2.xy = x+4, 185
         elif t_lane == 3:
             objects[19] = None
             objects[20] = None
             if x >= 56:
                 m_truck1 = MiniTruck()
                 objects[18] = m_truck1
-                m_truck1.xy = x, y
+                m_truck1.xy = x, 185
         elif t_lane == 2:
             objects[18] = None
             objects[20] = None
             if x + 2 >= 56:
                 m_truck1 = MiniTruck()
                 objects[19] = m_truck1
-                m_truck1.xy = x+2, y
+                m_truck1.xy = x+2, 185
         elif t_lane == 1:
             m_truck1 = MiniTruck()
             objects[18] = None
             objects[19] = None
             objects[20] = m_truck1
-            m_truck1.xy = x+4, y
+            m_truck1.xy = x+4, 185
     else:
         objects[20] = None
         objects[23] = None
 
-    # rr = number_to_bitfield(ram_state[9])
-    # rm = number_to_bitfield(ram_state[10])
-    # lm = number_to_bitfield(ram_state[11])
-    # ll = number_to_bitfield(ram_state[12])
+    # Enemy in the air top lane + bottom lane
 
     if ram_state[9]:
         lane_3 = ram_state[9]&56
         lane_3 = lane_3 >> 3
         lane_1 = ram_state[9]&7
-        x, y = 115 - truck_x - 4, 185
+        if ram_state[66]:
+            x = 115 - truck_x - 3
+        else:
+            x = 115 - truck_x - 4
         if lane_3 and x + lane_3 + 1<= 103:
                 m_enemy = MiniEnemy()
                 objects[24] = m_enemy
@@ -744,7 +780,10 @@ def _detect_objects_revised(objects, ram_state, hud):
         lane_3 = ram_state[10]&56
         lane_3 = lane_3 >> 3
         lane_1 = ram_state[10]&7
-        x, y = 99 - truck_x - 4, 185
+        if ram_state[66]:
+            x = 99 - truck_x - 3
+        else:
+            x = 99 - truck_x - 4
         if lane_3:
                 m_enemy = MiniEnemy()
                 objects[26] = m_enemy
@@ -765,7 +804,10 @@ def _detect_objects_revised(objects, ram_state, hud):
         lane_3 = ram_state[11]&56
         lane_3 = lane_3 >> 3
         lane_1 = ram_state[11]&7
-        x, y = 83 - truck_x - 4, 185
+        if ram_state[66]:
+            x = 83 - truck_x - 3
+        else:
+            x = 83 - truck_x - 4
         if lane_3:
                 m_enemy = MiniEnemy()
                 objects[28] = m_enemy
@@ -786,7 +828,10 @@ def _detect_objects_revised(objects, ram_state, hud):
         lane_3 = ram_state[12]&56
         lane_3 = lane_3 >> 3
         lane_1 = ram_state[12]&7
-        x = 67 - truck_x - 4
+        if ram_state[66]:
+            x = 67 - truck_x - 3
+        else:
+            x = 67 - truck_x - 4
         if lane_3 and x + lane_3 >= 55:
                 m_enemy = MiniEnemy()
                 objects[30] = m_enemy
