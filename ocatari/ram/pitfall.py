@@ -1,7 +1,7 @@
 from .game_objects import GameObject
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1,"Wall":1,"Logs":5,"Stairpit":4,"Pit":3,"Scorpion":1,"Rope":1,"Snake":1,"Tarpit":1,"Waterhole":1,"Crocodile":1,"GoldenBar":1,"Fire":1}
+MAX_NB_OBJECTS = {"Player": 1,"Wall":1,"Logs":5,"StairPit":4,"Pit":3,"Scorpion":1,"Rope":1,"Snake":1,"Tarpit":1,"Waterhole":1,"Crocodile":1,"GoldenBar":1,"Fire":1}
 MAX_NB_OBJECTS_HUD = {"LifeCount":3,"PlayerScore":6,"Timer":5}
 
 class Player(GameObject):
@@ -152,9 +152,13 @@ def _init_objects_pitfall_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player()]
+    objects = [Player(),Wall(),Logs(),Logs(),Logs(),StairPit(),StairPit(),Pit(),Pit(),Scorpion()]
+    objects.extend([Rope(),Snake(),Tarpit(),Waterhole(),Crocodile(),Crocodile(),Crocodile()])
+    objects.extend([GoldenBar(),Fire()])
     if hud:
-        objects.extend([])
+        objects.extend([LifeCount(),LifeCount(),LifeCount()])
+        objects.extend([PlayerScore()]*5)
+        objects.extend([Timer()]*4)
     return objects
 
 def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
@@ -168,6 +172,100 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
     # Player_y = 1.00 x ram[105] + 72.00
     player.xy =  ram_state[97]+1,ram_state[105]+72
     objects[0]=player
+    if ram_state[19]==0:
+        l1=Logs()
+        l1.xy=(ram_state[98]+2)%160,119
+        objects[2]=l1; objects[3]=None; objects[4]=None
+    elif ram_state[19]==1:
+        l1=Logs()
+        l2=Logs()
+        l1.xy=(ram_state[98]+2)%160,119
+        l2.xy=(ram_state[98]+16+2)%160,119
+        objects[2]=l1; objects[3]=l2; objects[4]=None
+    elif ram_state[19]==2:
+        l1=Logs()
+        l2=Logs()
+        l1.xy=(ram_state[98]+2)%160,119
+        l2.xy=(ram_state[98]+32+2)%160,119
+        objects[2]=l1; objects[3]=l2; objects[4]=None
+    elif ram_state[19]==3:
+        l1=Logs()
+        l2=Logs()
+        l3=Logs()
+        l1.xy=ram_state[98]+2,119
+        l2.xy=(ram_state[98]+32+2)%160,119
+        l3.xy=(ram_state[98]+64+2)%160,119
+        objects[2]=l1; objects[3]=l2; objects[4]=l3
+    else:
+        objects[2]=None; objects[3]=None; objects[4]=None
+    
+    # Handling the pits etc
+    if ram_state[20]==0:
+        # Single stairpit
+        objects[5:9]=[None]*4
+        objects[10]=None
+        objects[12:19]=[None]*7
+    elif ram_state[20]==1:
+        p1=Pit();p2=Pit()
+        p1.xy=48,122
+        p2.xy=100,122
+        objects[7]=p1; objects[8]=p2
+        objects[10]=None
+        objects[12:19]=[None]*7
+        objects[5:7]=[None]*2
+    elif ram_state[20]==2:
+        p=Tarpit()
+        p.xy=48,120
+        objects[12]=p
+        objects[7:9]=[None]*2
+        objects[10]=None
+        objects[13:19]=[None]*6
+        objects[5:7]=[None]*2
+    elif ram_state[20]==3:
+        w=Waterhole()
+        w.xy=50,119
+        objects[13]=w
+        objects[12]=None
+        objects[7:9]=[None]*2
+        objects[10]=None
+        objects[14:19]=[None]*5
+        objects[5:7]=[None]*2
+    elif ram_state[20]==4:
+        w=Waterhole()
+        w.xy=50,119
+        objects[13]=w
+        objects[12]=None
+        objects[7:9]=[None]*2
+        objects[10]=None
+        objects[14]=None
+        objects[5:7]=[None]*2
+        c1=Crocodile(); c1.xy=60,122
+        objects[15]=c1
+        c2=Crocodile(); c2.xy=76,122
+        objects[16]=c2
+        c3=Crocodile(); c3.xy=92,122
+        objects[17]=c3
+    else:
+        pass
+    
+    # Implementing Scorpion
+    # Remove scorpion when there is no pit
+    if ram_state[29]==0:
+        s=Scorpion()
+        s.xy=ram_state[99],170
+        objects[9]=s
+        objects[1]=None
+    elif ram_state[29]==1:
+        w=Wall()
+        w.xy=ram_state[99],170
+        objects[1]=w
+        objects[9]=None
+    else:
+        objects[1]=None; objects[9]=None
+
+
+
+
 
     if hud:
         pass
