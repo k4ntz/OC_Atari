@@ -21,11 +21,38 @@ AVAILABLE_GAMES = ["Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "
                    "MontezumaRevenge", "MsPacman", "Pong", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders",
                    "Tennis"]
 
+
+# TODO: complete the docstring 
 class OCAtari:
-    def __init__(self, env_name, mode="raw", hud=False, obs_mode="dqn", *args, **kwargs):
-        """
-        mode: raw/revised/vision/both
-        """
+    """OCAtari main class
+
+    Parameters
+    ----------
+    env_name : str
+        gymnasium environment to use
+    mode : str, optional
+        detection mode. options: vision, raw, revised, test. by default "raw"
+    hud : bool, optional
+        whether to detect and publish hud information or not, by default False
+    obs_mode : str, optional
+        determines the content of the observation returned by env.step(). dqn for dqn observation., by default None
+
+    Attributes
+    ----------
+    game_name : str
+        DESCRIPTION
+    mode : str
+        DESCRIPTION
+    obs_mode : str
+        DESCRIPTION
+    hud : str
+        DESCRIPTION
+    max_objects : list
+        DESCRIPTION
+    window : int
+        DESCRIPTION
+    """
+    def __init__(self, env_name, mode="raw", hud=False, obs_mode=None, *args, **kwargs):
         if "ALE/" in env_name: #case if v5 specified
             to_check = env_name[4:8]
             game_name = env_name.split("/")[1].split("-")[0].split("No")[0].split("Deterministic")[0]
@@ -39,6 +66,7 @@ class OCAtari:
         self._env = gym.make(env_name, *args, **kwargs)
         self.game_name = game_name
         self.mode = mode
+        self.obs_mode = obs_mode
         self.hud = hud
         self.max_objects = []
         self._objects = init_objects(self.game_name, self.hud)
@@ -87,12 +115,16 @@ class OCAtari:
         else:   # mode == "raw" because in raw mode we augment the info dictionary
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
         self._fill_buffer()
+        if self.obs_mode in ["dqn", "ori"]:
+            obs = self._get_buffer_as_stack()
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
         self.detect_objects(self._objects, obs, self.game_name, self.hud)
         self._fill_buffer()
+        if self.obs_mode in ["dqn", "ori"]:
+            obs = self._get_buffer_as_stack()
         return obs, reward, truncated, terminated, info
 
     def _step_test(self, *args, **kwargs):
@@ -100,6 +132,8 @@ class OCAtari:
         self.detect_objects_r(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self.detect_objects_v(self.objects_v, obs, self.game_name, self.hud)
         self._fill_buffer()
+        if self.obs_mode in ["dqn", "ori"]:
+            obs = self._get_buffer_as_stack()
         return obs, reward, truncated, terminated, info
 
     def _reset_buffer_dqn(self):
@@ -131,6 +165,9 @@ class OCAtari:
         self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
                                                device=DEVICE))
 
+    def _get_buffer_as_stack(self):
+        return torch.stack(list(self._state_buffer), 0).unsqueeze(0).byte()
+    
     def render(self, *args, **kwargs):
         return self._env.render(*args, **kwargs)
 
@@ -146,7 +183,7 @@ class OCAtari:
 
     @property
     def dqn_obs(self):
-        return torch.stack(list(self._state_buffer), 0).unsqueeze(0).byte()
+        return self._get_buffer_as_stack()
 
     def set_ram(self, target_ram_position, new_value):
         """
@@ -201,71 +238,3 @@ class OCAtari:
         table.set_fontsize(14)
         plt.subplots_adjust(top=0.8)
         plt.show()
-
-
-class PositionHistoryGymWrapper(gym.Env):
-
-    def __init__(self, ocatari_env : OCAtari) -> None:
-        super().__init__()
-        if ocatari_env.mode != "revised":
-            print("ram only supported for env wrapper for now")
-            exit()
-        self.ocatari_env = ocatari_env
-        self.reference_list = self._init_ref_vector()
-        self.current_vector = np.zeros(4 * len(self.reference_list), dtype=np.float32)
-
-
-    @property
-    def observation_space(self):
-        vl = len(self.reference_list) * 4
-        return gym.spaces.Box(low=-2**63, high=2**63 - 2, shape=(vl, ), dtype=np.float32)
-
-
-    @property
-    def action_space(self):
-        return self.ocatari_env.action_space
-
-
-    def step(self, *args, **kwargs):
-        _, reward, truncated, terminated, info = self.ocatari_env.step(*args, **kwargs)
-        self._obj2vec()
-        return self.current_vector, reward, truncated, terminated, info
-
-
-    def reset(self, *args, **kwargs):
-        _, info = self.ocatari_env.reset(*args, **kwargs)
-        self._obj2vec()
-        return self.current_vector, info
-
-
-    def render(self, *args, **kwargs):
-        return self.ocatari_env.render(*args, **kwargs)
-
-
-    def close(self, *args, **kwargs):
-        return self.ocatari_env.close(*args, **kwargs)
-
-
-    def _init_ref_vector(self):
-        reference_list = []
-        obj_counter = {}
-        for o in self.ocatari_env.max_objects:
-            if o.category not in obj_counter.keys():
-                obj_counter[o.category] = 0
-            obj_counter[o.category] += 1
-        for k in list(obj_counter.keys()):
-            reference_list.extend([k for i in range(obj_counter[k])])
-        return reference_list
-
-
-    def _obj2vec(self):
-        temp_ref_list = self.reference_list.copy()
-        for o in self.ocatari_env.objects: # populate out_vector with object instance
-            idx = temp_ref_list.index(o.category) #at position of first category occurance
-            start = idx * 4
-            flat = [item for sublist in o.h_coords for item in sublist]
-            self.current_vector[start:start + 4] = flat #write the slice
-            temp_ref_list[idx] = "" #remove reference from reference list
-        for i, d in enumerate(temp_ref_list):
-            if d != "": #fill not populated category instances wiht 0.0's
-                self.current_vector[i*4:i*4+4] = [0.0, 0.0, 0.0, 0.0] #np.zeros(4, dtype=np.float32)

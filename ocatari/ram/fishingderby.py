@@ -6,8 +6,8 @@ MAX_NB_OBJECTS_HUD = {"Player1FishingString": 1, "Player2FishingString": 1, "Fis
 
 
 class Fish(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 232, 232, 74
         self.xy = 0, 0
         self.wh = 8, 8
@@ -15,8 +15,8 @@ class Fish(GameObject):
 
 
 class Shark(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 232, 232, 74
         self.xy = 0, 0
         self.wh = 35, 17
@@ -26,8 +26,8 @@ class Shark(GameObject):
 
 class PlayerOneFishingString(GameObject):
     # ram_state[15] gives what input was played by player 1
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 232, 232, 74
         self.xy = 0, 37
         self.wh = 0, 0
@@ -36,8 +36,8 @@ class PlayerOneFishingString(GameObject):
 
 
 class ScorePlayerOne(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 167, 26, 26
         self.xy = 49, 8
         self.wh = 6, 8
@@ -46,8 +46,8 @@ class ScorePlayerOne(GameObject):
 
 class PlayerTwoFishingString(GameObject):
     # to deactivate player two -> turn ram_state[0] to 1
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 0, 0, 0
         self.xy = 0, 37
         self.wh = 0, 0
@@ -56,8 +56,8 @@ class PlayerTwoFishingString(GameObject):
 
 
 class ScorePlayerTwo(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 167, 26, 26
         self.xy = 113, 8
         self.wh = 6, 8

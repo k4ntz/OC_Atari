@@ -17,9 +17,9 @@ class Player(GameObject):
 
 
 class Ghost(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super(Ghost, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 79, 57
         self.wh = 9, 10
         self.rgb = 200, 72, 72
@@ -27,7 +27,7 @@ class Ghost(GameObject):
 
 
 class Fruit(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super(Fruit, self).__init__()
         self._xy = 125, 173
         self.wh = 9, 10
@@ -36,7 +36,7 @@ class Fruit(GameObject):
 
 
 class Score(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super(Score, self).__init__()
         self._xy = 95, 187
         self.wh = 7, 7
@@ -45,7 +45,7 @@ class Score(GameObject):
 
 
 class Life(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super(Life, self).__init__()
         self._xy = 12, 171
         self.wh = 7, 10
