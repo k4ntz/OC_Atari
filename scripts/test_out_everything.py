@@ -31,7 +31,7 @@ def ransac_regression(x, y):
 
 
 
-game_name = "KangarooNoFrameskip-v4"
+game_name = "BoxingNoFrameskip-v4"
 MODE = "vision"
 RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
@@ -60,8 +60,8 @@ dqn_agent = load_agent(opts, env.action_space.n)
 
 snapshot = None
 
-snapshot = pickle.load(open("kangstarted.pkl", "rb"))
-env._env.env.env.ale.restoreState(snapshot)
+# snapshot = pickle.load(open("kangstarted.pkl", "rb"))
+# env._env.env.env.ale.restoreState(snapshot)
 
 if snapshot is None:
     for _ in range(20):
@@ -85,7 +85,7 @@ def show_ims(obs_list, new_ram):
     plt.show()
 
 ram_n = initial_ram_n-1
-while ram_n < 128:
+while ram_n < 127:
     ram_n += 1
     askinput = True
     already_seen_frames = []

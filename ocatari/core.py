@@ -26,7 +26,7 @@ AVAILABLE_GAMES = ["Alien", "Assault", "Asterix", "Asteroids", "Atlantis", "Beam
                    "Tennis","Yarsrevenge"]
 
 
-class OCAtari:
+class OCAtari(gym.Env):
     def __init__(self, env_name, mode="revised", hud=False, obs_mode="dqn", *args, **kwargs):
         """
         mode: raw/revised/vision/both
@@ -75,6 +75,10 @@ class OCAtari:
         self._state_buffer = deque([], maxlen=self.window)
         self.action_space = self._env.action_space
         self._ale = self._env.unwrapped.ale
+        #inhererit every attribute and method of env
+        for meth in dir(self._env):
+            if meth not in dir(self):
+                setattr(self, meth, getattr(self._env, meth))
 
     def _step_ram(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
