@@ -5,8 +5,8 @@ import math
 
 class Player(GameObject):
     class Player(GameObject):
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
+        def __init__(self):
+            super().__init__()
             self.rgb = 187, 187, 53
             self._xy = 0, 0
             self.wh = 8, 11  # at some point 16, 11. advanced other player (oblix) is (6, 11)
@@ -14,8 +14,8 @@ class Player(GameObject):
 
 
 class Cauldron(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 167, 26, 26
         self._xy = 0, 0
         self.wh = 7, 10
@@ -23,8 +23,8 @@ class Cauldron(GameObject):
 
 
 class Enemy(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 228, 111, 111
         self._xy = 0, 0
         self.wh = 7, 11
@@ -32,8 +32,8 @@ class Enemy(GameObject):
 
 
 class Score(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 187, 187, 53
         self._xy = 0, 0
         self.wh = 8, 11
@@ -41,8 +41,8 @@ class Score(GameObject):
 
 
 class Lives(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 187, 187, 53
         self._xy = 0, 0
         self.wh = 6, 7
@@ -50,8 +50,8 @@ class Lives(GameObject):
 
 
 class Helmet(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 240, 128, 128
         self._xy = 0, 0
         self.wh = 7, 11
@@ -59,8 +59,8 @@ class Helmet(GameObject):
 
 
 class Shield(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 214, 214, 214
         self._xy = 0, 0
         self.wh = 5, 11
@@ -68,8 +68,8 @@ class Shield(GameObject):
 
 
 class Lamp(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 187, 53, 53
         self._xy = 0, 0
         self.wh = 8, 11
@@ -77,8 +77,8 @@ class Lamp(GameObject):
 
 
 class Apple(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 184, 50, 50
         self._xy = 0, 0
         self.wh = 8, 11
@@ -86,8 +86,8 @@ class Apple(GameObject):
 
 
 class Fish(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 198, 89, 179
         self._xy = 0, 0
         self.wh = 8, 5
@@ -95,8 +95,8 @@ class Fish(GameObject):
 
 
 class Meat(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 184, 50, 50
         self._xy = 0, 0
         self.wh = 5, 11
@@ -104,8 +104,8 @@ class Meat(GameObject):
 
 
 class Mug(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 184, 50, 50
         self._xy = 0, 0
         self.wh = 7, 11
@@ -113,8 +113,8 @@ class Mug(GameObject):
 
 
 class Reward50(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 198, 89, 179
         self._xy = 0, 0
         self.wh = 6, 11
@@ -122,8 +122,8 @@ class Reward50(GameObject):
 
 
 class Reward100(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 135, 183, 84
         self._xy = 0, 0
         self.wh = 8, 11
@@ -131,8 +131,8 @@ class Reward100(GameObject):
 
 
 class Reward200(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 195, 144, 61
         self._xy = 0, 0
         self.wh = 8, 11
@@ -140,8 +140,8 @@ class Reward200(GameObject):
 
 
 class Reward300(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 213, 130, 74
         self._xy = 0, 0
         self.wh = 8, 11
@@ -149,8 +149,8 @@ class Reward300(GameObject):
 
 
 class Reward400(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 135, 183, 84
         self._xy = 0, 0
         self.wh = 8, 11
@@ -158,8 +158,8 @@ class Reward400(GameObject):
 
 
 class Reward500(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 163, 57, 21
         self._xy = 0, 0
         self.wh = 8, 11

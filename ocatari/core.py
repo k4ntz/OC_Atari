@@ -2,7 +2,7 @@ from collections import deque
 
 import gymnasium as gym
 from termcolor import colored
-
+import numpy as np
 from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects, get_max_objects
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
@@ -26,19 +26,51 @@ AVAILABLE_GAMES = ["Alien", "Assault", "Asterix", "Asteroids", "Atlantis", "Beam
                    "Tennis","Yarsrevenge"]
 
 
-class OCAtari(gym.Env):
-    def __init__(self, env_name, mode="revised", hud=False, obs_mode="dqn", *args, **kwargs):
-        """
-        mode: raw/revised/vision/both
-        """
-        if env_name[:4] not in [gn[:4] for gn in AVAILABLE_GAMES]:
+# TODO: complete the docstring 
+class OCAtari:
+    """OCAtari main class
+
+    Parameters
+    ----------
+    env_name : str
+        gymnasium environment to use
+    mode : str, optional
+        detection mode. options: vision, raw, revised, test. by default "raw"
+    hud : bool, optional
+        whether to detect and publish hud information or not, by default False
+    obs_mode : str, optional
+        determines the content of the observation returned by env.step(). dqn for dqn observation., by default None
+
+    Attributes
+    ----------
+    game_name : str
+        DESCRIPTION
+    mode : str
+        DESCRIPTION
+    obs_mode : str
+        DESCRIPTION
+    hud : str
+        DESCRIPTION
+    max_objects : list
+        DESCRIPTION
+    window : int
+        DESCRIPTION
+    """
+    def __init__(self, env_name, mode="raw", hud=False, obs_mode=None, *args, **kwargs):
+        if "ALE/" in env_name: #case if v5 specified
+            to_check = env_name[4:8]
+            game_name = env_name.split("/")[1].split("-")[0].split("No")[0].split("Deterministic")[0]
+        else:
+            to_check = env_name[:4]
+            game_name = env_name.split("-")[0].split("No")[0].split("Deterministic")[0]
+        if to_check[:4] not in [gn[:4] for gn in AVAILABLE_GAMES]:
             print(colored("Game not available in OCAtari", "red"))
             print("Available games: ", AVAILABLE_GAMES)
             exit(1)
         self._env = gym.make(env_name, *args, **kwargs)
-        self.game_name = env_name.split("-")[0].split("No")[0].split("Deterministic")[0]
+        self.game_name = game_name
         self.mode = mode
-        self._ale = self._env.unwrapped.ale
+        self.obs_mode = obs_mode
         self.hud = hud
         self.max_objects = []
         self._objects = init_objects(self.game_name, self.hud)
@@ -87,12 +119,16 @@ class OCAtari(gym.Env):
         else:  # mode == "raw" because in raw mode we augment the info dictionary
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
         self._fill_buffer()
+        if self.obs_mode in ["dqn", "ori"]:
+            obs = self._get_buffer_as_stack()
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
         self.detect_objects(self._objects, obs, self.game_name, self.hud)
         self._fill_buffer()
+        if self.obs_mode in ["dqn", "ori"]:
+            obs = self._get_buffer_as_stack()
         return obs, reward, truncated, terminated, info
 
     def _step_test(self, *args, **kwargs):
@@ -100,6 +136,8 @@ class OCAtari(gym.Env):
         self.detect_objects_r(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self.detect_objects_v(self.objects_v, obs, self.game_name, self.hud)
         self._fill_buffer()
+        if self.obs_mode in ["dqn", "ori"]:
+            obs = self._get_buffer_as_stack()
         return obs, reward, truncated, terminated, info
 
     def _reset_buffer_dqn(self):
@@ -131,6 +169,9 @@ class OCAtari(gym.Env):
         self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
                                                device=DEVICE))
 
+    def _get_buffer_as_stack(self):
+        return torch.stack(list(self._state_buffer), 0).unsqueeze(0).byte()
+    
     def render(self, *args, **kwargs):
         return self._env.render(*args, **kwargs)
 
@@ -146,7 +187,7 @@ class OCAtari(gym.Env):
 
     @property
     def dqn_obs(self):
-        return torch.stack(list(self._state_buffer), 0).unsqueeze(0).byte()
+        return self._get_buffer_as_stack()
 
     def set_ram(self, target_ram_position, new_value):
         """
