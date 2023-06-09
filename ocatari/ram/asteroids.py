@@ -22,8 +22,8 @@ class Player(GameObject):
 
 
 class Asteroid(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.xy = 8, 87
         self.wh = 16, 28
         self.rgb = 180, 122, 48
