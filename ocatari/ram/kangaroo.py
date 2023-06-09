@@ -29,9 +29,9 @@ class Child(GameObject):
 
 
 class Enemy(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super(Enemy, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 79, 57
         self.wh = 6, 15
         self.rgb = 227, 159, 89
@@ -39,7 +39,7 @@ class Enemy(GameObject):
 
 
 class Fruit(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super(Fruit, self).__init__()
         self._xy = 125, 173
         self.wh = 7, 10
@@ -48,8 +48,8 @@ class Fruit(GameObject):
 
 
 class Scale(GameObject):
-    def __init__(self, x=0, y=0, w=8, h=35, *args, **kwargs):
-        super(Scale, self).__init__(*args, **kwargs)
+    def __init__(self, x=0, y=0, w=8, h=35):
+        super(Scale, self).__init__()
         self._xy = x, y
         self._prev_xy = x, y
         self.wh = w, h
@@ -58,8 +58,8 @@ class Scale(GameObject):
 
 
 class Platform(GameObject):
-    def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
-        super(Platform, self).__init__(*args, **kwargs)
+    def __init__(self, x=0, y=0, w=8, h=4):
+        super(Platform, self).__init__()
         self._xy = x, y
         self._prev_xy = x, y
         self.wh = w, h
@@ -68,7 +68,7 @@ class Platform(GameObject):
 
 
 class Projectile_top(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super(Projectile_top, self).__init__()
         self._xy = 0, 0
         self.wh = 2, 3
@@ -77,7 +77,7 @@ class Projectile_top(GameObject):
 
 
 class Projectile_enemy(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super(Projectile_enemy, self).__init__()
         self._xy = 0, 0
         self.wh = 2, 3
@@ -86,7 +86,7 @@ class Projectile_enemy(GameObject):
 
 
 class Bell(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super(Bell, self).__init__()
         self._xy = 126, 173
         self.wh = 6, 11
@@ -95,7 +95,7 @@ class Bell(GameObject):
 
 
 class Score(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super(Score, self).__init__()
         self._xy = 129, 183
         self.wh = 15, 7
@@ -104,7 +104,7 @@ class Score(GameObject):
 
 
 class Life(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super(Life, self).__init__()
         self._xy = 16, 183
         self.wh = 4, 7
@@ -113,7 +113,7 @@ class Life(GameObject):
 
 
 class Time(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super(Time, self).__init__()
         self._xy = 80, 191
         self.wh = 15, 5

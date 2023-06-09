@@ -52,8 +52,8 @@ class Live(GameObject):
 
 
 class BlockRow(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.xy = 8, 87
         self.wh = 144, 6
         self.rgb = 66, 72, 200
@@ -61,8 +61,8 @@ class BlockRow(GameObject):
 
 
 class PlayerNumber(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.xy = 136, 5
         self.wh = 4, 10
         self.rgb = 142, 142, 142

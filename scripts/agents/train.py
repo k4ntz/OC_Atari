@@ -1,7 +1,7 @@
 import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))) # noqa
-from ocatari.core import OCAtari, PositionHistoryGymWrapper
+from ocatari.environments import PositionHistoryEnv
 import gymnasium as gym
 from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.vec_env import SubprocVecEnv
@@ -38,7 +38,7 @@ def linear_schedule(initial_value: float) -> Callable[[float], float]:
 
 def make_env(game: str, rank: int, seed: int = 0) -> Callable:
     def _init() -> gym.Env:
-        env = PositionHistoryGymWrapper(OCAtari(game, mode="revised", hud=False, obs_mode=None))
+        env = PositionHistoryEnv(game)
         env = Monitor(env)
         env.reset(seed=seed + rank)
         return env
@@ -76,7 +76,7 @@ def main():
     ckpt_path.mkdir(parents=True, exist_ok=True)
 
     # check if compatible gym env
-    env = PositionHistoryGymWrapper(OCAtari(env_str, mode="revised", hud=False, obs_mode=None))
+    env = PositionHistoryEnv(env_str)
     check_env(env)
     del env
     eval_env = SubprocVecEnv([make_env(game=env_str, rank=i, seed=eval_env_seed) for i in range(n_eval_envs)], start_method="fork")
