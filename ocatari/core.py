@@ -108,9 +108,12 @@ class OCAtari:
         self.action_space = self._env.action_space
         self._ale = self._env.unwrapped.ale
         #inhererit every attribute and method of env
-       # for meth in dir(self._env):
-       #     if meth not in dir(self):
-       #         setattr(self, meth, getattr(self._env, meth))
+        for meth in dir(self._env):
+            if meth not in dir(self):
+                try:
+                    setattr(self, meth, getattr(self._env, meth))
+                except AttributeError:
+                    pass
 
     def _step_ram(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)

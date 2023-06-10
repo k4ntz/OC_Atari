@@ -27,4 +27,5 @@ scripts/agents/logs
 .idea/bachelor-praktikum.iml
 reports
 
+docs/_build
 .dataset_generation/.*

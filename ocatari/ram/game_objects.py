@@ -1,4 +1,7 @@
 class GameObject:
+    """
+    The Parent Class of every detected object in the Atari games (RAM Extraction mode)
+    """
     GET_COLOR = False
     GET_WH = False
 
@@ -15,10 +18,64 @@ class GameObject:
 
     @property
     def category(self):
+        """
+        The Category of class name of the game object (e.g. Player, Ball, ...).
+
+        :type: str
+        """
         return self.__class__.__name__
 
     @property
+    def x(self):
+        """
+        The x positional coordinate on the image (on the horizontal axis).
+
+        :type: int
+        """
+        return self._xy[0]
+
+    @property
+    def y(self):
+        """
+        The y positional coordinate on the image (on the vertical axis).
+
+        :type: int
+        """
+        return self._xy[1]
+
+    @property
+    def w(self):
+        """
+        The width/horizontal size of the object (in pixels).
+
+        :type: int
+        """
+        return self.wh[0]
+
+    @w.setter
+    def w(self, w):
+        self.wh = w, self.h
+
+    @property
+    def h(self):
+        """
+        The height/vertical size of the object (in pixels).
+
+        :type: int
+        """
+        return self.wh[1]
+    
+    @h.setter
+    def h(self, h):
+        self.wh = self.w, h
+
+    @property
     def xy(self):
+        """
+        Both (x, y) positional coordinates in a tuple. 
+
+        :type: (int, int)
+        """
         return self._xy
 
     @xy.setter
@@ -30,56 +87,53 @@ class GameObject:
     @property
     def h_coords(self):
         """
-        history of coordinates
+        History of coordinates, i.e. current (x, y) and previous (x, y) position.
+
+        :type: [(int, int), (int, int)]
         """
         return [self._xy, self._prev_xy]
 
     @property
     def dx(self):
+        """
+        The pixel movement correponding to: current_x - previous_x.
+
+        :type: int
+        """
         return self._xy[0] - self._prev_xy[0]
 
     @property
     def dy(self):
+        """
+        The pixel movement correponding to: current_y - previous_y.
+
+        :type: int
+        """
         return self._xy[1] - self._prev_xy[1]
 
     @property
     def xywh(self):
+        """
+        The (x, y, w, h) positional and width coordinates.
+
+        :type: (int, int, int, int)
+        """
         return self._xy[0], self._xy[1], self.wh[0], self.wh[1]
 
-    @property
-    def x(self):
-        return self._xy[0]
+    # @x.setter
+    # def x(self, x):
 
-    @property
-    def y(self):
-        return self._xy[1]
-
-    @x.setter
-    def x(self, x):
-        self._xy = x, self.xy[1]
+    #     self._xy = x, self.xy[1]
     
-    @y.setter
-    def y(self, y):
-        self._xy = self.xy[0], y
-
-    @property
-    def w(self):
-        return self.wh[0]
-
-    @w.setter
-    def w(self, w):
-        self.wh = w, self.h
-
-    @property
-    def h(self):
-        return self.wh[1]
-    
-    @h.setter
-    def h(self, h):
-        self.wh = self.w, h
+    # @y.setter
+    # def y(self, y):
+    #     self._xy = self.xy[0], y
 
     @property
     def orientation(self):
+        """
+        The orientation of the object (if available), game specific.
+        """
         return self._orientation
 
     @orientation.setter
@@ -88,9 +142,15 @@ class GameObject:
 
     @property
     def center(self):
+        """
+        The center of the bounding box of the object.
+        """
         return self._xy[0] + self.wh[0]/2, self._xy[1] + self.wh[1]/2
 
     def is_on_top(self, other):
+        """
+        returns true if this and another gameobject overlap.
+        """
         return (other.x <= self.x <= other.x + other.w) and \
             (other.y <= self.y <= other.y + other.h) 
 

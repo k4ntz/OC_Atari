@@ -14,9 +14,10 @@ def bbs_extend(labels, key: str, stationary=False):
 
 def most_common_color(image, exclude_black=True):
     """
-    returning the most common color in the image
+    Returns the most common color in the image.
 
-    exclude_black: If True, exclude the black color from the taken into account
+    :param exclude_black: If True, exclude the black color from the taken into account, defaults to `True`
+    :type exclude_black: bool
     """
     a2D = image.reshape(-1, image.shape[-1])
     col_range = (256, 256, 256) # generically : a2D.max(0)+1
@@ -33,16 +34,34 @@ def bb_by_color(labels, obs, color, key, closing_active=True):
     bbs_extend(labels, key)
 
 
-def assert_in(observed, target, tol):
+def assert_in(observed, expected, tol):
+    """
+    Asserts if the observed point is equal to the expected one with a given tolerance.
+    True if ||observed - expected|| <= tol, with | the maximum over the two dimensions.
+
+    :param observed: The observed value point (e.g. (x,y), (w,h))
+    :type observed: (int, int)
+    :param expected: The expected value point (also (x,y), (w,h))
+    :type expected: (int, int)
+    :param tol: A given tolerance.
+    :type tol: int or (int, int)
+    :return: True if points within the tolerance
+    :rtype: bool
+    """
     if type(tol) is int:
         tol = (tol, tol)
-    return np.all([target[i] + tol[i] >= observed[i] >= target[i] - tol[i] for i in range(2)])
-    # return np.all([target[i] + tol[i] >= observed[i] >= target[i] - tol[i] for i in range(2)])
+    return np.all([expected[i] + tol[i] >= observed[i] >= expected[i] - tol[i] for i in range(2)])
 
 
 def iou(bb, gt_bb):
     """
-    Intersection over Union
+    Computes the intersection over union between two bounding boxes. 
+    |iou_image|
+
+    :param bb: The bouding box of the detected object in (x, y, w, h) format
+    :type bb: (int, int, int, int)
+    :param gt_bb: The ground truth bouding box
+    :type gt_bb: (int, int, int, int)
     """
     inner_width = min(bb[1] + bb[3], gt_bb[1] + gt_bb[3]) - max(bb[1], gt_bb[1])
     inner_height = min(bb[0] + bb[2], gt_bb[0] + gt_bb[2]) - max(bb[0], gt_bb[0])
@@ -55,7 +74,22 @@ def iou(bb, gt_bb):
 
 def mark_point(image_array, x, y, color=(255, 0, 0), size=1, show=False, cross=True):
     """
-    marks a point on the image at the (x,y) position and displays it
+    Marks a point on the image at the (x,y) position (inplace)
+
+    :param image_array: The image to mark the point on
+    :type image_array: RGB np.array
+    :param x: The x coordinate of the point
+    :type x: int
+    :param y: The y coordinate of the point
+    :type y: int
+    :param color: The rgb values of the point.
+    :type color: (int, int, int)
+    :param size: The size of the point
+    :type size: int
+    :param show: If ``True``, shows the image using matplotlib
+    :type show: bool
+    :param cross: If ``True``, places a diagonal cross, else place a square
+    :type cross: bool
     """
     for i in range(-size, size + 1):
         for j in range(-size, size + 1):
@@ -67,23 +101,32 @@ def mark_point(image_array, x, y, color=(255, 0, 0), size=1, show=False, cross=T
         plt.show()
 
 
-def mark_around(image_array, x, y, color=(255, 0, 0), size=1, show=False, cross=True):
-    """
-    marks a point on the image at the (x,y) position and displays it
-    """
-    x, y = x - 2, y - 2
-    w, h = 4, 4
-    bottom = min(209, y + h)
-    right = min(159, x + w)
-    image_array[y:bottom, x] = color
-    image_array[y:bottom, right] = color
-    image_array[y, x:right+1] = color
-    image_array[bottom, x:right+1] = color
+# def mark_around(image_array, x, y, color=(255, 0, 0), size=1, show=False, cross=True):
+#     """
+#     Marks a point on the image at the (x,y) position and displays it
+#     """
+#     x, y = x - 2, y - 2
+#     w, h = 4, 4
+#     bottom = min(209, y + h)
+#     right = min(159, x + w)
+#     image_array[y:bottom, x] = color
+#     image_array[y:bottom, right] = color
+#     image_array[y, x:right+1] = color
+#     image_array[bottom, x:right+1] = color
 
 
 def mark_bb(image_array, bb, color=(255, 0, 0), surround=True):
     """
-    marks a bounding box on the image
+    Marks a bounding box on the image.
+
+    :param image_array: The image to mark the point on
+    :type image_array: RGB np.array
+    :param bb: The bouding box of the detected object in (x, y, w, h) format
+    :type bb: (int, int, int, int)
+    :param color: The rgb values of the point.
+    :type color: (int, int, int)
+    :param surround: If ``True``, place the bouding box with an offset of 1 pixel to surround the object
+    :type surround: bool
     """
     x, y, w, h = bb
     if surround:
@@ -115,50 +158,40 @@ def plot_bounding_boxes(obs, bbs, objects_colors):
             mark_bb(obs, bb, np.array([255, 255, 255]))
 
 
-# def plot_bounding_boxes_from_info(obs, info):
-#     colors = info.get("objects_colors", {})
-#     for name, oinf in info["objects"].items():
-#         if type(oinf) == tuple:
-#             _plot_bounding_boxes_from_tuple(obs, name, oinf, colors)
-#
-#         elif type(oinf) == list:
-#             for bb in oinf:
-#                 _plot_bounding_boxes_from_tuple(obs, name, bb, colors)
-#
-#         else:
-#             print(colored("the return type is not supported", "red"))
-#
-#
-# def _plot_bounding_boxes_from_tuple(obs, name, tup, colors):
-#     if len(tup) == 4:
-#         color = colors.get(name, np.array([0, 0, 0]))
-#         mark_bb(obs, tup, color)
-#     elif len(tup) == 7:
-#         bb = tup[:4]
-#         color = tup[4:]
-#         mark_bb(obs, bb, color)
-#     else:
-#         print(colored("the return type is not supported", "red"))
+def showim(image):
+    """
+    Display the given in a matplolib.pyplot plot.
 
-
-def showim(im):
-    plt.imshow(im)
+    :param image: The image to mark the point on
+    :type image: np.array
+    """
+    plt.imshow(image)
     plt.show()
 
 
-def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
-                    position=None, tol_p=2, min_distance=10, closing_dist=3,
+def find_mc_objects(image, colors, size=None, tol_s=10,
+                    position=None, tol_p=2, closing_active=True, closing_dist=3,
                     minx=0, miny=0, maxx=160, maxy=210, all_colors=True):
     """
-    image: image to detect objects from
-    color: fixed color of the object
+    Finds the multicolors objects in the image.
+
+    :param image: The image to mark the point on
+    :type image: np.array
+    :param colors: The colors of the object
+    :type colors: (int, int, int)
+    :param closing_active: If true, gathers in one bounding box the instances that are less than 
+    `closing_dist` 
+    :type closing_active: bool
+
     size: presupposed size
     tol_s: tolerance on the size
     position: presupposed position
     tol_p: tolerance on the position
     min_distance: minimal distance between two detected objects
-    """
 
+    :return: a list of tuple boxing boxes
+    :rtype: list
+    """
     masks = [cv2.inRange(image[miny:maxy, minx:maxx, :],
                          np.array(color), np.array(color)) for color in colors]
     if all_colors:
@@ -186,14 +219,14 @@ def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
         if position:
             if not assert_in((x, y), position, tol_p):
                 continue
-        if min_distance:
-            too_close = False
-            for det in detected:
-                if iou(det, (x, y, w, h)) > 0.05:
-                    too_close = True
-                    break
-            if too_close:
-                continue
+        # if min_distance:
+        #     too_close = False
+        #     for det in detected:
+        #         if iou(det, (x, y, w, h)) > 0.05:
+        #             too_close = True
+        #             break
+        #     if too_close:
+        #         continue
         # if x < minx or x+w > maxx or y < miny or y+h > maxy:
         #     continue
         # detected.append((y, x, h, w))
