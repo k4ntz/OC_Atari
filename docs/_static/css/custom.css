@@ -1,0 +1,18 @@
+div.twocol {
+    display: inline;
+}
+
+div.leftside {
+    width: 400px;
+    padding: 0px 3px 0px 0px;
+    float: left;
+}
+
+div.rightside {
+    /* margin-left: 425px; */
+    float: right;
+}
+
+div.rightside img {
+    width: 260px !important;
+}
