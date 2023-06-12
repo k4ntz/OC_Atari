@@ -2,7 +2,7 @@
 
 Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, ...
 
-<img style="float: right;" width="400px" src="docs/_static/kangaroo.png">
+<img style="float: right;" width="400px" align="right" src="docs/_static/kangaroo.png">
 
 Inspired by thw work of [Anand et. al.](https://arxiv.org/abs/1906.08226), we present OCAtari, an improved, extended and object-centric version of their [ATARI ARI project](https://github.com/mila-iqia/atari-representation-learning). \
 The [Arcade Learning Environment](https://github.com/mgbellemare/Arcade-Learning-Environment) allows us to read the RAM state at any time of a game. 
