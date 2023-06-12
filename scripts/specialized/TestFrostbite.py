@@ -342,7 +342,7 @@ def printEnvironmentInfo(env, observation, reward, info):
             print("objects revised:\n", env.objects)
         elif mode == "vision":
             print("objects vision:\n", env.objects)
-        elif mode == "test":
+        elif mode == "both":
             print("objects revised:\n", env.objects)
             print("objects vision:\n", env.objects_v)
     else:

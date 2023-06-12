@@ -31,14 +31,15 @@
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc',
+extensions = ['myst_parser',
+    'sphinx.ext.autodoc',
     'sphinxcontrib.napoleon',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
     'sphinx_rtd_theme',
-    'sphinx.ext.autosectionlabel',
+    # 'sphinx.ext.autosectionlabel',
     'sphinxcontrib.bibtex']
 
 # Add any paths that contain templates here, relative to this directory.

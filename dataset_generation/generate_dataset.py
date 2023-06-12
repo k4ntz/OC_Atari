@@ -29,7 +29,7 @@ parser.add_argument("-dqn", "--dqn", action="store_true", default=True, help="Us
 opts = parser.parse_args()
 
 # Init the environment
-env = OCAtari(opts.game, mode="test", render_mode='rgb_array', hud=True)
+env = OCAtari(opts.game, mode="both", render_mode='rgb_array', hud=True)
 observation, info = env.reset()
 
 # Set up an agent

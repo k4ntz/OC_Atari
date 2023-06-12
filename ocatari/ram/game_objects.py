@@ -144,12 +144,17 @@ class GameObject:
     def center(self):
         """
         The center of the bounding box of the object.
+        
+        :type: (int, int)
         """
         return self._xy[0] + self.wh[0]/2, self._xy[1] + self.wh[1]/2
 
     def is_on_top(self, other):
         """
-        returns true if this and another gameobject overlap.
+        Returns ``True`` if this and another gameobject overlap.
+
+        :return: True if objects overlap
+        :rtype: bool
         """
         return (other.x <= self.x <= other.x + other.w) and \
             (other.y <= self.y <= other.y + other.h) 

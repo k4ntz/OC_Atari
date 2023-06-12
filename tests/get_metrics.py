@@ -14,7 +14,7 @@ from ocatari.vision.tennis import objects_colors
 from ocatari.vision.pong import objects_colors
 from ocatari.vision.bowling import objects_colors
 from ocatari.vision.breakout import objects_colors
-from ocatari.utils import load_agent, test_parser, make_deterministic
+from ocatari.utils import load_agent, test_parser, make_deterministic, RandomAgent
 from copy import deepcopy
 import numpy as np
 import os
@@ -42,7 +42,7 @@ SAVE_FOLDER = "reports"
 SAVE_IMAGE_FOLDER = f"{SAVE_FOLDER}/{game_name}"
 os.makedirs(SAVE_IMAGE_FOLDER, exist_ok=True)
 print(colored(figlet.renderText(f"Testing  {game_name}"), "blue"))
-MODE = "test"
+MODE = "both"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
@@ -62,13 +62,6 @@ if ONLYBOTHDEFINEDOBJECTS:
         classes.append([el[0] for el in inspect.getmembers(sys.modules[mod_path], inspect.isclass)])
     classes_in_both = set.intersection(set(classes[0]) & set(classes[1]))
 
-
-class RandomAgent():
-    def __init__(self, nb_actions) -> None:
-        self.nb_actions = nb_actions
-
-    def draw_action(self, *args, **kwargs) -> int:
-        return random.randint(0, self.nb_actions-1)
 
 opts.path = f"models/{opts.game}/dqn.gz"
 dqn_agent = load_agent(opts, env.action_space.n)

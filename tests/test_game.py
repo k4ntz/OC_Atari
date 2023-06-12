@@ -17,8 +17,8 @@ parser.add_argument("-g", "--game", type=str, required=True,
 parser.add_argument("-i", "--interval", type=int, default=10,
                     help="The frame interval (default 10)")
 parser.add_argument("-m", "--mode", choices=["vision", "revised"],
-                    default="revised", help="The frame interval")
-parser.add_argument("-hud", "--hud", action="store_true", help="Detect HUD")
+                    default="revised", help="The extraction mode")
+parser.add_argument("-hud", "--hud", action="store_true", help="If provided, detect objects from HUD")
 
 opts = parser.parse_args()
 

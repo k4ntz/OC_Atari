@@ -11,24 +11,16 @@ from matplotlib import pyplot as plt
 from pynput import keyboard
 
 from ocatari.vision.utils import make_darker, mark_bb
-import pickle
+
 
 # running this file will start the game in multiple different ways given by the following variables:
-
-default_help = 'F  : FIRE\nTAB:PAUSE'
-HELP_TEXT = plt.text(0, -10.2, default_help, fontsize=20)
-
 
 useOCAtari = True                # if True, running this file will execute the OCAtari code
 printEnvInfo = False             # if True, the extracted objects or the environment info will be printed
 
 # gym[atari]/gymnasium
 game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
-game_name = "MsPacman-v4"    # game name ChopperCommand-v4
-# game_name = "Centipede-v4"    # game name ChopperCommand-v4
-game_name = "SpaceInvaders-v4"    # game name ChopperCommand-v4
-# game_name = "Centipede-v4"    # game name ChopperCommand-v4
-# game_name = "MontezumaRevenge-v4"    # game name ChopperCommand-v4
+game_name = "Kangaroo-v4"    # game name ChopperCommand-v4
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
 fps = 60                        # render fps
@@ -54,7 +46,7 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 
 # OCAtari modes
-mode = "revised"                    # raw, revised, vision, test
+mode = "raw"                    # raw, revised, vision, test
 HUD = True                      # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
@@ -81,18 +73,12 @@ interrupted = False
 fig = plt.gcf()
 fig.set_size_inches(10.5, 18.5)
 
-SAVE_EVERY = 10
-all_rams = []
-target_vals = []
-target_val = 0  # initial value
-env = None
 
 def withgym():
     """
     Sets up the gym environment and runs the game
     """
     # set up environment
-    global env
     env = gym.make(game_name, render_mode=render_mode)
     env.reset(seed=seed)
     env.metadata['render_fps'] = fps
@@ -105,27 +91,11 @@ def withocatari():
     Sets up the gym environment wrapped into the OCAtari2.0 and runs the game
     """
     # set up environment
-    global env
     oc = OCAtari(env_name=game_name, mode=mode, hud=HUD, render_mode=render_mode)
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
-    env = oc
-    # snapshot = pickle.load(open("riverplane.pkl", "rb"))
-    # env._env.env.env.ale.restoreState(snapshot)
 
     run(oc)
-
-
-def distance_to_joey(player):
-    max_dist = 344
-    if player.y > 130:
-        return 1 - (120 * 3 - player.x)/max_dist
-    elif player.y > 70:
-        return 1 - (120 + player.x)/max_dist
-    elif player.y > 25:
-        return 1 - (140 - player.x)/max_dist 
-    else:
-        return 1
 
 
 # def repeat_upsample(rgb_array, k=4, l=4, err=[]):
@@ -174,7 +144,6 @@ def run(env):
         plt.show(block=False)
 
     # run the game
-    previous_lives = 3
     for i in range(performActions):
         # get the action that will be performed
         if playGame:
@@ -193,16 +162,9 @@ def run(env):
         if showActions:
             print(action_name)
             # print(action)
-        
-        
 
         # do a step with the given action
         observation, reward, terminated, truncated, info = env.step(action)
-        # if info["lives"] < previous_lives:
-        #     reward -= 10
-        # previous_lives = info["lives"]
-        # print(reward)
-        # player = env.objects[0]
         # returns if the environment is in the terminal state (end) -> terminated, truncated
         if terminated or truncated:
             observation, info = env.reset()
@@ -211,9 +173,6 @@ def run(env):
 
         # RAM
         ram = get_unwrapped(env).ale.getRAM()
-        if not i % SAVE_EVERY:
-            all_rams.append(deepcopy(ram))
-            target_vals.append(target_val)
         if showRAM:
             print(ram)
 
@@ -291,14 +250,13 @@ def run(env):
         value = -1
         while pause:
             # take a look at the frame
-            HELP_TEXT.set_text("space: enter new value\nTab  : Unpause")
             plt.pause(1)
             # print("is paused")
 
             if end:
                 plt.close('all')
                 break
-        HELP_TEXT.set_text(default_help)
+
         # if escaped, end the program
         if end:
             plt.close('all')
@@ -311,9 +269,6 @@ def run(env):
     # close the environment at the end
     env.close()
     listener.stop()
-    save_fn = "mode_change_kangaroo.pkl"
-    pickle.dump((all_rams, target_vals), open(save_fn, "wb"))
-    print(f"Saved in {save_fn}")
 
 
 def get_unwrapped(env):
@@ -337,7 +292,7 @@ def printEnvironmentInfo(env, observation, reward, info):
             print("objects revised:\n", env.objects)
         elif mode == "vision":
             print("objects vision:\n", env.objects)
-        elif mode == "test":
+        elif mode == "both":
             print("objects revised:\n", env.objects)
             print("objects vision:\n", env.objects_v)
     else:
@@ -368,7 +323,7 @@ def ipdb_Interrupt(plot_time=0):
 
 def on_press(key):
     # running thread while ipdb interrupt
-    global pause, end, listener, HELPTEXT, target_val
+    global pause, end, listener
 
     if not interrupted:
         #print(key)
@@ -379,25 +334,12 @@ def on_press(key):
         # ending program based on escape
         if key == keyboard.Key.esc:
             end = True
-        
-        global env
-        if pause and key == keyboard.Key.space:
-            ram_pos = int(input('please enter ram pos'))
-            print(f"Currently as : {env.get_ram()[ram_pos]}")
-            new_val = int(input('please enter new target value'))
-            env.set_ram(ram_pos, new_val)
 
         # changing inputs
         key_name = str(key)
         key_name = key_name.removeprefix("Key.")
         key_name = key_name.removeprefix("\'")
         key_name = key_name.removesuffix("\'")
-        if pause and key_name.lower() == "s":
-            snapshot = env._env.env.env.ale.cloneState()
-            filename = input('give_filename')
-            pickle.dump(snapshot, open(filename, "wb"))
-            print(f"Saved state under {filename}")
-
         if key_name in key_map.keys():
             input_action = key_map[key_name]
             isActive.add(input_action)
