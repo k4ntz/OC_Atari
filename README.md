@@ -1,16 +1,20 @@
-# Object-Centric Atari
+# Object-Centric Atari Environments
 
 Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, ...
 
-Inspired by thw work of [Anand et. al.](https://arxiv.org/abs/1906.08226), we present OCAtari, an improved, extended and object-centric version of their [ATARI ARI project](https://github.com/mila-iqia/atari-representation-learning). 
+<img style="float: right;" width="400px" src="docs/_static/kangaroo.png">
+
+Inspired by thw work of [Anand et. al.](https://arxiv.org/abs/1906.08226), we present OCAtari, an improved, extended and object-centric version of their [ATARI ARI project](https://github.com/mila-iqia/atari-representation-learning). \
 The [Arcade Learning Environment](https://github.com/mgbellemare/Arcade-Learning-Environment) allows us to read the RAM state at any time of a game. 
-This repository is a wrapper for the well known [Gynmasium project](https://github.com/Farama-Foundation/Gymnasium) , that uses the state of the ram and reverse engineering 
-to provide object centric representation of the screen. It provides code for benchmarking, testing and generating object-centric representations of states.
+This repository provides a wrapper for the well known [Gynmasium project](https://github.com/Farama-Foundation/Gymnasium), that uses the state of the ram and reverse engineering to provide object centric representation of the screen. It provides code for benchmarking, testing and generating object-centric representations of states.
 
 * [Install](#install) -- Install all relevant dependencies and start using OCAtari yourself
 * [Usage](#usage) -- Learn about the different environments OCAtari supports and enables
 * [Producing your own dataset](#producing-your-own-dataset) -- OCAtari also support the generation of object-centric datasets for supported Atari games
 * [Models and additional Information](#models-and-additional-information) -- Everything you need to know to reproduce our results
+
+
+[HERE IS A LINK TO THE DOCUMENTATION :bookmark_tabs:](https://readthedocs.com)
 
 --- 
 
@@ -21,6 +25,27 @@ This repository is structured into multiple folder:
 * [ocatari](ocatari/) -- the actual wrapper
 * [scripts](scripts/) -- A huge amount of scripts to help and test while implementing, extending or using OCAtari. 
 Most are used to reverse engineer the RAM state, like searching for correlations within the RAM state.
+
+
+## Install
+You can install OCAtari in multiple ways, the recommended is to use the provided Dockerfile to install all requirements, like the Atari ROMs and gymnasium.
+You can also simply:
+`pip install ocatari`
+If you want to modify the code, you can clone this repo and run:
+`python setup.py install` or if you want to modify the code `python setup.py develop`
+
+## Usage
+
+```python
+from ocatari.core import OCAtari
+import random
+
+env = OCAtari("Pong", mode="ram", hud=True, render_mode='rgb_array')
+observation, info = env.reset()
+action = random.randint(env.nb_actions-1)
+obs, reward, terminated, truncated, info = env.step(action)
+```
+
 
 ###  List of covered games
 - [ ] Alien (only vision)
@@ -53,22 +78,6 @@ Most are used to reverse engineer the RAM state, like searching for correlations
 - [X] Space Invaders
 - [X] Tennis
 
-## Install
-You can install OCAtari in multiple ways, the easiest is to use the provided Dockerfile to install all requirements, like the Atari ROMs and gymnasium.
-
-If you have full control, we provide the following step-by-step installation manual:
-
-`python setup.py install` or `python setup.py develop`
-
-## Usage
-
-```python
-from ocatari.core import OCAtari
-env = OCAtari("Pong", mode="vision", hud=True, render_mode='rgb_array')
-observation, info = env.reset()
-obs, reward, terminated, truncated, info = env.step(1)
-```
-
 ### The two modes of OCAtari
 OCAtari supports two different modes to extract objects from the current state:
 
@@ -84,7 +93,7 @@ Use the demo files in the scripts/demo folder to test it yourself. You can set t
 You can also run the demo file with an already trained agent or your own developed agent. You can use the -p flag in the command to run the demo file by an agent and let the agent play the game.
 Here is an example: 
 
-`python3.8 demo_pong.py -p models/Pong/model_50000000.gz`
+`python demo_pong.py -p models/Pong/model_50000000.gz`
 
 More information can be found in this [ReadMe](scripts/demo/README%20Demos.md)
 ### Extract the objects from a state 

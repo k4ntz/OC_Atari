@@ -143,3 +143,16 @@ def load_agent(opt, nb_actions=None):
     ckpt = _load_checkpoint(opt.path)
     agent.load_state_dict(ckpt["estimator_state"])
     return agent
+
+
+class RandomAgent():
+    """
+    A agent acting randomly (following a uniform distribution).
+
+    :param nb_actions
+    """
+    def __init__(self, nb_actions) -> None:
+        self.nb_actions = nb_actions
+
+    def draw_action(self, *args, **kwargs) -> int:
+        return random.randint(0, self.nb_actions-1)

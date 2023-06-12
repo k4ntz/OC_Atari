@@ -20,11 +20,11 @@ HELP_TEXT = plt.text(0, -10.2, default_help, fontsize=20)
 
 
 useOCAtari = True                # if True, running this file will execute the OCAtari code
-printEnvInfo = True          # if True, the extracted objects or the environment info will be printed
+printEnvInfo = True        # if True, the extracted objects or the environment info will be printed
 
 # gym[atari]/gymnasium
 # game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
-game_name = "RoadRunner-v4"    # game name ChopperCommand-v4
+game_name = "Pitfall-v4"    # game name ChopperCommand-v4
 render_mode = "human"           # render_mode => "rgb_array" is advised, when playing
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
@@ -51,13 +51,13 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 
 # OCAtari modes
-mode = "vision"                    # raw, revised, vision, test
-HUD = True                     # if True, the returned objects contain only the necessary information to play the game
+mode = "revised"                    # raw, revised, vision, test
+HUD = False                     # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
 showInputs = False              # if True, prints the number and the description of the possible inputs (actions)
 showActions = False            # if True, prints the action that will be done
-showRAM = False         # if True, prints the RAM to the console  
+showRAM = True         # if True, prints the RAM to the console  
 # render_mode=="rgb_array" only
 printRGB = False                # if True, prints the rgb array
 showImage = True                # if True, plots the rgb array
@@ -107,8 +107,8 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/player.pkl", "rb"))
-    env._env.env.env.ale.restoreState(snapshot)
+    # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_4.pkl", "rb"))
+    # env._env.env.env.ale.restoreState(snapshot)
 
     run(oc)
 
@@ -344,7 +344,7 @@ def printEnvironmentInfo(env, observation, reward, info):
             print("objects revised:\n", env.objects)
         elif mode == "vision":
             print("objects vision:\n", env.objects)
-        elif mode == "test":
+        elif mode == "both":
             print("objects revised:\n", env.objects)
             print("objects vision:\n", env.objects_v)
     else:

@@ -55,8 +55,20 @@ You can download from the
    ocatari/vision.rst
 
 .. toctree::
+   :hidden:
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Scripts:
+   :glob:
+
+   scripts/*
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: Tests:
+   :glob:
+
+   tests/*
 
 
 

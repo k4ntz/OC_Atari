@@ -11,31 +11,30 @@ from matplotlib import pyplot as plt
 from pynput import keyboard
 
 from ocatari.vision.utils import make_darker, mark_bb
-
+import pickle
 
 # running this file will start the game in multiple different ways given by the following variables:
+
+default_help = 'F  : FIRE\nTAB:PAUSE'
+HELP_TEXT = plt.text(0, -10.2, default_help, fontsize=20)
+
+
 useOCAtari = True                # if True, running this file will execute the OCAtari code
 printEnvInfo = False             # if True, the extracted objects or the environment info will be printed
 
-# OCAtari modes
-mode = "vision"                    # raw, revised, vision, test
-mode = "revised"                    # raw, revised, vision, test
-HUD = True                      # if True, the returned objects are only the necessary ones
-
 # gym[atari]/gymnasium
-game_name = "ChopperCommand-v4"            # game name, e.g.: ChopperCommand-v4, Pong, Boxing or ...
+game_name = "FishingDerby-v4"    # game name ChopperCommand-v4
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
-seed = 42                       # resetting environment seed
-fps = 30                        # render fps
-
+fps = 60                        # render fps
+seed = 0
 
 # actions
 # possible action inputs given by a run with showInputs = True
-performActions = 30000         # number of actions that will be performed until the environment shuts down automatically
 INPUTS = ['NOOP', 'FIRE', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'UPRIGHT', 'UPLEFT', 'DOWNRIGHT', 'DOWNLEFT', 'UPFIRE',
           'RIGHTFIRE', 'LEFTFIRE', 'DOWNFIRE', 'UPRIGHTFIRE', 'UPLEFTFIRE', 'DOWNRIGHTFIRE', 'DOWNLEFTFIRE']
-playGame = True                # if True, enables inputs if you want to play
+performActions = 30000         # number of actions that will be performed until the environment shuts down automatically
+playGame = True                 # if True, enables inputs if you want to play
 key_map = {                     # the inputs mapped to the possible basic actions
 'f': 'FIRE',                    # -> every other action should be a combination of them
 'up': 'UP',
@@ -44,37 +43,51 @@ key_map = {                     # the inputs mapped to the possible basic action
 'down': 'DOWN'}
 isActive = set()                # the set of active basic actions (related to the currently pressed keys)
 default_action = 'NOOP'         # the default action if nothing is pressed or a false combination is pressed
-actionSequence = []             # only used if playGame is False
+actionSequence = ['NOOP']  # only used if playGame is False
 # -> repeats the action sequence until the number of actions reaches performActions
 # -> if no sequence is defined, it repeats random actions instead
 
-# get valuable information for reversed engineering purposes and others
-showInputs = True              # if True, prints the number and the description of the possible inputs (actions)
+
+# OCAtari modes
+mode = "revised"                    # raw, revised, vision, test
+HUD = True                      # if True, the returned objects contain only the necessary information to play the game
+
+# get valuable information for reversed engineering purposes
+showInputs = False              # if True, prints the number and the description of the possible inputs (actions)
 showActions = False             # if True, prints the action that will be done
 showRAM = False                 # if True, prints the RAM to the console
-showImage = True                # if True, plots the image
+# render_mode=="rgb_array" only
 printRGB = False                # if True, prints the rgb array
-slowDownPlot = 0.001            # pause per iteration
-# RAM manipulation
-manipulateRAM = False           # if True, you can set the RAM by an index
-setRAMIndex = 72                # the index of the ram that will be set
-setRAMValue = 10                # the value of the ram that will be set (if negative, then it counts up)
-showDelta = False               # shows any other changes that occurred by changing the ram (dependent on env.step)
-lastRAM = np.zeros(128)
-ipdb_delay = 0                  # delay of ipdb interrupt and chance to use the plot
+showImage = True                # if True, plots the rgb array
 
-# DO NOT CHANGE! global variables used in context of the key control
-pause = False                   # press tab to pause
-end = False                     # press esc to end
-ipdb_pause = False              # press i to interrupt with ipdb
+# RAM manipulation
+manipulateRAM = False          # if True, you can set the RAM by an index
+setRAMIndex = 52                 # the index of the ram that will be set
+setRAMValue = 255                # the value of the ram that will be set (if negative, then it counts up)
+showDelta = False               # shows any other changes that occured by changing the ram (dependent on env.step)
+slowDownPlot = 0.0001              # pause per iteration
+lastRAM = np.zeros(128)
+
+# DO NOT CHANGE! global variables used in context of interrupting, but keeping the plot stable (must be False)
+pause = False
+end = False
 interrupted = False
 
+fig = plt.gcf()
+fig.set_size_inches(10.5, 18.5)
 
-def with_gym():
+SAVE_EVERY = 10
+all_rams = []
+target_vals = []
+target_val = 0  # initial value
+env = None
+
+def withgym():
     """
     Sets up the gym environment and runs the game
     """
     # set up environment
+    global env
     env = gym.make(game_name, render_mode=render_mode)
     env.reset(seed=seed)
     env.metadata['render_fps'] = fps
@@ -82,38 +95,64 @@ def with_gym():
     run(env)
 
 
-def with_ocatari():
+def withocatari():
     """
     Sets up the gym environment wrapped into the OCAtari2.0 and runs the game
     """
     # set up environment
+    global env
     oc = OCAtari(env_name=game_name, mode=mode, hud=HUD, render_mode=render_mode)
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
+    env = oc
+    snapshot = pickle.load(open("lvl3.pkl", "rb"))
+    # env._env.env.env.ale.restoreState(snapshot)
 
     run(oc)
 
 
+def distance_to_joey(player):
+    max_dist = 344
+    if player.y > 130:
+        return 1 - (120 * 3 - player.x)/max_dist
+    elif player.y > 70:
+        return 1 - (120 + player.x)/max_dist
+    elif player.y > 25:
+        return 1 - (140 - player.x)/max_dist 
+    else:
+        return 1
+
+
+# def repeat_upsample(rgb_array, k=4, l=4, err=[]):
+#     # repeat kinda crashes if k/l are zero
+#     if rgb_array is None:
+#         raise ValueError("The rgb_array is None, probably mushroom_rl bug")
+#     if k <= 0 or l <= 0:
+#         if not err:
+#             print("Number of repeats must be larger than 0, k: {}, l: {}, returning default array!".format(k, l))
+#             err.append('logged')
+#         return rgb_array
+#     return np.repeat(np.repeat(rgb_array, k, axis=0), l, axis=1)
+
+
 def run(env):
-    """
-    runs the game in the given environment
-    env: the environment
-    """
     # key input handling
     listener = keyboard.Listener(on_press=on_press, on_release=on_release)
     listener.start()
 
+    global pause, lastRAM
     if playGame:
         # remove all inputs that are bound to plotting
         for x in key_map:
+            # print(plt.rcParams.items())
             for key in plt.rcParams:
+                # e.g. "keymap.enter"
                 if key.startswith("keymap"):
                     li = plt.rcParams[key]
                     if x in li:
                         li.remove(x)
 
-    # initialize stuff
-    global pause, lastRAM
+    # initialize
     manager = None
     delta = np.ndarray(shape=[128])
 
@@ -126,11 +165,11 @@ def run(env):
 
     # display image
     if showImage:
-        # activate interactive modus
-        plt.ion()
+        plt.ion()  # activate interactive modus
         plt.show(block=False)
 
     # run the game
+    previous_lives = 3
     for i in range(performActions):
         # get the action that will be performed
         if playGame:
@@ -146,33 +185,41 @@ def run(env):
             action_name = actionSequence[i % len(actionSequence)]
             action = actions.index(action_name)
 
-        # print current action
         if showActions:
             print(action_name)
+            # print(action)
 
         # do a step with the given action
         observation, reward, terminated, truncated, info = env.step(action)
+        # if info["lives"] < previous_lives:
+        #     reward -= 10
+        # previous_lives = info["lives"]
+        # print(reward)
+        player = env.objects[0]
+        print(distance_to_joey(player))
         # returns if the environment is in the terminal state (end) -> terminated, truncated
         if terminated or truncated:
             observation, info = env.reset()
 
-        # print valuable information
-        print_environment_info(env, observation, reward, info)
+        printEnvironmentInfo(env, observation, reward, info)
 
         # RAM
         ram = get_unwrapped(env).ale.getRAM()
+        if not i % SAVE_EVERY:
+            all_rams.append(deepcopy(ram))
+            target_vals.append(target_val)
         if showRAM:
             print(ram)
 
         # adjust the RAM as you like to see what it changes in the rendering (functional behavior of the RAM is
         # not important and therefore must not be part of the project, but the changes that are visually displayed)
-        if useOCAtari and manipulateRAM:
+
+        if manipulateRAM:
             if setRAMValue < 0:
-                # the expected value must not be negative, count up instead
                 value = i % 256
             else:
                 value = setRAMValue
-                value %= 256
+            value %= 256
             env.set_ram(setRAMIndex, value)
             print("ram changed in (index, value):", setRAMIndex, value)
             ram = get_unwrapped(env).ale.getRAM()
@@ -180,11 +227,24 @@ def run(env):
                 delta[j] = ram[j] - lastRAM[j]
             if showDelta:
                 # the frame is stored at 0 and not interesting
-                for j in range(len(delta)):
+                for j in range(1, len(delta)):
                     if delta[j] != 0:
                         print("difference in (index, value) = ", j, delta[j])
 
             lastRAM = deepcopy(ram)
+
+            """
+            # rendering dependant on the frame
+            frame = ram[0]
+            if frame == 255:
+                env.set_ram(1, ram[1] + 1)
+                frame = 0
+            env.set_ram(0, frame + 1)
+            image = env.render()
+            if manager is not None:
+                manager.remove()  # remove the last plot to avoid stacking plots
+            manager = plt.imshow(image)  # wrap the array as an image
+            """
 
         # preparation for the image output
         if useOCAtari and not manipulateRAM:
@@ -213,106 +273,99 @@ def run(env):
         if showImage and image is not None:
             if manager is not None:
                 manager.remove()  # remove the last plot to avoid stacking plots
+            # import ipdb; ipdb.set_trace()
             manager = plt.imshow(image)  # wrap the array as an image
             plt.pause(0.001)  # pause the interaction for a bit, so that the plot is drawn
             plt.pause(slowDownPlot)
 
         # test usage of ipdb
+        # ipdb_Interrupt(10)
 
         # if paused, then interrupt, but keep the plotting functions
+        value = -1
         while pause:
             # take a look at the frame
+            HELP_TEXT.set_text("space: enter new value\nTab  : Unpause")
             plt.pause(1)
+            # print("is paused")
 
-            # ending must be possible
             if end:
                 plt.close('all')
                 break
-
-        # ipdb interrupt
-        global ipdb_pause
-        if ipdb_pause:
-            ipdb_interrupt(ipdb_delay)
-            ipdb_pause = False
-
+        HELP_TEXT.set_text(default_help)
         # if escaped, end the program
         if end:
             plt.close('all')
             break
 
+        #if manipulateRAM:
+         #   plt.pause(1)
+          #  env.set_ram(div, old_value)
+
     # close the environment at the end
     env.close()
     listener.stop()
+    save_fn = "mode_change_kangaroo.pkl"
+    pickle.dump((all_rams, target_vals), open(save_fn, "wb"))
+    print(f"Saved in {save_fn}")
 
 
 def get_unwrapped(env):
-    """
-    env: the environment
-    unwraps the environment to gain access to the ram information or ale
-    """
     if useOCAtari:
         return env._env.env.unwrapped
     else:
         return env.unwrapped
 
 
-def print_environment_info(env, observation, reward, info):
-    """
-    prints the environment info if the printEnvInfo variable is set to True
-    """
-
+def printEnvironmentInfo(env, observation, reward, info):
     if not printEnvInfo:
         return
-
     if useOCAtari:
-        # Besides the extraction, ocatari gives back valuable information
+        # Besonderheit von ocatari ist neben der Extraktion, die in step() zwischengeschaltet ist, auch die Ausgabe
+        # dieser Extrahierten Daten:
+        # raw daten stehen in info (bekommt man durch oc.step(action))
+
         if mode == "raw":
             print("raw data:\n", info)
         elif mode == "revised":
             print("objects revised:\n", env.objects)
         elif mode == "vision":
             print("objects vision:\n", env.objects)
-        elif mode == "test":
+        elif mode == "both":
             print("objects revised:\n", env.objects)
             print("objects vision:\n", env.objects_v)
     else:
         print(info)
 
 
-def ipdb_interrupt(plot_time=0):
+def ipdb_Interrupt(plot_time=0):
     """
-    If you want to take a look at something with ipdb, pls use this function!
-    plot_time: describes how long the plot will be accessible, starting from the point in time, when
-    ipdb interrupts the code flow. If it is 0, then you won't be able to use the plot figure, because
-    it runs on the same thread as this. While the ipdb interrupt takes place, you can activate the access to
-    the plot figure for another x seconds by typing in plt.pause(x).
+    if you want to take a look at something with ipdb, pls use this function
+    the plot_time describes how long the plot will be accessible between the 2 ipdb interrupts
+    if it is 0, then there will only be 1 interrupt
     """
+    # note that only this thread is interrupted
+    # note that the plot won't work while ipdb interrupts the program
+    # the event loop is interrupted, so you have to activate it by plt.pause()
+    # that's why you need to write plt.pause(10) in the ipdb console to activate the interaction for 10 seconds
+    # if you know in advance how long you want it to plot, use this function with not 0
 
-    # while ipdb interrupt takes place, the key listener shouldn't listen to anything
     global interrupted
-    interrupted = True
 
-    # pause the plot
+    interrupted = True
+    ipdb.set_trace()
     if plot_time != 0:
         plt.pause(plot_time)
-
-    # ipdb interrupt
-    ipdb.set_trace()
-
-    # interruption ends
+        ipdb.set_trace()
     interrupted = False
 
 
 def on_press(key):
-    """
-    By pressing keys, you can play the game (given by the key_map), freeze a frame (pressing tab),
-    end the program (pressing escape) or use ipdb (pressing i)!
-    This function particularly only sets variables needed for that control, which are used in the primary function run!
-    """
     # running thread while ipdb interrupt
-    global pause, end, ipdb_pause
+    global pause, end, listener, HELPTEXT, target_val
 
     if not interrupted:
+        #print(key)
         # pausing based on space
         if key == keyboard.Key.tab:
             pause = not pause
@@ -320,75 +373,102 @@ def on_press(key):
         # ending program based on escape
         if key == keyboard.Key.esc:
             end = True
+        
+        global env
+        if pause and key == keyboard.Key.space:
+            ram_pos = int(input('please enter ram pos'))
+            print(f"Currently as : {env.get_ram()[ram_pos]}")
+            new_val = int(input('please enter new target value'))
+            env.set_ram(ram_pos, new_val)
 
-        # other inputs
+        # changing inputs
         key_name = str(key)
-        if key_name.startswith("Key."):
-            key_name = key_name[4:]
-        if "\'" in key_name:
-            key_name = key_name.replace("\'", "")
-        # key_name = key_name.removeprefix("\'")
-        # key_name = key_name.removesuffix("\'")
+        key_name = key_name.removeprefix("Key.")
+        key_name = key_name.removeprefix("\'")
+        key_name = key_name.removesuffix("\'")
+        if pause and key_name.lower() == "s":
+            snapshot = env._env.env.env.ale.cloneState()
+            filename = input('give_filename')
+            pickle.dump(snapshot, open(filename, "wb"))
+            print(f"Saved state under {filename}")
 
-        # ipdb
-        if key_name == 'i':
-            ipdb_pause = True
-
-        # game control given by the key_map => add inputs to the list of active keys
         if key_name in key_map.keys():
             input_action = key_map[key_name]
             isActive.add(input_action)
         # print(input_action)
         # print(pause)
 
-
 def on_release(key):
-    """
-    Removes keys from the list of active keys, when key is released
-    """
-    if not interrupted:
-        # changing inputs
-        key_name = str(key)
-        if key_name.startswith("Key."):
-            key_name = key_name[4:]
-        if "\'" in key_name:
-            key_name = key_name.replace("\'", "")
-        # key_name = key_name.removeprefix("Key.")
-        # key_name = key_name.removeprefix("\'")
-        # key_name = key_name.removesuffix("\'")
+    # changing inputs
+    key_name = str(key)
+    key_name = key_name.removeprefix("Key.")
+    key_name = key_name.removeprefix("\'")
+    key_name = key_name.removesuffix("\'")
 
-        if key_name in key_map.keys():
-            # print("released")
-            input_action = key_map[key_name]
-            isActive.remove(input_action)
+    if key_name in key_map.keys():
+        # print("released")
+        input_action = key_map[key_name]
+        isActive.remove(input_action)
+
+
+#hiermit muss man danach nur noch prüfen, mit welchem set das set der aktiven inputs übereinstimmt
+def getInput():
+    #combine inputs
+    values = key_map.values()
+    mySet = set()
+    dic = dict()
+    for part in INPUTS:
+        #aus dem String ein Set von Strings (wie values) machen
+        s = part
+        for value in values:
+            sArr = s.split(value)
+            if len(sArr)==1:
+                #entweder nur value drin oder value nicht drin
+                if sArr[0] == value:
+                    #wenn nur der value drin ist, dann hinzufügen und dic updaten
+                    mySet.add(value)
+                    dic.update({mySet:part})
+                    break
+                else:
+                    #value ist nicht drin, also weitermachen
+                    continue
+            else:
+                # ein Teil ist value, der andere ist ein Rest, den man noch betrachten will
+                if sArr[0]==value:
+                    s = sArr[1]               # Rest, den man noch betrachten will
+                else:
+                    s = sArr[0]
+                mySet.add(value)              # abgespaltener value wird hinzugefügt
+    #am ende hat man ein dictionary von Set, String
+    # wobei das set kombiniert den String ergibt
+    return dic
 
 
 def get_action_name(my_set=None):
     """
-    Gets the action name based on a set of actions that will be considered a combination
+    Gets the action name based on a set of combined actions
     """
-
+    #man könnte auch jedes mal schauen, ob jedes Element im Set ein Teil des INPUTS-Elements ist
     for action_name in INPUTS:
+        #muss jedes x enthalten sein
         length = 0
         number = 0
-        # compute how many elements of the set are part of the action name
         for x in my_set:
             if -1 != action_name.find(x):
-                # number of contained elements of the set increases
                 number += 1
-                # length of the combined string increases
                 length += len(x)
             else:
                 break
-        # every element in the set must be contained
-        # and there shouldn't be more parts of the name that are not in the set
+        # das set muss jeden Anteil enthalten
+        # jedes element in myset muss in action_name enthalten sein
+        # und action_name darf nur aus myset elementen bestehen
         if number == len(my_set) and length == len(action_name):
             return action_name
-    # if you haven't found anything, return the default action
+    # hat man nichts gefunden, so muss man auf den default zurückgreifen
     return default_action
 
 
 if useOCAtari:
-    with_ocatari()
+    withocatari()
 else:
-    with_gym()
+    withgym()
