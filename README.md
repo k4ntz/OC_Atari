@@ -13,7 +13,7 @@ This repository provides a wrapper for the well known [Gynmasium project](https:
 * [Models and additional Information](#models-and-additional-information) -- Everything you need to know to reproduce our results
 
 
-[HERE IS A LINK TO THE DOCUMENTATION :bookmark_tabs:](https://readthedocs.com)
+[HERE IS A LINK TO THE DOCUMENTATION :bookmark_tabs:](https://oc-atari.readthedocs.io/en/latest/)
 
 --- 
 
