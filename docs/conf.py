@@ -56,8 +56,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'OCAtari'
-copyright = '2023, Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kristian Kersting'
-author = 'Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kristian Kersting'
+copyright = '2023, Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kévin-Lâm Quesnel and Anurag Maurya'
+author = 'Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kévin-Lâm Quesnel and Anurag Maurya'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -155,7 +155,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'OCAtari.tex', 'OCAtari Documentation',
-     'Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kristian Kersting', 'manual'),
+     'Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kévin-Lâm Quesnel and Anurag Maurya', 'manual'),
 ]
 
 

@@ -1,6 +1,5 @@
 # Object-Centric Atari Environments
-
-Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, ...
+Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kévin-Lâm Quesnel and Anurag Maurya
 
 <img style="float: right;" width="400px" align="right" src="docs/_static/kangaroo.png">
 
