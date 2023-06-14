@@ -98,7 +98,7 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
                     else:
                         robjects = env.objects
                         vobjects = env.objects_v
-                    stats = difference_objects(robjects, vobjects)
+                    stats = get_all_metrics(robjects, vobjects)
                     det_scores.update(stats["dets"])
                     ALL_STATS["mean_ious"].append(stats["mean_iou"])
                     for class_name, value in stats["per_class_ious"].items():

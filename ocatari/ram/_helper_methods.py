@@ -50,7 +50,15 @@ def number_to_bitfield(n):
 
 def bitfield_to_number(b, flip=False):
     """
-    Convert Bitfield to a number.
+    Converts an int to a list of 1s and 0s which represent each bit of the input.
+
+    :param b: The number to be converted
+    :type b: uint8
+    :param flip: Weter to flip the array or not.
+    :type flip: bool
+    
+    :return: The bit list corresponding to this number.
+    :rtype: list of int
     """
     exp = len(b)-1
     if flip:
@@ -73,9 +81,9 @@ def get_iou(obj1, obj2):
     |iou_image|
 
     :param obj1: The bouding box of the detected object in (x, y, w, h) format
-    :type obj1: GameObject
+    :type obj1: ocatari.ram.game_objects.GameObject or ocatari.vision.game_objects.GameObject
     :param obj2: The ground truth bouding box
-    :type obj2: GameObject
+    :type obj2: ocatari.ram.game_objects.GameObject or ocatari.vision.game_objects.GameObject
     """
     # determine the (x, y)-coordinates of the intersection rectangle
     xA = max(obj1.x, obj2.x)
