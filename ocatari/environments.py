@@ -1,3 +1,7 @@
+"""
+Examples of environments wrapper around OCAtari environments that provide an easy way. 
+"""
+
 import gymnasium as gym
 import numpy as np
 from ocatari.core import OCAtari

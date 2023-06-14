@@ -1,3 +1,8 @@
+"""
+Classes and methods to compute metrics on the RAM extraction method, \
+    based on the ground truth vision extracted objects.
+"""
+
 import numpy as np
 from termcolor import colored
 from scipy.optimize import linear_sum_assignment
@@ -15,13 +20,19 @@ def format_values(dictionary):
 
 
 class DetectionScores():
+    """
+    Keeps track of true positives, false positive and false negative of the detected objects. 
+    Allow to fast compute precision, recall, and f1 scores.
+    """
     def __init__(self) -> None:
         self.true_pos = {}
         self.false_pos = {}
         self.false_neg = {}
-        self.iou = None
 
     def update(self, det_dict):
+        """
+        
+        """
         for cat, (TP, FP, FN) in det_dict.items():
             if not cat in self.true_pos:
                 self.true_pos[cat] = TP
@@ -34,20 +45,23 @@ class DetectionScores():
     
     @property
     def cat_precisions(self):
-        try:
-            return {cat: self.true_pos[cat]/(self.true_pos[cat]+self.false_pos[cat]) for cat in self.true_pos if self.true_pos[cat]+self.false_pos[cat]}
-        except ZeroDivisionError:
-            import ipdb; ipdb.set_trace()
+        """
+        The per cartegory dictionary of the precision
+        """
+        return {cat: self.true_pos[cat]/(self.true_pos[cat]+self.false_pos[cat]) for cat in self.true_pos if self.true_pos[cat]+self.false_pos[cat]}
 
     @property
     def cat_recalls(self):
-        try:
-            return {cat: self.true_pos[cat]/(self.true_pos[cat]+self.false_neg[cat]) for cat in self.true_pos if self.true_pos[cat]+self.false_neg[cat]}
-        except ZeroDivisionError:
-            import ipdb; ipdb.set_trace()
+        """
+        The per cartegory dictionary of the recall
+        """
+        return {cat: self.true_pos[cat]/(self.true_pos[cat]+self.false_neg[cat]) for cat in self.true_pos if self.true_pos[cat]+self.false_neg[cat]}
     
     @property
     def cat_f_scores(self):
+        """
+        The per cartegory dictionary of the F-scores
+        """
         prec, rec = self.cat_precisions, self.cat_recalls
         f_scores = {}
         for cat in prec.keys():
@@ -59,31 +73,43 @@ class DetectionScores():
 
     @property
     def mean_precision(self):
+        """
+        The mean precision on all objects
+        """
         return sum(self.true_pos.values())/(sum(self.true_pos.values()) + sum(self.false_pos.values()))
     
     @property
     def mean_recall(self):
+        """
+        The mean recall on all objects
+        """
         return sum(self.true_pos.values())/(sum(self.true_pos.values()) + sum(self.false_neg.values()))
     
     @property
     def mean_f_score(self):
+        """
+        The mean F-score on all objects
+        """
         prec, rec = self.mean_precision, self.mean_recall
         return 2 * prec * rec / (prec + rec)
 
-    @property
-    def mean_recall(self):
-        return sum(self.true_pos.values())/(sum(self.true_pos.values()) + sum(self.false_neg.values()))
 
     def __repr__(self) -> str:
         return "Detection stats with Cat. F-scores: \n" + str(self.cat_f_scores)
     
     @property
     def dict_summary(self):
+        """
+        The mean precision, recall and F-score on all objects.
+        """
         return {"precision": self.mean_precision, "recall": self.mean_recall, "f-score": self.mean_f_score,
-                "iou": self.iou}
+                }
     
 
 def print_all_stats(all_stats):
+    """
+    Nicely prints the stats in the terminal.
+    """
     linelength = 39
     print("Mean IOUs: ", round(all_stats['mean_ious'], 2))
     print("-"*linelength)
@@ -119,6 +145,14 @@ def print_all_stats(all_stats):
 
 
 def get_iou(obj1, obj2):
+    """
+    Computes the intersection over union between two GameObjects. 
+
+    :param obj1: The bouding box of the detected object in (x, y, w, h) format
+    :type obj1: ocatari.ram.game_objects.GameObject or ocatari.vision.game_objects.GameObject
+    :param obj2: The ground truth bouding box
+    :type obj2: ocatari.ram.game_objects.GameObject or ocatari.vision.game_objects.GameObject
+    """
     # determine the (x, y)-coordinates of the intersection rectangle
     xA = max(obj1.x, obj2.x)
     yA = max(obj1.y, obj2.y)
@@ -138,10 +172,18 @@ def get_iou(obj1, obj2):
     return iou
 
 
-def make_class_lists(ram_list, vision_list):
+def _make_class_lists(ram_list, vision_list):
     """
     Creates a dictionary of object category liked with both the ram objs of this 
     category and then the vision objs of this category.
+
+    :param ram_list: The list of objects detected by the RAM extraction method
+    :type ram_list: list of ocatari.ram.game_objects.GameObject
+    :param ram_list: The list of objects detected by the RAM extraction method
+    :type ram_list: list of ocatari.vision.game_objects.GameObject
+
+    :return: A dictionary containing the per class metrics.
+    :rtype: dict
     """
     categories = set([obj.category for obj in ram_list+vision_list])
     cat_lists = {}
@@ -150,11 +192,21 @@ def make_class_lists(ram_list, vision_list):
                              [obj.center for obj in vision_list if obj.category == cat])
     return cat_lists
 
+
 def detection_stats(ram_list, vision_list):
     """
-    returns the precision, recall and f1_score
+    Returns the Precision, Recall and F1_score via comparing the RAM and vision lists.
+    These metrics are computed based on MIN_DIST_DETECTION (default =5).
+
+    :param ram_list: The list of objects detected by the RAM extraction method
+    :type ram_list: list of ocatari.ram.game_objects.GameObject
+    :param ram_list: The list of objects detected by the RAM extraction method
+    :type ram_list: list of ocatari.vision.game_objects.GameObject
+
+    :return: A dictionary containing the per class metrics.
+    :rtype: dict
     """
-    cat_lists = make_class_lists(ram_list, vision_list)
+    cat_lists = _make_class_lists(ram_list, vision_list)
     dets = {}
     for cat, (rlist, vlist) in cat_lists.items():
         TrueP = 0
@@ -176,7 +228,28 @@ def detection_stats(ram_list, vision_list):
     return dets
 
 
-def difference_objects(ram_list, vision_list):
+def get_all_metrics(ram_list, vision_list):
+    """
+    Computes the:
+
+     * mean_iou 
+     * per_class_ious
+     * only_in_ram
+     * only_in_vision
+     * objs_in_ram
+     * objs_in_vision
+     * dets ()
+     
+    two lists of GameObjects (from the RAM extraction and from the vision extraction methods). 
+
+    :param ram_list: The list of objects detected by the RAM extraction method
+    :type ram_list: list of ocatari.ram.game_objects.GameObject
+    :param ram_list: The list of objects detected by the RAM extraction method
+    :type ram_list: list of ocatari.vision.game_objects.GameObject
+
+    :return: A dictionary containing the per class metrics.
+    :rtype: dict
+    """
     only_in_ram = []
     only_in_vision = []
     per_class_ious = {}
