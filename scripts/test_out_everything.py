@@ -70,7 +70,7 @@ if snapshot is None:
 
 base_next_obs, _, _, _, _ = env.step(0)
 base_objects = deepcopy(env.objects)
-binary_mode = False
+binary_mode = True
 
 # MAX_DIFF = 200
 original_ram, ram_n = 0, 0

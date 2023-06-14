@@ -5,12 +5,18 @@ Set of helper methods that are used in multiple Atari games
 
 def _convert_number(number):
     """
-    Almost every Atari Game displays the time/score in hexadecimal numbers, while the ram extraction
+    Lots of Atari Game displays the time/score in hexadecimal numbers, while the ram extraction
     displays it as an integer.
     This results in a required conversion from the extracted ram number (in dec) to a hex number, which we then display
     as a dec number.
 
     e.g.: game shows 10 seconds, but the ram display saves it as 16
+
+    :param n: The hexadecimal number to be converted
+    :type n: uint8
+
+    :return: The number in decimal
+    :rtype: int
     """
     number_str = str(hex(number))
     number_list = [*number_str]
@@ -30,6 +36,11 @@ def number_to_bitfield(n):
     Games like SpaceInvaders or Breakout use the bit representation of the number in the RAM to display or not display
     the objects. In most cases a 1 means the objects is displayed and a 0 means the object is not displayed.
     In SpaceInvaders the bit sequence needs to be reversed.
+
+    :param n: The number to be converted
+    :type n: uint8
+    :return: The number in decimal
+    :rtype: list of int
     """
     lst = [1 if digit == '1' else 0 for digit in bin(n)[2:]]
     buffer = [0] * (8 - len(lst))
@@ -57,6 +68,15 @@ def bitfield_to_number(b, flip=False):
     return res
 
 def get_iou(obj1, obj2):
+    """
+    Computes the intersection over union between two GameObjects. 
+    |iou_image|
+
+    :param obj1: The bouding box of the detected object in (x, y, w, h) format
+    :type obj1: GameObject
+    :param obj2: The ground truth bouding box
+    :type obj2: GameObject
+    """
     # determine the (x, y)-coordinates of the intersection rectangle
     xA = max(obj1.x, obj2.x)
     yA = max(obj1.y, obj2.y)
