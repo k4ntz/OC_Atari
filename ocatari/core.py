@@ -29,7 +29,7 @@ AVAILABLE_GAMES = ["Alien", "Assault", "Asterix", "Asteroids", "Atlantis", "Beam
 # TODO: complete the docstring 
 class OCAtari:
     """
-    OCAtari environment.
+    The OCAtari environment. Initialize it to get a Atari environments with objects tracked.
 
     :param env_name: The name of the Atari gymnasium environment e.g. "Pong" or "PongNoFrameskip-v5"
     :type env_name: str
