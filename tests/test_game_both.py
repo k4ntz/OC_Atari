@@ -27,7 +27,7 @@ parser.add_argument("-dqn", "--dqn", action="store_true", help="Use DQN agent")
 opts = parser.parse_args()
 
 
-env = OCAtari(opts.game, mode="both", render_mode='rgb_array', hud=opts.hud)
+env = OCAtari(opts.game, mode="both", render_mode='rgb_array', hud=opts.hud, obs_mode='dqn')
 observation, info = env.reset()
 
 if opts.dqn:

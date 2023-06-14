@@ -44,7 +44,7 @@ os.makedirs(SAVE_IMAGE_FOLDER, exist_ok=True)
 print(colored(figlet.renderText(f"Testing  {game_name}"), "blue"))
 MODE = "both"
 HUD = True
-env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
+env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array', obs_mode='dqn')
 observation, info = env.reset()
 NB_SAMPLES = 500
 
@@ -107,6 +107,7 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
                         ALL_STATS["per_class_ious"][class_name].append(value)
                     for only_in in ["only_in_ram", "only_in_vision"]:
                         for obj in stats[only_in]:
+                            import ipdb; ipdb.set_trace()
                             if not class_name in ALL_STATS[only_in]:
                                 ALL_STATS[only_in][class_name] = 0
                             ALL_STATS[only_in][class_name] += 1
