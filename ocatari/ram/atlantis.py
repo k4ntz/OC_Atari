@@ -1,12 +1,15 @@
 from .game_objects import GameObject
+import sys
 
 """
 RAM extraction for the game Atlantis. Supported modes: raw, revised.
 
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Projectile': 2, 'Enemys': 4, 'Buildings': 7}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Projectile': 2, 'Enemys': 4, 'Buildings': 7, 'PlayerScore': 1}
+MAX_NB_OBJECTS =  {'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'DomedPalace': 1, 
+                   'BridgedBazaar': 1, 'AquaPlane': 1, 'Projectile': 2, 'GorgonShip': 4, 'Deathray': 1, 'BanditBomber': 2}
+MAX_NB_OBJECTS_HUD = {'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'DomedPalace': 1, 
+                      'BridgedBazaar': 1, 'AquaPlane': 1, 'Projectile': 2, 'GorgonShip': 4, 'Deathray': 1, 'Score': 1, 'BanditBomber': 3}
 
 class Sentry(GameObject):
     def __init__(self):
@@ -140,6 +143,22 @@ def _init_objects_atlantis_ram(hud=True):
     vert_proj = None
 
     return objects
+
+
+# parses MAX_NB* dicts, returns default init list of objects
+def _get_max_objects(hud=False):
+
+    def fromdict(max_obj_dict):
+        objects = []
+        mod = sys.modules[__name__]
+        for k, v in max_obj_dict.items():
+            for _ in range(0, v):
+                objects.append(getattr(mod, k)())
+        return objects
+
+    if hud:
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
 
 
 # Determines whether the deathray can be used by the ships or not
@@ -398,7 +417,7 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         ray = Deathray()
         if prev_x4 < ram_state[36]:
             ray.xy = ram_state[36] - 1, 92
-            print(ray.xy)
+            #print(ray.xy)
         else:
             ray.xy = ram_state[36] + 1, 92
         objects.append(ray)
