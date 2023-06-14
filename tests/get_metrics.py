@@ -91,6 +91,8 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
             for i in range(20*NB_SAMPLES):
                 action = agent.draw_action(env.dqn_obs)
                 obse, reward, terminated, truncated, info = env.step(action)
+                if reward:
+                    print(reward)
                 if i % 20 == 0:
                     if ONLYBOTHDEFINEDOBJECTS:
                         robjects = [e for e in env.objects if e.__class__.__name__ in classes_in_both]
@@ -107,7 +109,6 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
                         ALL_STATS["per_class_ious"][class_name].append(value)
                     for only_in in ["only_in_ram", "only_in_vision"]:
                         for obj in stats[only_in]:
-                            import ipdb; ipdb.set_trace()
                             if not class_name in ALL_STATS[only_in]:
                                 ALL_STATS[only_in][class_name] = 0
                             ALL_STATS[only_in][class_name] += 1

@@ -33,7 +33,6 @@ observation, info = env.reset()
 if opts.dqn:
     opts.path = f"models/{opts.game}/dqn.gz"
     dqn_agent = load_agent(opts, env.action_space.n)
-    import ipdb; ipdb.set_trace()
 
 make_deterministic(0, env)
 
