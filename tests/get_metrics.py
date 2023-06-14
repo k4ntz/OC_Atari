@@ -91,8 +91,6 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
             for i in range(20*NB_SAMPLES):
                 action = agent.draw_action(env.dqn_obs)
                 obse, reward, terminated, truncated, info = env.step(action)
-                if reward:
-                    print(reward)
                 if i % 20 == 0:
                     if ONLYBOTHDEFINEDOBJECTS:
                         robjects = [e for e in env.objects if e.__class__.__name__ in classes_in_both]
