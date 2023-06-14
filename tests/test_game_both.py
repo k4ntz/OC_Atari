@@ -27,13 +27,13 @@ parser.add_argument("-dqn", "--dqn", action="store_true", help="Use DQN agent")
 opts = parser.parse_args()
 
 
-env = OCAtari(opts.game, mode="both", render_mode='rgb_array', hud=opts.hud, obs_mode='dqn')
+env = OCAtari(opts.game, mode="both", render_mode='rgb_array', hud=opts.hud)
 observation, info = env.reset()
 
 if opts.dqn:
     opts.path = f"models/{opts.game}/dqn.gz"
     dqn_agent = load_agent(opts, env.action_space.n)
-
+    import ipdb; ipdb.set_trace()
 
 make_deterministic(0, env)
 
