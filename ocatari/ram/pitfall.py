@@ -16,7 +16,7 @@ class Wall(GameObject):
     def __init__(self):
         super().__init__()
         self.xy=0,0
-        self.wh=(7,35)
+        self.wh=(7,32)
         self.rgb = 167,26,26
         self.hud = False
 
@@ -100,12 +100,36 @@ class GoldenBar(GameObject):
         self.rgb = 252,252,84
         self.hud = False
 
+class SilverBar(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(7,13)
+        self.rgb = 142,142,142
+        self.hud = False
+
+class DiamondRing(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(7,13)
+        self.rgb = 236,236,236
+        self.hud = False
+
 class Fire(GameObject):
     def __init__(self):
         super().__init__()
         self.xy=0,0
         self.wh=(8,14)
         self.rgb = 236,200,96
+        self.hud = False
+
+class MoneyBag(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.xy=0,0
+        self.wh=(7,14)
+        self.rgb = 111,111,111
         self.hud = False
 
 class LifeCount(GameObject):
@@ -152,12 +176,12 @@ def _init_objects_pitfall_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(),Wall(),Logs(),Logs(),Logs(),StairPit(),StairPit(),Pit(),Pit(),Scorpion()]
-    objects.extend([Rope(),Snake(),Tarpit(),Waterhole(),Crocodile(),Crocodile(),Crocodile()])
-    objects.extend([GoldenBar(),Fire()])
+    objects = [Player(),Wall(),Logs(),Logs(),Logs(),StairPit(),StairPit(),Pit(),Pit(),Scorpion()] #10
+    objects.extend([Rope(),Snake(),Tarpit(),Waterhole(),Crocodile(),Crocodile(),Crocodile()]) #7
+    objects.extend([GoldenBar()])
     if hud:
-        objects.extend([LifeCount(),LifeCount(),LifeCount()])
-        objects.extend([PlayerScore()]*5)
+        objects.extend([LifeCount(),LifeCount(),LifeCount()]) #3
+        objects.extend([PlayerScore()])
         objects.extend([Timer()]*4)
     return objects
 
@@ -166,106 +190,156 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
-    # 106 ram_state is somewhat controlling the y of the player when it's dying by sinking
+    # There are 8 treasures; Define all theclasses and at the time of detection replace with GoldenBar index 
     player,= objects[:1]
-    # 0.99 x ram[97] + 0.92 x is
-    # Player_y = 1.00 x ram[105] + 72.00
+    objects[:]=[None]*24
     player.xy =  ram_state[97]+1,ram_state[105]+72
     objects[0]=player
-    if ram_state[19]==0:
+
+    if ram_state[19]==0 and ram_state[20]!=4: #bug in pit_10.pkl
         l1=Logs()
         l1.xy=(ram_state[98]+2)%160,119
         objects[2]=l1; objects[3]=None; objects[4]=None
     elif ram_state[19]==1:
-        l1=Logs()
-        l2=Logs()
+        l1=Logs(); l2=Logs()
         l1.xy=(ram_state[98]+2)%160,119
         l2.xy=(ram_state[98]+16+2)%160,119
         objects[2]=l1; objects[3]=l2; objects[4]=None
     elif ram_state[19]==2:
-        l1=Logs()
-        l2=Logs()
+        l1=Logs(); l2=Logs()
         l1.xy=(ram_state[98]+2)%160,119
         l2.xy=(ram_state[98]+32+2)%160,119
         objects[2]=l1; objects[3]=l2; objects[4]=None
     elif ram_state[19]==3:
-        l1=Logs()
-        l2=Logs()
-        l3=Logs()
+        l1=Logs(); l2=Logs(); l3=Logs()
         l1.xy=ram_state[98]+2,119
         l2.xy=(ram_state[98]+32+2)%160,119
         l3.xy=(ram_state[98]+64+2)%160,119
         objects[2]=l1; objects[3]=l2; objects[4]=l3
+    elif ram_state[19]==4 and ram_state[20]!=4:
+        l1=Logs()
+        l1.xy=(ram_state[98]+2)%160,119
+        objects[2]=l1; objects[3]=None; objects[4]=None
+    # elif ram_state[19]==0 and ram_state[29]
     else:
         objects[2]=None; objects[3]=None; objects[4]=None
     
-    # Handling the pits etc
+    
+    # Implementing Pits,waterholes etc
+    objects[5:17]=[None]*12
     if ram_state[20]==0:
-        # Single stairpit
-        objects[5:9]=[None]*4
-        objects[10]=None
-        objects[12:19]=[None]*7
+        s=StairPit()
+        s.xy=76,122
+        objects[6]=s
+        objects[5]=None
+    
     elif ram_state[20]==1:
-        p1=Pit();p2=Pit()
+        s=StairPit(); s.xy=76,122
+        p1=Pit(); p2=Pit()
         p1.xy=48,122
         p2.xy=100,122
         objects[7]=p1; objects[8]=p2
-        objects[10]=None
-        objects[12:19]=[None]*7
-        objects[5:7]=[None]*2
+        objects[5]=s
+        objects[6]=None
+        
     elif ram_state[20]==2:
-        p=Tarpit()
-        p.xy=48,120
-        objects[12]=p
-        objects[7:9]=[None]*2
-        objects[10]=None
-        objects[13:19]=[None]*6
-        objects[5:7]=[None]*2
-    elif ram_state[20]==3:
-        w=Waterhole()
-        w.xy=50,119
+        t=Tarpit()
+        t.xy=48,120
+        objects[12]=t
+
+    elif ram_state[20]==4: # some ram index is controlling when the mouth of crocodile is open ; correspondingly varying sizes
+        w=Waterhole(); w.xy=48,120
         objects[13]=w
-        objects[12]=None
-        objects[7:9]=[None]*2
-        objects[10]=None
-        objects[14:19]=[None]*5
-        objects[5:7]=[None]*2
-    elif ram_state[20]==4:
-        w=Waterhole()
-        w.xy=50,119
-        objects[13]=w
-        objects[12]=None
-        objects[7:9]=[None]*2
-        objects[10]=None
-        objects[14]=None
-        objects[5:7]=[None]*2
         c1=Crocodile(); c1.xy=60,122
         objects[15]=c1
         c2=Crocodile(); c2.xy=76,122
         objects[16]=c2
         c3=Crocodile(); c3.xy=92,122
         objects[17]=c3
-    else:
-        pass
     
+    # Waterhole 
+    elif ram_state[20]==3:
+        w=Waterhole()
+        w.xy=48,120
+        objects[13]=w
+    
+    # Disappearing Waterhole
+    elif ram_state[20]==7:
+        w=Waterhole()
+        if ram_state[32]==1 and ram_state[33]==3 and ram_state[34]==15 and ram_state[35]==127:
+            w.xy=52,121
+            w.wh=(56,9)
+        if ram_state[32]==0 and ram_state[33]==1 and ram_state[34]==3 and ram_state[35]==15:
+            w.xy=48,120
+            w.wh=(64,10)
+        if ram_state[32]==255 and ram_state[33]==255 and ram_state[34]==255 and ram_state[35]==255:
+            objects[13]=None
+        else:
+            objects[13]=w
+    # Disappearig Tarpit
+    elif ram_state[20]==6:
+        t=Tarpit()
+        if ram_state[32]==1 and ram_state[33]==3 and ram_state[34]==15 and ram_state[35]==127:
+            t.xy=52,121
+            t.wh=(56,9)
+        if ram_state[32]==0 and ram_state[33]==1 and ram_state[34]==3 and ram_state[35]==15:
+            t.xy=48,120
+            t.wh=(64,10)
+        if ram_state[32]==255 and ram_state[33]==255 and ram_state[34]==255 and ram_state[35]==255:
+            objects[12]=None
+        else:
+            objects[12]=t
+    elif ram_state[20]==5:
+        t=Tarpit()
+        g=GoldenBar()
+        g.xy=124,118
+        if ram_state[32]==1 and ram_state[33]==3 and ram_state[34]==15 and ram_state[35]==127:
+            t.xy=52,121
+            t.wh=(56,9)
+        if ram_state[32]==0 and ram_state[33]==1 and ram_state[34]==3 and ram_state[35]==15:
+            t.xy=48,120
+            t.wh=(64,10)
+        if ram_state[32]==255 and ram_state[33]==255 and ram_state[34]==255 and ram_state[35]==255:
+            objects[12]=None
+        else:
+            objects[12]=t
+
+
     # Implementing Scorpion
     # Remove scorpion when there is no pit
-    if ram_state[29]==0:
+    if ram_state[29]==0:    
         s=Scorpion()
         s.xy=ram_state[99],170
         objects[9]=s
         objects[1]=None
-    elif ram_state[29]==1:
+    elif ram_state[29] in [1,255]:
         w=Wall()
-        w.xy=ram_state[99],170
+        w.xy=ram_state[99],148
         objects[1]=w
         objects[9]=None
     else:
         objects[1]=None; objects[9]=None
-
-
-
-
+    
+    # Implementing Fire,snake and Treasures
+    if ram_state[19]==6:
+        f=Fire()
+    elif ram_state[19]==7:
+        f=Snake()
+    
+    elif ram_state[19]>=8:
+        if ram_state[19]%4==0:
+            f=MoneyBag()
+        elif ram_state[19]%4==1:
+            f=SilverBar()
+        elif ram_state[19]%4==2:
+            f=GoldenBar()
+        elif ram_state[19]%4==3:
+            f=DiamondRing()
+    else:
+        f=None
+    if f is not None:
+        f.xy=124,118
+    objects[11]=f
 
     if hud:
         pass
