@@ -14,6 +14,9 @@ wallcolors = [[167,26,26],[142,142,142],[0,0,0]]
 snakecolors=[[167,26,26],[0,0,0],[111,111,111]]
 goldenbarcolors=[[252,252,84],[236,236,236]]
 firecolors=[[236,200,96],[252,188,116],[72,72,0]]
+moneybagcolors=[[111,111,111],[105,105,15]]
+silverbarcolors=[[142,142,142],[236,236,236]]
+diamondringcolors=[[236,236,236],[252,252,84]]
 
 
 class Player(GameObject):
@@ -87,11 +90,29 @@ class GoldenBar(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 252,252,84
         self.hud = False
+        
+class SilverBar(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 142,142,142
+        self.hud = False
 
 class Fire(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 236,200,96
+        self.hud = False
+
+class MoneyBag(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 111,111,111
+        self.hud = False
+
+class DiamondRing(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 236,236,236
         self.hud = False
 
 class LifeCount(GameObject):
@@ -143,7 +164,7 @@ def _detect_objects_pitfall(objects, obs, hud=False):
     for s in snake:
         objects.append(Snake(*s))
     
-    tp=find_objects(obs,objects_colors["smallpit"],size=(64,10),tol_s=8,maxy=130,miny=114)#same color as small pit
+    tp=find_objects(obs,objects_colors["smallpit"],size=(64,10),tol_s=10,maxy=130,miny=114)#same color as small pit
     for s in tp:
         objects.append(Tarpit(*s))
     
@@ -151,7 +172,7 @@ def _detect_objects_pitfall(objects, obs, hud=False):
     for p in pp:
         objects.append(Pit(*p))
     
-    wh=find_objects(obs,objects_colors["waterhole"],size=(64,10),tol_s=8,maxy=130,miny=114)
+    wh=find_objects(obs,objects_colors["waterhole"],size=(64,10),tol_s=10,maxy=130,miny=114)
     for w in wh:
         objects.append(Waterhole(*w))
     
@@ -166,6 +187,18 @@ def _detect_objects_pitfall(objects, obs, hud=False):
     fire=find_mc_objects(obs,firecolors,size=(8,14),tol_s=3,maxy=132,miny=114,closing_dist=4)
     for f in fire:
         objects.append(Fire(*f))
+    
+    mb=find_mc_objects(obs,moneybagcolors,size=(7,14),tol_s=3,maxy=132,miny=114,closing_dist=4)
+    for b in mb:
+        objects.append(MoneyBag(*b))
+    
+    gold=find_mc_objects(obs,silverbarcolors,size=(7,13),tol_s=3,maxy=132,miny=114,closing_dist=4)
+    for g in gold:
+        objects.append(SilverBar(*g))
+    
+    gold=find_mc_objects(obs,diamondringcolors,size=(7,13),tol_s=3,maxy=132,miny=114,closing_dist=4)
+    for g in gold:
+        objects.append(DiamondRing(*g))
     
 
     if hud:
