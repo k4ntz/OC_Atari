@@ -1,5 +1,5 @@
 # Object-Centric Atari Environments
-Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kévin-Lâm Quesnel and Anurag Maurya
+Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Anurag Maurya, Kévin-Lâm Quesnel and Simon Wulf
 
 <img style="float: right;" width="400px" align="right" src="docs/_static/kangaroo.png">
 
@@ -13,7 +13,7 @@ This repository provides a wrapper for the well known [Gynmasium project](https:
 * [Models and additional Information](#models-and-additional-information) -- Everything you need to know to reproduce our results
 
 
-[HERE IS A LINK TO THE DOCUMENTATION :bookmark_tabs:](https://oc-atari.readthedocs.io/en/latest/)
+:heavy_exclamation_mark: [HERE IS A LINK TO THE DOCUMENTATION  :bookmark_tabs:](https://oc-atari.readthedocs.io/en/latest/)
 
 --- 
 

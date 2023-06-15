@@ -34,7 +34,6 @@ if opts.dqn:
     opts.path = f"models/{opts.game}/dqn.gz"
     dqn_agent = load_agent(opts, env.action_space.n)
 
-
 make_deterministic(0, env)
 
 

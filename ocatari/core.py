@@ -29,7 +29,7 @@ AVAILABLE_GAMES = ["Alien", "Assault", "Asterix", "Asteroids", "Atlantis", "Beam
 # TODO: complete the docstring 
 class OCAtari:
     """
-    OCAtari environment.
+    The OCAtari environment. Initialize it to get a Atari environments with objects tracked.
 
     :param env_name: The name of the Atari gymnasium environment e.g. "Pong" or "PongNoFrameskip-v5"
     :type env_name: str
@@ -43,7 +43,7 @@ class OCAtari:
     the remaining \*args and \**kwargs will be passed to the \
         `gymnasium.make <https://gymnasium.farama.org/api/registry/#gymnasium.make>`_ function.
     """
-    def __init__(self, env_name, mode="raw", hud=False, obs_mode=None, *args, **kwargs):
+    def __init__(self, env_name, mode="raw", hud=False, obs_mode="dqn", *args, **kwargs):
         if "ALE/" in env_name: #case if v5 specified
             to_check = env_name[4:8]
             game_name = env_name.split("/")[1].split("-")[0].split("No")[0].split("Deterministic")[0]
@@ -121,16 +121,16 @@ class OCAtari:
         else:  # mode == "raw" because in raw mode we augment the info dictionary
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
         self._fill_buffer()
-        if self.obs_mode in ["dqn", "ori"]:
-            obs = self._get_buffer_as_stack()
+        # if self.obs_mode in ["dqn", "ori"]:
+        #     obs = self._get_buffer_as_stack()
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
         self.detect_objects(self._objects, obs, self.game_name, self.hud)
         self._fill_buffer()
-        if self.obs_mode in ["dqn", "ori"]:
-            obs = self._get_buffer_as_stack()
+        # if self.obs_mode in ["dqn", "ori"]:
+        #     obs = self._get_buffer_as_stack()
         return obs, reward, truncated, terminated, info
 
     def _step_test(self, *args, **kwargs):
@@ -138,8 +138,8 @@ class OCAtari:
         self.detect_objects_r(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self.detect_objects_v(self.objects_v, obs, self.game_name, self.hud)
         self._fill_buffer()
-        if self.obs_mode in ["dqn", "ori"]:
-            obs = self._get_buffer_as_stack()
+        # if self.obs_mode in ["dqn", "ori"]:
+        #     obs = self._get_buffer_as_stack()
         return obs, reward, truncated, terminated, info
 
     def _reset_buffer_dqn(self):
