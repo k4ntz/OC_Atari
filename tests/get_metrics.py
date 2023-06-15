@@ -44,7 +44,7 @@ os.makedirs(SAVE_IMAGE_FOLDER, exist_ok=True)
 print(colored(figlet.renderText(f"Testing  {game_name}"), "blue"))
 MODE = "both"
 HUD = True
-env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
+env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array', obs_mode='dqn')
 observation, info = env.reset()
 NB_SAMPLES = 500
 
@@ -98,7 +98,7 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
                     else:
                         robjects = env.objects
                         vobjects = env.objects_v
-                    stats = difference_objects(robjects, vobjects)
+                    stats = get_all_metrics(robjects, vobjects)
                     det_scores.update(stats["dets"])
                     ALL_STATS["mean_ious"].append(stats["mean_iou"])
                     for class_name, value in stats["per_class_ious"].items():

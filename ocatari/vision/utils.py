@@ -45,6 +45,7 @@ def assert_in(observed, expected, tol):
     :type expected: (int, int)
     :param tol: A given tolerance.
     :type tol: int or (int, int)
+    
     :return: True if points within the tolerance
     :rtype: bool
     """
