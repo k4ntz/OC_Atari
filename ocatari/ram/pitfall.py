@@ -181,7 +181,7 @@ def _init_objects_pitfall_ram(hud=False):
     objects.extend([GoldenBar()])
     if hud:
         objects.extend([LifeCount(),LifeCount(),LifeCount()]) #3
-        objects.extend([PlayerScore()])
+        objects.extend([PlayerScore()]*4)
         objects.extend([Timer()]*4)
     return objects
 
@@ -190,35 +190,36 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
-    # There are 8 treasures; Define all theclasses and at the time of detection replace with GoldenBar index 
+    # There are 8 treasures; Define all the classes and at the time of detection replace with GoldenBar index 
     player,= objects[:1]
-    objects[:]=[None]*24
+    objects[:]=[None]*24    # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_4.pkl", "rb"))
+    # env._env.env.env.ale.restoreState(snapshot)
     player.xy =  ram_state[97]+1,ram_state[105]+72
     objects[0]=player
 
     if ram_state[19]==0 and ram_state[20]!=4: #bug in pit_10.pkl
         l1=Logs()
-        l1.xy=(ram_state[98]+2)%160,119
+        l1.xy=(ram_state[98]+1)%160,118
         objects[2]=l1; objects[3]=None; objects[4]=None
     elif ram_state[19]==1:
         l1=Logs(); l2=Logs()
-        l1.xy=(ram_state[98]+2)%160,119
-        l2.xy=(ram_state[98]+16+2)%160,119
+        l1.xy=(ram_state[98]+1)%160,118
+        l2.xy=(ram_state[98]+16+1)%160,118
         objects[2]=l1; objects[3]=l2; objects[4]=None
     elif ram_state[19]==2:
         l1=Logs(); l2=Logs()
-        l1.xy=(ram_state[98]+2)%160,119
-        l2.xy=(ram_state[98]+32+2)%160,119
+        l1.xy=(ram_state[98]+1)%160,118
+        l2.xy=(ram_state[98]+32+1)%160,118
         objects[2]=l1; objects[3]=l2; objects[4]=None
     elif ram_state[19]==3:
         l1=Logs(); l2=Logs(); l3=Logs()
-        l1.xy=ram_state[98]+2,119
-        l2.xy=(ram_state[98]+32+2)%160,119
-        l3.xy=(ram_state[98]+64+2)%160,119
+        l1.xy=ram_state[98]+1,119
+        l2.xy=(ram_state[98]+32+1)%160,118
+        l3.xy=(ram_state[98]+64+1)%160,118
         objects[2]=l1; objects[3]=l2; objects[4]=l3
     elif ram_state[19]==4 and ram_state[20]!=4:
         l1=Logs()
-        l1.xy=(ram_state[98]+2)%160,119
+        l1.xy=(ram_state[98]+1)%160,118
         objects[2]=l1; objects[3]=None; objects[4]=None
     # elif ram_state[19]==0 and ram_state[29]
     else:
@@ -247,14 +248,19 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
         t.xy=48,120
         objects[12]=t
 
-    elif ram_state[20]==4: # some ram index is controlling when the mouth of crocodile is open ; correspondingly varying sizes
+    elif ram_state[20]==4: 
         w=Waterhole(); w.xy=48,120
         objects[13]=w
-        c1=Crocodile(); c1.xy=60,122
+        y1=122 if ram_state[46]==255 else 119
+        wh1=(8,6) if ram_state[46]==255 else (8,9)
+        c1=Crocodile(); c1.xy=60,y1
+        c1.wh=wh1
         objects[15]=c1
-        c2=Crocodile(); c2.xy=76,122
+        c2=Crocodile(); c2.xy=76,y1
+        c2.wh=wh1
         objects[16]=c2
-        c3=Crocodile(); c3.xy=92,122
+        c3=Crocodile(); c3.xy=92,y1
+        c3.wh=wh1
         objects[17]=c3
     
     # Waterhole 
@@ -309,7 +315,8 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
     # Remove scorpion when there is no pit
     if ram_state[29]==0:    
         s=Scorpion()
-        s.xy=ram_state[99],170
+        s.xy=ram_state[99],(170 if ram_state[65]==160 else 169)
+        s.wh=(7,8) if ram_state[65]==160 else (8,9)
         objects[9]=s
         objects[1]=None
     elif ram_state[29] in [1,255]:
@@ -342,7 +349,36 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
     objects[11]=f
 
     if hud:
-        pass
+        objects.extend([None]*10)
+        # PlayerScores
+        p1=PlayerScore()
+        p1.xy=62,9
+        objects[21]=p1
+        p2=PlayerScore()
+        p2.xy=54,9
+        objects[22]=p2
+        p3=PlayerScore()
+        p3.xy=46,9
+        objects[23]=p3
+        p4=PlayerScore()
+        p4.xy=39,9
+        objects[24]=p4
+        # LifeCounts
+        l1=LifeCount()
+        l1.xy=23,22
+        l2=LifeCount()
+        l2.xy=21,22
+        objects[25]=l1; objects[26]=l2
+        # Timer
+        t1=Timer(); t2=Timer(); t3=Timer(); t4=Timer()
+        t1.xy=62,22
+        t2.xy=54,22
+        t3.xy=38,22
+        t4.xy=31,22
+        objects[27]=t1; objects[28]=t2; objects[29]=t3; objects[30]=t4
+
+
+
 
 
 def _detect_objects_pitfall_raw(info, ram_state):
