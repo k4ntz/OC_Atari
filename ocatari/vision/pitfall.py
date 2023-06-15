@@ -10,7 +10,7 @@ objects_colors = {
     }
 
 playercolors = [[105,105,15],[228,111,111],[92,186,92],[53,95,24]]
-wallcolors = [[167,26,26],[142,142,142],[0,0,0]]
+wallcolors = [[167,26,26],[142,142,142]]
 snakecolors=[[167,26,26],[0,0,0],[111,111,111]]
 goldenbarcolors=[[252,252,84],[236,236,236]]
 firecolors=[[236,200,96],[252,188,116],[72,72,0]]
@@ -142,7 +142,7 @@ def _detect_objects_pitfall(objects, obs, hud=False):
     if player:
         objects.append(Player(*player[0]))
 
-    wall = find_mc_objects(obs, wallcolors, size=(7, 35), tol_s=2,miny=140,maxy=190,closing_active=False)
+    wall = find_mc_objects(obs, wallcolors, size=(7, 35), tol_s=5,closing_dist=5) #,miny=140,maxy=190,
     for w in wall:
         objects.append(Wall(*w))
     logs=find_objects(obs,objects_colors["logs"],size=(6,14),tol_s=2,maxy=132,miny=114)
@@ -156,9 +156,9 @@ def _detect_objects_pitfall(objects, obs, hud=False):
     for s in sc:
         objects.append(Scorpion(*s))
 
-    # rope=find_objects(obs,objects_colors["rope"],size=(15,15),tol_s=8,maxy=114,miny=64,minx=52,maxx=107,closing_dist=2)
-    # for r in rope:
-    #     objects.append(Rope(*s))
+    rope=find_objects(obs,objects_colors["rope"],size=(15,15),tol_s=8,maxy=114,miny=64,minx=52,maxx=107,closing_dist=5)
+    for r in rope:
+        objects.append(Rope(*s))
     
     snake=find_mc_objects(obs,snakecolors,size=(8,14),tol_s=2,maxy=132,miny=114)
     for s in snake:
@@ -205,7 +205,7 @@ def _detect_objects_pitfall(objects, obs, hud=False):
         lc=find_objects(obs,objects_colors["hud_objs"],size=(1,8),tol_s=1,maxy=30,miny=20,minx=15,maxx=26,closing_active=False)
         for l in lc:
             objects.append(LifeCount(*l))
-        ps=find_objects(obs,objects_colors["hud_objs"],size=(6,8),tol_s=1,maxy=18,miny=7,minx=16,maxx=70,closing_active=False)
+        ps=find_objects(obs,objects_colors["hud_objs"],size=(6,8),tol_s=2,maxy=18,miny=7,minx=16,maxx=70,closing_active=False)
         for p in ps:
             objects.append(PlayerScore(*p))
         ts=find_objects(obs,objects_colors["hud_objs"],size=(6,8),tol_s=3,maxy=30,miny=20,minx=28,maxx=69,closing_active=False)
