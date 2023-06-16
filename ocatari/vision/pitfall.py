@@ -10,10 +10,13 @@ objects_colors = {
     }
 
 playercolors = [[105,105,15],[228,111,111],[92,186,92],[53,95,24]]
-wallcolors = [[167,26,26],[142,142,142],[0,0,0]]
+wallcolors = [[167,26,26],[142,142,142]]
 snakecolors=[[167,26,26],[0,0,0],[111,111,111]]
 goldenbarcolors=[[252,252,84],[236,236,236]]
 firecolors=[[236,200,96],[252,188,116],[72,72,0]]
+moneybagcolors=[[111,111,111],[105,105,15]]
+silverbarcolors=[[142,142,142],[236,236,236]]
+diamondringcolors=[[236,236,236],[252,252,84]]
 
 
 class Player(GameObject):
@@ -87,11 +90,29 @@ class GoldenBar(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 252,252,84
         self.hud = False
+        
+class SilverBar(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 142,142,142
+        self.hud = False
 
 class Fire(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 236,200,96
+        self.hud = False
+
+class MoneyBag(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 111,111,111
+        self.hud = False
+
+class DiamondRing(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 236,236,236
         self.hud = False
 
 class LifeCount(GameObject):
@@ -121,7 +142,7 @@ def _detect_objects_pitfall(objects, obs, hud=False):
     if player:
         objects.append(Player(*player[0]))
 
-    wall = find_mc_objects(obs, wallcolors, size=(7, 35), tol_s=2,miny=140,maxy=190,closing_active=False)
+    wall = find_mc_objects(obs, wallcolors, size=(7, 35), tol_s=5,closing_dist=5) #,miny=140,maxy=190,
     for w in wall:
         objects.append(Wall(*w))
     logs=find_objects(obs,objects_colors["logs"],size=(6,14),tol_s=2,maxy=132,miny=114)
@@ -135,15 +156,15 @@ def _detect_objects_pitfall(objects, obs, hud=False):
     for s in sc:
         objects.append(Scorpion(*s))
 
-    # rope=find_objects(obs,objects_colors["rope"],size=(15,15),tol_s=8,maxy=114,miny=64,minx=52,maxx=107,closing_dist=2)
-    # for r in rope:
-    #     objects.append(Rope(*s))
+    rope=find_objects(obs,objects_colors["rope"],size=(15,15),tol_s=8,maxy=114,miny=64,minx=52,maxx=107,closing_dist=5)
+    for r in rope:
+        objects.append(Rope(*s))
     
     snake=find_mc_objects(obs,snakecolors,size=(8,14),tol_s=2,maxy=132,miny=114)
     for s in snake:
         objects.append(Snake(*s))
     
-    tp=find_objects(obs,objects_colors["smallpit"],size=(64,10),tol_s=8,maxy=130,miny=114)#same color as small pit
+    tp=find_objects(obs,objects_colors["smallpit"],size=(64,10),tol_s=10,maxy=130,miny=114)#same color as small pit
     for s in tp:
         objects.append(Tarpit(*s))
     
@@ -151,7 +172,7 @@ def _detect_objects_pitfall(objects, obs, hud=False):
     for p in pp:
         objects.append(Pit(*p))
     
-    wh=find_objects(obs,objects_colors["waterhole"],size=(64,10),tol_s=8,maxy=130,miny=114)
+    wh=find_objects(obs,objects_colors["waterhole"],size=(64,10),tol_s=10,maxy=130,miny=114)
     for w in wh:
         objects.append(Waterhole(*w))
     
@@ -167,12 +188,24 @@ def _detect_objects_pitfall(objects, obs, hud=False):
     for f in fire:
         objects.append(Fire(*f))
     
+    mb=find_mc_objects(obs,moneybagcolors,size=(7,14),tol_s=3,maxy=132,miny=114,closing_dist=4)
+    for b in mb:
+        objects.append(MoneyBag(*b))
+    
+    gold=find_mc_objects(obs,silverbarcolors,size=(7,13),tol_s=3,maxy=132,miny=114,closing_dist=4)
+    for g in gold:
+        objects.append(SilverBar(*g))
+    
+    gold=find_mc_objects(obs,diamondringcolors,size=(7,13),tol_s=3,maxy=132,miny=114,closing_dist=4)
+    for g in gold:
+        objects.append(DiamondRing(*g))
+    
 
     if hud:
         lc=find_objects(obs,objects_colors["hud_objs"],size=(1,8),tol_s=1,maxy=30,miny=20,minx=15,maxx=26,closing_active=False)
         for l in lc:
             objects.append(LifeCount(*l))
-        ps=find_objects(obs,objects_colors["hud_objs"],size=(6,8),tol_s=1,maxy=18,miny=7,minx=16,maxx=70,closing_active=False)
+        ps=find_objects(obs,objects_colors["hud_objs"],size=(6,8),tol_s=2,maxy=18,miny=7,minx=16,maxx=70,closing_active=False)
         for p in ps:
             objects.append(PlayerScore(*p))
         ts=find_objects(obs,objects_colors["hud_objs"],size=(6,8),tol_s=3,maxy=30,miny=20,minx=28,maxx=69,closing_active=False)
