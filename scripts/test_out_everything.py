@@ -17,7 +17,7 @@ from sklearn.linear_model import RANSACRegressor, LinearRegression
 sys.path.insert(0, '../ocatari') # noqa
 from ocatari.core import OCAtari
 from alive_progress import alive_bar
-from ocatari.utils import load_agent, make_deterministic
+from ocatari.utils import parser, load_agent, make_deterministic
 import pickle
 
 
@@ -29,19 +29,22 @@ def ransac_regression(x, y):
     ransac.fit(np.array(x).reshape(-1, 1), y)
     return ransac.estimator_.coef_.item(), ransac.estimator_.intercept_.item()
 
+parser.add_argument("-g", "--game", type=str, required=True,
+                    help="game to evaluate (e.g. 'Pong')")
+parser.add_argument("-dqn", "--dqn", action="store_true", help="Use DQN agent")
 
+opts = parser.parse_args()
 
-game_name = "BoxingNoFrameskip-v4"
 MODE = "vision"
 RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
-env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
+env = OCAtari(opts.game+"NoFrameskip", mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
 
 INTERACTIVE = False
 ONE_CHANGE = False
-initial_ram_n = 36
+initial_ram_n = 55
 
 
 make_deterministic(0, env)
@@ -54,9 +57,9 @@ observation, info = env.reset()
 class Options(object):
     pass
 
-opts = Options()
-opts.path = "models/Kangaroo/dqn.gz"
-dqn_agent = load_agent(opts, env.action_space.n)
+# opts = Options()
+# opts.path = "models/Kangaroo/dqn.gz"
+# dqn_agent = load_agent(opts, env.action_space.n)
 
 snapshot = None
 
@@ -70,7 +73,7 @@ if snapshot is None:
 
 base_next_obs, _, _, _, _ = env.step(0)
 base_objects = deepcopy(env.objects)
-binary_mode = True
+binary_mode = False
 
 # MAX_DIFF = 200
 original_ram, ram_n = 0, 0

@@ -16,7 +16,6 @@ import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
 sys.path.insert(0, '../ocatari') # noqa
 from ocatari.core import OCAtari
-from alive_progress import alive_bar
 from ocatari.utils import parser, load_agent, make_deterministic
 import pickle
 from time import sleep
@@ -32,8 +31,11 @@ def ransac_regression(x, y):
 
 
 
+parser.add_argument("-g", "--game", type=str, required=True,
+                    help="game to evaluate (e.g. 'Pong')")
 parser.add_argument("-dqn", "--dqn", action="store_true", help="Use DQN agent")
-
+parser.add_argument("-r", "--render", action="store_true", 
+                    help="If provided, renders")
 
 opts = parser.parse_args()
 
@@ -42,47 +44,52 @@ DROP_LOW = True
 MIN_CORRELATION = 0.6
 
 NB_SAMPLES = 1000
-game_name = "Centipede"
 MODE = "vision"
-RENDER_MODE = "human"
-# RENDER_MODE = "rgb_array"
-env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
+if opts.render:
+    RENDER_MODE = "human"
+else:
+    RENDER_MODE = "rgb_array"
+env = OCAtari(opts.game, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
 make_deterministic(0, env)
 
 observation, info = env.reset()
-object_list = ["Player"]
-# object_list = ["ball", "enemy", "player"]
-# create dict of list
-objects_infos = {
-    "player": []
+tracked_objects = ["Player"]
+tracked_objects_infos = {
+    "Player_w": [],
+    "Player_h": []
                  }
-subset = list(objects_infos.keys())
+subset = list(tracked_objects_infos.keys())
 
 if opts.dqn:
-    opts.game = game_name
+    opts.game = opts.game
     opts.path = f"models/{opts.game}/dqn.gz"
     dqn_agent = load_agent(opts, env.action_space.n)
 
 
 
 ram_saves = []
-for i in tqdm(range(NB_SAMPLES)):
+for i in tqdm(range(NB_SAMPLES*5)):
     # obs, reward, terminated, truncated, info = env.step(random.randint(0, env.action_space.n-1))
-    action = dqn_agent.draw_action(env.dqn_obs)
-    # action = random.randint(0, env.nb_actions-1)
+    if opts.dqn:
+        action = dqn_agent.draw_action(env.dqn_obs)
+    else:
+        action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
-    ram = env._env.unwrapped.ale.getRAM()
-    if ram[35] != 22:
-        sleep(0.5)
-    if i % 5 == 0:
-        if str(env.objects).count("Player at") == 1:
-            objects_infos["player"].append(1)
-        elif str(env.objects).count("Player at") == 0:
-            objects_infos["player"].append(0)
-        else:
+    ram = env.get_ram()
+    if random.random() < 1/5: # every 5 frames
+        save = True
+        for objstr in tracked_objects:
+            if str(env.objects).count(f"{objstr} at") != 1:
+                save = False # don't save anything
+        if not save:
             continue
+        for obj in env.objects:
+            objname = obj.category
+            if objname in tracked_objects:
+                tracked_objects_infos[f"{objname}_w"].append(obj.w)
+                tracked_objects_infos[f"{objname}_h"].append(obj.h)
         ram_saves.append(deepcopy(ram))        
 
     # modify and display render
@@ -92,28 +99,21 @@ env.close()
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
 
-objects_infos.update(from_rams)
-df = pd.DataFrame(objects_infos)
-
-
-
-
-pickle.dump(df, open("centipede2.pkl", "wb"))
-# df = pickle.load(open("centipede2.pkl", "rb"))
+tracked_objects_infos.update(from_rams)
+df = pd.DataFrame(tracked_objects_infos)
 
 
 # find correlation
-METHOD = "spearman"
+# METHOD = "spearman"
 # METHOD = "kendall"
-# METHOD = "pearson"
+METHOD = "pearson"
 corr = df.corr(method=METHOD)
 # Reduce the correlation matrix
-# subset = objects_infos
-# [f"{obj}_x" for obj in object_list] + [f"{obj}_y" for obj in object_list]
+# subset = tracked_objects_infos
+# [f"{obj}_x" for obj in tracked_objects] + [f"{obj}_y" for obj in tracked_objects]
 
 # Use submatrice
 corr = corr[subset].T
-import ipdb;ipdb.set_trace()
 corr.drop(subset, axis=1, inplace=True)
 
 if DROP_LOW:
@@ -132,7 +132,7 @@ for tick in ax.get_yticklabels():
 
 xlabs = corr.columns.to_list()
 plt.xticks(list(np.arange(0.5, len(xlabs) + .5, 1)), xlabs)
-plt.title(game_name)
+plt.title(opts.game)
 plt.show()
 
 # import ipdb;ipdb.set_trace()
@@ -148,9 +148,10 @@ for el in corrT:
             x, y = df[keys[idx]], df[el]
             # a, b = np.polyfit(x, y, deg=1)
             a, b = ransac_regression(x, y)
-            plt.scatter(x, y, marker="x", alpha=10/len(x))
-            plt.plot(x, a * x + b, color="k", lw=2.5)
+            plt.scatter(x, y, marker="x", alpha=NB_SAMPLES/(10*len(x)))
+            plt.plot(x, a * x + b, color="k", lw=2.5, alpha=0.3)
             print(f"{el} = ({a:.2f} * ram_state[{keys[idx]}] + {b:.2f}) ")
+            plt.title(f"{el} = ({a:.2f} * ram_state[{keys[idx]}] + {b:.2f}) ")
             plt.xlabel(keys[idx])
             plt.ylabel(el)
             plt.show()

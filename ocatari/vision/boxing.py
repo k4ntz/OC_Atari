@@ -46,13 +46,13 @@ class EnemyScore(GameObject):
 def _detect_objects_boxing(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
-    enemy = find_objects(obs, objects_colors["enemy"], min_distance=1)
+    enemy = find_objects(obs, objects_colors["enemy"], min_distance=1, closing_dist=6)
     for el in enemy:
         if el[1] > 30:
             objects.append(Enemy(*el))
         elif hud:
             objects.append(EnemyScore(*el))
-    player = find_objects(obs, objects_colors["player"], min_distance=1)
+    player = find_objects(obs, objects_colors["player"], min_distance=1, closing_dist=6)
     for el in player:
         if el[1] > 30:
             objects.append(Player(*el))

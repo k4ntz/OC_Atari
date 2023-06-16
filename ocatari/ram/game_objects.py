@@ -1,6 +1,13 @@
 class GameObject:
     """
     The Parent Class of every detected object in the Atari games (RAM Extraction mode)
+
+    :ivar category: The Category of class name of the game object (e.g. Player, Ball).
+    :type category: str
+    :ivar x: The x positional coordinate on the image (on the horizontal axis).
+    :type x: int
+    :ivar y: The y positional coordinate on the image (on the vertical axis).
+    :type y: int
     """
     GET_COLOR = False
     GET_WH = False
@@ -18,29 +25,14 @@ class GameObject:
 
     @property
     def category(self):
-        """
-        The Category of class name of the game object (e.g. Player, Ball, ...).
-
-        :type: str
-        """
         return self.__class__.__name__
 
     @property
     def x(self):
-        """
-        The x positional coordinate on the image (on the horizontal axis).
-
-        :type: int
-        """
         return self._xy[0]
 
     @property
     def y(self):
-        """
-        The y positional coordinate on the image (on the vertical axis).
-
-        :type: int
-        """
         return self._xy[1]
 
     @property
@@ -159,3 +151,16 @@ class GameObject:
         return (other.x <= self.x <= other.x + other.w) and \
             (other.y <= self.y <= other.y + other.h) 
 
+
+
+
+class ScoreObject(GameObject):
+    """
+    This class represents the score of the player (or sometimes Enemy).
+
+    :ivar value: The value of the score:
+    :type value: int
+    """
+    def __init__(self):
+        super().__init__()
+        self.value = 0
