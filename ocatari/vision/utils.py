@@ -295,7 +295,7 @@ def find_objects(image, color, size=None, tol_s=10,
     :param tol_p: tolerance on the presupposed position of the targeted object
     :type tol_p: int or (int, int)
     :param closing_active: If true, gathers in one bounding box the instances that are less than \
-    `closing_dist` 
+    `closing_dist` away.
     :type closing_active: bool
     :param closing_dist: The closing distance, for the under which two (or more) instances are merged \
     into one bounding box.

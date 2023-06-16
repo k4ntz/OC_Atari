@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ScoreObject
 import sys 
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 1}
@@ -6,6 +6,13 @@ MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'PlayerScore': 1, 'EnemyScore': 
 
 
 class Player(GameObject):
+    """    
+    The boxer controlled by the player
+
+    :ivar right_arm_length: initial value: 0
+    :ivar left_arm_length: initial value: 0
+    """
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -13,9 +20,19 @@ class Player(GameObject):
         self.rgb = 214, 214, 214
         self.hud = False
         self._above_10 = False
+        self.right_arm_length = 0
+        self.left_arm_length = 0
+    
+    
 
 
 class Enemy(GameObject):
+    """    
+    The enemy boxer controlled by the game
+
+    :ivar right_arm_length: initial value: 0
+    :ivar left_arm_length: initial value: 0
+    """
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -23,6 +40,8 @@ class Enemy(GameObject):
         self.rgb = 0, 0, 0
         self.hud = False
         self._above_10 = False
+        self.right_arm_length = 0
+        self.left_arm_length = 0
 
 
 class Clock(GameObject):
@@ -34,7 +53,7 @@ class Clock(GameObject):
         self.hud = True
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ScoreObject):
     def __init__(self):
         super().__init__()
         self.rgb = 214, 214, 214
@@ -59,7 +78,7 @@ class PlayerScore(GameObject):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
 
-class EnemyScore(GameObject):
+class EnemyScore(ScoreObject):
     def __init__(self):
         super().__init__()
         self._xy = 111, 5
@@ -125,6 +144,8 @@ def _detect_objects_boxing_revised(objects, ram_state, hud=False):
         # scores
         global plscore
         global enscore
+        plscore.value = ram_state[18]
+        enscore.value = ram_state[19]
         if ram_state[19] > 10:  # enemy score
             enscore.tenify()
         else:
