@@ -1,4 +1,5 @@
 gymnasium
+gymnasium[atari, accept-rom-license]
 matplotlib
 numpy
 opencv_python
