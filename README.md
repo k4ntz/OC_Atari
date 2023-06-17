@@ -45,6 +45,15 @@ action = random.randint(env.nb_actions-1)
 obs, reward, terminated, truncated, info = env.step(action)
 ```
 
+### Cite OCAtari:
+If you are using OCAtari for your scientific publications, please cite us:
+```bibtex
+@inproceedings{Delfosse2023OCAtariOA,
+  title={OCAtari: Object-Centric Atari 2600 Reinforcement Learning Environments},
+  author={Quentin Delfosse and Jannis Bluml and Bjarne Gregori and Sebastian Sztwiertnia and Kristian Kersting},
+  year={2023}
+}
+```
 
 ###  List of covered games
 - [ ] Alien (only vision)
