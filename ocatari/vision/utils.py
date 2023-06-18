@@ -344,6 +344,50 @@ def find_objects(image, color, size=None, tol_s=10,
     return detected
 
 
+def find_rope_segments(image, color, seg_height=(2, 5), minx=0, miny=0, maxx=160, maxy=210):
+    """
+    Finds the rope segments (max rope width of 1) of a displayed rope.
+    
+    :param image: The image to mark the point on
+    :type image: np.array
+    :param color: The color of the object
+    :type color: list of (int, int, int)
+    :param seg_height: interval in which segments are considered
+    :type seg_height: int or (int, int)
+    :param minx: minimum x position where the object can be located
+    :type minx: int
+    :param miny: minimum y position where the object can be located
+    :type miny: int
+    :param maxx: maximum x position where the object can be located
+    :type maxx: int
+    :param maxy: maximum y position where the object can be located
+    :type maxy: int
+
+    :return: a list of tuple boxing boxes
+    :rtype: list of (int, int, int)
+    """
+    mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color), np.array(color))
+    detected = []
+    for j in range(mask.shape[0]):
+        col = mask[:,j].astype(bool)
+        if col.all() or (~col).all():
+            continue
+        cur = False
+        begin = 0
+        for i, el in enumerate(col + [0]):
+            if el:
+                if not cur: 
+                    begin = i
+                cur = True
+            else:
+                if cur:
+                    length = i-begin
+                    if seg_height[0] <= length <= seg_height[1]:
+                        detected.append([minx+j, miny+begin, 1, length])
+                cur = False
+    return detected
+
+
 def find_rectangle_objects(image, color, max_size=None, minx=0, miny=0, maxx=160, maxy=210):
     """
     Finds rectangle objects with a given maximum size.
@@ -379,7 +423,6 @@ def find_rectangle_objects(image, color, max_size=None, minx=0, miny=0, maxx=160
         else:
             detected.extend(_find_rectangles_in_bb(mask.copy(), (x, y, w, h), max_size, minx, miny))
     return detected
-
 
 def _find_rectangles_in_bb(mask, bb, size, minx, miny):
     bounding_boxes = list()

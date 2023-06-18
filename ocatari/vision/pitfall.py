@@ -1,4 +1,4 @@
-from .utils import find_objects, find_mc_objects
+from .utils import find_objects, find_mc_objects, find_rope_segments
 from .game_objects import GameObject
 import numpy as np
 import matplotlib as plt
@@ -156,9 +156,10 @@ def _detect_objects_pitfall(objects, obs, hud=False):
     for s in sc:
         objects.append(Scorpion(*s))
 
-    rope=find_objects(obs,objects_colors["rope"],size=(15,15),tol_s=8,maxy=114,miny=64,minx=52,maxx=107,closing_dist=5)
-    for r in rope:
-        objects.append(Rope(*s))
+    rope_slices=find_rope_segments(obs, objects_colors["rope"], maxy=114, miny=70, minx=40, maxx=107)
+    if rope_slices:
+        lowest = max(rope_slices, key=lambda x:x[1])
+        objects.append(Rope(*lowest))
     
     snake=find_mc_objects(obs,snakecolors,size=(8,14),tol_s=2,maxy=132,miny=114)
     for s in snake:
