@@ -13,6 +13,8 @@ from ocatari.utils import load_agent, parser, make_deterministic
 from copy import deepcopy
 from PIL import Image
 import cv2 
+import pickle
+
 
 parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
@@ -22,6 +24,8 @@ parser.add_argument("-i", "--interval", type=int, default=10,
 #                     default="revised", help="The frame interval")
 parser.add_argument("-hud", "--hud", action="store_true", help="Detect HUD")
 parser.add_argument("-dqn", "--dqn", action="store_true", help="Use DQN agent")
+parser.add_argument("-snap", "--snapshot", type=str, default="",
+                    help="A path to a state snapshot")
 
 
 opts = parser.parse_args()
@@ -30,6 +34,9 @@ opts = parser.parse_args()
 env = OCAtari(opts.game+"Deterministic", mode="both", render_mode='rgb_array', hud=opts.hud)
 
 observation, info = env.reset()
+if opts.snapshot:
+    snapshot = pickle.load(open(opts.snapshot, "rb"))
+    env._env.env.env.ale.restoreState(snapshot)
 
 if opts.dqn:
     opts.path = f"models/{opts.game}/dqn.gz"
@@ -71,6 +78,8 @@ for i in range(100000):
 
         if terminated or truncated:
             observation, info = env.reset()
+            if opts.snapshot:
+                env._env.env.env.ale.restoreState(snapshot)   
         # modify and display render
     except ValueError as e:
         import ipdb; ipdb.set_trace()

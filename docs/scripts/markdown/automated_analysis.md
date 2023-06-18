@@ -1,4 +1,6 @@
-`automated_analysis` is a test that requires minimal human interaction
+# automated_analysis
+
+`automated_analysis.py` is a test that requires minimal human interaction
 to create a pretty good understanding of which ram value is responsible for
 which game object.
 

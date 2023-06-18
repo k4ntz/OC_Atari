@@ -1,4 +1,6 @@
-`find_causative_ram` looks at a specific part of the game image.
+# find_causative_ram
+
+`find_causative_ram.py` looks at a specific part of the game image.
 It manipulates the Ram in every possible place, and looks for changes in the
 Image.
 
