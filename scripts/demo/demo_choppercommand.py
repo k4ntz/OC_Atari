@@ -12,7 +12,7 @@ from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.utils import load_agent, parser
 from ocatari.ram.demonattack import ProjectileHostile
 
-game_name = "ChopperCommand-v4"
+game_name = "ChopperCommandNoFrameskip-v4"
 MODE = "vision"
 MODE = "revised"
 HUD = True
@@ -27,26 +27,29 @@ if opts.path:
 # snapshot = pickle.load(open("save.pickle", "rb"))
 # env._env.env.env.ale.restoreState(snapshot)
 
-for i in range(10000):
+for i in range(100000):
     # if opts.path is not None:
     #     action = agent.draw_action(env.dqn_obs)
     # else:
     #     action = 3
+    # if i < 50:
+    #     obs, reward, terminated, truncated, info = env.step(4)
+    # else:
+    #     obs, reward, terminated, truncated, info = env.step(3)
     obs, reward, terminated, truncated, info = env.step(3)
     obs, reward, terminated, truncated, info = env.step(1)  # env.step(6) for easy movement
-    # env._env.unwrapped.ale.setRAM(8, 91)fdf
+    # env._env.unwrapped.ale.setRAM(8, 91)
     # env._env.unwrapped.ale.setRAM(68, 0)
     # obs, reward, terminated, truncated, info = env.step(random.randint(-2, 2))
     # env.step(env.action_space.sample())
-    if i % 1 == 0:
-        print(env.objects)
+    if i % 20 == 0:
+        # print(env.objects)
         ram = env._env.unwrapped.ale.getRAM()
         # with open('save.pickle', 'wb') as handle:
         #     pickle.dump(env._env.env.env.ale.cloneState(), handle, protocol=pickle.HIGHEST_PROTOCOL)
-        # print(ram[68])
-        # print(ram[18:21], ram[68])
-        # print(ram[21], ram[17])
-        # print("{0:b}".format(ram[12]))  #, "{0:b}".format(ram[6]), "{0:b}".format(ram[7]), "{0:b}".format(ram[8]))
+        # print(ram[97])
+        # print(ram[74])
+        print(ram[70], ram[94], ram[95])
         
         for obj in env.objects:
             x, y = obj.xy
