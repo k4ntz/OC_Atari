@@ -52,12 +52,12 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 # OCAtari modes
 mode = "revised"                    # raw, revised, vision, test
-HUD = False                     # if True, the returned objects contain only the necessary information to play the game
+HUD = True                    # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
 showInputs = False              # if True, prints the number and the description of the possible inputs (actions)
 showActions = False            # if True, prints the action that will be done
-showRAM = True         # if True, prints the RAM to the console  
+showRAM = True        # if True, prints the RAM to the console  
 # render_mode=="rgb_array" only
 printRGB = False                # if True, prints the rgb array
 showImage = True                # if True, plots the rgb array
@@ -107,9 +107,8 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_4.pkl", "rb"))
-    # env._env.env.env.ale.restoreState(snapshot)
-
+    snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_6.pkl", "rb"))
+    env._env.env.env.ale.restoreState(snapshot)
     run(oc)
 
 
@@ -141,7 +140,6 @@ def run(env):
     # key input handling
     listener = keyboard.Listener(on_press=on_press, on_release=on_release)
     listener.start()
-    env.set_ram(81, 130)
     global pause, lastRAM
     if playGame:
         # remove all inputs that are bound to plotting
@@ -204,9 +202,8 @@ def run(env):
             observation, info = env.reset()
 
         printEnvironmentInfo(env, observation, reward, info)
-
-        # RAM
         ram = get_unwrapped(env).ale.getRAM()
+        # print(ram[70:100])
         if not i % SAVE_EVERY:
             all_rams.append(deepcopy(ram))
             target_vals.append(target_val)

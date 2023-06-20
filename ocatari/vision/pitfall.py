@@ -156,15 +156,18 @@ def _detect_objects_pitfall(objects, obs, hud=False):
     for s in sc:
         objects.append(Scorpion(*s))
 
-    rope_slices=find_rope_segments(obs, objects_colors["rope"], maxy=114, miny=70, minx=40, maxx=107)
+    rope_slices=find_rope_segments(obs, objects_colors["rope"],seg_height=(1,45), maxy=120, miny=70, minx=40, maxx=112)
     if rope_slices:
         lowest = max(rope_slices, key=lambda x:x[1])
+        if lowest[3]>1:
+            lowest[1]=lowest[1]+lowest[3]-1
+            lowest[3]=1
         objects.append(Rope(*lowest))
-    
+
     snake=find_mc_objects(obs,snakecolors,size=(8,14),tol_s=2,maxy=132,miny=114)
     for s in snake:
         objects.append(Snake(*s))
-    
+        
     tp=find_objects(obs,objects_colors["smallpit"],size=(64,10),tol_s=10,maxy=130,miny=114)#same color as small pit
     for s in tp:
         objects.append(Tarpit(*s))
