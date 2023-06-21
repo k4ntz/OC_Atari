@@ -41,8 +41,7 @@ random.seed(0)
 
 
 ONE_CHANGE = True
-initial_ram_n = 40
-
+initial_ram_n = 84
 
 make_deterministic(0, env)
 
@@ -73,7 +72,7 @@ opts = Options()
 opts.path = "models/Pitfall/dqn.gz"
 dqn_agent = load_agent(opts, env.action_space.n)
 
-snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_3.pkl", "rb"))
+snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_6.pkl", "rb"))
 env._env.env.env.ale.restoreState(snapshot)
 
 base_next_obs, _, _, _, _ = env.step(0)
