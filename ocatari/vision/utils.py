@@ -368,7 +368,7 @@ def find_rope_segments(image, color, seg_height=(2, 5), minx=0, miny=0, maxx=160
     """
     mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color), np.array(color))
     detected = []
-    for j in range(mask.shape[0]):
+    for j in range(mask.shape[1]):
         col = mask[:,j].astype(bool)
         if col.all() or (~col).all():
             continue

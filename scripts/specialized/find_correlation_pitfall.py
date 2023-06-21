@@ -43,10 +43,10 @@ env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE,hud=True)
 random.seed(0)
 
 observation, info = env.reset()
-snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_3.pkl", "rb"))
+snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_8.pkl", "rb"))
 env._env.env.env.ale.restoreState(snapshot)
 # object_list = ["Projectile"]
-object_list = ["TarPit"]
+object_list = ["LifeCount"]
 # create dict of list
 objects_infos = {}
 subset = []
