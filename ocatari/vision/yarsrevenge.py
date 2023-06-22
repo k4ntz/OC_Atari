@@ -6,7 +6,6 @@ objects_colors = {
     "player": [169,128,240]
     }
 player_colors=[[132,144,252],[252,144,144]]
-enemy_colors=[[]]
 barrier_colors=[[162,134,56],[200,72,72],[82,126,45]]
 
 class Player(GameObject):
@@ -27,16 +26,40 @@ class Swirl(GameObject):
         self.rgb = 169,128,240 
         self.hud = False
 
+class Enemy_Missile(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 169,128,240 
+        self.hud = False
+
 class Barrier(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 250,250,250
         self.hud = False
 
-# List of objects to detect: Player, Enemy, Swirl, fired bullets/shots by both Enemy and Player, Cannon that appears, Shield chunks, Barrier
+class Player_Bullet(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 169,128,240
+        self.hud = False
+
+class Shield_Block(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 163,57,21
+        self.hud = False
+
+
+
+# List of objects to detect: Player, Enemy, Swirl, fired bullets by Player, missile by Enemy, Cannon that appears, Shield chunks, Barrier
 def _detect_objects_yarsrevenge(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
+    ################################
+    # Detecting the number of unique colors present in the image
+    all_colors_image=np.unique(obs.reshape(-1, obs.shape[2]), axis=0)
+
     player=find_objects(obs, objects_colors["player"], closing_active=False,size=(8,16), tol_s=2)
     for p in player:
         # Handling the case where color of enemy is same as color of object
@@ -53,20 +76,37 @@ def _detect_objects_yarsrevenge(objects, obs, hud=False):
     if count!=0:
         objects.append(Barrier(*b))
     
-    # Detecting enemy
+    # Detecting enemy and swirl
     # Detecting what color is enemy right now
-    enemy_color=[]
-    obs_line=np.copy(obs[135:156])
+    enemy_color=None
+    swirl_color=None
+    for color in all_colors_image:
+        enemy=find_objects(obs,list(color),size=(8,18),tol_s=2,minx=147)
+        if not np.all(color==objects_colors["player"]):
+            swirl=find_objects(obs,list(color),size=(8,18),tol_s=2,maxx=125)
+        for e in enemy:
+            enemy_color=list(color)
+            objects.append(Enemy(*e))
+        for s in swirl:
+            swirl_color=list(color)
+            objects.append(Swirl(*s))
+    # detecting player bullet
+    p_b=find_objects(obs,objects_colors["player"],size=(1,2),tol_s=1,closing_active=False)
+    for p in p_b:
+        objects.append(Player_Bullet(*p))
 
-    for i in range(obs_line.shape[0]):
-        flag=True
-        for j in range(obs_line.shape[1]):
-            if not np.array_equal(obs_line[i,j],np.array(objects_colors["player"])):
-                if not np.array_equal(obs_line[i,j],np.array([0,0,0])):
-                    enemy_color.append(obs_line[i,j])
-    import ipdb; ipdb.set_trace()
+    # Currently throwing some unknown error
+    # Detecting the fired Missile by Enemy 
+    # e_m=find_objects(obs,enemy_color,size=(4,2),tol_s=1,closing_active=False)
+    # for e in e_m:
+    #     objects.append(Enemy_Missile(*e))
 
-    # enemy=find_objects(obs,enemy_color,size=)
+
+
+
+
+
+    
 
 
 
