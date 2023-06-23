@@ -80,7 +80,7 @@ def _init_objects_yarsrevenge_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(),Enemy_Missile()]
+    objects = [Player(),Enemy(),Swirl(),Enemy_Missile(),Barrier(),Player_Bullet()]
     return objects
 
 
@@ -89,8 +89,30 @@ def _detect_objects_yarsrevenge_revised(objects, ram_state, hud=False):
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
+    objects[3:]=[None]*3
     player,= objects[:1]
     player.xy=ram_state[32],ram_state[31]+2
+    if ram_state[43]>=145:
+        enemy=Enemy()
+        enemy.xy=ram_state[43],ram_state[42]+3
+        objects[2]=None
+        objects[1]=enemy
+    else:
+        swirl=Swirl()
+        swirl.xy=ram_state[43]+4,ram_state[42]+3
+        objects[2]=swirl
+        objects[1]=None
+    # Enemy Missile 
+    e_m=Enemy_Missile()
+    e_m.xy=ram_state[47],ram_state[46]+2
+    objects[3]=e_m
+    # Player Missile
+    if abs(ram_state[38]-3-ram_state[32])>5 or abs(ram_state[37]-ram_state[31])>5:
+        p_m=Player_Bullet()
+        p_m.xy=ram_state[38]-1,ram_state[37]+3
+        objects[5]=p_m
+    else:
+        objects[5]=None
     
     if hud:
         # scores

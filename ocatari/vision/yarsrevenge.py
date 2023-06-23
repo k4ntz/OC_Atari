@@ -90,26 +90,22 @@ def _detect_objects_yarsrevenge(objects, obs, hud=False):
         for s in swirl:
             swirl_color=list(color)
             objects.append(Swirl(*s))
+        e_m=find_objects(obs,list(color),size=(4,2),tol_s=1,maxx=49,closing_active=False)
+        for e in e_m:
+            objects.append(Enemy_Missile(*e))
+        e_m=find_objects(obs,list(color),size=(4,2),tol_s=1,minx=81,closing_active=False)
+        for e in e_m:
+            objects.append(Enemy_Missile(*e))
     # detecting player bullet
-    p_b=find_objects(obs,objects_colors["player"],size=(1,2),tol_s=1,closing_active=False)
+    p_b=find_objects(obs,objects_colors["player"],size=(1,2),tol_s=1,maxx=49,closing_active=False)
+    for p in p_b:
+        objects.append(Player_Bullet(*p))
+    p_b=find_objects(obs,objects_colors["player"],size=(1,2),tol_s=1,minx=81,closing_active=False)
     for p in p_b:
         objects.append(Player_Bullet(*p))
 
     # Currently throwing some unknown error
     # Detecting the fired Missile by Enemy 
-    # e_m=find_objects(obs,enemy_color,size=(4,2),tol_s=1,closing_active=False)
-    # for e in e_m:
-    #     objects.append(Enemy_Missile(*e))
-
-
-
-
-
-
-    
-
-
-
 
     if hud:
         pass
