@@ -107,13 +107,20 @@ def _detect_objects_yarsrevenge_revised(objects, ram_state, hud=False):
     e_m.xy=ram_state[47],ram_state[46]+2
     objects[3]=e_m
     # Player Missile
-    if abs(ram_state[38]-3-ram_state[32])>5 or abs(ram_state[37]-ram_state[31])>5:
+    if abs(ram_state[38]-3-ram_state[32])>5 and abs(ram_state[37]-ram_state[31])>5:
         p_m=Player_Bullet()
         p_m.xy=ram_state[38]-1,ram_state[37]+3
         objects[5]=p_m
     else:
         objects[5]=None
     
+    # Adding Barrier
+    if ram_state[53]==164:
+        b=Barrier()
+        b.xy=52,4
+        objects[4]=b
+    else:
+        objects[4]=None
     if hud:
         # scores
         pass
