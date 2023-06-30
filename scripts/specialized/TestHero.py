@@ -54,7 +54,7 @@ HUD = True  # if True, the returned objects contain only the necessary informati
 # get valuable information for reversed engineering purposes
 showInputs = False  # if True, prints the number and the description of the possible inputs (actions)
 showActions = False  # if True, prints the action that will be done
-showRAM = False  # if True, prints the RAM to the console
+showRAM = True  # if True, prints the RAM to the console
 # render_mode=="rgb_array" only
 printRGB = False  # if True, prints the rgb array
 showImage = True  # if True, plots the rgb array
