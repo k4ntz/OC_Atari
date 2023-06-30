@@ -47,15 +47,14 @@ class Player(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
-        self.wh = 8, 10
-        self.wh = 5, 20
+        self.wh = 5, 25
 
 
 class LaserBeam(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
-        self.wh = 8, 10
+        self.wh = 7, 2
 
 
 class Bomb(GameObject):
@@ -116,20 +115,69 @@ def _get_max_objects(hud=False):
 
 def _init_objects_hero_ram(hud=False):
     objects = [Player()]
+    if hud:
+        objects.extend([PowerBar(), BombStock(), Life(), Score(), ])
     return objects
 
 
-def _detect_objects_hero_revised(objects, ram_state, hud=False):
-    objects[0].xy = ram_state[27],ram_state[31]
-    if hud:
-        objects.append(PowerBar())
-        objects[-1].value = ram_state[43]
-        objects.append(BombStock())
-        objects[-1].value = ram_state[50]
-        objects.append(Score())
-        objects[-1].value = ram_state[56]
+number_of_added_enemies = 0
+objects_map = {}
 
-    return
+
+def _detect_objects_hero_revised(objects, ram_state, hud=False):
+    objects[0].xy = ram_state[27] + 1, 135 - ram_state[31]
+    base_length = 1 if not hud else 5
+    global objects_map
+
+    # Updating enemy and lamp positions
+    for i in range(3):
+        # height =
+        # type =
+        # subtype = ram_state[78 + i]
+        x, y = ram_state[37 + i], 114 + i * 39
+        currobj = objects_map.get(f"Instance {i}")
+        if ram_state[33 + i] != 0 or x == 147:
+            if currobj is not None:
+                objects_map.pop(f"Instance {i}")
+        else:
+            if currobj is not None:
+                currobj.xy = x, y
+            else:
+                enemy_instance = Enemy()
+                enemy_instance.xy = x, y
+                objects_map[f"Instance {i}"] = enemy_instance
+
+    # updating Laser Beam position
+    player_xy = objects[0].xy
+    laser_beam = objects_map.get(f"LaserBeam")
+    if ram_state[115] == 253:
+        if laser_beam is not None:
+            objects_map.pop(f"LaserBeam")
+    else:
+        orientation = 1 if ram_state[48] == 0 else -1
+        if laser_beam is None:
+            laser_beam_instance = LaserBeam()
+            objects_map[f"LaserBeam"] = laser_beam_instance
+        laser_beam = objects_map[f"LaserBeam"]
+        if ram_state[115] != 0:
+            if orientation == 1:
+                laser_beam.xy = player_xy[0] + 2 + ram_state[115] * orientation, player_xy[1] + 3
+            else:
+                laser_beam.xy = player_xy[0] + 4 + ram_state[115] * orientation - laser_beam.w, \
+                                player_xy[1] + 3
+        else:
+            if orientation == 1:
+                laser_beam.xy = player_xy[0] + 2 + 11 * orientation, player_xy[1] + 3
+            else:
+                laser_beam.xy = player_xy[0] + 4 + 11 * orientation, player_xy[1] + 3
+
+    if hud:
+        objects[1].value = ram_state[42] / 81
+        objects[2].value = ram_state[51]
+        objects[3].value = ram_state[53]
+        objects[4].value = ram_state[56]
+    print(ram_state)
+    objects[:] = objects[0:base_length] + list(objects_map.values())
 
 
 def _detect_objects_hero_raw(info, ram_state):
