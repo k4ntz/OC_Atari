@@ -13,6 +13,7 @@ class Wall(GameObject):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
         self.wh = 8, 10
+        self.destructible: bool = False
 
 
 class LavaWall(GameObject):
@@ -25,14 +26,16 @@ class LavaWall(GameObject):
 class EnemyType(Enum):
     Spider = 1
     Bat = 2
-    Thing = 3
+    Moth = 3
+    Snake = 4
+    Tentacle = 5
 
 
 class Enemy(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
-        self.wh = 8, 10
+        self.wh = 6, 10
         self.type: EnemyType
 
 
@@ -130,13 +133,14 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
     global objects_map
 
     # Updating enemy and lamp positions
+    # TODO get enemy type
     for i in range(3):
         # height =
         # type =
         # subtype = ram_state[78 + i]
-        x, y = ram_state[37 + i], 114 + i * 39
+        x, y = ram_state[37 + i], 115 - i * 42 - ram_state[33 + i]
         currobj = objects_map.get(f"Instance {i}")
-        if ram_state[33 + i] != 0 or x == 147:
+        if ram_state[33 + i] == 50 or x == 147:
             if currobj is not None:
                 objects_map.pop(f"Instance {i}")
         else:
@@ -170,6 +174,26 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
                 laser_beam.xy = player_xy[0] + 2 + 11 * orientation, player_xy[1] + 3
             else:
                 laser_beam.xy = player_xy[0] + 4 + 11 * orientation, player_xy[1] + 3
+
+    # wall disposition
+    # TODO switch case =function of ram_sate[28] + level = ram_state[117] + 1
+
+    # destructible wall
+    destructible_wall = objects_map.get(f"destructible wall")
+    if ram_state[32] in [0, 9, 153]:
+        if destructible_wall is not None:
+            objects_map.pop(f"destructible wall")
+    else:
+        if destructible_wall is not None:
+            destructible_wall.xy = ram_state[32], 19
+        else:
+            destructible_wall_instance = Wall()
+            destructible_wall_instance.xy = ram_state[32], 19
+            destructible_wall_instance.wh = 7, 79
+            objects_map[f"destructible wall"] = destructible_wall_instance
+
+    # Bomb / NPC position
+    # If we're on the final part of the level --> NPC position else bomb position
 
     if hud:
         objects[1].value = ram_state[42] / 81
