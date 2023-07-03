@@ -1,6 +1,7 @@
 import sys
 from termcolor import colored
 
+from .game_objects import GameObject
 from . import choppercommand
 from .asterix import _detect_objects_asterix_revised, _detect_objects_asterix_raw,\
     _init_objects_asterix_ram
@@ -197,6 +198,7 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
     """
     Augment the info dictionary with object centric information
     """
+    GameObject._save_prev()
     if game_name.lower() == "boxing":
         _detect_objects_boxing_revised(objects, ram_state, hud)
     elif game_name.lower() == "breakout":
