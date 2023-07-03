@@ -11,12 +11,13 @@ class GameObject:
     """
     GET_COLOR = False
     GET_WH = False
+    _xy = None
 
     def __init__(self):
         self.rgb = (0, 0, 0)
         self._xy = (0, 0)
         self.wh = (0, 0)
-        self._prev_xy = (0, 0)
+        self._prev_xy = None
         self._orientation = 0
         self.hud = False
 
@@ -72,7 +73,7 @@ class GameObject:
 
     @xy.setter
     def xy(self, xy):
-        self._prev_xy = self._xy
+        # self._prev_xy = self._xy
         self._xy = xy
 
     # returns 2 lists with current and past coords
@@ -92,7 +93,10 @@ class GameObject:
 
         :type: int
         """
-        return self._xy[0] - self._prev_xy[0]
+        if self._prev_xy:
+            return self._xy[0] - self._prev_xy[0]
+        else:
+            return 0
 
     @property
     def dy(self):
@@ -101,7 +105,10 @@ class GameObject:
 
         :type: int
         """
-        return self._xy[1] - self._prev_xy[1]
+        if self._prev_xy:
+            return self._xy[1] - self._prev_xy[1]
+        else:
+            return 0
 
     @property
     def xywh(self):
@@ -111,6 +118,11 @@ class GameObject:
         :type: (int, int, int, int)
         """
         return self._xy[0], self._xy[1], self.wh[0], self.wh[1]
+
+    @classmethod
+    def _save_prev(self):
+        self._prev_xy = self._xy
+
 
     # @x.setter
     # def x(self, x):

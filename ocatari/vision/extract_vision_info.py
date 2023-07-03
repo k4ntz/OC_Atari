@@ -30,6 +30,8 @@ from .alien import _detect_objects_alien
 from .frostbite import _detect_objects_frostbite
 from .pitfall import _detect_objects_pitfall
 from .yarsrevenge import _detect_objects_yarsrevenge
+
+
 def detect_objects_vision(objects, obs, game_name, hud=False):
     if game_name.lower() == "atlantis":
         return _detect_objects_atlantis(objects, obs, hud)
