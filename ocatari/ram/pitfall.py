@@ -186,6 +186,8 @@ def _init_objects_pitfall_ram(hud=False):
     global prev_y
     prev_x=78
     prev_y=106
+    global ram_81
+    ram_81=1
     objects = [Player(),Wall(),Logs(),Logs(),Logs(),StairPit(),StairPit(),Pit(),Pit(),Scorpion()] #10
     objects.extend([Rope(),Snake(),Tarpit(),Waterhole(),Crocodile(),Crocodile(),Crocodile()]) #7
     objects.extend([GoldenBar()])
@@ -374,8 +376,8 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
             increment=2
         elif ram_state[18]>ram_18:
             increment=-2
+        
 
-            
         if ram_state[18]!=ram_18:
             if ram_18==10:
                 # if ram_state[18]!=10:
@@ -390,7 +392,24 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
         ram_18=ram_state[18]
         r.xy=prev_x,prev_y
         objects[10]=r
-        
+
+        # if ram_state[18]!=ram_18:
+        #     prev_x=x_1 if abs(prev_x-x_1)<abs(prev_x-x_2) else x_2
+        #     prev_y=y
+        # else:
+        #     if ram_18==10 and ram_state[18]==10:
+        #         prev_x=prev_x+increment
+        #         prev_y=prev_y
+        # global ram_81
+        # if ram_state[81]%2==0:
+        #     # import ipdb; ipdb.set_trace()
+        #     increment=increment*-1
+        #     ram_81=ram_state[81]
+
+        # ram_18=ram_state[18]
+        # r.xy=prev_x,prev_y
+        # objects[10]=r
+
 
 
 
@@ -443,8 +462,8 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
         objects[27]=t1; objects[28]=t2; objects[29]=t3; objects[30]=t4
         if ram_state[88]<=9:
             objects[30]=None #making the first digit vanish if minute is single digit 
-
-
+        # import ipdb; ipdb.set_trace()
+        
 
 
 

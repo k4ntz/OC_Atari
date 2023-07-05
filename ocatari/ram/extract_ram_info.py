@@ -199,7 +199,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
     Augment the info dictionary with object centric information
     """
     for obj in objects: # saving the previsous positions
-        obj._save_prev()
+        if obj is not None:
+            obj._save_prev()
     if game_name.lower() == "boxing":
         _detect_objects_boxing_revised(objects, ram_state, hud)
     elif game_name.lower() == "breakout":
