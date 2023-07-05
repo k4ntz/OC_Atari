@@ -30,6 +30,7 @@ Most are used to reverse engineer the RAM state, like searching for correlations
 You can install OCAtari in multiple ways, the recommended is to use the provided Dockerfile to install all requirements, like the Atari ROMs and gymnasium.
 You can also simply:
 `pip install ocatari`
+`pip install "gymnasium[atari, accept-rom-license]"`
 If you want to modify the code, you can clone this repo and run:
 `python setup.py install` or if you want to modify the code `python setup.py develop`
 
