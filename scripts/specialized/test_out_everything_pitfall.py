@@ -31,7 +31,7 @@ def ransac_regression(x, y):
 
 
 
-game_name = "Pitfall-v4"
+game_name = "YarsRevenge-v4"
 MODE = "vision"
 RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
@@ -72,8 +72,8 @@ opts = Options()
 opts.path = "models/Pitfall/dqn.gz"
 dqn_agent = load_agent(opts, env.action_space.n)
 
-snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_6.pkl", "rb"))
-env._env.env.env.ale.restoreState(snapshot)
+# snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_6.pkl", "rb"))
+# env._env.env.env.ale.restoreState(snapshot)
 
 base_next_obs, _, _, _, _ = env.step(0)
 base_objects = deepcopy(env.objects)

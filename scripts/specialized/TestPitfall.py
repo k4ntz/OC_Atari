@@ -107,7 +107,7 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_8.pkl", "rb"))
+    snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/bug.pkl", "rb"))
     env._env.env.env.ale.restoreState(snapshot)
     run(oc)
 
@@ -208,7 +208,7 @@ def run(env):
             all_rams.append(deepcopy(ram))
             target_vals.append(target_val)
         if showRAM:
-            print(ram)
+            print(ram[19:21])
             # ram_change=np.array(ram.shape)
             # count=0
             # for i in range(len(all_rams)-1):
