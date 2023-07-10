@@ -33,6 +33,7 @@ from .yarsrevenge import _detect_objects_yarsrevenge
 from .icehockey import _detect_objects_icehockey
 
 
+from .privateeye import _detect_objects_privateeye
 def detect_objects_vision(objects, obs, game_name, hud=False):
     if game_name.lower() == "atlantis":
         return _detect_objects_atlantis(objects, obs, hud)
@@ -102,6 +103,8 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_yarsrevenge(objects, obs, hud)
     elif game_name.lower() == "icehockey":
         return _detect_objects_icehockey(objects, obs, hud)
+    elif game_name.lower() == "privateeye":
+        return _detect_objects_privateeye(objects, obs, hud)
     else:
         print(colored("Uncovered game in vision mode", "red"))
         exit(1)
