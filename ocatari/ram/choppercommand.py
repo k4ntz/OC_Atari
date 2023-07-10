@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from ._helper_methods import number_to_bitfield, bitfield_to_number
-from .game_objects import GameObject
+from ._helper_methods import number_to_bitfield, bitfield_to_number, _convert_number
+from .game_objects import GameObject, ScoreObject
 import sys
 from math import ceil
 
@@ -31,6 +31,7 @@ class Player(GameObject):
         super(Player, self).__init__()
         self._xy = 133, 103     #initially
         self.wh = 16, 9
+        self.orientation = 1
         self.rgb = 223, 183, 85
         self.hud = False
 
@@ -107,7 +108,7 @@ class Shot(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class Score(ScoreObject):
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 75, 16
@@ -230,6 +231,7 @@ def _detect_objects_revised(objects, ram_state, hud):
         player.xy = (ram_state[71] + 2, 159-ram_state[72])
     else:
         player.xy = (ram_state[71], 159-ram_state[72])
+    player.orientation = ram_state[66]
     # velocity_raw = ram_state[42]
     # if velocity_raw > 127:
     #     velocity_raw = 255-velocity_raw
@@ -916,6 +918,7 @@ def _detect_objects_revised(objects, ram_state, hud):
         else:
             score = Score()
             objects[42] = score
+        score.value = _convert_number(ram_state[108])*10000 + _convert_number(ram_state[110])*100 + _convert_number(ram_state[112])
 
     # score
     # x: value 35+i*8
