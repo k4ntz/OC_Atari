@@ -41,7 +41,7 @@ class EnemyScore(GameObject):
         super().__init__()
         self.rgb = 236,200,96
         self._xy = 0, 0
-        self.wh = (8, 7)
+        self.wh = (7, 7)
         self.hud = True
 
 class Timer(GameObject):
@@ -49,7 +49,7 @@ class Timer(GameObject):
         super().__init__()
         self.rgb = 84,92,214
         self._xy = 0, 0
-        self.wh = (8, 7)
+        self.wh = (7, 7)
         self.hud = True
 
 
@@ -97,14 +97,50 @@ def _detect_objects_icehockey_revised(objects, ram_state, hud=False):
     # Enenmy at upper side
     enemy_2=objects[3]
     enemy_2.xy=ram_state[58]-13,168-ram_state[54]
-
     # Ball
-
     ball=objects[4]
     ball.xy=ram_state[52]-10,188-ram_state[91]
     
     if hud:
         # scores
-        pass
+        # ram_state[11] for enemy score
+        if ram_state[11]<=9:
+            es1=EnemyScore()
+            es1.xy=110,14
+            objects[7]=es1
+            objects[8]=None
+        else:
+            es1=EnemyScore()
+            es2=EnemyScore()
+            es1.xy=110,14
+            es2.xy=102,14
+            objects[7]=es1
+            objects[8]=es2
+        # ram_state[10] for player score
+        if ram_state[10]<=9:
+            es1=PlayerScore()
+            es1.xy=46,14
+            objects[5]=es1
+            objects[6]=None
+        else:
+            es1=PlayerScore()
+            es2=PlayerScore()
+            es1.xy=46,14
+            es2.xy=38,14
+            objects[5]=es1
+            objects[6]=es2
+        # Timer
+        # ram_state[6] responsible for seconds place 
+        # ram_state[7] responsible for minutes's place
+        t1=objects[9]
+        t2=objects[10]
+        t3=objects[11]
+        t1.xy=89,5
+        t2.xy=81,5
+        t3.xy=65,5 #Minute place 
+
+
+
+
 
 
