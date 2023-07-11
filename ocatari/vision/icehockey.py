@@ -46,18 +46,12 @@ class Timer(GameObject):
 def _detect_objects_icehockey(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
-    # for color in player_colors:
-    #     player = find_objects(obs, color,size=(4,13), tol_s=4, min_distance=1)
-    #     for e in player:
-    #         eg=Player(*e)
-    #         eg.rgb=color
-    #         objects.append(eg)
     player = find_mc_objects(obs, player_colors, size=(16, 20), tol_s=10, closing_dist=3)
     # import ipdb; ipdb.set_trace()
     for p in player:
         objects.append(Player(*p))
     
-    enemy = find_mc_objects(obs, enemy_colors, size=(16, 20),maxy=100, tol_s=10, closing_dist=3)
+    enemy = find_mc_objects(obs, enemy_colors, size=(16, 20), tol_s=10, closing_dist=3)
     # import ipdb; ipdb.set_trace()
     for e in enemy:
         objects.append(Enemy(*e))
