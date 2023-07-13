@@ -1,33 +1,77 @@
-from .utils import find_objects, find_mc_objects
+from .utils import find_objects, find_mc_objects, find_rectangle_objects
 from .game_objects import GameObject
 
-objects_colors = {"ball": [0, 0, 0], "enemyscore":[236,200,96], "playerscore":[84,92,214], "timer":[84,92,214]}
-hud_color=[132,144,252]
-player_colors=[[45,50,184],[200,72,72],[184,50,50]]
-enemy_colors=[[200,72,72],[210,182,86],[232,204,99],[82,126,45]]
+objects_colors = {"gopher": [72,44,0], "blocks":[223,183,85]}
+hud_color=[195,144,61]
+player_colors=[[72,160,72],[214,92,92],[183,194,95],[181,83,40],[84,92,214],[181,83,40]]
+carrot_colors=[[50,132,50],[162,98,33],[180,122,48],[181,83,40]]
+birdcolors=[[195,144,61],[236,236,236],[232,204,99],[117,128,240]]
 
 class Player(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 72,160,72
+        self.hud = False
+
+class Gopher(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 72,44,0
+        self.hud = False
+
+class Carrot(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 162,98,33
+        self.hud = False
+
+class Bird(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 45,50,184 
         self.hud = False
 
+class Empty_block(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 223,183,85 
+        self.hud = False
+
+class Score(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 195,144,65 
+        self.hud = True
+
 
 def _detect_objects_gopher(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
-    player = find_mc_objects(obs, player_colors, size=(16, 20), tol_s=10, closing_dist=3)
+    player = find_mc_objects(obs, player_colors, size=(11,50),tol_s=2, closing_dist=1)
     for p in player:
         objects.append(Player(*p))
     
-    ball=find_objects(obs,objects_colors["ball"],size=(2,2),minx=32,maxx=127,miny=46,maxy=182,tol_s=1,min_distance=1)
-    # import ipdb; ipdb.set_trace()
-    for b in ball:
-        objects.append(Player(*b))
+    carrots = find_mc_objects(obs, carrot_colors, size=(12,27), miny=125, tol_s=4, closing_dist=2)
+    for c in carrots:
+        objects.append(Carrot(*c))
+    
+    gopher=find_objects(obs,objects_colors["gopher"],miny=130,size=(14,10),tol_s=2)
+    for g in gopher:
+        objects.append(Gopher(*g))
+    
+    blocks = find_rectangle_objects(obs, objects_colors["blocks"], max_size=(8,12),miny=125)
+    for b in blocks:
+        objects.append(Empty_block(*b))
     
 
     if hud:
-        pass
+        birds = find_mc_objects(obs, birdcolors, size=(15,18), maxy=90, tol_s=3, closing_dist=2)
+        for b in birds:
+            objects.append(Bird(*b))
+        score=find_objects(obs,hud_color,maxy=60,size=(5,9),tol_s=2, closing_active=False)
+        for s in score:
+            objects.append(Score(*s))
+        
         
 
 
