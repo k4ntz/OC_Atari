@@ -46,7 +46,7 @@ observation, info = env.reset()
 snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_8.pkl", "rb"))
 env._env.env.env.ale.restoreState(snapshot)
 # object_list = ["Projectile"]
-object_list = ["LifeCount"]
+object_list = ["Rope"]
 # create dict of list
 objects_infos = {}
 subset = []
@@ -71,7 +71,7 @@ for i in tqdm(range(NB_SAMPLES)):
     elif prob>0.6:
         action=3 # 4-RIGHT 3- Left, Truck at (56, 129), (16, 18), Cactus at (125, 55), (8, 8), Cactus at (129, 46), (8, 8)]
     # if i % 5: # reset for pressing
-    #     action = 0
+    action = 0
 
     obs, reward, terminated, truncated, info = env.step(action)
     if info.get('frame_number') > 10 and i % 1 == 0:

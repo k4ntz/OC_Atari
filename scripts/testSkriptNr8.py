@@ -13,7 +13,7 @@ set the ram and see whats changed
 """
 
 
-env = OCAtari("Qbert", mode="raw", render_mode='human')
+env = OCAtari("ChopperCommand", mode="vision", render_mode='human')
 prevRam = None
 observation, info = env.reset(seed=42)
 observation, reward, terminated, truncated, info = env.step(0)
@@ -23,18 +23,18 @@ print("Round: ", target_ram_position)
 
 for _ in range(100000):
     
-    if _ % 200 == 0:
+    if _ % 100 == 0:
         target_ram_position += 1
         print("Round: ", target_ram_position)
         env.close()
-        env = OCAtari("Qbert", mode="raw", render_mode='human')
+        env = OCAtari("ChopperCommand", mode="vision", render_mode='human')
         observation, info = env.reset(seed=42)
-        observation, reward, terminated, truncated, info = env.step(0)
-    new_ram_value = 4
+        observation, reward, terminated, truncated, info = env.step(1)
+    new_ram_value = 255
     env._env.unwrapped.ale.setRAM(target_ram_position, new_ram_value)
 
     terminated, truncated = False, False
-    observation, reward, terminated, truncated, info = env.step(0)
+    observation, reward, terminated, truncated, info = env.step(2)
     if terminated or truncated:
         observation, info = env.reset()
 

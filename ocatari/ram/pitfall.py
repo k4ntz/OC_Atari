@@ -180,14 +180,8 @@ def _init_objects_pitfall_ram(hud=False):
     """
     global ram_18
     ram_18=10
-    global direction
-    direction=0
     global prev_x
-    global prev_y
     prev_x=78
-    prev_y=106
-    global ram_81
-    ram_81=1
     objects = [Player(),Wall(),Logs(),Logs(),Logs(),StairPit(),StairPit(),Pit(),Pit(),Scorpion()] #10
     objects.extend([Rope(),Snake(),Tarpit(),Waterhole(),Crocodile(),Crocodile(),Crocodile()]) #7
     objects.extend([GoldenBar()])
@@ -361,54 +355,44 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
         else:
             objects[2]=None; objects[3]=None; objects[4]=None
 
-        # Adding Rope
-        # When does Rope come in? Disable for all other scenarios 
+    # Adding Rope
+    # When does Rope come in? Disable for all other scenarios 
+    rope_visible=False
+    rope_list=[2,3,6,10,11,12,14,17]
+    try:
+        index=rope_list.index(ram_state[20])
+        rope_visible=True
+    except:
+        pass
+    if ram_state[19]==2 and ram_state[20]==4:
+        rope_visible=True
+    # import ipdb; ipdb.set_trace()
+    if rope_visible:
         r=Rope()
         y=116-ram_state[18]
+        # Quadratic estimates
         x_1=int(76.5-np.sqrt((y-49)*(112-y)))
         x_2=int(76.5+np.sqrt((y-49)*(112-y)))
+        # Estimates from directly substituting vision found values
+        x_right=[109,107,105,104,99,99,99,97,95,93,91]
+        x_left=[47,49,51,52,54,55,60,60,61,63,65]
+        x_2=x_right[20-ram_state[18]]
+        x_1=x_left[20-ram_state[18]]
         global ram_18
-        global direction
         global prev_x
-        global prev_y
         increment=2
-        if ram_state[18]<ram_18:
-            increment=2
-        elif ram_state[18]>ram_18:
-            increment=-2
-        
-
         if ram_state[18]!=ram_18:
-            if ram_18==10:
-                # if ram_state[18]!=10:
-                # direction=abs(direction-1)
-                direction=0 if direction==1 else 1
-
-            prev_x=x_1 if direction==0 else x_2
-            prev_y=y
+            prev_x=x_1 if ram_state[93]==16 else x_2
         else:
             if ram_state[18]==10:
-                prev_x=prev_x+increment
+                if ram_state[94]>=96 and ram_state[94]<=168:
+                    increment=4
+                else:
+                    increment=-4
+                prev_x=prev_x+increment      
         ram_18=ram_state[18]
-        r.xy=prev_x,prev_y
+        r.xy=prev_x,y
         objects[10]=r
-
-        # if ram_state[18]!=ram_18:
-        #     prev_x=x_1 if abs(prev_x-x_1)<abs(prev_x-x_2) else x_2
-        #     prev_y=y
-        # else:
-        #     if ram_18==10 and ram_state[18]==10:
-        #         prev_x=prev_x+increment
-        #         prev_y=prev_y
-        # global ram_81
-        # if ram_state[81]%2==0:
-        #     # import ipdb; ipdb.set_trace()
-        #     increment=increment*-1
-        #     ram_81=ram_state[81]
-
-        # ram_18=ram_state[18]
-        # r.xy=prev_x,prev_y
-        # objects[10]=r
 
 
 
@@ -475,28 +459,3 @@ def _detect_objects_pitfall_raw(info, ram_state):
     info["objects_list"] = ram_state[32:36]
 
 
-# def _detect_objects_frostbite_revised_old(info, ram_state, hud=False):
-#     """
-#     For all 3 objects:
-#     (x, y, w, h, r, g, b)
-#     """
-#     objects = {}
-#     objects["player"] = ram_state[32]+5, ram_state[34]+38, 14, 46, 214, 214, 214
-#     objects["enemy"] = ram_state[33]+4, ram_state[35]+38, 14, 46, 0, 0, 0
-#     if hud:
-#         objects["enemy_score"] = 111, 5, 6, 7, 0, 0, 0
-#         if ram_state[19] < 10:
-#             objects["enemy_score2"] = 0, 0, 0, 0, 0, 0, 0
-#         else:
-#             objects["enemy_score2"] = 103, 5, 6, 7, 0, 0, 0
-#         objects["player_score"] = 47, 5, 6, 7, 214, 214, 214
-#         if ram_state[18] < 10:
-#             objects["player_score2"] = 0, 0, 0, 0, 0, 0, 0
-#         else:
-#             objects["player_score2"] = 39, 5, 6, 7, 214, 214, 214
-#         objects["logo"] = 62, 189, 32, 7, 20, 60, 0
-#         objects["time1"] = 63, 17, 6, 7, 20, 60, 0
-#         objects["time2"] = 73, 18, 2, 5, 20, 60, 0
-#         objects["time3"] = 79, 17, 6, 7, 20, 60, 0
-#         objects["time4"] = 87, 17, 6, 7, 20, 60, 0
-#     info["objects"] = objects
