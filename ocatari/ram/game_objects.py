@@ -157,13 +157,23 @@ class GameObject:
             (other.y <= self.y <= other.y + other.h) 
 
 
-
-
 class ScoreObject(GameObject):
     """
     This class represents the score of the player (or sometimes Enemy).
 
     :ivar value: The value of the score:
+    :type value: int
+    """
+    def __init__(self):
+        super().__init__()
+        self.value = 0
+
+
+class ClockObject(GameObject):
+    """
+    This class represents a Clock/Timer in game.
+
+    :ivar value: The value of the Timer:
     :type value: int
     """
     def __init__(self):

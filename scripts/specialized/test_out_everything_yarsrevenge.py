@@ -41,7 +41,7 @@ random.seed(0)
 
 
 ONE_CHANGE = True
-initial_ram_n = 1
+initial_ram_n = 30
 
 
 make_deterministic(0, env)

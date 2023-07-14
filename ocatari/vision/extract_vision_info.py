@@ -30,7 +30,9 @@ from .alien import _detect_objects_alien
 from .frostbite import _detect_objects_frostbite
 from .pitfall import _detect_objects_pitfall
 from .yarsrevenge import _detect_objects_yarsrevenge
-
+from .icehockey import _detect_objects_icehockey
+from .privateeye import _detect_objects_privateeye
+from .gopher import _detect_objects_gopher
 
 def detect_objects_vision(objects, obs, game_name, hud=False):
     if game_name.lower() == "atlantis":
@@ -99,6 +101,12 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_pitfall(objects, obs, hud)
     elif game_name.lower() == "yarsrevenge":
         return _detect_objects_yarsrevenge(objects, obs, hud)
+    elif game_name.lower() == "icehockey":
+        return _detect_objects_icehockey(objects, obs, hud)
+    elif game_name.lower() == "privateeye":
+        return _detect_objects_privateeye(objects, obs, hud)
+    elif game_name.lower() == "gopher":
+        return _detect_objects_gopher(objects, obs, hud)
     else:
         print(colored("Uncovered game in vision mode", "red"))
         exit(1)
