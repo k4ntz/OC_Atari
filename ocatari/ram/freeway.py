@@ -6,6 +6,10 @@ MAX_NB_OBJECTS =  {'Chicken': 2, 'Car': 10}
 MAX_NB_OBJECTS_HUD =  {'Chicken': 2, 'Car': 10, 'Score' : 2}
 
 class Chicken(GameObject):
+    """
+    A class representing the player figure i.e., the chicken. 
+    """
+    
     def __init__(self):
         super(Chicken, self).__init__()
         self._xy = 0, 0
@@ -15,6 +19,10 @@ class Chicken(GameObject):
 
 
 class Car(GameObject):
+    """
+    A class representing the vehicles on the freeway. 
+    """
+    
     def __init__(self):
         super(Car, self).__init__()
         self._xy = 0, 0
@@ -24,6 +32,10 @@ class Car(GameObject):
 
 
 class Score(GameObject):
+    """
+    A class representing the player score display.
+    """
+    
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 49, 5

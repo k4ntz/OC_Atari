@@ -12,6 +12,10 @@ MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile': 
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile': 1, 'PlayerScore': 1, 'Logo': 2, 'RoomCleared': 1}
 
 class Player(GameObject):
+    """
+    A class representing the player figure i.e., the earth man stuck on planet Mazeon. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 8, 79
@@ -21,6 +25,10 @@ class Player(GameObject):
 
 
 class PlayerMissile(GameObject):
+    """
+    A class representing the projectiles shot from the player's laser gun. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -30,6 +38,10 @@ class PlayerMissile(GameObject):
 
 
 class Enemy(GameObject):
+    """
+    A class representing the enemy Automazeons stalking the player. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -39,6 +51,10 @@ class Enemy(GameObject):
 
 
 class EnemyMissile(GameObject):
+    """
+    A class representing the projectiles fired at the player by the enemy Automazeons. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -48,6 +64,10 @@ class EnemyMissile(GameObject):
 
 
 class PlayerScore(GameObject):
+    """
+    A class representing the player score display.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 88, 183
@@ -60,6 +80,10 @@ class PlayerScore(GameObject):
 
 
 class Logo(GameObject):
+    """
+    A class representing the Atari logo, which is displayed in place of the score if the score is zero.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 63, 183

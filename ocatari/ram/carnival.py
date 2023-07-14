@@ -10,6 +10,10 @@ MAX_NB_OBJECTS =  {'Player': 1, 'PlayerMissile': 1, 'Rabbit': 6, 'Duck': 5, 'Ext
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerMissile': 1, 'Rabbit': 6, 'Duck': 5,'ExtraBullets': 4, 'Owl': 3, 'Wheel': 1, 'FlyingDuck': 6, 'AmmoBar': 1, 'BonusSign': 1, 'BonusValue': 1, 'PlayerScore': 1}
 
 class Player(GameObject):
+    """
+    A class representing the player figure i.e, the gun.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 66, 186
@@ -19,6 +23,10 @@ class Player(GameObject):
 
 
 class PlayerMissile(GameObject):
+    """
+    A class representing projectiles fired from the gun.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -28,6 +36,10 @@ class PlayerMissile(GameObject):
 
 
 class Owl(GameObject):
+    """
+    A class representing the owl targets.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -37,6 +49,10 @@ class Owl(GameObject):
 
 
 class Duck(GameObject):
+    """
+    A class representing the duck targets.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -46,6 +62,10 @@ class Duck(GameObject):
 
 
 class FlyingDuck(GameObject):
+    """
+    A class representing ducks that fly down the screen to eat some of the bullets.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -55,6 +75,10 @@ class FlyingDuck(GameObject):
 
 
 class Rabbit(GameObject):
+    """
+    A class representing the rabbit targets.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -64,6 +88,10 @@ class Rabbit(GameObject):
 
 
 class ExtraBullets(GameObject):
+    """
+    A class representing the extra-bullet boxes.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -73,6 +101,10 @@ class ExtraBullets(GameObject):
 
 
 class PlayerScore(GameObject):
+    """
+    A class representing the player score display.
+    """
+
     def __init__(self):
         super().__init__()
         self._xy = 65, 0
@@ -85,6 +117,10 @@ class PlayerScore(GameObject):
 
 
 class AmmoBar(GameObject):
+    """
+    A class representing the ammunition bar display.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 203
@@ -94,6 +130,10 @@ class AmmoBar(GameObject):
 
 
 class BonusSign(GameObject):
+    """
+    A class representing the bonus (or penalty) points/ammunition target.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 12, 29
@@ -103,6 +143,10 @@ class BonusSign(GameObject):
 
 
 class BonusValue(GameObject):
+    """
+    A class representing the value of the bonus/penalty target.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 22, 29
@@ -112,6 +156,10 @@ class BonusValue(GameObject):
 
 
 class Wheel(GameObject):
+    """
+    A class representing the spinning pipe target.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 70, 15
