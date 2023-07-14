@@ -23,6 +23,10 @@ class CCGameObject(GameObject): # color changing game object
 
 
 class CentipedeSegment(CCGameObject):
+    """
+    A class representing a segment of the centipede.
+    """
+    
     def __init__(self):
         super(CentipedeSegment, self).__init__()
         self._xy = 0, 0
@@ -33,6 +37,10 @@ class CentipedeSegment(CCGameObject):
 
 
 class Player(CCGameObject):
+    """
+    A class representing the player figure i.e., Oliver the elf. 
+    """
+    
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 0, 0
@@ -43,6 +51,10 @@ class Player(CCGameObject):
 
 
 class Projectile(GameObject):
+    """
+    A class representing the spells casted from the magic wand. 
+    """
+    
     def __init__(self):
         super(Projectile, self).__init__()
         self._xy = 0, 0
@@ -53,6 +65,10 @@ class Projectile(GameObject):
 
 
 class Mushroom(CCGameObject):
+    """
+    A class representing the mushrooms. 
+    """
+    
     def __init__(self):
         super(Mushroom, self).__init__()
         self._xy = 0, 0
@@ -63,6 +79,10 @@ class Mushroom(CCGameObject):
 
 
 class Spider(CCGameObject):
+    """
+    A class representing the spider that is trying to distract the player. 
+    """
+    
     def __init__(self):
         super(Spider, self).__init__()
         self._xy = 0, 0
@@ -73,6 +93,10 @@ class Spider(CCGameObject):
 
 
 class Flea(CCGameObject):  # i have no clue what it is supposed to be ...
+    """
+    A class representing the flea, which drops down and creates mushrooms in it's path. 
+    """
+    
     def __init__(self):     # some ball thingy with legs
         super(Flea, self).__init__()
         self._xy = 0, 0
@@ -83,6 +107,10 @@ class Flea(CCGameObject):  # i have no clue what it is supposed to be ...
 
 
 class Scorpion(CCGameObject):
+    """
+    A class representing the scorpion, which can run across the screen and poison mushrooms in it's path. 
+    """
+    
     def __init__(self):
         super(Scorpion, self).__init__()
         self._xy = 0, 0
@@ -93,6 +121,10 @@ class Scorpion(CCGameObject):
 
 
 class Score(GameObject):
+    """
+    A class representing the player score display.
+    """
+    
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 96, 7
@@ -102,6 +134,10 @@ class Score(GameObject):
 
 
 class Ground(GameObject):
+    """
+    A class representing the ground line.
+    """
+    
     def __init__(self):
         super(Ground, self).__init__()
         self._xy = 16, 183
@@ -114,6 +150,10 @@ class Ground(GameObject):
 
 
 class Life(GameObject):
+    """
+    A class representing the indicator for the remaining magic wands (lives). 
+    """
+    
     def __init__(self):
         super(Life, self).__init__()
         self._xy = 0, 0

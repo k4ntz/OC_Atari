@@ -6,6 +6,10 @@ MAX_NB_OBJECTS_HUD = {"Player1FishingString": 1, "Player2FishingString": 1, "Fis
 
 
 class Fish(GameObject):
+    """
+    A class representing the fish.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 232, 232, 74
@@ -15,6 +19,10 @@ class Fish(GameObject):
 
 
 class Shark(GameObject):
+    """
+    A class representing the shark.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 232, 232, 74
@@ -25,6 +33,10 @@ class Shark(GameObject):
 
 
 class PlayerOneHook(GameObject):
+    """
+    A class representing the hook of player one.
+    """
+    
     # ram_state[15] gives what input was played by player 1
     def __init__(self):
         super().__init__()

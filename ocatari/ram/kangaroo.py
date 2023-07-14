@@ -11,6 +11,10 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Platform'
 obj_tracker = {}
 
 class Player(GameObject):
+    """
+    A class representing the player figure, Mother Kangaroo.
+    """
+    
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 78, 103
@@ -20,6 +24,10 @@ class Player(GameObject):
 
 
 class Child(GameObject):
+    """
+    A class representing Baby Kangaroo.
+    """
+    
     def __init__(self):
         super(Child, self).__init__()
         self._xy = 78, 12
@@ -29,6 +37,10 @@ class Child(GameObject):
 
 
 class Enemy(GameObject):
+    """
+    A class representing the enemy monkeys.
+    """
+    
     def __init__(self):
         super(Enemy, self).__init__()
         super().__init__()
@@ -39,6 +51,10 @@ class Enemy(GameObject):
 
 
 class Fruit(GameObject):
+    """
+    A class representing the collectable fruits.
+    """
+    
     def __init__(self):
         super(Fruit, self).__init__()
         self._xy = 125, 173
@@ -48,6 +64,10 @@ class Fruit(GameObject):
 
 
 class Scale(GameObject):
+    """
+    A class representing the ladders.
+    """
+    
     def __init__(self, x=0, y=0, w=8, h=35):
         super(Scale, self).__init__()
         self._xy = x, y
@@ -58,6 +78,10 @@ class Scale(GameObject):
 
 
 class Platform(GameObject):
+    """
+    A class representing the platforms.
+    """
+    
     def __init__(self, x=0, y=0, w=8, h=4):
         super(Platform, self).__init__()
         self._xy = x, y
@@ -68,6 +92,10 @@ class Platform(GameObject):
 
 
 class Projectile_top(GameObject):
+    """
+    A class representing the dangerous apples dropping down from the top.
+    """
+    
     def __init__(self):
         super(Projectile_top, self).__init__()
         self._xy = 0, 0
@@ -77,6 +105,10 @@ class Projectile_top(GameObject):
 
 
 class Projectile_enemy(GameObject):
+    """
+    A class representing the apples thrown at the player by the monkeys.
+    """
+    
     def __init__(self):
         super(Projectile_enemy, self).__init__()
         self._xy = 0, 0
@@ -86,6 +118,10 @@ class Projectile_enemy(GameObject):
 
 
 class Bell(GameObject):
+    """
+    A class representing the bell that can be used to replenish the collectable fruits.
+    """
+    
     def __init__(self):
         super(Bell, self).__init__()
         self._xy = 126, 173
@@ -95,6 +131,10 @@ class Bell(GameObject):
 
 
 class Score(GameObject):
+    """
+    A class representing the player score indicator.
+    """
+    
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 129, 183
@@ -104,6 +144,10 @@ class Score(GameObject):
 
 
 class Life(GameObject):
+    """
+    A class representing the player's remaining lives.
+    """
+    
     def __init__(self):
         super(Life, self).__init__()
         self._xy = 16, 183
@@ -113,6 +157,10 @@ class Life(GameObject):
 
 
 class Time(GameObject):
+    """
+    A class representing the time indicator.
+    """
+    
     def __init__(self):
         super(Time, self).__init__()
         self._xy = 80, 191

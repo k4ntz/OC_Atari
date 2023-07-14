@@ -27,6 +27,10 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_NB_OBJECTS)
 
 class Player(GameObject):
+    """
+    A class representing the player figure i.e., the helicopter gunship. 
+    """
+    
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 133, 103     #initially
@@ -36,6 +40,10 @@ class Player(GameObject):
 
 
 class MiniPlayer(GameObject):
+    """
+    A class representing the blip for the player's helicopter on the Long Range Scanner. 
+    """
+    
     def __init__(self):
         super(MiniPlayer, self).__init__()
         self._xy = 133, 103  # initially
@@ -45,6 +53,10 @@ class MiniPlayer(GameObject):
 
 
 class Truck(GameObject):
+    """
+    A class representing the trucks of the convoy, which need to be protected. 
+    """
+    
     def __init__(self):
         super(Truck, self).__init__()
         self._xy = 0, 166      #166 immer
@@ -54,6 +66,10 @@ class Truck(GameObject):
 
 
 class MiniTruck(GameObject):
+    """
+    A class representing the blips for the trucks on the Long Range Scanner. 
+    """
+    
     def __init__(self):
         super(MiniTruck, self).__init__()
         self._xy = 133, 185  # initially
@@ -63,6 +79,10 @@ class MiniTruck(GameObject):
 
 
 class EnemyHelicopter(GameObject):
+    """
+    A class representing the enemy helicopters. 
+    """
+    
     def __init__(self):
         super(EnemyHelicopter, self).__init__()
         self._xy = 0, 0         #random
@@ -72,6 +92,10 @@ class EnemyHelicopter(GameObject):
 
 
 class EnemyPlane(GameObject):
+    """
+    A class representing the enemy planes. 
+    """
+    
     def __init__(self):
         super(EnemyPlane, self).__init__()
         self._xy = 0, 0         #random
@@ -81,6 +105,10 @@ class EnemyPlane(GameObject):
 
 
 class MiniEnemy(GameObject):
+    """
+    A class representing the blips for the enemy aircraft on the Long Range Scanner. 
+    """
+    
     def __init__(self):
         super(MiniEnemy, self).__init__()
         self._xy = 133, 103  # initially
@@ -90,6 +118,10 @@ class MiniEnemy(GameObject):
 
 
 class Bomb(GameObject):
+    """
+    A class representing the multi-warhead missiles deployed by enemy aircraft. 
+    """
+    
     def __init__(self):
         super(Bomb, self).__init__()
         self._xy = 0, 0         #random
@@ -99,6 +131,10 @@ class Bomb(GameObject):
 
 
 class Shot(GameObject):
+    """
+    A class representing the projectiles shot from the helicopter's laser cannon. 
+    """
+    
     def __init__(self):
         super(Shot, self).__init__()
         self._xy = 0, 0         # auf höhe des helis
@@ -108,6 +144,10 @@ class Shot(GameObject):
 
 
 class Score(GameObject):
+    """
+    A class representing the player score display.
+    """
+    
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 75, 16
@@ -117,6 +157,10 @@ class Score(GameObject):
 
 
 class Life(GameObject):
+    """
+    A class representing the indicator for helicopter rerves (lifes).
+    """
+    
     def __init__(self):
         super(Life, self).__init__()
         self._xy = 33, 24           # and 41, 24 and so on

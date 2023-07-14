@@ -9,6 +9,10 @@ MAX_NB_OBJECTS_HUD = {"Wall": 15, "LavaWall": 15, "Enemy": 10, "Player": 1, "Las
 
 
 class Wall(GameObject):
+    """
+    A class representing the walls in the mineshafts.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -17,6 +21,10 @@ class Wall(GameObject):
 
 
 class LavaWall(GameObject):
+    """
+    A class representing the lava walls in the mineshafts.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -32,6 +40,10 @@ class EnemyType(Enum):
 
 
 class Enemy(GameObject):
+    """
+    A class representing the dangerous creatures inside the mineshafts.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -40,6 +52,10 @@ class Enemy(GameObject):
 
 
 class Snake(GameObject):
+    """
+    A class representing the snakes.
+    """
+    
     def __init__(self, *args, **kwargs):
         self.xy = 0, 0
         self.wh = 8, 10
@@ -47,6 +63,10 @@ class Snake(GameObject):
 
 
 class Player(GameObject):
+    """
+    A class representing player figure.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -54,6 +74,10 @@ class Player(GameObject):
 
 
 class LaserBeam(GameObject):
+    """
+    A class representing the laser beams shot from the helmet of the player figure.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -61,6 +85,10 @@ class LaserBeam(GameObject):
 
 
 class Bomb(GameObject):
+    """
+    A class representing the dynamite sticks that can be deployed by the player.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -75,6 +103,10 @@ class EndNPC(GameObject):
 
 
 class Lamp(GameObject):
+    """
+    A class representing the lanterns that light the mineshafts.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -82,6 +114,10 @@ class Lamp(GameObject):
 
 
 class PowerBar(GameObject):
+    """
+    A class representing the power gauge.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -90,6 +126,10 @@ class PowerBar(GameObject):
 
 
 class BombStock(GameObject):
+    """
+    A class representing the indicator for remaining dynamite sticks.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -98,6 +138,10 @@ class BombStock(GameObject):
 
 
 class Life(GameObject):
+    """
+    A class representing the indicator for the player's lives.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -105,6 +149,10 @@ class Life(GameObject):
 
 
 class Score(GameObject):
+    """
+    A class representing the player score indicator.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0

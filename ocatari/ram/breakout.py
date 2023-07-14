@@ -13,6 +13,10 @@ MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'BlockRow': 50}    # blockrow could go
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerScore': 3, 'Live': 1, 'PlayerNumber': 1, 'BlockRow': 50, 'Ball': 1}
 
 class Player(GameObject):
+    """
+    A class representing the player figure i.e., the paddle. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 99, 189
@@ -22,6 +26,10 @@ class Player(GameObject):
 
 
 class Ball(GameObject):
+    """
+    A class representing the game ball. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -31,6 +39,10 @@ class Ball(GameObject):
 
 
 class PlayerScore(GameObject):
+    """
+    A class representing the player score display.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 36, 6
@@ -43,6 +55,8 @@ class PlayerScore(GameObject):
 
 
 class Live(GameObject):
+    
+    
     def __init__(self):
         super().__init__()
         self._xy = 100, 5
@@ -52,6 +66,10 @@ class Live(GameObject):
 
 
 class BlockRow(GameObject):
+    """
+    A class representing the rows of the brickwall.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy = 8, 87
@@ -61,6 +79,11 @@ class BlockRow(GameObject):
 
 
 class PlayerNumber(GameObject):
+    """
+    A class representing the player index display.
+    """
+
+
     def __init__(self):
         super().__init__()
         self.xy = 136, 5
