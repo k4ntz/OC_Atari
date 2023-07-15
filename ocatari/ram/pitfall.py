@@ -6,6 +6,10 @@ MAX_NB_OBJECTS = {"Player": 1,"Wall":1,"Logs":5,"StairPit":4,"Pit":3,"Scorpion":
 MAX_NB_OBJECTS_HUD = {"LifeCount":3,"PlayerScore":6,"Timer":5}
 
 class Player(GameObject):
+    """
+    A class representing the player figure: Pitfall Harry.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -14,6 +18,10 @@ class Player(GameObject):
         self.hud = False
 
 class Wall(GameObject):
+    """
+    A class representing the underground brick walls.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -22,6 +30,10 @@ class Wall(GameObject):
         self.hud = False
 
 class Logs(GameObject):
+    """
+    A class representing the logs.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -30,6 +42,10 @@ class Logs(GameObject):
         self.hud = False
 
 class StairPit(GameObject):
+    """
+    A class representing the escape shafts from the underground.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -38,6 +54,10 @@ class StairPit(GameObject):
         self.hud = False
 
 class Pit(GameObject):
+    """
+    A class representing the open holes in the ground.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -46,6 +66,10 @@ class Pit(GameObject):
         self.hud = False
 
 class Scorpion(GameObject):
+    """
+    A class representing the scorpions.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -54,6 +78,10 @@ class Scorpion(GameObject):
         self.hud = False
 
 class Rope(GameObject):
+    """
+    A class representing the swinging vines.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -62,6 +90,10 @@ class Rope(GameObject):
         self.hud = False
 
 class Snake(GameObject):
+    """
+    A class representing the snakes.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -70,6 +102,10 @@ class Snake(GameObject):
         self.hud = False
 
 class Tarpit(GameObject):
+    """
+    A class representing the tar pits.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -78,6 +114,10 @@ class Tarpit(GameObject):
         self.hud = False
 
 class Waterhole(GameObject):
+    """
+    A class representing the swamps.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -86,6 +126,10 @@ class Waterhole(GameObject):
         self.hud = False
 
 class Crocodile(GameObject):
+    """
+    A class representing the crocodiles.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -94,6 +138,10 @@ class Crocodile(GameObject):
         self.hud = False
 
 class GoldenBar(GameObject):
+    """
+    A class representing the collectable gold bars.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -102,6 +150,10 @@ class GoldenBar(GameObject):
         self.hud = False
 
 class SilverBar(GameObject):
+    """
+    A class representing the collectable silver bars.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -110,6 +162,10 @@ class SilverBar(GameObject):
         self.hud = False
 
 class DiamondRing(GameObject):
+    """
+    A class representing the collectable diamond rings.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -118,6 +174,10 @@ class DiamondRing(GameObject):
         self.hud = False
 
 class Fire(GameObject):
+    """
+    A class representing the fires.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -126,6 +186,10 @@ class Fire(GameObject):
         self.hud = False
 
 class MoneyBag(GameObject):
+    """
+    A class representing the collectable money bags.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -134,6 +198,10 @@ class MoneyBag(GameObject):
         self.hud = False
 
 class LifeCount(GameObject):
+    """
+    A class representing the indicator for the remaining lifes.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -142,6 +210,10 @@ class LifeCount(GameObject):
         self.hud = True
 
 class PlayerScore(GameObject):
+    """
+    A class representing the player score display.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -150,6 +222,10 @@ class PlayerScore(GameObject):
         self.hud = True
 
 class Timer(GameObject):
+    """
+    A class representing the 20-minute countdown.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy=0,0
