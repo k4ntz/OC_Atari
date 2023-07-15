@@ -7,6 +7,10 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Enemy': 1, 'PlayerScore': 1, 'Ene
 
 
 class Player(GameObject):
+    """
+    A class representing the player figure i.e., the movable bar at the side.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -17,6 +21,10 @@ class Player(GameObject):
 
 
 class Enemy(GameObject):
+    """
+    A class representing the enemy bar.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -27,6 +35,10 @@ class Enemy(GameObject):
 
 
 class Ball(GameObject):
+    """
+    A class representing the game ball.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -36,6 +48,10 @@ class Ball(GameObject):
 
 
 class PlayerScore(GameObject):
+    """
+    A class representing the player score display.
+    """
+    
     def __init__(self, ten=False):
         super().__init__()
         if ten:
@@ -53,6 +69,10 @@ class PlayerScore(GameObject):
 
 
 class EnemyScore(GameObject):
+    """
+    A class representing the enemy score display.
+    """
+    
     def __init__(self, ten=False):
         super().__init__()
         if ten:

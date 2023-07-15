@@ -49,6 +49,10 @@ _cubes_pos = [(68, 34), (56, 62), (84, 62), (44, 91), (68, 91), (96, 91), (32, 1
 _diskposes = [(12, 138), (140, 138)]
 
 class Player(GameObject):
+    """
+    A class representing the player figure: Q*bert.
+    """
+    
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 78, 103
@@ -58,6 +62,10 @@ class Player(GameObject):
 
 
 class Cube(GameObject):
+    """
+    A class representing the cubes.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = (0, 0)
@@ -67,6 +75,10 @@ class Cube(GameObject):
 
 
 class Disk(GameObject):
+    """
+    A class representing the lift disks at the sides.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = (0, 0)
@@ -76,6 +88,10 @@ class Disk(GameObject):
 
 
 class PurpleBall(GameObject):
+    """
+    A class representing the purple ball, which hatches Coily when reaching the bottom of the pyramid.
+    """
+
     def __init__(self):
         super(PurpleBall, self).__init__()
         self._xy = 78, 103
@@ -85,6 +101,10 @@ class PurpleBall(GameObject):
 
 
 class RedBall(GameObject):
+    """
+    A class representing the red ball.
+    """
+    
     def __init__(self):
         super(RedBall, self).__init__()
         self._xy = 78, 103
@@ -94,6 +114,10 @@ class RedBall(GameObject):
 
 
 class GreenBall(GameObject):
+    """
+    A class representing the green ball.
+    """
+    
     def __init__(self):
         super(GreenBall, self).__init__()
         self._xy = 78, 103
@@ -102,8 +126,11 @@ class GreenBall(GameObject):
         self.hud = False
 
 
-# The purple snake that hatches from the purple ball
 class Coily(GameObject):
+    """
+    A class representing Coily, one of Q*bert's enemies, who hatches from the purple ball.
+    """
+    
     def __init__(self):
         super(Coily, self).__init__()
         self._xy = 78, 103
@@ -112,8 +139,11 @@ class Coily(GameObject):
         self.hud = False
 
 
-# The green Object appearing
 class Sam(GameObject):
+    """
+    A class representing Sam, one of Q*bert's enemies, who changes the cubes' color back to original.
+    """
+    
     def __init__(self):
         super(Sam, self).__init__()
         self._xy = 78, 103
@@ -123,6 +153,10 @@ class Sam(GameObject):
 
 
 class FlyingDiscs(GameObject):
+    """
+    ???
+    """
+    
     def __init__(self):
         super(FlyingDiscs, self).__init__()
         self._xy = 78, 103
@@ -132,6 +166,10 @@ class FlyingDiscs(GameObject):
 
 
 class Score(GameObject):
+    """
+    A class representing the player score display.
+    """
+    
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 34, 6
@@ -141,6 +179,10 @@ class Score(GameObject):
 
 
 class Lives(GameObject):
+    """
+    A class representing the indicator for the remaining lifes.
+    """
+    
     def __init__(self):
         super(Lives, self).__init__()
         self._xy = 33, 16

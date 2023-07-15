@@ -3,7 +3,7 @@ from ._helper_methods import _convert_number, get_iou
 import sys
 
 """
-RAM extraction for the game KANGUROO. Supported modes: raw, revised.
+RAM extraction for the game PrivateEye. Supported modes: raw, revised.
 
 """
 
@@ -12,6 +12,10 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Car': 1, 'Score': 1, 'Clock': 1}
 obj_tracker = {}
 
 class Player(GameObject):
+    """
+    A class representing the player figure: Pierre Touche.
+    """
+    
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 0, 0
@@ -22,6 +26,10 @@ class Player(GameObject):
 
 
 class Car(GameObject):
+    """
+    A class representing the Touche's 1935 Model A with jumping capabilities.
+    """
+    
     def __init__(self):
         super(Car, self).__init__()
         self._xy = 0, 0
@@ -32,6 +40,10 @@ class Car(GameObject):
 
 
 class Badguy(GameObject):
+    """
+    A class representing the player figure: Pierre Touche.
+    """
+    
     def __init__(self):
         super(Badguy, self).__init__()
         self._xy = 0, 0
@@ -41,6 +53,10 @@ class Badguy(GameObject):
 
 
 class Clue(GameObject):
+    """
+    A class representing the questionable characters lurking from the windows.
+    """
+    
     def __init__(self):
         super(Clue, self).__init__()
         self._xy = 0, 0
@@ -50,6 +66,10 @@ class Clue(GameObject):
 
 
 class Mud(GameObject):
+    """
+    A class representing the pot holes.
+    """
+    
     def __init__(self):
         super(Mud, self).__init__()
         self._xy = 0, 0
@@ -59,6 +79,10 @@ class Mud(GameObject):
 
 
 class Shatterd_Object(GameObject):
+    """
+    A class representing the animation for broken bricks or flowerpots once they've hit the ground.
+    """
+    
     def __init__(self):
         super(Shatterd_Object, self).__init__()
         self._xy = 0, 0
@@ -68,6 +92,10 @@ class Shatterd_Object(GameObject):
 
 
 class Knife(GameObject):
+    """
+    A class representing the daggers thrown at the player, once the first item is collected.
+    """
+    
     def __init__(self):
         super(Knife, self).__init__()
         self._xy = 0, 0
@@ -76,6 +104,10 @@ class Knife(GameObject):
         self.hud = False
 
 class Dove(GameObject):
+    """
+    A class representing the birds.
+    """
+    
     def __init__(self):
         super(Dove, self).__init__()
         self._xy = 0, 0
@@ -85,6 +117,10 @@ class Dove(GameObject):
 
 
 class Lizard(GameObject):
+    """
+    A class representing the crawling rats.
+    """
+    
     def __init__(self):
         super(Lizard, self).__init__()
         self._xy = 0, 0
@@ -94,6 +130,10 @@ class Lizard(GameObject):
 
 
 class Pottet_Plant(GameObject):
+    """
+    A class representing the flowerpots thrown from windows.
+    """
+    
     def __init__(self):
         super(Pottet_Plant, self).__init__()
         self._xy = 0, 0
@@ -103,6 +143,10 @@ class Pottet_Plant(GameObject):
 
 
 class Brick(GameObject):
+    """
+    A class representing the bricks, occasionally dropping from the building facades.
+    """
+    
     def __init__(self):
         super(Brick, self).__init__()
         self._xy = 0, 0
@@ -112,6 +156,10 @@ class Brick(GameObject):
 
 
 class Barrier(GameObject):
+    """
+    A class representing the roadblocks.
+    """
+    
     def __init__(self):
         super(Barrier, self).__init__()
         self._xy = 0, 0
@@ -121,6 +169,10 @@ class Barrier(GameObject):
 
 
 class Passge(GameObject):
+    """
+    A class representing the passages into alleys or park lanes.
+    """
+    
     def __init__(self):
         super(Passge, self).__init__()
         self._xy = 0, 0
@@ -131,6 +183,10 @@ class Passge(GameObject):
 
 
 class Gun_Sign(GameObject):
+    """
+    A class representing the header of the gunstore.
+    """
+    
     def __init__(self):
         super(Gun_Sign, self).__init__()
         self._xy = 0, 0
@@ -140,6 +196,10 @@ class Gun_Sign(GameObject):
 
 
 class Police_Sign(GameObject):
+    """
+    A class representing the header of the police headquaters.
+    """
+    
     def __init__(self):
         super(Police_Sign, self).__init__()
         self._xy = 0, 0
@@ -149,6 +209,10 @@ class Police_Sign(GameObject):
 
 
 class Bank_Sign(GameObject):
+    """
+    A class representing the header of the bank building.
+    """
+    
     def __init__(self):
         super(Police_Sign, self).__init__()
         self._xy = 0, 0
@@ -158,6 +222,10 @@ class Bank_Sign(GameObject):
 
 
 class Money_Bag(GameObject):
+    """
+    A class representing the inventory display for the bag of stolen money (case 1).
+    """
+    
     def __init__(self):
         super(Money_Bag, self).__init__()
         self._xy = 0, 0
@@ -167,6 +235,10 @@ class Money_Bag(GameObject):
 
 
 class Gun(GameObject):
+    """
+    A class representing the inventory display for the gun (case 1).
+    """
+    
     def __init__(self):
         super(Gun, self).__init__()
         self._xy = 0, 0
@@ -176,6 +248,10 @@ class Gun(GameObject):
 
 
 class Button(GameObject):
+    """
+    A class representing the inventory display for the lost button (case 2).
+    """
+    
     def __init__(self):
         super(Button, self).__init__()
         self._xy = 0, 0
@@ -185,6 +261,10 @@ class Button(GameObject):
 
 
 class Comb(GameObject):
+    """
+    A class representing the inventory display for the comb (case 3).
+    """
+    
     def __init__(self):
         super(Comb, self).__init__()
         self._xy = 0, 0
@@ -194,6 +274,10 @@ class Comb(GameObject):
 
 
 class Shoe_Sole(GameObject):
+    """
+    A class representing the inventory display for the show sole (case 4).
+    """
+    
     def __init__(self):
         super(Shoe_Sole, self).__init__()
         self._xy = 0, 0
@@ -203,6 +287,10 @@ class Shoe_Sole(GameObject):
 
 
 class Vase(GameObject):
+    """
+    A class representing the inventory display for the ming vase (case 2).
+    """
+    
     def __init__(self):
         super(Vase, self).__init__()
         self._xy = 0, 0
@@ -212,6 +300,10 @@ class Vase(GameObject):
 
 
 class Necklace(GameObject):
+    """
+    A class representing the inventory display for the diamond necklace (case 3).
+    """
+    
     def __init__(self):
         super(Necklace, self).__init__()
         self._xy = 0, 0
@@ -221,6 +313,10 @@ class Necklace(GameObject):
 
 
 class Stamp(GameObject):
+    """
+    A class representing the inventory display for the stamp (case 4).
+    """
+    
     def __init__(self):
         super(Stamp, self).__init__()
         self._xy = 0, 0
@@ -230,6 +326,10 @@ class Stamp(GameObject):
 
 
 class Badguy_Head(GameObject):
+    """
+    A class representing the thugs lurching out to attack the player.
+    """
+    
     def __init__(self):
         super(Badguy_Head, self).__init__()
         self._xy = 0, 0
@@ -239,6 +339,10 @@ class Badguy_Head(GameObject):
 
 
 class Score(ScoreObject):
+    """
+    A class representing the player's merit score display.
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Score, self).__init__()
         self._xy = 97, 6
@@ -248,6 +352,10 @@ class Score(ScoreObject):
 
 
 class Clock(ClockObject):
+    """
+    A class representing the statue of limitation (game clock display) for the current case.
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Clock, self).__init__()
         self._xy = 88, 15

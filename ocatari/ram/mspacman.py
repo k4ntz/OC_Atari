@@ -8,6 +8,10 @@ MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4, 'Fruit': 1, 'Score': 3, 'Life': 2}
 
 class Player(GameObject):
+    """
+    A class representing the player figure: Ms. Pac-Man.
+    """
+    
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 78, 103
@@ -17,6 +21,10 @@ class Player(GameObject):
 
 
 class Ghost(GameObject):
+    """
+    A class representing the Ghosts.
+    """
+    
     def __init__(self):
         super(Ghost, self).__init__()
         super().__init__()
@@ -27,6 +35,10 @@ class Ghost(GameObject):
 
 
 class Fruit(GameObject):
+    """
+    A class representing collectable fruits.
+    """
+    
     def __init__(self):
         super(Fruit, self).__init__()
         self._xy = 125, 173
@@ -36,6 +48,10 @@ class Fruit(GameObject):
 
 
 class Score(GameObject):
+    """
+    A class representing the player score display.
+    """
+    
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 95, 187
@@ -45,6 +61,10 @@ class Score(GameObject):
 
 
 class Life(GameObject):
+    """
+    A class representing the indicator for remaining lifes.
+    """
+    
     def __init__(self):
         super(Life, self).__init__()
         self._xy = 12, 171
