@@ -50,7 +50,7 @@ if opts.dqn:
     opts.path = f"models/RoadRunner/dqn.gz"
     dqn_agent = load_agent(opts, env.action_space.n)
 # object_list = ["Projectile"]
-object_list = ["Barrier"]
+object_list = ["Shield_Block"]
 # create dict of list
 objects_infos = {}
 subset = []
