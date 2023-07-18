@@ -5,8 +5,10 @@ from .game_objects import GameObject, ScoreObject
 import sys
 from math import ceil
 
+"""
+RAM extraction for the game Chopper Command.
+"""
 
-# RAM
 MAX_NB_OBJECTS =  {'Player': 1, 'MiniPlayer': 1, 'Truck': 3, 'MiniTruck': 9, 'MiniEnemy': 12, 'Shot': 1, 'EnemyPlane': 3, 'EnemyHelicopter': 3, 'Bomb': 3}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Truck': 3, 'MiniPlayer': 1, 'MiniEnemy': 12, 'MiniTruck': 9, 'Shot': 1, 'EnemyPlane': 3, 'EnemyHelicopter': 3, 'Bomb': 3, 'Score': 4, 'Life': 2 }
 
@@ -146,7 +148,7 @@ class Shot(GameObject):
 
 class Score(ScoreObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self):
@@ -159,7 +161,7 @@ class Score(ScoreObject):
 
 class Life(GameObject):
     """
-    A class representing the indicator for helicopter rerves (lifes).
+    A class representing the indicator for helicopter rerves (lifes) (HUD).
     """
     
     def __init__(self):

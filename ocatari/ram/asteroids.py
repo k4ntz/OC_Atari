@@ -52,7 +52,7 @@ class PlayerMissile(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self):
@@ -67,7 +67,7 @@ class PlayerScore(GameObject):
 
 class Lives(GameObject):
     """
-    A class representing the lives-indicator of the player (HUD). 
+    A class representing the indicator for remaining lives of the player (HUD). 
     """
     
     def __init__(self):

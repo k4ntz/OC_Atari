@@ -3,6 +3,10 @@ from ._helper_methods import bitfield_to_number, number_to_bitfield
 import math
 import sys
 
+"""
+RAM extraction for the game Centipede.
+"""
+
 MAX_NB_OBJECTS =  {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9, 'Mushroom': 42, 'Spider': 1, 'Flea': 1}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9, 'Mushroom': 42, 'Score': 4, 'Life': 2, 'Spider': 1, 'Flea': 1, 'Scorpion': 1}
 
@@ -13,7 +17,11 @@ ground_colors = [(110, 156, 66), (66, 114, 194), (198, 108, 58), (66, 72, 200),
                  (162, 162, 42), (184, 70, 162), (200, 72, 72), (146, 70, 192)]
 
 
-class CCGameObject(GameObject): # color changing game object
+class CCGameObject(GameObject):
+    """
+    A parent class for objects that change color throughout the game.
+    """
+    
     def __init__(self):
         super(CCGameObject, self).__init__()
     
@@ -122,7 +130,7 @@ class Scorpion(CCGameObject):
 
 class Score(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self):
@@ -135,7 +143,7 @@ class Score(GameObject):
 
 class Ground(GameObject):
     """
-    A class representing the ground line.
+    A class representing the ground line (HUD).
     """
     
     def __init__(self):
@@ -151,7 +159,7 @@ class Ground(GameObject):
 
 class Life(GameObject):
     """
-    A class representing the indicator for the remaining magic wands (lives). 
+    A class representing the indicator for the remaining magic wands (lives) (HUD). 
     """
     
     def __init__(self):

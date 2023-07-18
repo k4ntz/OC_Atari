@@ -1,5 +1,9 @@
 from .game_objects import GameObject
 
+"""
+RAM extraction for the game Fishing Derby.
+"""
+
 MAX_NB_OBJECTS = {"Player1FishingString": 1, "Player2FishingString": 1, "Fish": 6, "Shark": 1}
 MAX_NB_OBJECTS_HUD = {"Player1FishingString": 1, "Player2FishingString": 1, "Fish": 6, "Shark": 1, "ScoreP1": 1,
                       "ScoreP2": 1}
@@ -48,6 +52,10 @@ class PlayerOneHook(GameObject):
 
 
 class ScorePlayerOne(GameObject):
+    """
+    A class representing the score display of player one (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 167, 26, 26
@@ -57,6 +65,10 @@ class ScorePlayerOne(GameObject):
 
 
 class PlayerTwoHook(GameObject):
+    """
+    A class representing the hook of player two.
+    """
+    
     # to deactivate player two -> turn ram_state[0] to 1
     def __init__(self):
         super().__init__()
@@ -68,6 +80,10 @@ class PlayerTwoHook(GameObject):
 
 
 class ScorePlayerTwo(GameObject):
+    """
+    A class representing the score display of player two (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 167, 26, 26

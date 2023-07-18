@@ -25,7 +25,7 @@ def twos_comp(val):
 
 class _DescendingObject(GameObject):
     """
-    A support class for descending objects.
+    A support class for objects descending on the screen.
     """
     
     _offset = None
@@ -126,7 +126,7 @@ class Bridge(_DescendingObject):
 
 class FuelDepot(_DescendingObject):
     """
-    A class representing the enemy helicopters.
+    A class representing fuel depots targets.
     """
     
     _offset = 23
@@ -141,7 +141,7 @@ class FuelDepot(_DescendingObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self):
@@ -156,7 +156,7 @@ class PlayerScore(GameObject):
 
 class Lives(GameObject):
     """
-    A class representing the indicator for remaining jets (lifes).
+    A class representing the indicator for remaining jets (lives) (HUD).
     """
     
     def __init__(self):

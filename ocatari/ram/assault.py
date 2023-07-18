@@ -13,7 +13,7 @@ MAX_NB_OBJECTS_HUD = {'PlayerScore': 6, 'Lives': 3, 'Health': 1}
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e., a cannon that can be moved horizontally, and is fixed at the bottom of the screen. 
+    A class representing the player figure i.e., the cannon. 
     """
     
     def __init__(self):
@@ -26,7 +26,7 @@ class Player(GameObject):
 
 class PlayerMissileVertical(GameObject):
     """
-    A class representing the projectile that can be shot in the vertical direction from the cannon. 
+    A class representing the projectile shot in the vertical direction from the cannon. 
     """
     
     def __init__(self):
@@ -39,7 +39,7 @@ class PlayerMissileVertical(GameObject):
 
 class PlayerMissileHorizontal(GameObject):
     """
-    A class representing the projectile that can be shot in the horizontal direction from the cannon. 
+    A class representing the projectiles shot in the horizontal direction from the cannon. 
     """
      
     def __init__(self):
@@ -91,7 +91,7 @@ class EnemyMissile(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player score display. 
+    A class representing the player's score display (HUD). 
     """
     
     def __init__(self):
@@ -107,7 +107,7 @@ class PlayerScore(GameObject):
 
 class Lives(GameObject):
     """
-    A class representing the lives-indicator of the player (HUD). 
+    A class representing the indicator for the remaining lives of the player (HUD). 
     """
 
     def __init__(self):

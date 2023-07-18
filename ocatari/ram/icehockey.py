@@ -1,6 +1,10 @@
 from .game_objects import GameObject
 import sys 
 
+"""
+RAM extraction for the game Ice Hockey.
+"""
+
 MAX_NB_OBJECTS = {"Player": 2, "Enemy":2, "Ball":1}
 MAX_NB_OBJECTS_HUD = {'PlayerScore':2, 'EnemyScore':2, 'Timer':3}# 'Score': 1}
 
@@ -42,7 +46,7 @@ class Ball(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self):
@@ -54,7 +58,7 @@ class PlayerScore(GameObject):
 
 class EnemyScore(GameObject):
     """
-    A class representing the enemy score display.
+    A class representing the enemy's score display (HUD).
     """
     
     def __init__(self):
@@ -66,7 +70,7 @@ class EnemyScore(GameObject):
 
 class Timer(GameObject):
     """
-    A class representing the game-clock.
+    A class representing the game-clock (HUD).
     """
     
     def __init__(self):

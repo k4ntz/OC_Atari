@@ -12,7 +12,7 @@ obj_tracker = {}
 
 class Player(GameObject):
     """
-    A class representing the player figure, Mother Kangaroo.
+    A class representing the player figure: Mother Kangaroo.
     """
     
     def __init__(self):
@@ -132,7 +132,7 @@ class Bell(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player score indicator.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self):
@@ -145,7 +145,7 @@ class Score(GameObject):
 
 class Life(GameObject):
     """
-    A class representing the player's remaining lives.
+    A class representing the player's remaining lives (HUD).
     """
     
     def __init__(self):
@@ -158,7 +158,7 @@ class Life(GameObject):
 
 class Time(GameObject):
     """
-    A class representing the time indicator.
+    A class representing the time indicator (HUD).
     """
     
     def __init__(self):

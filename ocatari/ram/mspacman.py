@@ -3,6 +3,10 @@ from ._helper_methods import _convert_number
 import math
 import sys
 
+"""
+RAM extraction for the game Ms. Pac-Man.
+"""
+
 # not sure about this one TODO: validate
 MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4, 'Fruit': 1, 'Score': 3, 'Life': 2}
@@ -49,7 +53,7 @@ class Fruit(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self):
@@ -62,7 +66,7 @@ class Score(GameObject):
 
 class Life(GameObject):
     """
-    A class representing the indicator for remaining lifes.
+    A class representing the indicator for remaining lives (HUD).
     """
     
     def __init__(self):

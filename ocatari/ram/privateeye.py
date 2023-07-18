@@ -40,10 +40,6 @@ class Car(GameObject):
 
 
 class Badguy(GameObject):
-    """
-    A class representing the player figure: Pierre Touche.
-    """
-    
     def __init__(self):
         super(Badguy, self).__init__()
         self._xy = 0, 0
@@ -275,7 +271,7 @@ class Comb(GameObject):
 
 class Shoe_Sole(GameObject):
     """
-    A class representing the inventory display for the show sole (case 4).
+    A class representing the inventory display for the shoe sole (case 4).
     """
     
     def __init__(self):

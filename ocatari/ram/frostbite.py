@@ -1,12 +1,16 @@
 from .game_objects import GameObject
 import sys 
 
+"""
+RAM extraction for the game Frostbite.
+"""
+
 MAX_NB_OBJECTS = {"Player": 1, "Bird": 8, "Crab":8, "Clam":8,"GreenFish":8,"WhitePlate":24, "BluePlate":24,"Bear":1, "House":1,"CompletedHouse":1,"FrostBite":1}
 MAX_NB_OBJECTS_HUD = {"LifeCount":1, "PlayerScore":4, "Degree":2}# 'Score': 1}
 
 class Player(GameObject):
     """
-    A class representing the player figure, Frostbite Bailey.
+    A class representing the player figure: Frostbite Bailey.
     """
     
     def __init__(self):
@@ -52,7 +56,7 @@ class WhitePlate(GameObject):
 
 class BluePlate(GameObject):
     """
-    A class representing the ice floes that have turned blue by jumoing on them.
+    A class representing the ice floes that have turned blue by jumping on them.
     """
     
     def __init__(self):
@@ -76,7 +80,7 @@ class Bird(GameObject):
 
 class Bear(GameObject):
     """
-    A class representing the dangerous grizzly polar bear on the shore (level 4).
+    A class representing the dangerous grizzly polar bears on the shore (level 4).
     """
     
     def __init__(self):
@@ -171,7 +175,7 @@ class Degree(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display.
     """
     
     def __init__(self):

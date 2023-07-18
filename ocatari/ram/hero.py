@@ -2,6 +2,10 @@ from enum import Enum
 
 from .game_objects import GameObject
 
+"""
+RAM extraction for the game H.E.R.O.
+"""
+
 MAX_NB_OBJECTS = {"Wall": 15, "LavaWall": 15, "Enemy": 10, "Player": 1, "LaserBeam": 3, "Bomb": 5, "EndNPC": 1,
                   "Lamp": 1, "Snake": 5, }
 MAX_NB_OBJECTS_HUD = {"Wall": 15, "LavaWall": 15, "Enemy": 10, "Player": 1, "LaserBeam": 3, "Bomb": 5, "EndNPC": 1,
@@ -96,6 +100,10 @@ class Bomb(GameObject):
 
 
 class EndNPC(GameObject):
+    """
+    A class representing the trapped miners to be rescued.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -115,7 +123,7 @@ class Lamp(GameObject):
 
 class PowerBar(GameObject):
     """
-    A class representing the power gauge.
+    A class representing the power gauge (HUD).
     """
     
     def __init__(self, *args, **kwargs):
@@ -127,7 +135,7 @@ class PowerBar(GameObject):
 
 class BombStock(GameObject):
     """
-    A class representing the indicator for remaining dynamite sticks.
+    A class representing the indicator for remaining dynamite sticks (HUD).
     """
     
     def __init__(self, *args, **kwargs):
@@ -139,7 +147,7 @@ class BombStock(GameObject):
 
 class Life(GameObject):
     """
-    A class representing the indicator for the player's lives.
+    A class representing the indicator for the player's remaining lives (HUD).
     """
     
     def __init__(self, *args, **kwargs):
@@ -150,7 +158,7 @@ class Life(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player score indicator.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self, *args, **kwargs):

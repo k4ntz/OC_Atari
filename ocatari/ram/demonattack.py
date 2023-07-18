@@ -3,13 +3,17 @@ from ._helper_methods import bitfield_to_number, number_to_bitfield, _convert_nu
 import math
 import sys
 
+"""
+RAM extraction for the game Demon Attack.
+"""
+
 # TODO: populate 
 MAX_NB_OBJECTS =  {}
 MAX_NB_OBJECTS_HUD = {}
 
 class Player(GameObject):
     """
-    A class representing the player figure. 
+    A class representing the player figure i.e., the laser cannon. 
     """
     
     def __init__(self):
@@ -35,7 +39,7 @@ class Enemy(GameObject):
 
 class ProjectileFriendly(GameObject):
     """
-    A class representing the projectiles from the player's laser cannon. 
+    A class representing the projectiles shot from the player's laser cannon. 
     """
     
     def __init__(self):
@@ -48,7 +52,7 @@ class ProjectileFriendly(GameObject):
 
 class ProjectileHostile(GameObject):
     """
-    A class representing projectiles shot by the enemy demonsS. 
+    A class representing projectiles shot by the enemy demons. 
     """
     
     def __init__(self):
@@ -61,7 +65,7 @@ class ProjectileHostile(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self):  # TODO
@@ -74,7 +78,7 @@ class Score(GameObject):
 
 class Live(GameObject):
     """
-    A class representing the indicator for remaining additional bunkers (lives).
+    A class representing the indicator for remaining additional bunkers (lives) (HUD).
     """
     
     def __init__(self):

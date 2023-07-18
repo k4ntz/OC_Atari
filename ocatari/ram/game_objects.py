@@ -26,16 +26,16 @@ class GameObject:
     :ivar h_coords: History of coordinates, i.e. current (x, y) and previous (x, y) position.
     :type h_coords: [(int, int), (int, int)]
 
-    :ivar dx: The pixel movement correponding to: current_x - previous_x.
+    :ivar dx: The pixel movement corresponding to: current_x - previous_x.
     :type dx: int
 
-    :ivar dy: The pixel movement correponding to: current_y - previous_y.
+    :ivar dy: The pixel movement corresponding to: current_y - previous_y.
     :type dy: int
 
-    :ivar xywh: The positional and width coordinates in a single tuple (x, y, w, h) .
+    :ivar xywh: The positional and width/height coordinates in a single tuple (x, y, w, h) .
     :type xywh: (int, int, int, int)
 
-    :ivar orientation: The orientation of the object (if available), game specific.
+    :ivar orientation: The orientation of the object (if available); game specific.
     :type orientation: int
 
     :ivar center: The center of the bounding box of the object.
