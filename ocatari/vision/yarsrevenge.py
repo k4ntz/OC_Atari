@@ -50,6 +50,11 @@ class Shield_Block(GameObject):
         self.rgb = 163,57,21
         self.hud = False
 
+class Canon(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 163,57,21
+        self.hud = False
 
 
 # List of objects to detect: Player, Enemy, Swirl, fired bullets by Player, missile by Enemy, Cannon that appears, Shield chunks, Barrier
