@@ -50,7 +50,7 @@ class Pin(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self):
@@ -66,7 +66,7 @@ class PlayerScore(GameObject):
 
 class PlayerRound(GameObject):
     """
-    A class representing the round display for the first player.
+    A class representing the round display for the first player (HUD).
     """
     
     def __init__(self):
@@ -79,7 +79,7 @@ class PlayerRound(GameObject):
 
 class Player2Round(GameObject):
     """
-    A class representing the round display for the second player.
+    A class representing the round display for the second player (HUD).
     """
     
     def __init__(self):

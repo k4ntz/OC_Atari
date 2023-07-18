@@ -47,7 +47,7 @@ class Enemy(GameObject):
 
 class Clock(GameObject):
     """
-    A class representing the game clock display. 
+    A class representing the game clock display (HUD). 
     """
     
     def __init__(self, x=0, y=0, w=0, h=0):
@@ -60,7 +60,7 @@ class Clock(GameObject):
 
 class PlayerScore(ScoreObject):
     """
-    A class representing the player score display. 
+    A class representing the player's score display (HUD). 
     """
     
     def __init__(self):
@@ -89,7 +89,7 @@ class PlayerScore(ScoreObject):
 
 class EnemyScore(ScoreObject):
     """
-    A class representing the enemy score display. 
+    A class representing the enemy's score display (HUD). 
     """
     
     def __init__(self):

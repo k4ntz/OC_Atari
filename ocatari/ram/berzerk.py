@@ -65,7 +65,7 @@ class EnemyMissile(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self):
@@ -81,7 +81,7 @@ class PlayerScore(GameObject):
 
 class Logo(GameObject):
     """
-    A class representing the Atari logo, which is displayed in place of the score if the score is zero.
+    A class representing the Atari logo, which is displayed in place of the score if the score is zero (HUD).
     """
     
     def __init__(self):
@@ -93,6 +93,10 @@ class Logo(GameObject):
 
 
 class RoomCleared(GameObject):
+    """
+    A class representing the display for bonus points scored, if and when all robots in a maze have been cleared (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 56, 183

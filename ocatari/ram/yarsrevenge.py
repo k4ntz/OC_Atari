@@ -1,10 +1,18 @@
 from .game_objects import GameObject
 import sys 
 
+"""
+RAM extraction for the game Yars' Revenge.
+"""
+
 MAX_NB_OBJECTS = {"Player": 1}
 MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
 
 class Player(GameObject):
+    """
+    A class representing the player figure i.e., the Yar.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -13,6 +21,10 @@ class Player(GameObject):
         self.hud = False
 
 class Enemy(GameObject):
+    """
+    A class representing the enemy Qotile.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -21,6 +33,10 @@ class Enemy(GameObject):
         self.hud = False
 
 class Swirl(GameObject):
+    """
+    A class representing the Qotile when transformed into a Swirl, charging at the player.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -29,6 +45,10 @@ class Swirl(GameObject):
         self.hud = False
 
 class Enemy_Missile(GameObject):
+    """
+    A class representing the Destroyer Missles fired by the Qotile.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -45,6 +65,10 @@ class Barrier(GameObject):
         self.hud = False
 
 class Player_Bullet(GameObject):
+    """
+    A class representing the Energy Missles fired by the player.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0

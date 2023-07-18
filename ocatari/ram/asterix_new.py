@@ -2,6 +2,10 @@ from .game_objects import GameObject
 from ._helper_methods import _convert_number
 import math
 
+"""
+RAM extraction for the game Asterix. 
+"""
+
 
 class Player(GameObject):
     """
@@ -31,7 +35,7 @@ class Enemy(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self):
@@ -44,7 +48,7 @@ class Score(GameObject):
 
 class Lives(GameObject):
     """
-    A class representing the lives-indicator of the player (HUD). 
+    A class representing the indicator for remaining lives of the player (HUD). 
     """
     
     def __init__(self):
@@ -159,7 +163,7 @@ class Mug(GameObject):
 
 class Reward50(GameObject):
     """
-    A class representing the 50 point reward for collecting a cauldron (asterix).
+    A class representing the 50 point reward-icon for collecting a cauldron (asterix).
     """
     
     def __init__(self):
@@ -172,7 +176,7 @@ class Reward50(GameObject):
 
 class Reward100(GameObject):
     """
-    A class representing the 100 point reward for collecting a helmet (asterix).
+    A class representing the 100 point reward-icon for collecting a helmet (asterix).
     """
     
     def __init__(self):
@@ -185,7 +189,7 @@ class Reward100(GameObject):
 
 class Reward200(GameObject):
     """
-    A class representing the 200 point reward for collecting a shield (asterix).
+    A class representing the 200 point reward-icon for collecting a shield (asterix).
     """
     
     def __init__(self):
@@ -198,7 +202,7 @@ class Reward200(GameObject):
 
 class Reward300(GameObject):
     """
-    A class representing the 300 point reward for collecting a lamp (asterix).
+    A class representing the 300 point reward-icon for collecting a lamp (asterix).
     """
     
     def __init__(self):
@@ -211,7 +215,7 @@ class Reward300(GameObject):
 
 class Reward400(GameObject):
     """
-    A class representing the 400 point reward for collecting an apple (obelix).
+    A class representing the 400 point reward-icon for collecting an apple (obelix).
     """
     
     def __init__(self):
@@ -224,7 +228,7 @@ class Reward400(GameObject):
 
 class Reward500(GameObject):
     """
-    A class representing the 500 point reward for collecting a fish, wild boar leg, mug or surprise object (obelix).
+    A class representing the 500 point reward-icon for collecting a fish, wild boar leg, mug, or surprise object (obelix).
     """
     
     def __init__(self):

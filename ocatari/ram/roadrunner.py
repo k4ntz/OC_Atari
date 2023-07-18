@@ -1,6 +1,10 @@
 from .game_objects import GameObject
 import sys 
 
+"""
+RAM extraction for the game Road Runner.
+"""
+
 MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "BirdSeeds": 1, "Truck": 6}
 MAX_NB_OBJECTS_HUD = {'Cactus': 6, 'Sign': 1}# 'Score': 1}
 
@@ -94,7 +98,7 @@ class Turret(GameObject):
 
 class TurretBall(GameObject):
     """
-    A class representing the cannonballs shot from the cannons.
+    A class representing the projectiles shot from the cannons.
     """
     
     def __init__(self):
@@ -106,7 +110,7 @@ class TurretBall(GameObject):
 
 class Stone(GameObject):
     """
-    A class representing the rocks tumbling down at the road.
+    A class representing the rocks tumbling down on the road.
     """
     
     def __init__(self):
@@ -118,7 +122,7 @@ class Stone(GameObject):
 
 class Cactus(GameObject):
     """
-    A class representing cactus in the background .
+    A class representing cactus in the background (HUD).
     """
     
     def __init__(self):
@@ -131,7 +135,7 @@ class Cactus(GameObject):
 
 class Sign(GameObject):
     """
-    A class representing the occasional road signs and billboards.
+    A class representing the occasional road signs and billboards (HUD).
     """
     
     def __init__(self):
@@ -156,7 +160,7 @@ class Bird(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self):

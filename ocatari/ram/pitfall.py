@@ -2,6 +2,11 @@ from .game_objects import GameObject
 import sys 
 import numpy as np
 
+"""
+RAM extraction for the game Pitfall.
+
+"""
+
 MAX_NB_OBJECTS = {"Player": 1,"Wall":1,"Logs":5,"StairPit":4,"Pit":3,"Scorpion":1,"Rope":1,"Snake":1,"Tarpit":1,"Waterhole":1,"Crocodile":1,"GoldenBar":1,"Fire":1}
 MAX_NB_OBJECTS_HUD = {"LifeCount":3,"PlayerScore":6,"Timer":5}
 
@@ -175,7 +180,7 @@ class DiamondRing(GameObject):
 
 class Fire(GameObject):
     """
-    A class representing the fires.
+    A class representing the open fires.
     """
     
     def __init__(self):
@@ -199,7 +204,7 @@ class MoneyBag(GameObject):
 
 class LifeCount(GameObject):
     """
-    A class representing the indicator for the remaining lifes.
+    A class representing the indicator for the remaining lives (HUD).
     """
     
     def __init__(self):
@@ -211,7 +216,7 @@ class LifeCount(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self):
@@ -223,7 +228,7 @@ class PlayerScore(GameObject):
 
 class Timer(GameObject):
     """
-    A class representing the 20-minute countdown.
+    A class representing the 20-minute countdown (HUD).
     """
     
     def __init__(self):

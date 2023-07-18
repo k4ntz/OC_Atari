@@ -102,7 +102,7 @@ class ExtraBullets(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
 
     def __init__(self):
@@ -118,7 +118,7 @@ class PlayerScore(GameObject):
 
 class AmmoBar(GameObject):
     """
-    A class representing the ammunition bar display.
+    A class representing the ammunition bar display (HUD).
     """
     
     def __init__(self):
@@ -131,7 +131,7 @@ class AmmoBar(GameObject):
 
 class BonusSign(GameObject):
     """
-    A class representing the bonus (or penalty) points/ammunition target.
+    A class representing the bonus (or penalty) points/ammunition target (HUD).
     """
     
     def __init__(self):

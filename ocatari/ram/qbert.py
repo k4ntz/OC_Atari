@@ -152,19 +152,6 @@ class Sam(GameObject):
         self.hud = False
 
 
-class FlyingDiscs(GameObject):
-    """
-    ???
-    """
-    
-    def __init__(self):
-        super(FlyingDiscs, self).__init__()
-        self._xy = 78, 103
-        self.wh = 8, 24
-        self.rgb = 223, 183, 85
-        self.hud = False
-
-
 class Score(GameObject):
     """
     A class representing the player score display.
@@ -180,7 +167,7 @@ class Score(GameObject):
 
 class Lives(GameObject):
     """
-    A class representing the indicator for the remaining lifes.
+    A class representing the indicator for the remaining lives.
     """
     
     def __init__(self):

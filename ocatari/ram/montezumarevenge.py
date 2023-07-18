@@ -3,8 +3,7 @@ from ._helper_methods import _convert_number, get_iou
 import sys
 
 """
-RAM extraction for the game KANGUROO. Supported modes: raw, revised.
-
+RAM extraction for the game Montezuma's Revenge.
 """
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Skull': 1, 'Spider': 1, 'Snake': 2, 'Key': 1, 'Amulet': 1, 'Torch': 1, 'Sword': 1,
@@ -183,7 +182,7 @@ class Rope(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self, *args, **kwargs):
@@ -196,7 +195,7 @@ class Score(GameObject):
 
 class Life(GameObject):
     """
-    A class representing the player's remaining additional lifes (displayed as hats).
+    A class representing the player's remaining additional lives (displayed as hats) (HUD).
     """
     
     def __init__(self, *args, **kwargs):
@@ -209,7 +208,7 @@ class Life(GameObject):
 
 class Key_HUD(GameObject):
     """
-    A class representing keys in the inventory display.
+    A class representing keys in the inventory display (HUD).
     """
     
     def __init__(self, *args, **kwargs):
@@ -222,7 +221,7 @@ class Key_HUD(GameObject):
         
 class Amulet_HUD(GameObject):
     """
-    A class representing amulets in the inventory display.
+    A class representing amulets in the inventory display (HUD).
     """
     
     def __init__(self, *args, **kwargs):
@@ -236,7 +235,7 @@ class Amulet_HUD(GameObject):
 
 class Torch_HUD(GameObject):
     """
-    A class representing torches in the inventory display.
+    A class representing torches in the inventory display (HUD).
     """
     
     def __init__(self, *args, **kwargs):
@@ -250,7 +249,7 @@ class Torch_HUD(GameObject):
 
 class Sword_HUD(GameObject):
     """
-    A class representing swords in the inventory display.
+    A class representing swords in the inventory display (HUD).
     """
     
     def __init__(self, *args, **kwargs):

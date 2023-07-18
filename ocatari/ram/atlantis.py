@@ -66,7 +66,7 @@ class DomedPalace(GameObject):
 
 class Generator(GameObject):
     """
-    A class representing the three generator stations. 
+    A class representing the three Generator Stations. 
     """
     
     def __init__(self):
@@ -144,7 +144,7 @@ class Deathray(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display.
     """
     
     def __init__(self):

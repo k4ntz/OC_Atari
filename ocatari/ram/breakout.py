@@ -6,6 +6,7 @@ import sys
 """
 RAM extraction for the game BREAKOUT. Supported modes: raw, revised.
 """
+
 # might be wrong
 # blockrow could go very very high with a performing agent
 
@@ -40,7 +41,7 @@ class Ball(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player score display.
+    A class representing the player's score display (HUD).
     """
     
     def __init__(self):
@@ -55,7 +56,9 @@ class PlayerScore(GameObject):
 
 
 class Live(GameObject):
-    
+    """
+    A class representing the indicator for the remaining balls (lives) (HUD).
+    """
     
     def __init__(self):
         super().__init__()
@@ -80,7 +83,7 @@ class BlockRow(GameObject):
 
 class PlayerNumber(GameObject):
     """
-    A class representing the player index display.
+    A class representing the player index display (HUD).
     """
 
 
