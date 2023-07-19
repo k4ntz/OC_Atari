@@ -5,6 +5,9 @@ MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "Birdseeds": 1, "Truck": 6}
 MAX_NB_OBJECTS_HUD = {'Cactus': 6, 'ThisWaySign': 1}# 'Score': 1}
 
 class Player(GameObject):
+    """
+    A class representing the player figure i.e., the crew-member roaming the maze of hallways of the spaceship. 
+    """
     def __init__(self):
         super().__init__()
         self._xy = 0, 0

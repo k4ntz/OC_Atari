@@ -31,7 +31,7 @@ def ransac_regression(x, y):
 
 
 
-game_name = "RoadRunner-v4"
+game_name = "YarsRevenge-v4"
 MODE = "vision"
 RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
@@ -41,7 +41,7 @@ random.seed(0)
 
 
 ONE_CHANGE = True
-initial_ram_n = 1
+initial_ram_n = 30
 
 
 make_deterministic(0, env)
@@ -73,8 +73,8 @@ opts = Options()
 opts.path = "models/RoadRunner/dqn.gz"
 dqn_agent = load_agent(opts, env.action_space.n)
 
-snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/player.pkl", "rb"))
-env._env.env.env.ale.restoreState(snapshot)
+# snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/player.pkl", "rb"))
+# env._env.env.env.ale.restoreState(snapshot)
 
 base_next_obs, _, _, _, _ = env.step(0)
 base_objects = deepcopy(env.objects)
@@ -97,7 +97,7 @@ while ram_n < 128:
     ram_n += 1
     askinput = True
     for i in range(255):
-        env._env.env.env.ale.restoreState(snapshot)
+        # env._env.env.env.ale.restoreState(snapshot)
         original_ram = env.get_ram()[ram_n]
         env.set_ram(ram_n, i)
         resulting_obs, _, _, _, _ = env.step(0)

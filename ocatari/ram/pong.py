@@ -1,12 +1,20 @@
 import sys
 from .game_objects import GameObject
 
+"""
+RAM extraction for the game Pong.
+
+"""
 
 MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Enemy': 1}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Enemy': 1, 'PlayerScore': 1, 'EnemyScore': 2}
 
 
 class Player(GameObject):
+    """
+    A class representing the player figure i.e., the movable bar at the side.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -17,6 +25,10 @@ class Player(GameObject):
 
 
 class Enemy(GameObject):
+    """
+    A class representing the enemy bar on the opposite side.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -27,6 +39,10 @@ class Enemy(GameObject):
 
 
 class Ball(GameObject):
+    """
+    A class representing the game ball.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -36,6 +52,10 @@ class Ball(GameObject):
 
 
 class PlayerScore(GameObject):
+    """
+    A class representing the player's score display (HUD).
+    """
+    
     def __init__(self, ten=False):
         super().__init__()
         if ten:
@@ -53,6 +73,10 @@ class PlayerScore(GameObject):
 
 
 class EnemyScore(GameObject):
+    """
+    A class representing the enemy's score display (HUD).
+    """
+    
     def __init__(self, ten=False):
         super().__init__()
         if ten:

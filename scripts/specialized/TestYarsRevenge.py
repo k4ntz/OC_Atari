@@ -1,7 +1,7 @@
 import random
 import time
 from copy import deepcopy
-
+count=0
 import gymnasium as gym
 import ipdb
 
@@ -18,53 +18,56 @@ import pickle
 default_help = 'F  : FIRE\nTAB:PAUSE'
 HELP_TEXT = plt.text(0, -10.2, default_help, fontsize=20)
 
-useOCAtari = True  # if True, running this file will execute the OCAtari code
-printEnvInfo = False  # if True, the extracted objects or the environment info will be printed
+
+useOCAtari = True                # if True, running this file will execute the OCAtari code
+printEnvInfo = False     # if True, the extracted objects or the environment info will be printed
 
 # gym[atari]/gymnasium
-game_name = "Hero-v4"  # game name ChopperCommand-v4
-render_mode = "rgb_array"  # render_mode => "rgb_array" is advised, when playing
+# game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
+game_name = "YarsRevenge-v4"    # game name ChopperCommand-v4
+render_mode = "human"           # render_mode => "rgb_array" is advised, when playing
+render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
-fps = 60  # render fps
+fps = 10                        # render fps
 seed = 0
 
 # actions
 # possible action inputs given by a run with showInputs = True
 INPUTS = ['NOOP', 'FIRE', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'UPRIGHT', 'UPLEFT', 'DOWNRIGHT', 'DOWNLEFT', 'UPFIRE',
           'RIGHTFIRE', 'LEFTFIRE', 'DOWNFIRE', 'UPRIGHTFIRE', 'UPLEFTFIRE', 'DOWNRIGHTFIRE', 'DOWNLEFTFIRE']
-performActions = 30000  # number of actions that will be performed until the environment shuts down automatically
-playGame = True  # if True, enables inputs if you want to play
-key_map = {  # the inputs mapped to the possible basic actions
-    'f': 'FIRE',  # -> every other action should be a combination of them
-    'up': 'UP',
-    'right': 'RIGHT',
-    'left': 'LEFT',
-    'down': 'DOWN'}
-isActive = set()  # the set of active basic actions (related to the currently pressed keys)
-default_action = 'NOOP'  # the default action if nothing is pressed or a false combination is pressed
+performActions = 30000         # number of actions that will be performed until the environment shuts down automatically
+playGame = True                 # if True, enables inputs if you want to play
+key_map = {                     # the inputs mapped to the possible basic actions
+'f': 'FIRE',                    # -> every other action should be a combination of them
+'up': 'UP',
+'right': 'RIGHT',
+'left': 'LEFT',
+'down': 'DOWN'}
+isActive = set()                # the set of active basic actions (related to the currently pressed keys)
+default_action = 'NOOP'         # the default action if nothing is pressed or a false combination is pressed
 actionSequence = ['NOOP']  # only used if playGame is False
 # -> repeats the action sequence until the number of actions reaches performActions
 # -> if no sequence is defined, it repeats random actions instead
 
 
 # OCAtari modes
-mode = "revised"  # raw, revised, vision, test
-HUD = True  # if True, the returned objects contain only the necessary information to play the game
+mode = "vision"                    # raw, revised, vision, test
+HUD = True                    # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
-showInputs = False  # if True, prints the number and the description of the possible inputs (actions)
-showActions = False  # if True, prints the action that will be done
-showRAM = True  # if True, prints the RAM to the console
+showInputs = False              # if True, prints the number and the description of the possible inputs (actions)
+showActions = False            # if True, prints the action that will be done
+showRAM = True        # if True, prints the RAM to the console  
 # render_mode=="rgb_array" only
-printRGB = False  # if True, prints the rgb array
-showImage = True  # if True, plots the rgb array
+printRGB = False                # if True, prints the rgb array
+showImage = True                # if True, plots the rgb array
 
 # RAM manipulation
-manipulateRAM = False  # if True, you can set the RAM by an index
-setRAMIndex = 52  # the index of the ram that will be set
-setRAMValue = 255  # the value of the ram that will be set (if negative, then it counts up)
-showDelta = False  # shows any other changes that occured by changing the ram (dependent on env.step)
-slowDownPlot = 0.0001  # pause per iteration
+manipulateRAM = False          # if True, you can set the RAM by an index
+setRAMIndex = 52                 # the index of the ram that will be set
+setRAMValue = 255                # the value of the ram that will be set (if negative, then it counts up)
+showDelta = False             # shows any other changes that occured by changing the ram (dependent on env.step)
+slowDownPlot = 0.0001              # pause per iteration
 lastRAM = np.zeros(128)
 
 # DO NOT CHANGE! global variables used in context of interrupting, but keeping the plot stable (must be False)
@@ -80,7 +83,6 @@ all_rams = []
 target_vals = []
 target_val = 0  # initial value
 env = None
-
 
 def withgym():
     """
@@ -105,20 +107,19 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    # snapshot = pickle.load(open("lvl3.pkl", "rb"))
-    # env._env.env.env.ale.restoreState(snapshot)
-
+    snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/cannon_Yars.pkl", "rb"))
+    env._env.env.env.ale.restoreState(snapshot)
     run(oc)
 
 
 def distance_to_joey(player):
     max_dist = 344
     if player.y > 130:
-        return 1 - (120 * 3 - player.x) / max_dist
+        return 1 - (120 * 3 - player.x)/max_dist 
     elif player.y > 70:
-        return 1 - (120 + player.x) / max_dist
+        return 1 - (120 + player.x)/max_dist
     elif player.y > 25:
-        return 1 - (140 - player.x) / max_dist
+        return 1 - (140 - player.x)/max_dist 
     else:
         return 1
 
@@ -139,14 +140,13 @@ def run(env):
     # key input handling
     listener = keyboard.Listener(on_press=on_press, on_release=on_release)
     listener.start()
-
     global pause, lastRAM
     if playGame:
         # remove all inputs that are bound to plotting
         for x in key_map:
             # print(plt.rcParams.items())
             for key in plt.rcParams:
-                # e.g. "keymap.enter"
+                # e.g. "keymap.enter" 
                 if key.startswith("keymap"):
                     li = plt.rcParams[key]
                     if x in li:
@@ -195,21 +195,35 @@ def run(env):
         #     reward -= 10
         # previous_lives = info["lives"]
         # print(reward)
-        #player = env.objects[0]
-        #print(distance_to_joey(player))
+        # player = env.objects[0]
+        # print(distance_to_joey(player))
         # returns if the environment is in the terminal state (end) -> terminated, truncated
         if terminated or truncated:
             observation, info = env.reset()
 
         printEnvironmentInfo(env, observation, reward, info)
-
-        # RAM
         ram = get_unwrapped(env).ale.getRAM()
+        # print(ram[70:100])
         if not i % SAVE_EVERY:
             all_rams.append(deepcopy(ram))
             target_vals.append(target_val)
         if showRAM:
+#             indices=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,20,22
+# ,24,26,27,28,31,32,37,38,42,46,47,48,51,53,54,97,98,104
+# ,105,112,124,125]
+#             print(ram[indices])
             print(ram)
+            # ram_change=np.array(ram.shape)
+            # count=0
+            # for i in range(len(all_rams)-1):
+            #     if count==0:
+            #         ram_change=all_rams[i]==all_rams[i+1]
+            #     else:
+            #         ram_change=ram_change == (all_rams[i]==all_rams[i+1])
+            #     count+=1
+            # print(np.where(ram_change==False))
+        
+                
 
         # adjust the RAM as you like to see what it changes in the rendering (functional behavior of the RAM is
         # not important and therefore must not be part of the project, but the changes that are visually displayed)
@@ -257,7 +271,7 @@ def run(env):
                     # change rgb a tiny bit, so that it is distinguishable from the objects color
                     bb_color = make_darker(object_color)
                     r, g, b = bb_color
-                    if r + g + b <= 20:
+                    if r+g+b <= 20:
                         bb_color = 255, 255, 255
                     mark_bb(observation, object_position, color=bb_color)
             image = observation
@@ -298,9 +312,9 @@ def run(env):
             plt.close('all')
             break
 
-        # if manipulateRAM:
-        #   plt.pause(1)
-        #  env.set_ram(div, old_value)
+        #if manipulateRAM:
+         #   plt.pause(1)
+          #  env.set_ram(div, old_value)
 
     # close the environment at the end
     env.close()
@@ -365,7 +379,7 @@ def on_press(key):
     global pause, end, listener, HELPTEXT, target_val
 
     if not interrupted:
-        # print(key)
+        #print(key)
         # pausing based on space
         if key == keyboard.Key.tab:
             pause = not pause
@@ -373,19 +387,20 @@ def on_press(key):
         # ending program based on escape
         if key == keyboard.Key.esc:
             end = True
-
+        
         global env
         if pause and key == keyboard.Key.space:
             ram_pos = int(input('please enter ram pos'))
             print(f"Currently as : {env.get_ram()[ram_pos]}")
             new_val = int(input('please enter new target value'))
             env.set_ram(ram_pos, new_val)
+        
 
         # changing inputs
         key_name = str(key)
-        key_name = key_name.removeprefix("Key.")
-        key_name = key_name.removeprefix("\'")
-        key_name = key_name.removesuffix("\'")
+        key_name = remove_prefix(key_name,"Key.")
+        key_name = remove_prefix(key_name,"\'")
+        key_name = remove_suffix(key_name,"\'")
         if pause and key_name.lower() == "s":
             snapshot = env._env.env.env.ale.cloneState()
             filename = input('give_filename')
@@ -398,13 +413,12 @@ def on_press(key):
         # print(input_action)
         # print(pause)
 
-
 def on_release(key):
     # changing inputs
     key_name = str(key)
-    key_name = key_name.removeprefix("Key.")
-    key_name = key_name.removeprefix("\'")
-    key_name = key_name.removesuffix("\'")
+    key_name = remove_prefix(key_name,"Key.")
+    key_name = remove_prefix(key_name,"\'")
+    key_name = remove_suffix(key_name,"\'")
 
     if key_name in key_map.keys():
         # print("released")
@@ -412,35 +426,35 @@ def on_release(key):
         isActive.remove(input_action)
 
 
-# hiermit muss man danach nur noch prüfen, mit welchem set das set der aktiven inputs übereinstimmt
+#hiermit muss man danach nur noch prüfen, mit welchem set das set der aktiven inputs übereinstimmt
 def getInput():
-    # combine inputs
+    #combine inputs
     values = key_map.values()
     mySet = set()
     dic = dict()
     for part in INPUTS:
-        # aus dem String ein Set von Strings (wie values) machen
+        #aus dem String ein Set von Strings (wie values) machen
         s = part
         for value in values:
             sArr = s.split(value)
-            if len(sArr) == 1:
-                # entweder nur value drin oder value nicht drin
+            if len(sArr)==1:
+                #entweder nur value drin oder value nicht drin
                 if sArr[0] == value:
-                    # wenn nur der value drin ist, dann hinzufügen und dic updaten
+                    #wenn nur der value drin ist, dann hinzufügen und dic updaten
                     mySet.add(value)
-                    dic.update({mySet: part})
+                    dic.update({mySet:part})
                     break
                 else:
-                    # value ist nicht drin, also weitermachen
+                    #value ist nicht drin, also weitermachen
                     continue
             else:
                 # ein Teil ist value, der andere ist ein Rest, den man noch betrachten will
-                if sArr[0] == value:
-                    s = sArr[1]  # Rest, den man noch betrachten will
+                if sArr[0]==value:
+                    s = sArr[1]               # Rest, den man noch betrachten will
                 else:
                     s = sArr[0]
-                mySet.add(value)  # abgespaltener value wird hinzugefügt
-    # am ende hat man ein dictionary von Set, String
+                mySet.add(value)              # abgespaltener value wird hinzugefügt
+    #am ende hat man ein dictionary von Set, String
     # wobei das set kombiniert den String ergibt
     return dic
 
@@ -449,9 +463,9 @@ def get_action_name(my_set=None):
     """
     Gets the action name based on a set of combined actions
     """
-    # man könnte auch jedes mal schauen, ob jedes Element im Set ein Teil des INPUTS-Elements ist
+    #man könnte auch jedes mal schauen, ob jedes Element im Set ein Teil des INPUTS-Elements ist
     for action_name in INPUTS:
-        # muss jedes x enthalten sein
+        #muss jedes x enthalten sein
         length = 0
         number = 0
         for x in my_set:
@@ -468,7 +482,15 @@ def get_action_name(my_set=None):
     # hat man nichts gefunden, so muss man auf den default zurückgreifen
     return default_action
 
+def remove_suffix(input_string, suffix):
+    if suffix and input_string.endswith(suffix):
+        return input_string[:-len(suffix)]
+    return input_string
 
+def remove_prefix(input_string, prefix):
+    if prefix and input_string.startswith(prefix):
+        return input_string[len(prefix):]
+    return input_string
 if useOCAtari:
     withocatari()
 else:

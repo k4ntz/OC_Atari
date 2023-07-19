@@ -1,6 +1,7 @@
 import sys
 from termcolor import colored
 
+from .game_objects import GameObject
 from . import choppercommand
 from .asterix import _detect_objects_asterix_revised, _detect_objects_asterix_raw,\
     _init_objects_asterix_ram
@@ -45,6 +46,10 @@ from .montezumarevenge import _init_objects_montezumarevenge_ram, _detect_object
 from .choppercommand import _init_objects_ram, _detect_objects_revised, _detect_objects_raw
 from .hero import _init_objects_hero_ram, _detect_objects_hero_revised
 from .pitfall import _init_objects_pitfall_ram, _detect_objects_pitfall_revised
+from .yarsrevenge import _init_objects_yarsrevenge_ram, _detect_objects_yarsrevenge_revised
+from .icehockey import _init_objects_icehockey_ram, _detect_objects_icehockey_revised
+from .privateeye import _init_objects_privateeye_ram, _detect_objects_privateeye_revised
+from .gopher import _init_objects_gopher_ram, _detect_objects_gopher_revised
 
 # calls the respective _get_max_objects from the game modules
 def get_max_objects(game_name, hud):
@@ -127,6 +132,14 @@ def init_objects(game_name, hud):
         return _init_objects_hero_ram(hud)
     elif game_name.lower() == "pitfall":
         return _init_objects_pitfall_ram(hud)
+    elif game_name.lower() == "yarsrevenge":
+        return _init_objects_yarsrevenge_ram(hud)
+    elif game_name.lower() == "icehockey":
+        return _init_objects_icehockey_ram(hud)
+    elif game_name.lower() == "privateeye":
+        return _init_objects_privateeye_ram(hud)
+    elif game_name.lower() == "gopher":
+        return _init_objects_gopher_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
@@ -194,6 +207,9 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
     """
     Augment the info dictionary with object centric information
     """
+    for obj in objects: # saving the previsous positions
+        if obj is not None:
+            obj._save_prev()
     if game_name.lower() == "boxing":
         _detect_objects_boxing_revised(objects, ram_state, hud)
     elif game_name.lower() == "breakout":
@@ -252,6 +268,14 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_hero_revised(objects, ram_state, hud)
     elif game_name.lower() == "pitfall":
         _detect_objects_pitfall_revised(objects, ram_state, hud)
+    elif game_name.lower() == "yarsrevenge":
+        _detect_objects_yarsrevenge_revised(objects, ram_state, hud)
+    elif game_name.lower() == "icehockey":
+        _detect_objects_icehockey_revised(objects, ram_state, hud)
+    elif game_name.lower() == "privateeye":
+        _detect_objects_privateeye_revised(objects, ram_state, hud)
+    elif game_name.lower() == "gopher":
+        _detect_objects_gopher_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)

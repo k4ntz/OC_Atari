@@ -1,10 +1,18 @@
 from .game_objects import GameObject
 import sys 
 
+"""
+RAM extraction for the game Frostbite.
+"""
+
 MAX_NB_OBJECTS = {"Player": 1, "Bird": 8, "Crab":8, "Clam":8,"GreenFish":8,"WhitePlate":24, "BluePlate":24,"Bear":1, "House":1,"CompletedHouse":1,"FrostBite":1}
 MAX_NB_OBJECTS_HUD = {"LifeCount":1, "PlayerScore":4, "Degree":2}# 'Score': 1}
 
 class Player(GameObject):
+    """
+    A class representing the player figure: Frostbite Bailey.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -14,6 +22,10 @@ class Player(GameObject):
 
 
 class GreenFish(GameObject):
+    """
+    A class representing the fresh fish swimming by regularly.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 111,210,111
@@ -31,6 +43,10 @@ class FrostBite(GameObject):
 
 
 class WhitePlate(GameObject):
+    """
+    A class representing the white, untouched ice floes.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 214,214,214
@@ -39,6 +55,10 @@ class WhitePlate(GameObject):
         self._xy = 0, 0
 
 class BluePlate(GameObject):
+    """
+    A class representing the ice floes that have turned blue by jumping on them.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 84,138,210
@@ -47,6 +67,10 @@ class BluePlate(GameObject):
         self._xy = 0, 0
 
 class Bird(GameObject):
+    """
+    A class representing the wild snowgeese.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 132,144,252
@@ -55,6 +79,10 @@ class Bird(GameObject):
         self._xy = 0, 0
 
 class Bear(GameObject):
+    """
+    A class representing the dangerous grizzly polar bears on the shore (level 4).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 0,0,0
@@ -63,6 +91,10 @@ class Bear(GameObject):
         self._xy = 0, 0
 
 class Crab(GameObject):
+    """
+    A class representing the dangerous Alaskan king crabs.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 213,130,74
@@ -71,6 +103,10 @@ class Crab(GameObject):
         self._xy = 0, 0
 
 class Clam(GameObject):
+    """
+    A class representing the dangerous clams.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 210,210,64
@@ -79,6 +115,10 @@ class Clam(GameObject):
         self.wh=(8, 7)
 
 class House(GameObject):
+    """
+    A class representing the igloo Frostbite Bailey is trying to build.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 142,142,142
@@ -87,6 +127,10 @@ class House(GameObject):
         self._xy = 0, 0
 
 class CompletedHouse(GameObject):
+    """
+    A class representing the finished igloo.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 0,0,0
@@ -96,6 +140,10 @@ class CompletedHouse(GameObject):
 
 
 class LifeCount(GameObject):
+    """
+    A class representing the indicator for the player's lives.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb =132,144,252
@@ -113,6 +161,10 @@ class LifeCount(GameObject):
 #         self._xy = 0, 0
 
 class Degree(GameObject):
+    """
+    A class representing the temperature display.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb =132,144,252
@@ -122,6 +174,10 @@ class Degree(GameObject):
 
 
 class PlayerScore(GameObject):
+    """
+    A class representing the player's score display.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb =132,144,252

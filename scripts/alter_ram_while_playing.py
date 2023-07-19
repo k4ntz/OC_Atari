@@ -390,9 +390,8 @@ def on_press(key):
 
         # changing inputs
         key_name = str(key)
-        key_name = key_name.removeprefix("Key.")
-        key_name = key_name.removeprefix("\'")
-        key_name = key_name.removesuffix("\'")
+        key_name = key_name.replace("Key.", "")
+        key_name = key_name.replace("\'", "")
         if pause and key_name.lower() == "s":
             snapshot = env._env.env.env.ale.cloneState()
             filename = input('give_filename')
@@ -408,9 +407,8 @@ def on_press(key):
 def on_release(key):
     # changing inputs
     key_name = str(key)
-    key_name = key_name.removeprefix("Key.")
-    key_name = key_name.removeprefix("\'")
-    key_name = key_name.removesuffix("\'")
+    key_name = key_name.replace("Key.", "")
+    key_name = key_name.replace("\'", "")
 
     if key_name in key_map.keys():
         # print("released")

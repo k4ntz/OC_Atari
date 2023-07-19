@@ -2,6 +2,10 @@ from enum import Enum
 
 from .game_objects import GameObject
 
+"""
+RAM extraction for the game H.E.R.O.
+"""
+
 MAX_NB_OBJECTS = {"Wall": 15, "LavaWall": 15, "Enemy": 10, "Player": 1, "LaserBeam": 3, "Bomb": 5, "EndNPC": 1,
                   "Lamp": 1, "Snake": 5, }
 MAX_NB_OBJECTS_HUD = {"Wall": 15, "LavaWall": 15, "Enemy": 10, "Player": 1, "LaserBeam": 3, "Bomb": 5, "EndNPC": 1,
@@ -9,13 +13,22 @@ MAX_NB_OBJECTS_HUD = {"Wall": 15, "LavaWall": 15, "Enemy": 10, "Player": 1, "Las
 
 
 class Wall(GameObject):
+    """
+    A class representing the walls in the mineshafts.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
         self.wh = 8, 10
+        self.destructible: bool = False
 
 
 class LavaWall(GameObject):
+    """
+    A class representing the lava walls in the mineshafts.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -25,18 +38,28 @@ class LavaWall(GameObject):
 class EnemyType(Enum):
     Spider = 1
     Bat = 2
-    Thing = 3
+    Moth = 3
+    Snake = 4
+    Tentacle = 5
 
 
 class Enemy(GameObject):
+    """
+    A class representing the dangerous creatures inside the mineshafts.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
-        self.wh = 8, 10
+        self.wh = 6, 10
         self.type: EnemyType
 
 
 class Snake(GameObject):
+    """
+    A class representing the snakes.
+    """
+    
     def __init__(self, *args, **kwargs):
         self.xy = 0, 0
         self.wh = 8, 10
@@ -44,21 +67,32 @@ class Snake(GameObject):
 
 
 class Player(GameObject):
+    """
+    A class representing player figure.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
-        self.wh = 8, 10
-        self.wh = 5, 20
+        self.wh = 5, 25
 
 
 class LaserBeam(GameObject):
+    """
+    A class representing the laser beams shot from the helmet of the player figure.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
-        self.wh = 8, 10
+        self.wh = 7, 2
 
 
 class Bomb(GameObject):
+    """
+    A class representing the dynamite sticks that can be deployed by the player.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -66,6 +100,10 @@ class Bomb(GameObject):
 
 
 class EndNPC(GameObject):
+    """
+    A class representing the trapped miners to be rescued.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -73,6 +111,10 @@ class EndNPC(GameObject):
 
 
 class Lamp(GameObject):
+    """
+    A class representing the lanterns that light the mineshafts.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -80,6 +122,10 @@ class Lamp(GameObject):
 
 
 class PowerBar(GameObject):
+    """
+    A class representing the power gauge (HUD).
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -88,6 +134,10 @@ class PowerBar(GameObject):
 
 
 class BombStock(GameObject):
+    """
+    A class representing the indicator for remaining dynamite sticks (HUD).
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -96,6 +146,10 @@ class BombStock(GameObject):
 
 
 class Life(GameObject):
+    """
+    A class representing the indicator for the player's remaining lives (HUD).
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -103,6 +157,10 @@ class Life(GameObject):
 
 
 class Score(GameObject):
+    """
+    A class representing the player's score display (HUD).
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -116,20 +174,90 @@ def _get_max_objects(hud=False):
 
 def _init_objects_hero_ram(hud=False):
     objects = [Player()]
+    if hud:
+        objects.extend([PowerBar(), BombStock(), Life(), Score(), ])
     return objects
 
 
-def _detect_objects_hero_revised(objects, ram_state, hud=False):
-    objects[0].xy = ram_state[27],ram_state[31]
-    if hud:
-        objects.append(PowerBar())
-        objects[-1].value = ram_state[43]
-        objects.append(BombStock())
-        objects[-1].value = ram_state[50]
-        objects.append(Score())
-        objects[-1].value = ram_state[56]
+number_of_added_enemies = 0
+objects_map = {}
 
-    return
+
+def _detect_objects_hero_revised(objects, ram_state, hud=False):
+    objects[0].xy = ram_state[27] + 1, 135 - ram_state[31]
+    base_length = 1 if not hud else 5
+    global objects_map
+
+    # Updating enemy and lamp positions
+    # TODO get enemy type
+    for i in range(3):
+        # height =
+        # type =
+        # subtype = ram_state[78 + i]
+        x, y = ram_state[37 + i], 115 - i * 42 - ram_state[33 + i]
+        currobj = objects_map.get(f"Instance {i}")
+        if ram_state[33 + i] == 50 or x == 147:
+            if currobj is not None:
+                objects_map.pop(f"Instance {i}")
+        else:
+            if currobj is not None:
+                currobj.xy = x, y
+            else:
+                enemy_instance = Enemy()
+                enemy_instance.xy = x, y
+                objects_map[f"Instance {i}"] = enemy_instance
+
+    # updating Laser Beam position
+    player_xy = objects[0].xy
+    laser_beam = objects_map.get(f"LaserBeam")
+    if ram_state[115] == 253:
+        if laser_beam is not None:
+            objects_map.pop(f"LaserBeam")
+    else:
+        orientation = 1 if ram_state[48] == 0 else -1
+        if laser_beam is None:
+            laser_beam_instance = LaserBeam()
+            objects_map[f"LaserBeam"] = laser_beam_instance
+        laser_beam = objects_map[f"LaserBeam"]
+        if ram_state[115] != 0:
+            if orientation == 1:
+                laser_beam.xy = player_xy[0] + 2 + ram_state[115] * orientation, player_xy[1] + 3
+            else:
+                laser_beam.xy = player_xy[0] + 4 + ram_state[115] * orientation - laser_beam.w, \
+                                player_xy[1] + 3
+        else:
+            if orientation == 1:
+                laser_beam.xy = player_xy[0] + 2 + 11 * orientation, player_xy[1] + 3
+            else:
+                laser_beam.xy = player_xy[0] + 4 + 11 * orientation, player_xy[1] + 3
+
+    # wall disposition
+    # TODO switch case =function of ram_sate[28] + level = ram_state[117] + 1
+
+    # destructible wall
+    destructible_wall = objects_map.get(f"destructible wall")
+    if ram_state[32] in [0, 9, 153]:
+        if destructible_wall is not None:
+            objects_map.pop(f"destructible wall")
+    else:
+        if destructible_wall is not None:
+            destructible_wall.xy = ram_state[32], 19
+        else:
+            destructible_wall_instance = Wall()
+            destructible_wall_instance.xy = ram_state[32], 19
+            destructible_wall_instance.wh = 7, 79
+            objects_map[f"destructible wall"] = destructible_wall_instance
+
+    # Bomb / NPC position
+    # If we're on the final part of the level --> NPC position else bomb position
+
+    if hud:
+        objects[1].value = ram_state[42] / 81
+        objects[2].value = ram_state[51]
+        objects[3].value = ram_state[53]
+        objects[4].value = ram_state[56]
+    print(ram_state)
+    objects[:] = objects[0:base_length] + list(objects_map.values())
 
 
 def _detect_objects_hero_raw(info, ram_state):

@@ -30,16 +30,18 @@ Most are used to reverse engineer the RAM state, like searching for correlations
 You can install OCAtari in multiple ways, the recommended is to use the provided Dockerfile to install all requirements, like the Atari ROMs and gymnasium.
 You can also simply:
 `pip install ocatari`
+`pip install "gymnasium[atari, accept-rom-license]"`
 If you want to modify the code, you can clone this repo and run:
 `python setup.py install` or if you want to modify the code `python setup.py develop`
 
-## Usage
 
-```python
+## Usage
+To use the OCAtari environments:
+``` python
 from ocatari.core import OCAtari
 import random
 
-env = OCAtari("Pong", mode="ram", hud=True, render_mode='rgb_array')
+env = OCAtari("Pong", mode="ram", hud=True, render_mode="rgb_array")
 observation, info = env.reset()
 action = random.randint(env.nb_actions-1)
 obs, reward, terminated, truncated, info = env.step(action)
@@ -49,9 +51,9 @@ obs, reward, terminated, truncated, info = env.step(action)
 If you are using OCAtari for your scientific publications, please cite us:
 ```bibtex
 @inproceedings{Delfosse2023OCAtariOA,
-  title={OCAtari: Object-Centric Atari 2600 Reinforcement Learning Environments},
-  author={Quentin Delfosse and Jannis Bluml and Bjarne Gregori and Sebastian Sztwiertnia and Kristian Kersting},
-  year={2023}
+title={OCAtari: Object-Centric Atari 2600 Reinforcement Learning Environments},
+author={Quentin Delfosse and Jannis Bluml and Bjarne Gregori and Sebastian Sztwiertnia and Kristian Kersting},
+year={2023}
 }
 ```
 
