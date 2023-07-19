@@ -12,6 +12,9 @@ MAX_NB_OBJECTS_HUD = {"Player1FishingString": 1, "Player2FishingString": 1, "Fis
 class Fish(GameObject):
     """
     A class representing the fish.
+
+    :ivar hooked: Wether the fish is currently hooked
+    :type: bool
     """
     
     def __init__(self):
