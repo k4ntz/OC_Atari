@@ -3,11 +3,19 @@ from ._helper_methods import bitfield_to_number, number_to_bitfield, _convert_nu
 import math
 import sys
 
+"""
+RAM extraction for the game Demon Attack.
+"""
+
 # TODO: populate 
 MAX_NB_OBJECTS =  {}
 MAX_NB_OBJECTS_HUD = {}
 
 class Player(GameObject):
+    """
+    A class representing the player figure i.e., the laser cannon. 
+    """
+    
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 0, 0
@@ -17,6 +25,10 @@ class Player(GameObject):
 
 
 class Enemy(GameObject):
+    """
+    A class representing the enemy demons. 
+    """
+    
     def __init__(self):
         super(Enemy, self).__init__()
         self._xy = 0, 0
@@ -26,6 +38,10 @@ class Enemy(GameObject):
 
 
 class ProjectileFriendly(GameObject):
+    """
+    A class representing the projectiles shot from the player's laser cannon. 
+    """
+    
     def __init__(self):
         super(ProjectileFriendly, self).__init__()
         self._xy = 0, 0
@@ -35,6 +51,10 @@ class ProjectileFriendly(GameObject):
 
 
 class ProjectileHostile(GameObject):
+    """
+    A class representing projectiles shot by the enemy demons. 
+    """
+    
     def __init__(self):
         super(ProjectileHostile, self).__init__()
         self._xy = 0, 0
@@ -44,6 +64,10 @@ class ProjectileHostile(GameObject):
 
 
 class Score(GameObject):
+    """
+    A class representing the player's score display (HUD).
+    """
+    
     def __init__(self):  # TODO
         super(Score, self).__init__()
         self._xy = 96, 7
@@ -53,6 +77,10 @@ class Score(GameObject):
 
 
 class Live(GameObject):
+    """
+    A class representing the indicator for remaining additional bunkers (lives) (HUD).
+    """
+    
     def __init__(self):
         super(Live, self).__init__()
         self._xy = 0, 0

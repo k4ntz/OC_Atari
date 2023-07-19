@@ -14,16 +14,18 @@ except ModuleNotFoundError:
         "\nOpenCV is required when using the ALE env wrapper. ",
         "Try `pip install opencv-python`.\n",
     )
-import torch
+try:
+    import torch
+    torch_imported = True
+except ModuleNotFoundError:
+    torch_imported = False
 
 DEVICE = "cpu"
 
 AVAILABLE_GAMES = ["Alien", "Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
                    "Breakout", "Carnival", "Centipede", "ChoppperCommand", "DemonAttack", "FishingDerby", "Freeway",
-                   "Frostbite", "Hero", "Kangaroo",
-                   "MontezumaRevenge", "MsPacman","Pitfall", "Pong", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing",
-                   "SpaceInvaders",
-                   "Tennis","Yarsrevenge"]
+                   "Frostbite", "Gopher","Hero", "IceHockey" "Kangaroo", "MontezumaRevenge", "MsPacman","Pitfall", "Pong",
+                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "Yarsrevenge"]
 
 
 # TODO: complete the docstring 
@@ -82,8 +84,11 @@ class OCAtari:
         self._fill_buffer = lambda *args, **kwargs: None
         self._reset_buffer = lambda *args, **kwargs: None
         if obs_mode == "dqn":
-            self._fill_buffer = self._fill_buffer_dqn
-            self._reset_buffer = self._reset_buffer_dqn
+            if torch_imported:
+                self._fill_buffer = self._fill_buffer_dqn
+                self._reset_buffer = self._reset_buffer_dqn
+            else:
+                print("To use the buffer of OCAtari, you need to install torch.")
         elif obs_mode == "ori":
             self._fill_buffer = self._fill_buffer_ori
             self._reset_buffer = self._reset_buffer_ori
@@ -265,7 +270,7 @@ class OCAtari:
 
         :type: list of GameObjects
         """
-        return [obj for obj in self._objects if obj]
+        return [obj for obj in self._objects if obj] # filtering out None objects
 
     def render_explanations(self):
         coefs = [0.05, 0.1, 0.25, 0.6]

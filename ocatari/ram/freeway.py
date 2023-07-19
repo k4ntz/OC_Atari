@@ -2,10 +2,18 @@ from ._helper_methods import _convert_number
 from .game_objects import GameObject
 import sys
 
+"""
+RAM extraction for the game Freeway.
+"""
+
 MAX_NB_OBJECTS =  {'Chicken': 2, 'Car': 10}
 MAX_NB_OBJECTS_HUD =  {'Chicken': 2, 'Car': 10, 'Score' : 2}
 
 class Chicken(GameObject):
+    """
+    A class representing the player figure i.e., the chicken. 
+    """
+    
     def __init__(self):
         super(Chicken, self).__init__()
         self._xy = 0, 0
@@ -15,6 +23,10 @@ class Chicken(GameObject):
 
 
 class Car(GameObject):
+    """
+    A class representing the vehicles on the freeway. 
+    """
+    
     def __init__(self):
         super(Car, self).__init__()
         self._xy = 0, 0
@@ -24,6 +36,10 @@ class Car(GameObject):
 
 
 class Score(GameObject):
+    """
+    A class representing the player's score display (HUD).
+    """
+    
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 49, 5

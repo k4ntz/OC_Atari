@@ -5,7 +5,7 @@ numpy
 opencv_python
 scikit_image
 termcolor
-torch
+#torch
 seaborn
 pandas
 scikit-learn

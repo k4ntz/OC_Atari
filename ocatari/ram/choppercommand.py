@@ -1,12 +1,14 @@
 from dataclasses import dataclass
 
-from ._helper_methods import number_to_bitfield, bitfield_to_number
-from .game_objects import GameObject
+from ._helper_methods import number_to_bitfield, bitfield_to_number, _convert_number
+from .game_objects import GameObject, ScoreObject
 import sys
 from math import ceil
 
+"""
+RAM extraction for the game Chopper Command.
+"""
 
-# RAM
 MAX_NB_OBJECTS =  {'Player': 1, 'MiniPlayer': 1, 'Truck': 3, 'MiniTruck': 9, 'MiniEnemy': 12, 'Shot': 1, 'EnemyPlane': 3, 'EnemyHelicopter': 3, 'Bomb': 3}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Truck': 3, 'MiniPlayer': 1, 'MiniEnemy': 12, 'MiniTruck': 9, 'Shot': 1, 'EnemyPlane': 3, 'EnemyHelicopter': 3, 'Bomb': 3, 'Score': 4, 'Life': 2 }
 
@@ -27,15 +29,24 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_NB_OBJECTS)
 
 class Player(GameObject):
+    """
+    A class representing the player figure i.e., the helicopter gunship. 
+    """
+    
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 133, 103     #initially
         self.wh = 16, 9
+        self.orientation = 1
         self.rgb = 223, 183, 85
         self.hud = False
 
 
 class MiniPlayer(GameObject):
+    """
+    A class representing the blip for the player's helicopter on the Long Range Scanner. 
+    """
+    
     def __init__(self):
         super(MiniPlayer, self).__init__()
         self._xy = 133, 103  # initially
@@ -45,6 +56,10 @@ class MiniPlayer(GameObject):
 
 
 class Truck(GameObject):
+    """
+    A class representing the trucks of the convoy, which need to be protected. 
+    """
+    
     def __init__(self):
         super(Truck, self).__init__()
         self._xy = 0, 166      #166 immer
@@ -54,6 +69,10 @@ class Truck(GameObject):
 
 
 class MiniTruck(GameObject):
+    """
+    A class representing the blips for the trucks on the Long Range Scanner. 
+    """
+    
     def __init__(self):
         super(MiniTruck, self).__init__()
         self._xy = 133, 185  # initially
@@ -63,6 +82,10 @@ class MiniTruck(GameObject):
 
 
 class EnemyHelicopter(GameObject):
+    """
+    A class representing the enemy helicopters. 
+    """
+    
     def __init__(self):
         super(EnemyHelicopter, self).__init__()
         self._xy = 0, 0         #random
@@ -72,6 +95,10 @@ class EnemyHelicopter(GameObject):
 
 
 class EnemyPlane(GameObject):
+    """
+    A class representing the enemy planes. 
+    """
+    
     def __init__(self):
         super(EnemyPlane, self).__init__()
         self._xy = 0, 0         #random
@@ -81,6 +108,10 @@ class EnemyPlane(GameObject):
 
 
 class MiniEnemy(GameObject):
+    """
+    A class representing the blips for the enemy aircraft on the Long Range Scanner. 
+    """
+    
     def __init__(self):
         super(MiniEnemy, self).__init__()
         self._xy = 133, 103  # initially
@@ -90,6 +121,10 @@ class MiniEnemy(GameObject):
 
 
 class Bomb(GameObject):
+    """
+    A class representing the multi-warhead missiles deployed by enemy aircraft. 
+    """
+    
     def __init__(self):
         super(Bomb, self).__init__()
         self._xy = 0, 0         #random
@@ -99,6 +134,10 @@ class Bomb(GameObject):
 
 
 class Shot(GameObject):
+    """
+    A class representing the projectiles shot from the helicopter's laser cannon. 
+    """
+    
     def __init__(self):
         super(Shot, self).__init__()
         self._xy = 0, 0         # auf höhe des helis
@@ -107,7 +146,11 @@ class Shot(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class Score(ScoreObject):
+    """
+    A class representing the player's score display (HUD).
+    """
+    
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 75, 16
@@ -117,6 +160,10 @@ class Score(GameObject):
 
 
 class Life(GameObject):
+    """
+    A class representing the indicator for helicopter rerves (lifes) (HUD).
+    """
+    
     def __init__(self):
         super(Life, self).__init__()
         self._xy = 33, 24           # and 41, 24 and so on
@@ -230,6 +277,7 @@ def _detect_objects_revised(objects, ram_state, hud):
         player.xy = (ram_state[71] + 2, 159-ram_state[72])
     else:
         player.xy = (ram_state[71], 159-ram_state[72])
+    player.orientation = ram_state[66]
     # velocity_raw = ram_state[42]
     # if velocity_raw > 127:
     #     velocity_raw = 255-velocity_raw
@@ -916,6 +964,7 @@ def _detect_objects_revised(objects, ram_state, hud):
         else:
             score = Score()
             objects[42] = score
+        score.value = _convert_number(ram_state[108])*10000 + _convert_number(ram_state[110])*100 + _convert_number(ram_state[112])
 
     # score
     # x: value 35+i*8
