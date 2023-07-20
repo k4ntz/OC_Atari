@@ -46,7 +46,7 @@ class Ball(GameObject):
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
-        self.wh = 2, 3
+        self.wh = 2, 4
         self.rgb = 236, 236, 236
         self.hud = False
 

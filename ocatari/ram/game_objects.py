@@ -32,7 +32,7 @@ class GameObject:
     :ivar dy: The pixel movement corresponding to: current_y - previous_y.
     :type dy: int
 
-    :ivar xywh: The positional and width/height coordinates in a single tuple (x, y, w, h) .
+    :ivar xywh: The positional and width/height coordinates in a single tuple (x, y, w, h).
     :type xywh: (int, int, int, int)
 
     :ivar orientation: The orientation of the object (if available); game specific.
@@ -40,6 +40,9 @@ class GameObject:
 
     :ivar center: The center of the bounding box of the object.
     :type center: (int, int)
+
+    :ivar hud: True if part of the Heads Up Display, and thus not interactable.
+    :type hud: bool
     """
     GET_COLOR = False
     GET_WH = False

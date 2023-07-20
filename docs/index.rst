@@ -65,6 +65,7 @@ You can download from the
    :caption: API:
 
    ocatari/core.rst
+   ocatari/game_objects.rst
    ocatari/ram.rst
    ocatari/vision.rst
 
