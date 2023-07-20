@@ -11,7 +11,7 @@ MAX_NB_OBJECTS_HUD = {'Cactus': 6, 'Sign': 1}# 'Score': 1}
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e, the Road Runner.
+    The player figure i.e, the Road Runner.
     """
     
     def __init__(self):
@@ -24,7 +24,7 @@ class Player(GameObject):
 
 class Enemy(GameObject):
     """
-    A class representing Wile E. Coyote.
+    Wile E. Coyote.
     """
     
     def __init__(self):
@@ -37,7 +37,7 @@ class Enemy(GameObject):
 
 class BirdSeeds(GameObject):
     """
-    A class representing the collectable piles of birdseed on the roadway.
+    The collectable piles of birdseed on the roadway.
     """
     
     def __init__(self):
@@ -50,7 +50,7 @@ class BirdSeeds(GameObject):
 
 class Truck(GameObject):
     """
-    A class representing the speeding trucks.
+    The speeding trucks.
     """
     
     def __init__(self):
@@ -62,7 +62,7 @@ class Truck(GameObject):
 
 class RoadCrack(GameObject):
     """
-    A class representing damaged road segments (cliffs??).
+    Damaged road segments (cliffs??).
     """
     
     def __init__(self):
@@ -74,7 +74,7 @@ class RoadCrack(GameObject):
 
 class AcmeMine(GameObject):
     """
-    A class representing the landmines planted along the road.
+    The landmines planted along the road.
     """
     
     def __init__(self):
@@ -86,7 +86,7 @@ class AcmeMine(GameObject):
 
 class Turret(GameObject):
     """
-    A class representing Wile E. Coyote's cannons along the road.
+    Wile E. Coyote's cannons along the road.
     """
     
     def __init__(self):
@@ -98,7 +98,7 @@ class Turret(GameObject):
 
 class TurretBall(GameObject):
     """
-    A class representing the projectiles shot from the cannons.
+    The projectiles shot from the cannons.
     """
     
     def __init__(self):
@@ -110,7 +110,7 @@ class TurretBall(GameObject):
 
 class Stone(GameObject):
     """
-    A class representing the rocks tumbling down on the road.
+    The rocks tumbling down on the road.
     """
     
     def __init__(self):
@@ -122,7 +122,7 @@ class Stone(GameObject):
 
 class Cactus(GameObject):
     """
-    A class representing cactus in the background (HUD).
+    Cactus in the background (HUD).
     """
     
     def __init__(self):
@@ -135,7 +135,7 @@ class Cactus(GameObject):
 
 class Sign(GameObject):
     """
-    A class representing the occasional road signs and billboards (HUD).
+    The occasional road signs and billboards (HUD).
     """
     
     def __init__(self):
@@ -147,7 +147,7 @@ class Sign(GameObject):
 
 class Bird(GameObject):
     """
-    A class representing the birds flying by.
+    The birds flying by.
     """
     
     def __init__(self):
@@ -160,7 +160,7 @@ class Bird(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):

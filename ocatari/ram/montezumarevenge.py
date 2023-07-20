@@ -15,7 +15,7 @@ obj_tracker = {}
 
 class Player(GameObject):
     """
-    A class representing the player figure: Panama Joe.
+    The player figure: Panama Joe.
     """
     
     def __init__(self):
@@ -28,7 +28,7 @@ class Player(GameObject):
 
 class Skull(GameObject):
     """
-    A class representing the bouncing or rolling skulls.
+    The bouncing or rolling skulls.
     """
     
     def __init__(self, *args, **kwargs):
@@ -42,7 +42,7 @@ class Skull(GameObject):
 
 class Spider(GameObject):
     """
-    A class representing the moving spiders.
+    The moving spiders.
     """
     
     def __init__(self, *args, **kwargs):
@@ -56,7 +56,7 @@ class Spider(GameObject):
 
 class Snake(GameObject):
     """
-    A class representing the stationary snakes.
+    The stationary snakes.
     """
     
     def __init__(self, *args, **kwargs):
@@ -70,7 +70,7 @@ class Snake(GameObject):
 
 class Key(GameObject):
     """
-    A class representing the collectable keys.
+    The collectable keys.
     """
     
     def __init__(self, *args, **kwargs):
@@ -84,7 +84,7 @@ class Key(GameObject):
 
 class Amulet(GameObject):
     """
-    A class representing the collectable amulets, which make enemies disappear temporally.
+    The collectable amulets, which make enemies disappear temporally.
     """
     
     def __init__(self, *args, **kwargs):
@@ -98,7 +98,7 @@ class Amulet(GameObject):
 
 class Torch(GameObject):
     """
-    A class representing the collectable torches for illuminating the rooms of the current game level.
+    The collectable torches for illuminating the rooms of the current game level.
     """
     
     def __init__(self, *args, **kwargs):
@@ -112,7 +112,7 @@ class Torch(GameObject):
 
 class Sword(GameObject):
     """
-    A class representing the collectable swords, that can eliminate spiders or skulls upon contact.
+    The collectable swords, that can eliminate spiders or skulls upon contact.
     """
     
     def __init__(self, *args, **kwargs):
@@ -126,7 +126,7 @@ class Sword(GameObject):
 
 class Ruby(GameObject):
     """
-    A class representing the collectable jewels.
+    The collectable jewels.
     """
     
     def __init__(self, *args, **kwargs):
@@ -140,7 +140,7 @@ class Ruby(GameObject):
 
 class Barrier(GameObject):
     """
-    A class representing the doors that can be unlocked with collectable keys. Unlocking removes the door.
+    The doors that can be unlocked with collectable keys. Unlocking removes the door.
     """
     
     def __init__(self, *args, **kwargs):
@@ -154,7 +154,7 @@ class Barrier(GameObject):
 
 class Beam(GameObject):
     """
-    A class representing the flashing laser gates.
+    The flashing laser gates.
     """
     
     def __init__(self, *args, **kwargs):
@@ -168,7 +168,7 @@ class Beam(GameObject):
 
 class Rope(GameObject):
     """
-    A class representing the climbing-ropes.
+    The climbing-ropes.
     """
     
     def __init__(self, *args, **kwargs):
@@ -182,7 +182,7 @@ class Rope(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self, *args, **kwargs):
@@ -195,7 +195,7 @@ class Score(GameObject):
 
 class Life(GameObject):
     """
-    A class representing the player's remaining additional lives (displayed as hats) (HUD).
+    The player's remaining additional lives (displayed as hats) (HUD).
     """
     
     def __init__(self, *args, **kwargs):
@@ -208,7 +208,7 @@ class Life(GameObject):
 
 class Key_HUD(GameObject):
     """
-    A class representing keys in the inventory display (HUD).
+    Keys in the inventory display (HUD).
     """
     
     def __init__(self, *args, **kwargs):
@@ -221,7 +221,7 @@ class Key_HUD(GameObject):
         
 class Amulet_HUD(GameObject):
     """
-    A class representing amulets in the inventory display (HUD).
+    Amulets in the inventory display (HUD).
     """
     
     def __init__(self, *args, **kwargs):
@@ -235,7 +235,7 @@ class Amulet_HUD(GameObject):
 
 class Torch_HUD(GameObject):
     """
-    A class representing torches in the inventory display (HUD).
+    Torches in the inventory display (HUD).
     """
     
     def __init__(self, *args, **kwargs):
@@ -249,7 +249,7 @@ class Torch_HUD(GameObject):
 
 class Sword_HUD(GameObject):
     """
-    A class representing swords in the inventory display (HUD).
+    Swords in the inventory display (HUD).
     """
     
     def __init__(self, *args, **kwargs):
@@ -263,7 +263,7 @@ class Sword_HUD(GameObject):
 
 class Platform(GameObject):
     """
-    A class representing permanent platforms.
+    Permanent platforms.
     """
     
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
@@ -277,7 +277,7 @@ class Platform(GameObject):
 
 class Ladder(GameObject):
     """
-    A class representing the ladders.
+    The ladders.
     """
     
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
@@ -291,7 +291,7 @@ class Ladder(GameObject):
 
 class Conveyer_Belt(GameObject):
     """
-    A class representing the conveyor belts.
+    The conveyor belts.
     """
     
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
@@ -319,7 +319,7 @@ class Wall(GameObject):
 
 class Disappearing_Platform(GameObject):
     """
-    A class representing dis- and reappearing parts of the floor.
+    Dis- and reappearing parts of the floor.
     """
     
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):

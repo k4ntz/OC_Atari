@@ -13,7 +13,7 @@ MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4, 'Fruit': 1, 'Score': 3, 'Life': 
 
 class Player(GameObject):
     """
-    A class representing the player figure: Ms. Pac-Man.
+    The player figure: Ms. Pac-Man.
     """
     
     def __init__(self):
@@ -26,7 +26,7 @@ class Player(GameObject):
 
 class Ghost(GameObject):
     """
-    A class representing the Ghosts.
+    The Ghosts.
     """
     
     def __init__(self):
@@ -40,7 +40,7 @@ class Ghost(GameObject):
 
 class Fruit(GameObject):
     """
-    A class representing collectable fruits.
+    The collectable fruits.
     """
     
     def __init__(self):
@@ -53,7 +53,7 @@ class Fruit(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):
@@ -66,7 +66,7 @@ class Score(GameObject):
 
 class Life(GameObject):
     """
-    A class representing the indicator for remaining lives (HUD).
+    The indicator for remaining lives (HUD).
     """
     
     def __init__(self):

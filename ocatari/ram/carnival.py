@@ -11,7 +11,7 @@ MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerMissile': 1, 'Rabbit': 6, 'Duck': 5,'
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e, the gun.
+    The player figure i.e, the gun.
     """
     
     def __init__(self):
@@ -24,7 +24,7 @@ class Player(GameObject):
 
 class PlayerMissile(GameObject):
     """
-    A class representing projectiles fired from the gun.
+    Projectiles fired from the player's gun.
     """
     
     def __init__(self):
@@ -37,7 +37,7 @@ class PlayerMissile(GameObject):
 
 class Owl(GameObject):
     """
-    A class representing the owl targets.
+    The owl targets.
     """
     
     def __init__(self):
@@ -50,7 +50,7 @@ class Owl(GameObject):
 
 class Duck(GameObject):
     """
-    A class representing the duck targets.
+    The duck targets.
     """
     
     def __init__(self):
@@ -63,7 +63,7 @@ class Duck(GameObject):
 
 class FlyingDuck(GameObject):
     """
-    A class representing ducks that fly down the screen to eat some of the bullets.
+    The ducks that fly down the screen to eat some of the bullets.
     """
     
     def __init__(self):
@@ -76,7 +76,7 @@ class FlyingDuck(GameObject):
 
 class Rabbit(GameObject):
     """
-    A class representing the rabbit targets.
+    The rabbit targets.
     """
     
     def __init__(self):
@@ -89,7 +89,7 @@ class Rabbit(GameObject):
 
 class ExtraBullets(GameObject):
     """
-    A class representing the extra-bullet boxes.
+    The extra-bullet boxes.
     """
     
     def __init__(self):
@@ -102,7 +102,7 @@ class ExtraBullets(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
 
     def __init__(self):
@@ -118,7 +118,7 @@ class PlayerScore(GameObject):
 
 class AmmoBar(GameObject):
     """
-    A class representing the ammunition bar display (HUD).
+    The ammunition bar display (HUD).
     """
     
     def __init__(self):
@@ -131,7 +131,7 @@ class AmmoBar(GameObject):
 
 class BonusSign(GameObject):
     """
-    A class representing the bonus (or penalty) points/ammunition target (HUD).
+    The bonus (or penalty) points/ammunition target (HUD).
     """
     
     def __init__(self):
@@ -144,7 +144,7 @@ class BonusSign(GameObject):
 
 class BonusValue(GameObject):
     """
-    A class representing the value of the bonus/penalty target.
+    The value of the bonus/penalty target.
     """
     
     def __init__(self):
@@ -157,7 +157,7 @@ class BonusValue(GameObject):
 
 class Wheel(GameObject):
     """
-    A class representing the spinning pipe target.
+    The spinning pipe target.
     """
     
     def __init__(self):

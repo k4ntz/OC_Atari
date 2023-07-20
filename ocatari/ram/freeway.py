@@ -11,7 +11,7 @@ MAX_NB_OBJECTS_HUD =  {'Chicken': 2, 'Car': 10, 'Score' : 2}
 
 class Chicken(GameObject):
     """
-    A class representing the player figure i.e., the chicken. 
+    The player figure i.e., the chicken. 
     """
     
     def __init__(self):
@@ -24,7 +24,7 @@ class Chicken(GameObject):
 
 class Car(GameObject):
     """
-    A class representing the vehicles on the freeway. 
+    The vehicles on the freeway. 
     """
     
     def __init__(self):
@@ -37,7 +37,7 @@ class Car(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):
