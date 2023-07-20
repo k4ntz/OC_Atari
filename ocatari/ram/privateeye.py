@@ -13,7 +13,7 @@ obj_tracker = {}
 
 class Player(GameObject):
     """
-    A class representing the player figure: Pierre Touche.
+    The player figure: Pierre Touche.
     """
     
     def __init__(self):
@@ -27,7 +27,7 @@ class Player(GameObject):
 
 class Car(GameObject):
     """
-    A class representing the Touche's 1935 Model A with jumping capabilities.
+    The Touche's 1935 Model A with jumping capabilities.
     """
     
     def __init__(self):
@@ -50,7 +50,7 @@ class Badguy(GameObject):
 
 class Clue(GameObject):
     """
-    A class representing the questionable characters lurking from the windows.
+    The questionable characters lurking from the windows.
     """
     
     def __init__(self):
@@ -63,7 +63,7 @@ class Clue(GameObject):
 
 class Mud(GameObject):
     """
-    A class representing the pot holes.
+    The pot holes.
     """
     
     def __init__(self):
@@ -76,7 +76,7 @@ class Mud(GameObject):
 
 class Shatterd_Object(GameObject):
     """
-    A class representing the animation for broken bricks or flowerpots once they've hit the ground.
+    The animation for broken bricks or flowerpots once they've hit the ground.
     """
     
     def __init__(self):
@@ -89,7 +89,7 @@ class Shatterd_Object(GameObject):
 
 class Knife(GameObject):
     """
-    A class representing the daggers thrown at the player, once the first item is collected.
+    The daggers thrown at the player, once the first item is collected.
     """
     
     def __init__(self):
@@ -101,7 +101,7 @@ class Knife(GameObject):
 
 class Dove(GameObject):
     """
-    A class representing the birds.
+    The birds.
     """
     
     def __init__(self):
@@ -114,7 +114,7 @@ class Dove(GameObject):
 
 class Lizard(GameObject):
     """
-    A class representing the crawling rats.
+    The crawling rats.
     """
     
     def __init__(self):
@@ -127,7 +127,7 @@ class Lizard(GameObject):
 
 class Pottet_Plant(GameObject):
     """
-    A class representing the flowerpots thrown from windows.
+    The flowerpots thrown from windows.
     """
     
     def __init__(self):
@@ -140,7 +140,7 @@ class Pottet_Plant(GameObject):
 
 class Brick(GameObject):
     """
-    A class representing the bricks, occasionally dropping from the building facades.
+    The bricks, occasionally dropping from the building facades.
     """
     
     def __init__(self):
@@ -153,7 +153,7 @@ class Brick(GameObject):
 
 class Barrier(GameObject):
     """
-    A class representing the roadblocks.
+    The roadblocks.
     """
     
     def __init__(self):
@@ -166,7 +166,7 @@ class Barrier(GameObject):
 
 class Passge(GameObject):
     """
-    A class representing the passages into alleys or park lanes.
+    The passages into alleys or park lanes.
     """
     
     def __init__(self):
@@ -180,7 +180,7 @@ class Passge(GameObject):
 
 class Gun_Sign(GameObject):
     """
-    A class representing the header of the gunstore.
+    The header of the gunstore.
     """
     
     def __init__(self):
@@ -193,7 +193,7 @@ class Gun_Sign(GameObject):
 
 class Police_Sign(GameObject):
     """
-    A class representing the header of the police headquaters.
+    The header of the police headquaters.
     """
     
     def __init__(self):
@@ -206,7 +206,7 @@ class Police_Sign(GameObject):
 
 class Bank_Sign(GameObject):
     """
-    A class representing the header of the bank building.
+    The header of the bank building.
     """
     
     def __init__(self):
@@ -219,7 +219,7 @@ class Bank_Sign(GameObject):
 
 class Money_Bag(GameObject):
     """
-    A class representing the inventory display for the bag of stolen money (case 1).
+    The inventory display for the bag of stolen money (case 1).
     """
     
     def __init__(self):
@@ -232,7 +232,7 @@ class Money_Bag(GameObject):
 
 class Gun(GameObject):
     """
-    A class representing the inventory display for the gun (case 1).
+    The inventory display for the gun (case 1).
     """
     
     def __init__(self):
@@ -245,7 +245,7 @@ class Gun(GameObject):
 
 class Button(GameObject):
     """
-    A class representing the inventory display for the lost button (case 2).
+    The inventory display for the lost button (case 2).
     """
     
     def __init__(self):
@@ -258,7 +258,7 @@ class Button(GameObject):
 
 class Comb(GameObject):
     """
-    A class representing the inventory display for the comb (case 3).
+    The inventory display for the comb (case 3).
     """
     
     def __init__(self):
@@ -271,7 +271,7 @@ class Comb(GameObject):
 
 class Shoe_Sole(GameObject):
     """
-    A class representing the inventory display for the shoe sole (case 4).
+    The inventory display for the shoe sole (case 4).
     """
     
     def __init__(self):
@@ -284,7 +284,7 @@ class Shoe_Sole(GameObject):
 
 class Vase(GameObject):
     """
-    A class representing the inventory display for the ming vase (case 2).
+    The inventory display for the ming vase (case 2).
     """
     
     def __init__(self):
@@ -297,7 +297,7 @@ class Vase(GameObject):
 
 class Necklace(GameObject):
     """
-    A class representing the inventory display for the diamond necklace (case 3).
+    The inventory display for the diamond necklace (case 3).
     """
     
     def __init__(self):
@@ -310,7 +310,7 @@ class Necklace(GameObject):
 
 class Stamp(GameObject):
     """
-    A class representing the inventory display for the stamp (case 4).
+    The inventory display for the stamp (case 4).
     """
     
     def __init__(self):
@@ -323,7 +323,7 @@ class Stamp(GameObject):
 
 class Badguy_Head(GameObject):
     """
-    A class representing the thugs lurching out to attack the player.
+    The thugs lurching out to attack the player.
     """
     
     def __init__(self):
@@ -336,7 +336,7 @@ class Badguy_Head(GameObject):
 
 class Score(ScoreObject):
     """
-    A class representing the player's merit score display.
+    The player's merit score display.
     """
     
     def __init__(self, *args, **kwargs):
@@ -349,7 +349,7 @@ class Score(ScoreObject):
 
 class Clock(ClockObject):
     """
-    A class representing the statue of limitation (game clock display) for the current case.
+    The statue of limitation (game clock display) for the current case.
     """
     
     def __init__(self, *args, **kwargs):

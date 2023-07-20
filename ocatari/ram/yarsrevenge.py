@@ -10,7 +10,7 @@ MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e., the Yar.
+    The player figure i.e., the Yar.
     """
     
     def __init__(self):
@@ -22,7 +22,7 @@ class Player(GameObject):
 
 class Enemy(GameObject):
     """
-    A class representing the enemy Qotile.
+    The enemy Qotile.
     """
     
     def __init__(self):
@@ -34,7 +34,7 @@ class Enemy(GameObject):
 
 class Swirl(GameObject):
     """
-    A class representing the Qotile when transformed into a Swirl, charging at the player.
+    The Qotile when transformed into a Swirl, charging at the player.
     """
     
     def __init__(self):
@@ -46,7 +46,7 @@ class Swirl(GameObject):
 
 class Enemy_Missile(GameObject):
     """
-    A class representing the Destroyer Missles fired by the Qotile.
+    The Destroyer Missles fired by the Qotile.
     """
     
     def __init__(self):
@@ -57,6 +57,10 @@ class Enemy_Missile(GameObject):
         self.hud = False
 
 class Barrier(GameObject):
+    """
+    The colorful and glittering neutral zone. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -66,7 +70,7 @@ class Barrier(GameObject):
 
 class Player_Bullet(GameObject):
     """
-    A class representing the Energy Missles fired by the player.
+    The Energy Missles fired by the player.
     """
     
     def __init__(self):
@@ -77,6 +81,10 @@ class Player_Bullet(GameObject):
         self.hud = False
 
 class Shield_Block(GameObject):
+    """
+    The cells of the energy shield protecting the Qotile.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0

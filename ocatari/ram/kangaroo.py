@@ -12,7 +12,7 @@ obj_tracker = {}
 
 class Player(GameObject):
     """
-    A class representing the player figure: Mother Kangaroo.
+    The player figure: Mother Kangaroo.
     """
     
     def __init__(self):
@@ -25,7 +25,7 @@ class Player(GameObject):
 
 class Child(GameObject):
     """
-    A class representing Baby Kangaroo.
+    Baby Kangaroo.
     """
     
     def __init__(self):
@@ -38,7 +38,7 @@ class Child(GameObject):
 
 class Enemy(GameObject):
     """
-    A class representing the enemy monkeys.
+    The enemy monkeys.
     """
     
     def __init__(self):
@@ -52,7 +52,7 @@ class Enemy(GameObject):
 
 class Fruit(GameObject):
     """
-    A class representing the collectable fruits.
+    The collectable fruits.
     """
     
     def __init__(self):
@@ -65,7 +65,7 @@ class Fruit(GameObject):
 
 class Scale(GameObject):
     """
-    A class representing the ladders.
+    The ladders.
     """
     
     def __init__(self, x=0, y=0, w=8, h=35):
@@ -79,7 +79,7 @@ class Scale(GameObject):
 
 class Platform(GameObject):
     """
-    A class representing the platforms.
+    The platforms.
     """
     
     def __init__(self, x=0, y=0, w=8, h=4):
@@ -93,7 +93,7 @@ class Platform(GameObject):
 
 class Projectile_top(GameObject):
     """
-    A class representing the dangerous apples dropping down from the top.
+    The dangerous apples dropping down from the top.
     """
     
     def __init__(self):
@@ -106,7 +106,7 @@ class Projectile_top(GameObject):
 
 class Projectile_enemy(GameObject):
     """
-    A class representing the apples thrown at the player by the monkeys.
+    The apples thrown at the player by the monkeys.
     """
     
     def __init__(self):
@@ -119,7 +119,7 @@ class Projectile_enemy(GameObject):
 
 class Bell(GameObject):
     """
-    A class representing the bell that can be used to replenish the collectable fruits.
+    The bell that can be used to replenish the collectable fruits.
     """
     
     def __init__(self):
@@ -132,7 +132,7 @@ class Bell(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):
@@ -145,7 +145,7 @@ class Score(GameObject):
 
 class Life(GameObject):
     """
-    A class representing the player's remaining lives (HUD).
+    The player's remaining lives (HUD).
     """
     
     def __init__(self):
@@ -158,7 +158,7 @@ class Life(GameObject):
 
 class Time(GameObject):
     """
-    A class representing the time indicator (HUD).
+    The time indicator (HUD).
     """
     
     def __init__(self):

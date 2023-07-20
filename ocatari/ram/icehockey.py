@@ -10,7 +10,7 @@ MAX_NB_OBJECTS_HUD = {'PlayerScore':2, 'EnemyScore':2, 'Timer':3}# 'Score': 1}
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e., the current hockey player (goalie or forward).
+    The player figure i.e., the current hockey player (goalie or forward).
     """
     
     def __init__(self):
@@ -22,7 +22,7 @@ class Player(GameObject):
 
 class Enemy(GameObject):
     """
-    A class representing the enemy player(s).
+    The enemy player(s).
     """
     
     def __init__(self):
@@ -34,7 +34,7 @@ class Enemy(GameObject):
 
 class Ball(GameObject):
     """
-    A class representing the puck.
+    The puck.
     """
     
     def __init__(self):
@@ -46,7 +46,7 @@ class Ball(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):
@@ -58,7 +58,7 @@ class PlayerScore(GameObject):
 
 class EnemyScore(GameObject):
     """
-    A class representing the enemy's score display (HUD).
+    The enemy's score display (HUD).
     """
     
     def __init__(self):
@@ -70,7 +70,7 @@ class EnemyScore(GameObject):
 
 class Timer(GameObject):
     """
-    A class representing the game-clock (HUD).
+    The game-clock (HUD).
     """
     
     def __init__(self):

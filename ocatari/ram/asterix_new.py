@@ -9,7 +9,7 @@ RAM extraction for the game Asterix.
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e., first asterix and then, as the game progresses, obelix. 
+    The player figure i.e., first asterix and then, as the game progresses, obelix. 
     """
     
     def __init__(self):
@@ -22,7 +22,7 @@ class Player(GameObject):
 
 class Enemy(GameObject):
     """
-    A class representing the deadly lyres that are among the other collectables.
+    The deadly lyres that are among the other collectables.
     """
     
     def __init__(self):
@@ -35,7 +35,7 @@ class Enemy(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):
@@ -48,7 +48,7 @@ class Score(GameObject):
 
 class Lives(GameObject):
     """
-    A class representing the indicator for remaining lives of the player (HUD). 
+    The indicator for remaining lives of the player (HUD). 
     """
     
     def __init__(self):
@@ -60,7 +60,7 @@ class Lives(GameObject):
 
 class Cauldron(GameObject):
     """
-    A class representing the collectable cauldrons of magic potion (asterix). 
+    The collectable cauldrons of magic potion (asterix). 
     """
     
     def __init__(self):
@@ -72,7 +72,7 @@ class Cauldron(GameObject):
 
 class Helmet(GameObject):
     """
-    A class representing the collectable helmets (asterix). 
+    The collectable helmets (asterix). 
     """
     
     def __init__(self):
@@ -85,7 +85,7 @@ class Helmet(GameObject):
 
 class Shield(GameObject):
     """
-    A class representing the collectable shields (asterix).
+    The collectable shields (asterix).
     """
     
     def __init__(self):
@@ -98,7 +98,7 @@ class Shield(GameObject):
 
 class Lamp(GameObject):
     """
-    A class representing the collectable lamps (asterix).
+    The collectable lamps (asterix).
     """
     
     def __init__(self):
@@ -111,7 +111,7 @@ class Lamp(GameObject):
 
 class Apple(GameObject):
     """
-    A class representing the collectable apples (obelix).
+    The collectable apples (obelix).
     """
     
     def __init__(self):
@@ -124,7 +124,7 @@ class Apple(GameObject):
 
 class Fish(GameObject):
     """
-    A class representing the collectable apples (obelix).
+    The collectable apples (obelix).
     """
     
     def __init__(self):
@@ -137,7 +137,7 @@ class Fish(GameObject):
 
 class Meat(GameObject):
     """
-    A class representing the collectable wild boar legs (obelix).
+    The collectable wild boar legs (obelix).
     """
     
     def __init__(self):
@@ -150,7 +150,7 @@ class Meat(GameObject):
 
 class Mug(GameObject):
     """
-    A class representing the collectable mugs of obelix' favourite drink (obelix).
+    The collectable mugs of obelix' favourite drink (obelix).
     """
     
     def __init__(self):
@@ -163,7 +163,7 @@ class Mug(GameObject):
 
 class Reward50(GameObject):
     """
-    A class representing the 50 point reward-icon for collecting a cauldron (asterix).
+    The 50 point reward-icon for collecting a cauldron (asterix).
     """
     
     def __init__(self):
@@ -176,7 +176,7 @@ class Reward50(GameObject):
 
 class Reward100(GameObject):
     """
-    A class representing the 100 point reward-icon for collecting a helmet (asterix).
+    The 100 point reward-icon for collecting a helmet (asterix).
     """
     
     def __init__(self):
@@ -189,7 +189,7 @@ class Reward100(GameObject):
 
 class Reward200(GameObject):
     """
-    A class representing the 200 point reward-icon for collecting a shield (asterix).
+    The 200 point reward-icon for collecting a shield (asterix).
     """
     
     def __init__(self):
@@ -202,7 +202,7 @@ class Reward200(GameObject):
 
 class Reward300(GameObject):
     """
-    A class representing the 300 point reward-icon for collecting a lamp (asterix).
+    The 300 point reward-icon for collecting a lamp (asterix).
     """
     
     def __init__(self):
@@ -215,7 +215,7 @@ class Reward300(GameObject):
 
 class Reward400(GameObject):
     """
-    A class representing the 400 point reward-icon for collecting an apple (obelix).
+    The 400 point reward-icon for collecting an apple (obelix).
     """
     
     def __init__(self):
@@ -228,7 +228,7 @@ class Reward400(GameObject):
 
 class Reward500(GameObject):
     """
-    A class representing the 500 point reward-icon for collecting a fish, wild boar leg, mug, or surprise object (obelix).
+    The 500 point reward-icon for collecting a fish, wild boar leg, mug, or surprise object (obelix).
     """
     
     def __init__(self):

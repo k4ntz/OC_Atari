@@ -53,7 +53,7 @@ PREV_RAM_STATE = 0
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e., the skier.
+    The player figure i.e., the skier.
     """
     
     def __init__(self):
@@ -67,7 +67,7 @@ class Player(GameObject):
 
 class Flag(GameObject):
     """
-    A class representing the poles (depicted as flags) of the gates.
+    The poles (depicted as flags) of the gates.
     
     :ivar xy: Both positional coordinates x and y in a tuple. 
     :type: (int, int)
@@ -102,7 +102,7 @@ class Flag(GameObject):
 
 class Mogul(GameObject):
     """
-    A class representing the moguls on the piste.
+    The moguls on the piste.
     
     :ivar xy: Both positional coordinates x and y in a tuple. 
     :type: (int, int)
@@ -133,7 +133,7 @@ class Mogul(GameObject):
 
 class Tree(GameObject):
     """
-    A class representing the trees on the piste.
+    The trees on the piste.
     
     :ivar xy: Both positional coordinates x and y in a tuple. 
     :type: (int, int)
@@ -176,7 +176,7 @@ class Tree(GameObject):
 
 class Clock(GameObject):
     """
-    A class representing the timer display (HUD).
+    The timer display (HUD).
     """
     
     def __init__(self, x=0, y=0, w=0, h=0):
@@ -189,7 +189,7 @@ class Clock(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the counter display. This can either be the remaining number of gates (slalom mode) 
+    The counter display. This can either be the remaining number of gates (slalom mode) 
     or remaining meters (downhill racing) (HUD).
     """
     

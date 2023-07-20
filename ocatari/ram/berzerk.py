@@ -13,7 +13,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e., the earth man stuck on planet Mazeon. 
+    A class representingT the player figure i.e., the earth man stuck on planet Mazeon. 
     """
     
     def __init__(self):
@@ -26,7 +26,7 @@ class Player(GameObject):
 
 class PlayerMissile(GameObject):
     """
-    A class representing the projectiles shot from the player's laser gun. 
+    The projectiles shot from the player's laser gun. 
     """
     
     def __init__(self):
@@ -39,7 +39,7 @@ class PlayerMissile(GameObject):
 
 class Enemy(GameObject):
     """
-    A class representing the enemy Automazeons stalking the player. 
+    The enemy Automazeons stalking the player. 
     """
     
     def __init__(self):
@@ -52,7 +52,7 @@ class Enemy(GameObject):
 
 class EnemyMissile(GameObject):
     """
-    A class representing the projectiles fired at the player by the enemy Automazeons. 
+    The projectiles fired at the player by the enemy Automazeons. 
     """
     
     def __init__(self):
@@ -65,7 +65,7 @@ class EnemyMissile(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):
@@ -81,7 +81,7 @@ class PlayerScore(GameObject):
 
 class Logo(GameObject):
     """
-    A class representing the Atari logo, which is displayed in place of the score if the score is zero (HUD).
+    The Atari logo, which is displayed in place of the score if the score is zero (HUD).
     """
     
     def __init__(self):
@@ -94,7 +94,7 @@ class Logo(GameObject):
 
 class RoomCleared(GameObject):
     """
-    A class representing the display for bonus points scored, if and when all robots in a maze have been cleared (HUD).
+    The display for bonus points scored, if and when all robots in a maze have been cleared (HUD).
     """
     
     def __init__(self):

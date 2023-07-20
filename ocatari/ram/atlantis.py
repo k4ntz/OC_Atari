@@ -13,7 +13,7 @@ MAX_NB_OBJECTS_HUD = {'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'D
 
 class Sentry(GameObject):
     """
-    A class representing the left and right sentry posts. 
+    The left and right sentry posts. 
     """
     
     def __init__(self):
@@ -27,7 +27,7 @@ class Sentry(GameObject):
 # No clue how the projectiles work
 class Projectile(GameObject):
     """
-    A class representing the projectiles shot from the sentry posts or the Acropolis Command Post. 
+    The projectiles shot from the sentry posts or the Acropolis Command Post. 
     """
     
     def __init__(self):
@@ -40,7 +40,7 @@ class Projectile(GameObject):
 
 class AquaPlane(GameObject):
     """
-    A class representing the Aqua Plain district of the city. 
+    The Aqua Plain district of the city. 
     """
 
     def __init__(self):
@@ -53,7 +53,7 @@ class AquaPlane(GameObject):
 
 class DomedPalace(GameObject):
     """
-    A class representing the Doomed Palace district of the city. 
+    The Doomed Palace district of the city. 
     """
     
     def __init__(self):
@@ -66,7 +66,7 @@ class DomedPalace(GameObject):
 
 class Generator(GameObject):
     """
-    A class representing the three Generator Stations. 
+    The three Generator Stations. 
     """
     
     def __init__(self):
@@ -79,7 +79,7 @@ class Generator(GameObject):
 
 class BridgedBazaar(GameObject):
     """
-    A class representing the Bridged Bazaar district of the city. 
+    The Bridged Bazaar district of the city. 
     """
     
     def __init__(self):
@@ -92,7 +92,7 @@ class BridgedBazaar(GameObject):
 
 class AcropolisCommandPost(GameObject):
     """
-    A class representing the Acropolis Command Post that defends the centre of Atlantis. 
+    The Acropolis Command Post that defends the centre of Atlantis. 
     """
     
     def __init__(self):
@@ -105,7 +105,7 @@ class AcropolisCommandPost(GameObject):
 
 class BanditBomber(GameObject):
     """
-    A class representing a fast Gorgon Bandit Bomber. 
+    The fast Gorgon Bandit Bombers. 
     """
     
     def __init__(self):
@@ -118,7 +118,7 @@ class BanditBomber(GameObject):
 
 class GorgonShip(GameObject):
     """
-    A class representing a Large Gorgon Vessel. 
+    The Large Gorgon Vessels. 
     """
     
     def __init__(self):
@@ -131,7 +131,7 @@ class GorgonShip(GameObject):
 
 class Deathray(GameObject):
     """
-    A class representing the deathray fired by close Gorgon units. 
+    The deathray fired by close Gorgon units. 
     """
     
     def __init__(self):
@@ -144,7 +144,7 @@ class Deathray(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player's score display.
+    The player's score display.
     """
     
     def __init__(self):

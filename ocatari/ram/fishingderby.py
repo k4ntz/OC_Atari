@@ -11,7 +11,7 @@ MAX_NB_OBJECTS_HUD = {"Player1FishingString": 1, "Player2FishingString": 1, "Fis
 
 class Fish(GameObject):
     """
-    A class representing the fish.
+    The fish.
 
     :ivar hooked: Wether the fish is currently hooked
     :type: bool
@@ -27,7 +27,7 @@ class Fish(GameObject):
 
 class Shark(GameObject):
     """
-    A class representing the shark.
+    The shark.
     """
     
     def __init__(self):
@@ -41,7 +41,7 @@ class Shark(GameObject):
 
 class PlayerOneHook(GameObject):
     """
-    A class representing the hook of player one.
+    The hook of player one.
     """
     
     # ram_state[15] gives what input was played by player 1
@@ -56,7 +56,7 @@ class PlayerOneHook(GameObject):
 
 class ScorePlayerOne(GameObject):
     """
-    A class representing the score display of player one (HUD).
+    The score display of player one (HUD).
     """
     
     def __init__(self):
@@ -69,7 +69,7 @@ class ScorePlayerOne(GameObject):
 
 class PlayerTwoHook(GameObject):
     """
-    A class representing the hook of player two.
+    The hook of player two.
     """
     
     # to deactivate player two -> turn ram_state[0] to 1
@@ -84,7 +84,7 @@ class PlayerTwoHook(GameObject):
 
 class ScorePlayerTwo(GameObject):
     """
-    A class representing the score display of player two (HUD).
+    The score display of player two (HUD).
     """
     
     def __init__(self):

@@ -21,7 +21,7 @@ def print_bmp(bmp):
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e., the laser cannon.
+    The player figure i.e., the laser cannon.
     """
     
     def __init__(self, num=1):
@@ -38,7 +38,7 @@ class Player(GameObject):
 
 class Alien(GameObject):
     """
-    A class representing the Space Invaders.
+    The Space Invaders.
     """
     
     def __init__(self):
@@ -51,7 +51,7 @@ class Alien(GameObject):
 
 class Satellite(GameObject):
     """
-    A class representing the Command Alien Ship.
+    The Command Alien Ship.
     """
     
     def __init__(self):
@@ -64,7 +64,7 @@ class Satellite(GameObject):
 
 class Shield(GameObject):
     """
-    A class representing the shields between the player's cannon and the Space Invaders.
+    The shields between the player's cannon and the Space Invaders.
     """
     
     def __init__(self):
@@ -77,7 +77,7 @@ class Shield(GameObject):
 
 class Bullet(GameObject):
     """
-    A class representing the player's laser beams and enemy laser bombs.
+    The player's laser beams and enemy laser bombs.
     """
     
     def __init__(self):
@@ -90,7 +90,7 @@ class Bullet(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self, num=0, x=0):  # , num,
@@ -106,7 +106,7 @@ class Score(GameObject):
 
 class Lives(GameObject):
     """
-    A class representing the indicator for the player's remaining lives (HUD).
+    The indicator for the player's remaining lives (HUD).
     """
     
     def __init__(self):

@@ -13,7 +13,7 @@ MAX_NB_OBJECTS_HUD = {}
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e., the laser cannon. 
+    The player figure i.e., the laser cannon. 
     """
     
     def __init__(self):
@@ -26,7 +26,7 @@ class Player(GameObject):
 
 class Enemy(GameObject):
     """
-    A class representing the enemy demons. 
+    The enemy demons. 
     """
     
     def __init__(self):
@@ -39,7 +39,7 @@ class Enemy(GameObject):
 
 class ProjectileFriendly(GameObject):
     """
-    A class representing the projectiles shot from the player's laser cannon. 
+    The projectiles shot from the player's laser cannon. 
     """
     
     def __init__(self):
@@ -52,7 +52,7 @@ class ProjectileFriendly(GameObject):
 
 class ProjectileHostile(GameObject):
     """
-    A class representing projectiles shot by the enemy demons. 
+    Projectiles shot by the enemy demons. 
     """
     
     def __init__(self):
@@ -65,7 +65,7 @@ class ProjectileHostile(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):  # TODO
@@ -78,7 +78,7 @@ class Score(GameObject):
 
 class Live(GameObject):
     """
-    A class representing the indicator for remaining additional bunkers (lives) (HUD).
+    The indicator for remaining additional bunkers (lives) (HUD).
     """
     
     def __init__(self):
