@@ -1,5 +1,5 @@
 from ._helper_methods import _convert_number
-from .game_objects import GameObject
+from .game_objects import GameObject, ScoreObject
 import sys
 
 """
@@ -89,7 +89,7 @@ class EnemyMissile(GameObject):
         self.hud = False
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ScoreObject):
     """
     A class representing the player's score display (HUD). 
     """
@@ -100,6 +100,7 @@ class PlayerScore(GameObject):
         self.rgb = 195, 144, 61
         self.wh = 6, 8
         self.hud = True
+        self.score = 0
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
