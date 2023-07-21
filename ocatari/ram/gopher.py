@@ -24,7 +24,7 @@ class Carrot(GameObject):
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
-        self.wh = (12,27)
+        self.wh = (8,27)
         self.rgb = 162,98,33
         self.hud = False
 
@@ -84,11 +84,62 @@ def _detect_objects_gopher_revised(objects, ram_state, hud=False):
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
+    # Detecting player
     player = objects[0]
-    player.xy = ram_state[59]-13, 168-ram_state[55]
+    player.xy = ram_state[31]-10, 96
+    # Detecting gopher
+    gopher=objects[1]
+    if ram_state[85]<=5:
+        gopher.xy=ram_state[41]-2,184
+        gopher.wh=(14,10)
+    elif ram_state[85]==35:
+        gopher.xy=ram_state[41]-2,149
+        gopher.wh=(14,10)
+    else:
+        gopher.xy=ram_state[41]-3,184-(ram_state[85])
+        gopher.wh=(7,23)
     
+    # Detecting carrots
+    # Carrot at (92, 151), (8, 27), Carrot at (76, 151), (8, 27), Carrot at (60, 151), (8, 27)
+    carrot1,carrot2,carrot3=Carrot(),Carrot(),Carrot()
+    carrot1.xy=92,151; carrot2.xy=76,151; carrot3.xy=60,151
+    if ram_state[36]==0 and ram_state[37]==0 and ram_state[38]==3:
+        objects[2:5]=carrot1,carrot2,carrot3
+    elif ram_state[36]==0 and ram_state[37]==0 and ram_state[38]==1:
+        objects[2]=carrot2; objects[3]=carrot3; objects[4]=None
+    elif ram_state[36]==0 and ram_state[37]==0 and ram_state[38]==0:
+        objects[2]=carrot3; objects[3]=None; objects[4]=None
+    elif ram_state[36]==128 and ram_state[37]==32 and ram_state[38]==1:
+        objects[2]=carrot2; objects[3]=carrot1; objects[4]=None
+    elif ram_state[36]==127 and ram_state[37]==16 and ram_state[38]==0:
+        objects[2]=carrot1; objects[3]=None; objects[4]=None
+    elif ram_state[36]==128 and ram_state[37]==32 and ram_state[38]==0:
+        objects[2]=carrot2; objects[3]=None; objects[4]=None
+
     if hud:
-        pass
+        # Score hundreds and thousands depend on ram_state[49] and score ones and tens depend on ram_state[50]
+        bound1,bound2,bound3,bound4=Score(),Score(),Score(),Score()
+        # Score at (98, 10), (5, 9), Score at (90, 10), (5, 9), Score at (82, 10), (5, 9), Score at (75, 10), (3, 9)]
+        bound1.xy=75,10
+        bound2.xy=82,10
+        bound3.xy=90,10
+        bound4.xy=98,10
+        if ram_state[49]==0 and ram_state[50]<=9:
+            # Right most bounding box only
+            objects[-1]=bound4
+            objects[-2]=None; objects[-3]=None; objects[-4]=None
+        elif ram_state[49]==0 and ram_state[50]>9:
+            # two bounding boxes
+            objects[-1]=bound4
+            objects[-2]=bound3
+            objects[-3]=None; objects[-4]=None
+        elif ram_state[49]<=9:
+            # 3 bounding boxes
+            objects[-1:-4]=bound4,bound3,bound2
+            objects[-4]=None
+        elif ram_state[49]>9:
+            # 4 bounding boxes
+            objects[-1:-5]=bound4,bound3,bound2,bound1
 
 
 
