@@ -3,11 +3,19 @@ from ._helper_methods import _convert_number
 import math
 import sys
 
+"""
+RAM extraction for the game Ms. Pac-Man.
+"""
+
 # not sure about this one TODO: validate
 MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4, 'Fruit': 1, 'Score': 3, 'Life': 2}
 
 class Player(GameObject):
+    """
+    The player figure: Ms. Pac-Man.
+    """
+    
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 78, 103
@@ -17,9 +25,13 @@ class Player(GameObject):
 
 
 class Ghost(GameObject):
-    def __init__(self, *args, **kwargs):
+    """
+    The Ghosts.
+    """
+    
+    def __init__(self):
         super(Ghost, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 79, 57
         self.wh = 9, 10
         self.rgb = 200, 72, 72
@@ -27,7 +39,11 @@ class Ghost(GameObject):
 
 
 class Fruit(GameObject):
-    def __init__(self, *args, **kwargs):
+    """
+    The collectable fruits.
+    """
+    
+    def __init__(self):
         super(Fruit, self).__init__()
         self._xy = 125, 173
         self.wh = 9, 10
@@ -36,7 +52,11 @@ class Fruit(GameObject):
 
 
 class Score(GameObject):
-    def __init__(self, *args, **kwargs):
+    """
+    The player's score display (HUD).
+    """
+    
+    def __init__(self):
         super(Score, self).__init__()
         self._xy = 95, 187
         self.wh = 7, 7
@@ -45,7 +65,11 @@ class Score(GameObject):
 
 
 class Life(GameObject):
-    def __init__(self, *args, **kwargs):
+    """
+    The indicator for remaining lives (HUD).
+    """
+    
+    def __init__(self):
         super(Life, self).__init__()
         self._xy = 12, 171
         self.wh = 7, 10
@@ -146,8 +170,11 @@ def _detect_objects_mspacman_revised(objects, ram_state, hud=True):
     if hud:
         score = _convert_number(ram_state[122]) * 10000 + _convert_number(ram_state[121]) * 100 +\
                 _convert_number(ram_state[120])
-        scores = _create_score_from_number(score)
-        objects.extend(scores)
+        sc = Score()
+        nb_digits = len(str(score))
+        sc.xy = 103 - 8 * nb_digits, 187
+        sc.wh = nb_digits * 8 - 1, 7
+        objects.append(sc)
         # if ram_state[122] < 16:
         #     objects[11].visible = False
         #     if ram_state[122] == 0:

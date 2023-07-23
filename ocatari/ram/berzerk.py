@@ -12,6 +12,10 @@ MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile': 
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile': 1, 'PlayerScore': 1, 'Logo': 2, 'RoomCleared': 1}
 
 class Player(GameObject):
+    """
+    A class representingT the player figure i.e., the earth man stuck on planet Mazeon. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 8, 79
@@ -21,6 +25,10 @@ class Player(GameObject):
 
 
 class PlayerMissile(GameObject):
+    """
+    The projectiles shot from the player's laser gun. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -30,6 +38,10 @@ class PlayerMissile(GameObject):
 
 
 class Enemy(GameObject):
+    """
+    The enemy Automazeons stalking the player. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -39,6 +51,10 @@ class Enemy(GameObject):
 
 
 class EnemyMissile(GameObject):
+    """
+    The projectiles fired at the player by the enemy Automazeons. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -48,6 +64,10 @@ class EnemyMissile(GameObject):
 
 
 class PlayerScore(GameObject):
+    """
+    The player's score display (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 88, 183
@@ -60,6 +80,10 @@ class PlayerScore(GameObject):
 
 
 class Logo(GameObject):
+    """
+    The Atari logo, which is displayed in place of the score if the score is zero (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 63, 183
@@ -69,6 +93,10 @@ class Logo(GameObject):
 
 
 class RoomCleared(GameObject):
+    """
+    The display for bonus points scored, if and when all robots in a maze have been cleared (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 56, 183
@@ -180,7 +208,7 @@ def _detect_objects_berzerk_revised(objects, ram_state, hud=False):
         for i in range(8):
             if ram_state[65 + i] != 0 and ram_state[56 + i] != 127:
                 enemy = Enemy()
-                enemy.xy = ram_state[65 + i] + 5, (ram_state[56 + i] * 2) + 4
+                enemy.xy = ram_state[65 + i] + 6, (ram_state[56 + i] * 2) + 4
                 enemy.rgb = enemy_colors.get(ram_state[92] % 16)
                 objects.append(enemy)
 

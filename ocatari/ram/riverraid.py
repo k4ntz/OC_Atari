@@ -24,6 +24,10 @@ def twos_comp(val):
 
 
 class _DescendingObject(GameObject):
+    """
+    A support class for objects descending on the screen.
+    """
+    
     _offset = None
     
     def __init__(self, xfr, x_off):
@@ -35,6 +39,10 @@ class _DescendingObject(GameObject):
 
 
 class Player(GameObject):
+    """
+    The player figure i.e., the jet.
+    """
+    
     def __init__(self):
         self._xy = 77, 145
         self.wh = 7, 13
@@ -43,6 +51,10 @@ class Player(GameObject):
 
 
 class PlayerMissile(GameObject):
+    """
+    The missles shot from the player's jet.
+    """
+    
     def __init__(self):
         self._xy = 0, 0
         self.wh = 1, 8
@@ -51,6 +63,10 @@ class PlayerMissile(GameObject):
 
 
 class Helicopter(_DescendingObject):
+    """
+    The enemy helicopters.
+    """
+    
     _offset = 16
     fh = 10  # final height
     def __init__(self, xfr, x_off):
@@ -67,6 +83,10 @@ class Helicopter(_DescendingObject):
 
 
 class Tanker(_DescendingObject):
+    """
+    The enemy tankers.
+    """
+    
     _offset = 13
     fh = 8
     def __init__(self, xfr, x_off):
@@ -77,6 +97,10 @@ class Tanker(_DescendingObject):
 
 
 class Jet(_DescendingObject):
+    """
+    The enemy jets.
+    """
+    
     _offset = 15
     fh = 6
     def __init__(self, xfr, x_off):
@@ -87,6 +111,10 @@ class Jet(_DescendingObject):
 
 
 class Bridge(_DescendingObject):
+    """
+    The bridge targets.
+    """
+    
     _offset = 17
     fh = 18
     def __init__(self, xfr, x_off):
@@ -97,6 +125,10 @@ class Bridge(_DescendingObject):
 
 
 class FuelDepot(_DescendingObject):
+    """
+    Fuel depots targets.
+    """
+    
     _offset = 23
     fh = 24
     def __init__(self, xfr, x_off):
@@ -108,6 +140,10 @@ class FuelDepot(_DescendingObject):
 
 
 class PlayerScore(GameObject):
+    """
+    The player's score display (HUD).
+    """
+    
     def __init__(self):
         self._xy = 97, 165
         self.rgb = 232, 232, 74
@@ -119,6 +155,10 @@ class PlayerScore(GameObject):
 
 
 class Lives(GameObject):
+    """
+    The indicator for remaining jets (lives) (HUD).
+    """
+    
     def __init__(self):
         self._xy = 57, 192
         self.rgb = 232, 232, 74

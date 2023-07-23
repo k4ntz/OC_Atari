@@ -6,11 +6,16 @@ import sys
 RAM extraction for the game SEAQUEST. Supported modes: raw, revised.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'EnemySubmarine': 3, 'EnemyMissile': 3}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'EnemySubmarine': 3, 'EnemyMissile': 3, 'CollectedDiver': 2, 'PlayerScore': 1, 'Lives': 1, 'OxygenBar': 1, 'OxygenBarDepleted': 1, 'Logo': 1, 'OxygenBarLogo': 1}
+# submarine and missile increased manually, during training more observed than via max_object script
+MAX_NB_OBJECTS =  {'Player': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'EnemySubmarine': 4, 'EnemyMissile': 3}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerScore': 1, 'Lives': 1, 'OxygenBar': 1, 'OxygenBarDepleted': 1, 'OxygenBarLogo': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'CollectedDiver': 3, 'EnemySubmarine': 3, 'EnemyMissile': 3}
 
 
 class Player(GameObject):
+    """
+    The player figure i.e., the submarine.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 76, 46
@@ -20,6 +25,10 @@ class Player(GameObject):
 
 
 class Diver(GameObject):
+    """
+    The divers to be retrieved and rescued.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -29,6 +38,10 @@ class Diver(GameObject):
 
 
 class Enemy(GameObject):
+    """
+    The killer sharks.
+    """
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -38,6 +51,10 @@ class Enemy(GameObject):
 
 
 class EnemySubmarine(GameObject):
+    """
+    The enemy submarines.
+    """
+    
     def __init__(self):
         self._xy = 0, 0
         self.wh = 8, 11
@@ -46,6 +63,10 @@ class EnemySubmarine(GameObject):
 
 
 class EnemyMissile(GameObject):
+    """
+    The torpedoes fired from enemy submarines.
+    """
+    
     def __init__(self):
         self._xy = 0, 0
         self.wh = 6, 4
@@ -54,6 +75,10 @@ class EnemyMissile(GameObject):
 
 
 class PlayerMissile(GameObject):
+    """
+    The torpedoes launched from the player's submarine.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -63,6 +88,10 @@ class PlayerMissile(GameObject):
 
 
 class PlayerScore(GameObject):
+    """
+    The player's score display (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 99, 9
@@ -75,6 +104,10 @@ class PlayerScore(GameObject):
 
 
 class Lives(GameObject):
+    """
+    The indidcator for remaining reserve subs (lives) (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 58, 22
@@ -84,6 +117,10 @@ class Lives(GameObject):
 
 
 class OxygenBar(GameObject):
+    """
+    The oxygen gauge (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 49, 170
@@ -93,6 +130,10 @@ class OxygenBar(GameObject):
 
 
 class OxygenBarDepleted(GameObject):
+    """
+    The empty oxygen bar (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 49, 170
@@ -102,6 +143,10 @@ class OxygenBarDepleted(GameObject):
 
 
 class OxygenBarLogo(GameObject):
+    """
+    The 'OXYGEN' lettering next to the oxygen gauge (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 15, 170
@@ -111,6 +156,10 @@ class OxygenBarLogo(GameObject):
 
 
 class CollectedDiver(GameObject):
+    """
+    The indicator for collected divers (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0

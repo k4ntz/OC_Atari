@@ -1,10 +1,11 @@
 gymnasium
+gymnasium[atari, accept-rom-license]
 matplotlib
 numpy
 opencv_python
 scikit_image
 termcolor
-torch
+#torch
 seaborn
 pandas
 scikit-learn

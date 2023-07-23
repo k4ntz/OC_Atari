@@ -12,6 +12,10 @@ MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'Ball': 1, 'BallShadow': 1, 'Pla
 
 
 class Player(GameObject):
+    """
+    The player figure i.e., the tennis player.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -22,6 +26,10 @@ class Player(GameObject):
 
 
 class Enemy(GameObject):
+    """
+    The enemy tennis player.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -32,6 +40,10 @@ class Enemy(GameObject):
 
 
 class Ball(GameObject):
+    """
+    The tennis ball.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -42,6 +54,10 @@ class Ball(GameObject):
 
 
 class BallShadow(GameObject):
+    """
+    The shadow cast by the ball onto the ground.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -52,6 +68,10 @@ class BallShadow(GameObject):
 
 
 class PlayerScore(GameObject):
+    """
+    The player's score display (HUD).
+    """
+
     def __init__(self):
         super().__init__()
         self._xy = 49, 5
@@ -65,6 +85,10 @@ class PlayerScore(GameObject):
 
 
 class EnemyScore(GameObject):
+    """
+    The enemy's score display (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 113, 5

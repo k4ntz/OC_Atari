@@ -11,6 +11,8 @@ import ipdb; ipdb.set_trace()
 
 df = df[~df.index.duplicated(keep='last')]
 
+# pickle.dump(df, open(pkl_report_file, "wb"))
+
 nb_games = len(df)
 print(colored(f"{nb_games} out of 35 done !"))
 

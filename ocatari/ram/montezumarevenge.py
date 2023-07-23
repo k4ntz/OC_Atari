@@ -3,8 +3,7 @@ from ._helper_methods import _convert_number, get_iou
 import sys
 
 """
-RAM extraction for the game KANGUROO. Supported modes: raw, revised.
-
+RAM extraction for the game Montezuma's Revenge.
 """
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Skull': 1, 'Spider': 1, 'Snake': 2, 'Key': 1, 'Amulet': 1, 'Torch': 1, 'Sword': 1,
@@ -15,6 +14,10 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Skull': 2, 'Spider': 1, 'Snake': 2, 'Key': 1
 obj_tracker = {}
 
 class Player(GameObject):
+    """
+    The player figure: Panama Joe.
+    """
+    
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 0, 0
@@ -24,6 +27,10 @@ class Player(GameObject):
 
 
 class Skull(GameObject):
+    """
+    The bouncing or rolling skulls.
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Skull, self).__init__()
         super().__init__(*args, **kwargs)
@@ -34,6 +41,10 @@ class Skull(GameObject):
 
 
 class Spider(GameObject):
+    """
+    The moving spiders.
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Spider, self).__init__()
         super().__init__(*args, **kwargs)
@@ -44,6 +55,10 @@ class Spider(GameObject):
 
 
 class Snake(GameObject):
+    """
+    The stationary snakes.
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Snake, self).__init__()
         super().__init__(*args, **kwargs)
@@ -54,6 +69,10 @@ class Snake(GameObject):
 
 
 class Key(GameObject):
+    """
+    The collectable keys.
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Key, self).__init__()
         super().__init__(*args, **kwargs)
@@ -64,6 +83,10 @@ class Key(GameObject):
 
 
 class Amulet(GameObject):
+    """
+    The collectable amulets, which make enemies disappear temporally.
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Amulet, self).__init__()
         super().__init__(*args, **kwargs)
@@ -74,6 +97,10 @@ class Amulet(GameObject):
 
 
 class Torch(GameObject):
+    """
+    The collectable torches for illuminating the rooms of the current game level.
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Torch, self).__init__()
         super().__init__(*args, **kwargs)
@@ -84,6 +111,10 @@ class Torch(GameObject):
 
 
 class Sword(GameObject):
+    """
+    The collectable swords, that can eliminate spiders or skulls upon contact.
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Sword, self).__init__()
         super().__init__(*args, **kwargs)
@@ -94,6 +125,10 @@ class Sword(GameObject):
 
 
 class Ruby(GameObject):
+    """
+    The collectable jewels.
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Ruby, self).__init__()
         super().__init__(*args, **kwargs)
@@ -104,6 +139,10 @@ class Ruby(GameObject):
 
 
 class Barrier(GameObject):
+    """
+    The doors that can be unlocked with collectable keys. Unlocking removes the door.
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Barrier, self).__init__()
         super().__init__(*args, **kwargs)
@@ -114,6 +153,10 @@ class Barrier(GameObject):
 
 
 class Beam(GameObject):
+    """
+    The flashing laser gates.
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Beam, self).__init__()
         super().__init__(*args, **kwargs)
@@ -124,6 +167,10 @@ class Beam(GameObject):
 
 
 class Rope(GameObject):
+    """
+    The climbing-ropes.
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Rope, self).__init__()
         super().__init__(*args, **kwargs)
@@ -134,6 +181,10 @@ class Rope(GameObject):
 
 
 class Score(GameObject):
+    """
+    The player's score display (HUD).
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Score, self).__init__()
         self._xy = 97, 6
@@ -143,6 +194,10 @@ class Score(GameObject):
 
 
 class Life(GameObject):
+    """
+    The player's remaining additional lives (displayed as hats) (HUD).
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Life, self).__init__()
         self._xy = 88, 15
@@ -152,6 +207,10 @@ class Life(GameObject):
 
 
 class Key_HUD(GameObject):
+    """
+    Keys in the inventory display (HUD).
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Key_HUD, self).__init__()
         super().__init__(*args, **kwargs)
@@ -161,6 +220,10 @@ class Key_HUD(GameObject):
         self.hud = True
         
 class Amulet_HUD(GameObject):
+    """
+    Amulets in the inventory display (HUD).
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Amulet_HUD, self).__init__()
         super().__init__(*args, **kwargs)
@@ -171,6 +234,10 @@ class Amulet_HUD(GameObject):
 
 
 class Torch_HUD(GameObject):
+    """
+    Torches in the inventory display (HUD).
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Torch_HUD, self).__init__()
         super().__init__(*args, **kwargs)
@@ -181,6 +248,10 @@ class Torch_HUD(GameObject):
 
 
 class Sword_HUD(GameObject):
+    """
+    Swords in the inventory display (HUD).
+    """
+    
     def __init__(self, *args, **kwargs):
         super(Sword_HUD, self).__init__()
         super().__init__(*args, **kwargs)
@@ -191,6 +262,10 @@ class Sword_HUD(GameObject):
 
 
 class Platform(GameObject):
+    """
+    Permanent platforms.
+    """
+    
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
         super(Platform, self).__init__(*args, **kwargs)
         self._xy = x, y
@@ -201,6 +276,10 @@ class Platform(GameObject):
 
 
 class Ladder(GameObject):
+    """
+    The ladders.
+    """
+    
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
         super(Ladder, self).__init__(*args, **kwargs)
         self._xy = x, y
@@ -211,6 +290,10 @@ class Ladder(GameObject):
 
 
 class Conveyer_Belt(GameObject):
+    """
+    The conveyor belts.
+    """
+    
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
         super(Conveyer_Belt, self).__init__(*args, **kwargs)
         self._xy = x, y
@@ -221,6 +304,10 @@ class Conveyer_Belt(GameObject):
 
 
 class Wall(GameObject):
+    """
+    A class representing walls.
+    """
+    
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
         super(Wall, self).__init__(*args, **kwargs)
         self._xy = x, y
@@ -231,6 +318,10 @@ class Wall(GameObject):
 
 
 class Disappearing_Platform(GameObject):
+    """
+    Dis- and reappearing parts of the floor.
+    """
+    
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
         super(Disappearing_Platform, self).__init__(*args, **kwargs)
         self._xy = x, y

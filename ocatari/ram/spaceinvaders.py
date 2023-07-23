@@ -3,6 +3,10 @@ import numpy as np
 from termcolor import colored
 import sys
 
+"""
+RAM extraction for the game Space Invaders.
+"""
+
 MAX_NB_OBJECTS =  {'Player': 1, 'Shield': 3, 'Alien': 36, 'Bullet': 3, 'Satellite': 1}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Alien': 36, 'Bullet': 3, 'Satellite': 1, 'Score': 4, 'Lives': 2}
 
@@ -16,8 +20,12 @@ def print_bmp(bmp):
 
 
 class Player(GameObject):
-    def __init__(self, num, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The player figure i.e., the laser cannon.
+    """
+    
+    def __init__(self, num=1):
+        super().__init__()
         if num == 1:
             self.rgb = 92, 186, 92  # green
         else:
@@ -29,8 +37,12 @@ class Player(GameObject):
 
 
 class Alien(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The Space Invaders.
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 134, 134, 29
         self._xy = 0, 0
         self.wh = 8, 10
@@ -38,8 +50,12 @@ class Alien(GameObject):
 
 
 class Satellite(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The Command Alien Ship.
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 151, 25, 122
         self._xy = 0, 0
         self.wh = 7, 8
@@ -47,8 +63,12 @@ class Satellite(GameObject):
 
 
 class Shield(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The shields between the player's cannon and the Space Invaders.
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 181, 83, 40
         self._xy = 0, 0
         self.wh = 8, 18
@@ -56,8 +76,12 @@ class Shield(GameObject):
 
 
 class Bullet(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The player's laser beams and enemy laser bombs.
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 142, 142, 142
         self._xy = 0, 0
         self.wh = 1, 10
@@ -65,8 +89,12 @@ class Bullet(GameObject):
 
 
 class Score(GameObject):
-    def __init__(self, num, x, *args, **kwargs):  # , num,
-        super().__init__(*args, **kwargs)
+    """
+    The player's score display (HUD).
+    """
+    
+    def __init__(self, num=0, x=0):  # , num,
+        super().__init__()
         if num == 1:
             self.rgb = 92, 186, 92
         else:
@@ -77,8 +105,12 @@ class Score(GameObject):
 
 
 class Lives(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The indicator for the player's remaining lives (HUD).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 162, 134, 56
         self._xy = 84, 185
         self.wh = 12, 10
@@ -179,7 +211,6 @@ def _init_objects_spaceinvaders_ram(hud=False):
         shield = Shield()
         shield.xy = 42 + i * 32, 157
         objects.append(shield)
-
     return objects
 
 

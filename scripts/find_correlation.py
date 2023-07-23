@@ -1,6 +1,6 @@
 """
-Demo script that allows me to find the correlation between ram states and
-detected objects through vision in Tennis
+Demo script that allows to find the correlation between ram states and
+detected objects through vision in a specified game.
 """
 
 # appends parent path to syspath to make ocatari importable
@@ -16,7 +16,6 @@ import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
 sys.path.insert(0, '../ocatari') # noqa
 from ocatari.core import OCAtari
-from alive_progress import alive_bar
 from ocatari.utils import parser, load_agent, make_deterministic
 import pickle
 from time import sleep
@@ -31,59 +30,82 @@ def ransac_regression(x, y):
     return ransac.estimator_.coef_.item(), ransac.estimator_.intercept_.item()
 
 
-
+parser.add_argument("-g", "--game", type=str, required=True,
+                    help="game to evaluate (e.g. 'Pong')")
+parser.add_argument("-to", "--tracked_objects", type=str, default=["Player"], nargs='+',
+                         help="A list of objects to track")
+parser.add_argument("-tp", "--tracked_properties", type=str, default=['x', 'y'], nargs='+',
+                         help="A list of properties to track for each object")
+parser.add_argument("-tn", "--top_n", type=int, default=3,
+                         help="The top n value to be kept in the correlation matrix")
+parser.add_argument("-ns", "--nb_samples", type=int, default=1000,
+                         help="The number of samples to use.")
 parser.add_argument("-dqn", "--dqn", action="store_true", help="Use DQN agent")
-
-
+parser.add_argument("-s", "--seed", default=0, 
+                    help="Seed to make everything deterministic")
+parser.add_argument("-r", "--render", action="store_true", 
+                    help="If provided, renders")
+parser.add_argument("-m", "--method", type=str, default="pearson", choices={"pearson", "spearman", "kendall"},
+                    help="The method to use for computing the correlation")
+parser.add_argument("-snap", "--snapshot", type=str, default=None,
+                    help="Path to an emulator state snapshot to start from.")
 opts = parser.parse_args()
 
 
-DROP_LOW = True
-MIN_CORRELATION = 0.6
-
-NB_SAMPLES = 1000
-game_name = "Centipede"
 MODE = "vision"
-RENDER_MODE = "human"
-# RENDER_MODE = "rgb_array"
-env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
-random.seed(0)
+if opts.render:
+    RENDER_MODE = "human"
+else:
+    RENDER_MODE = "rgb_array"
+env = OCAtari(opts.game, mode=MODE, render_mode=RENDER_MODE)
 
-make_deterministic(0, env)
+make_deterministic(opts.seed, env)
 
 observation, info = env.reset()
-object_list = ["Player"]
-# object_list = ["ball", "enemy", "player"]
-# create dict of list
-objects_infos = {
-    "player": []
-                 }
-subset = list(objects_infos.keys())
+if opts.snapshot:
+    snapshot = pickle.load(open(opts.snapshot, "rb"))
+    env._env.env.env.ale.restoreState(snapshot)
+
+tracked_objects_infos = {}
+for objname in opts.tracked_objects:
+    for prop in opts.tracked_properties:
+        tracked_objects_infos[f"{objname}_{prop}"] = []
+
+subset = list(tracked_objects_infos.keys())
 
 if opts.dqn:
-    opts.game = game_name
+    opts.game = opts.game
     opts.path = f"models/{opts.game}/dqn.gz"
     dqn_agent = load_agent(opts, env.action_space.n)
 
 
 
 ram_saves = []
-for i in tqdm(range(NB_SAMPLES)):
+for i in tqdm(range(opts.nb_samples*5)):
     # obs, reward, terminated, truncated, info = env.step(random.randint(0, env.action_space.n-1))
-    action = dqn_agent.draw_action(env.dqn_obs)
-    # action = random.randint(0, env.nb_actions-1)
+    if opts.dqn:
+        action = dqn_agent.draw_action(env.dqn_obs)
+    else:
+        action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
-    ram = env._env.unwrapped.ale.getRAM()
-    if ram[35] != 22:
-        sleep(0.5)
-    if i % 5 == 0:
-        if str(env.objects).count("Player at") == 1:
-            objects_infos["player"].append(1)
-        elif str(env.objects).count("Player at") == 0:
-            objects_infos["player"].append(0)
-        else:
+    ram = env.get_ram()
+    if random.random() < 1/5: # every 5 frames
+        save = True
+        for objstr in opts.tracked_objects:
+            if str(env.objects).count(f"{objstr} at") != 1:
+                save = False # don't save anything
+        if not save:
             continue
-        ram_saves.append(deepcopy(ram))        
+        for obj in env.objects:
+            objname = obj.category
+            if objname in opts.tracked_objects:
+                for prop in opts.tracked_properties:
+                    tracked_objects_infos[f"{objname}_{prop}"].append(obj.__getattribute__(prop))
+        ram_saves.append(deepcopy(ram))
+    if terminated or truncated:
+        observation, info = env.reset()
+        if opts.snapshot:
+            env._env.env.env.ale.restoreState(snapshot)        
 
     # modify and display render
 env.close()
@@ -92,35 +114,36 @@ env.close()
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
 
-objects_infos.update(from_rams)
-df = pd.DataFrame(objects_infos)
-
-
-
-
-pickle.dump(df, open("centipede2.pkl", "wb"))
-# df = pickle.load(open("centipede2.pkl", "rb"))
+tracked_objects_infos.update(from_rams)
+df = pd.DataFrame(tracked_objects_infos)
 
 
 # find correlation
-METHOD = "spearman"
-# METHOD = "kendall"
-# METHOD = "pearson"
-corr = df.corr(method=METHOD)
+corr = df.corr(method=opts.method)
 # Reduce the correlation matrix
-# subset = objects_infos
-# [f"{obj}_x" for obj in object_list] + [f"{obj}_y" for obj in object_list]
-
+# subset = tracked_objects_infos
+# [f"{obj}_x" for obj in opts.tracked_objects] + [f"{obj}_y" for obj in opts.tracked_objects]
+print("-"*20)
+for el, onlynans in corr.isna().all(axis=1).items():
+    if onlynans:
+        print(f"Only NaNs found for {el} in the correlation matrix, most probably fix attribute.")
+print("-"*20)
 # Use submatrice
 corr = corr[subset].T
-import ipdb;ipdb.set_trace()
 corr.drop(subset, axis=1, inplace=True)
 
-if DROP_LOW:
+if opts.top_n:
+    print(f"Filtering, keeping only top {opts.top_n} correlated elements")
     # corr = corr[corr.columns[[corr.abs().max() > MIN_CORRELATION]]]
-    corr = corr.loc[:, (corr.abs() > MIN_CORRELATION).any()]
+    to_keep = []
+    for index, row in corr.iterrows():
+        au_corr = row.to_frame().abs().unstack().sort_values(ascending=False)
+        au_corr = au_corr[0:opts.top_n].dropna()
+        to_keep.extend([key[1] for key in au_corr.keys()])
+    corr = corr[to_keep]
 
-# if METHOD == "pearson":
+
+# if opts.method == "pearson":
 ax = sns.heatmap(corr, vmin=-1, vmax=1, annot=True, cmap=sns.diverging_palette(20, 220, n=200))
 # else:
 #     ax = sns.heatmap(corr, vmin=0, vmax=1, annot=True, cmap=sns.diverging_palette(20, 220, n=200))
@@ -132,12 +155,12 @@ for tick in ax.get_yticklabels():
 
 xlabs = corr.columns.to_list()
 plt.xticks(list(np.arange(0.5, len(xlabs) + .5, 1)), xlabs)
-plt.title(game_name)
+plt.title(opts.game)
 plt.show()
 
-# import ipdb;ipdb.set_trace()
 
-
+print("-"*20)
+print("Finding relashionshinps using RANSAC regression")
 corrT = corr.T
 for el in corrT:
     keys = corrT[el].keys()
@@ -146,11 +169,18 @@ for el in corrT:
         #idx = corrT[el].abs()
         if maxval >= 0.6:
             x, y = df[keys[idx]], df[el]
+            xys = pd.DataFrame({'x': x, 'y': y})
             # a, b = np.polyfit(x, y, deg=1)
             a, b = ransac_regression(x, y)
-            plt.scatter(x, y, marker="x", alpha=10/len(x))
-            plt.plot(x, a * x + b, color="k", lw=2.5)
-            print(f"{el} = ({a:.2f} * ram_state[{keys[idx]}] + {b:.2f}) ")
+            for (xp, yp), sp in xys.value_counts(normalize=True).items():
+                plt.scatter(xp, yp, marker="x", color="b", s=500*sp)
+            if b >= 0:
+                formulae = f"{el} = {a:.2f} * ram_state[{keys[idx]}] + {b:.2f} "
+            else:
+                formulae = f"{el} = {a:.2f} * ram_state[{keys[idx]}] - {-b:.2f} "
+            print(formulae)
+            plt.plot(x, a * x + b, color="k", lw=2.5, alpha=0.3)
+            plt.title(formulae)
             plt.xlabel(keys[idx])
             plt.ylabel(el)
             plt.show()
