@@ -1,4 +1,5 @@
 from termcolor import colored
+from .hero import _detect_objects_hero
 from .pong import _detect_objects_pong
 from .skiing import _detect_objects_skiing
 from .freeway import _detect_objects_freeway
@@ -24,10 +25,15 @@ from .asteroids import _detect_objects_asteroids
 from .riverraid import _detect_objects_riverraid
 from .assault import _detect_objects_assault
 from .roadrunner import _detect_objects_roadrunner
-from .fishingDerby import _detect_objects_fishingDerby
-
+from .fishingderby import _detect_objects_fishingderby
 from .alien import _detect_objects_alien
 from .frostbite import _detect_objects_frostbite
+from .pitfall import _detect_objects_pitfall
+from .yarsrevenge import _detect_objects_yarsrevenge
+from .icehockey import _detect_objects_icehockey
+from .privateeye import _detect_objects_privateeye
+from .gopher import _detect_objects_gopher
+
 def detect_objects_vision(objects, obs, game_name, hud=False):
     if game_name.lower() == "atlantis":
         return _detect_objects_atlantis(objects, obs, hud)
@@ -88,7 +94,19 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
     elif game_name.lower() == "frostbite":
         return _detect_objects_frostbite(objects, obs, hud)
     elif game_name.lower() == "fishingderby":
-        return _detect_objects_fishingDerby(objects, obs, hud)
+        return _detect_objects_fishingderby(objects, obs, hud)
+    elif game_name.lower() == "hero":
+        return _detect_objects_hero(objects, obs, hud)
+    elif game_name.lower() == "pitfall":
+        return _detect_objects_pitfall(objects, obs, hud)
+    elif game_name.lower() == "yarsrevenge":
+        return _detect_objects_yarsrevenge(objects, obs, hud)
+    elif game_name.lower() == "icehockey":
+        return _detect_objects_icehockey(objects, obs, hud)
+    elif game_name.lower() == "privateeye":
+        return _detect_objects_privateeye(objects, obs, hud)
+    elif game_name.lower() == "gopher":
+        return _detect_objects_gopher(objects, obs, hud)
     else:
         print(colored("Uncovered game in vision mode", "red"))
         exit(1)

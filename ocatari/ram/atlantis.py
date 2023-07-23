@@ -1,14 +1,21 @@
 from .game_objects import GameObject
+import sys
 
 """
 RAM extraction for the game Atlantis. Supported modes: raw, revised.
 
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Projectile': 2, 'Enemys': 4, 'Buildings': 7}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Projectile': 2, 'Enemys': 4, 'Buildings': 7, 'PlayerScore': 1}
+MAX_NB_OBJECTS =  {'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'DomedPalace': 1, 
+                   'BridgedBazaar': 1, 'AquaPlane': 1, 'Projectile': 2, 'GorgonShip': 4, 'Deathray': 1, 'BanditBomber': 2}
+MAX_NB_OBJECTS_HUD = {'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'DomedPalace': 1, 
+                      'BridgedBazaar': 1, 'AquaPlane': 1, 'Projectile': 2, 'GorgonShip': 4, 'Deathray': 1, 'Score': 1, 'BanditBomber': 3}
 
 class Sentry(GameObject):
+    """
+    The left and right sentry posts. 
+    """
+    
     def __init__(self):
         super(Sentry, self).__init__()
         self._xy = 0, 124
@@ -19,6 +26,10 @@ class Sentry(GameObject):
 
 # No clue how the projectiles work
 class Projectile(GameObject):
+    """
+    The projectiles shot from the sentry posts or the Acropolis Command Post. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -28,6 +39,10 @@ class Projectile(GameObject):
 
 
 class AquaPlane(GameObject):
+    """
+    The Aqua Plain district of the city. 
+    """
+
     def __init__(self):
         super(AquaPlane, self).__init__()
         self._xy = 16, 171
@@ -37,6 +52,10 @@ class AquaPlane(GameObject):
 
 
 class DomedPalace(GameObject):
+    """
+    The Doomed Palace district of the city. 
+    """
+    
     def __init__(self):
         super(DomedPalace, self).__init__()
         self._xy = 38, 148
@@ -46,6 +65,10 @@ class DomedPalace(GameObject):
 
 
 class Generator(GameObject):
+    """
+    The three Generator Stations. 
+    """
+    
     def __init__(self):
         super(Generator, self).__init__()
         self._xy = 62, 137
@@ -55,6 +78,10 @@ class Generator(GameObject):
 
 
 class BridgedBazaar(GameObject):
+    """
+    The Bridged Bazaar district of the city. 
+    """
+    
     def __init__(self):
         super(BridgedBazaar, self).__init__()
         self._xy = 96, 159
@@ -64,6 +91,10 @@ class BridgedBazaar(GameObject):
 
 
 class AcropolisCommandPost(GameObject):
+    """
+    The Acropolis Command Post that defends the centre of Atlantis. 
+    """
+    
     def __init__(self):
         super(AcropolisCommandPost, self).__init__()
         self._xy = 72, 112
@@ -73,6 +104,10 @@ class AcropolisCommandPost(GameObject):
 
 
 class BanditBomber(GameObject):
+    """
+    The fast Gorgon Bandit Bombers. 
+    """
+    
     def __init__(self):
         super(BanditBomber, self).__init__()
         self._xy = 0, 0
@@ -82,6 +117,10 @@ class BanditBomber(GameObject):
 
 
 class GorgonShip(GameObject):
+    """
+    The Large Gorgon Vessels. 
+    """
+    
     def __init__(self):
         super(GorgonShip, self).__init__()
         self._xy = 0, 0
@@ -91,6 +130,10 @@ class GorgonShip(GameObject):
 
 
 class Deathray(GameObject):
+    """
+    The deathray fired by close Gorgon units. 
+    """
+    
     def __init__(self):
         super(Deathray, self).__init__()
         self._xy = 0, 92
@@ -100,6 +143,10 @@ class Deathray(GameObject):
 
 
 class Score(GameObject):
+    """
+    The player's score display.
+    """
+    
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 96, 188
@@ -140,6 +187,22 @@ def _init_objects_atlantis_ram(hud=True):
     vert_proj = None
 
     return objects
+
+
+# parses MAX_NB* dicts, returns default init list of objects
+def _get_max_objects(hud=False):
+
+    def fromdict(max_obj_dict):
+        objects = []
+        mod = sys.modules[__name__]
+        for k, v in max_obj_dict.items():
+            for _ in range(0, v):
+                objects.append(getattr(mod, k)())
+        return objects
+
+    if hud:
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
 
 
 # Determines whether the deathray can be used by the ships or not
@@ -398,7 +461,7 @@ def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
         ray = Deathray()
         if prev_x4 < ram_state[36]:
             ray.xy = ram_state[36] - 1, 92
-            print(ray.xy)
+            #print(ray.xy)
         else:
             ray.xy = ram_state[36] + 1, 92
         objects.append(ray)

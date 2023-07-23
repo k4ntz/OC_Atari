@@ -2,29 +2,31 @@ from .game_objects import GameObject
 from ._helper_methods import _convert_number
 import math
 
+"""
+RAM extraction for the game Asterix. 
+"""
+
 
 class Player(GameObject):
-    class Player(GameObject):
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.rgb = 187, 187, 53
-            self._xy = 0, 0
-            self.wh = 8, 11  # at some point 16, 11. advanced other player (oblix) is (6, 11)
-            self.hud = False
-
-
-class Cauldron(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 167, 26, 26
+    """
+    The player figure i.e., first asterix and then, as the game progresses, obelix. 
+    """
+    
+    def __init__(self):
+        super().__init__()
+        self.rgb = 187, 187, 53
         self._xy = 0, 0
-        self.wh = 7, 10
+        self.wh = 8, 11  # at some point 16, 11. advanced other player (oblix) is (6, 11)
         self.hud = False
 
 
 class Enemy(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The deadly lyres that are among the other collectables.
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 228, 111, 111
         self._xy = 0, 0
         self.wh = 7, 11
@@ -32,8 +34,12 @@ class Enemy(GameObject):
 
 
 class Score(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The player's score display (HUD).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 187, 187, 53
         self._xy = 0, 0
         self.wh = 8, 11
@@ -41,17 +47,36 @@ class Score(GameObject):
 
 
 class Lives(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The indicator for remaining lives of the player (HUD). 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 187, 187, 53
         self._xy = 0, 0
         self.wh = 6, 7
         self.hud = True
 
+class Cauldron(GameObject):
+    """
+    The collectable cauldrons of magic potion (asterix). 
+    """
+    
+    def __init__(self):
+        super().__init__()
+        self.rgb = 167, 26, 26
+        self._xy = 0, 0
+        self.wh = 7, 10
+        self.hud = False
 
 class Helmet(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The collectable helmets (asterix). 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 240, 128, 128
         self._xy = 0, 0
         self.wh = 7, 11
@@ -59,8 +84,12 @@ class Helmet(GameObject):
 
 
 class Shield(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The collectable shields (asterix).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 214, 214, 214
         self._xy = 0, 0
         self.wh = 5, 11
@@ -68,8 +97,12 @@ class Shield(GameObject):
 
 
 class Lamp(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The collectable lamps (asterix).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 187, 53, 53
         self._xy = 0, 0
         self.wh = 8, 11
@@ -77,8 +110,12 @@ class Lamp(GameObject):
 
 
 class Apple(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The collectable apples (obelix).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 184, 50, 50
         self._xy = 0, 0
         self.wh = 8, 11
@@ -86,8 +123,12 @@ class Apple(GameObject):
 
 
 class Fish(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The collectable apples (obelix).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 198, 89, 179
         self._xy = 0, 0
         self.wh = 8, 5
@@ -95,8 +136,12 @@ class Fish(GameObject):
 
 
 class Meat(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The collectable wild boar legs (obelix).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 184, 50, 50
         self._xy = 0, 0
         self.wh = 5, 11
@@ -104,8 +149,12 @@ class Meat(GameObject):
 
 
 class Mug(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The collectable mugs of obelix' favourite drink (obelix).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 184, 50, 50
         self._xy = 0, 0
         self.wh = 7, 11
@@ -113,8 +162,12 @@ class Mug(GameObject):
 
 
 class Reward50(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The 50 point reward-icon for collecting a cauldron (asterix).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 198, 89, 179
         self._xy = 0, 0
         self.wh = 6, 11
@@ -122,8 +175,12 @@ class Reward50(GameObject):
 
 
 class Reward100(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The 100 point reward-icon for collecting a helmet (asterix).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 135, 183, 84
         self._xy = 0, 0
         self.wh = 8, 11
@@ -131,8 +188,12 @@ class Reward100(GameObject):
 
 
 class Reward200(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The 200 point reward-icon for collecting a shield (asterix).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 195, 144, 61
         self._xy = 0, 0
         self.wh = 8, 11
@@ -140,8 +201,12 @@ class Reward200(GameObject):
 
 
 class Reward300(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The 300 point reward-icon for collecting a lamp (asterix).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 213, 130, 74
         self._xy = 0, 0
         self.wh = 8, 11
@@ -149,8 +214,12 @@ class Reward300(GameObject):
 
 
 class Reward400(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The 400 point reward-icon for collecting an apple (obelix).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 135, 183, 84
         self._xy = 0, 0
         self.wh = 8, 11
@@ -158,8 +227,12 @@ class Reward400(GameObject):
 
 
 class Reward500(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The 500 point reward-icon for collecting a fish, wild boar leg, mug, or surprise object (obelix).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 163, 57, 21
         self._xy = 0, 0
         self.wh = 8, 11

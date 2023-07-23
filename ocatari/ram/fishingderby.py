@@ -1,13 +1,24 @@
 from .game_objects import GameObject
 
+"""
+RAM extraction for the game Fishing Derby.
+"""
+
 MAX_NB_OBJECTS = {"Player1FishingString": 1, "Player2FishingString": 1, "Fish": 6, "Shark": 1}
 MAX_NB_OBJECTS_HUD = {"Player1FishingString": 1, "Player2FishingString": 1, "Fish": 6, "Shark": 1, "ScoreP1": 1,
                       "ScoreP2": 1}
 
 
 class Fish(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The fish.
+
+    :ivar hooked: Wether the fish is currently hooked
+    :type: bool
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 232, 232, 74
         self.xy = 0, 0
         self.wh = 8, 10
@@ -15,9 +26,13 @@ class Fish(GameObject):
 
 
 class Shark(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 0, 0, 0
+    """
+    The shark.
+    """
+    
+    def __init__(self):
+        super().__init__()
+        self.rgb = 232, 232, 74
         self.xy = 0, 0
         self.wh = 35, 13
         self.is_going_left_to_right = True  # is the shark going from left to right
@@ -25,9 +40,13 @@ class Shark(GameObject):
 
 
 class PlayerOneHook(GameObject):
+    """
+    The hook of player one.
+    """
+    
     # ram_state[15] gives what input was played by player 1
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 232, 232, 74
         self.xy = 0, 37
         self.wh = 0, 0
@@ -36,8 +55,12 @@ class PlayerOneHook(GameObject):
 
 
 class ScorePlayerOne(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The score display of player one (HUD).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 167, 26, 26
         self.xy = 49, 8
         self.wh = 6, 8
@@ -45,9 +68,13 @@ class ScorePlayerOne(GameObject):
 
 
 class PlayerTwoHook(GameObject):
+    """
+    The hook of player two.
+    """
+    
     # to deactivate player two -> turn ram_state[0] to 1
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 0, 0, 0
         self.xy = 0, 37
         self.wh = 0, 0
@@ -56,8 +83,12 @@ class PlayerTwoHook(GameObject):
 
 
 class ScorePlayerTwo(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The score display of player two (HUD).
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 167, 26, 26
         self.xy = 113, 8
         self.wh = 6, 8
@@ -68,7 +99,7 @@ def _get_max_objects(hud=False):
     return
 
 
-def _init_objects_fishingDerby_ram(hud=False):
+def _init_objects_fishingderby_ram(hud=False):
     if hud:
         objects = [PlayerOneHook(), PlayerTwoHook(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
                    Shark(),
@@ -79,7 +110,7 @@ def _init_objects_fishingDerby_ram(hud=False):
     return objects
 
 
-def _detect_objects_fishingDerby_revised(objects, ram_state, hud=False):
+def _detect_objects_fishingderby_revised(objects, ram_state, hud=False):
     # Ram state of the fishing poles
     p1s, p2s = objects[0:2]
     coeff_1 = 1
@@ -135,5 +166,5 @@ def _detect_objects_fishingDerby_revised(objects, ram_state, hud=False):
         objects[9].value = ram_state[62]
 
 
-def _detect_objects_fishingDerby_raw(info, ram_state):
+def _detect_objects_fishingderby_raw(info, ram_state):
     return

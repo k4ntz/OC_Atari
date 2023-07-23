@@ -14,9 +14,10 @@ def bbs_extend(labels, key: str, stationary=False):
 
 def most_common_color(image, exclude_black=True):
     """
-    returning the most common color in the image
+    Returns the most common color in the image.
 
-    exclude_black: If True, exclude the black color from the taken into account
+    :param exclude_black: If True, exclude the black color from the taken into account, defaults to `True`
+    :type exclude_black: bool
     """
     a2D = image.reshape(-1, image.shape[-1])
     col_range = (256, 256, 256) # generically : a2D.max(0)+1
@@ -33,16 +34,35 @@ def bb_by_color(labels, obs, color, key, closing_active=True):
     bbs_extend(labels, key)
 
 
-def assert_in(observed, target, tol):
+def assert_in(observed, expected, tol):
+    """
+    Asserts if the observed point is equal to the expected one with a given tolerance.
+    True if ||observed - expected|| <= tol, with || the maximum over the two dimensions.
+
+    :param observed: The observed value point (e.g. (x,y), (w,h))
+    :type observed: (int, int)
+    :param expected: The expected value point (also (x,y), (w,h))
+    :type expected: (int, int)
+    :param tol: A given tolerance.
+    :type tol: int or (int, int)
+    
+    :return: True if points within the tolerance
+    :rtype: bool
+    """
     if type(tol) is int:
         tol = (tol, tol)
-    return np.all([target[i] + tol[i] >= observed[i] >= target[i] - tol[i] for i in range(2)])
-    # return np.all([target[i] + tol[i] >= observed[i] >= target[i] - tol[i] for i in range(2)])
+    return np.all([expected[i] + tol[i] >= observed[i] >= expected[i] - tol[i] for i in range(2)])
 
 
 def iou(bb, gt_bb):
     """
-    Intersection over Union
+    Computes the intersection over union between two bounding boxes. 
+    |iou_image|
+
+    :param bb: The bouding box of the detected object in (x, y, w, h) format
+    :type bb: (int, int, int, int)
+    :param gt_bb: The ground truth bouding box
+    :type gt_bb: (int, int, int, int)
     """
     inner_width = min(bb[1] + bb[3], gt_bb[1] + gt_bb[3]) - max(bb[1], gt_bb[1])
     inner_height = min(bb[0] + bb[2], gt_bb[0] + gt_bb[2]) - max(bb[0], gt_bb[0])
@@ -55,7 +75,22 @@ def iou(bb, gt_bb):
 
 def mark_point(image_array, x, y, color=(255, 0, 0), size=1, show=False, cross=True):
     """
-    marks a point on the image at the (x,y) position and displays it
+    Marks a point on the image at the (x,y) position (inplace)
+
+    :param image_array: The image to mark the point on
+    :type image_array: RGB np.array
+    :param x: The x coordinate of the point
+    :type x: int
+    :param y: The y coordinate of the point
+    :type y: int
+    :param color: The rgb values of the point.
+    :type color: (int, int, int)
+    :param size: The size of the point
+    :type size: int
+    :param show: If ``True``, shows the image using matplotlib
+    :type show: bool
+    :param cross: If ``True``, places a diagonal cross, else place a square
+    :type cross: bool
     """
     for i in range(-size, size + 1):
         for j in range(-size, size + 1):
@@ -67,23 +102,18 @@ def mark_point(image_array, x, y, color=(255, 0, 0), size=1, show=False, cross=T
         plt.show()
 
 
-def mark_around(image_array, x, y, color=(255, 0, 0), size=1, show=False, cross=True):
-    """
-    marks a point on the image at the (x,y) position and displays it
-    """
-    x, y = x - 2, y - 2
-    w, h = 4, 4
-    bottom = min(209, y + h)
-    right = min(159, x + w)
-    image_array[y:bottom, x] = color
-    image_array[y:bottom, right] = color
-    image_array[y, x:right+1] = color
-    image_array[bottom, x:right+1] = color
-
-
 def mark_bb(image_array, bb, color=(255, 0, 0), surround=True):
     """
-    marks a bounding box on the image
+    Marks a bounding box on the image.
+
+    :param image_array: The image to mark the point on
+    :type image_array: RGB np.array
+    :param bb: The bouding box of the detected object in (x, y, w, h) format
+    :type bb: (int, int, int, int)
+    :param color: The rgb values of the point.
+    :type color: (int, int, int)
+    :param surround: If ``True``, place the bouding box with an offset of 1 pixel to surround the object
+    :type surround: bool
     """
     x, y, w, h = bb
     if surround:
@@ -115,50 +145,66 @@ def plot_bounding_boxes(obs, bbs, objects_colors):
             mark_bb(obs, bb, np.array([255, 255, 255]))
 
 
-# def plot_bounding_boxes_from_info(obs, info):
-#     colors = info.get("objects_colors", {})
-#     for name, oinf in info["objects"].items():
-#         if type(oinf) == tuple:
-#             _plot_bounding_boxes_from_tuple(obs, name, oinf, colors)
-#
-#         elif type(oinf) == list:
-#             for bb in oinf:
-#                 _plot_bounding_boxes_from_tuple(obs, name, bb, colors)
-#
-#         else:
-#             print(colored("the return type is not supported", "red"))
-#
-#
-# def _plot_bounding_boxes_from_tuple(obs, name, tup, colors):
-#     if len(tup) == 4:
-#         color = colors.get(name, np.array([0, 0, 0]))
-#         mark_bb(obs, tup, color)
-#     elif len(tup) == 7:
-#         bb = tup[:4]
-#         color = tup[4:]
-#         mark_bb(obs, bb, color)
-#     else:
-#         print(colored("the return type is not supported", "red"))
+def showim(image):
+    """
+    Display the given in a matplolib.pyplot plot.
 
-
-def showim(im):
-    plt.imshow(im)
+    :param image: The image to mark the point on
+    :type image: np.array
+    """
+    plt.imshow(image)
     plt.show()
 
 
-def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
-                    position=None, tol_p=2, min_distance=10, closing_dist=3,
+def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2, 
+                    min_distance=10, closing_active=True, closing_dist=3,
                     minx=0, miny=0, maxx=160, maxy=210, all_colors=True):
     """
-    image: image to detect objects from
-    color: fixed color of the object
-    size: presupposed size
-    tol_s: tolerance on the size
-    position: presupposed position
-    tol_p: tolerance on the position
-    min_distance: minimal distance between two detected objects
-    """
+    Finds the multicolors objects in the image. 
+        
+    This functions is used to detect object in e.g. Atlantis (depicted bellow). 
+    
+    |atlantis_image|
 
+    :param image: The image to mark the point on
+    :type image: np.array
+    :param colors: The colors of the object
+    :type colors: list of (int, int, int)
+    :param size: presupposed size of the targeted object (to detect)
+    :type size: int or (int, int)
+    :param tol_s: tolerance on the presupposed size of the targeted object
+    :type tol_s: int or (int, int)
+    :param size: presupposed size of the targeted object (to detect)
+    :type size: int or (int, int)
+    :param tol_s: tolerance on the presupposed size of the targeted object
+    :type tol_s: int or (int, int)
+    :param position: presupposed position of the targeted object (to detect)
+    :type position: int or (int, int)
+    :param tol_p: tolerance on the presupposed position of the targeted object
+    :type tol_p: int or (int, int)
+    :param min_distance: tolerance on the presupposed position of the targeted object
+    :type min_distance: int
+    :param closing_active: If true, gathers in one bounding box the instances that are less than \
+    `closing_dist` 
+    :type closing_active: bool
+    :param closing_dist: The closing distance, for the under which two (or more) instances are merged \
+    into one bounding box.
+    :type closing_dist: int
+    :param minx: minimum x position where the object can be located
+    :type minx: int
+    :param miny: minimum y position where the object can be located
+    :type miny: int
+    :param maxx: maximum x position where the object can be located
+    :type maxx: int
+    :param maxy: maximum y position where the object can be located
+    :type maxy: int
+    :param all_colors: If ``True``, only return the object if every given color in `colors` is present in the image
+    :type all_colors: bool
+
+
+    :return: a list of tuple boxing boxes
+    :rtype: list of (int, int, int, int)
+    """
     masks = [cv2.inRange(image[miny:maxy, minx:maxx, :],
                          np.array(color), np.array(color)) for color in colors]
     if all_colors:
@@ -200,31 +246,71 @@ def find_mc_objects(image, colors, closing_active=True, size=None, tol_s=10,
         detected.append((x, y, w, h))
     return detected
 
-def color_analysis(image, position, exclude=None):
+
+def color_analysis(image, bbox, exclude=[]):
     """
-    Returns the counter
+    Returns a Counter of all the detected colors in the bounding box
+
+    :param image: The image to mark the point on
+    :type image: np.array
+    :param bb: The bouding box where to perform the color analysis
+    :type bb: (int, int, int, int)
+    :param exclude: A list of color to exclude
+    :type exclude: list of (int, int, int)
+
+    :return: A `collections.Counter <https://docs.python.org/3/library/collections.html#collections.Counter>`_ \
+        of the detected colors
+    :rtype: list of (int, int, int)
     """
-    x, y, w, h = position
+    x, y, w, h = bbox
     subpart = image[y:y+h, x:x+w, :]
     w,h,c = subpart.shape
     subpart = list(map(tuple, subpart.reshape(w*h, c)))
-    if exclude:
-        for excolor in exclude:
-            subpart = [el for el in subpart if el != tuple(excolor)]
+    for excolor in exclude:
+        subpart = [el for el in subpart if el != tuple(excolor)]
     return Counter(subpart)
 
-def find_objects(image, color, closing_active=True, size=None, tol_s=10,
-                 position=None, tol_p=2, min_distance=10, closing_dist=3,
+
+def find_objects(image, color, size=None, tol_s=10,
+                 position=None, tol_p=2, min_distance=10,
+                 closing_active=True, closing_dist=3,
                  minx=0, miny=0, maxx=160, maxy=210):
     """
-    image: image to detect objects from
-    color: fixed color of the object
-    size: presupposed size
-    tol_s: tolerance on the size
-    position: presupposed position
-    tol_p: tolerance on the position
-    min_distance: minimal distance between two detected objects
-    closing_dist: distance between color instances of the same object
+    Finds the single colored objects in the image.
+
+    :param image: The image to mark the point on
+    :type image: np.array
+    :param color: The color of the object
+    :type color: list of (int, int, int)
+    :param size: presupposed size of the targeted object (to detect)
+    :type size: int or (int, int)
+    :param tol_s: tolerance on the presupposed size of the targeted object
+    :type tol_s: int or (int, int)
+    :param size: presupposed size of the targeted object (to detect)
+    :type size: int or (int, int)
+    :param tol_s: tolerance on the presupposed size of the targeted object
+    :type tol_s: int or (int, int)
+    :param position: presupposed position of the targeted object (to detect)
+    :type position: int or (int, int)
+    :param tol_p: tolerance on the presupposed position of the targeted object
+    :type tol_p: int or (int, int)
+    :param closing_active: If true, gathers in one bounding box the instances that are less than \
+    `closing_dist` away.
+    :type closing_active: bool
+    :param closing_dist: The closing distance, for the under which two (or more) instances are merged \
+    into one bounding box.
+    :type closing_dist: int
+    :param minx: minimum x position where the object can be located
+    :type minx: int
+    :param miny: minimum y position where the object can be located
+    :type miny: int
+    :param maxx: maximum x position where the object can be located
+    :type maxx: int
+    :param maxy: maximum y position where the object can be located
+    :type maxy: int
+
+    :return: a list of tuple boxing boxes
+    :rtype: list of (int, int, int)
     """
     mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color), np.array(color))
     if closing_active:
@@ -258,16 +344,70 @@ def find_objects(image, color, closing_active=True, size=None, tol_s=10,
     return detected
 
 
+def find_rope_segments(image, color, seg_height=(2, 5), minx=0, miny=0, maxx=160, maxy=210):
+    """
+    Finds the rope segments (max rope width of 1) of a displayed rope.
+    
+    :param image: The image to mark the point on
+    :type image: np.array
+    :param color: The color of the object
+    :type color: list of (int, int, int)
+    :param seg_height: interval in which segments are considered
+    :type seg_height: int or (int, int)
+    :param minx: minimum x position where the object can be located
+    :type minx: int
+    :param miny: minimum y position where the object can be located
+    :type miny: int
+    :param maxx: maximum x position where the object can be located
+    :type maxx: int
+    :param maxy: maximum y position where the object can be located
+    :type maxy: int
+
+    :return: a list of tuple boxing boxes
+    :rtype: list of (int, int, int)
+    """
+    mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color), np.array(color))
+    detected = []
+    for j in range(mask.shape[1]):
+        col = mask[:,j].astype(bool)
+        if col.all() or (~col).all():
+            continue
+        cur = False
+        begin = 0
+        for i, el in enumerate(col + [0]):
+            if el:
+                if not cur: 
+                    begin = i
+                cur = True
+            else:
+                if cur:
+                    length = i-begin
+                    if seg_height[0] <= length <= seg_height[1]:
+                        detected.append([minx+j, miny+begin, 1, length])
+                cur = False
+    return detected
+
 
 def find_rectangle_objects(image, color, max_size=None, minx=0, miny=0, maxx=160, maxy=210):
     """
-    finds rectangle objects with a maximum size
-    image: image to detect objects from
-    max_size: presupposed size (actual size will be equal or smaller)
-    tol_s: tolerance on the size
-    position: presupposed position
-    tol_p: tolerance on the position
-    min_distance: minimal distance between two detected objects
+    Finds rectangle objects with a given maximum size.
+    
+    :param image: The image in which the objects are displayed
+    :type image: RGB np.array
+    :param color: The color of the object
+    :type color: list of (int, int, int)
+    :param max_size: The maximum size of the objects
+    :type max_size: (int, int)
+    :type minx: int
+    :param miny: minimum y position where the object can be located
+    :type miny: int
+    :param maxx: maximum x position where the object can be located
+    :type maxx: int
+    :param maxy: maximum y position where the object can be located
+    :type maxy: int
+
+    :return: a list of tuple boxing boxes
+    :rtype: list of (int, int, int)
     """
     mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color), np.array(color))
     contours, _ = cv2.findContours(mask.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
@@ -281,17 +421,10 @@ def find_rectangle_objects(image, color, max_size=None, minx=0, miny=0, maxx=160
             if not detected.__contains__((x, y, w, h)):
                 detected.append((x, y, w, h))
         else:
-            detected.extend(find_rectangles_in_bb(mask.copy(), (x, y, w, h), max_size, minx, miny))
+            detected.extend(_find_rectangles_in_bb(mask.copy(), (x, y, w, h), max_size, minx, miny))
     return detected
 
-
-def find_rectangles_in_bb(mask, bb, size, minx, miny):
-    """
-    finds the rectangles of the given size in a given bounding box of an image and returns a list of bounding boxes
-    mask: must be a copy of the mask
-    bb: the part of the image that has a contour
-    size: the size of the rectangles
-    """
+def _find_rectangles_in_bb(mask, bb, size, minx, miny):
     bounding_boxes = list()
     (offx,offy) = size
     (x,y,w,h) = bb
@@ -333,19 +466,49 @@ def find_rectangles_in_bb(mask, bb, size, minx, miny):
     return bounding_boxes
 
 
-def find_objects_in_color_range(image, color_min, color_max, closing_active=True, size=None, tol_s=10,
-                 position=None, tol_p=2, min_distance=10, closing_dist=3,
-                 minx=0, miny=0, maxx=160, maxy=210):
+def find_objects_in_color_range(image, color_min, color_max, size=None, tol_s=10,
+                                position=None, tol_p=2, min_distance=10,
+                                closing_active=True, closing_dist=3,
+                                minx=0, miny=0, maxx=160, maxy=210):
     """
-    image: image to detect objects from
-    color_min: lower bound of the color spectrum
-    color_max: upper bound of the color spectrum
-    size: presupposed size
-    tol_s: tolerance on the size
-    position: presupposed position
-    tol_p: tolerance on the position
-    min_distance: minimal distance between two detected objects
-    """
+    Finds the single colored objects in the image.
+
+    :param image: image to mark the point on
+    :type image: np.array
+    :param color_min: lower bound of the color spectrum
+    :type color_min: (int, int, int)
+    :param color_max: upper bound of the color spectrum
+    :type color_max: (int, int, int)
+    :param size: presupposed size of the targeted object (to detect)
+    :type size: int or (int, int)
+    :param tol_s: tolerance on the presupposed size of the targeted object
+    :type tol_s: int or (int, int)
+    :param size: presupposed size of the targeted object (to detect)
+    :type size: int or (int, int)
+    :param tol_s: tolerance on the presupposed size of the targeted object
+    :type tol_s: int or (int, int)
+    :param position: presupposed position of the targeted object (to detect)
+    :type position: int or (int, int)
+    :param tol_p: tolerance on the presupposed position of the targeted object
+    :type tol_p: int or (int, int)
+    :param closing_active: If true, gathers in one bounding box the instances that are less than \
+    `closing_dist` 
+    :type closing_active: bool
+    :param closing_dist: The closing distance, for the under which two (or more) instances are merged \
+    into one bounding box.
+    :type closing_dist: int
+    :param minx: minimum x position where the object can be located
+    :type minx: int
+    :param miny: minimum y position where the object can be located
+    :type miny: int
+    :param maxx: maximum x position where the object can be located
+    :type maxx: int
+    :param maxy: maximum y position where the object can be located
+    :type maxy: int
+
+    :return: a list of tuple boxing boxes
+    :rtype: list of (int, int, int)
+    """    
     mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color_min), np.array(color_max))
     if closing_active:
         closed = closing(mask, square(closing_dist))
@@ -381,7 +544,15 @@ def find_objects_in_color_range(image, color_min, color_max, closing_active=True
 
 def make_darker(color, col_precent=0.8):
     """
-    return a darker color
+    Return a darker color.
+
+    :param color: upper bound of the color spectrum
+    :type color: (int, int, int)
+    :param col_precent: the luminosity reduction coefficient (between 0 and 1)
+    :type col_precent: float
+
+    :return: the darker color
+    :rtype: (int, int, int)
     """
     if not color:
         print("No color passed, using default black")

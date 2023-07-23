@@ -1,4 +1,4 @@
-# +
+
 # BOTH
 for game in Assault Asterix Atlantis Berzerk Bowling Boxing Breakout Carnival Freeway Kangaroo MsPacman Pong Seaquest Skiing SpaceInvaders Tennis
 do

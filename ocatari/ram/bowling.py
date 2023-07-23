@@ -10,6 +10,10 @@ MAX_NB_OBJECTS =  {'Player': 1, 'Ball': 1, 'Pin': 10}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Pin': 10, 'PlayerScore' : 1, 'PlayerRound' : 1, 'Player2Round' : 1}
 
 class Player(GameObject):
+    """
+    The player figure.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -19,6 +23,10 @@ class Player(GameObject):
 
 
 class Ball(GameObject):
+    """
+    The bowling ball. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 22, 139
@@ -28,6 +36,10 @@ class Ball(GameObject):
 
 
 class Pin(GameObject):
+    """
+    The pins. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -37,6 +49,10 @@ class Pin(GameObject):
 
 
 class PlayerScore(GameObject):
+    """
+    The player's score display (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 32, 19
@@ -49,6 +65,10 @@ class PlayerScore(GameObject):
 
 
 class PlayerRound(GameObject):
+    """
+    The round display for the first player (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 40, 7
@@ -58,6 +78,10 @@ class PlayerRound(GameObject):
 
 
 class Player2Round(GameObject):
+    """
+    The round display for the second player (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 120, 7

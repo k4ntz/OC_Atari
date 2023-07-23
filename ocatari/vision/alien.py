@@ -55,35 +55,35 @@ def _detect_objects_alien(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
     for color in player_colors:
-        player = find_objects(obs, color,size=(4,13),tol_s=4, min_distance=1)
+        player = find_objects(obs, color,size=(4,13), tol_s=4, min_distance=1)
         for e in player:
             eg=Player(*e)
             eg.rgb=color
             objects.append(eg)
     for color in egg_colors:
-        eggs = find_objects(obs, color,size=(1,2),tol_s=2, min_distance=1)
+        eggs = find_objects(obs, color,size=(1,2), tol_s=2, min_distance=1)
         for e in eggs:
             eg=Egg(*e)
             eg.rgb=color
             objects.append(eg)
     for color in alien_colors:
-        aliens = find_objects(obs, color,size=(8,13),tol_s=4, min_distance=1)
+        aliens = find_objects(obs, color,size=(8,13), tol_s=4, min_distance=1)
         for e in aliens:
             eg=Alien(*e)
             eg.rgb=color
             objects.append(eg)
     for color in pulsar_colors:
-        pulsars = find_objects(obs, color,size=(6,5),tol_s=2, min_distance=1)
+        pulsars = find_objects(obs, color,size=(6,5), tol_s=2, min_distance=1)
         for e in pulsars:
             eg=Pulsar(*e)
             eg.rgb=color
             objects.append(eg)
 
     if hud:
-        score = find_objects(obs, hud_color, closing_active=False,miny=174,maxy=183)
+        score = find_objects(obs, hud_color, closing_active=False, miny=174,maxy=183)
         for s in score:
             objects.append(PlayerScore(*s))
-        count_pulsars=find_objects(obs, hud_color, closing_active=False,miny=183,maxy=192)
+        count_pulsars=find_objects(obs, hud_color, closing_active=False, miny=183,maxy=192)
         for c in count_pulsars:
             objects.append(PulsarCount(*c))
 

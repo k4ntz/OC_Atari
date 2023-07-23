@@ -7,6 +7,10 @@ RAM extraction for the game KANGUROO. Supported modes: raw, revised.
 
 
 class Player(GameObject):
+    """
+    The player figure i.e., the space ship. 
+    """
+    
     def __init__(self):
         super(Player, self).__init__()
         self.visible = True
@@ -17,20 +21,32 @@ class Player(GameObject):
 
 
 class Player_Projectile(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The laser lariats that can be fired from the space ship. 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 198, 108, 58
 
 
 class Torpedos(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The limited torpedoes that can be fired from the space ship. 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 164, 89, 208
 
 
 class Saucer(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The White Enemy Saucers. 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 8, 5
@@ -39,80 +55,124 @@ class Saucer(GameObject):
 
 
 class Rejuvenator(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The Yellow Rejuvinators occasionally floating through the beam matrix. 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 187, 187, 53
 
 
 class Sentinel(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The Sector Sentinel Ship, which appears once a sector has been cleared. 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 184, 50, 50
 
 
 class Blocker(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The Green Blocker Ships (sector 6). 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 135, 183, 84
 
 
 class Jumper(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = None
 
 
 class Charger(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The Blue Chargers (sector 10). 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = None
 
 
 class Bouncecraft(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The Green Bounce Craft (sector 8). 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = None
 
 
 class Chriper(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The Yellow Chirper Ships (sector 4). 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = None
 
 
 class Rock(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The Brown Space Debris (sector 2). 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 134, 134, 29
 
 
 class Torpedos_Available(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The torpedoe availability display.
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 104, 25, 154
 
 
 class Enemy_Projectile(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    Enemy projectiles. 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 164, 89, 208
 
 
 class HUD(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 210, 164, 74
 
 
 class Enemy_Amount(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The count display for the remaining Enemy Saucers in the current sector. 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 82, 126, 45
 
 
 class Life(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    """
+    The lives-indicator of the player. 
+    """
+    
+    def __init__(self):
+        super().__init__()
         self.rgb = 210, 210, 64
 
 
