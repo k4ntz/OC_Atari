@@ -232,7 +232,7 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
                 laser_beam.xy = player_xy[0] + 4 + 11 * orientation, player_xy[1] + 3
 
     # wall disposition
-    # TODO switch case =function of ram_sate[28] + level = ram_state[117] + 1
+    # TODO switch case = function of ram_sate[28] and which level = ram_state[117] + 1
 
     # destructible wall
     destructible_wall = objects_map.get(f"destructible wall")
