@@ -16,7 +16,6 @@ import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
 sys.path.insert(0, '../ocatari') # noqa
 from ocatari.core import OCAtari
-from alive_progress import alive_bar
 from ocatari.utils import parser, load_agent, make_deterministic
 import pickle
 
@@ -63,8 +62,8 @@ class Options(object):
 
 snapshot = None
 
-# snapshot = pickle.load(open("kangstarted.pkl", "rb"))
-# env._env.env.env.ale.restoreState(snapshot)
+snapshot = pickle.load(open("snapshots/seaquest.pkl", "rb"))
+env._env.env.env.ale.restoreState(snapshot)
 
 if snapshot is None:
     for _ in range(20):

@@ -5,7 +5,7 @@ from .skiing import _detect_objects_skiing
 from .freeway import _detect_objects_freeway
 from .seaquest import _detect_objects_seaquest
 from .bowling import _detect_objects_bowling
-from .demonAttack import _detect_objects_demon_attack
+from .demonattack import _detect_objects_demon_attack
 from .breakout import _detect_objects_breakout
 from .tennis import _detect_objects_tennis
 from .spaceinvaders import _detect_objects_spaceinvaders
