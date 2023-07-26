@@ -3,47 +3,48 @@ class GameObject:
     The Parent Class of every detected object in the Atari games (RAM Extraction mode)
 
     :ivar category: The Category of class name of the game object (e.g. Player, Ball).
-    :type category: str
+    :vartype category: str
 
     :ivar x: The x positional coordinate on the image (on the horizontal axis).
-    :type x: int
+    :vartype x: int
 
     :ivar y: The y positional coordinate on the image (on the vertical axis).
-    :type y: int
+    :vartype y: int
 
     :ivar w: The width/horizontal size of the object (in pixels).
-    :type w: int
+    :vartype w: int
     
     :ivar h: The height/vertical size of the object (in pixels).
-    :type h: int
+    :vartype h: int
 
     :ivar prev_xy: The positional coordinates x and y of the previous time step in a tuple.
-    :type prev_xy: (int, int)
+    :vartype prev_xy: (int, int)
 
     :ivar xy: Both positional coordinates x and y in a tuple. 
-    :type: (int, int)
+    :vartype: (int, int)
 
     :ivar h_coords: History of coordinates, i.e. current (x, y) and previous (x, y) position.
-    :type h_coords: [(int, int), (int, int)]
+    :vartype h_coords: [(int, int), (int, int)]
 
     :ivar dx: The pixel movement corresponding to: current_x - previous_x.
-    :type dx: int
+    :vartype dx: int
 
     :ivar dy: The pixel movement corresponding to: current_y - previous_y.
-    :type dy: int
+    :vartype dy: int
 
     :ivar xywh: The positional and width/height coordinates in a single tuple (x, y, w, h).
-    :type xywh: (int, int, int, int)
+    :vartype xywh: (int, int, int, int)
 
     :ivar orientation: The orientation of the object (if available); game specific.
-    :type orientation: int
+    :vartype orientation: int
 
     :ivar center: The center of the bounding box of the object.
-    :type center: (int, int)
+    :vartype center: (int, int)
 
-    :ivar hud: True if part of the Heads Up Display, and thus not interactable.
-    :type hud: bool
+    :ivar hud: True, if part of the Heads Up Display, and thus not interactable.
+    :vartype hud: bool
     """
+
     GET_COLOR = False
     GET_WH = False
 
@@ -164,8 +165,8 @@ class ScoreObject(GameObject):
     """
     This class represents the score of the player (or sometimes Enemy).
 
-    :ivar value: The value of the score:
-    :type value: int
+    :ivar value: The value of the score.
+    :vartype value: int
     """
 
     def __init__(self):
@@ -179,7 +180,7 @@ class ResourceMeter(GameObject):
     ammunition bars, power gauges, etc.
 
     :ivar value: The value of the resource meter.
-    :type value: int
+    :vartype value: int
     """
     def __init__(self):
         super().__init__()
@@ -191,7 +192,7 @@ class ClockObject(GameObject):
     This class represents a Clock/Timer in game.
 
     :ivar value: The value of the Timer:
-    :type value: int
+    :vartype value: int
     """
     def __init__(self):
         super().__init__()
