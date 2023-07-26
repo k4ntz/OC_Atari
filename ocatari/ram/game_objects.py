@@ -159,6 +159,25 @@ class GameObject:
         """
         return (other.x <= self.x <= other.x + other.w) and \
             (other.y <= self.y <= other.y + other.h) 
+    
+    def manathan_distance(self, other):
+        """
+        Returns the manathan distance between the center of both objects.
+
+        :return: True if objects overlap
+        :rtype: bool
+        """
+        c0, c1 = self.center, other.center
+        return abs(c0[0] - c1[0]) + abs(c0[1]- c1[1])
+    
+    def closest_object(self, others):
+        """
+        Returns the closest object from others, based on manathan distance between the center of both objects.
+
+        :return: (Index, Object) from others
+        :rtype: int
+        """
+        return min(enumerate(others), key=lambda item: self.manathan_distance(item[1]))
 
 
 class ScoreObject(GameObject):
