@@ -113,12 +113,12 @@ def _detect_objects_seaquest(objects, obs, hud=False):
         objects.append(EnemySubmarine(*sub))
 
     if hud:
-        score_lives = find_objects(obs, objects_colors["player_score"], min_distance=1, closing_dist=4)
-        for s in score_lives:
-            if s[1] < 22:
-                objects.append(PlayerScore(*s))
+        score = find_objects(obs, objects_colors["player_score"], maxy=17, min_distance=1, closing_dist=5)
+        for s in score:
+            objects.append(PlayerScore(*s))
 
-            if 50 > s[1] > 21:
+        lives = find_objects(obs, objects_colors["player_score"], miny=22, maxy=30, min_distance=1, closing_dist=5)
+        for s in lives:
                 objects.append(Lives(*s))
 
         oxygen_bar = find_objects(obs, objects_colors["oxygen_bar"], min_distance=1)

@@ -24,7 +24,8 @@ DEVICE = "cpu"
 
 AVAILABLE_GAMES = ["Alien", "Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
                    "Breakout", "Carnival", "Centipede", "ChoppperCommand", "DemonAttack", "FishingDerby", "Freeway",
-                   "Frostbite", "Gopher","Hero", "IceHockey" "Kangaroo", "MontezumaRevenge", "MsPacman","Pitfall", "Pong",
+                   "Frostbite", "Gopher","Hero", "IceHockey", "Kangaroo", "MontezumaRevenge", "MsPacman","Pitfall", "Pong",
+                   "PrivateEye",
                    "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "Yarsrevenge"]
 
 

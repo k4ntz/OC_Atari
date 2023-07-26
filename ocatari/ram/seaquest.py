@@ -46,7 +46,7 @@ class Enemy(GameObject):
         super().__init__()
         self._xy = 0, 0
         self.wh = 8, 7
-        self.rgb = 1, 1, 1
+        self.rgb = 92, 186, 92
         self.hud = False
 
 
@@ -197,6 +197,7 @@ def _init_objects_seaquest_ram(hud=False):
 def _detect_objects_seaquest_revised(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = ram_state[70], ram_state[97] + 32
+    offset = ram_state[1] % 16 - 8
     if hud:
         score = objects[1]
 
@@ -263,6 +264,7 @@ def _calculate_objects(ram_state):
     divers_or_enemy_missiles = []
     missiles = []
     is_submarine = []
+    
 
     for i in range(4):
         if 3 < ram_state[89 + i] % 8 < 7:
@@ -299,7 +301,7 @@ def _calculate_objects(ram_state):
     # offset of 16 in x-position because the ram only saves the x-position of the left enemy
     for i in range(4):
         if (ram_state[36 + i] == 2 or ram_state[36 + i] == 3 or ram_state[36 + i] == 6 or ram_state[36 + i] == 7) \
-                and (ram_state[30] + 16) % 256 < 160:
+                and (ram_state[30 + i] + 16) % 256 < 160:
             if is_submarine[i]:
                 submarine = EnemySubmarine()
                 submarine.xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24
