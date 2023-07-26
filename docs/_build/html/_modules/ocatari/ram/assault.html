@@ -91,7 +91,7 @@
              
   <h1>Source code for ocatari.ram.assault</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">._helper_methods</span> <span class="kn">import</span> <span class="n">_convert_number</span>
-<span class="kn">from</span> <span class="nn">.game_objects</span> <span class="kn">import</span> <span class="n">GameObject</span>
+<span class="kn">from</span> <span class="nn">.game_objects</span> <span class="kn">import</span> <span class="n">GameObject</span><span class="p">,</span> <span class="n">ScoreObject</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
@@ -105,7 +105,7 @@
 
 <div class="viewcode-block" id="Player"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.Player">[docs]</a><span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class representing the player figure i.e., the cannon. </span>
+<span class="sd">    The player figure i.e., the cannon. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -118,7 +118,7 @@
 
 <div class="viewcode-block" id="PlayerMissileVertical"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.PlayerMissileVertical">[docs]</a><span class="k">class</span> <span class="nc">PlayerMissileVertical</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class representing the projectile shot in the vertical direction from the cannon. </span>
+<span class="sd">    The projectile shot in the vertical direction from the cannon. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -131,7 +131,7 @@
 
 <div class="viewcode-block" id="PlayerMissileHorizontal"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.PlayerMissileHorizontal">[docs]</a><span class="k">class</span> <span class="nc">PlayerMissileHorizontal</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class representing the projectiles shot in the horizontal direction from the cannon. </span>
+<span class="sd">    The projectiles shot in the horizontal direction from the cannon. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
      
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -144,7 +144,7 @@
 
 <div class="viewcode-block" id="MotherShip"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.MotherShip">[docs]</a><span class="k">class</span> <span class="nc">MotherShip</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class representing the mother ship at the top, that continually deploys the smaller drones. </span>
+<span class="sd">    The mother ship at the top, that continually deploys the smaller drones. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -157,7 +157,7 @@
 
 <div class="viewcode-block" id="Enemy"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.Enemy">[docs]</a><span class="k">class</span> <span class="nc">Enemy</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class representing the enemy drones deployed by the mother ship. </span>
+<span class="sd">    The enemy drones deployed by the mother ship. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -170,7 +170,7 @@
 
 <div class="viewcode-block" id="EnemyMissile"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.EnemyMissile">[docs]</a><span class="k">class</span> <span class="nc">EnemyMissile</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class representing the projectiles shot at the player by the enemy drones.</span>
+<span class="sd">    The projectiles shot at the player by the enemy drones.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -181,9 +181,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="PlayerScore"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.PlayerScore">[docs]</a><span class="k">class</span> <span class="nc">PlayerScore</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<div class="viewcode-block" id="PlayerScore"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.PlayerScore">[docs]</a><span class="k">class</span> <span class="nc">PlayerScore</span><span class="p">(</span><span class="n">ScoreObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class representing the player&#39;s score display (HUD). </span>
+<span class="sd">    The player&#39;s score display (HUD). </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -192,6 +192,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">195</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">61</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">PlayerScore</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">xy</span> <span class="o">==</span> <span class="n">o</span><span class="o">.</span><span class="n">xy</span></div>
@@ -199,7 +200,7 @@
 
 <div class="viewcode-block" id="Lives"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.Lives">[docs]</a><span class="k">class</span> <span class="nc">Lives</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class representing the indicator for the remaining lives of the player (HUD). </span>
+<span class="sd">    The indicator for the remaining lives of the player (HUD). </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -212,7 +213,7 @@
 
 <div class="viewcode-block" id="Health"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.Health">[docs]</a><span class="k">class</span> <span class="nc">Health</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class representing the temperature meter of the cannon (HUD). </span>
+<span class="sd">    The temperature meter of the cannon (HUD). </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

@@ -52,11 +52,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#ocatari.vision.game_objects.GameObject"><code class="docutils literal notranslate"><span class="pre">GameObject</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.vision.game_objects.GameObject.category"><code class="docutils literal notranslate"><span class="pre">GameObject.category</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.vision.game_objects.GameObject.center"><code class="docutils literal notranslate"><span class="pre">GameObject.center</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.vision.game_objects.GameObject.closest_object"><code class="docutils literal notranslate"><span class="pre">GameObject.closest_object()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.vision.game_objects.GameObject.dx"><code class="docutils literal notranslate"><span class="pre">GameObject.dx</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.vision.game_objects.GameObject.dy"><code class="docutils literal notranslate"><span class="pre">GameObject.dy</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.vision.game_objects.GameObject.h"><code class="docutils literal notranslate"><span class="pre">GameObject.h</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.vision.game_objects.GameObject.h_coords"><code class="docutils literal notranslate"><span class="pre">GameObject.h_coords</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.vision.game_objects.GameObject.is_on_top"><code class="docutils literal notranslate"><span class="pre">GameObject.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.vision.game_objects.GameObject.manathan_distance"><code class="docutils literal notranslate"><span class="pre">GameObject.manathan_distance()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.vision.game_objects.GameObject.w"><code class="docutils literal notranslate"><span class="pre">GameObject.w</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.vision.game_objects.GameObject.x"><code class="docutils literal notranslate"><span class="pre">GameObject.x</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.vision.game_objects.GameObject.xy"><code class="docutils literal notranslate"><span class="pre">GameObject.xy</span></code></a></li>
@@ -151,6 +153,20 @@
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.vision.game_objects.GameObject.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/vision/game_objects.html#GameObject.closest_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.vision.game_objects.GameObject.closest_object" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="ocatari.vision.game_objects.GameObject.dx">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dx</span></span><a class="headerlink" href="#ocatari.vision.game_objects.GameObject.dx" title="Permalink to this definition"></a></dt>
@@ -205,6 +221,20 @@
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.vision.game_objects.GameObject.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/vision/game_objects.html#GameObject.manathan_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.vision.game_objects.GameObject.manathan_distance" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Manathan distance (in pixel)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
