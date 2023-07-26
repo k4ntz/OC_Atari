@@ -32,7 +32,7 @@ class CCGameObject(GameObject):
 
 class CentipedeSegment(CCGameObject):
     """
-    A class representing a segment of the centipede.
+    A segment of the centipede.
     """
     
     def __init__(self):
@@ -46,7 +46,7 @@ class CentipedeSegment(CCGameObject):
 
 class Player(CCGameObject):
     """
-    A class representing the player figure i.e., Oliver the elf. 
+    The player figure i.e., Oliver the elf. 
     """
     
     def __init__(self):
@@ -60,7 +60,7 @@ class Player(CCGameObject):
 
 class Projectile(GameObject):
     """
-    A class representing the spells casted from the magic wand. 
+    The spells casted from the magic wand. 
     """
     
     def __init__(self):
@@ -74,7 +74,7 @@ class Projectile(GameObject):
 
 class Mushroom(CCGameObject):
     """
-    A class representing the mushrooms. 
+    The mushrooms. 
     """
     
     def __init__(self):
@@ -88,7 +88,7 @@ class Mushroom(CCGameObject):
 
 class Spider(CCGameObject):
     """
-    A class representing the spider that is trying to distract the player. 
+    The spider that is trying to distract the player. 
     """
     
     def __init__(self):
@@ -102,7 +102,7 @@ class Spider(CCGameObject):
 
 class Flea(CCGameObject):  # i have no clue what it is supposed to be ...
     """
-    A class representing the flea, which drops down and creates mushrooms in it's path. 
+    The flea, which drops down and creates mushrooms in it's path. 
     """
     
     def __init__(self):     # some ball thingy with legs
@@ -116,7 +116,7 @@ class Flea(CCGameObject):  # i have no clue what it is supposed to be ...
 
 class Scorpion(CCGameObject):
     """
-    A class representing the scorpion, which can run across the screen and poison mushrooms in it's path. 
+    The scorpion, which can run across the screen and poison mushrooms in it's path. 
     """
     
     def __init__(self):
@@ -130,7 +130,7 @@ class Scorpion(CCGameObject):
 
 class Score(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):
@@ -143,7 +143,7 @@ class Score(GameObject):
 
 class Ground(GameObject):
     """
-    A class representing the ground line (HUD).
+    The ground line (HUD).
     """
     
     def __init__(self):
@@ -159,7 +159,7 @@ class Ground(GameObject):
 
 class Life(GameObject):
     """
-    A class representing the indicator for the remaining magic wands (lives) (HUD). 
+    The indicator for the remaining magic wands (lives) (HUD). 
     """
     
     def __init__(self):

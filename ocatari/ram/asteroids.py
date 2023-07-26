@@ -15,7 +15,7 @@ MAX_NB_OBJECTS_HUD = {'Lives': 1, 'PlayerScore': 5}
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e., the space ship on patrol. 
+    The player figure i.e., the space ship on patrol. 
     """
     
     def __init__(self):
@@ -27,7 +27,7 @@ class Player(GameObject):
 
 class Asteroid(GameObject):
     """
-    A class representing the asteroid boulders. 
+    The asteroid boulders. 
     """
     
     def __init__(self):
@@ -40,7 +40,7 @@ class Asteroid(GameObject):
 
 class PlayerMissile(GameObject):
     """
-    A class representing the photon torpedoes that can be fired from the space ship. 
+    The photon torpedoes that can be fired from the space ship. 
     """
     
     def __init__(self):
@@ -52,7 +52,7 @@ class PlayerMissile(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):
@@ -67,7 +67,7 @@ class PlayerScore(GameObject):
 
 class Lives(GameObject):
     """
-    A class representing the indicator for remaining lives of the player (HUD). 
+    The indicator for remaining lives of the player (HUD). 
     """
     
     def __init__(self):

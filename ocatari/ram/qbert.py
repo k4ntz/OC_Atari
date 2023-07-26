@@ -50,7 +50,7 @@ _diskposes = [(12, 138), (140, 138)]
 
 class Player(GameObject):
     """
-    A class representing the player figure: Q*bert.
+    The player figure: Q*bert.
     """
     
     def __init__(self):
@@ -63,7 +63,7 @@ class Player(GameObject):
 
 class Cube(GameObject):
     """
-    A class representing the cubes.
+    The cubes.
     """
     
     def __init__(self):
@@ -76,7 +76,7 @@ class Cube(GameObject):
 
 class Disk(GameObject):
     """
-    A class representing the lift disks at the sides.
+    The lift disks at the sides.
     """
     
     def __init__(self):
@@ -89,7 +89,7 @@ class Disk(GameObject):
 
 class PurpleBall(GameObject):
     """
-    A class representing the purple ball, which hatches Coily when reaching the bottom of the pyramid.
+    The purple ball, which hatches Coily when reaching the bottom of the pyramid.
     """
 
     def __init__(self):
@@ -102,7 +102,7 @@ class PurpleBall(GameObject):
 
 class RedBall(GameObject):
     """
-    A class representing the red ball.
+    The red ball.
     """
     
     def __init__(self):
@@ -115,7 +115,7 @@ class RedBall(GameObject):
 
 class GreenBall(GameObject):
     """
-    A class representing the green ball.
+    The green ball.
     """
     
     def __init__(self):
@@ -154,7 +154,7 @@ class Sam(GameObject):
 
 class Score(GameObject):
     """
-    A class representing the player score display.
+    The player score display.
     """
     
     def __init__(self):
@@ -167,7 +167,7 @@ class Score(GameObject):
 
 class Lives(GameObject):
     """
-    A class representing the indicator for the remaining lives.
+    The indicator for the remaining lives.
     """
     
     def __init__(self):

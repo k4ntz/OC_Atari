@@ -10,7 +10,7 @@ MAX_NB_OBJECTS_HUD = {"LifeCount":1, "PlayerScore":4, "Degree":2}# 'Score': 1}
 
 class Player(GameObject):
     """
-    A class representing the player figure: Frostbite Bailey.
+    The player figure: Frostbite Bailey.
     """
     
     def __init__(self):
@@ -23,7 +23,7 @@ class Player(GameObject):
 
 class GreenFish(GameObject):
     """
-    A class representing the fresh fish swimming by regularly.
+    The fresh fish swimming by regularly.
     """
     
     def __init__(self):
@@ -44,7 +44,7 @@ class FrostBite(GameObject):
 
 class WhitePlate(GameObject):
     """
-    A class representing the white, untouched ice floes.
+    The white, untouched ice floes.
     """
     
     def __init__(self):
@@ -56,7 +56,7 @@ class WhitePlate(GameObject):
 
 class BluePlate(GameObject):
     """
-    A class representing the ice floes that have turned blue by jumping on them.
+    The ice floes that have turned blue by jumping on them.
     """
     
     def __init__(self):
@@ -68,7 +68,7 @@ class BluePlate(GameObject):
 
 class Bird(GameObject):
     """
-    A class representing the wild snowgeese.
+    The wild snowgeese.
     """
     
     def __init__(self):
@@ -80,7 +80,7 @@ class Bird(GameObject):
 
 class Bear(GameObject):
     """
-    A class representing the dangerous grizzly polar bears on the shore (level 4).
+    The dangerous grizzly polar bears on the shore (level 4).
     """
     
     def __init__(self):
@@ -92,7 +92,7 @@ class Bear(GameObject):
 
 class Crab(GameObject):
     """
-    A class representing the dangerous Alaskan king crabs.
+    The dangerous Alaskan king crabs.
     """
     
     def __init__(self):
@@ -104,7 +104,7 @@ class Crab(GameObject):
 
 class Clam(GameObject):
     """
-    A class representing the dangerous clams.
+    The dangerous clams.
     """
     
     def __init__(self):
@@ -116,7 +116,7 @@ class Clam(GameObject):
 
 class House(GameObject):
     """
-    A class representing the igloo Frostbite Bailey is trying to build.
+    The igloo Frostbite Bailey is trying to build.
     """
     
     def __init__(self):
@@ -128,7 +128,7 @@ class House(GameObject):
 
 class CompletedHouse(GameObject):
     """
-    A class representing the finished igloo.
+    The finished igloo.
     """
     
     def __init__(self):
@@ -141,7 +141,7 @@ class CompletedHouse(GameObject):
 
 class LifeCount(GameObject):
     """
-    A class representing the indicator for the player's lives.
+    The indicator for the player's lives.
     """
     
     def __init__(self):
@@ -162,7 +162,7 @@ class LifeCount(GameObject):
 
 class Degree(GameObject):
     """
-    A class representing the temperature display.
+    The temperature display.
     """
     
     def __init__(self):
@@ -175,7 +175,7 @@ class Degree(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player's score display.
+    The player's score display.
     """
     
     def __init__(self):

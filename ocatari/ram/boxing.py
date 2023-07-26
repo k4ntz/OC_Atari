@@ -7,7 +7,7 @@ MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'PlayerScore': 1, 'EnemyScore': 
 
 class Player(GameObject):
     """    
-    A class representing the player figure i.e., the boxer. 
+    The player figure i.e., the boxer. 
     
 
     :ivar right_arm_length: initial value: 0
@@ -29,7 +29,7 @@ class Player(GameObject):
 
 class Enemy(GameObject):
     """    
-    A class representing the enemy boxer.
+    The enemy boxer.
 
     :ivar right_arm_length: initial value: 0
     :ivar left_arm_length: initial value: 0
@@ -47,7 +47,7 @@ class Enemy(GameObject):
 
 class Clock(GameObject):
     """
-    A class representing the game clock display (HUD). 
+    The game clock display (HUD). 
     """
     
     def __init__(self, x=0, y=0, w=0, h=0):
@@ -60,7 +60,7 @@ class Clock(GameObject):
 
 class PlayerScore(ScoreObject):
     """
-    A class representing the player's score display (HUD). 
+    The player's score display (HUD). 
     """
     
     def __init__(self):
@@ -89,7 +89,7 @@ class PlayerScore(ScoreObject):
 
 class EnemyScore(ScoreObject):
     """
-    A class representing the enemy's score display (HUD). 
+    The enemy's score display (HUD). 
     """
     
     def __init__(self):
