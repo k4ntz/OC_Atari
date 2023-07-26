@@ -186,6 +186,20 @@ class ScoreObject(GameObject):
     :ivar value: The value of the score:
     :type value: int
     """
+
+    def __init__(self):
+        super().__init__()
+        self.value = 0
+
+
+class ResourceMeter(GameObject):
+    """
+    This class can be used to represent indicators that display the level of useable/deployable resources. For example: oxygen bars,
+    ammunition bars, power gauges, etc.
+
+    :ivar value: The value of the resource meter.
+    :type value: int
+    """
     def __init__(self):
         super().__init__()
         self.value = 0

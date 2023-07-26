@@ -1,6 +1,6 @@
 import os.path
 
-import gym
+import gymnasium as gym
 # import time
 # import random
 import numpy as np
@@ -91,7 +91,7 @@ def _check_path(game_name):
 
 
 if __name__ == "__main__":
-    game = "MontezumaRevenge"
+    game = "Gopher"
     dump_path = _check_path(game)
     candidates, fig_list1 = find_causative_ram(game)
 

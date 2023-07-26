@@ -11,7 +11,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Pin': 10, 'PlayerScore' : 1, 'Pla
 
 class Player(GameObject):
     """
-    A class representing the player figure.
+    The player figure.
     """
     
     def __init__(self):
@@ -24,7 +24,7 @@ class Player(GameObject):
 
 class Ball(GameObject):
     """
-    A class representing the bowling ball. 
+    The bowling ball. 
     """
     
     def __init__(self):
@@ -37,7 +37,7 @@ class Ball(GameObject):
 
 class Pin(GameObject):
     """
-    A class representing the pins. 
+    The pins. 
     """
     
     def __init__(self):
@@ -50,7 +50,7 @@ class Pin(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):
@@ -66,7 +66,7 @@ class PlayerScore(GameObject):
 
 class PlayerRound(GameObject):
     """
-    A class representing the round display for the first player (HUD).
+    The round display for the first player (HUD).
     """
     
     def __init__(self):
@@ -79,7 +79,7 @@ class PlayerRound(GameObject):
 
 class Player2Round(GameObject):
     """
-    A class representing the round display for the second player (HUD).
+    The round display for the second player (HUD).
     """
     
     def __init__(self):

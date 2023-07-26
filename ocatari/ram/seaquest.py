@@ -13,7 +13,7 @@ MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerScore': 1, 'Lives': 1, 'OxygenBar': 1
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e., the submarine.
+    The player figure i.e., the submarine.
     """
     
     def __init__(self):
@@ -26,7 +26,7 @@ class Player(GameObject):
 
 class Diver(GameObject):
     """
-    A class representing the divers to be retrieved and rescued.
+    The divers to be retrieved and rescued.
     """
     
     def __init__(self):
@@ -39,7 +39,7 @@ class Diver(GameObject):
 
 class Enemy(GameObject):
     """
-    A class representing the killer sharks.
+    The killer sharks.
     """
 
     def __init__(self):
@@ -52,7 +52,7 @@ class Enemy(GameObject):
 
 class EnemySubmarine(GameObject):
     """
-    A class representing the enemy submarines.
+    The enemy submarines.
     """
     
     def __init__(self):
@@ -64,7 +64,7 @@ class EnemySubmarine(GameObject):
 
 class EnemyMissile(GameObject):
     """
-    A class representing the torpedoes fired from enemy submarines.
+    The torpedoes fired from enemy submarines.
     """
     
     def __init__(self):
@@ -76,7 +76,7 @@ class EnemyMissile(GameObject):
 
 class PlayerMissile(GameObject):
     """
-    A class representing the torpedoes launched from the player's submarine.
+    The torpedoes launched from the player's submarine.
     """
     
     def __init__(self):
@@ -89,7 +89,7 @@ class PlayerMissile(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):
@@ -105,7 +105,7 @@ class PlayerScore(GameObject):
 
 class Lives(GameObject):
     """
-    A class representing the indidcator for remaining reserve subs (lives) (HUD).
+    The indidcator for remaining reserve subs (lives) (HUD).
     """
     
     def __init__(self):
@@ -118,7 +118,7 @@ class Lives(GameObject):
 
 class OxygenBar(GameObject):
     """
-    A class representing the oxygen gauge (HUD).
+    The oxygen gauge (HUD).
     """
     
     def __init__(self):
@@ -131,7 +131,7 @@ class OxygenBar(GameObject):
 
 class OxygenBarDepleted(GameObject):
     """
-    A class representing the empty oxygen bar (HUD).
+    The empty oxygen bar (HUD).
     """
     
     def __init__(self):
@@ -144,7 +144,7 @@ class OxygenBarDepleted(GameObject):
 
 class OxygenBarLogo(GameObject):
     """
-    A class representing the 'OXYGEN' lettering next to the oxygen gauge (HUD).
+    The 'OXYGEN' lettering next to the oxygen gauge (HUD).
     """
     
     def __init__(self):
@@ -157,7 +157,7 @@ class OxygenBarLogo(GameObject):
 
 class CollectedDiver(GameObject):
     """
-    A class representing the indicator for collected divers (HUD).
+    The indicator for collected divers (HUD).
     """
     
     def __init__(self):

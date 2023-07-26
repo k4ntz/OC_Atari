@@ -30,7 +30,7 @@ def _get_max_objects(hud=False):
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e., the helicopter gunship. 
+    The player figure i.e., the helicopter gunship. 
     """
     
     def __init__(self):
@@ -44,7 +44,7 @@ class Player(GameObject):
 
 class MiniPlayer(GameObject):
     """
-    A class representing the blip for the player's helicopter on the Long Range Scanner. 
+    The blip for the player's helicopter on the Long Range Scanner. 
     """
     
     def __init__(self):
@@ -57,7 +57,7 @@ class MiniPlayer(GameObject):
 
 class Truck(GameObject):
     """
-    A class representing the trucks of the convoy, which need to be protected. 
+    The trucks of the convoy, which need to be protected. 
     """
     
     def __init__(self):
@@ -70,7 +70,7 @@ class Truck(GameObject):
 
 class MiniTruck(GameObject):
     """
-    A class representing the blips for the trucks on the Long Range Scanner. 
+    The blips for the trucks on the Long Range Scanner. 
     """
     
     def __init__(self):
@@ -83,7 +83,7 @@ class MiniTruck(GameObject):
 
 class EnemyHelicopter(GameObject):
     """
-    A class representing the enemy helicopters. 
+    The enemy helicopters. 
     """
     
     def __init__(self):
@@ -96,7 +96,7 @@ class EnemyHelicopter(GameObject):
 
 class EnemyPlane(GameObject):
     """
-    A class representing the enemy planes. 
+    The enemy planes. 
     """
     
     def __init__(self):
@@ -109,7 +109,7 @@ class EnemyPlane(GameObject):
 
 class MiniEnemy(GameObject):
     """
-    A class representing the blips for the enemy aircraft on the Long Range Scanner. 
+    The blips for the enemy aircraft on the Long Range Scanner. 
     """
     
     def __init__(self):
@@ -122,7 +122,7 @@ class MiniEnemy(GameObject):
 
 class Bomb(GameObject):
     """
-    A class representing the multi-warhead missiles deployed by enemy aircraft. 
+    The multi-warhead missiles deployed by enemy aircraft. 
     """
     
     def __init__(self):
@@ -135,7 +135,7 @@ class Bomb(GameObject):
 
 class Shot(GameObject):
     """
-    A class representing the projectiles shot from the helicopter's laser cannon. 
+    The projectiles shot from the helicopter's laser cannon. 
     """
     
     def __init__(self):
@@ -148,7 +148,7 @@ class Shot(GameObject):
 
 class Score(ScoreObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):
@@ -161,7 +161,7 @@ class Score(ScoreObject):
 
 class Life(GameObject):
     """
-    A class representing the indicator for helicopter rerves (lifes) (HUD).
+    The indicator for helicopter rerves (lifes) (HUD).
     """
     
     def __init__(self):

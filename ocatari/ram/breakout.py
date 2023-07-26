@@ -15,7 +15,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerScore': 3, 'Live': 1, 'PlayerNumber': 
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e., the paddle. 
+    The player figure i.e., the paddle. 
     """
     
     def __init__(self):
@@ -28,7 +28,7 @@ class Player(GameObject):
 
 class Ball(GameObject):
     """
-    A class representing the game ball. 
+    The game ball. 
     """
     
     def __init__(self):
@@ -41,7 +41,7 @@ class Ball(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):
@@ -57,7 +57,7 @@ class PlayerScore(GameObject):
 
 class Live(GameObject):
     """
-    A class representing the indicator for the remaining balls (lives) (HUD).
+    The indicator for the remaining balls (lives) (HUD).
     """
     
     def __init__(self):
@@ -70,7 +70,7 @@ class Live(GameObject):
 
 class BlockRow(GameObject):
     """
-    A class representing the rows of the brickwall.
+    The rows of the brickwall.
     """
     
     def __init__(self):
@@ -83,7 +83,7 @@ class BlockRow(GameObject):
 
 class PlayerNumber(GameObject):
     """
-    A class representing the player index display (HUD).
+    The player index display (HUD).
     """
 
 

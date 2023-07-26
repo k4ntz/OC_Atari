@@ -40,7 +40,7 @@ class _DescendingObject(GameObject):
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e., the jet.
+    The player figure i.e., the jet.
     """
     
     def __init__(self):
@@ -52,7 +52,7 @@ class Player(GameObject):
 
 class PlayerMissile(GameObject):
     """
-    A class representing the missles shot from the player's jet.
+    The missles shot from the player's jet.
     """
     
     def __init__(self):
@@ -64,7 +64,7 @@ class PlayerMissile(GameObject):
 
 class Helicopter(_DescendingObject):
     """
-    A class representing the enemy helicopters.
+    The enemy helicopters.
     """
     
     _offset = 16
@@ -84,7 +84,7 @@ class Helicopter(_DescendingObject):
 
 class Tanker(_DescendingObject):
     """
-    A class representing the enemy tankers.
+    The enemy tankers.
     """
     
     _offset = 13
@@ -98,7 +98,7 @@ class Tanker(_DescendingObject):
 
 class Jet(_DescendingObject):
     """
-    A class representing the enemy jets.
+    The enemy jets.
     """
     
     _offset = 15
@@ -112,7 +112,7 @@ class Jet(_DescendingObject):
 
 class Bridge(_DescendingObject):
     """
-    A class representing the bridge targets.
+    The bridge targets.
     """
     
     _offset = 17
@@ -126,7 +126,7 @@ class Bridge(_DescendingObject):
 
 class FuelDepot(_DescendingObject):
     """
-    A class representing fuel depots targets.
+    Fuel depots targets.
     """
     
     _offset = 23
@@ -141,7 +141,7 @@ class FuelDepot(_DescendingObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):
@@ -156,7 +156,7 @@ class PlayerScore(GameObject):
 
 class Lives(GameObject):
     """
-    A class representing the indicator for remaining jets (lives) (HUD).
+    The indicator for remaining jets (lives) (HUD).
     """
     
     def __init__(self):

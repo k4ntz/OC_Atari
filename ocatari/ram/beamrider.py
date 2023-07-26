@@ -8,7 +8,7 @@ RAM extraction for the game KANGUROO. Supported modes: raw, revised.
 
 class Player(GameObject):
     """
-    A class representing the player figure i.e., the space ship. 
+    The player figure i.e., the space ship. 
     """
     
     def __init__(self):
@@ -22,7 +22,7 @@ class Player(GameObject):
 
 class Player_Projectile(GameObject):
     """
-    A class representing the laser lariats that can be fired from the space ship. 
+    The laser lariats that can be fired from the space ship. 
     """
     
     def __init__(self):
@@ -32,7 +32,7 @@ class Player_Projectile(GameObject):
 
 class Torpedos(GameObject):
     """
-    A class representing the limited torpedoes that can be fired from the space ship. 
+    The limited torpedoes that can be fired from the space ship. 
     """
     
     def __init__(self):
@@ -42,7 +42,7 @@ class Torpedos(GameObject):
 
 class Saucer(GameObject):
     """
-    A class representing the White Enemy Saucers. 
+    The White Enemy Saucers. 
     """
     
     def __init__(self):
@@ -56,7 +56,7 @@ class Saucer(GameObject):
 
 class Rejuvenator(GameObject):
     """
-    A class representing the Yellow Rejuvinators occasionally floating through the beam matrix. 
+    The Yellow Rejuvinators occasionally floating through the beam matrix. 
     """
     
     def __init__(self):
@@ -66,7 +66,7 @@ class Rejuvenator(GameObject):
 
 class Sentinel(GameObject):
     """
-    A class representing the Sector Sentinel Ship, which appears once a sector has been cleared. 
+    The Sector Sentinel Ship, which appears once a sector has been cleared. 
     """
     
     def __init__(self):
@@ -76,7 +76,7 @@ class Sentinel(GameObject):
 
 class Blocker(GameObject):
     """
-    A class representing the Green Blocker Ships (sector 6). 
+    The Green Blocker Ships (sector 6). 
     """
     
     def __init__(self):
@@ -92,7 +92,7 @@ class Jumper(GameObject):
 
 class Charger(GameObject):
     """
-    A class representing the Blue Chargers (sector 10). 
+    The Blue Chargers (sector 10). 
     """
     
     def __init__(self):
@@ -102,7 +102,7 @@ class Charger(GameObject):
 
 class Bouncecraft(GameObject):
     """
-    A class representing the Green Bounce Craft (sector 8). 
+    The Green Bounce Craft (sector 8). 
     """
     
     def __init__(self):
@@ -112,7 +112,7 @@ class Bouncecraft(GameObject):
 
 class Chriper(GameObject):
     """
-    A class representing the Yellow Chirper Ships (sector 4). 
+    The Yellow Chirper Ships (sector 4). 
     """
     
     def __init__(self):
@@ -122,7 +122,7 @@ class Chriper(GameObject):
 
 class Rock(GameObject):
     """
-    A class representing the Brown Space Debris (sector 2). 
+    The Brown Space Debris (sector 2). 
     """
     
     def __init__(self):
@@ -132,7 +132,7 @@ class Rock(GameObject):
 
 class Torpedos_Available(GameObject):
     """
-    A class representing the torpedoe availability display.
+    The torpedoe availability display.
     """
     
     def __init__(self):
@@ -142,7 +142,7 @@ class Torpedos_Available(GameObject):
 
 class Enemy_Projectile(GameObject):
     """
-    A class representing enemy projectiles. 
+    Enemy projectiles. 
     """
     
     def __init__(self):
@@ -158,7 +158,7 @@ class HUD(GameObject):
 
 class Enemy_Amount(GameObject):
     """
-    A class representing the count display for the remaining Enemy Saucers in the current sector. 
+    The count display for the remaining Enemy Saucers in the current sector. 
     """
     
     def __init__(self):
@@ -168,7 +168,7 @@ class Enemy_Amount(GameObject):
 
 class Life(GameObject):
     """
-    A class representing the lives-indicator of the player. 
+    The lives-indicator of the player. 
     """
     
     def __init__(self):

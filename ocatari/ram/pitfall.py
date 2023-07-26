@@ -12,7 +12,7 @@ MAX_NB_OBJECTS_HUD = {"LifeCount":3,"PlayerScore":6,"Timer":5}
 
 class Player(GameObject):
     """
-    A class representing the player figure: Pitfall Harry.
+    The player figure: Pitfall Harry.
     """
     
     def __init__(self):
@@ -24,7 +24,7 @@ class Player(GameObject):
 
 class Wall(GameObject):
     """
-    A class representing the underground brick walls.
+    The underground brick walls.
     """
     
     def __init__(self):
@@ -36,7 +36,7 @@ class Wall(GameObject):
 
 class Logs(GameObject):
     """
-    A class representing the logs.
+    The logs.
     """
     
     def __init__(self):
@@ -48,7 +48,7 @@ class Logs(GameObject):
 
 class StairPit(GameObject):
     """
-    A class representing the escape shafts from the underground.
+    The escape shafts from the underground.
     """
     
     def __init__(self):
@@ -60,7 +60,7 @@ class StairPit(GameObject):
 
 class Pit(GameObject):
     """
-    A class representing the open holes in the ground.
+    The open holes in the ground.
     """
     
     def __init__(self):
@@ -72,7 +72,7 @@ class Pit(GameObject):
 
 class Scorpion(GameObject):
     """
-    A class representing the scorpions.
+    The scorpions.
     """
     
     def __init__(self):
@@ -84,7 +84,7 @@ class Scorpion(GameObject):
 
 class Rope(GameObject):
     """
-    A class representing the swinging vines.
+    The swinging vines.
     """
     
     def __init__(self):
@@ -96,7 +96,7 @@ class Rope(GameObject):
 
 class Snake(GameObject):
     """
-    A class representing the snakes.
+    The snakes.
     """
     
     def __init__(self):
@@ -108,7 +108,7 @@ class Snake(GameObject):
 
 class Tarpit(GameObject):
     """
-    A class representing the tar pits.
+    The tar pits.
     """
     
     def __init__(self):
@@ -120,7 +120,7 @@ class Tarpit(GameObject):
 
 class Waterhole(GameObject):
     """
-    A class representing the swamps.
+    The swamps.
     """
     
     def __init__(self):
@@ -132,7 +132,7 @@ class Waterhole(GameObject):
 
 class Crocodile(GameObject):
     """
-    A class representing the crocodiles.
+    The crocodiles.
     """
     
     def __init__(self):
@@ -144,7 +144,7 @@ class Crocodile(GameObject):
 
 class GoldenBar(GameObject):
     """
-    A class representing the collectable gold bars.
+    The collectable gold bars.
     """
     
     def __init__(self):
@@ -156,7 +156,7 @@ class GoldenBar(GameObject):
 
 class SilverBar(GameObject):
     """
-    A class representing the collectable silver bars.
+    The collectable silver bars.
     """
     
     def __init__(self):
@@ -168,7 +168,7 @@ class SilverBar(GameObject):
 
 class DiamondRing(GameObject):
     """
-    A class representing the collectable diamond rings.
+    The collectable diamond rings.
     """
     
     def __init__(self):
@@ -180,7 +180,7 @@ class DiamondRing(GameObject):
 
 class Fire(GameObject):
     """
-    A class representing the open fires.
+    The open fires.
     """
     
     def __init__(self):
@@ -192,7 +192,7 @@ class Fire(GameObject):
 
 class MoneyBag(GameObject):
     """
-    A class representing the collectable money bags.
+    The collectable money bags.
     """
     
     def __init__(self):
@@ -204,7 +204,7 @@ class MoneyBag(GameObject):
 
 class LifeCount(GameObject):
     """
-    A class representing the indicator for the remaining lives (HUD).
+    The indicator for the remaining lives (HUD).
     """
     
     def __init__(self):
@@ -216,7 +216,7 @@ class LifeCount(GameObject):
 
 class PlayerScore(GameObject):
     """
-    A class representing the player's score display (HUD).
+    The player's score display (HUD).
     """
     
     def __init__(self):
@@ -228,7 +228,7 @@ class PlayerScore(GameObject):
 
 class Timer(GameObject):
     """
-    A class representing the 20-minute countdown (HUD).
+    The 20-minute countdown (HUD).
     """
     
     def __init__(self):
