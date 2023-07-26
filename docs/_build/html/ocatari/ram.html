@@ -49,11 +49,15 @@
 <li class="toctree-l1"><a class="reference internal" href="game_objects.html">Game Objects Details</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">RAM extraction mode</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.game_objects.GameObject"><code class="docutils literal notranslate"><span class="pre">GameObject</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.game_objects.GameObject.closest_object"><code class="docutils literal notranslate"><span class="pre">GameObject.closest_object()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.game_objects.GameObject.is_on_top"><code class="docutils literal notranslate"><span class="pre">GameObject.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.game_objects.GameObject.manathan_distance"><code class="docutils literal notranslate"><span class="pre">GameObject.manathan_distance()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.game_objects.ScoreObject"><code class="docutils literal notranslate"><span class="pre">ScoreObject</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.game_objects.ScoreObject.closest_object"><code class="docutils literal notranslate"><span class="pre">ScoreObject.closest_object()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.game_objects.ScoreObject.is_on_top"><code class="docutils literal notranslate"><span class="pre">ScoreObject.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.game_objects.ScoreObject.manathan_distance"><code class="docutils literal notranslate"><span class="pre">ScoreObject.manathan_distance()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#ocatari.ram._helper_methods.bitfield_to_number"><code class="docutils literal notranslate"><span class="pre">bitfield_to_number()</span></code></a></li>
@@ -125,9 +129,10 @@
 <li><p><strong>h_coords</strong> -- History of coordinates, i.e. current (x, y) and previous (x, y) position.</p></li>
 <li><p><strong>dx</strong> -- The pixel movement corresponding to: current_x - previous_x.</p></li>
 <li><p><strong>dy</strong> -- The pixel movement corresponding to: current_y - previous_y.</p></li>
-<li><p><strong>xywh</strong> -- The positional and width/height coordinates in a single tuple (x, y, w, h) .</p></li>
+<li><p><strong>xywh</strong> -- The positional and width/height coordinates in a single tuple (x, y, w, h).</p></li>
 <li><p><strong>orientation</strong> -- The orientation of the object (if available); game specific.</p></li>
 <li><p><strong>center</strong> -- The center of the bounding box of the object.</p></li>
+<li><p><strong>hud</strong> -- True if part of the Heads Up Display, and thus not interactable.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Type<span class="colon">:</span></dt>
@@ -135,9 +140,37 @@
 </dd>
 </dl>
 <dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.game_objects.GameObject.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/ram/game_objects.html#GameObject.closest_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.game_objects.GameObject.closest_object" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.game_objects.GameObject.is_on_top">
 <span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/ram/game_objects.html#GameObject.is_on_top"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.game_objects.GameObject.is_on_top" title="Permalink to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.game_objects.GameObject.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/ram/game_objects.html#GameObject.manathan_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.game_objects.GameObject.manathan_distance" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
@@ -160,9 +193,37 @@
 </dd>
 </dl>
 <dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.game_objects.ScoreObject.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.game_objects.ScoreObject.closest_object" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.game_objects.ScoreObject.is_on_top">
 <span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.game_objects.ScoreObject.is_on_top" title="Permalink to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.game_objects.ScoreObject.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.game_objects.ScoreObject.manathan_distance" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
