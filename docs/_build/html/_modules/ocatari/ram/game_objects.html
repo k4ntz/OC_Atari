@@ -124,7 +124,7 @@
 <span class="sd">    :ivar dy: The pixel movement corresponding to: current_y - previous_y.</span>
 <span class="sd">    :type dy: int</span>
 
-<span class="sd">    :ivar xywh: The positional and width/height coordinates in a single tuple (x, y, w, h) .</span>
+<span class="sd">    :ivar xywh: The positional and width/height coordinates in a single tuple (x, y, w, h).</span>
 <span class="sd">    :type xywh: (int, int, int, int)</span>
 
 <span class="sd">    :ivar orientation: The orientation of the object (if available); game specific.</span>
@@ -132,6 +132,9 @@
 
 <span class="sd">    :ivar center: The center of the bounding box of the object.</span>
 <span class="sd">    :type center: (int, int)</span>
+
+<span class="sd">    :ivar hud: True if part of the Heads Up Display, and thus not interactable.</span>
+<span class="sd">    :type hud: bool</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">GET_COLOR</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">GET_WH</span> <span class="o">=</span> <span class="kc">False</span>
@@ -246,7 +249,26 @@
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">w</span><span class="p">)</span> <span class="ow">and</span> \
-            <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">h</span><span class="p">)</span> </div></div>
+            <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">h</span><span class="p">)</span> </div>
+    
+<div class="viewcode-block" id="GameObject.manathan_distance"><a class="viewcode-back" href="../../../ocatari/ram.html#ocatari.ram.game_objects.GameObject.manathan_distance">[docs]</a>    <span class="k">def</span> <span class="nf">manathan_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the manathan distance between the center of both objects.</span>
+
+<span class="sd">        :return: True if objects overlap</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">c0</span><span class="p">,</span> <span class="n">c1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">center</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">c1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span> <span class="n">c1</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+    
+<div class="viewcode-block" id="GameObject.closest_object"><a class="viewcode-back" href="../../../ocatari/ram.html#ocatari.ram.game_objects.GameObject.closest_object">[docs]</a>    <span class="k">def</span> <span class="nf">closest_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">others</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the closest object from others, based on manathan distance between the center of both objects.</span>
+
+<span class="sd">        :return: (Index, Object) from others</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">others</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">manathan_distance</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span></div></div>
 
 
 <div class="viewcode-block" id="ScoreObject"><a class="viewcode-back" href="../../../ocatari/ram.html#ocatari.ram.game_objects.ScoreObject">[docs]</a><span class="k">class</span> <span class="nc">ScoreObject</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
@@ -256,9 +278,23 @@
 <span class="sd">    :ivar value: The value of the score:</span>
 <span class="sd">    :type value: int</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+<span class="k">class</span> <span class="nc">ResourceMeter</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class can be used to represent indicators that display the level of useable/deployable resources. For example: oxygen bars,</span>
+<span class="sd">    ammunition bars, power gauges, etc.</span>
+
+<span class="sd">    :ivar value: The value of the resource meter.</span>
+<span class="sd">    :type value: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
 
 
 <span class="k">class</span> <span class="nc">ClockObject</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
