@@ -5,13 +5,15 @@ This script allows you to play the game (using keyboard inputs), pause it, and a
 to test hypothesis on where and how information is stored.
 """
 
+import sys
 import random
 import time
 from copy import deepcopy
 
 import gymnasium as gym
 import ipdb
-
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
 from ocatari.utils import *
 from ocatari.core import OCAtari
 from matplotlib import pyplot as plt
