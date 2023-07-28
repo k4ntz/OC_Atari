@@ -2,6 +2,10 @@ from .game_objects import GameObject
 from ._helper_methods import _convert_number
 import math
 
+"""
+RAM extraction for the game Asterix. 
+"""
+
 
 class Player(GameObject):
     def __init__(self):
@@ -13,15 +17,22 @@ class Player(GameObject):
 
 
 class Cauldron(GameObject):
+    """
+    The player figure i.e., first asterix and then, as the game progresses, obelix. 
+    """
     def __init__(self):
         super().__init__()
-        self.rgb = 167, 26, 26
+        self.rgb = 187, 187, 53
         self._xy = 0, 0
-        self.wh = 7, 10
+        self.wh = 8, 11  # at some point 16, 11. advanced other player (oblix) is (6, 11)
         self.hud = False
 
 
 class Enemy(GameObject):
+    """
+    The deadly lyres that are among the other collectables.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 228, 111, 111
@@ -31,6 +42,10 @@ class Enemy(GameObject):
 
 
 class Score(GameObject):
+    """
+    The player's score display (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 187, 187, 53
@@ -40,6 +55,10 @@ class Score(GameObject):
 
 
 class Lives(GameObject):
+    """
+    The indicator for remaining lives of the player (HUD). 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 187, 187, 53
@@ -47,8 +66,23 @@ class Lives(GameObject):
         self.wh = 6, 7
         self.hud = True
 
+class Cauldron(GameObject):
+    """
+    The collectable cauldrons of magic potion (asterix). 
+    """
+    
+    def __init__(self):
+        super().__init__()
+        self.rgb = 167, 26, 26
+        self._xy = 0, 0
+        self.wh = 7, 10
+        self.hud = False
 
 class Helmet(GameObject):
+    """
+    The collectable helmets (asterix). 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 240, 128, 128
@@ -58,6 +92,10 @@ class Helmet(GameObject):
 
 
 class Shield(GameObject):
+    """
+    The collectable shields (asterix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 214, 214, 214
@@ -67,6 +105,10 @@ class Shield(GameObject):
 
 
 class Lamp(GameObject):
+    """
+    The collectable lamps (asterix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 187, 53, 53
@@ -76,6 +118,10 @@ class Lamp(GameObject):
 
 
 class Apple(GameObject):
+    """
+    The collectable apples (obelix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 184, 50, 50
@@ -85,6 +131,10 @@ class Apple(GameObject):
 
 
 class Fish(GameObject):
+    """
+    The collectable apples (obelix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 198, 89, 179
@@ -94,6 +144,10 @@ class Fish(GameObject):
 
 
 class Meat(GameObject):
+    """
+    The collectable wild boar legs (obelix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 184, 50, 50
@@ -103,6 +157,10 @@ class Meat(GameObject):
 
 
 class Mug(GameObject):
+    """
+    The collectable mugs of obelix' favourite drink (obelix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 184, 50, 50
@@ -112,6 +170,10 @@ class Mug(GameObject):
 
 
 class Reward50(GameObject):
+    """
+    The 50 point reward-icon for collecting a cauldron (asterix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 198, 89, 179
@@ -121,6 +183,10 @@ class Reward50(GameObject):
 
 
 class Reward100(GameObject):
+    """
+    The 100 point reward-icon for collecting a helmet (asterix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 135, 183, 84
@@ -130,6 +196,10 @@ class Reward100(GameObject):
 
 
 class Reward200(GameObject):
+    """
+    The 200 point reward-icon for collecting a shield (asterix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 195, 144, 61
@@ -139,6 +209,10 @@ class Reward200(GameObject):
 
 
 class Reward300(GameObject):
+    """
+    The 300 point reward-icon for collecting a lamp (asterix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 213, 130, 74
@@ -148,6 +222,10 @@ class Reward300(GameObject):
 
 
 class Reward400(GameObject):
+    """
+    The 400 point reward-icon for collecting an apple (obelix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 135, 183, 84
@@ -157,6 +235,10 @@ class Reward400(GameObject):
 
 
 class Reward500(GameObject):
+    """
+    The 500 point reward-icon for collecting a fish, wild boar leg, mug, or surprise object (obelix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 163, 57, 21

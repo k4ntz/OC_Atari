@@ -37,20 +37,20 @@ DROP_LOW = True
 MIN_CORRELATION = 0.8 #0.8
 
 NB_SAMPLES = 600# 600 before
-game_name = "RoadRunner" #RoadRunner-v4
+game_name = "YarsRevenge" #RoadRunner-v4
 MODE = "vision"
 RENDER_MODE = "human"
 # RENDER_MODE = "rgb_array"
 env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE,hud=True)
 random.seed(0)
 observation, info = env.reset()
-snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/roadrunner_level5.pkl", "rb"))
-env._env.env.env.ale.restoreState(snapshot)
+# snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/roadrunner_level5.pkl", "rb"))
+# env._env.env.env.ale.restoreState(snapshot)
 if opts.dqn:
     opts.path = f"models/RoadRunner/dqn.gz"
     dqn_agent = load_agent(opts, env.action_space.n)
 # object_list = ["Projectile"]
-object_list = ["Turret"]
+object_list = ["Shield_Block"]
 # create dict of list
 objects_infos = {}
 subset = []

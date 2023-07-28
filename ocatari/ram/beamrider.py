@@ -7,6 +7,10 @@ RAM extraction for the game KANGUROO. Supported modes: raw, revised.
 
 
 class Player(GameObject):
+    """
+    The player figure i.e., the space ship. 
+    """
+    
     def __init__(self):
         super(Player, self).__init__()
         self.visible = True
@@ -17,18 +21,30 @@ class Player(GameObject):
 
 
 class Player_Projectile(GameObject):
+    """
+    The laser lariats that can be fired from the space ship. 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 198, 108, 58
 
 
 class Torpedos(GameObject):
+    """
+    The limited torpedoes that can be fired from the space ship. 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 164, 89, 208
 
 
 class Saucer(GameObject):
+    """
+    The White Enemy Saucers. 
+    """
+    
     def __init__(self):
         super().__init__()
         self.visible = True
@@ -39,18 +55,30 @@ class Saucer(GameObject):
 
 
 class Rejuvenator(GameObject):
+    """
+    The Yellow Rejuvinators occasionally floating through the beam matrix. 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 187, 187, 53
 
 
 class Sentinel(GameObject):
+    """
+    The Sector Sentinel Ship, which appears once a sector has been cleared. 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 184, 50, 50
 
 
 class Blocker(GameObject):
+    """
+    The Green Blocker Ships (sector 6). 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 135, 183, 84
@@ -63,36 +91,60 @@ class Jumper(GameObject):
 
 
 class Charger(GameObject):
+    """
+    The Blue Chargers (sector 10). 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = None
 
 
 class Bouncecraft(GameObject):
+    """
+    The Green Bounce Craft (sector 8). 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = None
 
 
 class Chriper(GameObject):
+    """
+    The Yellow Chirper Ships (sector 4). 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = None
 
 
 class Rock(GameObject):
+    """
+    The Brown Space Debris (sector 2). 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 134, 134, 29
 
 
 class Torpedos_Available(GameObject):
+    """
+    The torpedoe availability display.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 104, 25, 154
 
 
 class Enemy_Projectile(GameObject):
+    """
+    Enemy projectiles. 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 164, 89, 208
@@ -105,12 +157,20 @@ class HUD(GameObject):
 
 
 class Enemy_Amount(GameObject):
+    """
+    The count display for the remaining Enemy Saucers in the current sector. 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 82, 126, 45
 
 
 class Life(GameObject):
+    """
+    The lives-indicator of the player. 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 210, 210, 64

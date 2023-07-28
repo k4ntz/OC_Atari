@@ -1,11 +1,19 @@
 from .game_objects import GameObject
 import sys 
 
+"""
+RAM extraction for the game Road Runner.
+"""
+
 MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "BirdSeeds": 1, "Truck": 6}
 MAX_NB_OBJECTS_HUD = {'Cactus': 6, 'Sign': 1}# 'Score': 1}
 
 
 class Player(GameObject):
+    """
+    The player figure i.e, the Road Runner.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -15,6 +23,10 @@ class Player(GameObject):
 
 
 class Enemy(GameObject):
+    """
+    Wile E. Coyote.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -24,6 +36,10 @@ class Enemy(GameObject):
 
 
 class BirdSeeds(GameObject):
+    """
+    The collectable piles of birdseed on the roadway.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -33,6 +49,10 @@ class BirdSeeds(GameObject):
 
 
 class Truck(GameObject):
+    """
+    The speeding trucks.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -41,6 +61,10 @@ class Truck(GameObject):
         self.hud = False
 
 class RoadCrack(GameObject):
+    """
+    Damaged road segments (cliffs??).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -49,14 +73,22 @@ class RoadCrack(GameObject):
         self.wh = (14,32)
 
 class AcmeMine(GameObject):
+    """
+    The landmines planted along the road.
+    """
+    
     def __init__(self):
         super().__init__()
-        self.rgb = 255,255,255#84,92,214
+        self.rgb = 255,255,255 #84,92,214
         self.hud = False
         self._xy = 0, 0
         self.wh = (4,3)
 
 class Turret(GameObject):
+    """
+    Wile E. Coyote's cannons along the road.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 66,72,200
@@ -65,6 +97,10 @@ class Turret(GameObject):
         self.wh = (12, 8)
 
 class TurretBall(GameObject):
+    """
+    The projectiles shot from the cannons.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 198,108,58
@@ -73,6 +109,10 @@ class TurretBall(GameObject):
         self.wh = (4,4)
 
 class Stone(GameObject):
+    """
+    The rocks tumbling down on the road.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 181,83,40
@@ -81,6 +121,10 @@ class Stone(GameObject):
         self.wh = (8, 11)
 
 class Cactus(GameObject):
+    """
+    Cactus in the background (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -90,6 +134,10 @@ class Cactus(GameObject):
 
 
 class Sign(GameObject):
+    """
+    The occasional road signs and billboards (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -98,6 +146,10 @@ class Sign(GameObject):
         self.hud = True
 
 class Bird(GameObject):
+    """
+    The birds flying by.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 252,188,116
@@ -107,6 +159,10 @@ class Bird(GameObject):
 
 
 class PlayerScore(GameObject):
+    """
+    The player's score display (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 0,0,0

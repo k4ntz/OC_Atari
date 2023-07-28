@@ -31,7 +31,7 @@ def ransac_regression(x, y):
 
 
 
-game_name = "YarsRevenge-v4"
+game_name = "Gopher-v4"
 MODE = "vision"
 RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
@@ -41,7 +41,7 @@ random.seed(0)
 
 
 ONE_CHANGE = True
-initial_ram_n = 1
+initial_ram_n = 30
 
 
 make_deterministic(0, env)
@@ -70,7 +70,7 @@ actions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 class Options(object):
     pass
 opts = Options()
-opts.path = "models/RoadRunner/dqn.gz"
+opts.path = "models/Gopher/dqn.gz"
 dqn_agent = load_agent(opts, env.action_space.n)
 
 # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/player.pkl", "rb"))

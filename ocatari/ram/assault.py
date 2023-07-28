@@ -1,5 +1,5 @@
 from ._helper_methods import _convert_number
-from .game_objects import GameObject
+from .game_objects import GameObject, ScoreObject
 import sys
 
 """
@@ -12,6 +12,10 @@ MAX_NB_OBJECTS_HUD = {'PlayerScore': 6, 'Lives': 3, 'Health': 1}
 
 
 class Player(GameObject):
+    """
+    The player figure i.e., the cannon. 
+    """
+    
     def __init__(self):
         self.visible = True
         self._xy = 0, 0
@@ -21,6 +25,10 @@ class Player(GameObject):
 
 
 class PlayerMissileVertical(GameObject):
+    """
+    The projectile shot in the vertical direction from the cannon. 
+    """
+    
     def __init__(self):
         self.visible = True
         self._xy = 0, 0
@@ -30,6 +38,10 @@ class PlayerMissileVertical(GameObject):
 
 
 class PlayerMissileHorizontal(GameObject):
+    """
+    The projectiles shot in the horizontal direction from the cannon. 
+    """
+     
     def __init__(self):
         self.visible = True
         self._xy = 0, 0
@@ -39,6 +51,10 @@ class PlayerMissileHorizontal(GameObject):
 
 
 class MotherShip(GameObject):
+    """
+    The mother ship at the top, that continually deploys the smaller drones. 
+    """
+    
     def __init__(self):
         self.visible = True
         self._xy = 0, 0
@@ -48,6 +64,10 @@ class MotherShip(GameObject):
 
 
 class Enemy(GameObject):
+    """
+    The enemy drones deployed by the mother ship. 
+    """
+    
     def __init__(self):
         self.visible = True
         self._xy = 0, 0
@@ -57,6 +77,10 @@ class Enemy(GameObject):
 
 
 class EnemyMissile(GameObject):
+    """
+    The projectiles shot at the player by the enemy drones.
+    """
+    
     def __init__(self):
         self.visible = True
         self._xy = 0, 0
@@ -65,19 +89,28 @@ class EnemyMissile(GameObject):
         self.hud = False
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ScoreObject):
+    """
+    The player's score display (HUD). 
+    """
+    
     def __init__(self):
         self.visible = True
         self._xy = 0, 0
         self.rgb = 195, 144, 61
         self.wh = 6, 8
         self.hud = True
+        self.score = 0
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
 
 class Lives(GameObject):
+    """
+    The indicator for the remaining lives of the player (HUD). 
+    """
+
     def __init__(self):
         self.visible = True
         self._xy = 0, 0
@@ -87,6 +120,10 @@ class Lives(GameObject):
 
 
 class Health(GameObject):
+    """
+    The temperature meter of the cannon (HUD). 
+    """
+    
     def __init__(self):
         self.visible = True
         self._xy = 96, 192

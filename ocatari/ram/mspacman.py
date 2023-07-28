@@ -3,11 +3,19 @@ from ._helper_methods import _convert_number
 import math
 import sys
 
+"""
+RAM extraction for the game Ms. Pac-Man.
+"""
+
 # not sure about this one TODO: validate
 MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4, 'Fruit': 1, 'Score': 3, 'Life': 2}
 
 class Player(GameObject):
+    """
+    The player figure: Ms. Pac-Man.
+    """
+    
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 78, 103
@@ -17,6 +25,10 @@ class Player(GameObject):
 
 
 class Ghost(GameObject):
+    """
+    The Ghosts.
+    """
+    
     def __init__(self):
         super(Ghost, self).__init__()
         super().__init__()
@@ -27,6 +39,10 @@ class Ghost(GameObject):
 
 
 class Fruit(GameObject):
+    """
+    The collectable fruits.
+    """
+    
     def __init__(self):
         super(Fruit, self).__init__()
         self._xy = 125, 173
@@ -36,6 +52,10 @@ class Fruit(GameObject):
 
 
 class Score(GameObject):
+    """
+    The player's score display (HUD).
+    """
+    
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 95, 187
@@ -45,6 +65,10 @@ class Score(GameObject):
 
 
 class Life(GameObject):
+    """
+    The indicator for remaining lives (HUD).
+    """
+    
     def __init__(self):
         super(Life, self).__init__()
         self._xy = 12, 171
