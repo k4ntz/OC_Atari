@@ -103,7 +103,7 @@ class DetectionScores():
         The mean precision, recall and F-score on all objects.
         """
         return {"precision": self.mean_precision, "recall": self.mean_recall, "f-score": self.mean_f_score,
-                }
+                "iou": self.iou}
     
 
 def print_all_stats(all_stats):

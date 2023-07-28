@@ -1,6 +1,7 @@
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
 import sys
+from .utils import _color_conversion
 
 """
 RAM extraction for the game SEAQUEST. Supported modes: raw, revised.
@@ -22,6 +23,7 @@ class Player(GameObject):
         self.wh = 16, 11
         self.rgb = 187, 187, 53
         self.hud = False
+        self.orientation = 0 # O is right, 8 is left
 
 
 class Diver(GameObject):
@@ -46,7 +48,7 @@ class Enemy(GameObject):
         super().__init__()
         self._xy = 0, 0
         self.wh = 8, 7
-        self.rgb = 1, 1, 1
+        self.rgb = 92, 186, 92
         self.hud = False
 
 
@@ -197,10 +199,10 @@ def _init_objects_seaquest_ram(hud=False):
 def _detect_objects_seaquest_revised(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = ram_state[70], ram_state[97] + 32
+    player.orientation = ram_state[86]
+    offset = ram_state[1] % 16 - 8
     if hud:
         score = objects[1]
-
-    if hud:
         del objects[2:]
     else:
         del objects[1:]
@@ -263,6 +265,7 @@ def _calculate_objects(ram_state):
     divers_or_enemy_missiles = []
     missiles = []
     is_submarine = []
+    
 
     for i in range(4):
         if 3 < ram_state[89 + i] % 8 < 7:
@@ -299,7 +302,7 @@ def _calculate_objects(ram_state):
     # offset of 16 in x-position because the ram only saves the x-position of the left enemy
     for i in range(4):
         if (ram_state[36 + i] == 2 or ram_state[36 + i] == 3 or ram_state[36 + i] == 6 or ram_state[36 + i] == 7) \
-                and (ram_state[30] + 16) % 256 < 160:
+                and (ram_state[30 + i] + 16) % 256 < 160:
             if is_submarine[i]:
                 submarine = EnemySubmarine()
                 submarine.xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24
@@ -357,6 +360,7 @@ def _detect_objects_seaquest_raw(info, ram_state):
 
     """
     player = [ram_state[70], ram_state[97]]
+    offset = ram_state[1]
     divers_missile_x = ram_state[71:75]  # 71 for first lane, 72 second lane, ...   divers and enemy missiles x position
     enemy_x = ram_state[30:34]
     enemy5_x = [ram_state[118]]  # lane 5 enemy only moves if top_enemy_enabled is 2 or higher
@@ -364,7 +368,7 @@ def _detect_objects_seaquest_raw(info, ram_state):
     player_missiles_x = [ram_state[103]]
     relevant_objects = player + divers_missile_x.tolist() + enemy_x.tolist() + enemy5_x + oxygen + player_missiles_x
     info["relevant_objects"] = relevant_objects
-
+    enemy_colors = ram_state[44:48]
     # additional info
     info["lives"] = ram_state[59]  # correct until 6 lives
     info["level"] = ram_state[61]  # changes enemies, speed, ... the higher the value the harder the game currently is

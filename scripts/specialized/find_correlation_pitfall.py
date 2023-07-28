@@ -46,7 +46,7 @@ observation, info = env.reset()
 # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_8.pkl", "rb"))
 # env._env.env.env.ale.restoreState(snapshot)
 # object_list = ["Projectile"]
-object_list = ["Player"]
+object_list = ["Gopher"]
 # create dict of list
 objects_infos = {}
 subset = []

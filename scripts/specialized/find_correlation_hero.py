@@ -42,7 +42,7 @@ env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
 observation, info = env.reset()
-object_list = ["Wall"]
+object_list = ["Enemy"]
 # create dict of list
 objects_infos = {}
 subset = []
@@ -57,17 +57,8 @@ actions = ([5] * 18 + [4] * 5) * 4 + 50 * [3]
 class Options(object):
     pass
 opts = Options()
-opts.path = "models/Hero/dqn.gz"
+opts.path = "models/Seaquest/dqn.gz"
 dqn_agent = load_agent(opts, env.action_space.n)
-
-_cubes_cinfo=[        21,               # row of 1
-                    52,  54,            # row of 2
-                 83, 85,  87,           # row of 3
-               98, 100, 102, 104,       # row of 4
-              1,  3,   5,   7,  9,      # row of 5
-            32, 34, 36,  38,  40, 42]   # row of 6
-
-to_exclude = _cubes_cinfo + [112, 122]  # disks
 
 
 for i in tqdm(range(NB_SAMPLES)):
@@ -88,7 +79,7 @@ for i in tqdm(range(NB_SAMPLES)):
         # plt.imshow(obs)
         # plt.show()
         for obj_name in object_list:  # avoid state without the tracked objects
-            if str(env.objects).count(f"{obj_name} at") != 1:
+            if str(env.objects).count(f"{obj_name} at") == 0:
                 SKIP = True
         if SKIP:  # or env.objects[-2].y < env.objects[-1].y:
             continue

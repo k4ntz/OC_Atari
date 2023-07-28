@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="python3.9" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reverse Engineering Helper &mdash; OCAtari  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The test scripts" href="test_scripts.html" />
+    <link rel="prev" title="Find Correlation" href="find_correlation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            OCAtari
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ocatari/core.html">The OCAtari Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocatari/game_objects.html">Game Objects Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocatari/ram.html">RAM extraction mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ocatari/vision.html">Vision processing mode</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Scripts:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="alter_ram_while_playing.html">Alter RAM while playing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="automated_analysis.html">Automated Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="find_causative_ram.html">Causative RAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reverse Engineering Helper</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#generally">Generally</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-use-gym-with-a-certain-game">How to use gym with a certain game</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-play-a-game">How to play a game</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-get-the-list-of-inputs-for-the-game">How to get the list of inputs for the game</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-bind-actions-to-a-key">How to bind actions to a key</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-can-i-do-while-the-game-runs">What can I do while the game runs?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ipdb-interrupts-but-the-plot-doesn-t-react">ipdb interrupts but the plot doesn't react</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-an-action-sequence">What is an action sequence?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-valuable-information-and-how-can-i-get-it">What is valuable information and how can I get it?</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ram-manipulation">RAM manipulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#what-else">What else?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="test_scripts.html">The test scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tests:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tests/comparison_test.html">Comparison test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/detection_metrics.html">Get detection metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/extraction_test.html">Extraction test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/test_speed.html">Speed test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/tests_utils.html">Tests utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OCAtari</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Reverse Engineering Helper</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/scripts/reverse_engineering_helper.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="reverse-engineering-helper">
+<h1>Reverse Engineering Helper<a class="headerlink" href="#reverse-engineering-helper" title="Permalink to this heading"></a></h1>
+<section id="generally">
+<h2>Generally<a class="headerlink" href="#generally" title="Permalink to this heading"></a></h2>
+<p>If you run the file 'ReverseEngineeringHelper', the environment will be set up and
+will loop threw an amount of steps while giving back valuable information based
+on the given actions.<br>
+'ReverseEngineeringHelper' is a tool to provide useful access to the games of atari
+for reverse engineering purposes!</p>
+<section id="variables">
+<h3>Variables<a class="headerlink" href="#variables" title="Permalink to this heading"></a></h3>
+<p>I divided the variables in 6 blocks. Each fulfills a different purpose.</p>
+<ol class="arabic simple">
+<li><p>the basics:</p>
+<ul class="simple">
+<li><p>This file enables the usage of gym with or without the OCAtari wrapper!</p></li>
+<li><p>Printing out environment info can be useful =&gt; printEnvInfo</p></li>
+</ul>
+</li>
+<li><p>a few standard gym variables:</p>
+<ul class="simple">
+<li><p>The game and render mode as well as the reset seed or fps of the gym environment</p></li>
+</ul>
+</li>
+<li><p>the OCAtari modes:</p>
+<ul class="simple">
+<li><p>There are the modes raw, revised, vision, test and HUD.</p></li>
+</ul>
+</li>
+<li><p>actions that will be performed each step.</p>
+<ul class="simple">
+<li><p>You can play the game, define an action sequence or let it run randomly.</p></li>
+</ul>
+</li>
+<li><p>Gaining valuable information for reversed engineering purposes and others</p></li>
+<li><p>Global variables =&gt; DO NOT CHANGE</p></li>
+</ol>
+</section>
+<section id="how-to-use-gym-with-a-certain-game">
+<h3>How to use gym with a certain game<a class="headerlink" href="#how-to-use-gym-with-a-certain-game" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>set useOCAtari to False</p></li>
+<li><p>set game_name to your game</p></li>
+<li><p>set playGame to False unless you want to play a game in which case it will take a few more steps</p></li>
+<li><p>set actionSequence to NONE</p></li>
+</ol>
+</section>
+<section id="how-to-play-a-game">
+<h3>How to play a game<a class="headerlink" href="#how-to-play-a-game" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Get the list of inputs for the game and assign it to the INPUTS variable <br>
+(atari game controls are quite the same, so this step might not be necessary, but better take a look)</p></li>
+<li><p>Bind actions to keys</p></li>
+<li><p>set playGame to True</p></li>
+<li><p>set showImage to True</p></li>
+<li><p>run the file
+side notes:</p></li>
+</ol>
+<ul class="simple">
+<li><p>setting the render_mode to &quot;rgb_array&quot; is advised while playing the game because of fps drops</p></li>
+<li><p>render_mode &quot;human&quot; is good for comparison reasons</p></li>
+<li><p>slowDownPlot in block 5 might slow down the game, set it to a low value</p></li>
+</ul>
+</section>
+<section id="how-to-get-the-list-of-inputs-for-the-game">
+<h3>How to get the list of inputs for the game<a class="headerlink" href="#how-to-get-the-list-of-inputs-for-the-game" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>set useOCAtari to False</p></li>
+<li><p>set game_name to your game</p></li>
+<li><p>set playGame to False</p></li>
+<li><p>set showInputs to True</p></li>
+<li><p>run the file and read the output on the command line (a list of Strings is what you are searching for)</p></li>
+</ol>
+</section>
+<section id="how-to-bind-actions-to-a-key">
+<h3>How to bind actions to a key<a class="headerlink" href="#how-to-bind-actions-to-a-key" title="Permalink to this heading"></a></h3>
+<p>There is key_map that maps the keys to a given basic operation.
+A basic operation is directly related to an action name or part of an action name.<br>
+For example: you map 'w' to 'UP' and 'd' to 'RIGHT' <br></p>
+<ul class="simple">
+<li><p>That means, that in case you press w, the action 'UP' will occur and in case of 'd' 'RIGHT'.</p></li>
+<li><p>If you press 'w' and 'd' at the same time and there is an action name
+'UPRIGHT' or 'RIGHTUP' in INPUTS, then that action will occur.<br></p></li>
+<li><p>Note: The plot may have functionalities that use hotkeys. All of your keys will work
+as described here, but these hotkeys might be overwritten. If you want to keep these hotkeys,
+avoid mapping the keys to an action.</p></li>
+</ul>
+</section>
+<section id="what-can-i-do-while-the-game-runs">
+<h3>What can I do while the game runs?<a class="headerlink" href="#what-can-i-do-while-the-game-runs" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>play (pressing the keys you bound actions to, when none of these keys is pressed, the default_action will occur)</p></li>
+<li><p>freeze the game (pressing tab) and look at the current frame</p></li>
+<li><p>close the program (pressing escape)</p></li>
+<li><p>use ipdb (pressing i)</p></li>
+</ul>
+</section>
+<section id="ipdb-interrupts-but-the-plot-doesn-t-react">
+<h3>ipdb interrupts but the plot doesn't react<a class="headerlink" href="#ipdb-interrupts-but-the-plot-doesn-t-react" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Don't use ipdb.set_trace directly, press i instead or use ipdb_interrupt(0)</p></li>
+<li><p>Unfortunately, the plot and the run are on the same thread, that's why the plotting
+functionalities only work as long as the program is not interrupted (by a debugger).</p></li>
+<li><p>But you can gain access by typing in plt.pause(x) in ipdb. This will activate the
+functions for x seconds.</p></li>
+<li><p>If you know in advance, that you want to have access to the frame before interrupting
+with ipdb, then set ipdb_delay to your wished delay.</p></li>
+</ul>
+</section>
+<section id="what-is-an-action-sequence">
+<h3>What is an action sequence?<a class="headerlink" href="#what-is-an-action-sequence" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>An action sequence is a list of Strings that describe actions that the environment will do repeatedly.</p></li>
+<li><p>Let's say you set actionSequence to ['RIGHT', 'FIRE', 'LEFT'], then the actions will
+be ['RIGHT', 'FIRE', 'LEFT', 'RIGHT', 'FIRE', 'LEFT', 'RIGHT',...]</p></li>
+<li><p>It only activates if playGame is False.</p></li>
+<li><p>If no action sequence is defined, then the environment will do random actions instead.</p></li>
+</ul>
+</section>
+<section id="what-is-valuable-information-and-how-can-i-get-it">
+<h3>What is valuable information and how can I get it?<a class="headerlink" href="#what-is-valuable-information-and-how-can-i-get-it" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>the possible inputs =&gt; showInputs</p></li>
+<li><p>the action of the current environment step =&gt; showActions</p></li>
+<li><p>RAM at the current frame =&gt; showRAM</p></li>
+<li><p>image (plot) of the game =&gt; showImage</p></li>
+<li><p>the rgb array =&gt; printRGB</p></li>
+<li><p>normal game =&gt; render_mode='human'</p></li>
+</ul>
+<section id="ram-manipulation">
+<h4>RAM manipulation<a class="headerlink" href="#ram-manipulation" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p>You can set the ram, if manipulateRAM is True. The RAM will be set at the index to a value.</p></li>
+<li><p>If the value is negative, then the ram value will instead be increased by 1 with every step of the environment</p></li>
+<li><p>The value will always be between 0 and 255, which is made certain by the modulo operator</p></li>
+<li><p>The change of the ram and the following step will influence the ram at other points.
+You can get these changes by setting showDelta to True</p></li>
+<li></li>
+</ul>
+</section>
+<section id="what-else">
+<h4>What else?<a class="headerlink" href="#what-else" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p>slowDownPlot can be set to a value, which will act like plt.pause(slowDownPlot) for every step of the environment</p></li>
+<li><p>everything that will be displayed is at runtime</p></li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="find_correlation.html" class="btn btn-neutral float-left" title="Find Correlation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="test_scripts.html" class="btn btn-neutral float-right" title="The test scripts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kévin-Lâm Quesnel and Anurag Maurya.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

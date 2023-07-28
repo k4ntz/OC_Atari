@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="python3.9" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The OCAtari Environments &mdash; OCAtari  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Game Objects Details" href="game_objects.html" />
+    <link rel="prev" title="Welcome to OCAtari&#39;s documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            OCAtari
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The OCAtari Environments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.core.OCAtari"><code class="docutils literal notranslate"><span class="pre">OCAtari</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.core.OCAtari.close"><code class="docutils literal notranslate"><span class="pre">OCAtari.close()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.core.OCAtari.dqn_obs"><code class="docutils literal notranslate"><span class="pre">OCAtari.dqn_obs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.core.OCAtari.get_ram"><code class="docutils literal notranslate"><span class="pre">OCAtari.get_ram()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.core.OCAtari.nb_actions"><code class="docutils literal notranslate"><span class="pre">OCAtari.nb_actions</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.core.OCAtari.objects"><code class="docutils literal notranslate"><span class="pre">OCAtari.objects</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.core.OCAtari.render"><code class="docutils literal notranslate"><span class="pre">OCAtari.render()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.core.OCAtari.reset"><code class="docutils literal notranslate"><span class="pre">OCAtari.reset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.core.OCAtari.set_ram"><code class="docutils literal notranslate"><span class="pre">OCAtari.set_ram()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.core.OCAtari.step"><code class="docutils literal notranslate"><span class="pre">OCAtari.step()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="game_objects.html">Game Objects Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ram.html">RAM extraction mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vision.html">Vision processing mode</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Scripts:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/alter_ram_while_playing.html">Alter RAM while playing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/automated_analysis.html">Automated Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/find_causative_ram.html">Causative RAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/reverse_engineering_helper.html">Reverse Engineering Helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/test_scripts.html">The test scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tests:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tests/comparison_test.html">Comparison test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/detection_metrics.html">Get detection metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/extraction_test.html">Extraction test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/test_speed.html">Speed test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/tests_utils.html">Tests utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OCAtari</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">The OCAtari Environments</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/ocatari/core.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="the-ocatari-environments">
+<h1>The OCAtari Environments<a class="headerlink" href="#the-ocatari-environments" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.core.OCAtari">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.core.</span></span><span class="sig-name descname"><span class="pre">OCAtari</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hud</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dqn'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/core.html#OCAtari"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.core.OCAtari" title="Permalink to this definition"></a></dt>
+<dd><p>The OCAtari environment. Initialize it to get a Atari environments with objects tracked.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>env_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) -- The name of the Atari gymnasium environment e.g. &quot;Pong&quot; or &quot;PongNoFrameskip-v5&quot;</p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) -- The detection method type: one of <cite>raw</cite>, <cite>revised</cite>, or <cite>vision</cite>, or <cite>both</cite> (i.e. <cite>revised</cite> + <cite>vision</cite>)</p></li>
+<li><p><strong>hud</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) -- Wether to include or not objects from the HUD (e.g. scores, lives)</p></li>
+<li><p><strong>obs_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) -- How to fill the image buffer (contaning the 4 last frames): one of <cite>None</cite>, <cite>dqn</cite>, <cite>ori</cite></p></li>
+</ul>
+</dd>
+</dl>
+<p>the remaining *args and **kwargs will be passed to the         <a class="reference external" href="https://gymnasium.farama.org/api/registry/#gymnasium.make">gymnasium.make</a> function.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.core.OCAtari.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/core.html#OCAtari.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.core.OCAtari.close" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the render frames as specified by render_mode during the initialization of the environment.
+See <a class="reference external" href="https://gymnasium.farama.org/api/env/#gymnasium.Env.close">env.close()</a> for gymnasium details.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ocatari.core.OCAtari.dqn_obs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dqn_obs</span></span><a class="headerlink" href="#ocatari.core.OCAtari.dqn_obs" title="Permalink to this definition"></a></dt>
+<dd><p>The 4 (grey+down)scaled last frames (84x84) of the environment, used notably by dqn agents as states.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.core.OCAtari.get_ram">
+<span class="sig-name descname"><span class="pre">get_ram</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/core.html#OCAtari.get_ram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.core.OCAtari.get_ram" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the RAM state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The 128 list of RAM bytes</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of 128 uint8 values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ocatari.core.OCAtari.nb_actions">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nb_actions</span></span><a class="headerlink" href="#ocatari.core.OCAtari.nb_actions" title="Permalink to this definition"></a></dt>
+<dd><p>The number of actions available in this environments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ocatari.core.OCAtari.objects">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">objects</span></span><a class="headerlink" href="#ocatari.core.OCAtari.objects" title="Permalink to this definition"></a></dt>
+<dd><p>A list of the object present in the environment. The objects are either         ocatari.vision.GameObject or ocatari.ram.GameObject, depending on the extraction method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of GameObjects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.core.OCAtari.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/core.html#OCAtari.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.core.OCAtari.render" title="Permalink to this definition"></a></dt>
+<dd><p>After the user has finished using the environment, close contains the code necessary to &quot;clean up&quot; the environment.
+See <a class="reference external" href="https://gymnasium.farama.org/api/env/#gymnasium.Env.render">env.render()</a> for gymnasium details.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.core.OCAtari.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/core.html#OCAtari.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.core.OCAtari.reset" title="Permalink to this definition"></a></dt>
+<dd><p>Resets the buffer and environment to an initial internal state, returning an initial observation and info.
+See <a class="reference external" href="https://gymnasium.farama.org/api/env/#gymnasium.Env.reset">env.reset()</a> for gymnasium details.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.core.OCAtari.set_ram">
+<span class="sig-name descname"><span class="pre">set_ram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_ram_position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/core.html#OCAtari.set_ram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.core.OCAtari.set_ram" title="Permalink to this definition"></a></dt>
+<dd><p>Directly set a given value at a targeted RAM position.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_ram_position</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) -- The ram position to be altered</p></li>
+<li><p><strong>new_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) -- The value to put at this RAM position</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.core.OCAtari.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/core.html#OCAtari.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.core.OCAtari.step" title="Permalink to this definition"></a></dt>
+<dd><p>Run one timestep of the environment's dynamics using the agent actions.         Extracts the objects, using RAM or vision based on the <cite>mode</cite> variable set at initialization.         Fills the buffer if <cite>obs_mode</cite> was not None at initialization.         The runs the Atari environment <a class="reference external" href="https://gymnasium.farama.org/api/env/#gymnasium.Env.step">env.step()</a> method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>action</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) -- The action to perform at this step.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to OCAtari&#39;s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="game_objects.html" class="btn btn-neutral float-right" title="Game Objects Details" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kévin-Lâm Quesnel and Anurag Maurya.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
