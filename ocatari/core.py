@@ -7,6 +7,8 @@ from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revi
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
 
+from ale_py import ALEInterface
+
 try:
     import cv2
 except ModuleNotFoundError:
@@ -19,6 +21,14 @@ try:
     torch_imported = True
 except ModuleNotFoundError:
     torch_imported = False
+
+try:
+    import pygame
+except ModuleNotFoundError:
+    print(
+        "\npygame is required for human rendering. ",
+        "Try `pip install pygame`.\n",
+    )
 
 DEVICE = "cpu"
 
@@ -129,6 +139,26 @@ class OCAtari:
         self._fill_buffer()
         # if self.obs_mode in ["dqn", "ori"]:
         #     obs = self._get_buffer_as_stack()
+        # if pygame.display.get_surface():
+        
+        # if self.render_mode == "human":
+        #     for obj in self.objects:
+        #         x = obj.x + obj.w / 2
+        #         y = obj.y + obj.h / 2
+        #         dx = obj.dx
+        #         dy = obj.dy
+
+        #         # Draw an 'X' at object center
+        #         pygame.draw.line(screen, color=(255, 255, 255),
+        #                         start_pos=(x - 2, y - 2), end_pos=(x + 2, y + 2))
+        #         pygame.draw.line(screen, color=(255, 255, 255),
+        #                         start_pos=(x - 2, y + 2), end_pos=(x + 2, y - 2))
+
+        #         # Draw velocity vector
+        #         if dx != 0 or dy != 0:
+        #             pygame.draw.line(screen, color=(100, 200, 255),
+        #                             start_pos=(float(x), float(y)), end_pos=(x + 8 * dx, y + 8 * dy))
+        
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
@@ -309,3 +339,56 @@ class OCAtari:
             rendered += coef * state_i
         rendered = rendered.cpu().detach().to(int).numpy()
         return rendered
+
+
+class HideEnemyPong(OCAtari):
+    def __init__(self, env_name, mode="raw", hud=False, obs_mode="dqn", *args, **kwargs):
+        self.render_mode = kwargs["render_mode"] if "render_mode" in kwargs else None
+        if self.render_mode == "human":
+            kwargs["render_mode"] = None
+            self.screen = pygame.display.set_mode((160, 210), flags=pygame.SCALED)
+            pygame.init()
+        super().__init__(env_name, mode, hud, obs_mode, *args, **kwargs)
+
+    def _step_ram(self, *args, **kwargs):
+        self._make_rendering()
+        return super()._step_ram(*args, **kwargs)
+    
+    def _make_rendering(self):
+        rgb_array = self._ale.getScreenRGB()
+        rgb_array[34:194, 4:20] = [144, 72, 17]
+
+        # Render RGB image
+        rgb_array = np.transpose(rgb_array, (1, 0, 2))
+        pygame.pixelcopy.array_to_surface(self.screen, rgb_array)
+
+
+        # # Render object coordinates and velocity vectors
+        # for obj in self.objects:
+        #     x = obj.x + obj.w / 2
+        #     y = obj.y + obj.h / 2
+        #     dx = obj.dx
+        #     dy = obj.dy
+
+        #     # Draw an 'X' at object center
+        #     pygame.draw.line(self.screen, color=(255, 255, 255),
+        #                     start_pos=(x - 2, y - 2), end_pos=(x + 2, y + 2))
+        #     pygame.draw.line(self.screen, color=(255, 255, 255),
+        #                     start_pos=(x - 2, y + 2), end_pos=(x + 2, y - 2))
+
+        #     # Draw velocity vector
+        #     if dx != 0 or dy != 0:
+        #         pygame.draw.line(self.screen, color=(100, 200, 255),
+        #                         start_pos=(float(x), float(y)), end_pos=(x + 8 * dx, y + 8 * dy))
+
+        pygame.display.flip()
+        pygame.event.pump()
+    
+    def _fill_buffer_dqn(self):
+        image = self._ale.getScreenGrayscale()
+        image[34:194, 8:24] = 87
+        state = cv2.resize(
+            image, (84, 84), interpolation=cv2.INTER_AREA,
+        )
+        self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
+                                               device=DEVICE))
