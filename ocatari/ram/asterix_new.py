@@ -4,13 +4,12 @@ import math
 
 
 class Player(GameObject):
-    class Player(GameObject):
-        def __init__(self):
-            super().__init__()
-            self.rgb = 187, 187, 53
-            self._xy = 0, 0
-            self.wh = 8, 11  # at some point 16, 11. advanced other player (oblix) is (6, 11)
-            self.hud = False
+    def __init__(self):
+        super().__init__()
+        self.rgb = 187, 187, 53
+        self._xy = 0, 0
+        self.wh = 8, 11  # at some point 16, 11. advanced other player (oblix) is (6, 11)
+        self.hud = False
 
 
 class Cauldron(GameObject):
