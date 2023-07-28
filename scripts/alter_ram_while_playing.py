@@ -25,7 +25,8 @@ import pickle
 
 parser = ArgumentParser()
 parser.add_argument("-g", "--game", type=str, help="The complete name of the game", required=True)
-
+parser.add_argument("-s", "--snapshot", type=str, default=None,
+                    help="Path to snapshot to start from.")
 parser.add_argument("-t", "--tracklist", type=int, default=[], nargs="+",
                     help="A list of tracked RAM position that will be printed out")
 
@@ -121,8 +122,9 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    # snapshot = pickle.load(open("riverplane.pkl", "rb"))
-    # env._env.env.env.ale.restoreState(snapshot)
+    if opts.snapshot:
+        snapshot = pickle.load(open(opts.snapshot, "rb"))
+        env._env.env.env.ale.restoreState(snapshot)
 
     run(oc)
 

@@ -45,6 +45,7 @@ def make_deterministic(seed, mdp, states_dict=None):
         torch.backends.cudnn.benchmark = False
     print(f"Set all environment deterministic to seed {seed}")
 
+
 if torch_imported:
     class AtariNet(nn.Module):
         """ Estimator used by DQN-style algorithms for ATARI games.
