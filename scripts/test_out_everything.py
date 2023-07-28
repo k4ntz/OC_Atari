@@ -30,6 +30,8 @@ def ransac_regression(x, y):
 
 parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
+parser.add_argument("-s", "--snapshot", type=str, default=None,
+                    help="Path to snapshot to start from.")
 parser.add_argument("-dqn", "--dqn", action="store_true", help="Use DQN agent")
 
 opts = parser.parse_args()
@@ -43,7 +45,7 @@ random.seed(0)
 
 INTERACTIVE = False
 ONE_CHANGE = False
-initial_ram_n = 0
+initial_ram_n = 44
 
 
 make_deterministic(0, env)
@@ -62,13 +64,14 @@ class Options(object):
 
 snapshot = None
 
-snapshot = pickle.load(open("snapshots/seaquest.pkl", "rb"))
-env._env.env.env.ale.restoreState(snapshot)
+if opts.snapshot:
+    snapshot = pickle.load(open(opts.snapshot, "rb"))
+    env._ale.restoreState(snapshot)
 
 if snapshot is None:
     for _ in range(20):
         resulting_obs, _, _, _, _ = env.step(random.randint(0, env.nb_actions-1))
-        snapshot = env._env.env.env.ale.cloneState()
+        snapshot = env._ale.cloneState()
 
 base_next_obs, _, _, _, _ = env.step(0)
 base_objects = deepcopy(env.objects)
@@ -94,7 +97,7 @@ while ram_n < 127:
     shown = 0
     for i in range(255):
         already_seen = False
-        env._env.env.env.ale.restoreState(snapshot)
+        env._ale.restoreState(snapshot)
         original_ram = env.get_ram()[ram_n]
         env.set_ram(ram_n, i)
         resulting_obs, _, _, _, _ = env.step(0)
@@ -135,7 +138,7 @@ while ram_n < 127:
                 while askinput:
                     el = input("What to do next ? (number/a/j/c/b)")
                     if el.isnumeric():
-                        env._env.env.env.ale.restoreState(snapshot)
+                        env._ale.restoreState(snapshot)
                         env.set_ram(ram_n, int(el))
                         new_obs, _, _, _, _ = env.step(0)
                         im_diff = new_obs - prev_obs

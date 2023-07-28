@@ -8,10 +8,18 @@ RAM extraction for the game Asterix.
 
 
 class Player(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 187, 187, 53
+        self._xy = 0, 0
+        self.wh = 8, 11  # at some point 16, 11. advanced other player (oblix) is (6, 11)
+        self.hud = False
+
+
+class Cauldron(GameObject):
     """
     The player figure i.e., first asterix and then, as the game progresses, obelix. 
     """
-    
     def __init__(self):
         super().__init__()
         self.rgb = 187, 187, 53
