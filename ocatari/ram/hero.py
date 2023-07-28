@@ -2,6 +2,10 @@ from enum import Enum
 
 from .game_objects import GameObject
 
+"""
+RAM extraction for the game H.E.R.O.
+"""
+
 MAX_NB_OBJECTS = {"Wall": 15, "LavaWall": 15, "Enemy": 10, "Player": 1, "LaserBeam": 3, "Bomb": 5, "EndNPC": 1,
                   "Lamp": 1, "Snake": 5, }
 MAX_NB_OBJECTS_HUD = {"Wall": 15, "LavaWall": 15, "Enemy": 10, "Player": 1, "LaserBeam": 3, "Bomb": 5, "EndNPC": 1,
@@ -9,6 +13,10 @@ MAX_NB_OBJECTS_HUD = {"Wall": 15, "LavaWall": 15, "Enemy": 10, "Player": 1, "Las
 
 
 class Wall(GameObject):
+    """
+    The walls in the mineshafts.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -17,6 +25,10 @@ class Wall(GameObject):
 
 
 class LavaWall(GameObject):
+    """
+    The lava walls in the mineshafts.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -32,6 +44,10 @@ class EnemyType(Enum):
 
 
 class Enemy(GameObject):
+    """
+    The dangerous creatures inside the mineshafts.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -40,6 +56,10 @@ class Enemy(GameObject):
 
 
 class Snake(GameObject):
+    """
+    The snakes.
+    """
+    
     def __init__(self, *args, **kwargs):
         self.xy = 0, 0
         self.wh = 8, 10
@@ -47,6 +67,10 @@ class Snake(GameObject):
 
 
 class Player(GameObject):
+    """
+    The player figure.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -54,6 +78,10 @@ class Player(GameObject):
 
 
 class LaserBeam(GameObject):
+    """
+    The laser beams shot from the helmet of the player figure.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -61,6 +89,10 @@ class LaserBeam(GameObject):
 
 
 class Bomb(GameObject):
+    """
+    The dynamite sticks that can be deployed by the player.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -68,6 +100,10 @@ class Bomb(GameObject):
 
 
 class EndNPC(GameObject):
+    """
+    The trapped miners to be rescued.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -75,6 +111,10 @@ class EndNPC(GameObject):
 
 
 class Lamp(GameObject):
+    """
+    The lanterns that light the mineshafts.
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -82,6 +122,10 @@ class Lamp(GameObject):
 
 
 class PowerBar(GameObject):
+    """
+    The power gauge (HUD).
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -90,6 +134,10 @@ class PowerBar(GameObject):
 
 
 class BombStock(GameObject):
+    """
+    The indicator for remaining dynamite sticks (HUD).
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -98,6 +146,10 @@ class BombStock(GameObject):
 
 
 class Life(GameObject):
+    """
+    The indicator for the player's remaining lives (HUD).
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -105,6 +157,10 @@ class Life(GameObject):
 
 
 class Score(GameObject):
+    """
+    The player's score display (HUD).
+    """
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
@@ -176,7 +232,7 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
                 laser_beam.xy = player_xy[0] + 4 + 11 * orientation, player_xy[1] + 3
 
     # wall disposition
-    # TODO switch case =function of ram_sate[28] + level = ram_state[117] + 1
+    # TODO switch case = function of ram_sate[28] and which level = ram_state[117] + 1
 
     # destructible wall
     destructible_wall = objects_map.get(f"destructible wall")

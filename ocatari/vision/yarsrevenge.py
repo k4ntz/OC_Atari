@@ -1,9 +1,9 @@
-from .utils import find_objects,find_mc_objects
+from .utils import find_objects,find_mc_objects, find_rectangle_objects
 from .game_objects import GameObject
 import numpy as np
 
 objects_colors = {
-    "player": [169,128,240]
+    "player": [169,128,240], "shield": [163,57,21]
     }
 player_colors=[[132,144,252],[252,144,144]]
 barrier_colors=[[162,134,56],[200,72,72],[82,126,45]]
@@ -35,7 +35,7 @@ class Enemy_Missile(GameObject):
 class Barrier(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 250,250,250
+        self.rgb = 163,57,21
         self.hud = False
 
 class Player_Bullet(GameObject):
@@ -50,6 +50,11 @@ class Shield_Block(GameObject):
         self.rgb = 163,57,21
         self.hud = False
 
+class Canon(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 163,57,21
+        self.hud = False
 
 
 # List of objects to detect: Player, Enemy, Swirl, fired bullets by Player, missile by Enemy, Cannon that appears, Shield chunks, Barrier
@@ -106,6 +111,10 @@ def _detect_objects_yarsrevenge(objects, obs, hud=False):
 
     # Currently throwing some unknown error
     # Detecting the fired Missile by Enemy 
+
+    shield = find_rectangle_objects(obs, objects_colors["shield"], max_size=(4,8),minx=125)
+    for s in shield:
+        objects.append(Shield_Block(*s))
 
     if hud:
         pass

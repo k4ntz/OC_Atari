@@ -20,8 +20,8 @@ parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
 parser.add_argument("-i", "--interval", type=int, default=10,
                     help="The frame interval (default 10)")
-# parser.add_argument("-m", "--mode", choices=["vision", "revised"],
-#                     default="revised", help="The frame interval")
+parser.add_argument("-s", "--start", type=int, default=0,
+                    help="The frame to start from")
 parser.add_argument("-hud", "--hud", action="store_true", help="Detect HUD")
 parser.add_argument("-dqn", "--dqn", action="store_true", help="Use DQN agent")
 parser.add_argument("-snap", "--snapshot", type=str, default="",
@@ -44,7 +44,6 @@ if opts.dqn:
 
 make_deterministic(0, env)
 
-
 for i in range(100000):
     try:
         if opts.dqn:
@@ -53,9 +52,10 @@ for i in range(100000):
             action = random.randint(0, env.nb_actions-1)
         obs, reward, terminated, truncated, info = env.step(action)
         obs2 = deepcopy(obs)
-        if i >= 10 and i % opts.interval == 0:
-            print(f"{i=}")
+        if i >= opts.start and i % opts.interval == 0:
             fig, axes = plt.subplots(1, 2)
+            for robj in env.objects:
+                print(robj, robj.closest_object(env.objects_v))
             for obs, objects_list, title, ax in zip([obs, obs2], [env.objects, env.objects_v], ["ram", "vision"], axes):
                 toprint = sorted(objects_list, key=lambda o: str(o))
                 # print([o for o in toprint if "Fuel" in str(o)])

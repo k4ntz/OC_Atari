@@ -3,6 +3,10 @@ import numpy as np
 from termcolor import colored
 import sys
 
+"""
+RAM extraction for the game Space Invaders.
+"""
+
 MAX_NB_OBJECTS =  {'Player': 1, 'Shield': 3, 'Alien': 36, 'Bullet': 3, 'Satellite': 1}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Alien': 36, 'Bullet': 3, 'Satellite': 1, 'Score': 4, 'Lives': 2}
 
@@ -16,6 +20,10 @@ def print_bmp(bmp):
 
 
 class Player(GameObject):
+    """
+    The player figure i.e., the laser cannon.
+    """
+    
     def __init__(self, num=1):
         super().__init__()
         if num == 1:
@@ -29,6 +37,10 @@ class Player(GameObject):
 
 
 class Alien(GameObject):
+    """
+    The Space Invaders.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 134, 134, 29
@@ -38,6 +50,10 @@ class Alien(GameObject):
 
 
 class Satellite(GameObject):
+    """
+    The Command Alien Ship.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 151, 25, 122
@@ -47,6 +63,10 @@ class Satellite(GameObject):
 
 
 class Shield(GameObject):
+    """
+    The shields between the player's cannon and the Space Invaders.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 181, 83, 40
@@ -56,6 +76,10 @@ class Shield(GameObject):
 
 
 class Bullet(GameObject):
+    """
+    The player's laser beams and enemy laser bombs.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 142, 142, 142
@@ -65,6 +89,10 @@ class Bullet(GameObject):
 
 
 class Score(GameObject):
+    """
+    The player's score display (HUD).
+    """
+    
     def __init__(self, num=0, x=0):  # , num,
         super().__init__()
         if num == 1:
@@ -77,6 +105,10 @@ class Score(GameObject):
 
 
 class Lives(GameObject):
+    """
+    The indicator for the player's remaining lives (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 162, 134, 56

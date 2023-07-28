@@ -13,6 +13,10 @@ MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerScore': 1, 'Lives': 1, 'OxygenBar': 1
 
 
 class Player(GameObject):
+    """
+    The player figure i.e., the submarine.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 76, 46
@@ -23,6 +27,10 @@ class Player(GameObject):
 
 
 class Diver(GameObject):
+    """
+    The divers to be retrieved and rescued.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -32,15 +40,23 @@ class Diver(GameObject):
 
 
 class Enemy(GameObject):
+    """
+    The killer sharks.
+    """
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
         self.wh = 8, 7
-        self.rgb = 1, 1, 1
+        self.rgb = 92, 186, 92
         self.hud = False
 
 
 class EnemySubmarine(GameObject):
+    """
+    The enemy submarines.
+    """
+    
     def __init__(self):
         self._xy = 0, 0
         self.wh = 8, 11
@@ -49,6 +65,10 @@ class EnemySubmarine(GameObject):
 
 
 class EnemyMissile(GameObject):
+    """
+    The torpedoes fired from enemy submarines.
+    """
+    
     def __init__(self):
         self._xy = 0, 0
         self.wh = 6, 4
@@ -57,6 +77,10 @@ class EnemyMissile(GameObject):
 
 
 class PlayerMissile(GameObject):
+    """
+    The torpedoes launched from the player's submarine.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -66,6 +90,10 @@ class PlayerMissile(GameObject):
 
 
 class PlayerScore(GameObject):
+    """
+    The player's score display (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 99, 9
@@ -78,6 +106,10 @@ class PlayerScore(GameObject):
 
 
 class Lives(GameObject):
+    """
+    The indidcator for remaining reserve subs (lives) (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 58, 22
@@ -87,6 +119,10 @@ class Lives(GameObject):
 
 
 class OxygenBar(GameObject):
+    """
+    The oxygen gauge (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 49, 170
@@ -96,6 +132,10 @@ class OxygenBar(GameObject):
 
 
 class OxygenBarDepleted(GameObject):
+    """
+    The empty oxygen bar (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 49, 170
@@ -105,6 +145,10 @@ class OxygenBarDepleted(GameObject):
 
 
 class OxygenBarLogo(GameObject):
+    """
+    The 'OXYGEN' lettering next to the oxygen gauge (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 15, 170
@@ -114,6 +158,10 @@ class OxygenBarLogo(GameObject):
 
 
 class CollectedDiver(GameObject):
+    """
+    The indicator for collected divers (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -152,6 +200,7 @@ def _detect_objects_seaquest_revised(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = ram_state[70], ram_state[97] + 32
     player.orientation = ram_state[86]
+    offset = ram_state[1] % 16 - 8
     if hud:
         score = objects[1]
         del objects[2:]
@@ -216,6 +265,7 @@ def _calculate_objects(ram_state):
     divers_or_enemy_missiles = []
     missiles = []
     is_submarine = []
+    
 
     for i in range(4):
         if 3 < ram_state[89 + i] % 8 < 7:
@@ -252,7 +302,7 @@ def _calculate_objects(ram_state):
     # offset of 16 in x-position because the ram only saves the x-position of the left enemy
     for i in range(4):
         if (ram_state[36 + i] == 2 or ram_state[36 + i] == 3 or ram_state[36 + i] == 6 or ram_state[36 + i] == 7) \
-                and (ram_state[30] + 16) % 256 < 160:
+                and (ram_state[30 + i] + 16) % 256 < 160:
             if is_submarine[i]:
                 submarine = EnemySubmarine()
                 submarine.xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24

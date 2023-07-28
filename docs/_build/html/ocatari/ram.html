@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="python3.9" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAM extraction mode &mdash; OCAtari  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Vision processing mode" href="vision.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="games/beamrider.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            OCAtari
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="core.html">The OCAtari Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="game_objects.html">Game Objects Details</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">RAM extraction mode</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.game_objects.GameObject"><code class="docutils literal notranslate"><span class="pre">GameObject</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.game_objects.GameObject.closest_object"><code class="docutils literal notranslate"><span class="pre">GameObject.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.game_objects.GameObject.is_on_top"><code class="docutils literal notranslate"><span class="pre">GameObject.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.game_objects.GameObject.manathan_distance"><code class="docutils literal notranslate"><span class="pre">GameObject.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.game_objects.ScoreObject"><code class="docutils literal notranslate"><span class="pre">ScoreObject</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.game_objects.ScoreObject.closest_object"><code class="docutils literal notranslate"><span class="pre">ScoreObject.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.game_objects.ScoreObject.is_on_top"><code class="docutils literal notranslate"><span class="pre">ScoreObject.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.game_objects.ScoreObject.manathan_distance"><code class="docutils literal notranslate"><span class="pre">ScoreObject.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram._helper_methods.bitfield_to_number"><code class="docutils literal notranslate"><span class="pre">bitfield_to_number()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram._helper_methods.get_iou"><code class="docutils literal notranslate"><span class="pre">get_iou()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram._helper_methods.number_to_bitfield"><code class="docutils literal notranslate"><span class="pre">number_to_bitfield()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vision.html">Vision processing mode</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Scripts:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/alter_ram_while_playing.html">Alter RAM while playing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/automated_analysis.html">Automated Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/find_causative_ram.html">Causative RAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/reverse_engineering_helper.html">Reverse Engineering Helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/test_scripts.html">The test scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tests:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tests/comparison_test.html">Comparison test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/detection_metrics.html">Get detection metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/extraction_test.html">Extraction test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/test_speed.html">Speed test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/tests_utils.html">Tests utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OCAtari</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">RAM extraction mode</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/ocatari/ram.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-ocatari.ram">
+<span id="ram-extraction-mode"></span><h1>RAM extraction mode<a class="headerlink" href="#module-ocatari.ram" title="Permalink to this heading"></a></h1>
+<p>RAM Extraction submodule of OCAtari</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.game_objects.GameObject">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.game_objects.</span></span><span class="sig-name descname"><span class="pre">GameObject</span></span><a class="reference internal" href="../_modules/ocatari/ram/game_objects.html#GameObject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.game_objects.GameObject" title="Permalink to this definition"></a></dt>
+<dd><p>The Parent Class of every detected object in the Atari games (RAM Extraction mode)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>category</strong> -- The Category of class name of the game object (e.g. Player, Ball).</p></li>
+<li><p><strong>x</strong> -- The x positional coordinate on the image (on the horizontal axis).</p></li>
+<li><p><strong>y</strong> -- The y positional coordinate on the image (on the vertical axis).</p></li>
+<li><p><strong>w</strong> -- The width/horizontal size of the object (in pixels).</p></li>
+<li><p><strong>h</strong> -- The height/vertical size of the object (in pixels).</p></li>
+<li><p><strong>prev_xy</strong> -- The positional coordinates x and y of the previous time step in a tuple.</p></li>
+<li><p><strong>xy</strong> -- Both positional coordinates x and y in a tuple.</p></li>
+<li><p><strong>h_coords</strong> -- History of coordinates, i.e. current (x, y) and previous (x, y) position.</p></li>
+<li><p><strong>dx</strong> -- The pixel movement corresponding to: current_x - previous_x.</p></li>
+<li><p><strong>dy</strong> -- The pixel movement corresponding to: current_y - previous_y.</p></li>
+<li><p><strong>xywh</strong> -- The positional and width/height coordinates in a single tuple (x, y, w, h).</p></li>
+<li><p><strong>orientation</strong> -- The orientation of the object (if available); game specific.</p></li>
+<li><p><strong>center</strong> -- The center of the bounding box of the object.</p></li>
+<li><p><strong>hud</strong> -- True if part of the Heads Up Display, and thus not interactable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.game_objects.GameObject.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/ram/game_objects.html#GameObject.closest_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.game_objects.GameObject.closest_object" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.game_objects.GameObject.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/ram/game_objects.html#GameObject.is_on_top"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.game_objects.GameObject.is_on_top" title="Permalink to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.game_objects.GameObject.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/ram/game_objects.html#GameObject.manathan_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.game_objects.GameObject.manathan_distance" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.game_objects.ScoreObject">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.game_objects.</span></span><span class="sig-name descname"><span class="pre">ScoreObject</span></span><a class="reference internal" href="../_modules/ocatari/ram/game_objects.html#ScoreObject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.game_objects.ScoreObject" title="Permalink to this definition"></a></dt>
+<dd><p>This class represents the score of the player (or sometimes Enemy).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> -- The value of the score:</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.game_objects.ScoreObject.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.game_objects.ScoreObject.closest_object" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.game_objects.ScoreObject.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.game_objects.ScoreObject.is_on_top" title="Permalink to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.game_objects.ScoreObject.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.game_objects.ScoreObject.manathan_distance" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-ocatari.ram._helper_methods"></span><p>Set of helper methods that are used in multiple Atari games</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ocatari.ram._helper_methods.bitfield_to_number">
+<span class="sig-prename descclassname"><span class="pre">ocatari.ram._helper_methods.</span></span><span class="sig-name descname"><span class="pre">bitfield_to_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/ram/_helper_methods.html#bitfield_to_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram._helper_methods.bitfield_to_number" title="Permalink to this definition"></a></dt>
+<dd><p>Converts an int to a list of 1s and 0s which represent each bit of the input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> (<em>uint8</em>) -- The number to be converted</p></li>
+<li><p><strong>flip</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) -- Weter to flip the array or not.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The bit list corresponding to this number.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ocatari.ram._helper_methods.get_iou">
+<span class="sig-prename descclassname"><span class="pre">ocatari.ram._helper_methods.</span></span><span class="sig-name descname"><span class="pre">get_iou</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/ram/_helper_methods.html#get_iou"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram._helper_methods.get_iou" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the intersection over union between two GameObjects.
+<a class="reference internal" href="https://www.interstellarengine.com/ai/3FF/0705mh00x005.png"><img alt="Visual description of IOU" src="https://www.interstellarengine.com/ai/3FF/0705mh00x005.png" style="width: 400px;" /></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj1</strong> (<a class="reference internal" href="#ocatari.ram.game_objects.GameObject" title="ocatari.ram.game_objects.GameObject"><em>ocatari.ram.game_objects.GameObject</em></a><em> or </em><a class="reference internal" href="vision.html#ocatari.vision.game_objects.GameObject" title="ocatari.vision.game_objects.GameObject"><em>ocatari.vision.game_objects.GameObject</em></a>) -- The bouding box of the detected object in (x, y, w, h) format</p></li>
+<li><p><strong>obj2</strong> (<a class="reference internal" href="#ocatari.ram.game_objects.GameObject" title="ocatari.ram.game_objects.GameObject"><em>ocatari.ram.game_objects.GameObject</em></a><em> or </em><a class="reference internal" href="vision.html#ocatari.vision.game_objects.GameObject" title="ocatari.vision.game_objects.GameObject"><em>ocatari.vision.game_objects.GameObject</em></a>) -- The ground truth bouding box</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ocatari.ram._helper_methods.number_to_bitfield">
+<span class="sig-prename descclassname"><span class="pre">ocatari.ram._helper_methods.</span></span><span class="sig-name descname"><span class="pre">number_to_bitfield</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ocatari/ram/_helper_methods.html#number_to_bitfield"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram._helper_methods.number_to_bitfield" title="Permalink to this definition"></a></dt>
+<dd><p>Convert number to 8 bit bitfield.</p>
+<p>Games like SpaceInvaders or Breakout use the bit representation of the number in the RAM to display or not display
+the objects. In most cases a 1 means the objects is displayed and a 0 means the object is not displayed.
+In SpaceInvaders the bit sequence needs to be reversed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n</strong> (<em>uint8</em>) -- The number to be converted</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The number in decimal</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="games/beamrider.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="vision.html" class="btn btn-neutral float-right" title="Vision processing mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kévin-Lâm Quesnel and Anurag Maurya.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

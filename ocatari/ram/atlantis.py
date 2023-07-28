@@ -12,6 +12,10 @@ MAX_NB_OBJECTS_HUD = {'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'D
                       'BridgedBazaar': 1, 'AquaPlane': 1, 'Projectile': 2, 'GorgonShip': 4, 'Deathray': 1, 'Score': 1, 'BanditBomber': 3}
 
 class Sentry(GameObject):
+    """
+    The left and right sentry posts. 
+    """
+    
     def __init__(self):
         super(Sentry, self).__init__()
         self._xy = 0, 124
@@ -22,6 +26,10 @@ class Sentry(GameObject):
 
 # No clue how the projectiles work
 class Projectile(GameObject):
+    """
+    The projectiles shot from the sentry posts or the Acropolis Command Post. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -31,6 +39,10 @@ class Projectile(GameObject):
 
 
 class AquaPlane(GameObject):
+    """
+    The Aqua Plain district of the city. 
+    """
+
     def __init__(self):
         super(AquaPlane, self).__init__()
         self._xy = 16, 171
@@ -40,6 +52,10 @@ class AquaPlane(GameObject):
 
 
 class DomedPalace(GameObject):
+    """
+    The Doomed Palace district of the city. 
+    """
+    
     def __init__(self):
         super(DomedPalace, self).__init__()
         self._xy = 38, 148
@@ -49,6 +65,10 @@ class DomedPalace(GameObject):
 
 
 class Generator(GameObject):
+    """
+    The three Generator Stations. 
+    """
+    
     def __init__(self):
         super(Generator, self).__init__()
         self._xy = 62, 137
@@ -58,6 +78,10 @@ class Generator(GameObject):
 
 
 class BridgedBazaar(GameObject):
+    """
+    The Bridged Bazaar district of the city. 
+    """
+    
     def __init__(self):
         super(BridgedBazaar, self).__init__()
         self._xy = 96, 159
@@ -67,6 +91,10 @@ class BridgedBazaar(GameObject):
 
 
 class AcropolisCommandPost(GameObject):
+    """
+    The Acropolis Command Post that defends the centre of Atlantis. 
+    """
+    
     def __init__(self):
         super(AcropolisCommandPost, self).__init__()
         self._xy = 72, 112
@@ -76,6 +104,10 @@ class AcropolisCommandPost(GameObject):
 
 
 class BanditBomber(GameObject):
+    """
+    The fast Gorgon Bandit Bombers. 
+    """
+    
     def __init__(self):
         super(BanditBomber, self).__init__()
         self._xy = 0, 0
@@ -85,6 +117,10 @@ class BanditBomber(GameObject):
 
 
 class GorgonShip(GameObject):
+    """
+    The Large Gorgon Vessels. 
+    """
+    
     def __init__(self):
         super(GorgonShip, self).__init__()
         self._xy = 0, 0
@@ -94,6 +130,10 @@ class GorgonShip(GameObject):
 
 
 class Deathray(GameObject):
+    """
+    The deathray fired by close Gorgon units. 
+    """
+    
     def __init__(self):
         super(Deathray, self).__init__()
         self._xy = 0, 92
@@ -103,6 +143,10 @@ class Deathray(GameObject):
 
 
 class Score(GameObject):
+    """
+    The player's score display.
+    """
+    
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 96, 188

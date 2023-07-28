@@ -2,6 +2,9 @@ import sys
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
 
+"""
+RAM extraction for the game Skiing.
+"""
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4, 'Score': 2, 'Clock': 7}
@@ -49,6 +52,10 @@ PREV_RAM_STATE = 0
 
 
 class Player(GameObject):
+    """
+    The player figure i.e., the skier.
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -59,6 +66,14 @@ class Player(GameObject):
 
 
 class Flag(GameObject):
+    """
+    The poles (depicted as flags) of the gates.
+    
+    :ivar xy: Both positional coordinates x and y in a tuple. 
+    :type: (int, int)
+    
+    """
+    
     def __init__(self, x=0, y=0, subtype=0):
         super().__init__()
         self.rgb = FLAG_COLOR[subtype]
@@ -86,6 +101,14 @@ class Flag(GameObject):
 
 
 class Mogul(GameObject):
+    """
+    The moguls on the piste.
+    
+    :ivar xy: Both positional coordinates x and y in a tuple. 
+    :type: (int, int)
+    
+    """
+    
     def __init__(self, x=0, y=0, subtype=None):
         super().__init__()
         self.rgb = (214, 214, 214)
@@ -109,6 +132,14 @@ class Mogul(GameObject):
 
 
 class Tree(GameObject):
+    """
+    The trees on the piste.
+    
+    :ivar xy: Both positional coordinates x and y in a tuple. 
+    :type: (int, int)
+    
+    """
+    
     def __init__(self, x=0, y=0, subtype=2):
         super().__init__()
         self.rgb = TREE_COLOR[subtype]
@@ -144,6 +175,10 @@ class Tree(GameObject):
 
 
 class Clock(GameObject):
+    """
+    The timer display (HUD).
+    """
+    
     def __init__(self, x=0, y=0, w=0, h=0):
         super().__init__()
         self._xy = x, y
@@ -153,6 +188,11 @@ class Clock(GameObject):
 
 
 class Score(GameObject):
+    """
+    The counter display. This can either be the remaining number of gates (slalom mode) 
+    or remaining meters (downhill racing) (HUD).
+    """
+    
     def __init__(self, ten=False):
         super().__init__()
         if ten:

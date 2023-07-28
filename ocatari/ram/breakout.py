@@ -6,6 +6,7 @@ import sys
 """
 RAM extraction for the game BREAKOUT. Supported modes: raw, revised.
 """
+
 # might be wrong
 # blockrow could go very very high with a performing agent
 
@@ -13,6 +14,10 @@ MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'BlockRow': 50}    # blockrow could go
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerScore': 3, 'Live': 1, 'PlayerNumber': 1, 'BlockRow': 50, 'Ball': 1}
 
 class Player(GameObject):
+    """
+    The player figure i.e., the paddle. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 99, 189
@@ -22,6 +27,10 @@ class Player(GameObject):
 
 
 class Ball(GameObject):
+    """
+    The game ball. 
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -31,6 +40,10 @@ class Ball(GameObject):
 
 
 class PlayerScore(GameObject):
+    """
+    The player's score display (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 36, 6
@@ -43,6 +56,10 @@ class PlayerScore(GameObject):
 
 
 class Live(GameObject):
+    """
+    The indicator for the remaining balls (lives) (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self._xy = 100, 5
@@ -52,6 +69,10 @@ class Live(GameObject):
 
 
 class BlockRow(GameObject):
+    """
+    The rows of the brickwall.
+    """
+    
     def __init__(self):
         super().__init__()
         self.xy = 8, 87
@@ -61,6 +82,11 @@ class BlockRow(GameObject):
 
 
 class PlayerNumber(GameObject):
+    """
+    The player index display (HUD).
+    """
+
+
     def __init__(self):
         super().__init__()
         self.xy = 136, 5

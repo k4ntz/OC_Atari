@@ -3,6 +3,10 @@ from ._helper_methods import bitfield_to_number, number_to_bitfield
 import math
 import sys
 
+"""
+RAM extraction for the game Centipede.
+"""
+
 MAX_NB_OBJECTS =  {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9, 'Mushroom': 42, 'Spider': 1, 'Flea': 1}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9, 'Mushroom': 42, 'Score': 4, 'Life': 2, 'Spider': 1, 'Flea': 1, 'Scorpion': 1}
 
@@ -13,7 +17,11 @@ ground_colors = [(110, 156, 66), (66, 114, 194), (198, 108, 58), (66, 72, 200),
                  (162, 162, 42), (184, 70, 162), (200, 72, 72), (146, 70, 192)]
 
 
-class CCGameObject(GameObject): # color changing game object
+class CCGameObject(GameObject):
+    """
+    A parent class for objects that change color throughout the game.
+    """
+    
     def __init__(self):
         super(CCGameObject, self).__init__()
     
@@ -23,6 +31,10 @@ class CCGameObject(GameObject): # color changing game object
 
 
 class CentipedeSegment(CCGameObject):
+    """
+    A segment of the centipede.
+    """
+    
     def __init__(self):
         super(CentipedeSegment, self).__init__()
         self._xy = 0, 0
@@ -33,6 +45,10 @@ class CentipedeSegment(CCGameObject):
 
 
 class Player(CCGameObject):
+    """
+    The player figure i.e., Oliver the elf. 
+    """
+    
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 0, 0
@@ -43,6 +59,10 @@ class Player(CCGameObject):
 
 
 class Projectile(GameObject):
+    """
+    The spells casted from the magic wand. 
+    """
+    
     def __init__(self):
         super(Projectile, self).__init__()
         self._xy = 0, 0
@@ -53,6 +73,10 @@ class Projectile(GameObject):
 
 
 class Mushroom(CCGameObject):
+    """
+    The mushrooms. 
+    """
+    
     def __init__(self):
         super(Mushroom, self).__init__()
         self._xy = 0, 0
@@ -63,6 +87,10 @@ class Mushroom(CCGameObject):
 
 
 class Spider(CCGameObject):
+    """
+    The spider that is trying to distract the player. 
+    """
+    
     def __init__(self):
         super(Spider, self).__init__()
         self._xy = 0, 0
@@ -73,6 +101,10 @@ class Spider(CCGameObject):
 
 
 class Flea(CCGameObject):  # i have no clue what it is supposed to be ...
+    """
+    The flea, which drops down and creates mushrooms in it's path. 
+    """
+    
     def __init__(self):     # some ball thingy with legs
         super(Flea, self).__init__()
         self._xy = 0, 0
@@ -83,6 +115,10 @@ class Flea(CCGameObject):  # i have no clue what it is supposed to be ...
 
 
 class Scorpion(CCGameObject):
+    """
+    The scorpion, which can run across the screen and poison mushrooms in it's path. 
+    """
+    
     def __init__(self):
         super(Scorpion, self).__init__()
         self._xy = 0, 0
@@ -93,6 +129,10 @@ class Scorpion(CCGameObject):
 
 
 class Score(GameObject):
+    """
+    The player's score display (HUD).
+    """
+    
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 96, 7
@@ -102,6 +142,10 @@ class Score(GameObject):
 
 
 class Ground(GameObject):
+    """
+    The ground line (HUD).
+    """
+    
     def __init__(self):
         super(Ground, self).__init__()
         self._xy = 16, 183
@@ -114,6 +158,10 @@ class Ground(GameObject):
 
 
 class Life(GameObject):
+    """
+    The indicator for the remaining magic wands (lives) (HUD). 
+    """
+    
     def __init__(self):
         super(Life, self).__init__()
         self._xy = 0, 0

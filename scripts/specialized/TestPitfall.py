@@ -24,7 +24,7 @@ printEnvInfo = True        # if True, the extracted objects or the environment i
 
 # gym[atari]/gymnasium
 # game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
-game_name = "Pitfall-v4"    # game name ChopperCommand-v4
+game_name = "Gopher-v4"    # game name ChopperCommand-v4
 render_mode = "human"           # render_mode => "rgb_array" is advised, when playing
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
@@ -107,8 +107,8 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_8.pkl", "rb"))
-    env._env.env.env.ale.restoreState(snapshot)
+    # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/bird_gopher.pkl", "rb"))
+    # env._env.env.env.ale.restoreState(snapshot)
     run(oc)
 
 
