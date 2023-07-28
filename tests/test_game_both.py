@@ -50,7 +50,6 @@ for i in range(100000):
             action = dqn_agent.draw_action(env.dqn_obs)
         else:
             action = random.randint(0, env.nb_actions-1)
-        import ipdb; ipdb.set_trace()
         obs, reward, terminated, truncated, info = env.step(action)
         obs2 = deepcopy(obs)
         if i >= opts.start and i % opts.interval == 0:
