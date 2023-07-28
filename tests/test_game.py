@@ -23,7 +23,7 @@ parser.add_argument("-hud", "--hud", action="store_true", help="If provided, det
 opts = parser.parse_args()
 
 
-env = OCAtari(opts.game, mode=opts.mode, render_mode='rgb_array', hud=opts.hud, obs_mode='dqn')
+env = OCAtari(opts.game+"Deterministic", mode=opts.mode, render_mode='rgb_array', hud=opts.hud, obs_mode='dqn')
 observation, info = env.reset()
 
 

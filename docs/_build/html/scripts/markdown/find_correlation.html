@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="python3.9" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>find_correlation &mdash; OCAtari  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            OCAtari
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ocatari/core.html">The OCAtari Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ocatari/game_objects.html">Game Objects Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ocatari/ram.html">RAM extraction mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ocatari/vision.html">Vision processing mode</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Scripts:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../alter_ram_while_playing.html">Alter RAM while playing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../automated_analysis.html">Automated Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../find_causative_ram.html">Causative RAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reverse_engineering_helper.html">Reverse Engineering Helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../test_scripts.html">The test scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tests:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tests/comparison_test.html">Comparison test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests/detection_metrics.html">Get detection metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests/extraction_test.html">Extraction test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests/test_speed.html">Speed test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests/tests_utils.html">Tests utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">OCAtari</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">find_correlation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/scripts/markdown/find_correlation.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="find-correlation">
+<h1>find_correlation<a class="headerlink" href="#find-correlation" title="Permalink to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">find_correlation.py</span></code> is the main script used to find correlations between ram states and variables.</p>
+<p>It incorporates the following parameters:</p>
+<ul class="simple">
+<li><p>-g / --game GAME : The game to evaluate (e.g. 'Pong')</p></li>
+<li><p>-to / --tracked_objects TRACKED_OBJECTS : A list of objects to track</p></li>
+<li><p>-tp / --tracked_properties TRACKED_PROPERTIES : A list of properties to track for each object</p></li>
+<li><p>-tn / --top_n TOP_N : The top n value to be kept in the correlation matrix</p></li>
+<li><p>-ns / --nb_samples NB_SAMPLES : The number of samples to use.</p></li>
+<li><p>-dqn / --dqn If provided, uses the DQN agent</p></li>
+<li><p>-s / --seed SEED : Seed to make everything deterministic</p></li>
+<li><p>-r / --render : If provided, renders</p></li>
+<li><p>-m /--method {pearson,spearman,kendall} : The method to use for computing the correlation</p></li>
+<li><p>-snap / --snapshot STATE_PATH : Path to an emulator state snapshot to start from.</p></li>
+</ul>
+<section id="finding-the-correlation-coefficient">
+<h2>Finding the correlation coefficient<a class="headerlink" href="#finding-the-correlation-coefficient" title="Permalink to this heading"></a></h2>
+<p>The scripts first computes correlations and displays the matrix of the <code class="docutils literal notranslate"><span class="pre">top_n</span></code>(default 3) coefficients, per object properties:
+If you call:
+python3 scripts/find_correlation.py -g Pong -to Player Enemy -tp y</p>
+<p>The scripts runs the game and checked in <code class="docutils literal notranslate"><span class="pre">nb_samples</span></code>: if all <code class="docutils literal notranslate"><span class="pre">tracked_objects</span></code> are present, it saves the <code class="docutils literal notranslate"><span class="pre">tracked_properties</span></code> of all <code class="docutils literal notranslate"><span class="pre">tracked_objects</span></code>, as well as the ram state.
+It will then compute a correlation matrix (using <code class="docutils literal notranslate"><span class="pre">method</span></code>, by default <code class="docutils literal notranslate"><span class="pre">pearson</span></code>).
+For you to recall:
+<img alt="correlations" src="https://www.researchgate.net/publication/347655744/figure/fig2/AS:971822594002945&#64;1608711970427/Comparison-of-the-Spearmans-rank-correlation-coefficient-with-respect-to-the-parametric.ppm" /></p>
+<p>It then plots the correlation matrix:
+<img alt="correlation_matrix" src="../../_images/corr_matrix.png" /></p>
+<p>Then, it iterates a correlation onto the kept objects and properties, computes a ransac regression, print it and displays the following result:
+<img alt="regression" src="../../_images/regression.png" /></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kévin-Lâm Quesnel and Anurag Maurya.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -31,5 +31,4 @@ scripts/various/env_descriptions
 .idea/bachelor-praktikum.iml
 reports
 
-docs/_build
 .dataset_generation/.*
