@@ -43,14 +43,11 @@ def detect_Walls(obs):
             for i in range(3):
                 for wall in find_objects(obs, objects_colors[color + " walls"][i], miny=stage_zone_y[i] + 1,
                                          maxy=stage_zone_y[i + 1], minx=X_MIN_GAMEZONE, closing_dist=2):
-                    color_is_found = True
                     wall_instance = Wall(*wall)
-                    wall_instance.xy = wall_instance.xy[0], stage_zone_y[i]
-                    wall_instance.wh = wall_instance.wh[0], stage_zone_y[i + 1] - stage_zone_y[i]
                     if wall[3] > 12 and not (
                             wall_instance.x > 8 and wall_instance.x + wall_instance.w < 149 and wall_instance.w < 12):
                         walls.append(Wall(*wall))
-
+                        color_is_found = True
             if color_is_found:
                 break
 
