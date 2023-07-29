@@ -249,6 +249,7 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
             objects_map[f"destructible wall"] = destructible_wall_instance
 
     # Bomb / NPC position
+    # NPC --> ram_state[41]
     # If we're on the final part of the level --> NPC position else bomb position
 
     if hud:
