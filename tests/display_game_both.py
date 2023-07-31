@@ -44,6 +44,9 @@ if opts.dqn:
 
 make_deterministic(0, env)
 
+fig, axes = plt.subplots(1, 2)
+plt.ion()  # activate interactive modus
+plt.show(block=False)
 for i in range(100000):
     # try:
     if True:
@@ -53,8 +56,7 @@ for i in range(100000):
             action = random.randint(0, env.nb_actions-1)
         obs, reward, terminated, truncated, info = env.step(action)
         obs2 = deepcopy(obs)
-        if i >= opts.start and i % opts.interval == 0:
-            fig, axes = plt.subplots(1, 2)
+        if i >= opts.start:
             # for robj in env.objects:
             #     print(robj, robj.closest_object(env.objects_v))
             for obs, objects_list, title, ax in zip([obs, obs2], [env.objects, env.objects_v], ["ram", "vision"], axes):
@@ -71,11 +73,12 @@ for i in range(100000):
                 ax.set_yticks([])
                 ax.imshow(obs)
                 ax.set_title(title)
-                im = Image.fromarray(obs)
-                cv2.imwrite(f"frames/{title}_frame_{i}.png", obs, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+                plt.pause(0.00001)  # pause the interaction for a bit, so that the plot is drawn
+                # im = Image.fromarray(obs)
+                # cv2.imwrite(f"frames/{title}_frame_{i}.png", obs, [cv2.IMWRITE_PNG_COMPRESSION, 0])
                 # im.save()
             fig.suptitle(f"frame {i}", fontsize=20)
-            plt.show()
+            # plt.show()
 
         if terminated or truncated:
             observation, info = env.reset()

@@ -149,4 +149,6 @@ class GameObject:
         :return: (Index, Object) from others
         :rtype: int
         """
+        if len(others) == 0:
+            return None
         return min(enumerate(others), key=lambda item: self.manathan_distance(item[1]))

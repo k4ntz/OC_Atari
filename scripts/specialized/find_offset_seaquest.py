@@ -34,10 +34,10 @@ DROP_LOW = True
 MIN_CORRELATION = 0.5
 
 NB_SAMPLES = 600
-game_name = "Riverraid-v4"
+game_name = "SeaquestNoFrameskip"
 MODE = "both"
 RENDER_MODE = "human"
-# RENDER_MODE = "rgb_array"
+RENDER_MODE = "rgb_array"
 env = OCAtari(game_name, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
@@ -46,59 +46,43 @@ observation, info = env.reset()
 object_list = ["Fuel"]
 # create dict of list
 objects_infos = {}
-subset = []
-for obj in object_list:
-    objects_infos[f"{obj}"] = []
-    subset.append(f"{obj}")
+subset = ["distances"]
+# for obj in object_list:
+#     objects_infos[f"{obj}"] = []
+#     subset.append(f"{obj}")
 ram_saves = []
 actions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 class Options(object):
     pass
 opts = Options()
-opts.path = "models/Riverraid/dqn.gz"
+opts.path = "models/Seaquest/dqn.gz"
 dqn_agent = load_agent(opts, env.action_space.n)
 
-
+distances = []
 # for i in tqdm(range(NB_SAMPLES)):
 for i in range(NB_SAMPLES):
     # obs, reward, terminated, truncated, info = env.step(random.randint(0, env.action_space.n-1))
     action = dqn_agent.draw_action(env.dqn_obs)
     obs, reward, terminated, truncated, info = env.step(action)
     ram = env._env.unwrapped.ale.getRAM()
-    # print(ram[75:80])
-    print(ram[103])
-    # if i == 300:
-    #     print("SET")
-    # env.set_ram(105, 0)
-    if i and i % 400 == 0:
-        env.set_ram(103, 2)
     if info.get('frame_number') > 10 and i % 5 == 0:
         SKIP = False
-        # print(env.objects)
-        # print(env.objects)
-        for obj_name in object_list:  # avoid state without the tracked objects
-            # if str(env.objects).count("PurpleBall") == 1:
-            #     objects_infos[f"Ball"].append(1)
-            if str(env.objects).count("GreenBall") == 1:
-                # print("True")
-                objects_infos[f"Ball"].append(2)
-            else:
-                objects_infos[f"Ball"].append(0)
-                # SKIP = True
-                # break
-        # if str(env.objects).count("Projectile at (75,") == 0:
-        #     print(env._env.unwrapped.ale.getRAM()[106])
-        if SKIP:# or env.objects[-2].y < env.objects[-1].y:
-            continue
-        ram_saves.append(deepcopy(ram))
-        # for obj in env.objects:
-        #     objname = obj.category
-        #     if objname in object_list:
-        #         objects_infos[f"{objname}_x"].append(obj.xy[0])
-        #         objects_infos[f"{objname}_y"].append(obj.xy[1])
-            # n += 1
-        
-        # env.render()
+        # print(env.objects_v)
+        print(env.objects)
+        if "Enemy " in str(env.objects_v):
+            for obj in env.objects:
+                if "Enemy " in str(obj):
+                    _, oth = obj.closest_object(env.objects_v)
+                    if "Enemy " not in str(oth):
+                        SKIP = True
+                        continue
+                    SKIP = False
+                    distances.append(obj.center[1] - oth.center[1])
+                    break
+            if SKIP:
+                continue
+            ram_saves.append(deepcopy(ram))
+
 
     # modify and display render
 env.close()
@@ -108,6 +92,7 @@ import ipdb; ipdb.set_trace()
 
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
+objects_infos["distances"] = distances
 objects_infos.update(from_rams)
 df = pd.DataFrame(objects_infos)
 
