@@ -1,7 +1,7 @@
 from .utils import find_objects
 from .game_objects import GameObject
 
-objects_colors = {"player": [187, 187, 53], "diver": [66, 72, 200], "background_water": [0, 28, 136],
+objects_colors = {"player": [[187, 187, 53], [236, 236, 236]], "diver": [66, 72, 200], "background_water": [0, 28, 136],
                   "player_score": [210, 210, 64], "oxygen_bar": [214, 214, 214], "lives": [210, 210, 64],
                   "logo": [66, 72, 200], "player_missile": [187, 187, 53], "oxygen_bar_depleted": [163, 57, 21],
                   "oxygen_logo": [0, 0, 0], "collected_diver": [24, 26, 167], "enemy_missile": [66, 72, 200],
@@ -86,15 +86,16 @@ class EnemyMissile(GameObject):
 def _detect_objects_seaquest(objects, obs, hud=False):
     objects.clear()
 
-    player = find_objects(obs, objects_colors["player"], min_distance=1)
-    for p in player:
-        if p[1] > 30 and p[3] > 6:
-            objects.append(Player(*p))
+    for color in objects_colors["player"]:
+        player = find_objects(obs, color, closing_dist=8)
+        for p in player:
+            if p[1] > 30 and p[3] > 6:
+                objects.append(Player(*p))
 
-        if p[1] > 30 and p[3] == 1 and p[2] == 8:
-            objects.append(PlayerMissile(*p))
+            if p[1] > 30 and p[3] == 1 and p[2] == 8:
+                objects.append(PlayerMissile(*p))
 
-    divers = find_objects(obs, objects_colors["diver"], min_distance=1)
+    divers = find_objects(obs, objects_colors["diver"], closing_dist=4)
     for d in divers:
         if d[1] < 190 and d[2] > 2 and d[3] < 5:
             objects.append(EnemyMissile(*d))
