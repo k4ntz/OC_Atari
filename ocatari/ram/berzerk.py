@@ -13,7 +13,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile
 
 class Player(GameObject):
     """
-    A class representingT the player figure i.e., the earth man stuck on planet Mazeon. 
+    The player figure i.e., the earth man stuck on planet Mazeon. 
     """
     
     def __init__(self):

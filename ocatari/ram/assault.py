@@ -45,7 +45,8 @@ class PlayerMissileHorizontal(GameObject):
     def __init__(self):
         self.visible = True
         self._xy = 0, 0
-        self.wh = 8, 1
+        self._prev_xy = None
+        self.wh = 4, 2
         self.rgb = 214, 214, 214
         self.hud = False
 
@@ -247,18 +248,34 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
         objects.append(missile)
 
     global horizontal_pos
+    global horizontal_pos_right
+    global horizontal_pos_left
+
     # player missile horizontal
     if ram_state[24] == 88:
         mis = PlayerMissileHorizontal()
+        mis_offset = 2
         # print(horizontal_pos)
-        if horizontal_pos == 0 or horizontal_pos > 130 or horizontal_pos < 20:
-            horizontal_pos = player.x
-        if ram_state[26] == 128:    # shoot to the right
-            horizontal_pos = horizontal_pos + 10
-        elif ram_state[26] == 64:
-            horizontal_pos = horizontal_pos - 10
-        mis.xy = horizontal_pos, 181
+        #if horizontal_pos == 0 or horizontal_pos > 130 or horizontal_pos < 20:
+        #    horizontal_pos = player.x
+        if horizontal_pos == 0:
+            horizontal_pos_right = player.x + player.w + mis_offset
+            horizontal_pos_left = player.x
+
+        if ram_state[26] == 128:    # shot to the right
+            
+            horizontal_pos_right =  horizontal_pos_right + 8
+            horizontal_pos = horizontal_pos_right
+            mis.xy = horizontal_pos_right, 181   
+
+        elif ram_state[26] == 64:   # shot to the left
+
+            horizontal_pos_left = horizontal_pos_left - 8
+            horizontal_pos = horizontal_pos_left
+            mis.xy = horizontal_pos_left, 181
+        
         objects.append(mis)
+        
     else:
         horizontal_pos = 0
 
