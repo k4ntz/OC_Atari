@@ -1,4 +1,4 @@
-import gym
+import gymnasium as gym
 # import time
 # import random
 import numpy as np
@@ -57,10 +57,11 @@ def find_causative_ram(game, x, y, width, height, show_plot=False):
 
 
 if __name__ == "__main__":
-    X = 14
-    Y = 186
-    WIDTH = 50
-    HEIGHT = 15
 
-    candidates = find_causative_ram("Centipede", X, Y, WIDTH, HEIGHT, show_plot=True)
+    X = 20
+    Y = 173
+    WIDTH = 110
+    HEIGHT = 13
+
+    candidates = find_causative_ram("Assault", X, Y, WIDTH, HEIGHT, show_plot=False)
     print(candidates)

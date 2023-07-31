@@ -14,7 +14,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
-sys.path.insert(0, '../ocatari') # noqa
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
 from ocatari.core import OCAtari
 from ocatari.utils import parser, load_agent, make_deterministic
 import pickle
@@ -166,6 +167,7 @@ for el in corrT:
     keys = corrT[el].keys()
     for idx in range(len(keys)):
         maxval = corrT[el].abs()[keys[idx]]
+        # maxval = 1
         #idx = corrT[el].abs()
         if maxval >= 0.6:
             x, y = df[keys[idx]], df[el]
