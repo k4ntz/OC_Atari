@@ -1,12 +1,16 @@
 from .game_objects import GameObject
 import sys 
-MAX_NB_OBJECTS = {"Player": 1, "Gopher":1, "Carrot":3,"Empty_block":30}
+MAX_NB_OBJECTS = {"Player": 1, "Gopher":1, "Carrot":3,"Empty_block":38}
 MAX_NB_OBJECTS_HUD = {"Bird":1, "Score":5}
 
-full_list=[(12, 161),(28, 161),(44, 161),(108, 161),(124, 161),(140, 161),(12, 173),(28, 173),(44, 173),(108, 173),(124, 173),
-               (0, 183),(20, 183),(36, 183),(52, 183),(60, 183),
-               (68, 183),(76, 183),(84, 183),(92, 183),(100, 183),(116, 183),(132, 183),(140, 183),(149, 183),(10,183),(27,183),(108,183),(140,175),(125,183),(45,183)]
-# (150, 192),(140, 192)
+full_list=[(140,175),(12,175),(27,175),(45,175),(108,175),(124,175),
+           (140,168),(12,168),(27,168),(45,168),(108,168),(124,168),
+           (140,161),(12,161),(27,161),(45,161),(108,161),(124,161)]
+for i in range(0,160,9):
+    full_list.append((i, 183))
+
+# (150, 192),(140, 192), (27,183)
+# (12,167),(12,173),(28, 161)
 global block_list
 block_list=[]
 global ram_70
@@ -83,7 +87,7 @@ def _init_objects_gopher_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player(),Gopher(),Carrot(),Carrot(),Carrot()]
-    objects.extend([Empty_block()]*30) # Maximum number of expeced blocks
+    objects.extend([Empty_block()]*38) # Maximum number of expeced blocks
     if hud:
         objects.extend([Bird(),Score(),Score(),Score(),Score()])
     return objects
@@ -134,7 +138,7 @@ def _detect_objects_gopher_revised(objects, ram_state, hud=False):
         temp_life=1
     
     # Making all the blocks empty
-    objects[5:35]=[None]*30
+    objects[5:43]=[None]*38
     # Adding empty_blocks intuition
     # max number of blocks as obtained from vision
     # Maintain three lists: possible, gopher, player
@@ -145,25 +149,25 @@ def _detect_objects_gopher_revised(objects, ram_state, hud=False):
     gopher_x=ram_state[41]-3
     gopher_y=184-(ram_state[85])
     for block in full_list:
-        if (abs(block[0]-gopher_x)<=10 and abs(block[1]-gopher_y)<=7) or (abs(block[0]-gopher_x)<=10 and ram_state[85]>=10):
+        if (abs(block[0]-gopher_x)<=10 and abs(block[1]-gopher_y)<=7) or (abs(block[0]-gopher_x)<=10 and ram_state[85]>=10) or (block[1]<183 and abs(block[0]-gopher_x)<=10 and ram_state[85]!=135 and abs(block[1]-gopher_y)<=10) :
             # If the block is not in existing list add it
             flag=True
             for block2 in block_list:
-                # import ipdb; ipdb.set_trace()
                 if block[0]==block2[0] and block[1]==block2[1]:
                     flag=False
             if flag:
-                block_list.append(block)        
-    count=0
+                block_list.append(block)     
+               
+    
     
     # Removing blocks
     # Get position of player 
     # extract objects below it
     # When the player presses handle remove the one with lowest y only if there are blocks other than the lowest position
-    player_x=ram_state[31]-10
+    player_mid=ram_state[31]-10+5
     remove_block=[]
     for block in block_list:
-        if abs(block[0]-player_x)<=5:
+        if abs(block[0]-player_mid)<=4:
             remove_block.append(block)
     global ram_70
     if ram_state[70]==255 and ram_70==0:
@@ -182,13 +186,16 @@ def _detect_objects_gopher_revised(objects, ram_state, hud=False):
     if life!=temp_life:
         block_list=[]
         life=temp_life
-    import ipdb; ipdb.set_trace()
+    # import ipdb; ipdb.set_trace()
+    count=0
     for block in block_list:
         b=Empty_block()
         b.xy=block
+        if block[1]<183:
+            b.wh=(8,6)
         objects[5+count]=b
         count+=1
-    
+    # import ipdb; ipdb.set_trace()
     if hud:
         # Score hundreds and thousands depend on ram_state[49] and score ones and tens depend on ram_state[50]
         bound1,bound2,bound3,bound4=Score(),Score(),Score(),Score()
@@ -199,22 +206,28 @@ def _detect_objects_gopher_revised(objects, ram_state, hud=False):
         bound4.xy=98,10
         if ram_state[49]==0 and ram_state[50]<=9:
             # Right most bounding box only
-            objects[-1]=bound4
-            objects[-2]=None; objects[-3]=None; objects[-4]=None
+            objects[44]=bound4
+            objects[45]=None; objects[46]=None; objects[47]=None
         elif ram_state[49]==0 and ram_state[50]>9:
             # two bounding boxes
-            objects[-1]=bound4
-            objects[-2]=bound3
-            objects[-3]=None; objects[-4]=None
+            objects[44]=bound4
+            objects[45]=bound3
+            objects[46]=None; objects[47]=None
         elif ram_state[49]<=9:
             # 3 bounding boxes
-            objects[-1:-4]=bound4,bound3,bound2
-            objects[-4]=None
+            objects[44:47]=bound4,bound3,bound2
+            objects[47]=None
         elif ram_state[49]>9:
             # 4 bounding boxes
-            objects[-1:-5]=bound4,bound3,bound2,bound1
-        
-        # Remove duplicate objects
+            objects[44:48]=bound4,bound3,bound2,bound1
+
+        if ram_state[28]<147:
+            b=Bird()
+            b.xy=ram_state[28]-12,30
+            objects[43]=b
+        else:
+            objects[43]=None
+
 
 
 
