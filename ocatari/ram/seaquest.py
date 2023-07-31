@@ -200,13 +200,13 @@ def _detect_objects_seaquest_revised(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = ram_state[70], ram_state[97] + 32
     player.orientation = ram_state[86]
-    offset = ram_state[1] % 16 - 8
+    offset = ram_state[93] - 4
     if hud:
         score = objects[1]
         del objects[2:]
     else:
         del objects[1:]
-    objs = _calculate_objects(ram_state)
+    objs = _calculate_objects(ram_state, offset)
     objects.extend(objs)
 
     if hud:
@@ -257,7 +257,7 @@ def _detect_objects_seaquest_revised(objects, ram_state, hud=False):
         objects.append(logo_bar)
 
 
-def _calculate_objects(ram_state):
+def _calculate_objects(ram_state, offset):
     """
     Calculate the current enemies, divers and missiles that are on the screen.
     """
@@ -282,7 +282,7 @@ def _calculate_objects(ram_state):
                 enemies.append(submarine)
             else:
                 enemy = Enemy()
-                enemy.xy = ram_state[30 + i], 141 - i * 24
+                enemy.xy = ram_state[30 + i], 141 - i * 24 + offset
                 enemies.append(enemy)
 
     # right enemy appears at variations 1, 3, 5, 7;
@@ -295,7 +295,7 @@ def _calculate_objects(ram_state):
                 enemies.append(submarine)
             else:
                 enemy = Enemy()
-                enemy.xy = (ram_state[30 + i] + 32) % 256, 141 - i * 24
+                enemy.xy = (ram_state[30 + i] + 32) % 256, 141 - i * 24 + offset
                 enemies.append(enemy)
 
     # middle enemy appears at variations 2, 3, 6, 7
@@ -309,7 +309,7 @@ def _calculate_objects(ram_state):
                 enemies.append(submarine)
             else:
                 enemy = Enemy()
-                enemy.xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24
+                enemy.xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24 + offset
                 enemies.append(enemy)
 
     # fifth lane enemy, only spawns in higher levels
