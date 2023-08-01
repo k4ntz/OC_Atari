@@ -61,16 +61,15 @@ config_ram = 28
 code += "def add_walls_to_object_list(ram_state, objects, objects_map):\n"
 for level_number in range(0, 20):
     indentation = "    "
-    code += indentation + f"elif ram_state[117] == {level_number}:\n"
-    env.set_ram(level_ram, level_number)
     if level_number == 0:
-        for i in range(50):
-            env.step(3)
-            env.step(4)
+        code += indentation + f"if ram_state[117] == {level_number}:\n"
+    else:
+        code += indentation + f"elif ram_state[117] == {level_number}:\n"
+    env.set_ram(level_ram, level_number)
     for i in range(30):
         env.step(0)
     env.set_ram(32, 0)
-    env.set_ram(42, 81)
+    env.set_ram(43, 81)
     for configuration_number in range(number_of_configuration_per_level[level_number]):
         indentation = "    "
         # destroy destructible walls
@@ -85,11 +84,9 @@ for level_number in range(0, 20):
         resulting_obs, _, _, _, _ = env.step(0)
         env.set_ram(31, 60)
         if configuration_number == number_of_configuration_per_level[level_number] - 1:
-            print(env.get_ram()[41])
             env.set_ram(27, env.get_ram()[41])
-            print(env.get_ram()[27], env.get_ram()[31])
             for i in range(30):
-                env.step(0)
+                env.step(1)
         print(f"level {level_number} configuration number {configuration_number}")
 
         walls = detect_Walls(resulting_obs)
