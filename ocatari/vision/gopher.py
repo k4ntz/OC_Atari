@@ -59,7 +59,19 @@ def _detect_objects_gopher(objects, obs, hud=False):
     for g in gopher:
         objects.append(Gopher(*g))
     
-    blocks = find_rectangle_objects(obs, objects_colors["blocks"], max_size=(8,12),miny=125)
+    blocks = find_rectangle_objects(obs, objects_colors["blocks"], max_size=(8,6),maxy=182,miny=176)
+    for b in blocks:
+        objects.append(Empty_block(*b))
+    
+    blocks = find_rectangle_objects(obs, objects_colors["blocks"], max_size=(8,6),maxy=176,miny=168)
+    for b in blocks:
+        objects.append(Empty_block(*b))
+    
+    blocks = find_rectangle_objects(obs, objects_colors["blocks"], max_size=(8,6),maxy=168,miny=162)
+    for b in blocks:
+        objects.append(Empty_block(*b))
+    
+    blocks = find_rectangle_objects(obs, objects_colors["blocks"], max_size=(8,12),miny=182)
     for b in blocks:
         objects.append(Empty_block(*b))
     
