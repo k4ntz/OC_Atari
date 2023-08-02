@@ -9,7 +9,7 @@ objects_colors = {"brown walls": [[144, 72, 17], [162, 98, 33], [180, 122, 48]],
                   "grey walls": [[74, 74, 74], [111, 111, 111], [142, 142, 142]],
                   "lava wall": [167, 26, 26],
                   "enemy": [[210, 164, 74], [195, 144, 61], [180, 122, 48]], "snake": [[111, 210, 111], [50, 132, 50]],
-                  "player": [84, 138, 210],
+                  "tentacle": [101, 183, 217], "player": [84, 138, 210],
                   "bomb": [184, 50, 50], "laser beam": [200, 72, 72], "end NPC": [92, 186, 92], "lamp": [142, 142, 142],
                   "powerbar full": [232, 232, 74], "powerbar depleted": [167, 26, 26], "life": [45, 87, 176],
                   "score": [214, 214, 214]}
@@ -38,7 +38,9 @@ class LavaWall(GameObject):
 class EnemyType(Enum):
     Spider = 1
     Bat = 2
-    Thing = 3
+    Moth = 3
+    Snake = 4
+    Tentacle = 5
 
 
 class Enemy(GameObject):
@@ -103,10 +105,10 @@ def _detect_objects_hero(objects, obs, hud=True):
     for color in possible_wall_colors:
         if len(find_objects(obs, objects_colors[color + " walls"][0], miny=20, maxy=60)) > 0:
             for i in range(3):
-                for wall in find_objects(obs, objects_colors[color + " walls"][i], miny=stage_zone_y[i] + 1,
+                for lava_wall in find_objects(obs, objects_colors[color + " walls"][i], miny=stage_zone_y[i] + 1,
                                          maxy=stage_zone_y[i + 1], minx=X_MIN_GAMEZONE, closing_dist=2):
-                    if wall[3] > 12:
-                        wall_instance = Wall(*wall)
+                    if lava_wall[3] > 12:
+                        wall_instance = Wall(*lava_wall)
                         if wall_instance.x > 8 and wall_instance.x + wall_instance.w < 149 and wall_instance.w < 12:
                             wall_instance.destructible = True
                         objects.append(wall_instance)
@@ -114,9 +116,15 @@ def _detect_objects_hero(objects, obs, hud=True):
             if color_is_found:
                 break
 
-    for lava_wall in find_objects(obs, objects_colors["lava wall"], closing_dist=4, miny=Y_MIN_GAMEZONE,
-                                  maxy=Y_MAX_GAMEZONE, minx=X_MIN_GAMEZONE):
-        objects.append(LavaWall(*lava_wall))
+    for i in range(3):
+        for lava_wall in find_objects(obs, objects_colors["lava wall"], miny=stage_zone_y[i] + 1,
+                                 maxy=stage_zone_y[i + 1], minx=X_MIN_GAMEZONE, closing_dist=2):
+            if lava_wall[3] > 12:
+                wall_instance = LavaWall(*lava_wall)
+                if wall_instance.x > 8 and wall_instance.x + wall_instance.w < 149 and wall_instance.w < 12:
+                    wall_instance.destructible = True
+                objects.append(wall_instance)
+
 
     for enemy in find_objects(obs, objects_colors["enemy"][0], closing_dist=4, miny=Y_MIN_GAMEZONE,
                               maxy=Y_MAX_GAMEZONE, minx=X_MIN_GAMEZONE):
@@ -135,10 +143,11 @@ def _detect_objects_hero(objects, obs, hud=True):
 
     for snake in find_objects(obs, objects_colors["snake"][0], miny=Y_MIN_GAMEZONE,
                               maxy=Y_MAX_GAMEZONE, minx=X_MIN_GAMEZONE):
-        snake_instance = Snake(*snake)
+        snake_instance = Enemy(*snake)
         for snake_head in find_objects(obs, objects_colors["snake"][1], miny=snake_instance.y - 4,
                                        maxy=snake_instance.y + 4, minx=X_MIN_GAMEZONE):
             snake_instance.xy = snake_instance.x, snake_head[1]
+            snake_instance.type = 4
         objects.append(snake_instance)
 
     for player in find_objects(obs, objects_colors["player"], miny=Y_MIN_GAMEZONE, maxy=Y_MAX_GAMEZONE,
@@ -171,11 +180,17 @@ def _detect_objects_hero(objects, obs, hud=True):
         end_npc_instance.wh = 7, end_npc_instance.h + 5 + 3
         objects.append(end_npc_instance)
 
+    for tentacle in find_objects(obs, objects_colors["tentacle"], miny=Y_MIN_GAMEZONE, maxy=Y_MAX_GAMEZONE,
+                             minx=X_MIN_GAMEZONE):
+        tentacle = Enemy(*tentacle)
+        tentacle.type = 5
+        objects.append(tentacle)
+
     for lamp in find_objects(obs, objects_colors["lamp"], miny=Y_MIN_GAMEZONE, maxy=Y_MAX_GAMEZONE,
                              minx=X_MIN_GAMEZONE):
-        lamp_instance = Lamp(*lamp)
-        if lamp_instance.h < 10:
-            objects.append(lamp_instance)
+        tentacle = Lamp(*lamp)
+        if tentacle.h < 10:
+            objects.append(tentacle)
 
     if hud:
         for life in find_objects(obs, objects_colors["player"], miny=Y_MAX_GAMEZONE,
