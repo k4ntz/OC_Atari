@@ -7,7 +7,7 @@ objects_colors = {"brown walls": [[144, 72, 17], [162, 98, 33], [180, 122, 48]],
                   "green walls": [[26, 102, 26], [50, 132, 150], [72, 160, 72]],
                   "blue walls": [[24, 59, 157], [45, 87, 176], [66, 114, 194]],
                   "grey walls": [[74, 74, 74], [111, 111, 111], [142, 142, 142]],
-                  "lava wall": [167, 26, 26],
+                  "lava wall": [167, 26, 26], "platform": [232, 232, 74],
                   "enemy": [[210, 164, 74], [195, 144, 61], [180, 122, 48]], "snake": [[111, 210, 111], [50, 132, 50]],
                   "tentacle": [101, 183, 217], "player": [84, 138, 210],
                   "bomb": [184, 50, 50], "laser beam": [200, 72, 72], "end NPC": [92, 186, 92], "lamp": [142, 142, 142],
@@ -17,7 +17,7 @@ objects_colors = {"brown walls": [[144, 72, 17], [162, 98, 33], [180, 122, 48]],
 Y_MIN_GAMEZONE = 20
 Y_MAX_GAMEZONE = 138
 X_MIN_GAMEZONE = 8
-X_MAX_GAMEZONE = 150
+X_MAX_GAMEZONE = 142
 
 
 # breakable walls are a certain size (<12px approximately) and can't touch the border (x=8/x=159) of the screen
@@ -33,6 +33,11 @@ class LavaWall(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.destructible: bool = False
+
+
+class Platform(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 
 class EnemyType(Enum):
@@ -102,29 +107,33 @@ def _detect_objects_hero(objects, obs, hud=True):
     possible_wall_colors = ["brown", "green", "blue", "grey"]
     stage_zone_y = [20, 60, 100, 150]
     color_is_found = False
-    for color in possible_wall_colors:
-        if len(find_objects(obs, objects_colors[color + " walls"][0], miny=20, maxy=60)) > 0:
-            for i in range(3):
-                for lava_wall in find_objects(obs, objects_colors[color + " walls"][i], miny=stage_zone_y[i] + 1,
-                                         maxy=stage_zone_y[i + 1], minx=X_MIN_GAMEZONE, closing_dist=2):
-                    if lava_wall[3] > 12:
-                        wall_instance = Wall(*lava_wall)
-                        if wall_instance.x > 8 and wall_instance.x + wall_instance.w < 149 and wall_instance.w < 12:
-                            wall_instance.destructible = True
-                        objects.append(wall_instance)
-                        color_is_found = True
-            if color_is_found:
-                break
+    destructible_wall_is_added = False
 
     for i in range(3):
         for lava_wall in find_objects(obs, objects_colors["lava wall"], miny=stage_zone_y[i] + 1,
-                                 maxy=stage_zone_y[i + 1], minx=X_MIN_GAMEZONE, closing_dist=2):
+                                      maxy=stage_zone_y[i + 1], minx=X_MIN_GAMEZONE, closing_dist=2):
             if lava_wall[3] > 12:
                 wall_instance = LavaWall(*lava_wall)
                 if wall_instance.x > 8 and wall_instance.x + wall_instance.w < 149 and wall_instance.w < 12:
                     wall_instance.destructible = True
+                    destructible_wall_is_added = True
+                    wall_instance.wh = wall_instance.w, 79
                 objects.append(wall_instance)
 
+    for color in possible_wall_colors:
+        if len(find_objects(obs, objects_colors[color + " walls"][0], miny=20, maxy=60)) > 0:
+            for i in range(3):
+                for lava_wall in find_objects(obs, objects_colors[color + " walls"][i], miny=stage_zone_y[i] + 1,
+                                              maxy=stage_zone_y[i + 1], minx=X_MIN_GAMEZONE, closing_dist=2):
+                    if lava_wall[3] > 12:
+                        wall_instance = Wall(*lava_wall)
+                        if wall_instance.x > 8 and wall_instance.x + wall_instance.w < 149 and wall_instance.w < 12 and not destructible_wall_is_added:
+                            wall_instance.destructible = True
+                            wall_instance.wh = wall_instance.w, 79
+                        objects.append(wall_instance)
+                        color_is_found = True
+            if color_is_found:
+                break
 
     for enemy in find_objects(obs, objects_colors["enemy"][0], closing_dist=4, miny=Y_MIN_GAMEZONE,
                               maxy=Y_MAX_GAMEZONE, minx=X_MIN_GAMEZONE):
@@ -181,10 +190,15 @@ def _detect_objects_hero(objects, obs, hud=True):
         objects.append(end_npc_instance)
 
     for tentacle in find_objects(obs, objects_colors["tentacle"], miny=Y_MIN_GAMEZONE, maxy=Y_MAX_GAMEZONE,
-                             minx=X_MIN_GAMEZONE):
+                                 minx=X_MIN_GAMEZONE):
         tentacle = Enemy(*tentacle)
         tentacle.type = 5
         objects.append(tentacle)
+
+    for platform in find_objects(obs, objects_colors["platform"], miny=Y_MIN_GAMEZONE, maxy=Y_MAX_GAMEZONE,
+                                 minx=X_MIN_GAMEZONE):
+        platform = Platform(*platform)
+        objects.append(platform)
 
     for lamp in find_objects(obs, objects_colors["lamp"], miny=Y_MIN_GAMEZONE, maxy=Y_MAX_GAMEZONE,
                              minx=X_MIN_GAMEZONE):
