@@ -333,15 +333,20 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
             if objects_map.get("platform") == None:
                 objects_map["platform"] = Platform()
                 objects_map["platform"].xy = ram_state[40], 135
-                if objects_map.get("tentacle") != None:
-                    objects_map.pop("tentacle")
+            else:
+                objects_map["platform"].xy = ram_state[40], 135
+            if objects_map.get("tentacle") != None:
+                objects_map.pop("tentacle")
+
         else:
             if objects_map.get("tentacle") == None:
                 objects_map["tentacle"] = Enemy()
                 objects_map["tentacle"].xy = ram_state[40], 137
                 objects_map["tentacle"].wh = 7, 10
-                if objects_map.get("platform") != None:
-                    objects_map.pop("platform")
+            else:
+                objects_map["tentacle"].xy = ram_state[40], 137
+            if objects_map.get("platform") != None:
+                objects_map.pop("platform")
     else:
         if objects_map.get("tentacle") != None:
             objects_map.pop("tentacle")
