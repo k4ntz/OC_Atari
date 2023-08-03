@@ -82,9 +82,12 @@ for level_number in range(0, 20):
         # env._env.env.env.ale.restoreState(snapshot)
         env.set_ram(config_ram, configuration_number)
 
-        env.set_ram(31, 60)
+        env.set_ram(31, 61)
+
+
         if configuration_number == number_of_configuration_per_level[level_number] - 1:
             env.set_ram(27, env.get_ram()[41])
+            env.set_ram(31, 61)
             for i in range(30):
                 env.step(1)
         print(f"level {level_number} configuration number {configuration_number}")
@@ -137,24 +140,24 @@ for level_number in range(0, 20):
         for i in range(len(lava_walls)):
             wall = lava_walls[i]
             if wall.destructible:
-                code += lava_wall_indentation + "wall_instance = LavaWall()\n"
+                code += lava_wall_indentation + f"wall_instance{i} = LavaWall()\n"
                 code += lava_wall_indentation + f"destructible_wall = objects_map['destructible wall']\n"
-                code += lava_wall_indentation + f"wall_instance.xy = destructible_wall.xy\n"
-                code += lava_wall_indentation + f"wall_instance.wh = destructible_wall.wh\n"
-                code += lava_wall_indentation + f"wall_instance.destructible = True\n"
+                code += lava_wall_indentation + f"wall_instance{i}.xy = destructible_wall.xy\n"
+                code += lava_wall_indentation + f"wall_instance{i}.wh = destructible_wall.wh\n"
+                code += lava_wall_indentation + f"wall_instance{i}.destructible = True\n"
                 code += lava_wall_indentation + f"if objects_map['destructible wall'] != None:\n"
-                code += lava_wall_indentation + "    " + f"objects_map['destructible wall'] = wall_instance\n"
+                code += lava_wall_indentation + "    " + f"objects_map['destructible wall'] = wall_instance{i}\n"
             else:
-                code += lava_wall_indentation + "wall_instance = LavaWall()\n"
-                code += lava_wall_indentation + f"wall_instance.xy = {wall.xy}\n"
-                code += lava_wall_indentation + f"wall_instance.wh = {wall.wh}\n"
-                code += lava_wall_indentation + f"objects_map['lava wall {number_of_lava_walls}'] = wall_instance\n"
+                code += lava_wall_indentation + f"wall_instance{i} = LavaWall()\n"
+                code += lava_wall_indentation + f"wall_instance{i}.xy = {wall.xy}\n"
+                code += lava_wall_indentation + f"wall_instance{i}.wh = {wall.wh}\n"
+                code += lava_wall_indentation + f"objects_map['lava wall {number_of_lava_walls}'] = wall_instance{i}\n"
                 number_of_lava_walls += 1
         code += lava_wall_indentation + f"number_of_lava_walls = {number_of_lava_walls}\n"
         code += lava_wall_indentation + "i = 0\n"
-        code += lava_wall_indentation + """while(objects_map.get(f"fixed wall {number_of_lava_walls + i}")!= None):\n"""
+        code += lava_wall_indentation + """while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):\n"""
         lava_wall_indentation += "    "
-        code += lava_wall_indentation + """objects_map.pop(f"fixed wall {number_of_lava_walls + i}")\n"""
+        code += lava_wall_indentation + """objects_map.pop(f"lava wall {number_of_lava_walls + i}")\n"""
         code += lava_wall_indentation + "i += 1\n"
 
         # show_ims(resulting_obs, level_number, configuration_number)
@@ -164,10 +167,10 @@ for level_number in range(0, 20):
         resulting_obs, _, _, _, _ = env.step(0)
         for i in range(len(walls)):
             wall = walls[i]
-            code += indentation + "wall_instance = Wall()\n"
-            code += indentation + f"wall_instance.xy = {wall.xy}\n"
-            code += indentation + f"wall_instance.wh = {wall.wh}\n"
-            code += indentation + f"objects_map['fixed wall {i}'] = wall_instance\n"
+            code += indentation + f"wall_instance{i} = Wall()\n"
+            code += indentation + f"wall_instance{i}.xy = {wall.xy}\n"
+            code += indentation + f"wall_instance{i}.wh = {wall.wh}\n"
+            code += indentation + f"objects_map['fixed wall {i}'] = wall_instance{i}\n"
         code += indentation + f"number_of_walls = {len(walls)}\n"
         code += indentation + "i = 0\n"
         code += indentation + """while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):\n"""
