@@ -5,10 +5,10 @@ from ocatari.vision.utils import find_objects
 Y_MIN_GAMEZONE = 20
 Y_MAX_GAMEZONE = 138
 X_MIN_GAMEZONE = 8
-X_MAX_GAMEZONE = 150
+X_MAX_GAMEZONE = 142
 
 objects_colors = {"brown walls": [[144, 72, 17], [162, 98, 33], [180, 122, 48]],
-                  "green walls": [[26, 102, 26], [50, 132, 150], [72, 160, 72]],
+                  "green walls": [[26, 102, 26], [50, 132, 50], [72, 160, 72]],
                   "blue walls": [[24, 59, 157], [45, 87, 176], [66, 114, 194]],
                   "grey walls": [[74, 74, 74], [111, 111, 111], [142, 142, 142]],
                   "lava wall": [167, 26, 26], }
@@ -52,9 +52,6 @@ def detect_Walls(obs):
             if color_is_found:
                 break
 
-    for lava_wall in find_objects(obs, objects_colors["lava wall"], closing_dist=4, miny=Y_MIN_GAMEZONE,
-                                  maxy=Y_MAX_GAMEZONE, minx=X_MIN_GAMEZONE):
-        walls.append(LavaWall(*lava_wall))
 
     return walls
 
