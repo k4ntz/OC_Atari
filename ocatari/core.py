@@ -33,10 +33,10 @@ except ModuleNotFoundError:
 DEVICE = "cpu"
 
 AVAILABLE_GAMES = ["Alien", "Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
-                   "Breakout", "Carnival", "Centipede", "ChoppperCommand", "DemonAttack", "FishingDerby", "Freeway",
+                   "Breakout", "Carnival", "Centipede", "ChoppperCommand", "DemonAttack", "Enduro","FishingDerby", "Freeway",
                    "Frostbite", "Gopher","Hero", "IceHockey", "Kangaroo", "MontezumaRevenge", "MsPacman","Pitfall", "Pong",
                    "PrivateEye",
-                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "Yarsrevenge"]
+                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis","Videocube", "Yarsrevenge"]
 
 
 # TODO: complete the docstring 
