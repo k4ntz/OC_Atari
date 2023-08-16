@@ -36,7 +36,7 @@ AVAILABLE_GAMES = ["Alien", "Assault", "Asterix", "Asteroids", "Atlantis", "Beam
                    "Breakout", "Carnival", "Centipede", "ChoppperCommand", "DemonAttack", "Enduro","FishingDerby", "Freeway",
                    "Frostbite", "Gopher","Hero", "IceHockey", "Kangaroo", "MontezumaRevenge", "MsPacman","Pitfall", "Pong",
                    "PrivateEye",
-                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis","Videocube", "Yarsrevenge"]
+                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis","Videocube", "VideoPinball", "Yarsrevenge"]
 
 
 # TODO: complete the docstring 
