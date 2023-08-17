@@ -6,8 +6,8 @@ RAM extraction for the game KANGAROO. Supported modes: raw, revised.
 
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Platform': 4, 'Scale': 3, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Platform': 4, 'Scale': 3, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1, 'Score': 1, 'Life': 8, 'Time': 1}
+MAX_NB_OBJECTS =  {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Platform': 4, 'Ladder': 3, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Platform': 4, 'Ladder': 3, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1, 'Score': 1, 'Life': 8, 'Time': 1}
 obj_tracker = {}
 
 class Player(GameObject):
@@ -63,13 +63,13 @@ class Fruit(GameObject):
         self.hud = False
 
 
-class Scale(GameObject):
+class Ladder(GameObject):
     """
     The ladders.
     """
     
     def __init__(self, x=0, y=0, w=8, h=35):
-        super(Scale, self).__init__()
+        super(Ladder, self).__init__()
         self._xy = x, y
         self._prev_xy = x, y
         self.wh = w, h
@@ -343,18 +343,18 @@ def manage_platforms(current_lvl_val, objects):
     changing_platforms = objects[13:]
     # levels: ram_state[36], total of 3 levels: 0, 1 and 2
     if current_lvl_val == 0:
-        objects[13:37] = [Scale(132, 132), Platform(16, 76, w=128), Scale(20, 85), Platform(16, 124, w=128), Scale(132, 37)] + [None] * 19
+        objects[13:37] = [Ladder(132, 132), Platform(16, 76, w=128), Ladder(20, 85), Platform(16, 124, w=128), Ladder(132, 37)] + [None] * 19
     elif current_lvl_val == 1:
-        objects[13:37] = [Platform(16, 124, w=28), Platform(52, 124, w=92), Platform(16, 76, w=60), 
-                        Platform(84, 76, w=60), Scale(120, 132, h=4), Scale(24, 116, h=4), Scale(128, 36, h=4), 
-                        Platform(28, 164, w=24), Platform(112, 84, w=24), Platform(120, 44, w=24), Platform(48, 156, w=32), 
-                        Platform(76, 148, w=32), Platform(104, 140, w=32), Platform(16, 108, w=32), Platform(56, 100, w=20), 
-                        Platform(56, 100, w=20), Platform(84, 92, w=20), Platform(64, 60, w=20), Platform(92, 52, w=20), 
-                        Platform(28, 68, w=28)] +  [None] * 4 # len 20
+        objects[13:37] = [Platform(16, 124, w=28), Platform(52, 124, w=92), Platform(16, 76, w=60),
+                          Platform(84, 76, w=60), Ladder(120, 132, h=4), Ladder(24, 116, h=4), Ladder(128, 36, h=4),
+                          Platform(28, 164, w=24), Platform(112, 84, w=24), Platform(120, 44, w=24), Platform(48, 156, w=32),
+                          Platform(76, 148, w=32), Platform(104, 140, w=32), Platform(16, 108, w=32), Platform(56, 100, w=20),
+                          Platform(56, 100, w=20), Platform(84, 92, w=20), Platform(64, 60, w=20), Platform(92, 52, w=20),
+                          Platform(28, 68, w=28)] +  [None] * 4 # len 20
     else: # current_lvl_val == 2
-        objects[13:37] = [Scale(20, 36, h=28), Scale(20, 148, h=4), Scale(36, 116, h=20), Scale(104, 36, h=20), Scale(120, 68, h=4), 
-                        Scale(132, 84, h=4), Platform(88, 140, w=16), Platform(64, 148, w=16), Platform(100, 116, w=16), 
-                        Platform(48, 100, w=16), Platform(76, 52, w=16), Platform(80, 36, w=16), Platform(104, 132, w=20), 
-                        Platform(84, 156, w=20), Platform(124, 124, w=20), Platform(52, 84, w=20), Platform(108, 164, w=36), 
-                        Platform(16, 108, w=80), Platform(16, 92, w=28), Platform(76, 92, w=68), Platform(16, 140, w=32), 
-                        Platform(96, 60, w=36), Platform(100, 76, w=44), Platform(60, 44, w=12)] # 24
+        objects[13:37] = [Ladder(20, 36, h=28), Ladder(20, 148, h=4), Ladder(36, 116, h=20), Ladder(104, 36, h=20), Ladder(120, 68, h=4),
+                          Ladder(132, 84, h=4), Platform(88, 140, w=16), Platform(64, 148, w=16), Platform(100, 116, w=16),
+                          Platform(48, 100, w=16), Platform(76, 52, w=16), Platform(80, 36, w=16), Platform(104, 132, w=20),
+                          Platform(84, 156, w=20), Platform(124, 124, w=20), Platform(52, 84, w=20), Platform(108, 164, w=36),
+                          Platform(16, 108, w=80), Platform(16, 92, w=28), Platform(76, 92, w=68), Platform(16, 140, w=32),
+                          Platform(96, 60, w=36), Platform(100, 76, w=44), Platform(60, 44, w=12)] # 24
