@@ -6,8 +6,14 @@ MAX_NB_OBJECTS_HUD = {"Bird":1, "Score":5}
 full_list=[(140,175),(12,175),(27,175),(45,175),(108,175),(124,175),
            (140,168),(12,168),(27,168),(45,168),(108,168),(124,168),
            (140,161),(12,161),(27,161),(45,161),(108,161),(124,161)]
-for i in range(0,160,9):
+
+for i in [2,140,36,12,27,45,108,124,150]:
+    full_list.append((i,183))
+for i in [22,117,134]: #narrower blocks
+    full_list.append((i,183))
+for i in range(55,108,9):
     full_list.append((i, 183))
+
 
 # (150, 192),(140, 192), (27,183)
 # (12,167),(12,173),(28, 161)
@@ -167,7 +173,7 @@ def _detect_objects_gopher_revised(objects, ram_state, hud=False):
     player_mid=ram_state[31]-10+5
     remove_block=[]
     for block in block_list:
-        if abs(block[0]-player_mid)<=4:
+        if abs(block[0]+4-player_mid)<=5:
             remove_block.append(block)
     global ram_70
     if ram_state[70]==255 and ram_70==0:
@@ -188,11 +194,14 @@ def _detect_objects_gopher_revised(objects, ram_state, hud=False):
         life=temp_life
     # import ipdb; ipdb.set_trace()
     count=0
+    # processing differenet sizes
     for block in block_list:
         b=Empty_block()
         b.xy=block
         if block[1]<183:
             b.wh=(8,6)
+        if block[0] in [22,117,134]:
+            b.wh=(4,12)
         objects[5+count]=b
         count+=1
     # import ipdb; ipdb.set_trace()
