@@ -13,8 +13,8 @@ class Player(GameObject):
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
-        self.wh = (8, 17)
-        self.rgb = 198,108,58
+        self.wh = (16,10)
+        self.rgb = 192,192,192
         self.hud = False
 
 class PlayerScore(GameObject):
@@ -61,7 +61,9 @@ def _detect_objects_enduro_revised(objects, ram_state, hud=False):
     (x, y, w, h, r, g, b)
     """
     # 106 ram_state is somewhat controlling the y of the player when it's dying by sinking
-    player= objects[:1]
+    player,= objects[:1]
+    player.xy=int(-0.566*ram_state[54]+146),144
 
     if hud:
+        # ram_state[45] indicates the level 
         pass
