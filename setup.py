@@ -28,6 +28,7 @@ setup(
         "seaborn",
         "pandas",
         "scikit-learn",
+        "keyboard",
         "tqdm",
         "pyfiglet",
     ]
