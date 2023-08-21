@@ -3,8 +3,15 @@ from ._helper_methods import _convert_number
 import math
 import sys
 
-MAX_NB_OBJECTS =  {"Player" :  1, "Enemy": 8, "Cauldron" : 8, "Reward50" : 8}
-MAX_NB_OBJECTS_HUD =  {"Player" :  1, "Enemy": 8, "Cauldron" : 8, "Reward50" : 8, "Score" : 1}
+
+MAX_NB_OBJECTS = {"Player" :  1, "Enemy": 8,
+                  "Reward50" : 8, "Reward100" : 8, "Reward200" : 8, "Reward300" : 8, "Reward400" : 8, "Reward500" : 8,
+                  "Cauldron" : 8, "Helmet" : 8, "Shield" : 8, "Lamp" : 8, "Apple" : 8, "Fish" : 8, "Meat" : 8, "Mug" : 8}
+
+MAX_NB_OBJECTS_HUD = {"Player" :  1, "Enemy": 8,
+                      "Reward50" : 8, "Reward100" : 8, "Reward200" : 8, "Reward300" : 8, "Reward400" : 8, "Reward500" : 8,
+                      "Cauldron" : 8, "Helmet" : 8, "Shield" : 8, "Lamp" : 8, "Apple" : 8, "Fish" : 8, "Meat" : 8, "Mug" : 8,
+                      "Score" : 1}
 
 
 
