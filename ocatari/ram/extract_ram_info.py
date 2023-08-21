@@ -52,6 +52,8 @@ from .privateeye import _init_objects_privateeye_ram, _detect_objects_privateeye
 from .gopher import _init_objects_gopher_ram, _detect_objects_gopher_revised
 from .enduro import _init_objects_enduro_ram, _detect_objects_enduro_revised
 from .videopinball import _init_objects_videopinball_ram, _detect_objects_videopinball_revised
+from .venture import _init_objects_venture_ram, _detect_objects_venture_revised
+
 # calls the respective _get_max_objects from the game modules
 def get_max_objects(game_name, hud):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
@@ -145,6 +147,8 @@ def init_objects(game_name, hud):
         return _init_objects_enduro_ram(hud)
     elif game_name.lower() == "videopinball":
         return _init_objects_videopinball_ram(hud)
+    elif game_name.lower() == "venture":
+        return _init_objects_venture_ram(hud)
     else:
         print(colored("Uncovered init objects", "red"))
         exit(1)
@@ -285,6 +289,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_enduro_revised(objects, ram_state, hud)
     elif game_name.lower() == "videopinball":
         _detect_objects_videopinball_revised(objects, ram_state, hud)
+    elif game_name.lower() == "venture":
+        _detect_objects_venture_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
