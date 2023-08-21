@@ -56,7 +56,8 @@ class OCAtari:
     the remaining \*args and \**kwargs will be passed to the \
         `gymnasium.make <https://gymnasium.farama.org/api/registry/#gymnasium.make>`_ function.
     """
-    def __init__(self, env_name, mode="raw", hud=False, obs_mode="dqn", *args, **kwargs):
+    def __init__(self, env_name, mode="raw", hud=False, obs_mode="dqn",
+                 render_mode=None, render_oc_overlay=False, *args, **kwargs):
         if "ALE/" in env_name: #case if v5 specified
             to_check = env_name[4:8]
             game_name = env_name.split("/")[1].split("-")[0].split("No")[0].split("Deterministic")[0]
@@ -67,13 +68,14 @@ class OCAtari:
             print(colored("Game not available in OCAtari", "red"))
             print("Available games: ", AVAILABLE_GAMES)
             exit(1)
-        self._env = gym.make(env_name, *args, **kwargs)
+        gym_render_mode = "rgb_array" if render_oc_overlay else render_mode
+        self._env = gym.make(env_name, render_mode=gym_render_mode, *args, **kwargs)
         self.game_name = game_name
         self.mode = mode
         self.obs_mode = obs_mode
         self.hud = hud
         self.max_objects = []
-        self._objects = init_objects(self.game_name, self.hud)
+        self._objects : list[GameObject] = init_objects(self.game_name, self.hud)
         if mode == "vision":
             self.detect_objects = detect_objects_vision
             self.step = self._step_vision
@@ -106,6 +108,11 @@ class OCAtari:
         elif obs_mode is not None:
             print(colored("Undefined mode for observation (obs_mode), has to be one of ['dqn', 'ori', None]", "red"))
             exit(1)
+
+        self.render_mode = render_mode
+        self.render_oc_overlay = render_oc_overlay
+        self.rendering_initialized = False
+
         self.window = 4
         self._state_buffer = deque([], maxlen=self.window)
         self.action_space = self._env.action_space
@@ -213,17 +220,97 @@ class OCAtari:
 
     def _get_buffer_as_stack(self):
         return torch.stack(list(self._state_buffer), 0).unsqueeze(0).byte()
-    
+
+    surface : pygame.Surface = None
+    clock : pygame.time.Clock = None
+
+    def _initialize_rendering(self, sample_image):
+        assert sample_image is not None
+        pygame.init()
+        pygame.display.set_caption(self.game_name)
+        self.image_size = (sample_image.shape[1], sample_image.shape[0])
+        self.surface = pygame.display.set_mode(self.image_size, flags=pygame.SCALED)
+        self.clock = pygame.time.Clock()
+        self.rendering_initialized = True
+
     def render(self, *args, **kwargs):
         """
-        After the user has finished using the environment, close contains the code necessary to "clean up" the environment.
-        See `env.render() <https://gymnasium.farama.org/api/env/#gymnasium.Env.render>`_ for gymnasium details.
+        Compute the render frames (as specified by render_mode during the
+        initialization of the environment). If activated, adds an overlay visualizing
+        object properties like position, velocity vector, orientation, name, etc.
+        See `env.render() <https://gymnasium.farama.org/api/env/#gymnasium.Env.render>`_
+        for gymnasium details.
         """
-        return self._env.render(*args, **kwargs)
+
+        image = self._env.render(*args, **kwargs)
+
+        if not self.render_oc_overlay:
+            return image
+
+        else:
+            if self.render_mode == "human":
+                # Prepare screen if not initialized
+                if not self.rendering_initialized:
+                    self._initialize_rendering(image)
+
+                self.clock.tick(15)  # limit FPS to avoid super fast movement
+
+                # Render RGB image
+                image = np.transpose(image, (1, 0, 2))
+                pygame.pixelcopy.array_to_surface(self.surface, image)
+
+                # Init overlay surface
+                overlay_surface = pygame.Surface(self.image_size)
+                overlay_surface.set_colorkey((0, 0, 0))
+                overlay_surface.set_alpha(180)
+
+                # For each object, render its position and velocity vector
+                for game_object in self._objects:
+                    if game_object is None:
+                        continue
+
+                    x, y = game_object.xy
+                    w, h = game_object.wh
+
+                    if x == np.nan:
+                        continue
+
+                    # Get object center position
+                    x_c = x + w // 2
+                    y_c = y + h // 2
+
+                    # Object velocity
+                    dx = game_object.dx
+                    dy = game_object.dy
+
+                    # Draw an 'X' at object center
+                    pygame.draw.line(overlay_surface, color=(255, 255, 255),
+                                     start_pos=(x_c - 2, y_c - 2), end_pos=(x_c + 2, y_c + 2))
+                    pygame.draw.line(overlay_surface, color=(255, 255, 255),
+                                     start_pos=(x_c - 2, y_c + 2), end_pos=(x_c + 2, y_c - 2))
+
+                    # Draw bounding box
+                    pygame.draw.rect(overlay_surface, color=(255, 255, 255),
+                                     rect=(x, y, w, h),
+                                     width=1, border_radius=2)
+
+                    # Draw velocity vector
+                    if dx != 0 or dy != 0:
+                        # if abs(dx) > 10 or abs(dy) > 10:
+                        #     print(f"Large velocity dx={dx}, dy={dy} encountered!")
+                        # TODO: make this an actual arrow
+                        pygame.draw.line(overlay_surface,
+                                         color=(100, 200, 255),
+                                         start_pos=(float(x_c), float(y_c)),
+                                         end_pos=(x_c + 2 * dx, y_c + 2 * dy))
+
+                self.surface.blit(overlay_surface, (0, 0))
+                pygame.display.flip()
+                pygame.event.pump()
 
     def close(self, *args, **kwargs):
         """
-        Compute the render frames as specified by render_mode during the initialization of the environment.
+        After the user has finished using the environment, close contains the code necessary to "clean up" the environment.
         See `env.close() <https://gymnasium.farama.org/api/env/#gymnasium.Env.close>`_ for gymnasium details.
         """
         return self._env.close(*args, **kwargs)
