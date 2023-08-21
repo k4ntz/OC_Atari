@@ -4,7 +4,7 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
 from ocatari.environments import PositionHistoryEnv
 import gymnasium as gym
 from stable_baselines3.common.env_checker import check_env
-from stable_baselines3.common.vec_env import SubprocVecEnv
+from stable_baselines3.common.vec_env import SubprocVecEnv, VecFrameStack
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.logger import configure
@@ -83,7 +83,9 @@ def main():
     # check if compatible gym env
     if opts.rgb:
         eval_env = make_atari_env(env_str, n_envs=n_eval_envs, seed=eval_env_seed, vec_env_cls=SubprocVecEnv, vec_env_kwargs={"start_method" :"fork"})
+        eval_env = VecFrameStack(eval_env, n_stack=4)
         env = make_atari_env(env_str, n_envs=n_envs, seed=opts.seed, vec_env_cls=SubprocVecEnv, vec_env_kwargs={"start_method" :"fork"})
+        env = VecFrameStack(env, n_stack=4)
     else:
         env = PositionHistoryEnv(env_str)
         check_env(env)
