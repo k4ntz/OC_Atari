@@ -8,7 +8,7 @@ RAM extraction for the game KANGUROO. Supported modes: raw, revised.
 """
 
 MAX_NB_OBJECTS =  {'Player': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Score': 1, 'life': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Score': 1, 'Life': 1}
 obj_tracker = {}
 
 class Player(GameObject):
