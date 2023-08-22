@@ -86,6 +86,7 @@ def main():
         eval_env = VecFrameStack(eval_env, n_stack=4)
         env = make_atari_env(env_str, n_envs=n_envs, seed=opts.seed, vec_env_cls=SubprocVecEnv, vec_env_kwargs={"start_method" :"fork"})
         env = VecFrameStack(env, n_stack=4)
+        print("h")
     else:
         env = PositionHistoryEnv(env_str)
         check_env(env)
@@ -144,15 +145,10 @@ def main():
         gae_lambda=0.95,
         clip_range=linear_schedule(clipping_eps),
         vf_coef=1,
-        ent_coef=0.001,
+        ent_coef=0.01,
         env=env,
         verbose=1)
-    #model = DQN.load("pong_baseline")
-    #model.set_env(env)
-    #model.load_replay_buffer("pong_baseline_rb")
-    #print(model.policy)
     model.set_logger(new_logger)
-    #model.learn(total_timesteps=8_000_000, reset_num_timesteps=False)
     model.learn(total_timesteps=training_timestamps, callback=cb_list)
 
 
