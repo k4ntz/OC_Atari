@@ -30,6 +30,7 @@ setup(
         "scikit-learn",
         "keyboard",
         "tqdm",
+        "pygame",
         "pyfiglet",
     ]
 )

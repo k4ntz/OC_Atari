@@ -1,11 +1,10 @@
 from .game_objects import GameObject
 from ._helper_methods import _convert_number
 import math
-import sys
 
-MAX_NB_OBJECTS =  {"Player" :  1, "Enemy": 8, "Cauldron" : 8, "Reward50" : 8}
-MAX_NB_OBJECTS_HUD =  {"Player" :  1, "Enemy": 8, "Cauldron" : 8, "Reward50" : 8, "Score" : 1}
-
+"""
+RAM extraction for the game Asterix. 
+"""
 
 
 class Player(GameObject):
@@ -13,20 +12,27 @@ class Player(GameObject):
         super().__init__()
         self.rgb = 187, 187, 53
         self._xy = 0, 0
-        self.wh = 8, 11  # at some point 16, 11. advanced other player (obelix) is (6, 11)
+        self.wh = 8, 11  # at some point 16, 11. advanced other player (oblix) is (6, 11)
         self.hud = False
 
 
 class Cauldron(GameObject):
+    """
+    The player figure i.e., first asterix and then, as the game progresses, obelix. 
+    """
     def __init__(self):
         super().__init__()
-        self.rgb = 167, 26, 26
+        self.rgb = 187, 187, 53
         self._xy = 0, 0
-        self.wh = 7, 10
+        self.wh = 8, 11  # at some point 16, 11. advanced other player (oblix) is (6, 11)
         self.hud = False
 
 
 class Enemy(GameObject):
+    """
+    The deadly lyres that are among the other collectables.
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 228, 111, 111
@@ -36,6 +42,10 @@ class Enemy(GameObject):
 
 
 class Score(GameObject):
+    """
+    The player's score display (HUD).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 187, 187, 53
@@ -45,6 +55,10 @@ class Score(GameObject):
 
 
 class Lives(GameObject):
+    """
+    The indicator for remaining lives of the player (HUD). 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 187, 187, 53
@@ -52,8 +66,23 @@ class Lives(GameObject):
         self.wh = 6, 7
         self.hud = True
 
+class Cauldron(GameObject):
+    """
+    The collectable cauldrons of magic potion (asterix). 
+    """
+    
+    def __init__(self):
+        super().__init__()
+        self.rgb = 167, 26, 26
+        self._xy = 0, 0
+        self.wh = 7, 10
+        self.hud = False
 
 class Helmet(GameObject):
+    """
+    The collectable helmets (asterix). 
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 240, 128, 128
@@ -63,6 +92,10 @@ class Helmet(GameObject):
 
 
 class Shield(GameObject):
+    """
+    The collectable shields (asterix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 214, 214, 214
@@ -72,6 +105,10 @@ class Shield(GameObject):
 
 
 class Lamp(GameObject):
+    """
+    The collectable lamps (asterix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 187, 53, 53
@@ -81,6 +118,10 @@ class Lamp(GameObject):
 
 
 class Apple(GameObject):
+    """
+    The collectable apples (obelix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 184, 50, 50
@@ -90,6 +131,10 @@ class Apple(GameObject):
 
 
 class Fish(GameObject):
+    """
+    The collectable apples (obelix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 198, 89, 179
@@ -99,6 +144,10 @@ class Fish(GameObject):
 
 
 class Meat(GameObject):
+    """
+    The collectable wild boar legs (obelix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 184, 50, 50
@@ -108,6 +157,10 @@ class Meat(GameObject):
 
 
 class Mug(GameObject):
+    """
+    The collectable mugs of obelix' favourite drink (obelix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 184, 50, 50
@@ -117,6 +170,10 @@ class Mug(GameObject):
 
 
 class Reward50(GameObject):
+    """
+    The 50 point reward-icon for collecting a cauldron (asterix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 198, 89, 179
@@ -126,6 +183,10 @@ class Reward50(GameObject):
 
 
 class Reward100(GameObject):
+    """
+    The 100 point reward-icon for collecting a helmet (asterix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 135, 183, 84
@@ -135,6 +196,10 @@ class Reward100(GameObject):
 
 
 class Reward200(GameObject):
+    """
+    The 200 point reward-icon for collecting a shield (asterix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 195, 144, 61
@@ -144,6 +209,10 @@ class Reward200(GameObject):
 
 
 class Reward300(GameObject):
+    """
+    The 300 point reward-icon for collecting a lamp (asterix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 213, 130, 74
@@ -153,6 +222,10 @@ class Reward300(GameObject):
 
 
 class Reward400(GameObject):
+    """
+    The 400 point reward-icon for collecting an apple (obelix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 135, 183, 84
@@ -162,28 +235,16 @@ class Reward400(GameObject):
 
 
 class Reward500(GameObject):
+    """
+    The 500 point reward-icon for collecting a fish, wild boar leg, mug, or surprise object (obelix).
+    """
+    
     def __init__(self):
         super().__init__()
         self.rgb = 163, 57, 21
         self._xy = 0, 0
         self.wh = 8, 11
         self.hud = False
-
-
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 
 def _init_objects_asterix_ram(hud=False):
@@ -194,7 +255,6 @@ def _init_objects_asterix_ram(hud=False):
     if hud:
         objects.extend([Score(), Lives(), Lives()])
 
-    objects += [None for i in range(8)]
     return objects
 
 
@@ -211,86 +271,157 @@ def _detect_objects_asterix_raw(info, ram_state):
     # info["maybe_useful"] = ram_state[10:18], ram_state[40], ram_state[19:27], ram_state[29:37], ram_state[87],
     # ram_state[7]
     # not known what they are for exactly
+    print(ram_state)
+
+
+class rev:
+    """
+    to save values temporarily
+    """
+    prevRam = []
+    lanes = {}
+
+    def __init__(self, prevRam, lanes):
+        self.prevRam = prevRam  # saving last ram
+        self.lanes = lanes  # saving current objs
+
+
+def _create_obj(i, level, array, rev_inst):
+    if array[i] % 2 == 1:  # create Enemy
+        rev_inst.lanes[i] = Enemy()
+    else:  # create eatable
+        if level == 0:
+            rev_inst.lanes[i] = Cauldron()
+        elif level == 1:
+            rev_inst.lanes[i] = Helmet()
+        elif level == 2:
+            rev_inst.lanes[i] = Shield()
+        elif level == 3:
+            rev_inst.lanes[i] = Lamp()
+        elif level == 4:
+            rev_inst.lanes[i] = Apple()
+        elif level == 5:
+            rev_inst.lanes[i] = Fish()
+        elif level == 6:
+            rev_inst.lanes[i] = Meat()
+        elif level == 7:
+            rev_inst.lanes[i] = Mug()
+    rev_inst.lanes[i].xy = array[i], 26 + i * 16  # specific poses we give in part updating in calling function
+    print("new object created:", rev_inst.lanes[0])
+    # return rev_inst
+
 
 def _detect_objects_asterix_revised(objects, ram_state, hud=False):
-    # player
-    player = objects[0]
-    player.xy = ram_state[41], 26 + ram_state[39] * 16
-    if ram_state[71] < 82:
-        if ram_state[54] < 5:  # asterix playing
+    """
+    we work on objects in lanes from class rev. And hand these to objects at the end
+    """
+    if not isinstance(objects[-1], rev):
+        rev_inst = rev(ram_state, {})
+    else:
+        rev_inst = objects[-1]
+
+    ram = ram_state
+
+    # old = rev_inst.old_objs
+    lives_nr = ram[83]
+    level = ram[54]
+    prev = rev_inst.prevRam
+    # lanes = rev_inst.lanes  # STRUCTURE: should look like [objs, player, score, lives]
+    reward_class = (Reward50, Reward100, Reward200, Reward300, Reward400, Reward500)  # , Reward500, Reward500)
+    eatable_class = (Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat, Mug)
+    if not prev == [] and not ram[12] == prev[12]:  # ram[12] decreases by 1 when all objects disappear (player died)
+        for i in range(8):
+            rev_inst.lanes[i] = None
+
+    if rev_inst.lanes == {}:  # initializing lanes (works correctly)
+        for i in range(8):  # objs
+            _create_obj(i, level, ram[29:37], rev_inst)  # (here it was creating Cauldrons, which is correct)
+            # print(rev_inst.lanes[i])
+        for i in range(2):  # player, score
+            rev_inst.lanes[i + 8] = objects[i]
+        for i in range(2):  # lives (max 2 symbols)
+            rev_inst.lanes[i + 10] = Lives()
+            rev_inst.lanes[i + 10].xy = 60 + i * 16, 169
+            rev_inst.lanes[i + 10].wh = 8, 11
+        rev_inst.lanes[8].rgb = 187, 187, 53  # giving player his color (so we see the rectangle!)
+
+    # ####  from now we edit the objects in the lanes which are in dictionary "lanes" #### #
+
+    # 1- here we only delete rewards and disappearing enemies (nothing appears after then)
+    if not prev == []:  # (for the first iteration)
+        for i in range(8):  # all possible objs are 8 (so going through rev_inst.lanes)
+            # for rew in reward_class:
+            #     print("checking rew classes")
+            #     if isinstance(rev_inst.lanes[i], rew):
+            if isinstance(rev_inst.lanes[i], reward_class):
+                # because there could be more than one kind reward in one frame
+                if not prev[42 + i] == ram[42 + i]:  # so reward moved => disappeared
+                    # del rev_inst.lanes[i]
+                    # rev_inst.lanes[i] = None  # delete reward
+                    rev_inst.lanes[i] = int(ram[42 + i]) - int(prev[42 + i])  # here we're deleting anyway
+                    print("deleting rew")
+                    # this int value does not get edited later only compared and then just replaced with moving obj
+            if isinstance(rev_inst.lanes[i], Enemy):  # if enemy
+                if prev[42 + i] == ram[42 + i]:  # if stopped
+                    rev_inst.lanes[i] = None  # delete Enemy
+    # til here we have deleted the disappearing rews/enemies
+
+    # creating new rewards
+    for i in range(8):
+        if ram[73 + i]:  # ->there is rew in this lane. (actual values 1-8)
+            if not isinstance(rev_inst.lanes[i], int) and rev_inst.lanes[i] is not None:  # -> object has been moving
+                # ~if there is None in lanes so don't create reward
+                # current moving obj (enemy/eatable) get replaced with a reward
+                if level == 0:
+                    rev_inst.lanes[i] = Reward50()
+                elif level == 1:
+                    rev_inst.lanes[i] = Reward100()
+                elif level == 2:
+                    rev_inst.lanes[i] = Reward200()
+                elif level == 3:
+                    rev_inst.lanes[i] = Reward300()
+                elif level == 4:
+                    rev_inst.lanes[i] = Reward400()
+                else:
+                    rev_inst.lanes[i] = Reward500()
+                rev_inst.lanes[i].xy = ram[42 + i], 26 + i * 16
+                # we see if we need to specify this value. I guess it is enough to test for 100_rew
+
+    # now we initiate moving objs WHILE PLAYING NOT FROM BEGINNING
+    for i in range(8):
+        if isinstance(rev_inst.lanes[i], int):
+            if (ram[42 + i] - prev[42 + i]) * rev_inst.lanes[i] < 0 or rev_inst.lanes[i] < 0 and ram[42 + i] > 137:
+                # ~ IF diff directions OR negative diff AND new obj is on the right side
+                # create objs
+                _create_obj(i, level, ram[29:37], rev_inst)  # standard
+
+    # print(rev_inst.lanes)
+    # UPDATING pos of objs  # works correctly
+    for i in range(8):
+        if rev_inst.lanes[i] and not isinstance(rev_inst.lanes[i], int):
+            if isinstance(rev_inst.lanes[i], Cauldron):
+                rev_inst.lanes[i].xy = ram[42 + i] + 1, 26 + i * 16 + 1
+            else:
+                rev_inst.lanes[i].xy = ram[42 + i], 26 + i * 16
+
+    # if while playing we have new level but objects exist and are moving(they simply turn into new ones)
+    if level > prev[54]:
+        for i in range(8):
+            if isinstance(rev_inst.lanes[i], eatable_class):
+                _create_obj(i, level, ram[42:50], rev_inst)
+
+    player = rev_inst.lanes[8]  # works correctly
+    player.xy = ram[41], 26 + ram[39] * 16
+    if ram[71] < 82:
+        if level < 5:  # asterix playing
             player.wh = 8, 11
         else:  # obelix playing
             player.wh = 6, 11
-    else:  # player is wide (is dying)
+    else:  # player is wide(is dying)
         player.wh = 16, 11
-    player.rgb = 187, 187, 53
 
-
-    lives_nr = ram_state[83]
-    reward_class = (Reward50, Reward100, Reward200, Reward300, Reward400, Reward500)  # , Reward500, Reward500)
-    eatable_class = (Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat, Mug)
-    # get lanes
     if hud:
-        offset = 1 + lives_nr
-    else:
-        offset = 1
-    lanes = objects[offset:]
-    const = ram_state[54] % 8
-    reward_lanes = []
-    for i in range(8):
-        if ram_state[18-i] == 11:
-            objects[offset + i] = None
-        elif ram_state[73 + i]:  # set to lane number if there is reward in that lane
-            reward_lanes.append(i)  # 0-7 instead actual 1-8
-            if type(lanes[i]) not in reward_class:
-                if const == 0:  # 50 reward
-                    rew = Reward50()
-                elif const == 1:  # 100 reward
-                    rew = Reward100()
-                elif const == 2:  # 200 reward
-                    rew = Reward200()
-                elif const == 3:  # 300 reward
-                    rew = Reward300()
-                elif const == 4:  # 400 reward
-                    rew = Reward400()
-                else:  # 500 reward
-                    rew = Reward500()
-                objects[offset + i] = rew
-            else:
-                rew = lanes[i]
-            rew.xy = ram_state[42 + i], 26 + i * 16
-        elif ram_state[29 + i] % 2 == 1:
-            if not isinstance(lanes[i], Enemy):
-                en = Enemy()
-                objects[offset + i] = en
-            else:
-                en = lanes[i]
-            en.xy = ram_state[42 + i], 26 + i * 16
-        else:
-            if type(lanes[i]) not in eatable_class:
-                if const == 0:
-                    instance = Cauldron()
-                elif const == 1:
-                    instance = Helmet()
-                elif const == 2:
-                    instance = Shield()
-                elif const == 3:
-                    instance = Lamp()
-                elif const == 4:
-                    instance = Apple()
-                elif const == 5:
-                    instance = Fish()
-                elif const == 6:
-                    instance = Meat()
-                elif const == 7:
-                    instance = Mug()
-                objects[offset + i] = instance
-            else:
-                instance = lanes[i]
-            instance.xy = ram_state[42 + i] + 1, 26 + i * 16 + 1
-    
-    if hud:
-        score = objects[1]
+        score = rev_inst.lanes[9]
         dec_value = _convert_number(ram_state[94]) * 10000 + _convert_number(ram_state[95]) * 100 + _convert_number(
             ram_state[96])
         if dec_value == 0:
@@ -301,15 +432,21 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
             score.xy = 96 - digits * 8, 184
             score.wh = 6 + digits * 8, 7
 
-        if lives_nr >= 2:
-            lives = objects[2]
-            lives.xy = 60, 169
-            lives.wh = 8, 11
-        elif isinstance(objects[2], Lives):
-            del objects[2]
-        if lives_nr >= 3:
-            lives = objects[3]
-            lives.xy = 60 + 16, 169
-            lives.wh = 8, 11
-        elif isinstance(objects[3], Lives):
-            del objects[3]
+        # here we are deleting lives if they disappeared
+        for i in range(2):  # works correctly
+            if isinstance(rev_inst.lanes[10 + i], Lives):
+                if lives_nr <= i + 1:
+                    rev_inst.lanes[10 + i] = None
+
+    del objects[:]  # works correctly (deleting refs no objs)
+    # print(rev_inst.lanes)
+    # print(ram)
+    for i in range(len(rev_inst.lanes)):
+        if rev_inst.lanes[i] is not None and not isinstance(rev_inst.lanes[i], int):
+            objects.append(rev_inst.lanes[i])
+    print(len(objects))
+    objects.append(rev_inst)  # so we guarantee that rev_inst does not get deleted
+    prev = ram
+
+    # we don't need at beginning to check which objs we had in "objects". because we have already their references in
+    # rev_inst.lanes we do all the editing in this function
