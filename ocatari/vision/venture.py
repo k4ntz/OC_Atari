@@ -156,18 +156,20 @@ def _detect_objects_venture(objects, obs, hud=False):
 
     skeleton = None
     if len(wall) == 0:
+        grey = find_objects(obs, objects_colors['dark_grey'])
+        yellow = find_objects(obs, objects_colors['yellow'])
         if mcc == (168, 48, 143):
-            skeleton = find_objects(obs, objects_colors['dark_grey'])
-            for bb in skeleton:
+            for bb in grey:
                 objects.append(Skeleton(*bb))
 
-            if len(skeleton):
+            if len(grey):
                 purple = find_objects(obs, objects_colors['purple'])
                 for bb in purple:
                     objects.append(Purple_Collectable(*bb))
+            for bb in yellow:
+                objects.append(Yellow_Collectable(*bb))
+            
         else:
-            grey = find_objects(obs, objects_colors['dark_grey'])
-            yellow = find_objects(obs, objects_colors['yellow'])
             if len(grey) != 0 and len(yellow) != 0:
                 for bb in grey:
                     objects.append(Troll(*bb))
@@ -186,8 +188,6 @@ def _detect_objects_venture(objects, obs, hud=False):
         grey = find_objects(obs, objects_colors['dark_grey'])
         for bb in grey:
             objects.append(Grey_Collectable(*bb))
-
-    yellow = find_objects(obs, objects_colors['yellow'])
     
     if skeleton is None or len(skeleton) == 0:
         goblin = find_objects(obs, objects_colors['purple'])
