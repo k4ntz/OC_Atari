@@ -4,11 +4,12 @@ sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
 from ocatari.environments import PositionHistoryEnv
 import gymnasium as gym
 from stable_baselines3.common.env_checker import check_env
-from stable_baselines3.common.vec_env import SubprocVecEnv
+from stable_baselines3.common.vec_env import SubprocVecEnv, VecFrameStack
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.logger import configure
 from stable_baselines3.common.utils import set_random_seed
+from stable_baselines3.common.env_util import make_atari_env
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.callbacks import CheckpointCallback, EveryNTimesteps, BaseCallback, CallbackList, EvalCallback
 from pathlib import Path
@@ -57,11 +58,15 @@ def main():
                         help="seed")
     parser.add_argument("-c", "--cores", type=int, required=True,
                         help="number of envs used")
+    parser.add_argument("--rgb", action="store_true", help="rgb observation space")
     opts = parser.parse_args()
 
 
     env_str = "ALE/" + opts.game +"-v5"
-    exp_name = opts.game + "-s" + str(opts.seed)
+    suffix = ""
+    if opts.rgb:
+        suffix = "-rgb"
+    exp_name = opts.game + "-s" + str(opts.seed) + suffix
     n_envs = opts.cores
     n_eval_envs = 4
     n_eval_episodes = 4
@@ -76,10 +81,19 @@ def main():
     ckpt_path.mkdir(parents=True, exist_ok=True)
 
     # check if compatible gym env
-    env = PositionHistoryEnv(env_str)
-    check_env(env)
-    del env
-    eval_env = SubprocVecEnv([make_env(game=env_str, rank=i, seed=eval_env_seed) for i in range(n_eval_envs)], start_method="fork")
+    if opts.rgb:
+        eval_env = make_atari_env(env_str, n_envs=n_eval_envs, seed=eval_env_seed, vec_env_cls=SubprocVecEnv, vec_env_kwargs={"start_method" :"fork"})
+        eval_env = VecFrameStack(eval_env, n_stack=4)
+        env = make_atari_env(env_str, n_envs=n_envs, seed=opts.seed, vec_env_cls=SubprocVecEnv, vec_env_kwargs={"start_method" :"fork"})
+        env = VecFrameStack(env, n_stack=4)
+        print("h")
+    else:
+        env = PositionHistoryEnv(env_str)
+        check_env(env)
+        del env
+        eval_env = SubprocVecEnv([make_env(game=env_str, rank=i, seed=eval_env_seed) for i in range(n_eval_envs)], start_method="fork")
+        env = SubprocVecEnv([make_env(game=env_str, rank=i, seed=opts.seed) for i in range(n_envs)], start_method="fork")
+    
 
     rtpt_iters = training_timestamps // rtpt_frequency
     eval_callback = EvalCallback(
@@ -107,7 +121,7 @@ def main():
         callback=rtpt_callback)
 
     cb_list = CallbackList([checkpoint_callback, eval_callback, n_callback])
-    env = SubprocVecEnv([make_env(game=env_str, rank=i, seed=opts.seed) for i in range(n_envs)], start_method="fork")
+
 
    
 
@@ -115,10 +129,14 @@ def main():
 
     # atari hyperparameters from the ppo paper:
     # https://arxiv.org/abs/1707.06347
+    if opts.rgb:
+        policy_str = "CnnPolicy"
+    else:
+        policy_str = "MlpPolicy"
     adam_step_size = 0.00025
     clipping_eps = 0.1
     model = PPO(
-        "MlpPolicy",
+        policy_str,
         n_steps=128,
         learning_rate=linear_schedule(adam_step_size),
         n_epochs=3,
@@ -127,15 +145,10 @@ def main():
         gae_lambda=0.95,
         clip_range=linear_schedule(clipping_eps),
         vf_coef=1,
-        ent_coef=0.001,
+        ent_coef=0.01,
         env=env,
         verbose=1)
-    #model = DQN.load("pong_baseline")
-    #model.set_env(env)
-    #model.load_replay_buffer("pong_baseline_rb")
-    #print(model.policy)
     model.set_logger(new_logger)
-    #model.learn(total_timesteps=8_000_000, reset_num_timesteps=False)
     model.learn(total_timesteps=training_timestamps, callback=cb_list)
 
 
