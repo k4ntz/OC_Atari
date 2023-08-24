@@ -1,42 +1,46 @@
+import sys
+
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
-import sys
-from .utils import _color_conversion
 
 """
 RAM extraction for the game SEAQUEST. Supported modes: raw, revised.
 """
 
 # submarine and missile increased manually, during training more observed than via max_object script
-MAX_NB_OBJECTS =  {'Player': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'EnemySubmarine': 4, 'EnemyMissile': 3}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerScore': 1, 'Lives': 1, 'OxygenBar': 1, 'OxygenBarDepleted': 1, 'OxygenBarLogo': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'CollectedDiver': 3, 'EnemySubmarine': 3, 'EnemyMissile': 3}
+MAX_NB_OBJECTS = {'Player': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'EnemySubmarine': 4, 'EnemyMissile': 4}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerScore': 1, 'Lives': 1, 'OxygenBar': 1, 'OxygenBarDepleted': 1,
+                      'OxygenBarLogo': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'CollectedDiver': 6,
+                      'EnemySubmarine': 4, 'EnemyMissile': 4}
 
 
 class Player(GameObject):
     """
-    The player figure i.e., the submarine.
+    The player figure, i.e., the submarine.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 76, 46
         self.wh = 16, 11
         self.rgb = 187, 187, 53
         self.hud = False
-        self.orientation = 0 # O is right, 8 is left
+        self.orientation = 0  # O is right, 8 is left
+        self.exists = True
 
 
 class Diver(GameObject):
     """
     The divers to be retrieved and rescued.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
         self.wh = 8, 11
         self.rgb = 66, 72, 200
         self.hud = False
+        self.exists = False
 
 
 class Enemy(GameObject):
@@ -50,56 +54,63 @@ class Enemy(GameObject):
         self.wh = 8, 7
         self.rgb = 92, 186, 92
         self.hud = False
+        self.exists = False
 
 
 class EnemySubmarine(GameObject):
     """
     The enemy submarines.
     """
-    
+
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 8, 11
         self.rgb = 170, 170, 170
         self.hud = False
+        self.exists = False
 
 
 class EnemyMissile(GameObject):
     """
     The torpedoes fired from enemy submarines.
     """
-    
+
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 6, 4
         self.rgb = 66, 72, 200
         self.hud = False
+        self.exists = False
 
 
 class PlayerMissile(GameObject):
     """
     The torpedoes launched from the player's submarine.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
         self.wh = 8, 1
         self.rgb = 187, 187, 53
         self.hud = False
+        self.exists = False
 
 
 class PlayerScore(GameObject):
     """
     The player's score display (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 99, 9
         self.rgb = 210, 210, 64
         self.wh = 6, 8
         self.hud = True
+        self.exists = True
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
@@ -109,80 +120,98 @@ class Lives(GameObject):
     """
     The indidcator for remaining reserve subs (lives) (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 58, 22
         self.rgb = 210, 210, 64
         self.wh = 23, 8
         self.hud = True
+        self.exists = True
 
 
 class OxygenBar(GameObject):
     """
     The oxygen gauge (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 49, 170
         self.rgb = 214, 214, 214
         self.wh = 63, 5
         self.hud = True
+        self.exists = True
 
 
 class OxygenBarDepleted(GameObject):
     """
     The empty oxygen bar (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 49, 170
         self.rgb = 163, 57, 21
         self.wh = 63, 5
         self.hud = True
+        self.exists = True
 
 
 class OxygenBarLogo(GameObject):
     """
     The 'OXYGEN' lettering next to the oxygen gauge (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 15, 170
         self.rgb = 0, 0, 0
         self.wh = 23, 5
         self.hud = True
+        self.exists = True
 
 
 class CollectedDiver(GameObject):
     """
     The indicator for collected divers (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
         self.rgb = 24, 26, 167
         self.wh = 8, 9
         self.hud = True
+        self.exists = False
+
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
-
     def fromdict(max_obj_dict):
         objects = []
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
+
+
+def _init_all_objects() -> dict[str, list[GameObject]]:
+    mod = sys.modules[__name__]
+    all_objects = {}
+    for obj_cls_name, max_obj_count in MAX_NB_OBJECTS_HUD.items():
+        same_type_objects = [getattr(mod, obj_cls_name)() for _ in range(max_obj_count)]
+        all_objects[obj_cls_name] = same_type_objects
+    return all_objects
+
+
+objects = _init_all_objects()
+
 
 def _init_objects_seaquest_ram(hud=False):
     """
@@ -196,147 +225,173 @@ def _init_objects_seaquest_ram(hud=False):
     return objects
 
 
-def _detect_objects_seaquest_revised(objects, ram_state, hud=False):
-    player = objects[0]
+def _detect_objects_seaquest_revised(objects_old, ram_state, hud=False):
+    _update_objects(ram_state, hud)
+    existing_objects = []
+    object_categories = list(objects.values())
+    for same_type_objects in object_categories:
+        for game_object in same_type_objects:
+            if game_object.exists:
+                existing_objects.append(game_object)
+    del objects_old[:]
+    objects_old.extend(existing_objects)
+
+
+def _update_objects(ram_state, hud=False):
+    _update_player(ram_state)
+    _update_enemies(ram_state)
+    _update_player_missile(ram_state)
+    _update_divers_and_enemy_missiles(ram_state)
+    _update_fifth_lane_enemy(ram_state)
+
+    if hud:
+        _update_score(ram_state)
+        _update_lives(ram_state)
+        _update_oxygen_bar(ram_state)
+        _update_depleted_oxygen_bar(ram_state)
+        _update_collected_divers(ram_state)
+
+
+def _update_player(ram_state):
+    player = objects["Player"][0]
     player.xy = ram_state[70], ram_state[97] + 32
     player.orientation = ram_state[86]
-    offset = ram_state[93] - 4
-    if hud:
-        score = objects[1]
-        del objects[2:]
+
+
+def _update_score(ram_state):
+    score = objects["PlayerScore"][0]
+    score_value = (_convert_number(ram_state[57]) * 100) + _convert_number(ram_state[58])
+
+    if 100 > score_value > 0:
+        score.xy = 91, 9
+        score.wh = 14, 8
+
+    elif 1000 > score_value >= 100:
+        score.xy = 83, 9
+        score.wh = 22, 8
+
+    elif score_value >= 1000:
+        score.xy = 75, 9
+        score.wh = 30, 8
+
+
+def _update_lives(ram_state):
+    lives = objects["Lives"][0]
+    if ram_state[59] != 0:
+        lives.exist = True
+        lives.wh = 7 + 8 * (ram_state[59] - 1), 8
     else:
-        del objects[1:]
-    objs = _calculate_objects(ram_state, offset)
-    objects.extend(objs)
-
-    if hud:
-        # score
-        score_value = (_convert_number(ram_state[57]) * 100) + _convert_number(ram_state[58])
-        if 100 > score_value > 0:
-            score.xy = 91, 9
-            score.wh = 14, 8
-
-        elif 1000 > score_value >= 100:
-            score.xy = 83, 9
-            score.wh = 22, 8
-
-        elif score_value >= 1000:
-            score.xy = 75, 9
-            score.wh = 30, 8
-
-        # lives
-        if ram_state[59] != 0:
-            lives = Lives()
-            lives.wh = 7 + 8 * (ram_state[59] - 1), 8
-            objects.append(lives)
-
-        # oxygen bar
-        if ram_state[102] != 0:
-            oxygen = OxygenBar()
-            if ram_state[102] == 64:
-                oxygen.wh = 63, 5
-            else:
-                oxygen.wh = ram_state[102], 5
-            objects.append(oxygen)
-
-        # depleted oxygen bar
-        if ram_state[102] != 64:
-            oxygen_dpl = OxygenBarDepleted()
-            oxygen_dpl.xy = 49 + ram_state[102], 170
-            oxygen_dpl.wh = 63 - ram_state[102], 5
-            objects.append(oxygen_dpl)
-
-        # collected divers, if you have six collected divers they blink but that is not implemented
-        for i in range(ram_state[62]):
-            collected = CollectedDiver()
-            collected.xy = 58 + i * 8, 178
-            objects.append(collected)
-
-        # oxygen bar logo
-        logo_bar = OxygenBarLogo()
-        objects.append(logo_bar)
+        lives.exist = False
 
 
-def _calculate_objects(ram_state, offset):
-    """
-    Calculate the current enemies, divers and missiles that are on the screen.
-    """
-    enemies = []
-    divers_or_enemy_missiles = []
-    missiles = []
-    is_submarine = []
-    
-
-    for i in range(4):
-        if 3 < ram_state[89 + i] % 8 < 7:
-            is_submarine.append(True)
+def _update_oxygen_bar(ram_state):
+    if ram_state[102] != 0:
+        oxygen = objects["OxygenBar"][0]
+        if ram_state[102] == 64:
+            oxygen.wh = 63, 5
         else:
-            is_submarine.append(False)
+            oxygen.wh = ram_state[102], 5
 
-    # left enemy appears at variations 4, 5, 6, 7
-    for i in range(4):  # for the 4 lanes, check if the left enemy appears
+
+def _update_depleted_oxygen_bar(ram_state):
+    if ram_state[102] != 64:
+        oxygen_dpl = objects["OxygenBarDepleted"][0]
+        oxygen_dpl.xy = 49 + ram_state[102], 170
+        oxygen_dpl.wh = 63 - ram_state[102], 5
+
+
+def _update_collected_divers(ram_state):
+    # if you have six collected divers they blink but that is not implemented
+    for i in range(6):
+        collected = objects["CollectedDiver"][i]
+        if i < ram_state[62]:
+            collected.xy = 58 + i * 8, 178
+            collected.exists = True
+        else:
+            collected.exists = False
+
+
+def _update_enemies(ram_state):
+    offset = ram_state[93] - 4
+
+    for i in range(4):  # for each of the 4 lanes
+        submarine = objects["EnemySubmarine"][i]
+        submarine.exists = False
+        enemy = objects["Enemy"][i]
+        enemy.exists = False
+
+        # left enemy appears at variations 4, 5, 6, 7
         if ram_state[36 + i] >= 4 and ram_state[30 + i] < 160:
-            if is_submarine[i]:
-                submarine = EnemySubmarine()
+            if _is_submarine(i, ram_state):
+                submarine.exists = True
                 submarine.xy = ram_state[30 + i], 141 - i * 24
-                enemies.append(submarine)
             else:
-                enemy = Enemy()
+                enemy.exists = True
                 enemy.xy = ram_state[30 + i], 141 - i * 24 + offset
-                enemies.append(enemy)
 
-    # right enemy appears at variations 1, 3, 5, 7;
-    # offset of 32 in x-position because the ram only saves the x-position of the left enemy
-    for i in range(4):
+        # right enemy appears at variations 1, 3, 5, 7;
+        # offset of 32 in x-position because the ram only saves the x-position of the left enemy
         if ram_state[36 + i] % 2 == 1 and (ram_state[30 + i] + 32) % 256 < 160:
-            if is_submarine[i]:
-                submarine = EnemySubmarine()
+            if _is_submarine(i, ram_state):
+                submarine.exists = True
                 submarine.xy = (ram_state[30 + i] + 32) % 256, 141 - i * 24
-                enemies.append(submarine)
             else:
-                enemy = Enemy()
+                enemy.exists = True
                 enemy.xy = (ram_state[30 + i] + 32) % 256, 141 - i * 24 + offset
-                enemies.append(enemy)
 
-    # middle enemy appears at variations 2, 3, 6, 7
-    # offset of 16 in x-position because the ram only saves the x-position of the left enemy
-    for i in range(4):
-        if (ram_state[36 + i] == 2 or ram_state[36 + i] == 3 or ram_state[36 + i] == 6 or ram_state[36 + i] == 7) \
-                and (ram_state[30 + i] + 16) % 256 < 160:
-            if is_submarine[i]:
-                submarine = EnemySubmarine()
+        # middle enemy appears at variations 2, 3, 6, 7
+        # offset of 16 in x-position because the ram only saves the x-position of the left enemy
+        if (ram_state[36 + i] == 2 or ram_state[36 + i] == 3 or ram_state[36 + i] == 6 or
+                ram_state[36 + i] == 7) and (ram_state[30 + i] + 16) % 256 < 160:
+            if _is_submarine(i, ram_state):
+                submarine.exists = True
                 submarine.xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24
-                enemies.append(submarine)
             else:
-                enemy = Enemy()
+                enemy.exists = True
                 enemy.xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24 + offset
-                enemies.append(enemy)
 
-    # fifth lane enemy, only spawns in higher levels
-    if ram_state[60] >= 2 and ram_state[118] < 160:
-        submarine = EnemySubmarine()
-        submarine.xy = ram_state[118], 45
-        enemies.append(submarine)
 
+def _update_divers_and_enemy_missiles(ram_state):
     # divers and enemy_missiles share a ram position
+    missiles = objects["EnemyMissile"]
+    divers = objects["Diver"]
     for i in range(4):
         if 0 < ram_state[71 + i] < 160:
-            if is_submarine[i]:     # then its an enemy missile
-                missile = EnemyMissile()
-                missile.xy = ram_state[71 + i] + 3, 145 - i * 24
-                divers_or_enemy_missiles.append(missile)
+            if _is_submarine(i, ram_state):  # then, it's an enemy missile
+                missiles[i].exists = True
+                missiles[i].xy = ram_state[71 + i] + 3, 145 - i * 24
             else:
-                diver = Diver()
-                diver.xy = ram_state[71 + i], 141 - i * 24
-                divers_or_enemy_missiles.append(diver)
+                divers[i].exists = True
+                divers[i].xy = ram_state[71 + i], 141 - i * 24
+        else:
+            missiles[i].exists = False
+            divers[i].exists = False
 
-    # player missile
+
+def _update_fifth_lane_enemy(ram_state):
+    # only spawns in higher levels
+    enemy_sub = objects["EnemySubmarine"][-1]
+    if ram_state[60] >= 2 and ram_state[118] < 160:
+        enemy_sub.exists = True
+        enemy_sub.xy = ram_state[118], 45
+    else:
+        enemy_sub.exists = False
+
+
+def _is_submarine(i: int, ram_state) -> bool:
+    """True if object with index i is an enemy submarine, else False (i.e., an enemy shark)."""
+    return 3 < ram_state[89 + i] % 8 < 7
+
+
+def _update_player_missile(ram_state):
+    missile = objects["PlayerMissile"][0]
     if 0 < ram_state[103] < 160:
-        missile = PlayerMissile()
+        missile.exists = True
         missile.xy = ram_state[103], ram_state[97] + 40
-        missiles.append(missile)
-
-    return enemies + divers_or_enemy_missiles + missiles
+    else:
+        missile.exists = False
+        player = objects["Player"][0]
+        missile.xy = player.xy  # assume the missile to be at the player's position
 
 
 def _detect_objects_seaquest_raw(info, ram_state):
