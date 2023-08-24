@@ -24,7 +24,7 @@ printEnvInfo = False       # if True, the extracted objects or the environment i
 
 # gym[atari]/gymnasium
 # game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
-game_name = "Gopher-v4"    # game name ChopperCommand-v4
+game_name = "Enduro-v4"    # game name ChopperCommand-v4
 render_mode = "human"           # render_mode => "rgb_array" is advised, when playing
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
@@ -70,8 +70,6 @@ showDelta = False             # shows any other changes that occured by changing
 slowDownPlot = 0.0001              # pause per iteration
 lastRAM = np.zeros(128)
 categorical_inference=True
-start_categorical=0
-stop_categorical=36
 
 # DO NOT CHANGE! global variables used in context of interrupting, but keeping the plot stable (must be False)
 pause = False
@@ -164,7 +162,7 @@ def run(env):
     # run the game
     previous_lives = 3
     prev_ram=[]
-    ram_dict=dict([(i,[]) for i in range(start_categorical,stop_categorical+1)])
+    ram_dict=dict([(i,[]) for i in range(0,128)])
     for i in range(performActions):
         # get the action that will be performed
         if playGame:
@@ -195,19 +193,19 @@ def run(env):
             all_rams.append(deepcopy(ram))
             target_vals.append(target_val)
         if showRAM:
-            print(ram[0:19])
+            # print(ram)
             if categorical_inference:
                 if i==0:
-                    prev_ram=ram[start_categorical:stop_categorical+1]
-                now_ram=ram[start_categorical:stop_categorical+1]
-                for i in range(start_categorical,stop_categorical+1):
+                    prev_ram=ram[0:128]
+                now_ram=ram[0:128]
+                for i in range(0,128):
                     if prev_ram[i]!=now_ram[i]:
                         # print(str(i)+" changed from "+str(prev_ram[i])+" to "+str(now_ram[i]))
                         if now_ram[i] not in ram_dict[i]:
                             ram_dict[i].append(now_ram[i])
                 
                 prev_ram=now_ram
-                print(ram_dict)
+                # print(ram_dict)
 
         if manipulateRAM:
             if setRAMValue < 0:
@@ -300,9 +298,14 @@ def run(env):
     # close the environment at the end
     env.close()
     listener.stop()
-    save_fn = "mode_change_kangaroo.pkl"
-    pickle.dump((all_rams, target_vals), open(save_fn, "wb"))
+    # save_fn = "mode_change_kangaroo.pkl"
+    # pickle.dump((all_rams, target_vals), open(save_fn, "wb"))
+    # print(f"Saved in {save_fn}")
+
+    save_fn="ram_dict_enduro"
+    pickle.dump(ram_dict,open(save_fn, "wb"))
     print(f"Saved in {save_fn}")
+
 
 
 def get_unwrapped(env):
