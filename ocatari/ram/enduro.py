@@ -5,8 +5,8 @@ import sys
 RAM extraction for the game Enduro.
 """
 
-MAX_NB_OBJECTS = {"Player": 1, "Bird": 8, "Crab":8, "Clam":8,"GreenFish":8,"WhitePlate":24, "BluePlate":24,"Bear":1, "House":1,"CompletedHouse":1,"FrostBite":1}
-MAX_NB_OBJECTS_HUD = {"LifeCount":1, "PlayerScore":4, "Degree":2}# 'Score': 1}
+MAX_NB_OBJECTS = {"Player": 1, "Car": 24}
+MAX_NB_OBJECTS_HUD = {"NumberOfCars":4, "PlayerScore":6, "Level":1}# 'Score': 1}
 
 class Player(GameObject):
     
@@ -17,17 +17,37 @@ class Player(GameObject):
         self.rgb = 192,192,192
         self.hud = False
 
-class PlayerScore(GameObject):
-    """
-    The player's score display.
-    """
-    
+class Car(GameObject):
     def __init__(self):
         super().__init__()
+        self._xy = 0, 0
+        self.wh = (16,10)
+        self.rgb = 192,192,192
+        self.hud = False
+
+class PlayerScore(GameObject):
+    def __init__(self):
+        super().__init__()
+        self._xy = 0, 0
+        self.wh = (16,10)
         self.rgb =132,144,252
         self.hud = True
-        self.wh = (8, 18)
+
+class NumberOfCars(GameObject):
+    def __init__(self):
+        super().__init__()
         self._xy = 0, 0
+        self.wh = (16,10)
+        self.rgb =0,0,0
+        self.hud = True 
+
+class Level(GameObject):
+    def __init__(self):
+        super().__init__()
+        self._xy = 0, 0
+        self.wh = (16,10)
+        self.rgb =0,0,0
+        self.hud = True 
 
 
 # parses MAX_NB* dicts, returns default init list of objects
