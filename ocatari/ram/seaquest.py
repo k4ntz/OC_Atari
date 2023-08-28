@@ -1,4 +1,5 @@
 import sys
+from typing import Type
 
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
@@ -8,10 +9,10 @@ RAM extraction for the game SEAQUEST. Supported modes: raw, revised.
 """
 
 # submarine and missile increased manually, during training more observed than via max_object script
-MAX_NB_OBJECTS = {'Player': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'EnemySubmarine': 4, 'EnemyMissile': 4}
+MAX_NB_OBJECTS = {'Player': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'EnemySubmarine': 5, 'EnemyMissile': 4}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerScore': 1, 'Lives': 1, 'OxygenBar': 1, 'OxygenBarDepleted': 1,
                       'OxygenBarLogo': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'CollectedDiver': 6,
-                      'EnemySubmarine': 4, 'EnemyMissile': 4}
+                      'EnemySubmarine': 5, 'EnemyMissile': 4}
 
 
 class Player(GameObject):
@@ -26,7 +27,6 @@ class Player(GameObject):
         self.rgb = 187, 187, 53
         self.hud = False
         self.orientation = 0  # O is right, 8 is left
-        self.exists = True
 
 
 class Diver(GameObject):
@@ -40,7 +40,6 @@ class Diver(GameObject):
         self.wh = 8, 11
         self.rgb = 66, 72, 200
         self.hud = False
-        self.exists = False
 
 
 class Enemy(GameObject):
@@ -54,7 +53,6 @@ class Enemy(GameObject):
         self.wh = 8, 7
         self.rgb = 92, 186, 92
         self.hud = False
-        self.exists = False
 
 
 class EnemySubmarine(GameObject):
@@ -68,7 +66,6 @@ class EnemySubmarine(GameObject):
         self.wh = 8, 11
         self.rgb = 170, 170, 170
         self.hud = False
-        self.exists = False
 
 
 class EnemyMissile(GameObject):
@@ -82,7 +79,6 @@ class EnemyMissile(GameObject):
         self.wh = 6, 4
         self.rgb = 66, 72, 200
         self.hud = False
-        self.exists = False
 
 
 class PlayerMissile(GameObject):
@@ -96,7 +92,6 @@ class PlayerMissile(GameObject):
         self.wh = 8, 1
         self.rgb = 187, 187, 53
         self.hud = False
-        self.exists = False
 
 
 class PlayerScore(GameObject):
@@ -110,7 +105,6 @@ class PlayerScore(GameObject):
         self.rgb = 210, 210, 64
         self.wh = 6, 8
         self.hud = True
-        self.exists = True
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
@@ -127,7 +121,7 @@ class Lives(GameObject):
         self.rgb = 210, 210, 64
         self.wh = 23, 8
         self.hud = True
-        self.exists = True
+        self.value = 3
 
 
 class OxygenBar(GameObject):
@@ -141,7 +135,6 @@ class OxygenBar(GameObject):
         self.rgb = 214, 214, 214
         self.wh = 63, 5
         self.hud = True
-        self.exists = True
 
 
 class OxygenBarDepleted(GameObject):
@@ -155,7 +148,6 @@ class OxygenBarDepleted(GameObject):
         self.rgb = 163, 57, 21
         self.wh = 63, 5
         self.hud = True
-        self.exists = True
 
 
 class OxygenBarLogo(GameObject):
@@ -169,7 +161,6 @@ class OxygenBarLogo(GameObject):
         self.rgb = 0, 0, 0
         self.wh = 23, 5
         self.hud = True
-        self.exists = True
 
 
 class CollectedDiver(GameObject):
@@ -183,7 +174,6 @@ class CollectedDiver(GameObject):
         self.rgb = 24, 26, 167
         self.wh = 8, 9
         self.hud = True
-        self.exists = False
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -205,12 +195,26 @@ def _init_all_objects() -> dict[str, list[GameObject]]:
     mod = sys.modules[__name__]
     all_objects = {}
     for obj_cls_name, max_obj_count in MAX_NB_OBJECTS_HUD.items():
-        same_type_objects = [getattr(mod, obj_cls_name)() for _ in range(max_obj_count)]
-        all_objects[obj_cls_name] = same_type_objects
+        obj_cls = getattr(mod, obj_cls_name)
+        all_objects[obj_cls] = max_obj_count * [None]
     return all_objects
 
 
 objects = _init_all_objects()
+
+
+def _update_object(obj_cls: Type[GameObject], attr: str, value, idx: int = 0):
+    game_object = objects[obj_cls][idx]
+    if game_object is None:
+        new_game_object = obj_cls()
+        new_game_object.__setattr__(attr, value)
+        objects[obj_cls][idx] = new_game_object
+    else:
+        game_object.__setattr__(attr, value)
+
+
+def _remove_object(obj_cls: Type[GameObject], idx: int = 0):
+    objects[obj_cls][idx] = None
 
 
 def _init_objects_seaquest_ram(hud=False):
@@ -231,7 +235,7 @@ def _detect_objects_seaquest_revised(objects_old, ram_state, hud=False):
     object_categories = list(objects.values())
     for same_type_objects in object_categories:
         for game_object in same_type_objects:
-            if game_object.exists:
+            if game_object is not None:
                 existing_objects.append(game_object)
     del objects_old[:]
     objects_old.extend(existing_objects)
@@ -253,145 +257,151 @@ def _update_objects(ram_state, hud=False):
 
 
 def _update_player(ram_state):
-    player = objects["Player"][0]
-    player.xy = ram_state[70], ram_state[97] + 32
-    player.orientation = ram_state[86]
+    new_xy = ram_state[70], ram_state[97] + 32
+    new_orientation = ram_state[86]
+    _update_object(Player, "xy", new_xy)
+    _update_object(Player, "orientation", new_orientation)
 
 
 def _update_score(ram_state):
-    score = objects["PlayerScore"][0]
     score_value = (_convert_number(ram_state[57]) * 100) + _convert_number(ram_state[58])
 
-    if 100 > score_value > 0:
-        score.xy = 91, 9
-        score.wh = 14, 8
+    if score_value == 0:
+        new_x = 99
+        new_w = 6
+
+    elif 100 > score_value > 0:
+        new_x = 91
+        new_w = 14
 
     elif 1000 > score_value >= 100:
-        score.xy = 83, 9
-        score.wh = 22, 8
+        new_x = 83
+        new_w = 22
 
-    elif score_value >= 1000:
-        score.xy = 75, 9
-        score.wh = 30, 8
+    else:
+        new_x = 75
+        new_w = 30
+
+    _update_object(PlayerScore, "xy", (new_x, 9))
+    _update_object(PlayerScore, "wh", (new_w, 8))
 
 
 def _update_lives(ram_state):
-    lives = objects["Lives"][0]
-    if ram_state[59] != 0:
-        lives.exist = True
-        lives.wh = 7 + 8 * (ram_state[59] - 1), 8
+    num_lives = ram_state[59]
+    if num_lives > 0:
+        new_wh = 7 + 8 * (num_lives - 1), 8
+        _update_object(Lives, "wh", new_wh)
+        _update_object(Lives, "value", num_lives)
     else:
-        lives.exist = False
+        _remove_object(Lives)
 
 
 def _update_oxygen_bar(ram_state):
     if ram_state[102] != 0:
-        oxygen = objects["OxygenBar"][0]
         if ram_state[102] == 64:
-            oxygen.wh = 63, 5
+            new_wh = 63, 5
         else:
-            oxygen.wh = ram_state[102], 5
+            new_wh = ram_state[102], 5
+        _update_object(OxygenBar, "wh", new_wh)
+    else:
+        _remove_object(OxygenBar)
 
 
 def _update_depleted_oxygen_bar(ram_state):
     if ram_state[102] != 64:
-        oxygen_dpl = objects["OxygenBarDepleted"][0]
-        oxygen_dpl.xy = 49 + ram_state[102], 170
-        oxygen_dpl.wh = 63 - ram_state[102], 5
+        new_xy = 49 + ram_state[102], 170
+        new_wh = 63 - ram_state[102], 5
+        _update_object(OxygenBarDepleted, "xy", new_xy)
+        _update_object(OxygenBarDepleted, "wh", new_wh)
+    else:
+        _remove_object(OxygenBarDepleted)
 
 
 def _update_collected_divers(ram_state):
-    # if you have six collected divers they blink but that is not implemented
+    # If you have six collected divers they blink. Blinking is ignored here
     for i in range(6):
-        collected = objects["CollectedDiver"][i]
         if i < ram_state[62]:
-            collected.xy = 58 + i * 8, 178
-            collected.exists = True
+            _update_object(CollectedDiver, "xy", (58 + i * 8, 178), idx=i)
         else:
-            collected.exists = False
+            _remove_object(CollectedDiver, idx=i)
 
 
 def _update_enemies(ram_state):
     offset = ram_state[93] - 4
 
     for i in range(4):  # for each of the 4 lanes
-        submarine = objects["EnemySubmarine"][i]
-        submarine.exists = False
-        enemy = objects["Enemy"][i]
-        enemy.exists = False
+        sub_xy = None
+        enemy_xy = None
 
         # left enemy appears at variations 4, 5, 6, 7
         if ram_state[36 + i] >= 4 and ram_state[30 + i] < 160:
             if _is_submarine(i, ram_state):
-                submarine.exists = True
-                submarine.xy = ram_state[30 + i], 141 - i * 24
+                sub_xy = ram_state[30 + i], 141 - i * 24
             else:
-                enemy.exists = True
-                enemy.xy = ram_state[30 + i], 141 - i * 24 + offset
+                enemy_xy = ram_state[30 + i], 141 - i * 24 + offset
 
         # right enemy appears at variations 1, 3, 5, 7;
         # offset of 32 in x-position because the ram only saves the x-position of the left enemy
         if ram_state[36 + i] % 2 == 1 and (ram_state[30 + i] + 32) % 256 < 160:
             if _is_submarine(i, ram_state):
-                submarine.exists = True
-                submarine.xy = (ram_state[30 + i] + 32) % 256, 141 - i * 24
+                sub_xy = (ram_state[30 + i] + 32) % 256, 141 - i * 24
             else:
-                enemy.exists = True
-                enemy.xy = (ram_state[30 + i] + 32) % 256, 141 - i * 24 + offset
+                enemy_xy = (ram_state[30 + i] + 32) % 256, 141 - i * 24 + offset
 
         # middle enemy appears at variations 2, 3, 6, 7
         # offset of 16 in x-position because the ram only saves the x-position of the left enemy
         if (ram_state[36 + i] == 2 or ram_state[36 + i] == 3 or ram_state[36 + i] == 6 or
                 ram_state[36 + i] == 7) and (ram_state[30 + i] + 16) % 256 < 160:
             if _is_submarine(i, ram_state):
-                submarine.exists = True
-                submarine.xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24
+                sub_xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24
             else:
-                enemy.exists = True
-                enemy.xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24 + offset
+                enemy_xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24 + offset
+
+        if sub_xy is None:
+            _remove_object(EnemySubmarine, i)
+        else:
+            _update_object(EnemySubmarine, "xy", sub_xy, idx=i)
+
+        if enemy_xy is None:
+            _remove_object(Enemy, i)
+        else:
+            _update_object(Enemy, "xy", enemy_xy, idx=i)
 
 
 def _update_divers_and_enemy_missiles(ram_state):
     # divers and enemy_missiles share a ram position
-    missiles = objects["EnemyMissile"]
-    divers = objects["Diver"]
     for i in range(4):
         if 0 < ram_state[71 + i] < 160:
             if _is_submarine(i, ram_state):  # then, it's an enemy missile
-                missiles[i].exists = True
-                missiles[i].xy = ram_state[71 + i] + 3, 145 - i * 24
+                _update_object(EnemyMissile, "xy", (ram_state[71 + i] + 3, 145 - i * 24), idx=i)
+                _remove_object(Diver, i)
             else:
-                divers[i].exists = True
-                divers[i].xy = ram_state[71 + i], 141 - i * 24
+                _update_object(Diver, "xy", (ram_state[71 + i], 141 - i * 24), idx=i)
+                _remove_object(EnemyMissile, i)
         else:
-            missiles[i].exists = False
-            divers[i].exists = False
+            _remove_object(EnemyMissile, i)
+            _remove_object(Diver, i)
 
 
 def _update_fifth_lane_enemy(ram_state):
-    # only spawns in higher levels
-    enemy_sub = objects["EnemySubmarine"][-1]
+    # only spawns in late game
     if ram_state[60] >= 2 and ram_state[118] < 160:
-        enemy_sub.exists = True
-        enemy_sub.xy = ram_state[118], 45
+        _update_object(EnemySubmarine, "xy", (ram_state[118], 45), -1)
     else:
-        enemy_sub.exists = False
+        _remove_object(EnemySubmarine, -1)
+
+
+def _update_player_missile(ram_state):
+    if 0 < ram_state[103] < 160:
+        new_xy = ram_state[103], ram_state[97] + 40
+        _update_object(PlayerMissile, "xy", new_xy)
+    else:
+        _remove_object(PlayerMissile)
 
 
 def _is_submarine(i: int, ram_state) -> bool:
     """True if object with index i is an enemy submarine, else False (i.e., an enemy shark)."""
     return 3 < ram_state[89 + i] % 8 < 7
-
-
-def _update_player_missile(ram_state):
-    missile = objects["PlayerMissile"][0]
-    if 0 < ram_state[103] < 160:
-        missile.exists = True
-        missile.xy = ram_state[103], ram_state[97] + 40
-    else:
-        missile.exists = False
-        player = objects["Player"][0]
-        missile.xy = player.xy  # assume the missile to be at the player's position
 
 
 def _detect_objects_seaquest_raw(info, ram_state):
