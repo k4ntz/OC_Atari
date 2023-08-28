@@ -62,17 +62,6 @@ class Enemy(GameObject):
         self.type: EnemyType
 
 
-class Snake(GameObject):
-    """
-    The snakes.
-    """
-
-    def __init__(self, *args, **kwargs):
-        self.xy = 0, 0
-        self.wh = 8, 10
-        super().__init__(*args, **kwargs)
-
-
 class Player(GameObject):
     """
     The player figure.
