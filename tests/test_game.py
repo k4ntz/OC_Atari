@@ -42,10 +42,9 @@ for i in range(100000):
         action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
     if i % opts.interval == 0:
-        print(env.objects)
-        for obs, objects_list, title in zip([obs],
-                                                [env.objects],
-                                                ["ram"] if opts.mode == "revised" else ["vision"]):
+        print(sorted(env.objects, key=lambda o:str(o)))
+        for obs, objects_list, title in zip([obs], [env.objects],
+                                            ["ram"] if opts.mode == "revised" else ["vision"]):
             for obj in objects_list:
                 opos = obj.xywh
                 ocol = obj.rgb
