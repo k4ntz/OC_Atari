@@ -242,7 +242,7 @@ class OCAtari:
             self.window = pygame.Surface(self.window_size)
         self.rendering_initialized = True
 
-    def render(self, *args, **kwargs):
+    def render(self):
         """
         Compute the render frames (as specified by render_mode during the
         initialization of the environment). If activated, adds an overlay visualizing
@@ -251,7 +251,7 @@ class OCAtari:
         for gymnasium details.
         """
 
-        image = self._env.render(*args, **kwargs)
+        image = self._env.render()
 
         if not self.render_oc_overlay:
             return image
@@ -318,7 +318,7 @@ class OCAtari:
                                width=2)
 
                 # Draw object type label
-                object_type_str = str(type(game_object).__name__)
+                object_type_str = game_object.category
                 draw_label(self.window, object_type_str, position=(x, y + h + 4))
 
             self.window.blit(overlay_surface, (0, 0))
