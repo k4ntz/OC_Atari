@@ -1,5 +1,7 @@
 from enum import Enum
 
+import numpy as np
+
 from .game_objects import GameObject
 
 """
@@ -346,9 +348,15 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
     if hud:
         objects[1].value = ram_state[43] / 81
         objects[2].value = ram_state[50]
+        objects[2].xy = 105 - objects[2].value * 8, objects[2].y
+        objects[2].wh = objects[2].value * 8, objects[2].h
         objects[3].value = ram_state[51]
+        objects[3].xy = 105 - objects[3].value * 6, objects[3].y
+        objects[3].wh = objects[3].value * 6, objects[3].h
         objects[4].value = ram_state[56]
-    print(ram_state)
+        objects[4].xy = 105 - (int(np.log(max(objects[4].value,1))) + 1) * 6, objects[4].y
+        objects[4].wh = (int(np.log(max(objects[4].value,1))) + 1) * 6, objects[4].h
+
     # if we want to not use lava wall detection, because it has some bugs
     # objects[:] = objects[0:base_length]
     # for key in objects_map.keys():
