@@ -36,20 +36,30 @@ class Pulsar(GameObject):
         self.hud = False
 
 
-class PlayerScore(GameObject):
+class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 132,144,252
         self.hud = True
 
 
-class PulsarCount(GameObject):
+class Life(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # self.rgb = 0, 0, 0
+        self.rgb = 132, 144, 252
         self.count=0
         self.hud=True
 
+
+# def _detect_eggs_alien(objects, obs, hud=False):
+#     objects.clear()
+#     for color in egg_colors:
+#         eggs = find_objects(obs, color,size=(1,2), tol_s=1, min_distance=2, minx=86, maxy=24)
+#         for e in eggs:
+#             eg=Egg(*e)
+#             eg.rgb=color
+#             objects.append(eg)
+    
 
 def _detect_objects_alien(objects, obs, hud=False):
     # detection and filtering
@@ -73,18 +83,18 @@ def _detect_objects_alien(objects, obs, hud=False):
             eg.rgb=color
             objects.append(eg)
     for color in pulsar_colors:
-        pulsars = find_objects(obs, color,size=(6,5), tol_s=2, min_distance=1)
+        pulsars = find_objects(obs, color ,size=(6,5), tol_s=2, min_distance=1)
         for e in pulsars:
             eg=Pulsar(*e)
             eg.rgb=color
             objects.append(eg)
 
     if hud:
-        score = find_objects(obs, hud_color, closing_active=False, miny=174,maxy=183)
+        score = find_objects(obs, hud_color, miny=174,maxy=183)
         for s in score:
-            objects.append(PlayerScore(*s))
+            objects.append(Score(*s))
         count_pulsars=find_objects(obs, hud_color, closing_active=False, miny=183,maxy=192)
         for c in count_pulsars:
-            objects.append(PulsarCount(*c))
+            objects.append(Life(*c))
 
 
