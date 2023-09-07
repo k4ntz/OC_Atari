@@ -71,14 +71,14 @@ year={2023}
 - [X] Carnival
 - [X] Centipede
 - [X] Chopper Command 
-- [ ] DemonAttack  (only vision)
-- [ ] Fishing Derby  (only vision)
+- [X] DemonAttack
+- [X] Fishing Derby  
 - [X] Freeway
 - [X] Frostbite 
 - [X] Kangaroo
 - [X] MontezumaRevenge
 - [X] MsPacman
-- [ ] Pitfall  (only vision)
+- [X] Pitfall
 - [X] Pong
 - [X] Q\*Bert  
 - [X] RiverRaid  
@@ -87,13 +87,16 @@ year={2023}
 - [X] Skiing
 - [X] Space Invaders
 - [X] Tennis
+- [X] Venture
+- [X] VideoPinball
+- [ ] YarsRevenge
 
 ### The two modes of OCAtari
 OCAtari supports two different modes to extract objects from the current state:
 
-**Vision mode:** Return a list of objects currently on the screen with their X, Y, Width, Height, R, G, B Values, based on handwritten rules used on the visual representation. 
+**Vision Extraction Mode:** Return a list of objects currently on the screen with their X, Y, Width, Height, R, G, B Values, based on handwritten rules used on the visual representation. 
 
-**Ram/Revised mode:** Uses the object values stored in the RAM to detect the objects currently on the screen.
+**Ram Extraction Mode:** Uses the object values stored in the RAM to detect the objects currently on the screen.
 
 ### Use these trained agents and the demo script:
 
