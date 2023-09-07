@@ -291,6 +291,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_videopinball_revised(objects, ram_state, hud)
     elif game_name.lower() == "venture":
         _detect_objects_venture_revised(objects, ram_state, hud)
+    elif game_name.lower() == "alien":
+        _detect_objects_alien_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
