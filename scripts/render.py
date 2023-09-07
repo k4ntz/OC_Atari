@@ -7,5 +7,8 @@ env = OCAtari(GAME, mode="revised", hud=True, render_mode=RENDER_MODE, render_oc
 env.reset()
 
 while True:
-    env.step(env.action_space.sample())  # act randomly
+    action = env.action_space.sample()  # pick random action
+    done = env.step(action)[3]
     env.render()
+    if done:
+        env.reset()

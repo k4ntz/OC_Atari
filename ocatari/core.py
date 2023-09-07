@@ -6,8 +6,12 @@ import numpy as np
 from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects, get_max_objects
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
+from ocatari.ram.game_objects import GameObject
+from ocatari.utils import draw_label, draw_arrow
 
 from ale_py import ALEInterface
+
+UPSCALE_FACTOR = 4
 
 try:
     import cv2
@@ -64,7 +68,7 @@ class OCAtari:
             to_check = env_name[:4]
             game_name = env_name.split("-")[0].split("No")[0].split("Deterministic")[0]
         if to_check[:4] not in [gn[:4] for gn in AVAILABLE_GAMES]:
-            print(colored("Game not available in OCAtari", "red"))
+            print(colored(f"Game '{to_check}' not available in OCAtari", "red"))
             print("Available games: ", AVAILABLE_GAMES)
             exit(1)
         gym_render_mode = "rgb_array" if render_oc_overlay else render_mode
@@ -112,11 +116,11 @@ class OCAtari:
         self.render_oc_overlay = render_oc_overlay
         self.rendering_initialized = False
 
-        self.window = 4
-        self._state_buffer = deque([], maxlen=self.window)
+        self.buffer_window_size = 4
+        self._state_buffer = deque([], maxlen=self.buffer_window_size)
         self.action_space = self._env.action_space
         self._ale = self._env.unwrapped.ale
-        #inhererit every attribute and method of env
+        # inhererit every attribute and method of env
         for meth in dir(self._env):
             if meth not in dir(self):
                 try:
@@ -185,13 +189,13 @@ class OCAtari:
         return obs, reward, truncated, terminated, info
 
     def _reset_buffer_dqn(self):
-        for _ in range(self.window):
+        for _ in range(self.buffer_window_size):
             self._state_buffer.append(
                 torch.zeros(84, 84, device=DEVICE, dtype=torch.uint8)
             )
 
     def _reset_buffer_ori(self):
-        for _ in range(self.window):
+        for _ in range(self.buffer_window_size):
             self._state_buffer.append(
                 torch.zeros(210, 160, 3, device=DEVICE, dtype=torch.uint8)
             )
@@ -220,19 +224,25 @@ class OCAtari:
     def _get_buffer_as_stack(self):
         return torch.stack(list(self._state_buffer), 0).unsqueeze(0).byte()
 
-    surface : pygame.Surface = None
+    window : pygame.Surface = None
     clock : pygame.time.Clock = None
 
     def _initialize_rendering(self, sample_image):
         assert sample_image is not None
         pygame.init()
-        pygame.display.set_caption(self.game_name)
+        if self.render_mode == "human":
+            pygame.display.set_caption(self.game_name)
         self.image_size = (sample_image.shape[1], sample_image.shape[0])
-        self.surface = pygame.display.set_mode(self.image_size, flags=pygame.SCALED)
-        self.clock = pygame.time.Clock()
+        self.window_size = (sample_image.shape[1] * UPSCALE_FACTOR,
+                            sample_image.shape[0] * UPSCALE_FACTOR)  # render with higher res
+        if self.render_mode == "human":
+            self.window = pygame.display.set_mode(self.window_size)
+            self.clock = pygame.time.Clock()
+        else:
+            self.window = pygame.Surface(self.window_size)
         self.rendering_initialized = True
 
-    def render(self, *args, **kwargs):
+    def render(self):
         """
         Compute the render frames (as specified by render_mode during the
         initialization of the environment). If activated, adds an overlay visualizing
@@ -241,71 +251,85 @@ class OCAtari:
         for gymnasium details.
         """
 
-        image = self._env.render(*args, **kwargs)
+        image = self._env.render()
 
         if not self.render_oc_overlay:
             return image
 
         else:
+            # Prepare screen if not initialized
+            if not self.rendering_initialized:
+                self._initialize_rendering(image)
+
+            # Render env RGB image
+            image = np.transpose(image, (1, 0, 2))
+            image_surface = pygame.Surface(self.image_size)
+            pygame.pixelcopy.array_to_surface(image_surface, image)
+            upscaled_image = pygame.transform.scale(image_surface, self.window_size)
+            self.window.blit(upscaled_image, (0, 0))
+
+            # Init overlay surface
+            overlay_surface = pygame.Surface(self.window_size)
+            overlay_surface.set_colorkey((0, 0, 0))
+
+            # For each object, render its position and velocity vector
+            for game_object in self._objects:
+                if game_object is None:
+                    continue
+
+                x, y = game_object.xy
+                w, h = game_object.wh
+
+                if x == np.nan:
+                    continue
+
+                # Object velocity
+                dx = game_object.dx
+                dy = game_object.dy
+
+                # Transform to upscaled screen resolution
+                x *= UPSCALE_FACTOR
+                y *= UPSCALE_FACTOR
+                w *= UPSCALE_FACTOR
+                h *= UPSCALE_FACTOR
+                dx *= UPSCALE_FACTOR
+                dy *= UPSCALE_FACTOR
+
+                # Compute center coordinates
+                x_c = x + w // 2
+                y_c = y + h // 2
+
+                # Draw an 'X' at object center
+                pygame.draw.line(overlay_surface, color=(255, 255, 255), width=2,
+                                 start_pos=(x_c - 4, y_c - 4), end_pos=(x_c + 4, y_c + 4))
+                pygame.draw.line(overlay_surface, color=(255, 255, 255), width=2,
+                                 start_pos=(x_c - 4, y_c + 4), end_pos=(x_c + 4, y_c - 4))
+
+                # Draw bounding box
+                pygame.draw.rect(overlay_surface, color=(255, 255, 255),
+                                 rect=(x, y, w, h), width=2)
+
+                # Draw velocity vector
+                if dx != 0 or dy != 0:
+                    draw_arrow(overlay_surface,
+                               start_pos=(float(x_c), float(y_c)),
+                               end_pos=(x_c + 2 * dx, y_c + 2 * dy),
+                               color=(100, 200, 255),
+                               width=2)
+
+                # Draw object type label
+                object_type_str = game_object.category
+                draw_label(self.window, object_type_str, position=(x, y + h + 4))
+
+            self.window.blit(overlay_surface, (0, 0))
+
             if self.render_mode == "human":
-                # Prepare screen if not initialized
-                if not self.rendering_initialized:
-                    self._initialize_rendering(image)
-
                 self.clock.tick(15)  # limit FPS to avoid super fast movement
-
-                # Render RGB image
-                image = np.transpose(image, (1, 0, 2))
-                pygame.pixelcopy.array_to_surface(self.surface, image)
-
-                # Init overlay surface
-                overlay_surface = pygame.Surface(self.image_size)
-                overlay_surface.set_colorkey((0, 0, 0))
-                overlay_surface.set_alpha(180)
-
-                # For each object, render its position and velocity vector
-                for game_object in self._objects:
-                    if game_object is None:
-                        continue
-
-                    x, y = game_object.xy
-                    w, h = game_object.wh
-
-                    if x == np.nan:
-                        continue
-
-                    # Get object center position
-                    x_c = x + w // 2
-                    y_c = y + h // 2
-
-                    # Object velocity
-                    dx = game_object.dx
-                    dy = game_object.dy
-
-                    # Draw an 'X' at object center
-                    pygame.draw.line(overlay_surface, color=(255, 255, 255),
-                                     start_pos=(x_c - 2, y_c - 2), end_pos=(x_c + 2, y_c + 2))
-                    pygame.draw.line(overlay_surface, color=(255, 255, 255),
-                                     start_pos=(x_c - 2, y_c + 2), end_pos=(x_c + 2, y_c - 2))
-
-                    # Draw bounding box
-                    pygame.draw.rect(overlay_surface, color=(255, 255, 255),
-                                     rect=(x, y, w, h),
-                                     width=1, border_radius=2)
-
-                    # Draw velocity vector
-                    if dx != 0 or dy != 0:
-                        # if abs(dx) > 10 or abs(dy) > 10:
-                        #     print(f"Large velocity dx={dx}, dy={dy} encountered!")
-                        # TODO: make this an actual arrow
-                        pygame.draw.line(overlay_surface,
-                                         color=(100, 200, 255),
-                                         start_pos=(float(x_c), float(y_c)),
-                                         end_pos=(x_c + 2 * dx, y_c + 2 * dy))
-
-                self.surface.blit(overlay_surface, (0, 0))
                 pygame.display.flip()
                 pygame.event.pump()
+
+            elif self.render_mode == "rgb_array":
+                return pygame.surfarray.array3d(self.window)
 
     def close(self, *args, **kwargs):
         """
