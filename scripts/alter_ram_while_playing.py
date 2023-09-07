@@ -92,6 +92,7 @@ pause = False
 end = False
 interrupted = False
 
+plt.rcParams['figure.dpi'] = 200
 fig = plt.gcf()
 fig.set_size_inches(10.5, 18.5)
 
@@ -120,7 +121,8 @@ def withocatari():
     """
     # set up environment
     global env
-    oc = OCAtari(env_name=game_name, mode=mode, hud=HUD, render_mode=render_mode, render_oc_overlay=True)
+    oc = OCAtari(env_name=game_name, mode=mode, hud=HUD, render_mode=render_mode,
+                 render_oc_overlay=useOCAtari)
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
@@ -258,27 +260,29 @@ def run(env):
             """
 
         # preparation for the image output
-        if useOCAtari and not manipulateRAM:
-            for obj in env.objects:
-                x, y = obj.xy
-                if x < 160 and y < 210:
-                    object_position = obj.xywh
-                    object_color = obj.rgb
+        # if useOCAtari and not manipulateRAM:
+        #     for obj in env.objects:
+        #         x, y = obj.xy
+        #         if x < 160 and y < 210:
+        #             object_position = obj.xywh
+        #             object_color = obj.rgb
+        #
+        #             # change rgb a tiny bit, so that it is distinguishable from the objects color
+        #             bb_color = make_darker(object_color)
+        #             r, g, b = bb_color
+        #             if r+g+b <= 20:
+        #                 bb_color = 255, 255, 255
+        #             mark_bb(observation, object_position, color=bb_color)
+        #     image = observation
+        # else:
+        #     # RGB
+        #     rgb_array = env.render()
+        #     if printRGB:
+        #         print("rgb_array: ")
+        #         print(rgb_array)
+        #     image = rgb_array
 
-                    # change rgb a tiny bit, so that it is distinguishable from the objects color
-                    bb_color = make_darker(object_color)
-                    r, g, b = bb_color
-                    if r+g+b <= 20:
-                        bb_color = 255, 255, 255
-                    mark_bb(observation, object_position, color=bb_color)
-            image = observation
-        else:
-            # RGB
-            rgb_array = env.render()
-            if printRGB:
-                print("rgb_array: ")
-                print(rgb_array)
-            image = rgb_array
+        image = env.render().swapaxes(0, 1)
 
         # display image
         if showImage and image is not None:
