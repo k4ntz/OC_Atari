@@ -279,7 +279,9 @@ def run(env):
         while pause:
             # take a look at the frame
             HELP_TEXT.set_text("space: enter new value\nTab  : Unpause")
-            plt.pause(1)
+            plt.pause(1)    # save_fn = "mode_change_kangaroo.pkl"
+    # pickle.dump((all_rams, target_vals), open(save_fn, "wb"))
+    # print(f"Saved in {save_fn}")
             # print("is paused")
 
             if end:
