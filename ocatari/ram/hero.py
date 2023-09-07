@@ -250,7 +250,6 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
                                                         (19, 8), (19, 10)]:
                     enemy_instance = Lamp()
                     enemy_instance.xy = x, enemy_instance.y
-                    print(enemy_instance.y)
                 else:
                     enemy_instance = Enemy()
                     enemy_instance.xy = x, y
