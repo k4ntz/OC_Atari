@@ -76,6 +76,7 @@ for i in range(100000):
                 # im.save()
             fig.suptitle(f"frame {i}", fontsize=20)
             plt.show()
+            # import ipdb; ipdb.set_trace()
 
         if terminated or truncated:
             observation, info = env.reset()

@@ -77,7 +77,7 @@ class GameObject:
 
     @w.setter
     def w(self, w):
-        self.wh = w, self.h
+        self.wh = int(w), self.h
 
     @property
     def h(self):
@@ -85,8 +85,7 @@ class GameObject:
     
     @h.setter
     def h(self, h):
-        self.wh = self.w, h
-
+        self.wh = self.w, int(h)
 
     @property
     def prev_xy(self):
@@ -105,7 +104,7 @@ class GameObject:
 
     @xy.setter
     def xy(self, xy):
-        self._xy = xy
+        self._xy = (int(xy[0]), int(xy[1]))
 
     # returns 2 lists with current and past coords
     @property
@@ -116,11 +115,9 @@ class GameObject:
     def dx(self):
         return self._xy[0] - self.prev_xy[0]
 
-
     @property
     def dy(self):
         return self._xy[1] - self.prev_xy[1]
-
 
     @property
     def xywh(self):
