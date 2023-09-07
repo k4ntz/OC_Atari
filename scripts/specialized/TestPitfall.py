@@ -24,7 +24,7 @@ printEnvInfo = False       # if True, the extracted objects or the environment i
 
 # gym[atari]/gymnasium
 # game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
-game_name = "Enduro-v4"    # game name ChopperCommand-v4
+game_name = "Gopher-v4"    # game name ChopperCommand-v4
 render_mode = "human"           # render_mode => "rgb_array" is advised, when playing
 render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
 # => "human" to also get the normal representation to compare between object extraction and default
@@ -51,7 +51,7 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 
 # OCAtari modes
-mode = "revised"                    # raw, revised, vision, test
+mode = "vision"                    # raw, revised, vision, test
 HUD = True                    # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
@@ -108,7 +108,7 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/snapshots/night_enduro.pkl", "rb"))
+    # snapshot = pickle.load(open("/home/anur4: [24, 25, 0], 5: [24, 25, 0], 6: [128, 0], 7: [128, 152, 153, 0], 8: [1, 0], 9: [], 10: [24, 25, 0], 11: [1, 25, 0], 12: [128, 0], 13: [128, 152, 153, 0], 14: [1, 0], 15: [], 16: [1, 25, 0], 17: [24, 25, 0], 18: [], 19: [128, 192, 224, 240, 252, 255, 0]ag/Desktop/HiWi_OC/OC_Atari/snapshots/night_enduro.pkl", "rb"))
     # env._env.env.env.ale.restoreState(snapshot)
     run(oc)
 
@@ -193,7 +193,7 @@ def run(env):
             all_rams.append(deepcopy(ram))
             target_vals.append(target_val)
         if showRAM:
-            # print(ram)
+            print(ram[18])
             if categorical_inference:
                 if i==0:
                     prev_ram=ram[0:128]
@@ -304,7 +304,7 @@ def run(env):
     # pickle.dump((all_rams, target_vals), open(save_fn, "wb"))
     # print(f"Saved in {save_fn}")
 
-    save_fn="ram_dict_enduro"
+    save_fn="ram_dict_gopher.pkl"
     pickle.dump(ram_dict,open(save_fn, "wb"))
     print(f"Saved in {save_fn}")
 
