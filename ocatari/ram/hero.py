@@ -259,7 +259,6 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
                                                         (19, 8), (19, 10)]:
                     enemy_instance = Lamp()
                     enemy_instance.xy = x, enemy_instance.y
-                    print(enemy_instance.y)
                 else:
                     enemy_instance = Enemy()
                     enemy_instance.xy = x, y
@@ -359,7 +358,6 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
         objects[2].value = ram_state[50]
         objects[3].value = ram_state[51]
         objects[4].value = ram_state[56]
-    print(ram_state)
     # if we want to not use lava wall detection, because it has some bugs
     # objects[:] = objects[0:base_length]
     # for key in objects_map.keys():

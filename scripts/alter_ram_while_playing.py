@@ -120,7 +120,7 @@ def withocatari():
     """
     # set up environment
     global env
-    oc = OCAtari(env_name=game_name, mode=mode, hud=HUD, render_mode=render_mode)
+    oc = OCAtari(env_name=game_name, mode=mode, hud=HUD, render_mode=render_mode, render_oc_overlay=True)
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
