@@ -191,7 +191,7 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_NB_OBJECTS)
 
 
-def _init_all_objects() -> dict[str, list[GameObject]]:
+def _init_all_objects():
     mod = sys.modules[__name__]
     all_objects = {}
     for obj_cls_name, max_obj_count in MAX_NB_OBJECTS_HUD.items():
