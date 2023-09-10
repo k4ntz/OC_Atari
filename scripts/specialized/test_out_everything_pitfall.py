@@ -31,7 +31,7 @@ def ransac_regression(x, y):
 
 
 
-game_name = "Gopher-v4"
+game_name = "Enduro-v4"
 MODE = "vision"
 RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
