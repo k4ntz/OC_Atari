@@ -141,7 +141,7 @@ class OCAtari:
         raise NotImplementedError()
 
     def _step_ram(self, *args, **kwargs):
-        obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
+        obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
         if self.mode == "revised":
             self.detect_objects(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         else:  # mode == "raw" because in raw mode we augment the info dictionary
@@ -172,7 +172,7 @@ class OCAtari:
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
-        obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
+        obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
         self.detect_objects(self._objects, obs, self.game_name, self.hud)
         self._fill_buffer()
         # if self.obs_mode in ["dqn", "ori"]:
@@ -180,7 +180,7 @@ class OCAtari:
         return obs, reward, truncated, terminated, info
 
     def _step_test(self, *args, **kwargs):
-        obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
+        obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
         self.detect_objects_r(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self.detect_objects_v(self.objects_v, obs, self.game_name, self.hud)
         self._fill_buffer()
