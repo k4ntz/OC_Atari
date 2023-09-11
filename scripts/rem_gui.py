@@ -255,21 +255,24 @@ class Renderer:
         for k, value in enumerate(ram):
             ale.setRAM(k, value)  # restore original RAM
 
-        candidates = []
+        self.candidate_cell_ids = []
         for i in tqdm(range(len(ram))):
             original_ram_value = ram[i]
             ale.setRAM(i, 0)
             self.env.step(0)
             new_frame = self.env.render()
+            self.active_cell_idx = i
+            self.current_active_cell_input = "0"
             self._render(new_frame)
             new_pixel = new_frame[y, x]
             if np.any(new_pixel != original_pixel):
-                candidates.append(i)
+                self.candidate_cell_ids.append(i)
             for k, value in enumerate(ram):
                 ale.setRAM(k, value)  # restore original RAM
 
+        self.active_cell_idx = None
+        self.current_active_cell_input = ""
         self._render()
-        self.candidate_cell_ids = candidates
 
 
 if __name__ == "__main__":

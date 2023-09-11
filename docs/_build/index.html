@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="python3.9" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to OCAtari&#39;s documentation! &mdash; OCAtari  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=03ece63d"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The OCAtari Environments" href="ocatari/core.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            OCAtari
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ocatari/core.html">The OCAtari Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ocatari/game_objects.html">Game Objects Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ocatari/ram.html">RAM extraction mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ocatari/vision.html">Vision processing mode</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Scripts:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="scripts/alter_ram_while_playing.html">Alter RAM while playing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/automated_analysis.html">Automated Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/find_causative_ram.html">Causative RAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/rem_gui.html">REM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/reverse_engineering_helper.html">Reverse Engineering Helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/test_scripts.html">The test scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tests:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tests/comparison_test.html">Comparison test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests/detection_metrics.html">Get detection metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests/extraction_test.html">Extraction test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests/test_speed.html">Speed test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests/tests_utils.html">Tests utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">OCAtari</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Welcome to OCAtari's documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-ocatari-s-documentation">
+<h1>Welcome to OCAtari's documentation!<a class="headerlink" href="#welcome-to-ocatari-s-documentation" title="Link to this heading"></a></h1>
+<div class="twocol docutils container">
+<div class="leftside docutils container">
+<p>OCAtari is a wrapper around the Atari environments available in gymnasium.
+It automatically extracts the objects that exists in the state,
+either via looking up their attribute in the RAM (fast), or using vision processing methods.
+OC_Atari environments allow for object centric Reinforcement Learning.</p>
+</div>
+<div class="rightside docutils container">
+<p><a class="reference internal" href="_images/kangaroo.png"><img alt="A picture of the kangaroo Atari game with bouding boxes around objects, and a list of all detected objects." src="_images/kangaroo.png" style="width: 200px;" /></a></p>
+</div>
+</div>
+<section id="cite-our-work">
+<h2>Cite our work<a class="headerlink" href="#cite-our-work" title="Link to this heading"></a></h2>
+<p>If you are using OCAtari for your scientific publications, please cite us:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@inproceedings</span><span class="p">{</span><span class="nl">Delfosse2023OCAtariOA</span><span class="p">,</span>
+<span class="w">   </span><span class="na">title</span><span class="p">=</span><span class="s">{OCAtari: Object-Centric Atari 2600 Reinforcement Learning Environments}</span><span class="p">,</span>
+<span class="w">   </span><span class="na">author</span><span class="p">=</span><span class="s">{Quentin Delfosse and Jannis Bluml and Bjarne Gregori and Sebastian Sztwiertnia and Kristian Kersting}</span><span class="p">,</span>
+<span class="w">   </span><span class="na">year</span><span class="p">=</span><span class="s">{2023}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
+<p>This project depends on:</p>
+<ul class="simple">
+<li><p>gymnasium</p></li>
+<li><p>numpy</p></li>
+<li><p>termcolor (if you want colored Warning error and messages)</p></li>
+<li><p>cv2 and torch (if you want to use an automatic wrapper that provides 4x84x84 observations (as used by DQN and many deep algorithms))</p></li>
+</ul>
+<p>Download and install:
+You can download from the
+<a class="reference external" href="https://github.com/k4ntz/OC_Atari">Github</a> repository or:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">ocatari</span>
+</pre></div>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ocatari/core.html" class="btn btn-neutral float-right" title="The OCAtari Environments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kévin-Lâm Quesnel and Anurag Maurya.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
