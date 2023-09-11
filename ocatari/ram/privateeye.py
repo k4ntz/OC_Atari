@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ScoreObject, ClockObject
+from .game_objects import GameObject, ValueObject, ValueObject
 from ._helper_methods import _convert_number, get_iou
 import sys
 
@@ -334,7 +334,7 @@ class Badguy_Head(GameObject):
         self.hud = False
 
 
-class Score(ScoreObject):
+class Score(ValueObject):
     """
     The player's merit score display.
     """
@@ -347,7 +347,7 @@ class Score(ScoreObject):
         self.hud = True
 
 
-class Clock(ClockObject):
+class Clock(ValueObject):
     """
     The statue of limitation (game clock display) for the current case.
     """

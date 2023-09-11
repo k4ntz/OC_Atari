@@ -2,7 +2,7 @@ import sys
 from typing import Type
 
 from ._helper_methods import _convert_number
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject, ValueObject
 
 """
 RAM extraction for the game SEAQUEST. Supported modes: raw, revised.
@@ -94,7 +94,7 @@ class PlayerMissile(GameObject):
         self.hud = False
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
@@ -105,12 +105,13 @@ class PlayerScore(GameObject):
         self.rgb = 210, 210, 64
         self.wh = 6, 8
         self.hud = True
+        self.value = 0
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
 
-class Lives(GameObject):
+class Lives(ValueObject):
     """
     The indidcator for remaining reserve subs (lives) (HUD).
     """
@@ -124,7 +125,7 @@ class Lives(GameObject):
         self.value = 3
 
 
-class OxygenBar(GameObject):
+class OxygenBar(ValueObject):
     """
     The oxygen gauge (HUD).
     """
@@ -135,9 +136,10 @@ class OxygenBar(GameObject):
         self.rgb = 214, 214, 214
         self.wh = 63, 5
         self.hud = True
+        self.value = 0
 
 
-class OxygenBarDepleted(GameObject):
+class OxygenBarDepleted(ValueObject):
     """
     The empty oxygen bar (HUD).
     """
@@ -148,6 +150,7 @@ class OxygenBarDepleted(GameObject):
         self.rgb = 163, 57, 21
         self.wh = 63, 5
         self.hud = True
+        self.value = 64
 
 
 class OxygenBarLogo(GameObject):
@@ -282,6 +285,7 @@ def _update_score(ram_state):
         new_x = 75
         new_w = 30
 
+    _update_object(PlayerScore, "value", score_value)
     _update_object(PlayerScore, "xy", (new_x, 9))
     _update_object(PlayerScore, "wh", (new_w, 8))
 
