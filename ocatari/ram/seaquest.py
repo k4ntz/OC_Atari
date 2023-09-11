@@ -2,17 +2,32 @@ import sys
 from typing import Type
 
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, ValueObject, ValueObject
+from .game_objects import GameObject, ValueObject
 
 """
 RAM extraction for the game SEAQUEST. Supported modes: raw, revised.
 """
 
-# submarine and missile increased manually, during training more observed than via max_object script
-MAX_NB_OBJECTS = {'Player': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'EnemySubmarine': 5, 'EnemyMissile': 4}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerScore': 1, 'Lives': 1, 'OxygenBar': 1, 'OxygenBarDepleted': 1,
-                      'OxygenBarLogo': 1, 'Diver': 4, 'PlayerMissile': 1, 'Enemy': 4, 'CollectedDiver': 6,
-                      'EnemySubmarine': 5, 'EnemyMissile': 4}
+MAX_ESSENTIAL_OBJECTS = {
+    'Player': 1,
+    'Diver': 4,
+    'Shark': 12,
+    'Submarine': 12,
+    'SurfaceSubmarine': 1,
+    'PlayerMissile': 1,
+    'EnemyMissile': 4,
+    'Lives': 1,
+    'OxygenBar': 1,
+    'CollectedDiver': 6,
+}
+
+MAX_OPTIONAL_OBJECTS = {
+    'PlayerScore': 1,
+    'OxygenBarDepleted': 1,
+    'OxygenBarLogo': 1,
+}
+
+MAX_ALL_OBJECTS = MAX_ESSENTIAL_OBJECTS | MAX_OPTIONAL_OBJECTS
 
 
 class Player(GameObject):
@@ -42,7 +57,7 @@ class Diver(GameObject):
         self.hud = False
 
 
-class Enemy(GameObject):
+class Shark(GameObject):
     """
     The killer sharks.
     """
@@ -55,7 +70,7 @@ class Enemy(GameObject):
         self.hud = False
 
 
-class EnemySubmarine(GameObject):
+class Submarine(GameObject):
     """
     The enemy submarines.
     """
@@ -66,6 +81,12 @@ class EnemySubmarine(GameObject):
         self.wh = 8, 11
         self.rgb = 170, 170, 170
         self.hud = False
+
+
+class SurfaceSubmarine(Submarine):
+    """
+    Spawns right at the surface, but only in later games.
+    """
 
 
 class EnemyMissile(GameObject):
@@ -190,14 +211,14 @@ def _get_max_objects(hud=False):
         return objects
 
     if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
+        return fromdict(MAX_ALL_OBJECTS)
+    return fromdict(MAX_ESSENTIAL_OBJECTS)
 
 
 def _init_all_objects():
     mod = sys.modules[__name__]
     all_objects = {}
-    for obj_cls_name, max_obj_count in MAX_NB_OBJECTS_HUD.items():
+    for obj_cls_name, max_obj_count in MAX_ALL_OBJECTS.items():
         obj_cls = getattr(mod, obj_cls_name)
         all_objects[obj_cls] = max_obj_count * [None]
     return all_objects
@@ -221,9 +242,7 @@ def _remove_object(obj_cls: Type[GameObject], idx: int = 0):
 
 
 def _init_objects_seaquest_ram(hud=False):
-    """
-    (Re)Initialize the objects
-    """
+    """(Re)Initialize the objects."""
     objects = [Player()]
 
     if hud:
@@ -249,7 +268,7 @@ def _update_objects(ram_state, hud=False):
     _update_enemies(ram_state)
     _update_player_missile(ram_state)
     _update_divers_and_enemy_missiles(ram_state)
-    _update_fifth_lane_enemy(ram_state)
+    _update_surface_submarine(ram_state)
 
     if hud:
         _update_score(ram_state)
@@ -267,32 +286,42 @@ def _update_player(ram_state):
 
 
 def _update_score(ram_state):
-    score_value = (_convert_number(ram_state[57]) * 100) + _convert_number(ram_state[58])
+    score_value = _convert_number(ram_state[56]) * 10000 + \
+                  _convert_number(ram_state[57]) * 100 + \
+                  _convert_number(ram_state[58])
 
     if score_value == 0:
-        new_x = 99
-        new_w = 6
+        x = 99
+        w = 6
 
     elif 100 > score_value > 0:
-        new_x = 91
-        new_w = 14
+        x = 91
+        w = 14
 
     elif 1000 > score_value >= 100:
-        new_x = 83
-        new_w = 22
+        x = 83
+        w = 22
 
-    else:
-        new_x = 75
-        new_w = 30
+    elif 10000 > score_value >= 1000:
+        x = 75
+        w = 30
+
+    elif 100000 > score_value >= 10000:
+        x = 67
+        w = 38
+
+    else:  # highest possible score is 999_999
+        x = 59
+        w = 46
 
     _update_object(PlayerScore, "value", score_value)
-    _update_object(PlayerScore, "xy", (new_x, 9))
-    _update_object(PlayerScore, "wh", (new_w, 8))
+    _update_object(PlayerScore, "xy", (x, 9))
+    _update_object(PlayerScore, "wh", (w, 8))
 
 
 def _update_lives(ram_state):
     num_lives = ram_state[59]
-    if num_lives > 0:
+    if num_lives > 0:  # Up to 6 lives possible
         new_wh = 7 + 8 * (num_lives - 1), 8
         _update_object(Lives, "wh", new_wh)
         _update_object(Lives, "value", num_lives)
@@ -331,45 +360,31 @@ def _update_collected_divers(ram_state):
 
 
 def _update_enemies(ram_state):
-    offset = ram_state[93] - 4
+    """The diving area is divided into 4 lanes (plus the surface lane).
+    Enemies come in batches. Each batch has three slots that can be
+    arbitrarily filled up by enemies. Consequently, there are 8 possible
+    combinations (formations) of enemy/empty slots for each batch. For each lane,
+    one single RAM value determines the current formation. Moreover, each
+    batch consits purely of sharks or of submarines, determined by another value."""
 
-    for i in range(4):  # for each of the 4 lanes
-        sub_xy = None
-        enemy_xy = None
+    for i in range(4):  # for each of the 4 lanes (from bottom to top lane)
+        present_enemy_type = Submarine if _is_submarine(i, ram_state) else Shark
+        hidden_enemy_type = Shark if _is_submarine(i, ram_state) else Submarine
+        batch_formation = ram_state[36 + i]
 
-        # left enemy appears at variations 4, 5, 6, 7
-        if ram_state[36 + i] >= 4 and ram_state[30 + i] < 160:
-            if _is_submarine(i, ram_state):
-                sub_xy = ram_state[30 + i], 141 - i * 24
+        for j in range(3):  # for each of the three slots (left to right)
+            enemy_in_slot = (batch_formation // 2 ** (2 - j)) % 2
+            idx = i * 3 + j
+            if enemy_in_slot:
+                x = (ram_state[30 + i] + 16 * j) % 256
+                y = 141 - i * 24
+                if present_enemy_type == Shark:
+                    # Sharks float up and down, determined by an offset
+                    y += ram_state[93] - 4
+                _update_object(present_enemy_type, "xy", (x, y), idx=idx)
             else:
-                enemy_xy = ram_state[30 + i], 141 - i * 24 + offset
-
-        # right enemy appears at variations 1, 3, 5, 7;
-        # offset of 32 in x-position because the ram only saves the x-position of the left enemy
-        if ram_state[36 + i] % 2 == 1 and (ram_state[30 + i] + 32) % 256 < 160:
-            if _is_submarine(i, ram_state):
-                sub_xy = (ram_state[30 + i] + 32) % 256, 141 - i * 24
-            else:
-                enemy_xy = (ram_state[30 + i] + 32) % 256, 141 - i * 24 + offset
-
-        # middle enemy appears at variations 2, 3, 6, 7
-        # offset of 16 in x-position because the ram only saves the x-position of the left enemy
-        if (ram_state[36 + i] == 2 or ram_state[36 + i] == 3 or ram_state[36 + i] == 6 or
-                ram_state[36 + i] == 7) and (ram_state[30 + i] + 16) % 256 < 160:
-            if _is_submarine(i, ram_state):
-                sub_xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24
-            else:
-                enemy_xy = (ram_state[30 + i] + 16) % 256, 141 - i * 24 + offset
-
-        if sub_xy is None:
-            _remove_object(EnemySubmarine, i)
-        else:
-            _update_object(EnemySubmarine, "xy", sub_xy, idx=i)
-
-        if enemy_xy is None:
-            _remove_object(Enemy, i)
-        else:
-            _update_object(Enemy, "xy", enemy_xy, idx=i)
+                _remove_object(present_enemy_type, idx)
+            _remove_object(hidden_enemy_type, idx)  # always remove the invisible enemy
 
 
 def _update_divers_and_enemy_missiles(ram_state):
@@ -387,12 +402,12 @@ def _update_divers_and_enemy_missiles(ram_state):
             _remove_object(Diver, i)
 
 
-def _update_fifth_lane_enemy(ram_state):
+def _update_surface_submarine(ram_state):
     # only spawns in late game
     if ram_state[60] >= 2 and ram_state[118] < 160:
-        _update_object(EnemySubmarine, "xy", (ram_state[118], 45), -1)
+        _update_object(SurfaceSubmarine, "xy", (ram_state[118], 45))
     else:
-        _remove_object(EnemySubmarine, -1)
+        _remove_object(SurfaceSubmarine)
 
 
 def _update_player_missile(ram_state):
