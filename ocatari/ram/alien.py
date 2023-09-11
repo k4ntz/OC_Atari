@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ScoreObject
+from .game_objects import GameObject, ValueObject
 import sys 
 
 MAX_NB_OBJECTS = {"Player": 1}
@@ -41,7 +41,7 @@ class Pulsar(GameObject):
         self.hud = False
 
 
-class Score(ScoreObject):
+class Score(ValueObject):
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 0, 0

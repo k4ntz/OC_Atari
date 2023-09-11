@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ScoreObject
+from .game_objects import GameObject, ValueObject
 import sys 
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 1}
@@ -58,7 +58,7 @@ class Clock(GameObject):
         self.hud = True
 
 
-class PlayerScore(ScoreObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD). 
     """
@@ -87,7 +87,7 @@ class PlayerScore(ScoreObject):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
 
-class EnemyScore(ScoreObject):
+class EnemyScore(ValueObject):
     """
     The enemy's score display (HUD). 
     """
