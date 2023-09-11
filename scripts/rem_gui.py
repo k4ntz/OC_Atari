@@ -3,6 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 import pygame
+from ocatari.core import OCAtari, UPSCALE_FACTOR
 
 """
 This script can be used to identify any RAM positions that
@@ -11,7 +12,6 @@ identify the values that belong to a GameObject.
 """
 
 
-UPSCALE_FACTOR = 4
 RAM_RENDER_WIDTH = 1000
 RAM_N_COLS = 8
 RAM_CELL_WIDTH = 115
@@ -24,17 +24,18 @@ class Renderer:
     env: gym.Env
 
     def __init__(self, env_name: str):
-        self.env = gym.make(env_name, render_mode="rgb_array", frameskip=1)
-        obs = self.env.reset(seed=42)[0]
-        self._init_pygame(obs)
+        self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+                           render_oc_overlay=True, frameskip=1)
+        self.env.reset(seed=42)[0]
+        self.current_frame = self.env.render()
+        self._init_pygame(self.current_frame)
         self.paused = False
-        self.current_frame = obs
 
         self.current_keys_down = set()
         self.current_mouse_pos = None
         self.keys2actions = self.env.unwrapped.get_keys_to_action()
 
-        self.ram_grid_anchor_left = self.ale_screen_size[0] * UPSCALE_FACTOR + 28
+        self.ram_grid_anchor_left = self.env_render_shape[0] + 28
         self.ram_grid_anchor_top = 28
 
         self.active_cell_idx = None
@@ -44,9 +45,8 @@ class Renderer:
     def _init_pygame(self, sample_image):
         pygame.init()
         pygame.display.set_caption("OCAtari Environment")
-        self.ale_screen_size = (sample_image.shape[1], sample_image.shape[0])
-        self.env_render_size = (sample_image.shape[1] * UPSCALE_FACTOR, sample_image.shape[0] * UPSCALE_FACTOR)
-        window_size = (self.env_render_size[0] + RAM_RENDER_WIDTH, self.env_render_size[1])
+        self.env_render_shape = sample_image.shape[:2]
+        window_size = (self.env_render_shape[0] + RAM_RENDER_WIDTH, self.env_render_shape[1])
         self.window = pygame.display.set_mode(window_size)
         self.clock = pygame.time.Clock()
         self.ram_cell_id_font = pygame.font.SysFont('Pixel12x10', 16)
@@ -148,11 +148,9 @@ class Renderer:
     def _render_atari(self, frame = None):
         if frame is None:
             frame = self.current_frame
-        image = np.transpose(frame, (1, 0, 2))
-        image_surface = pygame.Surface(self.ale_screen_size)
-        pygame.pixelcopy.array_to_surface(image_surface, image)
-        upscaled_image = pygame.transform.scale(image_surface, self.env_render_size)
-        self.window.blit(upscaled_image, (0, 0))
+        frame_surface = pygame.Surface(self.env_render_shape)
+        pygame.pixelcopy.array_to_surface(frame_surface, frame)
+        self.window.blit(frame_surface, (0, 0))
         self.clock.tick(60)
 
     def _render_ram(self):
@@ -172,6 +170,11 @@ class Renderer:
         ale.setRAM(idx, value)
         # self.current_frame = self.env.render()
         # self._render()
+
+    def _set_ram(self, values):
+        ale = self.env.unwrapped.ale
+        for k, value in enumerate(values):
+            ale.setRAM(k, value)
 
     def _increment_ram_value_at(self, idx: int):
         value = self._get_ram_value_at(idx)
@@ -265,24 +268,23 @@ class Renderer:
 
         ram = ale.getRAM().copy()
         self.env.step(0)
-        original_pixel = self.env.render()[y, x]
-        for k, value in enumerate(ram):
-            ale.setRAM(k, value)  # restore original RAM
+        original_pixel = ale.getScreenRGB()[y, x]
+        self._set_ram(ram)  # restore original RAM
 
         self.candidate_cell_ids = []
         for i in tqdm(range(len(ram))):
-            original_ram_value = ram[i]
-            ale.setRAM(i, 0)
-            self.env.step(0)
-            new_frame = self.env.render()
             self.active_cell_idx = i
-            self.current_active_cell_input = "0"
-            self._render(new_frame)
-            new_pixel = new_frame[y, x]
-            if np.any(new_pixel != original_pixel):
-                self.candidate_cell_ids.append(i)
-            for k, value in enumerate(ram):
-                ale.setRAM(k, value)  # restore original RAM
+            for altered_value in [0]:  # adding values != 0 causes Atari to crash
+                self.current_active_cell_input = str(altered_value)
+                ale.setRAM(i, altered_value)
+                self.env.step(0)
+                new_frame = ale.getScreenRGB()
+                self._render()
+                new_pixel = new_frame[y, x]
+                self._set_ram(ram)  # restore original RAM
+                if np.any(new_pixel != original_pixel):
+                    self.candidate_cell_ids.append(i)
+                    break
 
         self._unselect_active_cell()
         self._render()

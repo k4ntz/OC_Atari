@@ -235,6 +235,7 @@ class OCAtari:
         self.image_size = (sample_image.shape[1], sample_image.shape[0])
         self.window_size = (sample_image.shape[1] * UPSCALE_FACTOR,
                             sample_image.shape[0] * UPSCALE_FACTOR)  # render with higher res
+        self.label_font = pygame.font.SysFont('Pixel12x10', 16)
         if self.render_mode == "human":
             self.window = pygame.display.set_mode(self.window_size)
             self.clock = pygame.time.Clock()
@@ -319,12 +320,12 @@ class OCAtari:
 
                 # Draw object type label
                 object_type_str = game_object.category
-                draw_label(self.window, object_type_str, position=(x, y + h + 4))
+                draw_label(self.window, object_type_str, position=(x, y + h + 4), font=self.label_font)
 
             self.window.blit(overlay_surface, (0, 0))
 
             if self.render_mode == "human":
-                self.clock.tick(15)  # limit FPS to avoid super fast movement
+                self.clock.tick(60 // self._env.unwrapped._frameskip)  # limit FPS to avoid super fast movement
                 pygame.display.flip()
                 pygame.event.pump()
 
