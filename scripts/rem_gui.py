@@ -99,17 +99,27 @@ class Renderer:
                         self._decrement_ram_value_at(cell_idx)
 
             elif event.type == pygame.KEYDOWN:  # keyboard key pressed
-                if event.key == pygame.K_p:  # 'P'
+                if event.key == pygame.K_p:  # 'P': pause/resume
                     self.paused = not self.paused
+
+                if event.key == pygame.K_r:  # 'R': reset
+                    self.env.reset()
+
+                elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
+                    self._unselect_active_cell()
 
                 elif (event.key,) in self.keys2actions.keys():  # env action
                     self.current_keys_down.add(event.key)
 
-                elif pygame.K_0 <= event.key <= pygame.K_9 or \
-                    pygame.K_KP0 <= event.key <= pygame.K_KP9:
-                    char = chr(event.key)
+                elif pygame.K_0 <= event.key <= pygame.K_9:  # enter digit
+                    char = str(event.key - pygame.K_0)
                     if self.active_cell_idx is not None:
-                        self.current_active_cell_input = self.current_active_cell_input + char
+                        self.current_active_cell_input += char
+
+                elif pygame.K_KP1 <= event.key <= pygame.K_KP0:  # enter digit
+                    char = str((event.key - pygame.K_KP1 + 1) % 10)
+                    if self.active_cell_idx is not None:
+                        self.current_active_cell_input += char
 
                 elif event.key == pygame.K_BACKSPACE:  # remove character
                     if self.active_cell_idx is not None:
@@ -121,14 +131,14 @@ class Renderer:
                             new_cell_value = int(self.current_active_cell_input)
                             if new_cell_value < 256:
                                 self._set_ram_value_at(self.active_cell_idx, new_cell_value)
-                        self.active_cell_idx = None
-                        self.current_active_cell_input = ""
+                        self._unselect_active_cell()
 
             elif event.type == pygame.KEYUP:  # keyboard key released
                 if (event.key,) in self.keys2actions.keys():
                     self.current_keys_down.remove(event.key)
 
     def _render(self, frame = None):
+        self.window.fill((0,0,0))  # clear the entire window
         self._render_atari(frame)
         self._render_ram()
         self._render_hover()
@@ -241,6 +251,10 @@ class Renderer:
                 return row * RAM_N_COLS + col
         return None
 
+    def _unselect_active_cell(self):
+        self.active_cell_idx = None
+        self.current_active_cell_input = ""
+
     def find_causative_ram(self, x, y):
         """
         Goes over the entire RAM, manipulating it to observe possible changes
@@ -270,8 +284,7 @@ class Renderer:
             for k, value in enumerate(ram):
                 ale.setRAM(k, value)  # restore original RAM
 
-        self.active_cell_idx = None
-        self.current_active_cell_input = ""
+        self._unselect_active_cell()
         self._render()
 
 

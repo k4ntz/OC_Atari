@@ -11,7 +11,7 @@ In the `__main__` method of `rem_gui.py`, you define the Atari game to run. Star
 On the left, the current game image is rendered. The right panel visualizes the RAM as a grid where each RAM cell is shown with its ID and its current value.
 
 ### Interact with the GUI
-You **play** the Atari game by using the keys `W`, `A`, `S`, `D`, `Space`, and `Esc`. Pause/resume the game with `P`.
+You **play the Atari game** by using the keys `W`, `A`, `S`, `D`, `Space`, and `Esc`. Pause/resume the game with `P`, reset it with `R`.
 
 By mouse-clicking any object on the game screen, all (presumably) relevant RAM cells for that object will be highlighted blue.
 
