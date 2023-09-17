@@ -27,7 +27,7 @@ MAX_OPTIONAL_OBJECTS = {
     'Score': 1,
 }
 
-MAX_ALL_OBJECTS = MAX_ESSENTIAL_OBJECTS | MAX_OPTIONAL_OBJECTS
+MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
 
 obj_tracker = {}
 
@@ -409,14 +409,13 @@ def _get_fruit_properties(ram_value):
     Returns (wh, rgb) or None if no Fruit there."""
 
     if ram_value < 128:
-        match ram_value % 4:
-            case 0:
+        if ram_value%4== 0:
                 return (7, 11), (214, 92, 92)
-            case 1:
+        elif ram_value%4== 1:
                 return (7, 9), (214, 92, 92)
-            case 2:
+        elif ram_value%4==  2:
                 return (8, 11), (214, 92, 92)
-            case 3:
+        elif ram_value%4== 3:
                 return (8, 11), (195, 144, 61)
     else:
         return None
