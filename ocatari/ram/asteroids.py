@@ -1,5 +1,7 @@
+import sys
+
 from ._helper_methods import _convert_number
-from .game_objects import GameObject
+from .game_objects import GameObject, Orientation
 
 """
 RAM extraction for the game ASTEROIDS. Supported modes: raw
@@ -19,6 +21,7 @@ class Player(GameObject):
     """
     
     def __init__(self):
+        super().__init__()
         self._xy = 84, 99
         self.wh = 5, 10
         self.rgb = 240, 128, 128
@@ -44,6 +47,7 @@ class PlayerMissile(GameObject):
     """
     
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 1, 2
         self.rgb = 117, 181, 239
@@ -56,6 +60,7 @@ class PlayerScore(GameObject):
     """
     
     def __init__(self):
+        super().__init__()
         self._xy = 68, 5
         self.rgb = 184, 50, 50
         self.wh = 12, 10
@@ -71,6 +76,7 @@ class Lives(GameObject):
     """
     
     def __init__(self):
+        super().__init__()
         self._xy = 132, 5
         self.rgb = 184, 50, 50
         self.wh = 12, 10
@@ -82,6 +88,21 @@ asteroids_colors = {"brown": [180, 122, 48], "purple": [104, 72, 198], "yellow":
                     "pink": [184, 70, 162], "red": [184, 50, 50]}
 
 player_missile_colors = {"blue": [117, 181, 239], "red": [240, 128, 128]}
+
+# parses MAX_NB* dicts, returns default init list of objects
+def _get_max_objects(hud=False):
+
+    def fromdict(max_obj_dict):
+        objects = []
+        mod = sys.modules[__name__]
+        for k, v in max_obj_dict.items():
+            for _ in range(0, v):
+                objects.append(getattr(mod, k)())
+        return objects
+
+    if hud:
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
 
 
 def _init_objects_asteroids_ram(hud=False):
@@ -102,6 +123,7 @@ def _detect_objects_asteroids_revised(objects, ram_state, hud=False):
     """
     player = objects[0]
     player.xy = 100, 100 + (2 * (ram_state[74] - 41))
+    player.orientation = Orientation(ram_state[60] % 16)
 
     if hud:
         del objects[3:]
@@ -131,26 +153,29 @@ def _detect_objects_asteroids_revised(objects, ram_state, hud=False):
 
     if hud:
         lives, score = objects[1:3]
-        score_value = _convert_number(ram_state[61]) * 1000 + _convert_number(ram_state[62]) * 10
-        if score_value >= 10:
-            sc = PlayerScore()
-            sc.xy = 52, 5
-            objects.append(sc)
+        thousands = _convert_number(ram_state[61])
+        tens = _convert_number(ram_state[62])
+        if thousands is not None and tens is not None:
+            score_value = thousands * 1000 + tens * 10
+            if score_value >= 10:
+                sc = PlayerScore()
+                sc.xy = 52, 5
+                objects.append(sc)
 
-        if score_value >= 100:
-            sc = PlayerScore()
-            sc.xy = 36, 5
-            objects.append(sc)
+            if score_value >= 100:
+                sc = PlayerScore()
+                sc.xy = 36, 5
+                objects.append(sc)
 
-        if score_value >= 1000:
-            sc = PlayerScore()
-            sc.xy = 20, 5
-            objects.append(sc)
+            if score_value >= 1000:
+                sc = PlayerScore()
+                sc.xy = 20, 5
+                objects.append(sc)
 
-        if score_value >= 10000:
-            sc = PlayerScore()
-            sc.xy = 4, 5
-            objects.append(sc)
+            if score_value >= 10000:
+                sc = PlayerScore()
+                sc.xy = 4, 5
+                objects.append(sc)
 
 
 def _augment_info_asteroids_revised(info, ram_state):
