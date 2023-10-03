@@ -6,8 +6,8 @@ import numpy as np
 from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects, get_max_objects
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
-from ocatari.ram.game_objects import GameObject
-from ocatari.utils import draw_label, draw_arrow
+from ocatari.ram.game_objects import GameObject, ValueObject
+from ocatari.utils import draw_label, draw_arrow, draw_orientation_indicator
 
 from ale_py import ALEInterface
 
@@ -310,6 +310,16 @@ class OCAtari:
                 pygame.draw.rect(overlay_surface, color=(255, 255, 255),
                                  rect=(x, y, w, h), width=2)
 
+                # Draw object category label (optional with value)
+                label = game_object.category
+                if isinstance(game_object, ValueObject):
+                    label += f" ({game_object.value})"
+                draw_label(self.window, label, position=(x, y + h + 4), font=self.label_font)
+
+                # Draw object orientation
+                if game_object.orientation is not None:
+                    draw_orientation_indicator(overlay_surface, game_object.orientation.value, x_c, y_c, w, h)
+
                 # Draw velocity vector
                 if dx != 0 or dy != 0:
                     draw_arrow(overlay_surface,
@@ -317,10 +327,6 @@ class OCAtari:
                                end_pos=(x_c + 2 * dx, y_c + 2 * dy),
                                color=(100, 200, 255),
                                width=2)
-
-                # Draw object type label
-                object_type_str = game_object.category
-                draw_label(self.window, object_type_str, position=(x, y + h + 4), font=self.label_font)
 
             self.window.blit(overlay_surface, (0, 0))
 
