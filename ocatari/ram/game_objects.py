@@ -1,3 +1,25 @@
+from enum import Enum
+
+
+class Orientation(Enum):  # 16-wind compass directions
+    N = 0
+    NNE = 1
+    NE = 2
+    ENE = 3
+    E = 4
+    ESE = 5
+    SE = 6
+    SSE = 7
+    S = 8
+    SSW = 9
+    SW = 10
+    WSW = 11
+    W = 12
+    WNW = 13
+    NW = 14
+    NNW = 15
+
+
 class GameObject:
     """
     The Parent Class of every detected object in the Atari games (RAM Extraction mode)
@@ -53,7 +75,7 @@ class GameObject:
         self._xy = (0, 0)
         self.wh = (0, 0)
         self._prev_xy = None
-        self._orientation = 0
+        self._orientation = None
         self.hud = False
 
     def __repr__(self):
