@@ -382,7 +382,11 @@ def _detect_lives(ram_state):
 
 
 def _detect_time(ram_state):
-    time_remaining = _convert_number(ram_state[59])
+    time_value = ram_state[59]
+    if time_value <= 32:
+        time_remaining = _convert_number(time_value)
+    else:
+        time_remaining = time_value - 160
     _update_object(Time, "value", time_remaining)
 
 
