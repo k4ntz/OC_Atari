@@ -42,6 +42,7 @@ class Player(GameObject):
         self.rgb = 187, 187, 53
         self.hud = False
         self.orientation = Orientation.E  # E is right, W is left
+        self.crashed = False
 
 
 class Diver(GameObject):
@@ -281,8 +282,11 @@ def _update_objects(ram_state, hud=False):
 def _update_player(ram_state):
     xy = ram_state[70], ram_state[97] + 32
     orientation = Orientation.E if ram_state[86] == 0 else Orientation.W
+    crashed = ram_state[105] > 0
+
     _update_object(Player, "xy", xy)
     _update_object(Player, "orientation", orientation)
+    _update_object(Player, "crashed", crashed)
 
 
 def _update_score(ram_state):

@@ -43,6 +43,7 @@ class Player(GameObject):
         self.wh = 8, 24
         self.rgb = 223, 183, 85
         self.hud = False
+        self.crashed = False
 
 
 class Child(GameObject):
@@ -283,6 +284,8 @@ def _detect_player(ram_state):
 
     orientation = Orientation.E if ram_state[18] in [8, 9, 28, 73, 74] else Orientation.W
 
+    crashed = ram_state[54] in [1, 128]
+
     # Determine height during jump animation or during duck
     if ram_state[18] in [20, 28]:
         h = 16  # ducking
@@ -296,6 +299,7 @@ def _detect_player(ram_state):
     _update_object(Player, "xy", (x, y))
     _update_object(Player, "wh", (8 , h))
     _update_object(Player, "orientation", orientation)
+    _update_object(Player, "crashed", crashed)
 
 
 def _detect_child(ram_state):
