@@ -51,6 +51,19 @@ class Fruit(GameObject):
         self.hud = False
 
 
+class PowerPill(GameObject):
+    """
+    The collectable fruits.
+    """
+    
+    def __init__(self):
+        super(PowerPill, self).__init__()
+        self._xy = 125, 173
+        self.wh = 4, 7
+        self.rgb = 228, 111, 111
+        self.hud = False
+
+
 class Score(GameObject):
     """
     The player's score display (HUD).
@@ -91,37 +104,6 @@ def _get_max_objects(hud=False):
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
 
-def _create_score_from_number(number):
-    """
-    returns a list a list with number * Score objects at the correct position
-    """
-    score = 1
-    if number > 0:
-        score = int(math.log10(number)) + 1
-
-    ret = []
-    x = 95
-    for i in range(score):
-        score = Score()
-        score.xy = x, 187
-        ret.append(score)
-        x -= 8
-    return ret
-
-
-def _create_lifes_from_number(number):
-    """
-    returns a list a list with number * Life objects at the correct position
-    """
-    ret = []
-    x = 12
-    for i in range(number):
-        life = Life()
-        life.xy = x, 173
-        ret.append(life)
-        x += 15
-    return ret
-
 
 def _init_objects_mspacman_ram(hud=False):
     """
@@ -130,20 +112,15 @@ def _init_objects_mspacman_ram(hud=False):
 
     objects = [Player(), Ghost(), Ghost(), Ghost(), Ghost()]
 
+    objects.extend([None]*4)
+
     if hud:
-        objects.append(Fruit())
-        objects.extend(_create_score_from_number(100000))
-
-        objects.extend(_create_lifes_from_number(3))
-
+        objects.extend([None]*10)
     return objects
 
 
 def _detect_objects_mspacman_revised(objects, ram_state, hud=True):
     player, g1, g2, g3, g4 = objects[:5]
-    if hud:
-        fruit_hud = objects[5]
-        fruit_hud.rgb = get_fruit_rgb(ram_state[123])
 
     player.xy = ram_state[10] - 13, ram_state[16] + 1
 
@@ -156,38 +133,76 @@ def _detect_objects_mspacman_revised(objects, ram_state, hud=True):
     g4.xy = ram_state[9] - 13, ram_state[15] + 1
     # no rgb adjustment, since this colour is the default one
 
-    objects.clear()
-    objects.extend([player, g1, g2, g3, g4])
-    if hud:
-        objects.append(fruit_hud)
-
     if ram_state[11] > 0 and ram_state[17] > 0:
         fruit = Fruit()
         fruit.xy = ram_state[11] - 13, ram_state[17] + 1
         fruit.rgb = get_fruit_rgb(ram_state[123])
-        objects.append(fruit)
+        objects[5] = fruit
+
+    if ram_state[117] & 4:
+        pp = PowerPill()
+        objects[6] = pp
+        pp.xy = 148, 146
+    else:
+        objects[6] = None
+
+    if ram_state[117] & 8:
+        pp = PowerPill()
+        objects[7] = pp
+        pp.xy = 148, 14
+    else:
+        objects[7] = None
+
+    if ram_state[117] & 16:
+        pp = PowerPill()
+        objects[8] = pp
+        pp.xy = 8, 147
+    else:
+        objects[8] = None
+
+    if ram_state[117] & 32:
+        pp = PowerPill()
+        objects[9] = pp
+        pp.xy = 8, 15
+    else:
+        objects[9] = None
+
 
     if hud:
+        fruit_hud = Fruit()
+        objects[10] = fruit_hud
+        fruit_hud.rgb = get_fruit_rgb(ram_state[123])
+
         score = _convert_number(ram_state[122]) * 10000 + _convert_number(ram_state[121]) * 100 +\
                 _convert_number(ram_state[120])
         sc = Score()
-        nb_digits = len(str(score))
-        sc.xy = 103 - 8 * nb_digits, 187
-        sc.wh = nb_digits * 8 - 1, 7
-        objects.append(sc)
-        # if ram_state[122] < 16:
-        #     objects[11].visible = False
-        #     if ram_state[122] == 0:
-        #         objects[10].visible = False
-        #         if ram_state[121] < 16:
-        #             objects[9].visible = False
-        #             if ram_state[121] == 0:
-        #                 objects[8].visible = False
-        #                 if ram_state[120] < 16:
-        #                     objects[7].visible = False
+        if ram_state[122] > 16:
+            sc.xy =  55, 187
+            sc.wh = 47, 7
+        elif ram_state[122]:
+            sc.xy =  63, 187
+            sc.wh = 39, 7
+        elif ram_state[121] > 16:
+            sc.xy =  71, 187
+            sc.wh = 31, 7
+        elif ram_state[121]:
+            sc.xy =  79, 187
+            sc.wh = 23, 7
+        elif ram_state[120] > 16:
+            sc.xy =  87, 187
+            sc.wh = 15, 7
+        elif ram_state[120]:
+            sc.xy =  95, 187
+            sc.wh = 7, 7
+        objects[11] = sc
 
-        lifes = _create_lifes_from_number(ram_state[123])
-        objects.extend(lifes)
+        for i in range(3):
+            if (ram_state[123]%4) > i:
+                life = Life()
+                objects[12+i] = life
+                life.xy = 12 + (i*16), 173
+            else:
+               objects[12+i] = None 
 
 
 def _detect_objects_mspacman_raw(info, ram_state):
