@@ -224,7 +224,7 @@ class ValueObject(GameObject):
 
     @value.setter
     def value(self, value):
-        self._value = int(value)
+        self._value = None if value is None else int(value)
 
     @property
     def prev_value(self):
