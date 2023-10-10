@@ -23,7 +23,7 @@ class Enemy(GameObject):
 class Swirl(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 169,128,240 
+        self.rgb = 181, 83, 40 
         self.hud = False
 
 class Enemy_Missile(GameObject):
