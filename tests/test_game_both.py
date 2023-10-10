@@ -32,7 +32,7 @@ parser.add_argument("-snap", "--snapshot", type=str, default="",
 opts = parser.parse_args()
 
 
-env = OCAtari(opts.game+"Deterministic", mode="both", render_mode='rgb_array', hud=opts.hud)
+env = OCAtari(opts.game+"NoFrameskip", mode="both", render_mode='rgb_array', hud=opts.hud)
 
 observation, info = env.reset()
 if opts.snapshot:
@@ -83,6 +83,7 @@ for i in range(100000):
                 # im.save()
             fig.suptitle(f"frame {i}", fontsize=20)
             plt.show()
+            # import ipdb; ipdb.set_trace()
 
         if terminated or truncated:
             observation, info = env.reset()

@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='ocatari',
-    version='0.1.2',
+    version='0.1.3',
     author='Quentin Delfosse',
     author_email='quentin.delfosse@cs.tu-darmstadt.de',
     packages=find_packages(),
@@ -28,7 +28,9 @@ setup(
         "seaborn",
         "pandas",
         "scikit-learn",
+        "keyboard",
         "tqdm",
+        "pygame",
         "pyfiglet",
     ]
 )

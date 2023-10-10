@@ -1,5 +1,5 @@
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, ScoreObject
+from .game_objects import GameObject, ValueObject
 import sys
 
 """
@@ -90,7 +90,7 @@ class EnemyMissile(GameObject):
         self.hud = False
 
 
-class PlayerScore(ScoreObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD). 
     """

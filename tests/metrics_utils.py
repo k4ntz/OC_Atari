@@ -65,10 +65,13 @@ class DetectionScores():
         prec, rec = self.cat_precisions, self.cat_recalls
         f_scores = {}
         for cat in prec.keys():
-            if prec[cat] == 0 and rec[cat] == 0:
+            try:
+                if prec[cat] == 0 and rec[cat] == 0:
+                    f_scores[cat] = 0
+                else:
+                    f_scores[cat] = 2 * prec[cat] * rec[cat] / (prec[cat] + rec[cat])
+            except KeyError:
                 f_scores[cat] = 0
-            else:
-                f_scores[cat] = 2 * prec[cat] * rec[cat] / (prec[cat] + rec[cat])
         return f_scores
 
     @property

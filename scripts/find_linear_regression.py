@@ -1,6 +1,6 @@
 """
-Demo script that allows me to find the correlation between ram states and
-detected objects through vision in Tennis
+Demo script that allows me to find the linear relation between selected ram states and
+detected objects through vision in game
 """
 
 import random
