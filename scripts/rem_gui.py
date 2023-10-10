@@ -291,5 +291,5 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer("Seaquest")
+    renderer = Renderer("Pong")
     renderer.run()
