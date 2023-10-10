@@ -133,7 +133,8 @@ def mark_bb(image_array, bb, color=(255, 0, 0), surround=True):
         image_array[y, x:right + 1] = color
         image_array[bottom, x:right + 1] = color
     except IndexError:
-        import ipdb; ipdb.set_trace()
+        pass
+        # import ipdb; ipdb.set_trace()
 
 
 def plot_bounding_boxes(obs, bbs, objects_colors):

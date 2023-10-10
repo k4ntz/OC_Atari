@@ -103,88 +103,6 @@ def bit_correlation(bit_mats, tresh):
     
     return fig, ax
 
-    
-def check_interactions(env, tgt_obj, prop):
-    
-    anchor_state = env._clone_state()
-    cat = tgt_obj.category
-    old_prop = tgt_obj.__getattribute__(prop)
-    obs_saves = []
-    ram_saves = []
-
-    interactions = dict.fromkeys(ram_labels)
-    for key in interactions.keys():
-        interactions[key] = list()
-
-    env = OCAtari(opts.game, mode=MODE, render_mode=RENDER_MODE)
-
-    make_deterministic(opts.seed, env)
-
-    observation, info = env.reset()
-    
-    if opts.snapshot:
-        snapshot = pickle.load(open(opts.snapshot, "rb"))
-        env._env.env.env.ale.restoreState(snapshot)
-
-    for i in tqdm(range(opts.nb_samples), desc="Looking for inactive ram positions"):
-        # obs, reward, terminated, truncated, info = env.step(random.randint(0, env.action_space.n-1))
-        if opts.dqn:
-            action = dqn_agent.draw_action(env.dqn_obs)
-        else:
-            action = random.randint(0, env.nb_actions-1)
-        obs, reward, terminated, truncated, info = env.step(action)
-
-        ram = env.get_ram()
-        ram_saves.append(ram)
-
-        if terminated or truncated:
-            observation, info = env.reset()
-            if opts.snapshot:
-                env._env.env.env.ale.restoreState(snapshot)        
-
-    ram_saves = np.array(ram_saves)
-    ram_reduced, ram_labels = remove_zero_cols(ram_saves)
-    
-    def test_values(min_val, max_val, step):
-        env._restore_state(anchor_state)
-        
-        for val in np.arange(min_val, max_val, step):
-            env.unwrapped.ale.setRAM(pos, val)
-            ram_copy = deepcopy(env.get_ram())
-            ram_saves.append(ram_copy)
-            obs, reward, terminated, truncated, info = env.step(0)
-            for obj in env.objects:
-                if obj.category == cat:
-                    new_prop = obj.__getattribute__(prop)
-                    if (new_prop - old_prop) != 0:
-                        hit = True
-                        interactions[pos].append((val, new_prop))
-                        obs_saves.append(obs)
-                    break
-
-
-    print(f"\nChecking ram positions for interactions...")
-
-    for pos in tqdm(ram_labels.tolist()):
-        hit = False
-        test_values(min_val=0, max_val=256, step=1)
-        if hit:
-            print(f"Found interactions at RAM position {pos}")
-
-    for key, value in interactions.items():
-        if value:
-            interactions[key] = list(zip(*value))
-            values = interactions[key][0]
-            props = interactions[key][1]
-
-            fig, ax = plt.subplots()
-            ax.scatter(values, props, marker="X")
-            ax.set(xlabel='RAM Value', ylabel=f"{opts.tracked_objects[0]}_{opts.tracked_properties[0]}",
-            title=f"Interactions for RAM Position {key}")
-
-            plt.show(block=False)
-
-    return interactions, obs_saves, ram_saves
 
 def remove_zero_cols(ram_saves):
     
@@ -241,7 +159,6 @@ observation, info = env.reset()
 if opts.snapshot:
     env._env.env.env.ale.restoreState(snapshot)  
 
-count = 4
 
 for i in tqdm(range(opts.nb_samples)):
     # obs, reward, terminated, truncated, info = env.step(random.randint(0, env.action_space.n-1))
@@ -261,14 +178,7 @@ for i in tqdm(range(opts.nb_samples)):
             ram_saves["obj"].append(ram)
 
             for prop in opts.tracked_properties:
-                # if obj.__getattribute__("dx") != 0 and count > 0:
-                    # interactions, itest_ob, itest_rams = check_interactions(env, ram, ram_labels, obj, prop)
-                    # itest_ram_saves.extend(ram_saves)
-                    # itest_obs.extend(obs_saves)
-                    # count -= 1
-
                 tracked_objects_infos[f"{objname}_{prop}"].append(obj.__getattribute__(prop))
-
         else:
             ram_saves["no_obj"].append(ram)
 
