@@ -1,4 +1,7 @@
-from .game_objects import GameObject
+from typing import Type, Sequence, Dict
+
+from .game_objects import GameObject, ValueObject
+from ._helper_methods import _convert_number
 import sys
 
 """
@@ -6,15 +9,34 @@ RAM extraction for the game KANGAROO. Supported modes: raw, revised.
 
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Platform': 4, 'Scale': 3, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Child': 1, 'Fruit': 3, 'Bell': 1, 'Platform': 4, 'Scale': 3, 'Projectile_top': 1, 'Enemy': 4, 'Projectile_enemy': 1, 'Score': 1, 'Life': 8, 'Time': 1}
+MAX_ESSENTIAL_OBJECTS = {
+    'Player': 1,
+    'Child': 1,
+    'Fruit': 3,
+    'Bell': 1,
+    'Platform': 20,
+    'Ladder': 6,
+    'Monkey': 4,
+    'FallingCoconut': 1,
+    'ThrownCoconut': 3,
+    'Life': 8,
+    'Time': 1,
+}
+
+MAX_OPTIONAL_OBJECTS = {
+    'Score': 1,
+}
+
+MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
+
 obj_tracker = {}
+
 
 class Player(GameObject):
     """
     The player figure: Mother Kangaroo.
     """
-    
+
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 78, 103
@@ -27,7 +49,7 @@ class Child(GameObject):
     """
     Baby Kangaroo.
     """
-    
+
     def __init__(self):
         super(Child, self).__init__()
         self._xy = 78, 12
@@ -36,13 +58,13 @@ class Child(GameObject):
         self.hud = False
 
 
-class Enemy(GameObject):
+class Monkey(GameObject):
     """
-    The enemy monkeys.
+    The Monkey monkeys.
     """
-    
+
     def __init__(self):
-        super(Enemy, self).__init__()
+        super(Monkey, self).__init__()
         super().__init__()
         self._xy = 79, 57
         self.wh = 6, 15
@@ -54,22 +76,22 @@ class Fruit(GameObject):
     """
     The collectable fruits.
     """
-    
+
     def __init__(self):
         super(Fruit, self).__init__()
         self._xy = 125, 173
-        self.wh = 7, 10
+        self.wh = 7, 11
         self.rgb = 214, 92, 92
         self.hud = False
 
 
-class Scale(GameObject):
+class Ladder(GameObject):
     """
     The ladders.
     """
-    
-    def __init__(self, x=0, y=0, w=8, h=35):
-        super(Scale, self).__init__()
+
+    def __init__(self, x=0, y=0, w=8, h=36):
+        super(Ladder, self).__init__()
         self._xy = x, y
         self._prev_xy = x, y
         self.wh = w, h
@@ -81,7 +103,7 @@ class Platform(GameObject):
     """
     The platforms.
     """
-    
+
     def __init__(self, x=0, y=0, w=8, h=4):
         super(Platform, self).__init__()
         self._xy = x, y
@@ -91,26 +113,26 @@ class Platform(GameObject):
         self.hud = False
 
 
-class Projectile_top(GameObject):
+class FallingCoconut(GameObject):
     """
     The dangerous apples dropping down from the top.
     """
-    
+
     def __init__(self):
-        super(Projectile_top, self).__init__()
+        super(FallingCoconut, self).__init__()
         self._xy = 0, 0
         self.wh = 2, 3
         self.rgb = 162, 98, 33
         self.hud = False
 
 
-class Projectile_enemy(GameObject):
+class ThrownCoconut(GameObject):
     """
     The apples thrown at the player by the monkeys.
     """
-    
+
     def __init__(self):
-        super(Projectile_enemy, self).__init__()
+        super(ThrownCoconut, self).__init__()
         self._xy = 0, 0
         self.wh = 2, 3
         self.rgb = 227, 159, 89
@@ -121,7 +143,7 @@ class Bell(GameObject):
     """
     The bell that can be used to replenish the collectable fruits.
     """
-    
+
     def __init__(self):
         super(Bell, self).__init__()
         self._xy = 126, 173
@@ -130,43 +152,44 @@ class Bell(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class Score(ValueObject):
     """
     The player's score display (HUD).
     """
-    
+
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 129, 183
         self.wh = 15, 7
         self.rgb = 160, 171, 79
         self.hud = True
+        self.value = 0
 
 
 class Life(GameObject):
     """
     The player's remaining lives (HUD).
     """
-    
+
     def __init__(self):
         super(Life, self).__init__()
         self._xy = 16, 183
         self.wh = 4, 7
         self.rgb = 160, 171, 79
-        self.hud = True
+        self.hud = False
 
 
 class Time(GameObject):
     """
     The time indicator (HUD).
     """
-    
+
     def __init__(self):
         super(Time, self).__init__()
         self._xy = 80, 191
         self.wh = 15, 5
         self.rgb = 160, 171, 79
-        self.hud = True
+        self.hud = False
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -176,185 +199,290 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
+        return fromdict(MAX_ALL_OBJECTS)
+    return fromdict(MAX_ESSENTIAL_OBJECTS)
+
+
+def _init_all_objects() -> Dict[Type[GameObject], Sequence[GameObject]]:
+    mod = sys.modules[__name__]
+    all_objects = {}
+    for obj_cls_name, max_obj_count in MAX_ALL_OBJECTS.items():
+        obj_cls = getattr(mod, obj_cls_name)
+        all_objects[obj_cls] = max_obj_count * [None]
+    return all_objects
+
+
+objects = _init_all_objects()
+
+
+def _update_object(obj_cls: Type[GameObject], attr: str, value, idx: int = 0):
+    game_object = objects[obj_cls][idx]
+    if game_object is None:
+        new_game_object = obj_cls()
+        new_game_object.__setattr__(attr, value)
+        objects[obj_cls][idx] = new_game_object
+    else:
+        game_object.__setattr__(attr, value)
+
+
+def _remove_object(obj_cls: Type[GameObject], idx: int = 0):
+    objects[obj_cls][idx] = None
 
 
 def _init_objects_kangaroo_ram(hud=True):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Child(), Enemy(), Enemy(), Enemy(), Enemy(),
-               Projectile_top(), Projectile_enemy(), Fruit(), Fruit(), Fruit(), Bell(), 
-               Platform(16, 172, w=128), Platform(16, 28, w=128)]
-    manage_platforms(0, objects)
-    global prevval
-    prevval = 0
+    objects[Time][0] = Time()
+    init_obj = [Player(), Child(), Monkey(), Monkey(), Monkey(), Monkey(),
+                FallingCoconut(), ThrownCoconut(), Fruit(), Fruit(), Fruit(), Bell(),
+                Platform(16, 172, w=128), Platform(16, 28, w=128), Time(), Life(), Life()]
+    manage_platforms(0, init_obj)
+    global prev_level
+    prev_level = 0
     if hud:
-        objects.extend([Score(), Time(), Life(), Life()])
-    return objects
+        init_obj.extend([Score()])
+    return init_obj
 
 
-def _detect_objects_kangaroo_revised(objects, ram_state, hud=True):
-    # player
-    player = objects[0]
-    player.xy = ram_state[17] + 15, ram_state[16] * 8 + 5
+def _detect_objects_kangaroo_revised(objects_old, ram_state, hud=True):
+    _update_objects(ram_state, hud)
+    existing_objects = []
+    object_categories = list(objects.values())
+    for same_type_objects in object_categories:
+        for game_object in same_type_objects:
+            if game_object is not None:
+                existing_objects.append(game_object)
+    del objects_old[:]
+    objects_old.extend(existing_objects)
+
+
+def _update_objects(ram_state, hud=True):
+    _detect_player(ram_state)
+    _detect_child(ram_state)
+    _detect_monkeys(ram_state)
+    _detect_coconuts(ram_state)
+    _detect_fruits(ram_state)
+    _detect_bell(ram_state)
+    _detect_platforms(ram_state)
+    _detect_lives(ram_state)
+
+    if hud:
+        _detect_score(ram_state)
+
+
+def _detect_player(ram_state):
+    x = ram_state[17] + 15
+    y = ram_state[16] * 8 + 5
+
+    # Detect jump animation
     if ram_state[19] > 16 and ram_state[19] < 24:
-        player.wh = 8, 13
+        h = 13
     elif ram_state[19] == 31:
-        player.wh = 8, 15
+        h = 15
     else:
-        player.wh = 8, 24
+        h = 24
 
-    # kangaroo child (goal)
-    child = objects[1]
-    child.xy = ram_state[83] + 15, 12
-    enemies = objects[2:6]
-    for i, en in enumerate(enemies):
-        if ram_state[11-i] != 255 and ram_state[11-i] != 127:
-            if en is None:
-                en = Enemy()
-                objects[2+i] = en
-            en.xy = ram_state[15-i] + 16, ram_state[11-i] * 8 + 5
-        elif en is not None:
-            objects[2+i] = None
+    _update_object(Player, "xy", (x, y))
+    _update_object(Player, "wh", (8, h))
 
-    # # falling Projectile
-    proj1 = objects[6]
-    if ram_state[33] != 255:
-        if proj1 is None:
-            proj1 = Projectile_top()
-            objects[6] = proj1
-        proj1.xy = ram_state[34] + 14, ((ram_state[33] - (22 * ram_state[36])) * 8) + 9
-    else:
-        objects[6] = None
-    # thrown by monkeys Projectile
-    # This projectiles visual representation seems to differ from its RAM x position,
-    # therefor you will see it leaving the bounding box on both left and right depending on the situation
-    proj2 = objects[7]
-    if ram_state[25] != 255:
-        if proj2 is None:
-            proj2 = Projectile_enemy()
-            objects[7] = proj2
-        proj2.xy = ram_state[28] + 15, (ram_state[25] * 8) + 1
-    else:
-        objects[7] = None
 
-    # # fruits
-    fruits = objects[8: 11]
-    for i, frt in enumerate(fruits):
-        rgb = _get_fruit_type_kangaroo(ram_state[42+i])
-        if rgb is not None:
-            if frt is None:
-                frt = Fruit()
-                objects[8+i] = frt
-            frt.rgb = rgb
-            if ram_state[87] == ram_state[86]:
-                y = (ram_state[84+i] * 8) + 4
-            else:
-                y = (ram_state[85+i] * 8) + 4  
-            if ram_state[92] == ram_state[91]:
-                x = ram_state[89+i] + 15
-            else:
-                x = ram_state[90+i] + 15
-            frt.xy = x, y 
+def _detect_child(ram_state):
+    x = ram_state[83] + 15
+    y = 12
+    _update_object(Child, "xy", (x, y))
+
+
+def _detect_monkeys(ram_state):
+    for i in range(MAX_ESSENTIAL_OBJECTS["Monkey"]):
+        if ram_state[11 - i] != 255 and ram_state[11 - i] != 127:
+            x = ram_state[15 - i] + 16
+            y = ram_state[11 - i] * 8 + 5
+            _update_object(Monkey, "xy", (x, y), idx=i)
         else:
-            objects[8+i] = None
+            _remove_object(Monkey, idx=i)
 
-    # bell
-    bell = objects[11]
-    bell.xy = ram_state[82] + 16, 36
-    # potential lvl change
-    curlvlval = ram_state[36]
-    global prevval
-    if prevval != curlvlval:
-        manage_platforms(curlvlval, objects) # ram_state[40]
-    prevval = curlvlval
 
-    if hud:
-        # score
-        score = objects[37]
-        if ram_state[40] != 0:
-            score.xy = 121, 183
-            score.wh = 23, 7
-        if ram_state[40] >= 16:
-            score.xy = 113, 183
-            score.wh = 31, 7
-        if ram_state[39] != 0:
-            score.xy = 105, 183
-            score.wh = 39, 7
-        if ram_state[39] >= 16:
-            score.xy = 97, 183
-            score.wh = 47, 7
+def _detect_coconuts(ram_state):
+    # Fallling coconut
+    if ram_state[33] != 255:
+        x = ram_state[34] + 14
+        y = (ram_state[33] - 22 * ram_state[36]) * 8 + 9
+        _update_object(FallingCoconut, "xy", (x, y))
+    else:
+        _remove_object(FallingCoconut)
 
-        time = objects[38]
-        time.xy = 80, 191
+    # Thrown coconuts
+    # This projectiles visual representation seems to differ from its RAM x position,
+    # therefore you will see it leaving the bounding box on both left and right depending on the situation
+    for i in range(MAX_ESSENTIAL_OBJECTS["ThrownCoconut"]):
+        if ram_state[25 + i] != 255:
+            x = ram_state[28 + i] + 15
+            y = (ram_state[25 + i] * 8) + 1
+            _update_object(ThrownCoconut, "xy", (x, y), idx=i)
+        else:
+            _remove_object(ThrownCoconut, idx=i)
 
-        # lives
-        for i in range(2):
-            life = objects[39+i]
-            if i < ram_state[45]:
-                if objects[39+i] is None:
-                    life = Life()
-                    objects[39+i] = life
-                life.xy = 16 + (i*8), 183
-            elif life is not None:
-                objects[39+i] = None
 
-    # return objects
+def _detect_fruits(ram_state):
+    for i in range(MAX_ESSENTIAL_OBJECTS["Fruit"]):
+        properties = _get_fruit_properties(ram_state[42 + i])
+        if properties is not None:
+            wh, rgb = properties
+            if ram_state[87] == ram_state[86]:
+                y = (ram_state[84 + i] * 8) + 4
+            else:
+                y = (ram_state[85 + i] * 8) + 4
+            if ram_state[92] == ram_state[91]:
+                x = ram_state[89 + i] + 15
+            else:
+                x = ram_state[90 + i] + 15
+            _update_object(Fruit, "xy", (x, y), idx=i)
+            _update_object(Fruit, "wh", wh, idx=i)
+            _update_object(Fruit, "rgb", rgb, idx=i)
+        else:
+            _remove_object(Fruit, idx=i)
+
+
+def _detect_bell(ram_state):
+    x = ram_state[82] + 16
+    y = 36
+    _update_object(Bell, "xy", (x, y))
+
+
+def _detect_platforms(ram_state):
+    # Only on level change
+    current_level = ram_state[36]
+    global prev_level
+    if current_level != prev_level:
+        manage_platforms(current_level, objects)
+    prev_level = current_level
+
+
+def _detect_lives(ram_state):
+    n_lives = ram_state[45]
+    for i in range(MAX_ESSENTIAL_OBJECTS["Life"]):
+        if i < n_lives:
+            x = 16 + (i * 8)
+            y = 183
+            _update_object(Life, "xy", (x, y), idx=i)
+        else:
+            _remove_object(Life, idx=i)
+
+
+def _detect_score(ram_state):
+    score_value = _convert_number(ram_state[39]) * 10000 + \
+                  _convert_number(ram_state[40]) * 100
+
+    if score_value < 100:
+        x = 129
+        w = 15
+    elif 100 <= score_value < 1000:
+        x = 121
+        w = 23
+    elif 1000 <= score_value < 10000:
+        x = 113
+        w = 31
+    elif 10000 <= score_value < 100000:
+        x = 105
+        w = 39
+    else:
+        x = 97
+        w = 47
+
+    _update_object(Score, "xy", (x, 183))
+    _update_object(Score, "wh", (w, 7))
 
 
 def _detect_objects_kangaroo_raw(info, ram_state):
-
     # for proper y coordinates you will have to multiply by 8
     # if the coordinates equal 255 they are not visible on screen
     info["ram_slice"] = ram_state[0:18] + ram_state[25], ram_state[28], ram_state[33:35], ram_state[83]
 
-    # info["player_position"] = ram_state[17], ram_state[16]
-    # info["kangaroo_child"] = ram_state[83]
-    # info["monkey_1_position"] = ram_state[15], ram_state[11]
-    # info["monkey_2_position"] = ram_state[14], ram_state[10]
-    # info["monkey_3_position"] = ram_state[13], ram_state[9]
-    # info["monkey_4_position"] = ram_state[12], ram_state[8]
-    # info["bouncing_projectile_position"] = ram_state[34], ram_state[33]
-    # info["monkey_projectile_position"] = ram_state[28], ram_state[25]
-    # info["level"] = ram_state[36] takes values 0-2
 
+def _get_fruit_properties(ram_value):
+    """Returns the fruit properties depending on the given RAM value.
+    Returns (wh, rgb) or None if no Fruit there."""
 
-def _get_fruit_type_kangaroo(ram_state):
-    """
-    Returns the RGB value for fruits depending on the ram-state given
-    """
-
-    if ram_state < 128:
-        if ram_state % 4 == 3:
-            return 195, 144, 61
-        else:
-            return 214, 92, 92
+    if ram_value < 128:
+        if ram_value%4== 0:
+                return (7, 11), (214, 92, 92)
+        elif ram_value%4== 1:
+                return (7, 9), (214, 92, 92)
+        elif ram_value%4==  2:
+                return (8, 11), (214, 92, 92)
+        elif ram_value%4== 3:
+                return (8, 11), (195, 144, 61)
     else:
         return None
 
-def manage_platforms(current_lvl_val, objects):
-    # base platform and top platform are always there
-    changing_platforms = objects[13:]
-    # levels: ram_state[36], total of 3 levels: 0, 1 and 2
+
+def manage_platforms(current_lvl_val, _):
+    objects[Platform][:2] = [
+        Platform(16, 172, w=128),
+        Platform(16, 28, w=128)
+    ]
+
+    # There is a total of 3 levels
     if current_lvl_val == 0:
-        objects[13:37] = [Scale(132, 132), Platform(16, 76, w=128), Scale(20, 85), Platform(16, 124, w=128), Scale(132, 37)] + [None] * 19
+        objects[Ladder] = [
+            Ladder(132, 132),
+            Ladder(20, 84),
+            Ladder(132, 36),
+            None,
+            None,
+            None,
+        ]
+
+        objects[Platform][2:4] = [
+            Platform(16, 76, w=128),
+            Platform(16, 124, w=128),
+        ]
+
+        for i in range(4, MAX_ESSENTIAL_OBJECTS["Platform"]):
+            _remove_object(Platform, idx=i)
+
     elif current_lvl_val == 1:
-        objects[13:37] = [Platform(16, 124, w=28), Platform(52, 124, w=92), Platform(16, 76, w=60), 
-                        Platform(84, 76, w=60), Scale(120, 132, h=4), Scale(24, 116, h=4), Scale(128, 36, h=4), 
-                        Platform(28, 164, w=24), Platform(112, 84, w=24), Platform(120, 44, w=24), Platform(48, 156, w=32), 
-                        Platform(76, 148, w=32), Platform(104, 140, w=32), Platform(16, 108, w=32), Platform(56, 100, w=20), 
-                        Platform(56, 100, w=20), Platform(84, 92, w=20), Platform(64, 60, w=20), Platform(92, 52, w=20), 
-                        Platform(28, 68, w=28)] +  [None] * 4 # len 20
-    else: # current_lvl_val == 2
-        objects[13:37] = [Scale(20, 36, h=28), Scale(20, 148, h=4), Scale(36, 116, h=20), Scale(104, 36, h=20), Scale(120, 68, h=4), 
-                        Scale(132, 84, h=4), Platform(88, 140, w=16), Platform(64, 148, w=16), Platform(100, 116, w=16), 
-                        Platform(48, 100, w=16), Platform(76, 52, w=16), Platform(80, 36, w=16), Platform(104, 132, w=20), 
-                        Platform(84, 156, w=20), Platform(124, 124, w=20), Platform(52, 84, w=20), Platform(108, 164, w=36), 
-                        Platform(16, 108, w=80), Platform(16, 92, w=28), Platform(76, 92, w=68), Platform(16, 140, w=32), 
-                        Platform(96, 60, w=36), Platform(100, 76, w=44), Platform(60, 44, w=12)] # 24
+        objects[Ladder] = [
+            Ladder(120, 132, h=4),
+            Ladder(24, 116, h=4),
+            Ladder(128, 36, h=4),
+            None,
+            None,
+            None,
+        ]
+
+        objects[Platform][2:18] = [
+            Platform(16, 124, w=28), Platform(52, 124, w=92),
+            Platform(16, 76, w=60), Platform(84, 76, w=60),
+            Platform(28, 164, w=24), Platform(112, 84, w=24),
+            Platform(120, 44, w=24), Platform(48, 156, w=32),
+            Platform(76, 148, w=32), Platform(104, 140, w=32),
+            Platform(16, 108, w=32), Platform(56, 100, w=20),
+            Platform(84, 92, w=20), Platform(64, 60, w=20),
+            Platform(92, 52, w=20), Platform(28, 68, w=28)
+        ]
+        objects[Platform][18:] = [None, None]
+
+    else:  # current_lvl_val == 2
+        objects[Ladder] = [
+            Ladder(20, 36, h=28),
+            Ladder(20, 148, h=4),
+            Ladder(36, 116, h=20),
+            Ladder(104, 36, h=20),
+            Ladder(120, 68, h=4),
+            Ladder(132, 84, h=4)
+        ]
+
+        objects[Platform][2:] = [
+            Platform(88, 140, w=16), Platform(64, 148, w=16), Platform(100, 116, w=16),
+            Platform(48, 100, w=16), Platform(76, 52, w=16), Platform(80, 36, w=16),
+            Platform(104, 132, w=20), Platform(84, 156, w=20), Platform(124, 124, w=20),
+            Platform(52, 84, w=20), Platform(108, 164, w=36), Platform(16, 108, w=80),
+            Platform(16, 92, w=28), Platform(76, 92, w=68), Platform(16, 140, w=32),
+            Platform(96, 60, w=36), Platform(100, 76, w=44), Platform(60, 44, w=12)
+        ]

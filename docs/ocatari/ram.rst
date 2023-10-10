@@ -9,7 +9,7 @@ RAM extraction mode
     :members:
     :inherited-members: Module
 
-.. autoclass:: ocatari.ram.game_objects.ScoreObject
+.. autoclass:: ocatari.ram.game_objects.ValueObject
     :members:
     :inherited-members: Module
 

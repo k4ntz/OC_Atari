@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="python3.9" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ocatari.ram.atlantis &mdash; OCAtari  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=03ece63d"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            OCAtari
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../ocatari/core.html">The OCAtari Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ocatari/game_objects.html">Game Objects Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ocatari/ram.html">RAM extraction mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ocatari/vision.html">Vision processing mode</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Scripts:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/alter_ram_while_playing.html">Alter RAM while playing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/automated_analysis.html">Automated Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/find_causative_ram.html">Causative RAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/reverse_engineering_helper.html">Reverse Engineering Helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/test_scripts.html">The test scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tests:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tests/comparison_test.html">Comparison test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tests/detection_metrics.html">Get detection metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tests/extraction_test.html">Extraction test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tests/test_speed.html">Speed test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tests/tests_utils.html">Tests utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">OCAtari</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">ocatari.ram.atlantis</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ocatari.ram.atlantis</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.game_objects</span> <span class="kn">import</span> <span class="n">GameObject</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">RAM extraction for the game Atlantis. Supported modes: raw, revised.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">MAX_NB_OBJECTS</span> <span class="o">=</span>  <span class="p">{</span><span class="s1">&#39;Sentry&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;AcropolisCommandPost&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Generator&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;DomedPalace&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+                   <span class="s1">&#39;BridgedBazaar&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;AquaPlane&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Projectile&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;GorgonShip&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;Deathray&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;BanditBomber&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="n">MAX_NB_OBJECTS_HUD</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Sentry&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;AcropolisCommandPost&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Generator&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;DomedPalace&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+                      <span class="s1">&#39;BridgedBazaar&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;AquaPlane&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Projectile&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;GorgonShip&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;Deathray&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Score&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;BanditBomber&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+
+<div class="viewcode-block" id="Sentry">
+<a class="viewcode-back" href="../../../ocatari/games/atlantis.html#ocatari.ram.atlantis.Sentry">[docs]</a>
+<span class="k">class</span> <span class="nc">Sentry</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The left and right sentry posts. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Sentry</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">124</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">111</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">111</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<span class="c1"># No clue how the projectiles work</span>
+<div class="viewcode-block" id="Projectile">
+<a class="viewcode-back" href="../../../ocatari/games/atlantis.html#ocatari.ram.atlantis.Projectile">[docs]</a>
+<span class="k">class</span> <span class="nc">Projectile</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The projectiles shot from the sentry posts or the Acropolis Command Post. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">184</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">162</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="AquaPlane">
+<a class="viewcode-back" href="../../../ocatari/games/atlantis.html#ocatari.ram.atlantis.AquaPlane">[docs]</a>
+<span class="k">class</span> <span class="nc">AquaPlane</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Aqua Plain district of the city. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AquaPlane</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">171</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">7</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">252</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">144</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="DomedPalace">
+<a class="viewcode-back" href="../../../ocatari/games/atlantis.html#ocatari.ram.atlantis.DomedPalace">[docs]</a>
+<span class="k">class</span> <span class="nc">DomedPalace</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Doomed Palace district of the city. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DomedPalace</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">148</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">103</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="Generator">
+<a class="viewcode-back" href="../../../ocatari/games/atlantis.html#ocatari.ram.atlantis.Generator">[docs]</a>
+<span class="k">class</span> <span class="nc">Generator</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The three Generator Stations. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Generator</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">62</span><span class="p">,</span> <span class="mi">137</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">117</span><span class="p">,</span> <span class="mi">231</span><span class="p">,</span> <span class="mi">194</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="BridgedBazaar">
+<a class="viewcode-back" href="../../../ocatari/games/atlantis.html#ocatari.ram.atlantis.BridgedBazaar">[docs]</a>
+<span class="k">class</span> <span class="nc">BridgedBazaar</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Bridged Bazaar district of the city. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BridgedBazaar</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">159</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">214</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="AcropolisCommandPost">
+<a class="viewcode-back" href="../../../ocatari/games/atlantis.html#ocatari.ram.atlantis.AcropolisCommandPost">[docs]</a>
+<span class="k">class</span> <span class="nc">AcropolisCommandPost</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Acropolis Command Post that defends the centre of Atlantis. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AcropolisCommandPost</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">112</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">227</span><span class="p">,</span> <span class="mi">151</span><span class="p">,</span> <span class="mi">89</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="BanditBomber">
+<a class="viewcode-back" href="../../../ocatari/games/atlantis.html#ocatari.ram.atlantis.BanditBomber">[docs]</a>
+<span class="k">class</span> <span class="nc">BanditBomber</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The fast Gorgon Bandit Bombers. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BanditBomber</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">7</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">173</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="GorgonShip">
+<a class="viewcode-back" href="../../../ocatari/games/atlantis.html#ocatari.ram.atlantis.GorgonShip">[docs]</a>
+<span class="k">class</span> <span class="nc">GorgonShip</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Large Gorgon Vessels. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GorgonShip</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">53</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="Deathray">
+<a class="viewcode-back" href="../../../ocatari/games/atlantis.html#ocatari.ram.atlantis.Deathray">[docs]</a>
+<span class="k">class</span> <span class="nc">Deathray</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The deathray fired by close Gorgon units. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Deathray</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">92</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">88</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">209</span><span class="p">,</span> <span class="mi">174</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="Score">
+<a class="viewcode-back" href="../../../ocatari/games/atlantis.html#ocatari.ram.atlantis.Score">[docs]</a>
+<span class="k">class</span> <span class="nc">Score</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The player&#39;s score display.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Score</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">188</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">252</span><span class="p">,</span> <span class="mi">188</span><span class="p">,</span> <span class="mi">116</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_init_objects_atlantis_ram</span><span class="p">(</span><span class="n">hud</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (Re)Initialize the objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">objects</span> <span class="o">=</span> <span class="p">[</span><span class="n">Sentry</span><span class="p">(),</span> <span class="n">Sentry</span><span class="p">()]</span>
+
+    <span class="n">objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="mi">152</span><span class="p">,</span> <span class="mi">112</span>
+
+    <span class="k">global</span> <span class="n">ray_available</span>
+    <span class="n">ray_available</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">global</span> <span class="n">buildings_amount</span>
+    <span class="n">buildings_amount</span> <span class="o">=</span> <span class="mi">7</span>
+
+    <span class="k">global</span> <span class="n">prev_x1</span>
+    <span class="k">global</span> <span class="n">prev_x2</span>
+    <span class="k">global</span> <span class="n">prev_x3</span>
+    <span class="k">global</span> <span class="n">prev_x4</span>
+    <span class="n">prev_x1</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">prev_x2</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">prev_x3</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">prev_x4</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">global</span> <span class="n">prev_x_p1</span>
+    <span class="k">global</span> <span class="n">prev_x_p2</span>
+    <span class="n">prev_x_p1</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">prev_x_p2</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">global</span> <span class="n">vert_proj</span>
+    <span class="n">vert_proj</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">objects</span>
+
+
+<span class="c1"># parses MAX_NB* dicts, returns default init list of objects</span>
+<span class="k">def</span> <span class="nf">_get_max_objects</span><span class="p">(</span><span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">fromdict</span><span class="p">(</span><span class="n">max_obj_dict</span><span class="p">):</span>
+        <span class="n">objects</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mod</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">max_obj_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+                <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">k</span><span class="p">)())</span>
+        <span class="k">return</span> <span class="n">objects</span>
+
+    <span class="k">if</span> <span class="n">hud</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fromdict</span><span class="p">(</span><span class="n">MAX_NB_OBJECTS_HUD</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fromdict</span><span class="p">(</span><span class="n">MAX_NB_OBJECTS</span><span class="p">)</span>
+
+
+<span class="c1"># Determines whether the deathray can be used by the ships or not</span>
+<span class="k">global</span> <span class="n">ray_available</span>
+<span class="c1"># Saves the previous amount of buildings that are still standing</span>
+<span class="k">global</span> <span class="n">buildings_amount</span>
+<span class="c1"># Saves the previous x-values of the ships</span>
+<span class="k">global</span> <span class="n">prev_x1</span>
+<span class="k">global</span> <span class="n">prev_x2</span>
+<span class="k">global</span> <span class="n">prev_x3</span>
+<span class="k">global</span> <span class="n">prev_x4</span>
+<span class="k">global</span> <span class="n">prev_x_p1</span>
+<span class="k">global</span> <span class="n">prev_x_p2</span>
+
+
+<span class="k">def</span> <span class="nf">missile_pos</span><span class="p">(</span><span class="n">rs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="mi">182</span> <span class="o">&lt;=</span> <span class="n">rs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">201</span> <span class="o">-</span> <span class="n">rs</span>
+    <span class="k">elif</span> <span class="mi">164</span> <span class="o">&lt;=</span> <span class="n">rs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">202</span> <span class="o">-</span> <span class="n">rs</span>
+    <span class="k">elif</span> <span class="mi">145</span> <span class="o">&lt;=</span> <span class="n">rs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">203</span> <span class="o">-</span> <span class="n">rs</span>
+    <span class="k">elif</span> <span class="mi">126</span> <span class="o">&lt;=</span> <span class="n">rs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">204</span> <span class="o">-</span> <span class="n">rs</span>
+    <span class="k">elif</span> <span class="mi">114</span> <span class="o">&lt;=</span> <span class="n">rs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">205</span> <span class="o">-</span> <span class="n">rs</span>
+    <span class="k">elif</span> <span class="mi">106</span> <span class="o">&lt;=</span> <span class="n">rs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">206</span> <span class="o">-</span> <span class="n">rs</span>
+    <span class="k">elif</span> <span class="mi">104</span> <span class="o">&lt;=</span> <span class="n">rs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">207</span> <span class="o">-</span> <span class="n">rs</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">208</span> <span class="o">-</span> <span class="n">rs</span>
+
+
+<span class="k">def</span> <span class="nf">_detect_objects_atlantis_revised</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">ram_state</span><span class="p">,</span> <span class="n">hud</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">del</span> <span class="n">objects</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+
+    <span class="n">buildings_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">global</span> <span class="n">prev_x_p1</span>
+    <span class="k">global</span> <span class="n">prev_x_p2</span>
+
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">58</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">60</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">proj</span> <span class="o">=</span> <span class="n">Projectile</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">prev_x_p1</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">60</span><span class="p">]:</span>
+            <span class="n">proj</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">60</span><span class="p">]</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">missile_pos</span><span class="p">(</span><span class="n">ram_state</span><span class="p">[</span><span class="mi">58</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">prev_x_p1</span> <span class="o">==</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">60</span><span class="p">]:</span>
+            <span class="n">proj</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">60</span><span class="p">],</span> <span class="n">missile_pos</span><span class="p">(</span><span class="n">ram_state</span><span class="p">[</span><span class="mi">58</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">proj</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">60</span><span class="p">]</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="n">missile_pos</span><span class="p">(</span><span class="n">ram_state</span><span class="p">[</span><span class="mi">58</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">proj</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proj</span><span class="p">)</span>
+
+    <span class="n">prev_x_p1</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">60</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">59</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">61</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">proj</span> <span class="o">=</span> <span class="n">Projectile</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">prev_x_p2</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">61</span><span class="p">]:</span>
+            <span class="n">proj</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">61</span><span class="p">]</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">missile_pos</span><span class="p">(</span><span class="n">ram_state</span><span class="p">[</span><span class="mi">59</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span>
+            <span class="c1"># print(&quot;LEFT 2&quot;)</span>
+        <span class="k">elif</span> <span class="n">prev_x_p2</span> <span class="o">==</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">61</span><span class="p">]:</span>
+            <span class="c1"># proj.xy = ram_state[61], int(214 - 1.0775 * ram_state[59])</span>
+            <span class="n">proj</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">61</span><span class="p">],</span> <span class="n">missile_pos</span><span class="p">(</span><span class="n">ram_state</span><span class="p">[</span><span class="mi">59</span><span class="p">])</span>
+            <span class="c1"># if 204 - ram_state[59] &lt;= 22:</span>
+            <span class="c1">#     proj.xy = ram_state[61], 210 - ram_state[59] - 9</span>
+            <span class="c1"># elif 204 - ram_state[59] &lt;= 32:</span>
+            <span class="c1">#     proj.xy = ram_state[61], 210 - ram_state[59] - 8</span>
+            <span class="c1"># elif 204 - ram_state[59] &lt;= 59:</span>
+            <span class="c1">#     proj.xy = ram_state[61], 210 - ram_state[59] - 7</span>
+            <span class="c1"># elif 204 - ram_state[59] &lt;= 78:</span>
+            <span class="c1">#     proj.xy = ram_state[61], 204 - ram_state[59]</span>
+            <span class="c1"># elif 204 - ram_state[59] &lt; 90:</span>
+            <span class="c1">#     proj.xy = ram_state[61], 210 - ram_state[59] - 5</span>
+            <span class="c1"># else:</span>
+            <span class="c1">#     proj.xy = ram_state[61], 210 - ram_state[59] - 4</span>
+            <span class="c1"># print(&quot;CENTER 2&quot;)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">proj</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">61</span><span class="p">]</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="n">missile_pos</span><span class="p">(</span><span class="n">ram_state</span><span class="p">[</span><span class="mi">59</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span>
+            <span class="c1"># print(&quot;RIGHT 2&quot;)</span>
+        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proj</span><span class="p">)</span>
+
+    <span class="n">prev_x_p2</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">61</span><span class="p">]</span>
+
+    <span class="c1"># print(&#39;-&#39;*20)</span>
+    <span class="c1"># The visual representation of the Sprite relative to the ram_state</span>
+    <span class="c1"># seems to differ depending on the ship entering on the left/right.</span>
+    <span class="c1"># These variables help to determine where the ship entered</span>
+    <span class="k">global</span> <span class="n">prev_x1</span>
+    <span class="k">global</span> <span class="n">prev_x2</span>
+    <span class="k">global</span> <span class="n">prev_x3</span>
+    <span class="k">global</span> <span class="n">prev_x4</span>
+
+    <span class="k">global</span> <span class="n">ray_available</span>
+    <span class="k">global</span> <span class="n">buildings_amount</span>
+
+    <span class="c1"># Ships from top to bottom</span>
+    <span class="c1"># lane 1</span>
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">39</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ship</span> <span class="o">=</span> <span class="n">_get_ship_type</span><span class="p">(</span><span class="n">ram_state</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">131</span><span class="p">)</span>
+        <span class="n">g_s</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">64</span><span class="p">:</span>
+            <span class="n">g_s</span> <span class="o">=</span> <span class="n">GorgonShip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">prev_x1</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">39</span><span class="p">]:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">39</span><span class="p">]</span> <span class="o">-</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">19</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">39</span><span class="p">]</span> <span class="o">-</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">19</span>
+        <span class="k">elif</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">32</span> <span class="ow">or</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">48</span><span class="p">:</span>
+            <span class="n">g_s</span> <span class="o">=</span> <span class="n">GorgonShip</span><span class="p">()</span>
+            <span class="n">g_s</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">7</span>
+            <span class="k">if</span> <span class="n">prev_x1</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">39</span><span class="p">]:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">39</span><span class="p">]</span> <span class="o">-</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">20</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">39</span><span class="p">]</span> <span class="o">-</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">20</span>
+        <span class="k">elif</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">80</span><span class="p">:</span>
+            <span class="n">g_s</span> <span class="o">=</span> <span class="n">BanditBomber</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">prev_x1</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">39</span><span class="p">]:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">39</span><span class="p">]</span> <span class="o">-</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">20</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">39</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span>
+        <span class="k">if</span> <span class="n">g_s</span><span class="p">:</span>
+            <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g_s</span><span class="p">)</span>
+
+    <span class="n">prev_x1</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">39</span><span class="p">]</span>
+
+    <span class="c1"># lane2</span>
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">38</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ship</span> <span class="o">=</span> <span class="n">_get_ship_type</span><span class="p">(</span><span class="n">ram_state</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">130</span><span class="p">)</span>
+        <span class="n">g_s</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">64</span><span class="p">:</span>
+            <span class="n">g_s</span> <span class="o">=</span> <span class="n">GorgonShip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">prev_x2</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">38</span><span class="p">]:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">38</span><span class="p">]</span> <span class="o">-</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">40</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">38</span><span class="p">]</span> <span class="o">-</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">40</span>
+        <span class="k">elif</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">32</span> <span class="ow">or</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">48</span><span class="p">:</span>
+            <span class="n">g_s</span> <span class="o">=</span> <span class="n">GorgonShip</span><span class="p">()</span>
+            <span class="n">g_s</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">7</span>
+            <span class="k">if</span> <span class="n">prev_x2</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">38</span><span class="p">]:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">38</span><span class="p">]</span> <span class="o">-</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">41</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">38</span><span class="p">]</span> <span class="o">-</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">41</span>
+        <span class="k">elif</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">80</span><span class="p">:</span>
+            <span class="n">g_s</span> <span class="o">=</span> <span class="n">BanditBomber</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">prev_x2</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">38</span><span class="p">]:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">38</span><span class="p">]</span> <span class="o">-</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">41</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">38</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">41</span>
+        <span class="k">if</span> <span class="n">g_s</span><span class="p">:</span>
+            <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g_s</span><span class="p">)</span>
+
+    <span class="n">prev_x2</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">38</span><span class="p">]</span>
+
+    <span class="c1"># lane3</span>
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">37</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ship</span> <span class="o">=</span> <span class="n">_get_ship_type</span><span class="p">(</span><span class="n">ram_state</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">129</span><span class="p">)</span>
+        <span class="n">g_s</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">64</span><span class="p">:</span>
+            <span class="n">g_s</span> <span class="o">=</span> <span class="n">GorgonShip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">prev_x3</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">37</span><span class="p">]:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">37</span><span class="p">]</span> <span class="o">-</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">61</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">37</span><span class="p">]</span> <span class="o">-</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">61</span>
+        <span class="k">elif</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">32</span> <span class="ow">or</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">48</span><span class="p">:</span>
+            <span class="n">g_s</span> <span class="o">=</span> <span class="n">GorgonShip</span><span class="p">()</span>
+            <span class="n">g_s</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">7</span>
+            <span class="k">if</span> <span class="n">prev_x3</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">37</span><span class="p">]:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">37</span><span class="p">]</span> <span class="o">-</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">62</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">37</span><span class="p">]</span> <span class="o">-</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">62</span>
+        <span class="k">elif</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">80</span><span class="p">:</span>
+            <span class="n">g_s</span> <span class="o">=</span> <span class="n">BanditBomber</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">prev_x3</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">37</span><span class="p">]:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">37</span><span class="p">]</span> <span class="o">-</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">62</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">37</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">62</span>
+        <span class="k">if</span> <span class="n">g_s</span><span class="p">:</span>
+            <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g_s</span><span class="p">)</span>
+
+    <span class="n">prev_x3</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">37</span><span class="p">]</span>
+
+    <span class="c1"># lane4</span>
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ship</span> <span class="o">=</span> <span class="n">_get_ship_type</span><span class="p">(</span><span class="n">ram_state</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+        <span class="n">g_s</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">64</span><span class="p">:</span>
+            <span class="n">g_s</span> <span class="o">=</span> <span class="n">GorgonShip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">prev_x4</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">]:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">]</span> <span class="o">-</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">82</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">]</span> <span class="o">-</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">82</span>
+        <span class="k">elif</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">32</span> <span class="ow">or</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">48</span><span class="p">:</span>
+            <span class="n">g_s</span> <span class="o">=</span> <span class="n">GorgonShip</span><span class="p">()</span>
+            <span class="n">g_s</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">7</span>
+            <span class="k">if</span> <span class="n">prev_x4</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">]:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">]</span> <span class="o">-</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">83</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">]</span> <span class="o">-</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">83</span>
+        <span class="k">elif</span> <span class="n">ship</span> <span class="o">==</span> <span class="mi">80</span><span class="p">:</span>
+            <span class="n">g_s</span> <span class="o">=</span> <span class="n">BanditBomber</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">prev_x4</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">]:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">]</span> <span class="o">-</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">83</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">g_s</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">83</span>
+        <span class="k">if</span> <span class="n">g_s</span><span class="p">:</span>
+            <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g_s</span><span class="p">)</span>
+
+    <span class="c1"># Command-Post center building with gun</span>
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">84</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">AcropolisCommandPost</span><span class="p">())</span>
+        <span class="n">buildings_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Generator left</span>
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">22</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">152</span><span class="p">:</span>
+        <span class="n">gen</span> <span class="o">=</span> <span class="n">Generator</span><span class="p">()</span>
+        <span class="n">gen</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">124</span>
+        <span class="n">gen</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">111</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">111</span>
+        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span>
+        <span class="n">buildings_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Generator Command-Post</span>
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">23</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">152</span><span class="p">:</span>
+        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Generator</span><span class="p">())</span>
+        <span class="n">buildings_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Generator right</span>
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">24</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">152</span><span class="p">:</span>
+        <span class="n">gen</span> <span class="o">=</span> <span class="n">Generator</span><span class="p">()</span>
+        <span class="n">gen</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="mi">142</span><span class="p">,</span> <span class="mi">137</span>
+        <span class="n">gen</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">188</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">252</span>
+        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span>
+        <span class="n">buildings_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Domed-Palace building with dome</span>
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">25</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">152</span><span class="p">:</span>
+        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DomedPalace</span><span class="p">())</span>
+        <span class="n">buildings_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Bridged-Bazaar rightmost building</span>
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">26</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">152</span><span class="p">:</span>
+        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BridgedBazaar</span><span class="p">())</span>
+        <span class="n">buildings_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Aqua-Plane leftmost building</span>
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">27</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">152</span><span class="p">:</span>
+        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">AquaPlane</span><span class="p">())</span>
+        <span class="n">buildings_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Determines if the deathray is usable</span>
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">30</span><span class="p">]</span> <span class="o">==</span> <span class="mi">152</span><span class="p">:</span>
+        <span class="n">ray_available</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="n">buildings_count</span> <span class="o">&lt;</span> <span class="n">buildings_amount</span><span class="p">:</span>
+        <span class="n">ray_available</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Deathray can only be shot by ships on lane 4</span>
+    <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">30</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">152</span> <span class="ow">and</span> <span class="n">ray_available</span><span class="p">:</span>
+        <span class="n">ray</span> <span class="o">=</span> <span class="n">Deathray</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">prev_x4</span> <span class="o">&lt;</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">]:</span>
+            <span class="n">ray</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">92</span>
+            <span class="c1">#print(ray.xy)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ray</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">92</span>
+        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ray</span><span class="p">)</span>
+
+    <span class="n">prev_x4</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">]</span>
+    <span class="n">buildings_amount</span> <span class="o">=</span> <span class="n">buildings_count</span>
+
+    <span class="c1"># global vert_proj</span>
+    <span class="c1"># if ram_state[106]:</span>
+    <span class="c1">#     if not vert_proj:</span>
+    <span class="c1">#         vert_proj = Projectile()</span>
+    <span class="c1">#         vert_proj.rgb = (20, 200, 20)</span>
+    <span class="c1">#         objects.append(vert_proj)</span>
+    <span class="c1">#     vert_proj._xy = 73, 3 * ram_state[106] + 21</span>
+    <span class="c1"># elif vert_proj:</span>
+    <span class="c1">#     if vert_proj in objects:</span>
+    <span class="c1">#         objects.remove(vert_proj)</span>
+    <span class="c1">#     vert_proj = None</span>
+
+    <span class="c1"># for oj in objects:</span>
+    <span class="c1">#     if isinstance(oj, Projectile):</span>
+    <span class="c1">#         xy = oj.xy</span>
+    <span class="c1">#         oj.xy = xy[0]-4, xy[1]-8</span>
+
+    <span class="k">if</span> <span class="n">hud</span><span class="p">:</span>
+        <span class="c1"># Score</span>
+        <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">33</span><span class="p">]</span> <span class="ow">or</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">34</span><span class="p">]</span> <span class="ow">or</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">35</span><span class="p">]:</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">Score</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">33</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">16</span><span class="p">:</span>
+                <span class="n">score</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">10</span>
+                <span class="n">score</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="mi">88</span><span class="p">,</span> <span class="mi">188</span>
+            <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">34</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">score</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">10</span>
+                <span class="n">score</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">188</span>
+            <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">34</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">16</span><span class="p">:</span>
+                <span class="n">score</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">10</span>
+                <span class="n">score</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">188</span>
+            <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">35</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">score</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">39</span><span class="p">,</span> <span class="mi">10</span>
+                <span class="n">score</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">188</span>
+            <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">35</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">16</span><span class="p">:</span>
+                <span class="n">score</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">10</span>
+                <span class="n">score</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="mi">56</span><span class="p">,</span> <span class="mi">188</span>
+            <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">objects</span>
+
+
+<span class="k">def</span> <span class="nf">_get_ship_type</span><span class="p">(</span><span class="n">ram_state</span><span class="p">,</span> <span class="n">height1</span><span class="p">,</span> <span class="n">height2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines the type of ship by its sprite index</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">71</span><span class="o">+</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">height1</span> <span class="ow">or</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">71</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">height2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">79</span><span class="o">+</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">return</span> <span class="mi">0</span>
+
+
+<span class="k">def</span> <span class="nf">_detect_objects_atlantis_raw</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">ram_state</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raw ram-slice for playing the game with minimum requirements</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">enemy_x</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">36</span><span class="p">:</span><span class="mi">40</span><span class="p">]</span>
+    <span class="n">player_projectile</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">58</span><span class="p">:</span><span class="mi">62</span><span class="p">]</span>
+    <span class="c1"># score ram_state[33:36]</span>
+    <span class="n">info</span><span class="p">[</span><span class="s2">&quot;ram_slice&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">enemy_x</span> <span class="o">+</span> <span class="n">player_projectile</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kévin-Lâm Quesnel and Anurag Maurya.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,62 +1,61 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "Birdseeds": 1, "Truck": 6}
-MAX_NB_OBJECTS_HUD = {'Cactus': 6, 'ThisWaySign': 1}# 'Score': 1}
+MAX_NB_OBJECTS = {"Player": 1}
+MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
 
 class Player(GameObject):
-    """
-    A class representing the player figure i.e., the crew-member roaming the maze of hallways of the spaceship. 
-    """
     def __init__(self):
-        super().__init__()
+        super(Player, self).__init__()
         self._xy = 0, 0
-        self.wh = (8, 32)
-        self.rgb = 101, 111, 228
+        self.wh = (6, 13)
+        self.rgb = 132, 144, 252
         self.hud = False
 
 
-class Enemy(GameObject):
+class Alien(GameObject):
     def __init__(self):
-        super().__init__()
+        super(Alien, self).__init__()
         self._xy = 0, 0
-        self.wh = (7, 29)
+        self.wh = (8, 13)
+        self.rgb = 236, 140, 224
+        self.vulnerable = False
+        self.hud = False
+
+
+class Egg(GameObject):
+    def __init__(self):
+        super(Egg, self).__init__()
+        self._xy = 0, 0
+        self.wh = (1, 2)
         self.rgb = 198, 108, 58
         self.hud = False
 
 
-class Birdseeds(GameObject):
+class Pulsar(GameObject):
     def __init__(self):
-        super().__init__()
+        super(Pulsar, self).__init__()
         self._xy = 0, 0
-        self.wh = (5, 3)
-        self.rgb = 84, 92, 214
+        self.wh = (7, 5)
+        self.rgb = 252, 144, 144
         self.hud = False
 
 
-class Truck(GameObject):
+class Score(ValueObject):
     def __init__(self):
-        super().__init__()
+        super(Score, self).__init__()
         self._xy = 0, 0
-        self.wh = (16, 18)
-        self.rgb = 198, 108, 58
+        self.wh = (6, 7)
+        self.rgb = 132, 144, 252
         self.hud = False
 
 
-class Cactus(GameObject):
+class Life(GameObject):
     def __init__(self):
-        super().__init__()
+        super(Life, self).__init__()
         self._xy = 0, 0
-        self.wh = (8, 8)
-        self.rgb = 187, 187, 53
-        self.hud = False
-
-class ThisWaySign(GameObject):
-    def __init__(self):
-        super().__init__()
-        self._xy = 0, 0
-        self.wh = (16, 15)
-        self.rgb = 0, 0, 0
+        self.wh = (5, 5)
+        self.rgb = 132, 144, 252
         self.hud = False
 
 
@@ -80,7 +79,11 @@ def _init_objects_alien_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Enemy(), Truck()]
+    objects = [Player()]
+
+    objects.extend([None] * 172)
+    if hud:
+        objects.extend([None] * 7)
     return objects
 
 
@@ -89,26 +92,158 @@ def _detect_objects_alien_revised(objects, ram_state, hud=False):
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
-    player, enemy, truck = objects[:4]
-    player.xy = ram_state[80], ram_state[3] + 95
-    if ram_state[81] > 145: # Removing the enemy
-        objects[1] = None
-    elif enemy is None:
-        enemy = Enemy()
-        objects[1] = enemy
-    if enemy is not None:
-        enemy.xy = ram_state[81], ram_state[5] + 98
-    if truck is not None:
-        truck.xy=ram_state[42]-2, ram_state[46]-15
+    player = objects[0]
+    player.xy = ram_state[52] + 18, 196 -  ram_state[45]*2 + 1
     
-    if hud:
-        # scores
-        global plscore
-        if ram_state[18] > 10:  # player score
-            plscore.tenify()
+    # y 110 = 43 152 = 22
+    for i in range(3):
+        if ram_state[42+i] and ram_state[49+i]:
+            alien = Alien()
+            objects[1+i] = alien
+            alien.xy = ram_state[49+i] + 17, 196 - ram_state[42+i]*2
+            if ram_state[117] == 139:
+                alien.rgb = 101, 111, 228
+                alien.vulnerable = True
+            elif i == 0:
+                alien.rgb = 132, 252, 212
+                alien.vulnerable = False
+            elif i == 1:
+                alien.rgb = 252, 252, 84
+                alien.vulnerable = False
+            elif i == 2:
+                alien.rgb = 236, 140, 224
+                alien.vulnerable = False
         else:
-            plscore.detenify()
-    # import ipdb; ipdb.set_trace()
+             objects[1+i] = None
+
+    if ram_state[103]:
+        if ram_state[103] == 1:
+            pulsar = Pulsar()
+            objects[4] = pulsar
+            pulsar.xy = 123, 137
+        elif ram_state[103] == 2:
+            pulsar = Pulsar()
+            objects[4] = pulsar
+            pulsar.xy = 31, 137
+        elif ram_state[103] == 3:
+            pulsar = Pulsar()
+            objects[4] = pulsar
+            pulsar.xy = 77, 17
+    else:
+        objects[4] = None
+
+##############################################
+# ============================================
+##############################################
+    y = 19
+    for i in range(13):
+        if ram_state[65+i]&4:
+            egg0 = Egg()
+            objects[5+i*6] = egg0
+            egg0.xy = 26, y
+        else:
+            objects[5+i*6] = None
+        
+        if ram_state[65+i]&8:
+            egg1 = Egg()
+            objects[6+i*6] = egg1
+            egg1.xy = 56, y
+        else:
+            objects[6+i*6] = None
+        if ram_state[65+i]&16:
+            egg2 = Egg()
+            objects[7+i*6] = egg2
+            egg2.xy = 34, y+2
+        else:
+            objects[7+i*6] = None
+        if ram_state[65+i]&32:
+            egg3 = Egg()
+            objects[8+i*6] = egg3
+            egg3.xy = 64, y+2
+        else:
+            objects[8+i*6] = None
+        if ram_state[65+i]&64:
+            egg4 = Egg()
+            objects[9+i*6] = egg4
+            egg4.xy = 42, y+4
+        else:
+            objects[9+i*6] = None
+        if ram_state[65+i]&128:
+            egg5 = Egg()
+            objects[10+i*6] = egg5
+            egg5.xy = 72, y+4
+        else:
+            objects[10+i*6] = None
+        y += 12
+    
+    y = 19
+    for i in range(13):
+        if ram_state[78+i]&4:
+            egg0 = Egg()
+            objects[83+i*6] = egg0
+            egg0.xy = 89, y
+        else:
+            objects[83+i*6] = None
+        
+        if ram_state[78+i]&8:
+            egg1 = Egg()
+            objects[84+i*6] = egg1
+            egg1.xy = 118, y
+        else:
+            objects[84+i*6] = None
+        if ram_state[78+i]&16:
+            egg2 = Egg()
+            objects[85+i*6] = egg2
+            egg2.xy = 97, y+2
+        else:
+            objects[85+i*6] = None
+        if ram_state[78+i]&32:
+            egg3 = Egg()
+            objects[86+i*6] = egg3
+            egg3.xy = 126, y+2
+        else:
+            objects[86+i*6] = None
+        if ram_state[78+i]&64:
+            egg4 = Egg()
+            objects[87+i*6] = egg4
+            egg4.xy = 105, y+4
+        else:
+            objects[87+i*6] = None
+        if ram_state[78+i]&128:
+            egg5 = Egg()
+            objects[88+i*6] = egg5
+            egg5.xy = 134, y+4
+        else:
+            objects[88+i*6] = None
+        y += 12
+
+
+
+    if hud:
+        score = Score()
+        objects[173] = score
+        score.xy = 63, 176
+        score.wh = 6, 7
+        x = 23
+        w = 46
+        for i in [3, 5, 7, 9, 11]:
+            if ram_state[i] != 128:
+                score.xy = x, 176
+                score.wh = w, 7
+            else:
+                x += 8
+                w -= 8
+        x = 21
+        lives = ram_state[64] - 1
+        for i in range(6):
+            if lives > 0:
+                objects[174+i] = Life()
+                objects[174+i].xy = x + 8*i, 187
+            else:
+                objects[174+i] = None
+            lives -= 1
+            
+            
 
 
 def _detect_objects_alien_raw(info, ram_state):

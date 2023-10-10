@@ -32,9 +32,9 @@ class Fruit(GameObject):
         self.rgb = 214, 92, 92
 
 
-class Scale(GameObject):
+class Ladder(GameObject):
     def __init__(self, x=0, y=0, w=8, h=35, *args, **kwargs):
-        super(Scale, self).__init__(x, y, w, h, *args, **kwargs)
+        super(Ladder, self).__init__(x, y, w, h, *args, **kwargs)
         self._xy = x, y
         self._prev_xy = x, y
         self.wh = w, h
@@ -159,11 +159,11 @@ def _detect_objects_kangaroo(objects, obs, hud=True):
     objects.append(Platform(16, 172, w=128))  # base platform
     objects.append(Platform(16, 28, w=128))  # top platform
     # if lvl_value < 23:
-    objects.append(Scale(132, 132))
+    objects.append(Ladder(132, 132))
     objects.append(Platform(16, 76, w=128))
-    objects.append(Scale(20, 85))
+    objects.append(Ladder(20, 85))
     objects.append(Platform(16, 124, w=128))
-    objects.append(Scale(132, 37))
+    objects.append(Ladder(132, 37))
 
     if hud:
         life = find_objects(obs, objects_colors["hud"], min_distance=1, minx=10, maxx=40)

@@ -20,7 +20,7 @@ HELP_TEXT = plt.text(0, -10.2, default_help, fontsize=20)
 
 
 useOCAtari = True                # if True, running this file will execute the OCAtari code
-printEnvInfo = True        # if True, the extracted objects or the environment info will be printed
+printEnvInfo = False       # if True, the extracted objects or the environment info will be printed
 
 # gym[atari]/gymnasium
 # game_name = "ChopperCommand-v4"    # game name ChopperCommand-v4
@@ -51,7 +51,7 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 
 # OCAtari modes
-mode = "revised"                    # raw, revised, vision, test
+mode = "vision"                    # raw, revised, vision, test
 HUD = True                    # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
@@ -69,6 +69,7 @@ setRAMValue = 255                # the value of the ram that will be set (if neg
 showDelta = False             # shows any other changes that occured by changing the ram (dependent on env.step)
 slowDownPlot = 0.0001              # pause per iteration
 lastRAM = np.zeros(128)
+categorical_inference=True
 
 # DO NOT CHANGE! global variables used in context of interrupting, but keeping the plot stable (must be False)
 pause = False
@@ -107,7 +108,7 @@ def withocatari():
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
-    # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/bird_gopher.pkl", "rb"))
+    # snapshot = pickle.load(open("/home/anur4: [24, 25, 0], 5: [24, 25, 0], 6: [128, 0], 7: [128, 152, 153, 0], 8: [1, 0], 9: [], 10: [24, 25, 0], 11: [1, 25, 0], 12: [128, 0], 13: [128, 152, 153, 0], 14: [1, 0], 15: [], 16: [1, 25, 0], 17: [24, 25, 0], 18: [], 19: [128, 192, 224, 240, 252, 255, 0]ag/Desktop/HiWi_OC/OC_Atari/snapshots/night_enduro.pkl", "rb"))
     # env._env.env.env.ale.restoreState(snapshot)
     run(oc)
 
@@ -124,16 +125,6 @@ def distance_to_joey(player):
         return 1
 
 
-# def repeat_upsample(rgb_array, k=4, l=4, err=[]):
-#     # repeat kinda crashes if k/l are zero
-#     if rgb_array is None:
-#         raise ValueError("The rgb_array is None, probably mushroom_rl bug")
-#     if k <= 0 or l <= 0:
-#         if not err:
-#             print("Number of repeats must be larger than 0, k: {}, l: {}, returning default array!".format(k, l))
-#             err.append('logged')
-#         return rgb_array
-#     return np.repeat(np.repeat(rgb_array, k, axis=0), l, axis=1)
 
 
 def run(env):
@@ -170,6 +161,8 @@ def run(env):
 
     # run the game
     previous_lives = 3
+    prev_ram=[]
+    ram_dict=dict([(i,[]) for i in range(0,128)])
     for i in range(performActions):
         # get the action that will be performed
         if playGame:
@@ -187,17 +180,9 @@ def run(env):
 
         if showActions:
             print(action_name)
-            # print(action)
 
-        # do a step with the given action
         observation, reward, terminated, truncated, info = env.step(action)
-        # if info["lives"] < previous_lives:
-        #     reward -= 10
-        # previous_lives = info["lives"]
-        # print(reward)
-        # player = env.objects[0]
-        # print(distance_to_joey(player))
-        # returns if the environment is in the terminal state (end) -> terminated, truncated
+
         if terminated or truncated:
             observation, info = env.reset()
 
@@ -208,21 +193,19 @@ def run(env):
             all_rams.append(deepcopy(ram))
             target_vals.append(target_val)
         if showRAM:
-            print(ram)
-            # ram_change=np.array(ram.shape)
-            # count=0
-            # for i in range(len(all_rams)-1):
-            #     if count==0:
-            #         ram_change=all_rams[i]==all_rams[i+1]
-            #     else:
-            #         ram_change=ram_change == (all_rams[i]==all_rams[i+1])
-            #     count+=1
-            # print(np.where(ram_change==False))
-        
+            print(ram[18])
+            if categorical_inference:
+                if i==0:
+                    prev_ram=ram[0:128]
+                now_ram=ram[0:128]
+                for i in range(0,128):
+                    if prev_ram[i]!=now_ram[i]:
+                        # print(str(i)+" changed from "+str(prev_ram[i])+" to "+str(now_ram[i]))
+                        if now_ram[i] not in ram_dict[i]:
+                            ram_dict[i].append(now_ram[i])
                 
-
-        # adjust the RAM as you like to see what it changes in the rendering (functional behavior of the RAM is
-        # not important and therefore must not be part of the project, but the changes that are visually displayed)
+                prev_ram=now_ram
+                # print(ram_dict)
 
         if manipulateRAM:
             if setRAMValue < 0:
@@ -296,7 +279,9 @@ def run(env):
         while pause:
             # take a look at the frame
             HELP_TEXT.set_text("space: enter new value\nTab  : Unpause")
-            plt.pause(1)
+            plt.pause(1)    # save_fn = "mode_change_kangaroo.pkl"
+    # pickle.dump((all_rams, target_vals), open(save_fn, "wb"))
+    # print(f"Saved in {save_fn}")
             # print("is paused")
 
             if end:
@@ -315,9 +300,14 @@ def run(env):
     # close the environment at the end
     env.close()
     listener.stop()
-    save_fn = "mode_change_kangaroo.pkl"
-    pickle.dump((all_rams, target_vals), open(save_fn, "wb"))
+    # save_fn = "mode_change_kangaroo.pkl"
+    # pickle.dump((all_rams, target_vals), open(save_fn, "wb"))
+    # print(f"Saved in {save_fn}")
+
+    save_fn="ram_dict_gopher.pkl"
+    pickle.dump(ram_dict,open(save_fn, "wb"))
     print(f"Saved in {save_fn}")
+
 
 
 def get_unwrapped(env):

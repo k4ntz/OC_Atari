@@ -31,9 +31,11 @@ from .frostbite import _detect_objects_frostbite
 from .pitfall import _detect_objects_pitfall
 from .yarsrevenge import _detect_objects_yarsrevenge
 from .icehockey import _detect_objects_icehockey
+from .venture import _detect_objects_venture
 from .privateeye import _detect_objects_privateeye
 from .gopher import _detect_objects_gopher
 from .enduro import _detect_objects_enduro
+from .videopinball import _detect_objects_videopinball
 def detect_objects_vision(objects, obs, game_name, hud=False):
     if game_name.lower() == "atlantis":
         return _detect_objects_atlantis(objects, obs, hud)
@@ -109,6 +111,10 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_gopher(objects, obs, hud)
     elif game_name.lower() == "enduro":
         return _detect_objects_enduro(objects, obs, hud)
+    elif game_name.lower() == "videopinball":
+        return _detect_objects_videopinball(objects, obs, hud)
+    elif game_name.lower() == "venture":
+        return _detect_objects_venture(objects, obs, hud)
     else:
         print(colored("Uncovered game in vision mode", "red"))
         exit(1)
