@@ -128,6 +128,14 @@ class GameObject:
     def xy(self, xy):
         self._xy = (int(xy[0]), int(xy[1]))
 
+    @x.setter
+    def x(self, x):
+        self._xy = int(x), self.y
+
+    @y.setter
+    def y(self, y):
+        self._xy = self.x, int(y)
+
     # returns 2 lists with current and past coords
     @property
     def h_coords(self):
