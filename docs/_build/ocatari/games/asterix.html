@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="python3.9" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; OCAtari  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=03ece63d"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="atlantis.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="assault.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            OCAtari
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../core.html">The OCAtari Environments</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../game_objects.html">Game Objects Details</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="alien.html"><code class="docutils literal notranslate"><span class="pre">Alien</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alien.html#ocatari.ram.alien.Egg"><code class="docutils literal notranslate"><span class="pre">Egg</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alien.html#ocatari.ram.alien.Life"><code class="docutils literal notranslate"><span class="pre">Life</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alien.html#ocatari.ram.alien.Player"><code class="docutils literal notranslate"><span class="pre">Player</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alien.html#ocatari.ram.alien.Pulsar"><code class="docutils literal notranslate"><span class="pre">Pulsar</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alien.html#ocatari.ram.alien.Score"><code class="docutils literal notranslate"><span class="pre">Score</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="assault.html"><code class="docutils literal notranslate"><span class="pre">Enemy</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="assault.html#ocatari.ram.assault.EnemyMissile"><code class="docutils literal notranslate"><span class="pre">EnemyMissile</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="assault.html#ocatari.ram.assault.Health"><code class="docutils literal notranslate"><span class="pre">Health</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="assault.html#ocatari.ram.assault.Lives"><code class="docutils literal notranslate"><span class="pre">Lives</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="assault.html#ocatari.ram.assault.MotherShip"><code class="docutils literal notranslate"><span class="pre">MotherShip</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="assault.html#ocatari.ram.assault.Player"><code class="docutils literal notranslate"><span class="pre">Player</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="assault.html#ocatari.ram.assault.PlayerMissileHorizontal"><code class="docutils literal notranslate"><span class="pre">PlayerMissileHorizontal</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="assault.html#ocatari.ram.assault.PlayerMissileVertical"><code class="docutils literal notranslate"><span class="pre">PlayerMissileVertical</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="assault.html#ocatari.ram.assault.PlayerScore"><code class="docutils literal notranslate"><span class="pre">PlayerScore</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">Apple</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Apple.closest_object"><code class="docutils literal notranslate"><span class="pre">Apple.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Apple.is_on_top"><code class="docutils literal notranslate"><span class="pre">Apple.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Apple.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Apple.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Cauldron"><code class="docutils literal notranslate"><span class="pre">Cauldron</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Cauldron.closest_object"><code class="docutils literal notranslate"><span class="pre">Cauldron.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Cauldron.is_on_top"><code class="docutils literal notranslate"><span class="pre">Cauldron.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Cauldron.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Cauldron.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Enemy"><code class="docutils literal notranslate"><span class="pre">Enemy</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Enemy.closest_object"><code class="docutils literal notranslate"><span class="pre">Enemy.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Enemy.is_on_top"><code class="docutils literal notranslate"><span class="pre">Enemy.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Enemy.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Enemy.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Fish"><code class="docutils literal notranslate"><span class="pre">Fish</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Fish.closest_object"><code class="docutils literal notranslate"><span class="pre">Fish.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Fish.is_on_top"><code class="docutils literal notranslate"><span class="pre">Fish.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Fish.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Fish.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Helmet"><code class="docutils literal notranslate"><span class="pre">Helmet</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Helmet.closest_object"><code class="docutils literal notranslate"><span class="pre">Helmet.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Helmet.is_on_top"><code class="docutils literal notranslate"><span class="pre">Helmet.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Helmet.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Helmet.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Lamp"><code class="docutils literal notranslate"><span class="pre">Lamp</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Lamp.closest_object"><code class="docutils literal notranslate"><span class="pre">Lamp.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Lamp.is_on_top"><code class="docutils literal notranslate"><span class="pre">Lamp.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Lamp.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Lamp.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Lives"><code class="docutils literal notranslate"><span class="pre">Lives</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Lives.closest_object"><code class="docutils literal notranslate"><span class="pre">Lives.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Lives.is_on_top"><code class="docutils literal notranslate"><span class="pre">Lives.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Lives.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Lives.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Meat"><code class="docutils literal notranslate"><span class="pre">Meat</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Meat.closest_object"><code class="docutils literal notranslate"><span class="pre">Meat.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Meat.is_on_top"><code class="docutils literal notranslate"><span class="pre">Meat.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Meat.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Meat.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Mug"><code class="docutils literal notranslate"><span class="pre">Mug</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Mug.closest_object"><code class="docutils literal notranslate"><span class="pre">Mug.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Mug.is_on_top"><code class="docutils literal notranslate"><span class="pre">Mug.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Mug.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Mug.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Player"><code class="docutils literal notranslate"><span class="pre">Player</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Player.closest_object"><code class="docutils literal notranslate"><span class="pre">Player.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Player.is_on_top"><code class="docutils literal notranslate"><span class="pre">Player.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Player.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Player.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Reward100"><code class="docutils literal notranslate"><span class="pre">Reward100</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward100.closest_object"><code class="docutils literal notranslate"><span class="pre">Reward100.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward100.is_on_top"><code class="docutils literal notranslate"><span class="pre">Reward100.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward100.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Reward100.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Reward200"><code class="docutils literal notranslate"><span class="pre">Reward200</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward200.closest_object"><code class="docutils literal notranslate"><span class="pre">Reward200.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward200.is_on_top"><code class="docutils literal notranslate"><span class="pre">Reward200.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward200.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Reward200.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Reward300"><code class="docutils literal notranslate"><span class="pre">Reward300</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward300.closest_object"><code class="docutils literal notranslate"><span class="pre">Reward300.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward300.is_on_top"><code class="docutils literal notranslate"><span class="pre">Reward300.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward300.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Reward300.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Reward400"><code class="docutils literal notranslate"><span class="pre">Reward400</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward400.closest_object"><code class="docutils literal notranslate"><span class="pre">Reward400.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward400.is_on_top"><code class="docutils literal notranslate"><span class="pre">Reward400.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward400.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Reward400.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Reward50"><code class="docutils literal notranslate"><span class="pre">Reward50</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward50.closest_object"><code class="docutils literal notranslate"><span class="pre">Reward50.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward50.is_on_top"><code class="docutils literal notranslate"><span class="pre">Reward50.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward50.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Reward50.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Reward500"><code class="docutils literal notranslate"><span class="pre">Reward500</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward500.closest_object"><code class="docutils literal notranslate"><span class="pre">Reward500.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward500.is_on_top"><code class="docutils literal notranslate"><span class="pre">Reward500.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Reward500.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Reward500.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Score"><code class="docutils literal notranslate"><span class="pre">Score</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Score.closest_object"><code class="docutils literal notranslate"><span class="pre">Score.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Score.is_on_top"><code class="docutils literal notranslate"><span class="pre">Score.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Score.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Score.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.Shield"><code class="docutils literal notranslate"><span class="pre">Shield</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Shield.closest_object"><code class="docutils literal notranslate"><span class="pre">Shield.closest_object()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Shield.is_on_top"><code class="docutils literal notranslate"><span class="pre">Shield.is_on_top()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.asterix.Shield.manathan_distance"><code class="docutils literal notranslate"><span class="pre">Shield.manathan_distance()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ocatari.ram.asterix.rev"><code class="docutils literal notranslate"><span class="pre">rev</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlantis.html"><code class="docutils literal notranslate"><span class="pre">AcropolisCommandPost</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlantis.html#ocatari.ram.atlantis.AquaPlane"><code class="docutils literal notranslate"><span class="pre">AquaPlane</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlantis.html#ocatari.ram.atlantis.BanditBomber"><code class="docutils literal notranslate"><span class="pre">BanditBomber</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlantis.html#ocatari.ram.atlantis.BridgedBazaar"><code class="docutils literal notranslate"><span class="pre">BridgedBazaar</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlantis.html#ocatari.ram.atlantis.Deathray"><code class="docutils literal notranslate"><span class="pre">Deathray</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlantis.html#ocatari.ram.atlantis.DomedPalace"><code class="docutils literal notranslate"><span class="pre">DomedPalace</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlantis.html#ocatari.ram.atlantis.Generator"><code class="docutils literal notranslate"><span class="pre">Generator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlantis.html#ocatari.ram.atlantis.GorgonShip"><code class="docutils literal notranslate"><span class="pre">GorgonShip</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlantis.html#ocatari.ram.atlantis.Projectile"><code class="docutils literal notranslate"><span class="pre">Projectile</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlantis.html#ocatari.ram.atlantis.Score"><code class="docutils literal notranslate"><span class="pre">Score</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="atlantis.html#ocatari.ram.atlantis.Sentry"><code class="docutils literal notranslate"><span class="pre">Sentry</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html"><code class="docutils literal notranslate"><span class="pre">Blocker</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Bouncecraft"><code class="docutils literal notranslate"><span class="pre">Bouncecraft</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Charger"><code class="docutils literal notranslate"><span class="pre">Charger</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Chriper"><code class="docutils literal notranslate"><span class="pre">Chriper</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Enemy_Amount"><code class="docutils literal notranslate"><span class="pre">Enemy_Amount</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Enemy_Projectile"><code class="docutils literal notranslate"><span class="pre">Enemy_Projectile</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.HUD"><code class="docutils literal notranslate"><span class="pre">HUD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Jumper"><code class="docutils literal notranslate"><span class="pre">Jumper</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Life"><code class="docutils literal notranslate"><span class="pre">Life</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Player"><code class="docutils literal notranslate"><span class="pre">Player</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Player_Projectile"><code class="docutils literal notranslate"><span class="pre">Player_Projectile</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Rejuvenator"><code class="docutils literal notranslate"><span class="pre">Rejuvenator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Rock"><code class="docutils literal notranslate"><span class="pre">Rock</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Saucer"><code class="docutils literal notranslate"><span class="pre">Saucer</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Sentinel"><code class="docutils literal notranslate"><span class="pre">Sentinel</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Torpedos"><code class="docutils literal notranslate"><span class="pre">Torpedos</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="beamrider.html#ocatari.ram.beamrider.Torpedos_Available"><code class="docutils literal notranslate"><span class="pre">Torpedos_Available</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ram.html">RAM extraction mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vision.html">Vision processing mode</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Scripts:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/alter_ram_while_playing.html">Alter RAM while playing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/automated_analysis.html">Automated Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/find_causative_ram.html">Causative RAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/rem_gui.html">REM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/reverse_engineering_helper.html">Reverse Engineering Helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/test_scripts.html">The test scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tests:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tests/comparison_test.html">Comparison test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests/detection_metrics.html">Get detection metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests/extraction_test.html">Extraction test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests/test_speed.html">Speed test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tests/tests_utils.html">Tests utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">OCAtari</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../game_objects.html">Game Objects Details</a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/ocatari/games/asterix.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <dl class="py class" id="module-ocatari.ram.asterix">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Apple">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Apple</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Apple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Apple" title="Link to this definition"></a></dt>
+<dd><p>The collectable apples (obelix).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Apple.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Apple.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Apple.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Apple.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Apple.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Apple.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Cauldron">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Cauldron</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Cauldron"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Cauldron" title="Link to this definition"></a></dt>
+<dd><p>The collectable cauldrons of magic potion (asterix).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Cauldron.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Cauldron.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Cauldron.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Cauldron.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Cauldron.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Cauldron.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Enemy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Enemy</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Enemy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Enemy" title="Link to this definition"></a></dt>
+<dd><p>The deadly lyres that are among the other collectables.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Enemy.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Enemy.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Enemy.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Enemy.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Enemy.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Enemy.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Fish">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Fish</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Fish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Fish" title="Link to this definition"></a></dt>
+<dd><p>The collectable apples (obelix).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Fish.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Fish.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Fish.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Fish.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Fish.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Fish.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Helmet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Helmet</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Helmet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Helmet" title="Link to this definition"></a></dt>
+<dd><p>The collectable helmets (asterix).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Helmet.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Helmet.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Helmet.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Helmet.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Helmet.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Helmet.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Lamp">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Lamp</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Lamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Lamp" title="Link to this definition"></a></dt>
+<dd><p>The collectable lamps (asterix).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Lamp.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Lamp.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Lamp.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Lamp.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Lamp.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Lamp.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Lives">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Lives</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Lives"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Lives" title="Link to this definition"></a></dt>
+<dd><p>The indicator for remaining lives of the player (HUD).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Lives.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Lives.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Lives.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Lives.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Lives.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Lives.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Meat">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Meat</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Meat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Meat" title="Link to this definition"></a></dt>
+<dd><p>The collectable wild boar legs (obelix).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Meat.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Meat.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Meat.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Meat.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Meat.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Meat.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Mug">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Mug</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Mug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Mug" title="Link to this definition"></a></dt>
+<dd><p>The collectable mugs of obelix' favourite drink (obelix).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Mug.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Mug.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Mug.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Mug.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Mug.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Mug.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Player">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Player</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Player" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Player.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Player.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Player.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Player.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Player.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Player.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward100">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Reward100</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Reward100"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Reward100" title="Link to this definition"></a></dt>
+<dd><p>The 100 point reward-icon for collecting a helmet (asterix).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward100.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward100.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward100.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward100.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward100.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward100.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward200">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Reward200</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Reward200"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Reward200" title="Link to this definition"></a></dt>
+<dd><p>The 200 point reward-icon for collecting a shield (asterix).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward200.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward200.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward200.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward200.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward200.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward200.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward300">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Reward300</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Reward300"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Reward300" title="Link to this definition"></a></dt>
+<dd><p>The 300 point reward-icon for collecting a lamp (asterix).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward300.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward300.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward300.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward300.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward300.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward300.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward400">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Reward400</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Reward400"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Reward400" title="Link to this definition"></a></dt>
+<dd><p>The 400 point reward-icon for collecting an apple (obelix).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward400.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward400.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward400.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward400.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward400.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward400.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward50">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Reward50</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Reward50"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Reward50" title="Link to this definition"></a></dt>
+<dd><p>The 50 point reward-icon for collecting a cauldron (asterix).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward50.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward50.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward50.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward50.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward50.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward50.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward500">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Reward500</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Reward500"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Reward500" title="Link to this definition"></a></dt>
+<dd><p>The 500 point reward-icon for collecting a fish, wild boar leg, mug, or surprise object (obelix).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward500.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward500.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward500.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward500.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Reward500.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Reward500.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Score">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Score</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Score" title="Link to this definition"></a></dt>
+<dd><p>The player's score display (HUD).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Score.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Score.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Score.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Score.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Score.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Score.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Shield">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">Shield</span></span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#Shield"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.Shield" title="Link to this definition"></a></dt>
+<dd><p>The collectable shields (asterix).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Shield.closest_object">
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Shield.closest_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Index, Object) from others</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Shield.is_on_top">
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Shield.is_on_top" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.Shield.manathan_distance">
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.asterix.Shield.manathan_distance" title="Link to this definition"></a></dt>
+<dd><p>Returns the manathan distance between the center of both objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if objects overlap</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ocatari.ram.asterix.rev">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.asterix.</span></span><span class="sig-name descname"><span class="pre">rev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prevRam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lanes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ocatari/ram/asterix.html#rev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.asterix.rev" title="Link to this definition"></a></dt>
+<dd><p>to save values temporarily</p>
+</dd></dl>
+
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="assault.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="atlantis.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Kévin-Lâm Quesnel and Anurag Maurya.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

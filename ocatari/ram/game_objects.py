@@ -89,7 +89,7 @@ class GameObject:
 
     @property
     def prev_xy(self):
-        if self._prev_xy:
+        if self._prev_xy is not None:
             return self._prev_xy
         else:
             return self._xy
@@ -179,9 +179,13 @@ class GameObject:
         return min(enumerate(others), key=lambda item: self.manathan_distance(item[1]))
 
 
-class ScoreObject(GameObject):
+class ValueObject(GameObject):
     """
-    This class represents the score of the player (or sometimes Enemy).
+    This class represents a game object that incorporates any notion of a value.
+    For example:
+    * the score of the player (or sometimes Enemy).
+    * the level of useable/deployable resources (oxygen bars, ammunition bars, power gauges, etc.)
+    * the clock/timer
 
     :ivar value: The value of the score.
     :vartype value: int
@@ -189,29 +193,28 @@ class ScoreObject(GameObject):
 
     def __init__(self):
         super().__init__()
-        self.value = 0
+        self._value = 0
+        self._prev_value = None
 
+    @property
+    def value(self):
+        return self._value
 
-class ResourceMeter(GameObject):
-    """
-    This class can be used to represent indicators that display the level of useable/deployable resources. For example: oxygen bars,
-    ammunition bars, power gauges, etc.
+    @value.setter
+    def value(self, value):
+        self._value = int(value)
 
-    :ivar value: The value of the resource meter.
-    :vartype value: int
-    """
-    def __init__(self):
-        super().__init__()
-        self.value = 0
+    @property
+    def prev_value(self):
+        if self._prev_value is not None:
+            return self._prev_value
+        else:
+            return self._value
 
+    def _save_prev(self):
+        super()._save_prev()
+        self._prev_value = self._value
 
-class ClockObject(GameObject):
-    """
-    This class represents a Clock/Timer in game.
-
-    :ivar value: The value of the Timer:
-    :vartype value: int
-    """
-    def __init__(self):
-        super().__init__()
-        self.value = 0
+    @property
+    def value_diff(self):
+        return self.value - self.prev_value

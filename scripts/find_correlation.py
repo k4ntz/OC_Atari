@@ -15,6 +15,7 @@ import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
 from os import path
+import pathlib
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
 from ocatari.core import OCAtari
 from ocatari.utils import parser, load_agent, make_deterministic
@@ -77,7 +78,12 @@ subset = list(tracked_objects_infos.keys())
 if opts.dqn:
     opts.game = opts.game
     opts.path = f"models/{opts.game}/dqn.gz"
-    dqn_agent = load_agent(opts, env.action_space.n)
+    try:
+        dqn_agent = load_agent(opts, env.action_space.n)
+    except FileNotFoundError:
+        oc_atari_dir = pathlib.Path(__file__).parents[1].resolve()
+        opts.path = str(oc_atari_dir / 'models' / f"{opts.game}" / 'dqn.gz')
+        dqn_agent = load_agent(opts, env.action_space.n)
 
 
 
@@ -140,7 +146,7 @@ if opts.top_n:
     for index, row in corr.iterrows():
         au_corr = row.to_frame().abs().unstack().sort_values(ascending=False)
         au_corr = au_corr[0:opts.top_n].dropna()
-        to_keep.extend([key[1] for key in au_corr.keys()])
+        to_keep.extend([key[1] for key in au_corr.keys() if key[1] not in to_keep])
     corr = corr[to_keep]
 
 
@@ -167,7 +173,6 @@ for el in corrT:
     keys = corrT[el].keys()
     for idx in range(len(keys)):
         maxval = corrT[el].abs()[keys[idx]]
-        # maxval = 1
         #idx = corrT[el].abs()
         if maxval >= 0.6:
             x, y = df[keys[idx]], df[el]
