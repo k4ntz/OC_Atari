@@ -11,6 +11,8 @@ from ocatari.vision.spaceinvaders import objects_colors
 from ocatari.vision.pong import objects_colors
 from ocatari.utils import load_agent, parser, make_deterministic
 import time
+import numpy as np
+from tqdm import tqdm
 
 parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
@@ -35,30 +37,42 @@ if opts.path:
 env.step(2)
 make_deterministic(0, env)
 ax = plt.gca()
-for i in range(100000):
+bally = []
+enemyy = []
+for i in tqdm(range(10000)):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
         action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
     if i % opts.interval == 0:
-        print(sorted(env.objects, key=lambda o:str(o)))
-        for obs, objects_list, title in zip([obs], [env.objects],
-                                            ["ram"] if opts.mode == "revised" else ["vision"]):
-            for obj in objects_list:
-                opos = obj.xywh
-                ocol = obj.rgb
-                sur_col = make_darker(ocol)
-                mark_bb(obs, opos, color=sur_col)
+        # print(sorted(env.objects, key=lambda o:str(o)))
+        for obj in env.objects:
+            if len(env.objects) == 3:
+                if "Ene" in str(obj):
+                    # print("Done")
+                    enemyy.append(obj.y)
+                elif "Ball" in str(obj):
+                    bally.append(obj.y)
+        # for obs, objects_list, title in zip([obs], [env.objects],
+        #                                     ["ram"] if opts.mode == "revised" else ["vision"]):
+        #     for obj in objects_list:
+        #         opos = obj.xywh
+        #         ocol = obj.rgb
+        #         sur_col = make_darker(ocol)
+        #         mark_bb(obs, opos, color=sur_col)
                 # mark_point(obs, *opos[:2], color=(255, 255, 0))
-        ax.set_xticks([])
-        ax.set_yticks([])
-        plt.title(f"{opts.mode}: {opts.mode} mode (frame {i})", fontsize=20)
-        plt.imshow(obs)
-        plt.show()
-
+        # ax.set_xticks([])
+        # ax.set_yticks([])
+        # plt.title(f"{opts.mode}: {opts.mode} mode (frame {i})", fontsize=20)
+        # plt.imshow(obs)
+        # plt.show()
+            
 
     if terminated or truncated:
         observation, info = env.reset()
     # modify and display render
 env.close()
+
+print(np.corrcoef(enemyy, bally))
+import ipdb; ipdb.set_trace()
