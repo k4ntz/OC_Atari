@@ -65,7 +65,7 @@ def _detect_objects_asteroids(objects, obs, hud=False):
                 objects.append(missile_inst)
 
     if hud:
-        score = find_objects(obs, objects_colors["score"], min_distance=1)
+        score = find_objects(obs, objects_colors["score"], closing_dist=6)
         for s in score:
             if s[0] < 132 and s[1] <= 5:
                 objects.append(PlayerScore(*s))
