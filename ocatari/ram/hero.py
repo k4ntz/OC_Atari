@@ -1,5 +1,7 @@
 from enum import Enum
 
+import numpy as np
+
 from .game_objects import GameObject
 
 """
@@ -12,6 +14,7 @@ MAX_NB_OBJECTS_HUD = {"Wall": 15, "LavaWall": 15, "Enemy": 10, "Player": 1, "Las
                       "Lamp": 1, "Snake": 5, "PowerBar": 1, "BombStock": 1, "Life": 1, "Score": 1}
 
 
+# changing ram 54 activate some kind of bot that plays alone
 class Wall(GameObject):
     """
     The walls in the mineshafts.
@@ -58,19 +61,8 @@ class Enemy(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
-        self.wh = 6, 10
+        self.wh = 7, 10
         self.type: EnemyType
-
-
-class Snake(GameObject):
-    """
-    The snakes.
-    """
-
-    def __init__(self, *args, **kwargs):
-        self.xy = 0, 0
-        self.wh = 8, 10
-        super().__init__(*args, **kwargs)
 
 
 class Player(GameObject):
@@ -81,7 +73,8 @@ class Player(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
-        self.wh = 5, 25
+        self.wh = 6, 25
+        self.rgb = [84, 138, 210]
 
 
 class LaserBeam(GameObject):
@@ -93,6 +86,7 @@ class LaserBeam(GameObject):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
         self.wh = 7, 2
+        self.rgb = [200, 72, 72]
 
 
 class Bomb(GameObject):
@@ -103,7 +97,8 @@ class Bomb(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 0
-        self.wh = 8, 10
+        self.wh = 3, 11
+        self.rgb = [184, 50, 50]
 
 
 class EndNPC(GameObject):
@@ -125,7 +120,7 @@ class Lamp(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 0, 35
-        self.wh = 6, 7
+        self.wh = 7, 8
 
 
 class PowerBar(GameObject):
@@ -135,8 +130,8 @@ class PowerBar(GameObject):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.xy = 48, 144
-        self.wh = 78, 5
+        self.xy = 49, 145
+        self.wh = 79, 5
         self.value = 1
 
 
@@ -148,7 +143,7 @@ class BombStock(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 58, 165
-        self.wh = 43, 11
+        self.wh = 43, 12
         self.value = 5
 
 
@@ -160,7 +155,7 @@ class Life(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.xy = 58, 152
-        self.wh = 43, 11
+        self.wh = 43, 13
         self.value = 4
 
 
@@ -171,8 +166,8 @@ class Score(GameObject):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.xy = 58, 177
-        self.wh = 43, 11
+        self.xy = 58, 178
+        self.wh = 43, 8
         self.value = 0
 
 
@@ -203,67 +198,117 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
         # type =
         # subtype = ram_state[78 + i]
         x, y = ram_state[37 + i], 115 - i * 42 - ram_state[33 + i]
+
         currobj = objects_map.get(f"Instance {i}")
         if ram_state[33 + i] == 50 or x == 147:
             if currobj is not None:
                 objects_map.pop(f"Instance {i}")
         else:
-            if currobj is not None:
-                if i == 2 and (ram_state[117], ram_state[28]) in [(2, 1), (2, 3), (3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6),
-                                                        (4, 1), (4, 3), (4, 4), (4, 5), (4, 6), (5, 1), (5, 2), (5, 3),
-                                                        (5, 4), (5, 5), (5, 6), (5, 7), (5, 8), (6, 1), (6, 2), (6, 3),
-                                                        (6, 4), (6, 5), (6, 6), (6, 7), (6, 8), (6, 9), (6, 10), (7, 1),
-                                                        (7, 2), (7, 3), (7, 4), (7, 5), (7, 6), (7, 7), (7, 8), (7, 9),
-                                                        (7, 10), (8, 1), (8, 2), (8, 3), (8, 4), (8, 5), (8, 6), (8, 7),
-                                                        (8, 8), (8, 9), (8, 10), (9, 1), (9, 2), (9, 3), (9, 4), (9, 5),
-                                                        (9, 6), (9, 7), (9, 8), (9, 9), (9, 10), (10, 1), (10, 2),
-                                                        (10, 3), (10, 4), (10, 5), (10, 6), (10, 7), (10, 8), (10, 9),
-                                                        (10, 10), (11, 1), (11, 2), (11, 4), (11, 5), (11, 6), (11, 7),
-                                                        (11, 9), (11, 10), (12, 1), (12, 2), (12, 3), (12, 4), (12, 5),
-                                                        (12, 6), (12, 8), (12, 9), (13, 1), (13, 3), (13, 5), (13, 6),
-                                                        (13, 7), (13, 10), (14, 1), (14, 2), (14, 3), (14, 4), (14, 5),
-                                                        (14, 6), (14, 7), (14, 8), (14, 9), (14, 10), (15, 1), (15, 3),
-                                                        (15, 4), (15, 5), (15, 6), (15, 7), (15, 8), (15, 9), (15, 10),
-                                                        (16, 1), (16, 2), (16, 3), (16, 4), (16, 5), (16, 6), (16, 7),
-                                                        (16, 9), (16, 10), (17, 1), (17, 2), (17, 3), (17, 4), (17, 5),
-                                                        (17, 7), (17, 8), (17, 9), (17, 10), (18, 1), (18, 2), (18, 3),
-                                                        (18, 4), (18, 5), (18, 6), (18, 7), (18, 8), (18, 9), (18, 10),
-                                                        (19, 1), (19, 2), (19, 3), (19, 4), (19, 5), (19, 6), (19, 7),
-                                                        (19, 8), (19, 10)]:
-                    enemy_instance = Lamp()
-                    enemy_instance.xy = x, enemy_instance.y
+            if i != 0 or ((x < 146) and not ((
+                    x in [64, 68, 75, 76, 77] and (ram_state[117], ram_state[28]) not in [(1, 2), (2, 1), (3, 6),
+                                                                                          (5, 2),
+                                                                                          (6, 7), (6, 10), (7, 1),
+                                                                                          (7, 2),
+                                                                                          (7, 13), (8, 10), (8, 11),
+                                                                                          (8, 13),
+                                                                                          (9, 7), (9, 8), (9, 9),
+                                                                                          (9, 11),
+                                                                                          (9, 12), ]))):
+                if currobj is not None:
+                    if i == 2 and (ram_state[117], ram_state[28]) in [(2, 1), (2, 3), (3, 1), (3, 2), (3, 3), (3, 4),
+                                                                      (3, 5), (3, 6),
+                                                                      (4, 1), (4, 3), (4, 4), (4, 5), (4, 6), (5, 1),
+                                                                      (5, 2), (5, 3),
+                                                                      (5, 4), (5, 5), (5, 6), (5, 7), (5, 8), (6, 1),
+                                                                      (6, 2), (6, 3),
+                                                                      (6, 4), (6, 5), (6, 6), (6, 7), (6, 8), (6, 9),
+                                                                      (6, 10), (7, 1),
+                                                                      (7, 2), (7, 3), (7, 4), (7, 5), (7, 6), (7, 7),
+                                                                      (7, 8), (7, 9),
+                                                                      (7, 10), (8, 1), (8, 2), (8, 3), (8, 4), (8, 5),
+                                                                      (8, 6), (8, 7),
+                                                                      (8, 8), (8, 9), (8, 10), (9, 1), (9, 2), (9, 3),
+                                                                      (9, 4), (9, 5),
+                                                                      (9, 6), (9, 7), (9, 8), (9, 9), (9, 10), (10, 1),
+                                                                      (10, 2),
+                                                                      (10, 3), (10, 4), (10, 5), (10, 6), (10, 7),
+                                                                      (10, 8), (10, 9),
+                                                                      (10, 10), (11, 1), (11, 2), (11, 4), (11, 5),
+                                                                      (11, 6), (11, 7),
+                                                                      (11, 9), (11, 10), (12, 1), (12, 2), (12, 3),
+                                                                      (12, 4), (12, 5),
+                                                                      (12, 6), (12, 8), (12, 9), (13, 1), (13, 3),
+                                                                      (13, 5), (13, 6),
+                                                                      (13, 7), (13, 10), (14, 1), (14, 2), (14, 3),
+                                                                      (14, 4), (14, 5),
+                                                                      (14, 6), (14, 7), (14, 8), (14, 9), (14, 10),
+                                                                      (15, 1), (15, 3),
+                                                                      (15, 4), (15, 5), (15, 6), (15, 7), (15, 8),
+                                                                      (15, 9), (15, 10),
+                                                                      (16, 1), (16, 2), (16, 3), (16, 4), (16, 5),
+                                                                      (16, 6), (16, 7),
+                                                                      (16, 9), (16, 10), (17, 1), (17, 2), (17, 3),
+                                                                      (17, 4), (17, 5),
+                                                                      (17, 7), (17, 8), (17, 9), (17, 10), (18, 1),
+                                                                      (18, 2), (18, 3),
+                                                                      (18, 4), (18, 5), (18, 6), (18, 7), (18, 8),
+                                                                      (18, 9), (18, 10),
+                                                                      (19, 1), (19, 2), (19, 3), (19, 4), (19, 5),
+                                                                      (19, 6), (19, 7),
+                                                                      (19, 8), (19, 10)]:
+                        enemy_instance = Lamp()
+                        enemy_instance.xy = x, enemy_instance.y
+                        objects_map[f"Instance {i}"] = enemy_instance
+                    else:
+                        currobj.xy = x, y
+                else:
+                    if i == 2 and (ram_state[117], ram_state[28]) in [(2, 1), (2, 3), (3, 1), (3, 2), (3, 3), (3, 4),
+                                                                      (3, 5), (3, 6),
+                                                                      (4, 1), (4, 3), (4, 4), (4, 5), (4, 6), (5, 1),
+                                                                      (5, 2), (5, 3),
+                                                                      (5, 4), (5, 5), (5, 6), (5, 7), (5, 8), (6, 1),
+                                                                      (6, 2), (6, 3),
+                                                                      (6, 4), (6, 5), (6, 6), (6, 7), (6, 8), (6, 9),
+                                                                      (6, 10), (7, 1),
+                                                                      (7, 2), (7, 3), (7, 4), (7, 5), (7, 6), (7, 7),
+                                                                      (7, 8), (7, 9),
+                                                                      (7, 10), (8, 1), (8, 2), (8, 3), (8, 4), (8, 5),
+                                                                      (8, 6), (8, 7),
+                                                                      (8, 8), (8, 9), (8, 10), (9, 1), (9, 2), (9, 3),
+                                                                      (9, 4), (9, 5),
+                                                                      (9, 6), (9, 7), (9, 8), (9, 9), (9, 10), (10, 1),
+                                                                      (10, 2),
+                                                                      (10, 3), (10, 4), (10, 5), (10, 6), (10, 7),
+                                                                      (10, 8), (10, 9),
+                                                                      (10, 10), (11, 1), (11, 2), (11, 4), (11, 5),
+                                                                      (11, 6), (11, 7),
+                                                                      (11, 9), (11, 10), (12, 1), (12, 2), (12, 3),
+                                                                      (12, 4), (12, 5),
+                                                                      (12, 6), (12, 8), (12, 9), (13, 1), (13, 3),
+                                                                      (13, 5), (13, 6),
+                                                                      (13, 7), (13, 10), (14, 1), (14, 2), (14, 3),
+                                                                      (14, 4), (14, 5),
+                                                                      (14, 6), (14, 7), (14, 8), (14, 9), (14, 10),
+                                                                      (15, 1), (15, 3),
+                                                                      (15, 4), (15, 5), (15, 6), (15, 7), (15, 8),
+                                                                      (15, 9), (15, 10),
+                                                                      (16, 1), (16, 2), (16, 3), (16, 4), (16, 5),
+                                                                      (16, 6), (16, 7),
+                                                                      (16, 9), (16, 10), (17, 1), (17, 2), (17, 3),
+                                                                      (17, 4), (17, 5),
+                                                                      (17, 7), (17, 8), (17, 9), (17, 10), (18, 1),
+                                                                      (18, 2), (18, 3),
+                                                                      (18, 4), (18, 5), (18, 6), (18, 7), (18, 8),
+                                                                      (18, 9), (18, 10),
+                                                                      (19, 1), (19, 2), (19, 3), (19, 4), (19, 5),
+                                                                      (19, 6), (19, 7),
+                                                                      (19, 8), (19, 10)]:
+                        enemy_instance = Lamp()
+                        enemy_instance.xy = x, enemy_instance.y
+                    else:
+                        enemy_instance = Enemy()
+                        enemy_instance.xy = x, y
                     objects_map[f"Instance {i}"] = enemy_instance
-                else:
-                    currobj.xy = x, y
-            else:
-                if i==2 and (ram_state[117], ram_state[28]) in [(2, 1), (2, 3), (3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6),
-                                                        (4, 1), (4, 3), (4, 4), (4, 5), (4, 6), (5, 1), (5, 2), (5, 3),
-                                                        (5, 4), (5, 5), (5, 6), (5, 7), (5, 8), (6, 1), (6, 2), (6, 3),
-                                                        (6, 4), (6, 5), (6, 6), (6, 7), (6, 8), (6, 9), (6, 10), (7, 1),
-                                                        (7, 2), (7, 3), (7, 4), (7, 5), (7, 6), (7, 7), (7, 8), (7, 9),
-                                                        (7, 10), (8, 1), (8, 2), (8, 3), (8, 4), (8, 5), (8, 6), (8, 7),
-                                                        (8, 8), (8, 9), (8, 10), (9, 1), (9, 2), (9, 3), (9, 4), (9, 5),
-                                                        (9, 6), (9, 7), (9, 8), (9, 9), (9, 10), (10, 1), (10, 2),
-                                                        (10, 3), (10, 4), (10, 5), (10, 6), (10, 7), (10, 8), (10, 9),
-                                                        (10, 10), (11, 1), (11, 2), (11, 4), (11, 5), (11, 6), (11, 7),
-                                                        (11, 9), (11, 10), (12, 1), (12, 2), (12, 3), (12, 4), (12, 5),
-                                                        (12, 6), (12, 8), (12, 9), (13, 1), (13, 3), (13, 5), (13, 6),
-                                                        (13, 7), (13, 10), (14, 1), (14, 2), (14, 3), (14, 4), (14, 5),
-                                                        (14, 6), (14, 7), (14, 8), (14, 9), (14, 10), (15, 1), (15, 3),
-                                                        (15, 4), (15, 5), (15, 6), (15, 7), (15, 8), (15, 9), (15, 10),
-                                                        (16, 1), (16, 2), (16, 3), (16, 4), (16, 5), (16, 6), (16, 7),
-                                                        (16, 9), (16, 10), (17, 1), (17, 2), (17, 3), (17, 4), (17, 5),
-                                                        (17, 7), (17, 8), (17, 9), (17, 10), (18, 1), (18, 2), (18, 3),
-                                                        (18, 4), (18, 5), (18, 6), (18, 7), (18, 8), (18, 9), (18, 10),
-                                                        (19, 1), (19, 2), (19, 3), (19, 4), (19, 5), (19, 6), (19, 7),
-                                                        (19, 8), (19, 10)]:
-                    enemy_instance = Lamp()
-                    enemy_instance.xy = x, enemy_instance.y
-                    print(enemy_instance.y)
-                else:
-                    enemy_instance = Enemy()
-                    enemy_instance.xy = x, y
-                objects_map[f"Instance {i}"] = enemy_instance
 
     # updating Laser Beam position
     player_xy = objects[0].xy
@@ -300,7 +345,7 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
         else:
             destructible_wall_instance = Wall()
             destructible_wall_instance.xy = ram_state[32], 19
-            destructible_wall_instance.wh = 7, 79
+            destructible_wall_instance.wh = 8, 79
             destructible_wall_instance.destructible = True
             objects_map[f"destructible wall"] = destructible_wall_instance
 
@@ -318,7 +363,7 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
         else:
             if objects_map.get("bomb") == None:
                 objects_map["bomb"] = Bomb()
-                objects_map["bomb"].xy = ram_state[41], objects[0].y + 13
+                objects_map["bomb"].xy = ram_state[41] + 3, objects[0].y + 13
                 if objects_map.get("EndNPC") != None:
                     objects_map.pop("EndNPC")
     else:
@@ -357,9 +402,16 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
     if hud:
         objects[1].value = ram_state[43] / 81
         objects[2].value = ram_state[50]
+        objects[2].xy = 102 - (objects[2].value) * 7, objects[2].y
+        objects[2].wh = (objects[2].value) * 7, objects[2].h
         objects[3].value = ram_state[51]
+        objects[3].xy = 102 - (objects[3].value - 1) * 7, objects[3].y
+        objects[3].wh = (objects[3].value - 1) * 7, objects[3].h
+        #score value is related to ram_state[56], ram_state[55] and ram_state[57] --> TODO: Get relation
         objects[4].value = ram_state[56]
-    print(ram_state)
+        objects[4].xy = 103 - (int(np.log(max(objects[4].value, 1))) + 1) * 6, objects[4].y
+        objects[4].wh = (int(np.log(max(objects[4].value, 1))) + 1) * 6, objects[4].h
+
     # if we want to not use lava wall detection, because it has some bugs
     # objects[:] = objects[0:base_length]
     # for key in objects_map.keys():
@@ -372,12 +424,13 @@ def _detect_objects_hero_revised(objects, ram_state, hud=False):
 def _detect_objects_hero_raw(info, ram_state):
     return
 
+
 def add_walls_to_object_list(ram_state, objects_map):
     if ram_state[117] == 0:
         if ram_state[28] == 0:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -406,13 +459,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -437,7 +490,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -445,7 +498,7 @@ def add_walls_to_object_list(ram_state, objects_map):
         if ram_state[28] == 0:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -474,13 +527,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -513,13 +566,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -556,13 +609,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 7'] = wall_instance7
             number_of_walls = 8
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -587,7 +640,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -595,7 +648,7 @@ def add_walls_to_object_list(ram_state, objects_map):
         if ram_state[28] == 0:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -624,13 +677,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -659,13 +712,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -698,13 +751,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -741,13 +794,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 7'] = wall_instance7
             number_of_walls = 8
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -780,13 +833,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -811,7 +864,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -819,7 +872,7 @@ def add_walls_to_object_list(ram_state, objects_map):
         if ram_state[28] == 0:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -848,13 +901,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -887,13 +940,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -934,13 +987,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 8'] = wall_instance8
             number_of_walls = 9
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -981,13 +1034,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 8'] = wall_instance8
             number_of_walls = 9
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1020,13 +1073,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1059,13 +1112,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1098,13 +1151,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1133,7 +1186,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -1141,7 +1194,7 @@ def add_walls_to_object_list(ram_state, objects_map):
         if ram_state[28] == 0:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1170,7 +1223,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
@@ -1184,7 +1237,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1201,13 +1254,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1232,7 +1285,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
@@ -1246,7 +1299,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1267,13 +1320,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1306,7 +1359,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
@@ -1320,7 +1373,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1345,7 +1398,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -1359,7 +1412,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1384,13 +1437,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1419,7 +1472,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -1435,7 +1488,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1456,13 +1509,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1495,7 +1548,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
@@ -1509,7 +1562,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1534,13 +1587,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1581,7 +1634,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 8'] = wall_instance8
             number_of_walls = 9
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -1595,7 +1648,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1632,13 +1685,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 7'] = wall_instance7
             number_of_walls = 8
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1675,7 +1728,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 7'] = wall_instance7
             number_of_walls = 8
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -1689,7 +1742,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1714,13 +1767,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1757,7 +1810,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 7'] = wall_instance7
             number_of_walls = 8
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
@@ -1771,7 +1824,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1796,13 +1849,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1827,7 +1880,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -1843,7 +1896,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1864,13 +1917,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1903,7 +1956,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
@@ -1917,7 +1970,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1942,13 +1995,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -1981,7 +2034,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -1999,7 +2052,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2028,13 +2081,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2071,7 +2124,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 7'] = wall_instance7
             number_of_walls = 8
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -2089,7 +2142,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2118,13 +2171,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2157,7 +2210,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
@@ -2171,7 +2224,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2196,13 +2249,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2239,13 +2292,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 7'] = wall_instance7
             number_of_walls = 8
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 10:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2270,13 +2323,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 11:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2289,7 +2342,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 1'] = wall_instance1
             number_of_walls = 2
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -2305,7 +2358,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2326,7 +2379,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
@@ -2340,7 +2393,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2361,7 +2414,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
@@ -2375,7 +2428,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2396,7 +2449,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
@@ -2410,7 +2463,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2435,7 +2488,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -2453,7 +2506,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2482,7 +2535,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
@@ -2496,7 +2549,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2521,7 +2574,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -2535,7 +2588,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2560,7 +2613,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
@@ -2578,7 +2631,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2607,7 +2660,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
@@ -2625,7 +2678,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2654,7 +2707,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
@@ -2672,7 +2725,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2701,13 +2754,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 10:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2732,13 +2785,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 11:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2759,13 +2812,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 12:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2786,13 +2839,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 13:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2805,7 +2858,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 1'] = wall_instance1
             number_of_walls = 2
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -2821,7 +2874,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2842,7 +2895,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
@@ -2856,7 +2909,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2881,7 +2934,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
@@ -2899,7 +2952,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2924,7 +2977,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
@@ -2942,7 +2995,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -2963,7 +3016,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -2981,7 +3034,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3002,7 +3055,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
@@ -3020,7 +3073,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3041,7 +3094,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -3055,7 +3108,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3080,7 +3133,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
@@ -3094,7 +3147,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3123,7 +3176,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
@@ -3137,7 +3190,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3162,7 +3215,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
@@ -3176,7 +3229,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3197,13 +3250,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 10:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3224,13 +3277,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 11:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3247,13 +3300,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 12:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3274,13 +3327,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 13:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3301,13 +3354,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 14:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3328,13 +3381,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 15:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3347,7 +3400,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 1'] = wall_instance1
             number_of_walls = 2
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -3363,7 +3416,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3384,7 +3437,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
@@ -3398,7 +3451,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3423,7 +3476,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
@@ -3437,7 +3490,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3462,7 +3515,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
@@ -3476,7 +3529,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3505,7 +3558,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -3523,7 +3576,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3556,7 +3609,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
@@ -3574,7 +3627,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3603,7 +3656,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -3617,7 +3670,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3650,7 +3703,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
@@ -3672,7 +3725,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 3'] = wall_instance3
             number_of_lava_walls = 4
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3701,7 +3754,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
@@ -3715,7 +3768,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3736,7 +3789,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
@@ -3750,7 +3803,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3771,7 +3824,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 10:
@@ -3781,7 +3834,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3802,13 +3855,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 11:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3825,13 +3878,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 12:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3852,7 +3905,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 13:
@@ -3862,7 +3915,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3879,13 +3932,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 14:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3906,13 +3959,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 15:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3925,7 +3978,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 1'] = wall_instance1
             number_of_walls = 2
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -3941,7 +3994,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3962,7 +4015,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
@@ -3976,7 +4029,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -3997,7 +4050,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
@@ -4015,7 +4068,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4040,7 +4093,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
@@ -4054,7 +4107,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4079,7 +4132,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -4101,7 +4154,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 3'] = wall_instance3
             number_of_lava_walls = 4
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4138,7 +4191,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 7'] = wall_instance7
             number_of_walls = 8
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
@@ -4160,7 +4213,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 3'] = wall_instance3
             number_of_lava_walls = 4
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4201,7 +4254,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 8'] = wall_instance8
             number_of_walls = 9
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -4215,7 +4268,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4240,7 +4293,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
@@ -4254,7 +4307,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4275,7 +4328,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
@@ -4293,7 +4346,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4314,7 +4367,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
@@ -4328,7 +4381,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4349,13 +4402,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 10:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4392,13 +4445,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 7'] = wall_instance7
             number_of_walls = 8
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 11:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4419,7 +4472,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 12:
@@ -4429,7 +4482,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4446,13 +4499,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 13:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4473,13 +4526,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 14:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4500,13 +4553,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 15:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4519,7 +4572,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 1'] = wall_instance1
             number_of_walls = 2
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -4535,7 +4588,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4556,7 +4609,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
@@ -4570,7 +4623,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4595,7 +4648,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
@@ -4609,7 +4662,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4630,7 +4683,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
@@ -4644,7 +4697,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4665,7 +4718,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -4679,7 +4732,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4704,7 +4757,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
@@ -4718,7 +4771,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4743,7 +4796,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -4761,7 +4814,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4786,7 +4839,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
@@ -4800,7 +4853,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4817,7 +4870,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
@@ -4835,7 +4888,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4852,7 +4905,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
@@ -4870,7 +4923,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4891,7 +4944,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 10:
@@ -4901,7 +4954,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4926,13 +4979,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 11:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4953,13 +5006,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 12:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -4980,13 +5033,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 13:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5007,7 +5060,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 14:
@@ -5017,7 +5070,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5034,13 +5087,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 15:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5057,7 +5110,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -5073,7 +5126,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5094,7 +5147,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
@@ -5116,7 +5169,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 3'] = wall_instance3
             number_of_lava_walls = 4
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5153,7 +5206,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 7'] = wall_instance7
             number_of_walls = 8
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
@@ -5175,7 +5228,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 3'] = wall_instance3
             number_of_lava_walls = 4
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5216,7 +5269,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 8'] = wall_instance8
             number_of_walls = 9
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
@@ -5230,7 +5283,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5259,7 +5312,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -5273,7 +5326,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5302,7 +5355,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
@@ -5320,7 +5373,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5349,7 +5402,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -5367,7 +5420,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5388,7 +5441,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
@@ -5402,7 +5455,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5419,13 +5472,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5458,7 +5511,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
@@ -5472,7 +5525,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5493,13 +5546,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 10:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5512,13 +5565,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 1'] = wall_instance1
             number_of_walls = 2
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 11:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5539,7 +5592,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 12:
@@ -5549,7 +5602,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5566,13 +5619,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 13:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5593,13 +5646,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 14:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5620,13 +5673,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 15:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5643,7 +5696,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -5659,7 +5712,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5680,7 +5733,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
@@ -5694,7 +5747,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5711,7 +5764,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
@@ -5725,7 +5778,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5742,7 +5795,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
@@ -5756,7 +5809,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5773,7 +5826,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -5787,7 +5840,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5812,7 +5865,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
@@ -5826,7 +5879,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5855,7 +5908,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -5873,7 +5926,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5898,7 +5951,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
@@ -5912,7 +5965,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5933,7 +5986,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
@@ -5947,7 +6000,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -5968,7 +6021,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
@@ -5982,7 +6035,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6007,13 +6060,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 10:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6042,13 +6095,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 11:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6069,7 +6122,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 12:
@@ -6079,7 +6132,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6096,13 +6149,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 13:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6123,13 +6176,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 14:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6154,13 +6207,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 15:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6181,7 +6234,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -6197,7 +6250,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6218,7 +6271,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
@@ -6232,7 +6285,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6257,7 +6310,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
@@ -6275,7 +6328,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6300,7 +6353,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
@@ -6314,7 +6367,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6339,7 +6392,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -6353,7 +6406,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6378,7 +6431,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
@@ -6392,7 +6445,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6421,7 +6474,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -6439,7 +6492,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6472,7 +6525,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
@@ -6486,7 +6539,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6515,7 +6568,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
@@ -6529,7 +6582,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6562,7 +6615,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
@@ -6576,7 +6629,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6605,13 +6658,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 10:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6640,13 +6693,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 11:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6667,13 +6720,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 12:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6702,7 +6755,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 13:
@@ -6712,7 +6765,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6729,13 +6782,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 14:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6748,13 +6801,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 1'] = wall_instance1
             number_of_walls = 2
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 15:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6775,7 +6828,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -6791,7 +6844,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6820,7 +6873,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
@@ -6838,7 +6891,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6863,7 +6916,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
@@ -6881,7 +6934,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6898,7 +6951,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
@@ -6912,7 +6965,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6933,7 +6986,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -6951,7 +7004,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -6976,7 +7029,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
@@ -6994,7 +7047,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7019,7 +7072,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -7037,7 +7090,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7058,7 +7111,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
@@ -7072,7 +7125,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7093,7 +7146,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
@@ -7115,7 +7168,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 3'] = wall_instance3
             number_of_lava_walls = 4
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7136,7 +7189,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
@@ -7150,7 +7203,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7171,7 +7224,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 10:
@@ -7181,7 +7234,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7202,7 +7255,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 11:
@@ -7212,7 +7265,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7229,13 +7282,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 12:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7256,7 +7309,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 13:
@@ -7266,7 +7319,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7283,13 +7336,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 14:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7310,7 +7363,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 15:
@@ -7320,7 +7373,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7337,7 +7390,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -7353,7 +7406,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7374,7 +7427,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
@@ -7388,7 +7441,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7413,7 +7466,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
@@ -7431,7 +7484,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7456,13 +7509,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7491,7 +7544,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -7505,7 +7558,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7526,7 +7579,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
@@ -7540,7 +7593,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7561,7 +7614,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -7575,7 +7628,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7600,7 +7653,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
@@ -7614,7 +7667,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7635,7 +7688,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
@@ -7649,7 +7702,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7666,7 +7719,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
@@ -7680,7 +7733,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7701,13 +7754,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 10:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7732,13 +7785,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 11:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7759,13 +7812,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 12:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7786,13 +7839,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 13:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7813,7 +7866,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 14:
@@ -7823,7 +7876,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7840,13 +7893,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 15:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7863,7 +7916,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -7879,7 +7932,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7900,7 +7953,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
@@ -7914,7 +7967,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7939,7 +7992,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
@@ -7957,7 +8010,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -7986,7 +8039,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
@@ -8000,7 +8053,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8025,7 +8078,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -8039,7 +8092,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8064,7 +8117,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
@@ -8078,7 +8131,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8099,7 +8152,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -8113,7 +8166,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8134,7 +8187,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
@@ -8148,7 +8201,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8173,7 +8226,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
@@ -8187,7 +8240,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8208,7 +8261,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
@@ -8230,7 +8283,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 3'] = wall_instance3
             number_of_lava_walls = 4
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8267,7 +8320,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 7'] = wall_instance7
             number_of_walls = 8
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 10:
@@ -8281,7 +8334,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8314,13 +8367,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 11:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8341,7 +8394,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 12:
@@ -8351,7 +8404,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8368,13 +8421,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 13:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8395,13 +8448,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 14:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8418,7 +8471,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 15:
@@ -8428,7 +8481,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8445,7 +8498,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -8461,7 +8514,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8482,7 +8535,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
@@ -8496,7 +8549,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8521,7 +8574,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
@@ -8539,7 +8592,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8564,7 +8617,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
@@ -8578,7 +8631,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8603,7 +8656,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -8621,7 +8674,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8650,7 +8703,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
@@ -8664,7 +8717,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8689,7 +8742,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -8703,7 +8756,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8724,13 +8777,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8763,7 +8816,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 6'] = wall_instance6
             number_of_walls = 7
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
@@ -8777,7 +8830,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8798,7 +8851,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
@@ -8816,7 +8869,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8837,13 +8890,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 10:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8872,13 +8925,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 11:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8899,7 +8952,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 12:
@@ -8909,7 +8962,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8926,13 +8979,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 13:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8953,7 +9006,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 14:
@@ -8963,7 +9016,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -8980,7 +9033,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 15:
@@ -8990,7 +9043,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9007,7 +9060,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 
@@ -9023,7 +9076,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9044,7 +9097,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 1:
@@ -9058,7 +9111,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9083,13 +9136,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 2:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9126,7 +9179,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 7'] = wall_instance7
             number_of_walls = 8
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 3:
@@ -9144,7 +9197,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9165,7 +9218,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 4:
@@ -9179,7 +9232,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9200,7 +9253,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 5:
@@ -9214,7 +9267,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 1'] = wall_instance1
             number_of_lava_walls = 2
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9235,7 +9288,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 6:
@@ -9253,7 +9306,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9274,7 +9327,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 3'] = wall_instance3
             number_of_walls = 4
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 7:
@@ -9292,7 +9345,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9317,7 +9370,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 4'] = wall_instance4
             number_of_walls = 5
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 8:
@@ -9335,7 +9388,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9364,7 +9417,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 9:
@@ -9382,7 +9435,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 2'] = wall_instance2
             number_of_lava_walls = 3
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9411,13 +9464,13 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 10:
             number_of_lava_walls = 0
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9446,7 +9499,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 5'] = wall_instance5
             number_of_walls = 6
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 11:
@@ -9456,7 +9509,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9473,7 +9526,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 12:
@@ -9483,7 +9536,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9500,7 +9553,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 13:
@@ -9510,7 +9563,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9527,7 +9580,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 14:
@@ -9537,7 +9590,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9554,7 +9607,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
         elif ram_state[28] == 15:
@@ -9564,7 +9617,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['lava wall 0'] = wall_instance0
             number_of_lava_walls = 1
             i = 0
-            while(objects_map.get(f"lava wall {number_of_lava_walls + i}")!= None):
+            while (objects_map.get(f"lava wall {number_of_lava_walls + i}") != None):
                 objects_map.pop(f"lava wall {number_of_lava_walls + i}")
                 i += 1
             wall_instance0 = Wall()
@@ -9581,7 +9634,7 @@ def add_walls_to_object_list(ram_state, objects_map):
             objects_map['fixed wall 2'] = wall_instance2
             number_of_walls = 3
             i = 0
-            while(objects_map.get(f"fixed wall {number_of_walls + i}")!= None):
+            while (objects_map.get(f"fixed wall {number_of_walls + i}") != None):
                 objects_map.pop(f"fixed wall {number_of_walls + i}")
                 i += 1
 

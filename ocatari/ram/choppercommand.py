@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from ._helper_methods import number_to_bitfield, bitfield_to_number, _convert_number
-from .game_objects import GameObject, ScoreObject
+from .game_objects import GameObject, ValueObject
 import sys
 from math import ceil
 
@@ -146,7 +146,7 @@ class Shot(GameObject):
         self.hud = False
 
 
-class Score(ScoreObject):
+class Score(ValueObject):
     """
     The player's score display (HUD).
     """
@@ -964,7 +964,7 @@ def _detect_objects_revised(objects, ram_state, hud):
         else:
             score = Score()
             objects[42] = score
-        score.value = _convert_number(ram_state[108])*10000 + _convert_number(ram_state[110])*100 + _convert_number(ram_state[112])
+        score.value = _convert_number(ram_state[108]) * 10000 + _convert_number(ram_state[110]) * 100 + _convert_number(ram_state[112])
 
     # score
     # x: value 35+i*8

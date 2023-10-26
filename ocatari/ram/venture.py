@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ScoreObject
+from .game_objects import GameObject, ValueObject
 from ._helper_methods import _convert_number, get_iou
 import sys
 
@@ -154,7 +154,7 @@ class Green_Collectable(GameObject):
         self.hud = False
 
 
-class Score(ScoreObject):
+class Score(ValueObject):
     def __init__(self, *args, **kwargs):
         super(Score, self).__init__()
         self._xy = 97, 6

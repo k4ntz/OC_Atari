@@ -141,7 +141,7 @@ class OCAtari:
         raise NotImplementedError()
 
     def _step_ram(self, *args, **kwargs):
-        obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
+        obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
         if self.mode == "revised":
             self.detect_objects(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         else:  # mode == "raw" because in raw mode we augment the info dictionary
@@ -172,7 +172,7 @@ class OCAtari:
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
-        obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
+        obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
         self.detect_objects(self._objects, obs, self.game_name, self.hud)
         self._fill_buffer()
         # if self.obs_mode in ["dqn", "ori"]:
@@ -180,7 +180,7 @@ class OCAtari:
         return obs, reward, truncated, terminated, info
 
     def _step_test(self, *args, **kwargs):
-        obs, reward, truncated, terminated, info = self._env.step(*args, **kwargs)
+        obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
         self.detect_objects_r(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self.detect_objects_v(self.objects_v, obs, self.game_name, self.hud)
         self._fill_buffer()
@@ -235,6 +235,7 @@ class OCAtari:
         self.image_size = (sample_image.shape[1], sample_image.shape[0])
         self.window_size = (sample_image.shape[1] * UPSCALE_FACTOR,
                             sample_image.shape[0] * UPSCALE_FACTOR)  # render with higher res
+        self.label_font = pygame.font.SysFont('Pixel12x10', 16)
         if self.render_mode == "human":
             self.window = pygame.display.set_mode(self.window_size)
             self.clock = pygame.time.Clock()
@@ -242,7 +243,7 @@ class OCAtari:
             self.window = pygame.Surface(self.window_size)
         self.rendering_initialized = True
 
-    def render(self, *args, **kwargs):
+    def render(self):
         """
         Compute the render frames (as specified by render_mode during the
         initialization of the environment). If activated, adds an overlay visualizing
@@ -251,7 +252,7 @@ class OCAtari:
         for gymnasium details.
         """
 
-        image = self._env.render(*args, **kwargs)
+        image = self._env.render()
 
         if not self.render_oc_overlay:
             return image
@@ -318,13 +319,13 @@ class OCAtari:
                                width=2)
 
                 # Draw object type label
-                object_type_str = str(type(game_object).__name__)
-                draw_label(self.window, object_type_str, position=(x, y + h + 4))
+                object_type_str = game_object.category
+                draw_label(self.window, object_type_str, position=(x, y + h + 4), font=self.label_font)
 
             self.window.blit(overlay_surface, (0, 0))
 
             if self.render_mode == "human":
-                self.clock.tick(15)  # limit FPS to avoid super fast movement
+                self.clock.tick(60 // self._env.unwrapped._frameskip)  # limit FPS to avoid super fast movement
                 pygame.display.flip()
                 pygame.event.pump()
 

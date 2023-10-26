@@ -1,5 +1,6 @@
 from .game_objects import GameObject
-import sys 
+from ._helper_methods import _convert_number
+import sys
 import numpy as np
 
 """
@@ -14,7 +15,7 @@ class Player(GameObject):
     """
     The player figure: Pitfall Harry.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -26,7 +27,7 @@ class Wall(GameObject):
     """
     The underground brick walls.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -38,7 +39,7 @@ class Logs(GameObject):
     """
     The logs.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -50,7 +51,7 @@ class StairPit(GameObject):
     """
     The escape shafts from the underground.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -62,7 +63,7 @@ class Pit(GameObject):
     """
     The open holes in the ground.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -74,7 +75,7 @@ class Scorpion(GameObject):
     """
     The scorpions.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -86,7 +87,7 @@ class Rope(GameObject):
     """
     The swinging vines.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -98,7 +99,7 @@ class Snake(GameObject):
     """
     The snakes.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -110,7 +111,7 @@ class Tarpit(GameObject):
     """
     The tar pits.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -122,7 +123,7 @@ class Waterhole(GameObject):
     """
     The swamps.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -134,7 +135,7 @@ class Crocodile(GameObject):
     """
     The crocodiles.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -146,7 +147,7 @@ class GoldenBar(GameObject):
     """
     The collectable gold bars.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -158,7 +159,7 @@ class SilverBar(GameObject):
     """
     The collectable silver bars.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -170,7 +171,7 @@ class DiamondRing(GameObject):
     """
     The collectable diamond rings.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -182,7 +183,7 @@ class Fire(GameObject):
     """
     The open fires.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -194,7 +195,7 @@ class MoneyBag(GameObject):
     """
     The collectable money bags.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -206,7 +207,7 @@ class LifeCount(GameObject):
     """
     The indicator for the remaining lives (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -218,7 +219,7 @@ class PlayerScore(GameObject):
     """
     The player's score display (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -230,7 +231,7 @@ class Timer(GameObject):
     """
     The 20-minute countdown (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy=0,0
@@ -238,6 +239,34 @@ class Timer(GameObject):
         self.rgb =214,214,214
         self.hud = True
 
+def bcd_to_decimal(bcd):
+    decimal_value = 0
+
+    # Process the most significant byte (byte 0)
+    msb = bcd >> 8
+    msb_units = (msb >> 4) & 0x0F  # Extract the tens place
+    msb_ones = msb & 0x0F         # Extract the ones place
+    decimal_value += (msb_units * 10) + msb_ones
+
+    # Process the least significant byte (byte 1)
+    lsb = bcd & 0xFF
+    lsb_units = (lsb >> 4) & 0x0F  # Extract the tens place
+    lsb_ones = lsb & 0x0F         # Extract the ones place
+    decimal_value += (lsb_units * 10) + lsb_ones
+
+    return decimal_value
+def get_pos_rope(t_min,t_sec, t_sixtieth):
+    period = _convert_number(25)*60+_convert_number(40) + 43/60 - (_convert_number(25)*60+_convert_number(35) + 57/60)
+    omega = 2 * np.pi / period
+    theta_max = 26.6/180 * np.pi
+    t_true = _convert_number(t_min)*60+_convert_number(t_sec) + t_sixtieth/60
+    phi = - (_convert_number(25)*60+_convert_number(67) + 2/60) +19*np.pi/120
+    # phi = np.pi - (_convert_number(25)*60+_convert_number(86) + 11/60) * omega
+    theta_t = theta_max*np.cos(omega*t_true + phi)
+    length_rope = 69.31
+    x_fixation_rope = 78
+    y_fixation_rope = 34
+    return int(x_fixation_rope + np.sin(theta_t)*length_rope), int(y_fixation_rope + np.cos(theta_t)*length_rope)
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
@@ -247,7 +276,7 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
@@ -284,8 +313,8 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
     # env._env.env.env.ale.restoreState(snapshot)
     player.xy =  ram_state[97]+1,ram_state[105]+72
     objects[0]=player
-    
-    
+
+
     # Implementing Pits,waterholes etc
     objects[5:17]=[None]*12
     if ram_state[20]==0:
@@ -293,7 +322,7 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
         s.xy=76,122
         objects[6]=s
         objects[5]=None
-    
+
     elif ram_state[20]==1:
         s=StairPit(); s.xy=76,122
         p1=Pit(); p2=Pit()
@@ -302,13 +331,13 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
         objects[7]=p1; objects[8]=p2
         objects[5]=s
         objects[6]=None
-        
+
     elif ram_state[20]==2:
         t=Tarpit()
         t.xy=48,120
         objects[12]=t
 
-    elif ram_state[20]==4: 
+    elif ram_state[20]==4:
         w=Waterhole(); w.xy=48,120
         objects[13]=w
         y1=122 if ram_state[46]==255 else 119
@@ -322,13 +351,13 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
         c3=Crocodile(); c3.xy=92,y1
         c3.wh=wh1
         objects[17]=c3
-    
+
     # Waterhole 
     elif ram_state[20]==3:
         w=Waterhole()
         w.xy=48,120
         objects[13]=w
-    
+
     # Disappearing Waterhole
     elif ram_state[20]==7:
         w=Waterhole()
@@ -373,7 +402,7 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
 
     # Implementing Scorpion
     # Remove scorpion when there is no pit
-    if ram_state[29]==0:    
+    if ram_state[29]==0:
         s=Scorpion()
         s.xy=ram_state[99],(170 if ram_state[65]==160 else 169)
         s.wh=(7,8) if ram_state[65]==160 else (8,9)
@@ -386,13 +415,13 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
         objects[9]=None
     else:
         objects[1]=None; objects[9]=None
-    
+
     # Implementing Fire,snake and Treasures
     if ram_state[19]==6:
         f=Fire()
     elif ram_state[19]==7:
         f=Snake()
-    
+
     elif ram_state[19]>=8:
         if ram_state[19]%4==0:
             f=MoneyBag()
@@ -451,29 +480,36 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
     if rope_visible:
         r=Rope()
         y=116-ram_state[18]
-        # Quadratic estimates
-        x_1=int(76.5-np.sqrt((y-49)*(112-y)))
-        x_2=int(76.5+np.sqrt((y-49)*(112-y)))
-        # Estimates from directly substituting vision found values
-        x_right=[109,107,105,104,99,99,99,97,95,93,91]
-        x_left=[47,49,51,52,54,55,60,60,61,63,65]
-        x_2=x_right[20-ram_state[18]]
-        x_1=x_left[20-ram_state[18]]
-        global ram_18
-        global prev_x
-        increment=2
-        if ram_state[18]!=ram_18:
-            prev_x=x_1 if ram_state[93]==16 else x_2
-        else:
-            if ram_state[18]==10:
-                if ram_state[94]>=96 and ram_state[94]<=168:
-                    increment=4
-                else:
-                    increment=-4
-                prev_x=prev_x+increment      
-        ram_18=ram_state[18]
-        r.xy=prev_x,y
+        # # Quadratic estimates
+        # x_1=int(76.5-np.sqrt((y-49)*(112-y)))
+        # x_2=int(76.5+np.sqrt((y-49)*(112-y)))
+        # # Estimates from directly substituting vision found values
+        # x_right=[109,107,105,104,99,99,99,97,95,93,91]
+        # x_left=[47,49,51,52,54,55,60,60,61,63,65]
+        # x_2=x_right[20-ram_state[18]]
+        # x_1=x_left[20-ram_state[18]]
+        # global ram_18
+        # global prev_x
+        # increment=2
+        # if ram_state[18]!=ram_18:
+        #     prev_x=x_1 if ram_state[93]==16 else x_2
+        # else:
+        #     if ram_state[18]==10:
+        #         if ram_state[94]>=96 and ram_state[94]<=168:
+        #             increment=4
+        #         else:
+        #             increment=-4
+        #         prev_x=prev_x+increment
+        # ram_18=ram_state[18]
+        # r.xy= prev_x,y
+        r.xy = get_pos_rope(ram_state[88],ram_state[89],ram_state[90])[0], y
+        # r.xy = 78,106
+        # if r.xy == (109,96):
+        #     get_pos_rope(25, 67, 4)
+        #     print(ram_state[88],ram_state[89],ram_state[90])
         objects[10]=r
+        # print(r.xy)
+        # print(get_pos_rope(ram_state[88],ram_state[89],ram_state[90]))
 
 
 
@@ -526,9 +562,9 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
         t4.xy=31,22
         objects[27]=t1; objects[28]=t2; objects[29]=t3; objects[30]=t4
         if ram_state[88]<=9:
-            objects[30]=None #making the first digit vanish if minute is single digit 
+            objects[30]=None #making the first digit vanish if minute is single digit
         # import ipdb; ipdb.set_trace()
-        
+
 
 
 

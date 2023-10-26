@@ -13,8 +13,9 @@ from tqdm import tqdm
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from os import path
 from sklearn.linear_model import RANSACRegressor, LinearRegression
-sys.path.insert(0, '../ocatari') # noqa
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
 from ocatari.core import OCAtari
 from ocatari.utils import parser, load_agent, make_deterministic
 import pickle
@@ -45,7 +46,7 @@ random.seed(0)
 
 INTERACTIVE = False
 ONE_CHANGE = False
-initial_ram_n = 83
+initial_ram_n = 18
 
 
 make_deterministic(0, env)
