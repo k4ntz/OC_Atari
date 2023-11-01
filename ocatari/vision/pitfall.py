@@ -206,12 +206,12 @@ def _detect_objects_pitfall(objects, obs, hud=False):
     
 
     if hud:
-        lc=find_objects(obs,objects_colors["hud_objs"],size=(1,8),tol_s=1,maxy=30,miny=20,minx=15,maxx=26,closing_active=False)
+        lc=find_objects(obs,objects_colors["hud_objs"],maxy=30,miny=20,minx=15,maxx=26,closing_dist= 2)
         for l in lc:
             objects.append(LifeCount(*l))
-        ps=find_objects(obs,objects_colors["hud_objs"],size=(6,8),tol_s=2,maxy=18,miny=7,minx=16,maxx=70,closing_active=False)
+        ps=find_objects(obs,objects_colors["hud_objs"],maxy=18,miny=7,minx=16,maxx=70,closing_dist= 8)
         for p in ps:
             objects.append(PlayerScore(*p))
-        ts=find_objects(obs,objects_colors["hud_objs"],size=(6,8),tol_s=3,maxy=30,miny=20,minx=28,maxx=69,closing_active=False)
+        ts=find_objects(obs,objects_colors["hud_objs"],maxy=30,miny=20,minx=28,maxx=69,closing_dist= 8)
         for t in ts:
             objects.append(Timer(*t))
