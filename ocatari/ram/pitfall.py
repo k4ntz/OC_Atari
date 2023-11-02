@@ -1,3 +1,4 @@
+import math
 import sys
 
 import numpy as np
@@ -259,7 +260,7 @@ class Timer(GameObject):
     def __init__(self):
         super().__init__()
         self.xy = 31, 22
-        self.wh = (36, 8)
+        self.wh = (37, 8)
         self.rgb = 214, 214, 214
         self.value = 0 # in seconds
         self.hud = True
@@ -327,7 +328,7 @@ def _init_objects_pitfall_ram(hud=False):
     objects.extend([GoldenBar()])
     if hud:
         objects.extend([LifeCount(), LifeCount(), LifeCount()])  # 3
-        objects.extend([PlayerScore()] * 4)
+        objects.extend([PlayerScore()])
         objects.extend([Timer()])
         objects.extend([PlayerScore()])
     return objects
@@ -548,53 +549,39 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
         # PlayerScores related to ram_state 86 and 87
         p1 = PlayerScore()
         p1.value = _convert_number(ram_state[85])*1000 + _convert_number(ram_state[86]) *100 + _convert_number(ram_state[87])
-        print(p1.value)
-        p1.xy = 62, 9
-        objects[21] = p1
-        p2 = PlayerScore()
-        p2.xy = 54, 9
-        objects[22] = p2
-        p3 = PlayerScore()
-        p3.xy = 46, 9
-        objects[23] = p3
-        p4 = PlayerScore()
-        p4.xy = 39, 9
-        objects[24] = p4
-        if ram_state[85] != 0:
-            p5 = PlayerScore()
-            p5.xy = 31, 9
-            objects[31] = p5
+        size = 0
+        if p1.value != 0:
+            size = math.ceil(np.log10(p1.value)) * 8
         else:
-            objects[31] = None
-            if ram_state[86] <= 9:
-                objects[24] = None
-            if ram_state[86] == 0:
-                objects[24] = None
-                objects[23] = None
+            size = 0
+        p1.xy = 70 - size, 9
+        p1.wh = size, p1.h
+        objects[21] = p1
         # LifeCounts
+        # number of lives remaining, stored as displayed pattern ($a0 = 2, $80 = 1, $00 = 0)
         if ram_state[0] == 160:
             l1 = LifeCount()
             l1.xy = 23, 22
             l2 = LifeCount()
             l2.xy = 21, 22
-            objects[25] = l1;
-            objects[26] = l2
+            objects[22] = l1;
+            objects[23] = l2
         elif ram_state[0] == 128:
             l1 = LifeCount()
             l1.xy = 21, 22
-            objects[25] = l1;
-            objects[26] = None
+            objects[22] = l1;
+            objects[23] = None
         else:
-            objects[25] = None;
-            objects[26] = None
+            objects[22] = None;
+            objects[23] = None
 
         # Timer
         t1 = Timer();
         t1.value = _convert_number(ram_state[88])*60+_convert_number(ram_state[89]) + ram_state[90]/60
         if ram_state[88] <= 9:
-            t1.wh = 31, t1.h
+            t1.wh = 32, t1.h
             t1.xy = 37, t1.y
-        objects[27] = t1
+        objects[24] = t1
         # import ipdb; ipdb.set_trace()
 
 
