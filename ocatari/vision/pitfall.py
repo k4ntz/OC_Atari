@@ -206,7 +206,8 @@ def _detect_objects_pitfall(objects, obs, hud=False):
     
 
     if hud:
-        lc=find_objects(obs,objects_colors["hud_objs"],maxy=30,miny=20,minx=15,maxx=26,closing_dist= 2)
+        lc = find_objects(obs, objects_colors["hud_objs"], size=(1, 8), tol_s=1, maxy=30, miny=20, minx=15, maxx=26,
+                          closing_active=False)
         for l in lc:
             objects.append(LifeCount(*l))
         ps=find_objects(obs,objects_colors["hud_objs"],maxy=18,miny=7,minx=16,maxx=70,closing_dist= 8)

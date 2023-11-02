@@ -551,10 +551,10 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
         p1.value = _convert_number(ram_state[85])*1000 + _convert_number(ram_state[86]) *100 + _convert_number(ram_state[87])
         size = 0
         if p1.value != 0:
-            size = math.ceil(np.log10(p1.value)) * 8
+            size = math.ceil(np.log10(p1.value)) * 8 - int(0.5*math.ceil(np.log10(p1.value)))
         else:
             size = 0
-        p1.xy = 70 - size, 9
+        p1.xy = 68 - size, 9
         p1.wh = size, p1.h
         objects[21] = p1
         # LifeCounts
