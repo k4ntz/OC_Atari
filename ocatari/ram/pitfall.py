@@ -286,19 +286,21 @@ def bcd_to_decimal(bcd):
 
 def get_pos_rope(ram_state):
     theta_t = -0.0060223306193817605 + 0.003809046734072426 * ram_state[92]
-    # The length depends on the angle
-    length_rope = np.sqrt(5657.0 + -9.333333333333334 * ram_state[92])
     x_fixation_rope = 78
     y_fixation_rope = 34
     y = 116 - ram_state[18]
-    # small correction
-    supplement_y = abs(y - (y_fixation_rope + np.cos(theta_t) * length_rope))
+    # The length depends on the angle
+    length_rope = abs((y - y_fixation_rope) / np.cos(theta_t))
+    # This is a better approximation, but it is less understandable
+    # length_rope = np.sqrt(5657.0 + -9.333333333333334 * ram_state[92])
+    # correction to the formula
+    # supplement_y = abs(y - (y_fixation_rope + np.cos(theta_t) * length_rope))
     if ram_state[93] <= 16:
         sign = -1
     else:
         sign = 1
-    return int(x_fixation_rope + np.sin(theta_t) * sign * length_rope + np.arctan(theta_t) * supplement_y), y
-
+    # return int(x_fixation_rope + np.sin(theta_t) * sign * length_rope + np.arctan(theta_t) * supplement_y), y
+    return int(x_fixation_rope + np.sin(theta_t) * sign * length_rope), y
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
