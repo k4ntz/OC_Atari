@@ -34,7 +34,7 @@ except ModuleNotFoundError:
         "Try `pip install pygame`.\n",
     )
 
-DEVICE = "gpu" if torch.cuda.is_available() else "cpu"
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 AVAILABLE_GAMES = ["Alien", "Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
                    "Breakout", "Carnival", "Centipede", "ChoppperCommand", "DemonAttack", "Enduro", "FishingDerby", "Freeway",
