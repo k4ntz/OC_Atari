@@ -12,6 +12,70 @@ identify the values that belong to a GameObject.
 """
 
 
+import pygame
+from ocatari.core import OCAtari, DEVICE
+import numpy as np
+import torch
+import cv2
+
+
+class ConstantBackgroundRiverraid(OCAtari):
+    def __init__(self, env_name="RiverraidDeterministic-v0", mode="raw", hud=False, obs_mode="dqn", *args, **kwargs):
+        self.render_mode = kwargs["render_mode"] if "render_mode" in kwargs else None
+        super().__init__(env_name, mode, hud, obs_mode, *args, **kwargs)
+    
+    def alter_ram(self):
+        bgs = self.get_ram()[38:44]
+        ram = self.get_ram()
+        for i in range(6):
+            self.set_ram(14+i, 69)  # setting the grass
+            self.set_ram(44+i, 0)
+            self.set_ram(38+i, 35)
+            if ram[32+i] == 8:
+                self.set_ram(32+i, 0) # remove bridge
+
+    def _step_ram(self, *args, **kwargs):
+        self.alter_ram()
+        toret = super()._step_ram(*args, **kwargs)
+        # for i, bg in enumerate(bgs):
+        #     if bg not in [65, 129]:
+        #         env.set_ram(38+i, 35)
+        #     env.set_ram(44+i, 0)
+        return toret
+
+    def _fill_buffer_dqn(self):
+        image = self._ale.getScreenGrayscale()
+        state = cv2.resize(
+            image, (84, 84), interpolation=cv2.INTER_AREA,
+        )
+        self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
+                                               device=DEVICE))
+
+# import random
+# from time import sleep
+# from ocatari.utils import load_agent, parser, make_deterministic
+# env = ConstantBackgroundRiverraid(render_mode="human")
+# dqn_agent = load_agent("../OC_Atari/models/Riverraid/dqn.gz", env.action_space.n)
+# env.reset()
+# for i in range(10000):
+#     # action = random.randint(0,5)
+#     action = dqn_agent.draw_action(env.dqn_obs)
+#     _, _, done1, done2, _ = env.step(action)
+#     sleep(0.01)
+#     print(env.get_ram()[38:44])
+#     if done1 or done2:
+#         env.reset()
+
+
+
+
+
+
+
+
+
+
+
 RAM_RENDER_WIDTH = 1000
 RAM_N_COLS = 8
 RAM_CELL_WIDTH = 115
@@ -24,7 +88,9 @@ class Renderer:
     env: gym.Env
 
     def __init__(self, env_name: str):
-        self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+        # self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+        #                    render_oc_overlay=True, frameskip=1)
+        self.env = ConstantBackgroundRiverraid(env_name, mode="revised", hud=True, render_mode="rgb_array",
                            render_oc_overlay=True, frameskip=1)
         self.env.reset(seed=42)[0]
         self.current_frame = self.env.render()
@@ -41,6 +107,8 @@ class Renderer:
         self.active_cell_idx = None
         self.candidate_cell_ids = []
         self.current_active_cell_input : str = ""
+        import pickle
+        self.env._env.env.env.ale.restoreState(pickle.load(open("../HackAtari/riveraid_wat.pkl", 'rb')))
 
     def _init_pygame(self, sample_image):
         pygame.init()
@@ -58,7 +126,10 @@ class Renderer:
             self._handle_user_input()
             if not self.paused:
                 action = self._get_action()
-                self.env.step(action)
+                tuple = self.env.step(action)
+                rew = tuple[1]
+                if rew != 0:
+                    print(rew)
                 self.current_frame = self.env.render().copy()
             self._render()
         pygame.quit()
@@ -291,5 +362,5 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer("Pong")
+    renderer = Renderer("Riverraid")
     renderer.run()

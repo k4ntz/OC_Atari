@@ -13,18 +13,21 @@ from ocatari.utils import AtariNet, make_deterministic, _load_checkpoint
 import numpy as np
 
 
+render_mode = 'human'
+render_mode = 'rgb_array'
+
 if "hide" in sys.argv:
-    env = HideEnemyPong("PongDeterministic-v0", mode="revised", render_mode='human', hud=False, obs_mode='dqn')
+    env = HideEnemyPong("PongDeterministic-v0", mode="revised", render_mode=render_mode, hud=False, obs_mode='dqn')
 else:
-    env = OCAtari("PongDeterministic-v0", mode="revised", render_mode='human', hud=False, obs_mode='dqn')
+    env = OCAtari("PongDeterministic-v0", mode="revised", render_mode=render_mode, hud=False, obs_mode='dqn')
 observation, info = env.reset()
 AGENT_TYPE = "dqn"
-dist = "c51" in AGENT_TYPE
-agent = AtariNet(env.nb_actions, distributional=dist)
-ckpt = _load_checkpoint(f"models/Pong/{AGENT_TYPE}.gz")
+agent = AtariNet(env.nb_actions, distributional=False)
+ckpt = _load_checkpoint(f"models/Pong/dqn.gz")
+# import ipdb; ipdb.set_trace()
 agent.load_state_dict(ckpt["estimator_state"])
 
-print(f"Loaded {AGENT_TYPE} agents")
+
 
 env.step(2)
 make_deterministic(0, env)
