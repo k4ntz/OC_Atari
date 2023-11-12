@@ -148,9 +148,9 @@ class HumanAgent():
 
 
 def load_agent(opt, nb_actions=None):
-    ckpt_path = Path(opt.path)
-    agent = AtariNet(nb_actions, distributional="c51" in opt.path)
-    ckpt = _load_checkpoint(opt.path)
+    pth = opt if isinstance(opt, str) else opt.path
+    agent = AtariNet(nb_actions, distributional="c51" in pth)
+    ckpt = _load_checkpoint(pth)
     agent.load_state_dict(ckpt["estimator_state"])
     return agent
 

@@ -41,6 +41,7 @@ class EnemyScore(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 0, 0, 0
+        self.hud = True
 
 
 def _detect_objects_boxing(objects, obs, hud=False):

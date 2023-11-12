@@ -3,6 +3,7 @@ from typing import Type
 
 from ._helper_methods import _convert_number
 from .game_objects import GameObject, ValueObject
+from itertools import chain
 
 """
 RAM extraction for the game SEAQUEST. Supported modes: raw, revised.
@@ -27,7 +28,8 @@ MAX_OPTIONAL_OBJECTS = {
     'OxygenBarLogo': 1,
 }
 
-MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
+# MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
+MAX_ALL_OBJECTS = dict(chain(MAX_ESSENTIAL_OBJECTS.items(),MAX_OPTIONAL_OBJECTS.items()))
 
 
 class Player(GameObject):
