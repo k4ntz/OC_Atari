@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-
+from ocatari import __version__
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='ocatari',
-    version='0.1.3',
+    version=__version__,
     author='Quentin Delfosse',
     author_email='quentin.delfosse@cs.tu-darmstadt.de',
     packages=find_packages(),
