@@ -37,8 +37,8 @@ except ModuleNotFoundError:
 
 DEVICE = "cpu" if torch.cuda.is_available() else "cpu"
 
-AVAILABLE_GAMES = ["Alien", "Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
-                   "Breakout", "Carnival", "Centipede", "ChoppperCommand", "DemonAttack", "Enduro", "FishingDerby", "Freeway",
+AVAILABLE_GAMES = ["Alien", "Amidar", "Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
+                   "Breakout", "Carnival", "Centipede", "ChoppperCommand", "CrazyClimber", "DemonAttack", "Enduro", "FishingDerby", "Freeway",
                    "Frostbite", "Gopher", "Hero", "IceHockey", "Kangaroo", "MontezumaRevenge", "MsPacman","Pitfall", "Pong", "PrivateEye",
                    "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis","Videocube", "Venture", "Yarsrevenge"]
 
