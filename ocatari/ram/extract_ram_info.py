@@ -150,8 +150,8 @@ def init_objects(game_name, hud):
     elif game_name.lower() == "venture":
         return _init_objects_venture_ram(hud)
     else:
-        print(colored("Uncovered init objects", "red"))
-        exit(1)
+        raise NotImplementedError(colored("Uncovered init objects", "red"))
+        
 
 
 def detect_objects_raw(info, ram_state, game_name):

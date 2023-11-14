@@ -116,5 +116,4 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
     elif game_name.lower() == "venture":
         return _detect_objects_venture(objects, obs, hud)
     else:
-        print(colored("Uncovered game in vision mode", "red"))
-        exit(1)
+        raise NotImplementedError(colored("Uncovered game in vision mode", "red"))

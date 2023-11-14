@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 from tqdm import tqdm
 import pygame
 from ocatari.core import OCAtari, UPSCALE_FACTOR
+from gymnasium.error import NameNotFound
 
 """
 This script can be used to identify any RAM positions that
@@ -35,8 +36,11 @@ class Renderer:
     env: gym.Env
 
     def __init__(self, env_name: str):
-        self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
-                           render_oc_overlay=True, frameskip=1)
+        try:
+            self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+                            render_oc_overlay=True, frameskip=1)
+        except NameNotFound:
+            self.env = gym.make(env_name, render_mode="rgb_array", frameskip=1)
         self.env.reset(seed=42)[0]
         self.current_frame = self.env.render()
         self._init_pygame(self.current_frame)
@@ -305,5 +309,6 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer("Riverraid")
+    # renderer = Renderer("Riverraid")
+    renderer = Renderer("ALE/BasicMath-v5")
     renderer.run()
