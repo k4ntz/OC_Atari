@@ -53,6 +53,9 @@ from .gopher import _init_objects_gopher_ram, _detect_objects_gopher_revised
 from .enduro import _init_objects_enduro_ram, _detect_objects_enduro_revised
 from .videopinball import _init_objects_videopinball_ram, _detect_objects_videopinball_revised
 from .venture import _init_objects_venture_ram, _detect_objects_venture_revised
+from .crazyclimber import _init_objects_crazyclimber_ram, _detect_objects_crazyclimber_revised
+from .amidar import _init_objects_amidar_ram, _detect_objects_amidar_revised
+from .battlezone import _init_objects_battlezone_ram, _detect_objects_battlezone_revised
 
 # calls the respective _get_max_objects from the game modules
 def get_max_objects(game_name, hud):
@@ -149,6 +152,12 @@ def init_objects(game_name, hud):
         return _init_objects_videopinball_ram(hud)
     elif game_name.lower() == "venture":
         return _init_objects_venture_ram(hud)
+    elif game_name.lower() == "crazyclimber":
+        return _init_objects_crazyclimber_ram(hud)
+    elif game_name.lower() == "amidar":
+        return _init_objects_amidar_ram(hud)
+    elif game_name.lower() == "battlezone":
+        return _init_objects_battlezone_ram(hud)
     else:
         raise NotImplementedError(colored("Uncovered init objects", "red"))
         
@@ -293,6 +302,12 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_venture_revised(objects, ram_state, hud)
     elif game_name.lower() == "alien":
         _detect_objects_alien_revised(objects, ram_state, hud)
+    elif game_name.lower() == "crazyclimber":
+        _detect_objects_crazyclimber_revised(objects, ram_state, hud)
+    elif game_name.lower() == "amidar":
+        _detect_objects_amidar_revised(objects, ram_state, hud)
+    elif game_name.lower() == "battlezone":
+        _detect_objects_battlezone_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
