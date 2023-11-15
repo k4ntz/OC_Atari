@@ -112,8 +112,6 @@ def _detect_objects_amidar_revised(objects, ram_state, hud=False):
         else:
             fig = objects[0]
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
-        # else:
-        #     print(73+i, ram_state[73+i])
 
     # 6-49 purple lines; first 4 ==> lines, remaining for ==> pillars
     # even numbers are inverted
@@ -152,7 +150,7 @@ def _detect_objects_amidar_revised(objects, ram_state, hud=False):
         
         # Lives 86
         for i in range(3):
-            if i <= ram_state[86]&3:
+            if i < ram_state[86]&3:
                 life = Life()
                 objects[9+i] = life
                 life.xy = 148-(i*16), 175
