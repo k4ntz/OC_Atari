@@ -7,6 +7,7 @@ import pickle
 import sys
 sys.path.insert(0, '../') # noqa
 from ocatari.core import OCAtari, UPSCALE_FACTOR
+from ocatari.vision.utils import mark_bb, make_darker
 
 """
 This script can be used to identify any RAM positions that
@@ -34,6 +35,8 @@ class Renderer:
         self.current_frame = self.env.render()
         self._init_pygame(self.current_frame)
         self.paused = False
+        obs, info = self.env.reset()
+        self.obs = obs
 
         self.current_keys_down = set()
         self.current_mouse_pos = None
@@ -62,9 +65,11 @@ class Renderer:
             self._handle_user_input()
             if not self.paused:
                 action = self._get_action()
-                self.env.step(action)
+                obs, reward, terminated, truncated, info = self.env.step(action)
+                self.obs = obs
                 self.current_frame = self.env.render().copy()
             self._render()
+            # print(self.env.objects)
         pygame.quit()
 
     def _get_action(self):
@@ -136,6 +141,18 @@ class Renderer:
                             if new_cell_value < 256:
                                 self._set_ram_value_at(self.active_cell_idx, new_cell_value)
                         self._unselect_active_cell()
+                elif event.key == pygame.K_g:
+                    print(self.env.objects)
+                    for obj in self.env.objects:
+                        x, y = obj.xy
+                        if x < 160 and y < 210:
+                            opos = obj.xywh
+                            ocol = obj.rgb
+                            sur_col = make_darker(ocol)
+                            mark_bb(self.obs, opos, color=sur_col)
+                    _, ax = plt.subplots(1, 1, figsize=(6, 8))
+                    ax.imshow(self.obs)
+                    plt.show()
                 elif event.key == pygame.K_h:
                     with open(self.env_name + '_save_state1.pickle', 'wb') as handle:
                         pickle.dump(self.env._env.env.env.ale.cloneState(), handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -288,10 +305,12 @@ class Renderer:
         """
         ale = self.env.unwrapped.ale
 
+        state = self.env._env.env.env.ale.cloneState()
         ram = ale.getRAM().copy()
         self.env.step(0)
         original_pixel = ale.getScreenRGB()[y, x]
-        self._set_ram(ram)  # restore original RAM
+        # self.env._env.env.env.ale.restoreState(state)
+        # self._set_ram(ram)  # restore original RAM
 
         self.candidate_cell_ids = []
         for i in tqdm(range(len(ram))):
@@ -304,14 +323,16 @@ class Renderer:
                 self._render()
                 new_pixel = new_frame[y, x]
                 self._set_ram(ram)  # restore original RAM
+                self.env._env.env.env.ale.restoreState(state)
                 if np.any(new_pixel != original_pixel):
                     self.candidate_cell_ids.append(i)
                     break
-
+        self.env._env.env.env.ale.restoreState(state)
+        
         self._unselect_active_cell()
         self._render()
 
 
 if __name__ == "__main__":
-    renderer = Renderer("Pitfall")
+    renderer = Renderer("BattleZone")
     renderer.run()
