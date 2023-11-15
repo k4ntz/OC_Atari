@@ -36,6 +36,10 @@ from .privateeye import _detect_objects_privateeye
 from .gopher import _detect_objects_gopher
 from .enduro import _detect_objects_enduro
 from .videopinball import _detect_objects_videopinball
+from .crazyclimber import _detect_objects_crazyclimber
+from .amidar import _detect_objects_amidar
+from .battlezone import _detect_objects_battlezone
+
 def detect_objects_vision(objects, obs, game_name, hud=False):
     if game_name.lower() == "atlantis":
         return _detect_objects_atlantis(objects, obs, hud)
@@ -115,5 +119,11 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_videopinball(objects, obs, hud)
     elif game_name.lower() == "venture":
         return _detect_objects_venture(objects, obs, hud)
+    elif game_name.lower() == "crazyclimber":
+        return _detect_objects_crazyclimber(objects, obs, hud)
+    elif game_name.lower() == "amidar":
+        return _detect_objects_amidar(objects, obs, hud)
+    elif game_name.lower() == "battlezone":
+        return _detect_objects_battlezone(objects, obs, hud)
     else:
         raise NotImplementedError(colored("Uncovered game in vision mode", "red"))
