@@ -1,15 +1,18 @@
 import pandas as pd
 import pickle
 from termcolor import colored
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 pkl_report_file = "reports/all_games_report.pkl"
 latex_report_file = "reports/all_games_report.tex"
 with open(pkl_report_file, "rb") as savefile:
     df = pickle.load(savefile)
 
-import ipdb; ipdb.set_trace()
 
 df = df[~df.index.duplicated(keep='last')]
+
+
 
 # pickle.dump(df, open(pkl_report_file, "wb"))
 
@@ -23,6 +26,14 @@ df = dfT.T
 
 df = df.round(1)
 
+import ipdb; ipdb.set_trace()
+x_axis_labels = df.index.to_list()
+ax = sns.heatmap(dfT, cmap="Spectral", annot=False, xticklabels=x_axis_labels, vmin=0, vmax=100)
+ax.xaxis.tick_top() # x axis on top
+ax.xaxis.set_label_position('top')
+plt.xticks(rotation=90)
+plt.savefig("heatmap.svg")
+plt.show()
 
 styler = df.style
 styler.background_gradient(cmap='Spectral', vmin=0, vmax=100)
