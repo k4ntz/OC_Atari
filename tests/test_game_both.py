@@ -32,7 +32,8 @@ parser.add_argument("-snap", "--snapshot", type=str, default="",
 opts = parser.parse_args()
 
 
-env = OCAtari(opts.game+"NoFrameskip", mode="both", render_mode='rgb_array', hud=opts.hud)
+# env = OCAtari(opts.game+"NoFrameskip", mode="both", render_mode='rgb_array', hud=opts.hud)
+env = OCAtari(opts.game, mode="both", render_mode='rgb_array', hud=opts.hud)
 
 observation, info = env.reset()
 if opts.snapshot:
