@@ -135,15 +135,10 @@ def calc_x(number, ignore_upper=True):
     takes the bitfield(4 bits) and extracts the x of the object
     way too complicated for no reason
     """
-    bitfield = number_to_bitfield(number)
-    x_bits = bitfield[4:]
-    # res = 26 - bitfield_to_number(bitfield[:4])
-    res = 10 + bitfield_to_number_equality(bitfield[:4])
+    anchor = number % 32
+    offset = number >> 5
 
-    if ignore_upper:
-        res = 10
-
-    res = res + int(bitfield_to_number(x_bits) * 15.5)
+    res = anchor * 16 - offset
 
     return res
 
