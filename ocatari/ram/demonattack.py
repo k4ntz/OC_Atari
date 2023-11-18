@@ -130,17 +130,20 @@ def bitfield_to_number_equality(bitfield):
     return res
 
 
-def calc_x(number, ignore_upper=True):
+def calc_x(number):
     """
     takes the bitfield(4 bits) and extracts the x of the object
     way too complicated for no reason
     """
-    anchor = number % 32
-    offset = number >> 5
+    anchor = number % 16
+    offset = number >> 4
+    if offset > 7:
+        offset = 28 - offset # 23 + 5 (5 being constant offset)
+    else:
+        offset = 12 - offset # 7 + 5
+    return anchor * 15 + offset
 
-    res = anchor * 16 - offset
 
-    return res
 
 
 def _get_score_x_and_width(score):
@@ -181,21 +184,21 @@ def _detect_objects_demon_attack_revised(objects, ram_state, hud=False):
     if hud:
         score = objects[2]
 
-    player.xy = calc_x(ram_state[16], True), 174
+    player.xy = calc_x(ram_state[16]), 174
 
     if 90 <= ram_state[21]:
-        proj_friendly.xy = 3 + calc_x(ram_state[22]), 176 - ram_state[21]
+        proj_friendly.xy = 2 + calc_x(ram_state[22]), 176 - ram_state[21]
     else:
-        proj_friendly.xy = 3 + calc_x(ram_state[22]), 178 - ram_state[21]
+        proj_friendly.xy = 2 + calc_x(ram_state[22]), 178 - ram_state[21]
 
     objects.clear()  # giga ugly but i didnt find a better solution
     objects.extend([player, proj_friendly, score])
-    objects.extend(calculate_small_projectiles_from_bitmap(ram_state[37:47], 3 + calc_x(ram_state[20], False)))
+    objects.extend(calculate_small_projectiles_from_bitmap(ram_state[37:47], 3 + calc_x(ram_state[20])))
 
     for i in range(3):
         if not ram_state[13 + i] == 0:
             enemy = Enemy()
-            x = calc_x(ram_state[13 + i], False)
+            x = calc_x(ram_state[13 + i])
             if i == 2:
                 x = x + 3
             enemy.xy = x, 175 - ram_state[69 + i]
@@ -217,8 +220,8 @@ def _detect_objects_demon_attack_revised(objects, ram_state, hud=False):
 def _detect_objects_demon_attack_raw(info, ram_state):
     info["lives"] = ram_state[114]  # 0-3 but renders correctly till 6
     info["player_x"] = ram_state[16]
-    info["enemy_y"] = ram_state[69:71]  # 69 is topmost enemy 71 is lowest
-    info["enemy_x"] = ram_state[13:15]  # 13 is topmost enemy 15 is lowest
+    info["enemy_y"] = ram_state[69:72]  # 69 is topmost enemy 71 is lowest
+    info["enemy_x"] = ram_state[13:16]  # 13 is topmost enemy 15 is lowest
     info["enemy_projectile_y"] = ram_state[37:46]
     # kind of like a bit map. If a value is 0 then there is no projectile
     # at that position the higher the value the thicker / more projectiles
