@@ -57,7 +57,7 @@ def _detect_objects_demon_attack(objects, obs, hud=False):
 
     # enemy = find_objects(obs, objects_colors["enemy"], min_distance=1)
     enemy = find_mc_objects(obs, objects_colors["enemy"], 
-                            closing_dist=2, all_colors=False,
+                            closing_dist=4, all_colors=False,
                             size=(16,7), tol_s=(3,3), miny=10, maxy=180)
     # index = 0
     for bb in enemy:
@@ -66,7 +66,7 @@ def _detect_objects_demon_attack(objects, obs, hud=False):
         objects.append(Enemy(*bb))
 
     if hud:
-        score = find_objects(obs, objects_colors["score"], min_distance=1, closing_dist=5)
+        score = find_objects(obs, objects_colors["score"], min_distance=1, closing_dist=5, maxy=20)
         for s in score:
             objects.append(Score(*s))
 
