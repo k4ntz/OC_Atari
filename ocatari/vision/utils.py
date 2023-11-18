@@ -213,6 +213,9 @@ def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2,
             if mask.max() == 0:
                 return []
     mask = sum(masks)
+    # if mask.max() > 0:
+        # showim(mask)
+        # import ipdb; ipdb.set_trace()
     # if not all_colors and mask.max():
     #     import ipdb;ipdb.set_trace()
     if closing_active:
