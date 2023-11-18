@@ -202,7 +202,8 @@ def _detect_objects_demon_attack_revised(objects, ram_state, hud=False):
             if i == 2:
                 x = x + 3
             enemy.xy = x, 175 - ram_state[69 + i]
-            objects.append(enemy)
+            if ram_state[29+i] != 0:
+                objects.append(enemy)
 
     if hud:
         base_x = 17
