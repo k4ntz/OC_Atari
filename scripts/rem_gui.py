@@ -21,6 +21,7 @@ import cv2
 import random
 
 
+get_bin = lambda x: format(x, 'b').zfill(8)
 
 
 
@@ -240,6 +241,7 @@ class Renderer:
             else:
                 color = (200, 200, 200)
             text = self.ram_cell_value_font.render(str(value), True, color, None)
+            # text = self.ram_cell_value_font.render(get_bin(value), True, color, None)
             text_rect = text.get_rect()
             text_rect.bottomright = (x + w - 2, y + h - 2)
             self.window.blit(text, text_rect)
