@@ -283,7 +283,7 @@ class Renderer:
         for changes at pixel x, y.
         """
         ale = self.env.unwrapped.ale
-
+        sys_state = ale.cloneSystemState()
         ram = ale.getRAM().copy()
         self.env.step(0)
         original_pixel = ale.getScreenRGB()[y, x]
@@ -300,6 +300,7 @@ class Renderer:
                 self._render()
                 new_pixel = new_frame[y, x]
                 self._set_ram(ram)  # restore original RAM
+                ale.restoreSystemState(sys_state)
                 if np.any(new_pixel != original_pixel):
                     self.candidate_cell_ids.append(i)
                     break
@@ -310,5 +311,6 @@ class Renderer:
 
 if __name__ == "__main__":
     # renderer = Renderer("Riverraid")
-    renderer = Renderer("ALE/BasicMath-v5")
+    renderer = Renderer("DemonAttack")
+    # renderer = Renderer("ALE/BasicMath-v5")
     renderer.run()
