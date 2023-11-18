@@ -116,7 +116,7 @@ def calculate_small_projectiles_from_bitmap(bitmap, basex):
         for b in bitfield:
             if b == 1:
                 proj = ProjectileHostile()
-                proj.xy = basex + index, current_y  # projectiles are only one pixel wide
+                proj.xy = basex - 3 + index, current_y - 4 # projectiles are only one pixel wide
                 result.append(proj)
             index += 1
 
