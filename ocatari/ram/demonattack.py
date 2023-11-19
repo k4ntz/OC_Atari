@@ -195,7 +195,6 @@ def _detect_objects_demon_attack_revised(objects, ram_state, hud=False):
     objects.extend([player, proj_friendly, score])
     objects.extend(calculate_small_projectiles_from_bitmap(ram_state[37:47], 3 + calc_x(ram_state[20])))
 
-    print("-------------")
     for i in range(3):
         if not ram_state[13 + i] == 0:
             enemy = Enemy()
