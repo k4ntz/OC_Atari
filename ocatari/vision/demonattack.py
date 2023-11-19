@@ -6,9 +6,12 @@ objects_colors = {'player': [184, 70, 162],
                   'projectile_friendly': [212, 140, 252], 'projectile_hostile': [252, 144, 144],
                   'live': [240, 128, 128], 'score': [223, 183, 85],
                   'enemy': [
-                      [84, 92, 214], [92, 186, 92],
-                      [104, 72, 198], [127, 92, 213], [195, 144, 61],
-                      [213, 130, 74], [214, 92, 92], 
+                      [72, 160, 72], 
+                      [84, 92, 214], [84, 138, 210], [84, 160, 197], [84, 184, 153], [92, 186, 92],
+                      [101, 111, 228], [104, 72, 198], [127, 92, 213], [149, 111, 227], 
+                      [181, 108, 224], [195, 144, 61], [197, 124, 238],
+                      [212, 108, 195], [213, 130, 74], [214, 92, 92], [214, 214, 214], 
+                      [224, 236, 124], [227, 151, 89], [228, 111, 111], 
                             ]}
 
 
@@ -58,7 +61,10 @@ def _detect_objects_demon_attack(objects, obs, hud=False):
     # enemy = find_objects(obs, objects_colors["enemy"], min_distance=1)
     enemy = find_mc_objects(obs, objects_colors["enemy"], 
                             closing_dist=4, all_colors=False,
-                            size=(16,7), tol_s=(3,3), miny=10, maxy=180)
+                            size=(14,7), tol_s=(3,3), miny=10, maxy=180)
+    enemy += find_mc_objects(obs, objects_colors["enemy"], 
+                            closing_dist=1, all_colors=False,
+                            size=(7,4), tol_s=(2,2), miny=10, maxy=180)
     # index = 0
     for bb in enemy:
         # name = "enemy"+str(index)
