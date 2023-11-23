@@ -312,7 +312,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    # renderer = Renderer("Riverraid")
-    renderer = Renderer("DemonAttack")
-    # renderer = Renderer("ALE/BasicMath-v5")
+    # renderer = Renderer("Pong")
+    # renderer = Renderer("DemonAttack")
+    renderer = Renderer("ALE/Pacman-v5")
     renderer.run()
