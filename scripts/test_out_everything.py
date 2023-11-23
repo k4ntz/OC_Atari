@@ -19,7 +19,7 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
 from ocatari.core import OCAtari
 from ocatari.utils import parser, load_agent, make_deterministic
 import pickle
-
+import gymnasium as gym
 
 def ransac_regression(x, y):
     ransac = RANSACRegressor(estimator=LinearRegression(),
@@ -40,13 +40,14 @@ opts = parser.parse_args()
 MODE = "vision"
 RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
-env = OCAtari(opts.game+"NoFrameskip", mode=MODE, render_mode=RENDER_MODE)
+env = OCAtari(opts.game, mode=MODE, render_mode=RENDER_MODE)
+# env = gym.make(opts.game, render_mode=RENDER_MODE, frameskip=1)
 random.seed(0)
 
 
 INTERACTIVE = False
 ONE_CHANGE = False
-initial_ram_n = 77
+initial_ram_n = 15
 
 
 make_deterministic(0, env)
