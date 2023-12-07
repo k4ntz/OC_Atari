@@ -56,6 +56,7 @@ from .venture import _init_objects_venture_ram, _detect_objects_venture_revised
 from .crazyclimber import _init_objects_crazyclimber_ram, _detect_objects_crazyclimber_revised
 from .amidar import _init_objects_amidar_ram, _detect_objects_amidar_revised
 from .battlezone import _init_objects_battlezone_ram, _detect_objects_battlezone_revised
+from .bankheist import _init_objects_bankheist_ram, _detect_objects_bankheist_revised
 
 # calls the respective _get_max_objects from the game modules
 def get_max_objects(game_name, hud):
@@ -158,6 +159,8 @@ def init_objects(game_name, hud):
         return _init_objects_amidar_ram(hud)
     elif game_name.lower() == "battlezone":
         return _init_objects_battlezone_ram(hud)
+    elif game_name.lower() == "bankheist":
+        return _init_objects_bankheist_ram(hud)
     else:
         raise NotImplementedError(colored("Uncovered init objects", "red"))
         
@@ -308,6 +311,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_amidar_revised(objects, ram_state, hud)
     elif game_name.lower() == "battlezone":
         _detect_objects_battlezone_revised(objects, ram_state, hud)
+    elif game_name.lower() == "bankheist":
+        _detect_objects_bankheist_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)

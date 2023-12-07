@@ -53,7 +53,16 @@ class Blue_Tank(GameObject):
         super(Blue_Tank, self).__init__()
         self._xy = 74, 3
         self.wh = (16, 10)
-        self.rgb = 24, 80, 128
+        self.rgb = 66, 136, 176
+        self.hud = False
+
+
+class Yellow_Blue_Tank(GameObject):
+    def __init__(self):
+        super(Yellow_Blue_Tank, self).__init__()
+        self._xy = 74, 3
+        self.wh = (16, 10)
+        self.rgb = 195, 144, 61
         self.hud = False
 
 
@@ -122,21 +131,423 @@ def _detect_objects_battlezone_revised(objects, ram_state, hud=False):
     # 46
     # 73, 81 == type; 1 == blue tank; 2 == other tank; 3 == destroyed; 4 == red thing; 5 == yellow boss
 
-    if ram_state[73]:
+    if ram_state[73] and ram_state[48] and ram_state[46]:
         enemy = None
+        x, y = ram_state[48]+1, 97-ram_state[47]
+        w, h = 16, 10
         if ram_state[73] == 1:
             enemy = Blue_Tank()
+            if ram_state[46] == 21:
+                w-=5
+                h-=1
+            elif ram_state[46] == 26:
+                w-=4
+            elif ram_state[46] == 27:
+                x+=4
+                w-=4
+            elif ram_state[46] == 28:
+                x+=2
+                w-=2
+            elif ram_state[46] == 30:
+                x+=12
+                w+=4
+            elif ram_state[46] == 32:
+                x+=2
+                w-=2
+            elif ram_state[46] == 33:
+                h+=5
+            elif ram_state[46] == 34:
+                h+=4
+            elif ram_state[46] == 35:
+                x+=7
+                w+=4
+                h+=4
+            elif ram_state[46] == 36:
+                x+=9
+                w+=8
+                h+=4
+            elif ram_state[46] == 39:
+                h+=6
+            elif ram_state[46] == 40:
+                h+=6
+            elif ram_state[46] == 41:
+                x+=12
+                w+=4
+                h+=7
+            elif ram_state[46] == 46:
+                x+=12
+                w+=4
+                h+=7
         elif ram_state[73] == 2:
-            enemy = Blue_Tank()
+            enemy = Yellow_Blue_Tank()
+            if ram_state[46] == 26:
+                x+=4
+                w-=4
+            elif ram_state[46] == 27:
+                x+=4
+                w-=4
+            elif ram_state[46] == 28:
+                x+=2
+                w-=2
+            elif ram_state[46] == 30:
+                x+=12
+                w+=4
+            elif ram_state[46] == 32:
+                x+=2
+                w-=2
+            elif ram_state[46] == 33:
+                h+=5
+            elif ram_state[46] == 34:
+                h+=4
+            elif ram_state[46] == 35:
+                x+=7
+                w+=4
+                h+=4
+            elif ram_state[46] == 36:
+                w+=8
+                h+=4
+            elif ram_state[46] == 39:
+                h+=6
+            elif ram_state[46] == 40:
+                h+=6
+            elif ram_state[46] == 41:
+                x+=12
+                w+=4
+                h+=7
+            elif ram_state[46] == 46:
+                w+=4
+                h+=7
+            elif ram_state[46] == 48:
+                w+=8
+                h+=6
+            elif ram_state[46] == 49:
+                w+=12
+                h+=6
         elif ram_state[73] == 3:
             enemy = Blue_Tank()
+        elif ram_state[81] == 1 and ram_state[73] == 4:
+            enemy = Red_Thing()
+            if ram_state[47] == 0:
+                x+=2
+                y-=2
+                w=2
+                h=1
+            elif ram_state[47] == 1:
+                y-=1
+                w = 5
+                h = 2
+            elif ram_state[47] == 2:
+                y-=1
+                w = 6
+                h = 3
+            elif ram_state[47] == 3:
+                x-=1
+                y-=1
+                w = 8
+                h = 3
+            elif ram_state[47] == 4:
+                x+=2
+                w = 12
+                h = 5
+            elif ram_state[47] == 5:
+                h = 5
+            elif ram_state[47] == 6:
+                x+=4
+                w = 24
+                h = 6
+            elif ram_state[47] == 7:
+                x+=4
+                y+=1
+                w = 24
+                h = 8
+            elif ram_state[47] == 8:
+                y+=1
+                w = 32
+                h-=1
+            elif ram_state[47] == 9:
+                w = 32
+                h+=1
         elif ram_state[73] == 4:
             enemy = Red_Thing()
+            if ram_state[47] == 0:
+                x+=2
+                y-=2
+                w=2
+                h=1
+            elif ram_state[47] == 1:
+                y-=1
+                w = 5
+                h = 2
+            elif ram_state[47] == 2:
+                y-=1
+                w = 6
+                h = 3
+            elif ram_state[47] == 3:
+                x-=1
+                y-=1
+                w = 8
+                h = 3
+            elif ram_state[47] == 4:
+                x+=2
+                w = 12
+                h = 5
+            elif ram_state[47] == 5:
+                h = 5
+            elif ram_state[47] == 6:
+                x+=4
+                w = 24
+                h = 6
+            elif ram_state[47] == 7:
+                x+=4
+                y+=1
+                w = 24
+                h = 8
+            elif ram_state[47] == 8:
+                y+=1
+                w = 32
+                h-=1
+            elif ram_state[47] == 9:
+                w = 32
+                h+=1
         elif ram_state[73] == 5:
             enemy = Blue_Tank()
         objects[3] = enemy
         if enemy is not None:
-            enemy.xy = ram_state[48]+1, 97-ram_state[47]
+            enemy.xy = x, y
+            enemy.wh = w, h
+    else:
+        objects[3] = None
+
+    if ram_state[81] and ram_state[54]:
+        enemy = None
+        x, y = ram_state[54]+1, 97-ram_state[53]
+        w, h= 16, 10
+        if ram_state[81] == 1 and ram_state[73] == 1:
+            enemy = Blue_Tank()
+            if ram_state[52] == 21:
+                # w-=5
+                # h-=1
+                pass
+            elif ram_state[52] == 26:
+                w-=4
+            elif ram_state[52] == 27:
+                x+=4
+                w-=4
+            elif ram_state[52] == 28:
+                x+=2
+                w-=2
+            elif ram_state[52] == 30:
+                x+=12
+                w+=4
+            elif ram_state[52] == 32:
+                x+=2
+                w-=2
+            elif ram_state[52] == 33:
+                h+=5
+            elif ram_state[52] == 34:
+                h+=4
+            elif ram_state[52] == 35:
+                x+=7
+                w+=4
+                h+=4
+            elif ram_state[52] == 36:
+                x+=9
+                w+=8
+                h+=4
+            elif ram_state[52] == 39:
+                h+=6
+            elif ram_state[52] == 40:
+                h+=6
+            elif ram_state[52] == 41:
+                x+=12
+                w+=4
+                h+=7
+            elif ram_state[52] == 46:
+                x+=12
+                w+=4
+                h+=7
+        elif ram_state[81] == 1 and ram_state[73] != 1:
+            enemy = Blue_Tank()
+            if ram_state[52] == 21:
+                # w-=5
+                # h-=1
+                pass
+            elif ram_state[52] == 26:
+                w-=4
+            elif ram_state[52] == 27:
+                x+=4
+                w-=4
+            elif ram_state[52] == 28:
+                x+=2
+                w-=2
+            elif ram_state[52] == 30:
+                x+=12
+                w+=4
+            elif ram_state[52] == 32:
+                x+=2
+                w-=2
+            elif ram_state[52] == 33:
+                h+=5
+            elif ram_state[52] == 34:
+                h+=4
+            elif ram_state[52] == 35:
+                x+=7
+                w+=4
+                h+=4
+            elif ram_state[52] == 36:
+                x+=9
+                w+=8
+                h+=4
+            elif ram_state[52] == 39:
+                h+=6
+            elif ram_state[52] == 40:
+                h+=6
+            elif ram_state[52] == 41:
+                x+=12
+                w+=4
+                h+=7
+            elif ram_state[52] == 46:
+                x+=12
+                w+=4
+                h+=7
+        if ram_state[81] == 1 and ram_state[73] == 1:
+            enemy = Yellow_Blue_Tank()
+            if ram_state[52] == 21:
+                w-=5
+                h-=1
+            elif ram_state[52] == 26:
+                w-=4
+            elif ram_state[52] == 27:
+                x+=4
+                w-=4
+            elif ram_state[52] == 28:
+                x+=2
+                w-=2
+            elif ram_state[52] == 30:
+                x+=12
+                w+=4
+            elif ram_state[52] == 32:
+                x+=2
+                w-=2
+            elif ram_state[52] == 33:
+                h+=5
+            elif ram_state[52] == 34:
+                h+=4
+            elif ram_state[52] == 35:
+                x+=7
+                w+=4
+                h+=4
+            elif ram_state[52] == 36:
+                x+=9
+                w+=8
+                h+=4
+            elif ram_state[52] == 39:
+                h+=6
+            elif ram_state[52] == 40:
+                h+=6
+            elif ram_state[52] == 41:
+                x+=12
+                w+=4
+                h+=7
+            elif ram_state[52] == 46:
+                x+=12
+                w+=4
+                h+=7
+        elif ram_state[81] == 1 and ram_state[73] != 1:
+            enemy = Yellow_Blue_Tank()
+            if ram_state[52] == 21:
+                w-=5
+                h-=1
+            elif ram_state[52] == 26:
+                w-=4
+            elif ram_state[52] == 27:
+                x+=4
+                w-=4
+            elif ram_state[52] == 28:
+                x+=2
+                w-=2
+            elif ram_state[52] == 30:
+                x+=12
+                w+=4
+            elif ram_state[52] == 32:
+                x+=2
+                w-=2
+            elif ram_state[52] == 33:
+                h+=5
+            elif ram_state[52] == 34:
+                h+=4
+            elif ram_state[52] == 35:
+                x+=7
+                w+=4
+                h+=4
+            elif ram_state[52] == 36:
+                x+=9
+                w+=8
+                h+=4
+            elif ram_state[52] == 39:
+                h+=6
+            elif ram_state[52] == 40:
+                h+=6
+            elif ram_state[52] == 41:
+                x+=12
+                w+=4
+                h+=7
+            elif ram_state[52] == 46:
+                x+=12
+                w+=4
+                h+=7
+        elif ram_state[81] == 3:
+            enemy = Blue_Tank()
+        elif ram_state[81] == 4:
+            enemy = Red_Thing()
+            if ram_state[53] == 0:
+                x+=2
+                y-=2
+                w=2
+                h=1
+            elif ram_state[53] == 1:
+                y-=1
+                w = 5
+                h = 2
+            elif ram_state[53] == 2:
+                y-=1
+                w = 6
+                h = 3
+            elif ram_state[53] == 3:
+                x-=1
+                y-=1
+                w = 8
+                h = 3
+            elif ram_state[53] == 4:
+                x+=2
+                w = 12
+                h = 5
+            elif ram_state[53] == 5:
+                h = 5
+            elif ram_state[53] == 6:
+                x+=4
+                w = 24
+                h = 6
+            elif ram_state[53] == 7:
+                x+=4
+                y+=1
+                w = 24
+                h = 8
+            elif ram_state[53] == 8:
+                y+=1
+                w = 32
+                h-=1
+            elif ram_state[53] == 9:
+                w = 32
+                h+=1
+        elif ram_state[81] == 5:
+            enemy = Blue_Tank()
+        objects[4] = enemy
+        if enemy is not None:
+            enemy.xy = x, y
+            enemy.wh = w, h
+    else:
+        objects[4] = None
 
     if hud:
         pass
