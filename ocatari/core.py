@@ -37,7 +37,7 @@ except ModuleNotFoundError:
 
 DEVICE = "cpu" if torch.cuda.is_available() else "cpu"
 
-AVAILABLE_GAMES = ["Alien", "Amidar", "Assault", "Asterix", "Asteroids", "Atlantis", "Bankheist", "BattleZone","BeamRider", "Berzerk", "Bowling", "Boxing",
+AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix", "Asteroids", "Atlantis", "Bankheist", "BattleZone","BeamRider", "Berzerk", "Bowling", "Boxing",
                    "Breakout", "Carnival", "Centipede", "ChoppperCommand", "CrazyClimber", "DemonAttack", "Enduro", "FishingDerby", "Freeway",
                    "Frostbite", "Gopher", "Hero", "IceHockey", "Kangaroo", "MontezumaRevenge", "MsPacman","Pitfall", "Pong", "PrivateEye",
                    "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "Videocube", "VideoPinball", "Venture", "Yarsrevenge"]
@@ -52,9 +52,9 @@ class OCAtari:
     :type env_name: str
     :param mode: The detection method type: one of `raw`, `revised`, or `vision`, or `both` (i.e. `revised` + `vision`)
     :type mode: str
-    :param hud: Wether to include or not objects from the HUD (e.g. scores, lives)
+    :param hud: Whether to include or not objects from the HUD (e.g. scores, lives)
     :type hud: bool
-    :param obs_mode: How to fill the image buffer (contaning the 4 last frames): one of `None`, `dqn`, `ori` 
+    :param obs_mode: How to fill the image buffer (containing the 4 last frames): one of `None`, `dqn`, `ori`
     :type obs_mode: str
     
     the remaining \*args and \**kwargs will be passed to the \
