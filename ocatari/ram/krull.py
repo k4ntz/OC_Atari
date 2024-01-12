@@ -125,13 +125,31 @@ class Castle(GameObject):
         self.hud = False
 
 
+class Sun(ValueObject):
+    def __init__(self):
+        super(Sun, self).__init__()
+        self._xy = 0, 0
+        self.wh = (7, 7)
+        self.rgb = 236, 236, 236
+        self.hud = True
+
+
+class Hour_Glass(ValueObject):
+    def __init__(self):
+        super(Hour_Glass, self).__init__()
+        self._xy = 0, 0
+        self.wh = (5, 8)
+        self.rgb = 214, 92, 92
+        self.hud = True
+
+
 class Score(ValueObject):
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 0, 0
         self.wh = (7, 7)
         self.rgb = 252, 252, 84
-        self.hud = False
+        self.hud = True
 
 
 class Life(GameObject):
@@ -140,7 +158,7 @@ class Life(GameObject):
         self._xy = 0, 0
         self.wh = (6, 7)
         self.rgb = 92, 186, 92
-        self.hud = False
+        self.hud = True
 
 
 class Weapon_HUD(GameObject):
@@ -149,7 +167,7 @@ class Weapon_HUD(GameObject):
         self._xy = 0, 0
         self.wh = (8, 7)
         self.rgb = 92, 186, 92
-        self.hud = False
+        self.hud = True
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -388,12 +406,54 @@ def _detect_objects_krull_revised(objects, ram_state, hud=False):
     
 
     if hud:
-        # sun xy == r24,
+        # sun xy == r23, r24,
         # hour-glass == r26
         # lives == r31
         # weapon == r32
 
-        
+        # Sun
+        if 25 < ram_state[23] < 42:
+            sun = Sun()
+            objects[-9] = sun
+            top = 0
+            bottom = 0
+            xoff = 0
+            if ram_state[23] < 32:
+                top = 32 - ram_state[23]
+                if top == 5:
+                    xoff = 1
+                elif top == 6:
+                    xoff = 2
+            elif ram_state[23] > 35:
+                bottom = ram_state[23] - 35
+                if bottom == 5:
+                    xoff = 1
+                elif bottom == 6:
+                    xoff = 2
+            sun.xy =  ram_state[24] + 9 + xoff, ram_state[23] - 30 + top
+            sun.wh = 7 - (xoff*2), 7 - top - bottom
+        else:
+            objects[-9] = None
+
+        # Hour Glass
+        if ram_state[26]:
+            time =  Hour_Glass()
+            objects[-8] = time
+            yoff = 0
+            h = 0
+            for i in range(8):
+                if ram_state[26]&2**i:
+                    if yoff:
+                        h += i - yoff + 1
+                    else:
+                        h = 1
+                    yoff = i+1
+
+            time.xy = 121, 11 - yoff
+            time.wh = 5, h
+        else:
+            objects[-8] = None
+            
         # Score
         score = Score()
         objects[-7] = score
