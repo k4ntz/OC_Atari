@@ -93,6 +93,16 @@ class Castle(GameObject):
 
 
 #  ---- HUD -----
+class Sun(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = [236, 236, 236]
+
+class Hour_Glass(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = [214, 92, 92]
+
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -190,6 +200,14 @@ def _detect_objects_krull(objects, obs, hud=False):
         objects.append(Castle(*bb))
     
     if hud:
+        sun = find_objects(obs, objects_colors["white"], maxy=11)
+        for bb in sun:
+            objects.append(Sun(*bb))
+
+        time = find_objects(obs, objects_colors["red1"], maxy=11)
+        for bb in time:
+            objects.append(Hour_Glass(*bb))
+        
         score = find_objects(obs, objects_colors["yellow1"], miny=174, closing_dist=8)
         for bb in score:
             objects.append(Score(*bb))
