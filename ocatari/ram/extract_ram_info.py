@@ -34,9 +34,11 @@ from .frostbite import _init_objects_frostbite_ram, _detect_objects_frostbite_re
 from .gopher import _init_objects_gopher_ram, _detect_objects_gopher_revised
 from .hero import _init_objects_hero_ram, _detect_objects_hero_revised
 from .icehockey import _init_objects_icehockey_ram, _detect_objects_icehockey_revised
+from .jamesbond import _init_objects_jamesbond_ram, _detect_objects_jamesbond_revised
 from .kangaroo import _detect_objects_kangaroo_raw, \
     _detect_objects_kangaroo_revised, \
     _init_objects_kangaroo_ram
+from .krull import _init_objects_krull_ram, _detect_objects_krull_revised
 from .montezumarevenge import _init_objects_montezumarevenge_ram, _detect_objects_montezumarevenge_revised
 from .mspacman import _detect_objects_mspacman_raw, \
     _detect_objects_mspacman_revised, \
@@ -58,7 +60,6 @@ from .tennis import _detect_objects_tennis_raw, _detect_objects_tennis_revised, 
 from .venture import _init_objects_venture_ram, _detect_objects_venture_revised
 from .videopinball import _init_objects_videopinball_ram, _detect_objects_videopinball_revised
 from .yarsrevenge import _init_objects_yarsrevenge_ram, _detect_objects_yarsrevenge_revised
-
 
 # calls the respective _get_max_objects from the game modules
 def get_max_objects(game_name, hud):
@@ -165,6 +166,10 @@ def init_objects(game_name, hud):
         return _init_objects_bankheist_ram(hud)
     elif game_name.lower() == "adventure":
         return _init_objects_adventure_ram(hud)
+    elif game_name.lower() == "jamesbond":
+        return _init_objects_jamesbond_ram(hud)
+    elif game_name.lower() == "krull":
+        return _init_objects_krull_ram(hud)
     else:
         raise NotImplementedError(colored("Uncovered init objects", "red"))
 
@@ -318,6 +323,10 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_bankheist_revised(objects, ram_state, hud)
     elif game_name.lower() == "adventure":
         _detect_objects_adventure_revised(objects, ram_state, hud)
+    elif game_name.lower() == "jamesbond":
+        _detect_objects_jamesbond_revised(objects, ram_state, hud)
+    elif game_name.lower() == "krull":
+        _detect_objects_krull_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
