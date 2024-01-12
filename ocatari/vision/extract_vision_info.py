@@ -26,7 +26,9 @@ from .frostbite import _detect_objects_frostbite
 from .gopher import _detect_objects_gopher
 from .hero import _detect_objects_hero
 from .icehockey import _detect_objects_icehockey
+from .jamesbond import _detect_objects_jamesbond
 from .kangaroo import _detect_objects_kangaroo
+from .krull import _detect_objects_krull
 from .montezumarevenge import _detect_objects_montezumarevenge
 from .mspacman import _detect_objects_mspacman
 from .pitfall import _detect_objects_pitfall
@@ -42,7 +44,6 @@ from .tennis import _detect_objects_tennis
 from .venture import _detect_objects_venture
 from .videopinball import _detect_objects_videopinball
 from .yarsrevenge import _detect_objects_yarsrevenge
-
 
 def detect_objects_vision(objects, obs, game_name, hud=False):
     if game_name.lower() == "atlantis":
@@ -133,5 +134,9 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_bankheist(objects, obs, hud)
     elif game_name.lower() == "adventure":
         return _detect_objects_adventure(objects, obs, hud)
+    elif game_name.lower() == "jamesbond":
+        return _detect_objects_jamesbond(objects, obs, hud)
+    elif game_name.lower() == "krull":
+        return _detect_objects_krull(objects, obs, hud)
     else:
         raise NotImplementedError(colored("Uncovered game in vision mode", "red"))
