@@ -331,7 +331,8 @@ class OCAtari:
             self.window.blit(overlay_surface, (0, 0))
 
             if self.render_mode == "human":
-                self.clock.tick(60 // self._env.unwrapped._frameskip)  # limit FPS to avoid super fast movement
+                frameskip = self._env.unwrapped._frameskip if isinstance(self._env.unwrapped._frameskip, int) else 1
+                self.clock.tick(60 // frameskip)  # limit FPS to avoid super fast movement
                 pygame.display.flip()
                 pygame.event.pump()
 
