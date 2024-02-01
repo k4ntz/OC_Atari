@@ -41,6 +41,8 @@ from .seaquest import _detect_objects_seaquest
 from .skiing import _detect_objects_skiing
 from .spaceinvaders import _detect_objects_spaceinvaders
 from .tennis import _detect_objects_tennis
+from .timepilot import _detect_objects_timepilot
+from .upndown import _detect_objects_upndown
 from .venture import _detect_objects_venture
 from .videopinball import _detect_objects_videopinball
 from .yarsrevenge import _detect_objects_yarsrevenge
@@ -138,5 +140,9 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_jamesbond(objects, obs, hud)
     elif game_name.lower() == "krull":
         return _detect_objects_krull(objects, obs, hud)
+    elif game_name.lower() == "timepilot":
+        return _detect_objects_timepilot(objects, obs, hud)
+    elif game_name.lower() == "upndown":
+        return _detect_objects_upndown(objects, obs, hud)
     else:
         raise NotImplementedError(colored("Uncovered game in vision mode", "red"))

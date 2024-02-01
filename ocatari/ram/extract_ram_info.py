@@ -58,6 +58,8 @@ from .spaceinvaders import _detect_objects_spaceinvaders_raw, \
     _init_objects_spaceinvaders_ram
 from .tennis import _detect_objects_tennis_raw, _detect_objects_tennis_revised, _init_objects_tennis_ram
 from .venture import _init_objects_venture_ram, _detect_objects_venture_revised
+from .timepilot import _init_objects_timepilot_ram, _detect_objects_timepilot_revised
+from .upndown import _init_objects_upndown_ram, _detect_objects_upndown_revised
 from .videopinball import _init_objects_videopinball_ram, _detect_objects_videopinball_revised
 from .yarsrevenge import _init_objects_yarsrevenge_ram, _detect_objects_yarsrevenge_revised
 
@@ -170,6 +172,10 @@ def init_objects(game_name, hud):
         return _init_objects_jamesbond_ram(hud)
     elif game_name.lower() == "krull":
         return _init_objects_krull_ram(hud)
+    elif game_name.lower() == "timepilot":
+        return _init_objects_timepilot_ram(hud)
+    elif game_name.lower() == "upndown":
+        return _init_objects_upndown_ram(hud)
     else:
         raise NotImplementedError(colored("Uncovered init objects", "red"))
 
@@ -327,6 +333,10 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_jamesbond_revised(objects, ram_state, hud)
     elif game_name.lower() == "krull":
         _detect_objects_krull_revised(objects, ram_state, hud)
+    elif game_name.lower() == "timepilot":
+        _detect_objects_timepilot_revised(objects, ram_state, hud)
+    elif game_name.lower() == "upndown":
+        _detect_objects_upndown_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)

@@ -39,8 +39,8 @@ DEVICE = "cpu" if torch.cuda.is_available() else "cpu"
 
 AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix", "Asteroids", "Atlantis", "Bankheist", "BattleZone","BeamRider", "Berzerk", "Bowling", "Boxing",
                    "Breakout", "Carnival", "Centipede", "ChoppperCommand", "CrazyClimber", "DemonAttack", "Enduro", "FishingDerby", "Freeway",
-                   "Frostbite", "Gopher", "Hero", "IceHockey", "JamesBond", "Kangaroo", "Krull", "MontezumaRevenge", "MsPacman","Pitfall", "Pong", "PrivateEye",
-                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "Videocube", "VideoPinball", "Venture", "Yarsrevenge"]
+                   "Frostbite", "Gopher", "Hero", "IceHockey", "Jamesbond", "Kangaroo", "Krull", "MontezumaRevenge", "MsPacman", "Pitfall", "Pong", "PrivateEye",
+                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "TimePilot", "UpNDown", "Videocube", "VideoPinball", "Venture", "Yarsrevenge"]
 
 
 # TODO: complete the docstring 
