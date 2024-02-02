@@ -1,3 +1,25 @@
+from enum import Enum
+
+
+class Orientation(Enum):  # 16-wind compass directions
+    N = 0
+    NNE = 1
+    NE = 2
+    ENE = 3
+    E = 4
+    ESE = 5
+    SE = 6
+    SSE = 7
+    S = 8
+    SSW = 9
+    SW = 10
+    WSW = 11
+    W = 12
+    WNW = 13
+    NW = 14
+    NNW = 15
+
+
 class GameObject:
     """
     The Parent Class of every detected object in the Atari games (RAM Extraction mode)
@@ -53,7 +75,7 @@ class GameObject:
         self._xy = (0, 0)
         self.wh = (0, 0)
         self._prev_xy = None
-        self._orientation = 0
+        self._orientation = None
         self.hud = False
 
     def __repr__(self):
@@ -105,6 +127,14 @@ class GameObject:
     @xy.setter
     def xy(self, xy):
         self._xy = (int(xy[0]), int(xy[1]))
+
+    @x.setter
+    def x(self, x):
+        self._xy = int(x), self.y
+
+    @y.setter
+    def y(self, y):
+        self._xy = self.x, int(y)
 
     # returns 2 lists with current and past coords
     @property
@@ -202,7 +232,7 @@ class ValueObject(GameObject):
 
     @value.setter
     def value(self, value):
-        self._value = int(value)
+        self._value = None if value is None else int(value)
 
     @property
     def prev_value(self):
