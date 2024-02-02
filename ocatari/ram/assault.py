@@ -171,7 +171,6 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
     For all objects:
     (x, y, w, h, r, g, b)
     """
-    del objects[0:]
 
     # player
     player = Player()
@@ -184,7 +183,7 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
         player.xy = x, 178
     else:
         player.xy = player_x_pos_128[ram_state[16] % 16] - x_diff, 178
-    objects.append(player)
+    objects[0] = player
 
     # player missile
     missile = PlayerMissileVertical()
@@ -245,7 +244,9 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
                 y = y - 9
 
             missile.xy = x - 1, y
-        objects.append(missile)
+        objects[1] = missile
+    else:
+        objects[1] = None
 
     global horizontal_pos
     global horizontal_pos_right
@@ -274,9 +275,10 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
             horizontal_pos = horizontal_pos_left
             mis.xy = horizontal_pos_left, 181
         
-        objects.append(mis)
+        objects[2] = mis
         
     else:
+        objects[2] = None
         horizontal_pos = 0
 
     # mother ship
@@ -293,7 +295,7 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
 
     if ram_state[11] == 112:    # mother ship changes color
         mother_ship.rgb = 184, 70, 162
-    objects.append(mother_ship)
+    objects[3] = mother_ship
 
     # enemy
     global enemy_missile_x
@@ -373,10 +375,10 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
             elif ram_state[40] == 212:  # set enemy color
                 enemy2.rgb = 105, 77, 20
 
-            objects.append(enemy2)
+            objects[4+en] = enemy2
 
         if enemy_appearance != 96:
-            objects.append(enemy)
+            objects[4+en] = enemy
 
         if en == 0 and enemy_missile_x == 0 and ram_state[75] == 128\
                 and (enemy_appearance == 192 or enemy_appearance == 160 or enemy_appearance == 224):
@@ -410,7 +412,7 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
             missile.xy = enemy_missile_x, 60 + ram_state[110]
             missile.rgb = 187, 187, 53
 
-        objects.append(missile)
+        objects[7] = missile
     else:
         enemy_missile_x = 0
 
@@ -419,13 +421,13 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
         for i in range(6):
             sc = PlayerScore()
             sc.xy = 96 - 8 * i, 2
-            objects.append(sc)
+            objects[8+i] = sc
 
         # lives
         for i in range(ram_state[101] - 1):
             liv = Lives()
             liv.xy = 15 + 16 * i, 192
-            objects.append(liv)
+            objects[14+i] = liv
 
         # health
         health = Health()
@@ -462,7 +464,7 @@ def _detect_objects_assault_revised(objects, ram_state, hud=False):
 
         if ram_state[21] == 70:
             health.rgb = 200, 72, 72
-        objects.append(health)
+        objects[14+ram_state[101]] = health
 
 
 def _detect_objects_assault_raw(info, ram_state):

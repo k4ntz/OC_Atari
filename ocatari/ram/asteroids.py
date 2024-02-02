@@ -1,7 +1,6 @@
-import sys
-
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, Orientation
+from .game_objects import GameObject
+import sys
 
 """
 RAM extraction for the game ASTEROIDS. Supported modes: raw
@@ -11,8 +10,8 @@ they were not interpretable. One x Value corresponds to multiple positions on th
 another RAM state which separates them into quadrants or the x-Axis is moving.
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissile': 2, 'Asteroid': 50}  # Asteroid count can get really high
-MAX_NB_OBJECTS_HUD = {'Lives': 1, 'PlayerScore': 5}
+MAX_NB_OBJECTS = {'Player': 1, 'Asteroids':30,'PlayerMissile': 2}  # Asteroid count can get really high
+MAX_NB_OBJECTS_HUD = {'Lives': 1, 'PlayerScore': 1}
 
 
 class Player(GameObject):
@@ -21,11 +20,12 @@ class Player(GameObject):
     """
     
     def __init__(self):
-        super().__init__()
+        super(Player, self).__init__()
         self._xy = 84, 99
         self.wh = 5, 10
         self.rgb = 240, 128, 128
         self.hud = False
+        self.orientation = 0
 
 
 class Asteroid(GameObject):
@@ -34,8 +34,8 @@ class Asteroid(GameObject):
     """
     
     def __init__(self):
-        super().__init__()
-        self.xy = 8, 87
+        super(Asteroid, self).__init__()
+        self._xy = 8, 87
         self.wh = 16, 28
         self.rgb = 180, 122, 48
         self.hud = False
@@ -47,7 +47,7 @@ class PlayerMissile(GameObject):
     """
     
     def __init__(self):
-        super().__init__()
+        super(PlayerMissile, self).__init__()
         self._xy = 0, 0
         self.wh = 1, 2
         self.rgb = 117, 181, 239
@@ -60,7 +60,7 @@ class PlayerScore(GameObject):
     """
     
     def __init__(self):
-        super().__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 68, 5
         self.rgb = 184, 50, 50
         self.wh = 12, 10
@@ -76,7 +76,7 @@ class Lives(GameObject):
     """
     
     def __init__(self):
-        super().__init__()
+        super(Lives, self).__init__()
         self._xy = 132, 5
         self.rgb = 184, 50, 50
         self.wh = 12, 10
@@ -89,7 +89,7 @@ asteroids_colors = {"brown": [180, 122, 48], "purple": [104, 72, 198], "yellow":
 
 player_missile_colors = {"blue": [117, 181, 239], "red": [240, 128, 128]}
 
-# parses MAX_NB* dicts, returns default init list of objects
+
 def _get_max_objects(hud=False):
 
     def fromdict(max_obj_dict):
@@ -97,7 +97,7 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())
+                objects.append(getattr(mod, k)())    
         return objects
 
     if hud:
@@ -110,7 +110,7 @@ def _init_objects_asteroids_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player()]
-
+    objects.extend([None] * 33)
     if hud:
         objects.extend([Lives(), PlayerScore()])
     return objects
@@ -121,62 +121,202 @@ def _detect_objects_asteroids_revised(objects, ram_state, hud=False):
        For all objects:
        (x, y, w, h, r, g, b)
     """
-    player = objects[0]
-    player.xy = 100, 100 + (2 * (ram_state[74] - 41))
-    player.orientation = Orientation(ram_state[60] % 16)
 
-    if hud:
-        del objects[3:]
-    else:
-        del objects[1:]
+    # rotation == 60 16pos
+    # x position 4ls bits are set x positions 
+    # 4ms bits are off sets 1000 == x+8, 0101 ==  x - 5, 1111 == x + 8 -7-> x+1
 
-    # 0 und 1 asteroids on left
-    # 9, 10 asteroids on right
-    for i in range(16):
-        if (ram_state[21 + i] == 0 and ram_state[3 + i] == 0) or ram_state[3 + i] == 224:
-            continue
+    player = Player()
+    objects[0] = player
+
+    if ram_state[74] != 224:
+        if ram_state[60]%16 == 4:
+            player.xy = _x_position(ram_state[73])-1, 100 + (2 * (ram_state[74] - 41))
+            player.wh = 6, 10
+        elif ram_state[60]%16 == 12:
+            player.xy = _x_position(ram_state[73])+1, 100 + (2 * (ram_state[74] - 41))
+            player.wh = 6, 10
+        elif 2 > ram_state[60]&8 > 6:
+            player.xy = _x_position(ram_state[73]), 100 + (2 * (ram_state[74] - 41))
+            player.wh = 5, 10
         else:
-            asteroid = Asteroid()
-            y = 0
-            x = 0
-            if i >= 8:
-                x = round(ram_state[21 + i] / 3)
+            player.xy = _x_position(ram_state[73]), 100 + (2 * (ram_state[74] - 41))
+            player.wh = 6, 10
+    else:
+        objects[0] = None
+    
+    player.orientation = ram_state[60]%16
+
+    ast_list = [3,4,5,6,7,8,9,12,13,14,15,16,17,18,19]
+    for i in range(len(ast_list)):
+        # if not ram_state[ast_list[i]] == 224:
+        # 0010 1111
+        # 1111 0010
+        if ram_state[ast_list[i]+18] and not ram_state[ast_list[i]]&128:
+            ast2 = None
+            ast = Asteroid()
+            objects[1+i] = ast
+            x = int(_x_position(ram_state[ast_list[i]+18]))
+            y = 184 - 2 * (80 - ram_state[ast_list[i]])
+            if ram_state[ast_list[i]+36]&127 < 32:
+                split = False
+                ast.xy = x, y
+                w, h = 16, 28
+                if x >= 160-16:
+                    w -= (x+16)-160
+                    split = True
+                if y >= 194-28:
+                    h -= (y+28)-194
+                    split = True
+                if w < 0 or h < 0:
+                    ast = None
+                else:
+                    ast.wh = w, h
+                if split and 16-w > 0 and 28-h > 0:
+                    ast2 = Asteroid()
+                    objects[16+i] = ast2
+                    if w == 16:
+                        ast2.xy = x, 18
+                        ast2.wh = 16, 28-h
+                    elif h == 28:
+                        ast2.xy = 0, y
+                        ast2.wh = 16-w, 28
+                    else:
+                        ast2.xy = 0, 18
+                        ast2.wh = 16-w, 28-h
+                else:
+                    objects[16+i] = None
+
+            elif ram_state[ast_list[i]+36]&127 < 48:
+                split = False
+                ast.xy = x-1, y-2
+                w, h = 8, 15
+                if x >= 160-8:
+                    w -= (x+7)-160
+                    split = True
+                if y >= 194-15:
+                    h -= (y+13)-194
+                    split = True
+                if w < 0 or h < 0:
+                    ast = None
+                else:
+                    ast.wh = w, h
+                if split and 8-w > 0 and 15-h > 0:
+                    ast2 = Asteroid()
+                    objects[16+i] = ast2
+                    if w == 8:
+                        ast2.xy = x-1, 18
+                        ast2.wh = 8, 15-h
+                    elif h == 15:
+                        ast2.xy = 0, y-2
+                        ast2.wh = 8-w, 15
+                    else:
+                        ast2.xy = 0, 18
+                        ast2.wh = 8-w, 15-h
+                else:
+                    objects[16+i] = None
             else:
-                x = 25
-            if ram_state[3 + i] > 200:
-                y = 18
-            else:
-                y = 184 - 2 * (80 - ram_state[3 + i])
-            asteroid.xy = x, y
-            print(str(i) + " " + str(ram_state[21 + i]) + ", " + str(ram_state[3 + i]))
-            objects.append(asteroid)
+                split = False
+                ast.xy = x-1, y-1
+                w, h = 4, 8
+                if x >= 160-4:
+                    w -= (x+3)-160
+                    split = True
+                if y >= 194-8:
+                    h -= (y+7)-194
+                    split = True
+                if w < 0 or h < 0:
+                    ast = None
+                else:
+                    ast.wh = w, h
+                if split and 4-w > 0 and 8-h > 0:
+                    ast2 = Asteroid()
+                    objects[16+i] = ast2
+                    if w == 4:
+                        ast2.xy = x-1, 18
+                        ast2.wh = 4, 15-h
+                    elif h == 8:
+                        ast2.xy = 0, y-1
+                        ast2.wh = 8-w, 8
+                    else:
+                        ast2.xy = 0, 18
+                        ast2.wh = 4-w, 8-h
+                else:
+                    objects[16+i] = None
+            if ast is not None:
+                w1, h1 = ast.wh
+                if w1 < 0:
+                    print(w1, "wtf w1?")
+                if h1 < 0:
+                    print(h1, "wtf h1?")
+            if ast2 is not None:
+                w2, h2 = ast2.wh
+                if w2 < 0:
+                    print(w2, "wtf w2?")
+                if h2 < 0:
+                    print(h2, "wtf h2?")
+        else:
+            objects[1+i] = None
+            objects[16+i] = None
+    
+    if ram_state[83] and not ram_state[86]&128:
+        miss = PlayerMissile()
+        objects[16] = miss
+        miss.xy = _x_position(ram_state[83]) + 1, 175 - 2 * (80 - ram_state[86]) + 2
+    else:
+        objects[16] = None
+
+
+    if ram_state[84] and not ram_state[87]&128:
+        miss = PlayerMissile()
+        objects[17] = miss
+        miss.xy = _x_position(ram_state[84]) + 1, 175 - 2 * (80 - ram_state[87]) + 2
+    else:
+        objects[17] = None
 
     if hud:
-        lives, score = objects[1:3]
-        thousands = _convert_number(ram_state[61])
-        tens = _convert_number(ram_state[62])
-        if thousands is not None and tens is not None:
-            score_value = thousands * 1000 + tens * 10
-            if score_value >= 10:
-                sc = PlayerScore()
-                sc.xy = 52, 5
-                objects.append(sc)
+        if ram_state[61] >= 16:
+            score = PlayerScore()
+            objects[-1] = score
+            score.xy = 4, 5
+            score.wh = 76, 10
+        elif ram_state[61]:
+            score = PlayerScore()
+            objects[-1] = score
+            score.xy = 20, 5
+            score.wh = 60, 10
+        elif ram_state[62] >= 16:
+            score = PlayerScore()
+            objects[-1] = score
+            score.xy = 36, 5
+            score.wh = 44, 10
+        elif ram_state[62]:
+            score = PlayerScore()
+            objects[-1] = score
+            score.xy = 52, 5
+            score.wh = 28, 10
+        else:
+            score = PlayerScore()
+            objects[-1] = score
+            score.xy = 68, 5
+            score.wh = 12, 10
 
-            if score_value >= 100:
-                sc = PlayerScore()
-                sc.xy = 36, 5
-                objects.append(sc)
 
-            if score_value >= 1000:
-                sc = PlayerScore()
-                sc.xy = 20, 5
-                objects.append(sc)
 
-            if score_value >= 10000:
-                sc = PlayerScore()
-                sc.xy = 4, 5
-                objects.append(sc)
-
+def _x_position(value):
+    ls = value&15
+    add = 8*((value>>7)&1)
+    sub = (value>>4)&7
+    if value == 0:
+        return 64
+    elif value == 1:
+        return 4
+    elif ls%2 == 0:
+        mult = (ls/2)-1
+        return 97 + 15 * mult + add - sub
+    elif ls%2 == 1:
+        mult = ((ls-1)/2)-1
+        return 10 + 15 * mult + add - sub
 
 def _augment_info_asteroids_revised(info, ram_state):
     """

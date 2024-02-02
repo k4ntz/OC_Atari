@@ -8,6 +8,7 @@ from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
 from ocatari.ram.game_objects import GameObject, ValueObject
 from ocatari.utils import draw_label, draw_arrow, draw_orientation_indicator
+from gymnasium.error import NameNotFound
 
 from ale_py import ALEInterface
 
@@ -34,12 +35,12 @@ except ModuleNotFoundError:
         "Try `pip install pygame`.\n",
     )
 
-DEVICE = "cpu"
+DEVICE = "cpu" if torch.cuda.is_available() else "cpu"
 
-AVAILABLE_GAMES = ["Alien", "Assault", "Asterix", "Asteroids", "Atlantis", "BeamRider", "Berzerk", "Bowling", "Boxing",
-                   "Breakout", "Carnival", "Centipede", "ChoppperCommand", "DemonAttack", "Enduro", "FishingDerby", "Freeway",
-                   "Frostbite", "Gopher", "Hero", "IceHockey", "Kangaroo", "MontezumaRevenge", "MsPacman","Pitfall", "Pong", "PrivateEye",
-                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis","Videocube", "Venture", "Yarsrevenge"]
+AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix", "Asteroids", "Atlantis", "Bankheist", "BattleZone","BeamRider", "Berzerk", "Bowling", "Boxing",
+                   "Breakout", "Carnival", "Centipede", "ChoppperCommand", "CrazyClimber", "DemonAttack", "Enduro", "FishingDerby", "Freeway",
+                   "Frostbite", "Gopher", "Hero", "IceHockey", "JamesBond", "Kangaroo", "Krull", "MontezumaRevenge", "MsPacman","Pitfall", "Pong", "PrivateEye",
+                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "Videocube", "VideoPinball", "Venture", "Yarsrevenge"]
 
 
 # TODO: complete the docstring 
@@ -51,9 +52,9 @@ class OCAtari:
     :type env_name: str
     :param mode: The detection method type: one of `raw`, `revised`, or `vision`, or `both` (i.e. `revised` + `vision`)
     :type mode: str
-    :param hud: Wether to include or not objects from the HUD (e.g. scores, lives)
+    :param hud: Whether to include or not objects from the HUD (e.g. scores, lives)
     :type hud: bool
-    :param obs_mode: How to fill the image buffer (contaning the 4 last frames): one of `None`, `dqn`, `ori` 
+    :param obs_mode: How to fill the image buffer (containing the 4 last frames): one of `None`, `dqn`, `ori`
     :type obs_mode: str
     
     the remaining \*args and \**kwargs will be passed to the \
@@ -68,9 +69,11 @@ class OCAtari:
             to_check = env_name[:4]
             game_name = env_name.split("-")[0].split("No")[0].split("Deterministic")[0]
         if to_check[:4] not in [gn[:4] for gn in AVAILABLE_GAMES]:
-            print(colored(f"Game '{to_check}' not available in OCAtari", "red"))
+            print(colored(f"Game '{env_name}' not covered yet by OCAtari", "red"))
             print("Available games: ", AVAILABLE_GAMES)
-            exit(1)
+            self._covered_game = False
+        else:
+            self._covered_game = True
         gym_render_mode = "rgb_array" if render_oc_overlay else render_mode
         self._env = gym.make(env_name, render_mode=gym_render_mode, *args, **kwargs)
         self.game_name = game_name
@@ -78,8 +81,12 @@ class OCAtari:
         self.obs_mode = obs_mode
         self.hud = hud
         self.max_objects = []
-        self._objects : list[GameObject] = init_objects(self.game_name, self.hud)
-        if mode == "vision":
+        if not self._covered_game:
+            global init_objects
+            init_objects = lambda *args, **kwargs: []
+            self.detect_objects = lambda *args, **kwargs: None
+            self.step = self._step_ram
+        elif mode == "vision":
             self.detect_objects = detect_objects_vision
             self.step = self._step_vision
         elif mode == "raw":
@@ -97,6 +104,7 @@ class OCAtari:
         else:
             print(colored("Undefined mode for information extraction", "red"))
             exit(1)
+        self._objects : list[GameObject] = init_objects(self.game_name, self.hud)
         self._fill_buffer = lambda *args, **kwargs: None
         self._reset_buffer = lambda *args, **kwargs: None
         if obs_mode == "dqn":
@@ -147,36 +155,12 @@ class OCAtari:
         else:  # mode == "raw" because in raw mode we augment the info dictionary
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
         self._fill_buffer()
-        # if self.obs_mode in ["dqn", "ori"]:
-        #     obs = self._get_buffer_as_stack()
-        # if pygame.display.get_surface():
-        
-        # if self.render_mode == "human":
-        #     for obj in self.objects:
-        #         x = obj.x + obj.w / 2
-        #         y = obj.y + obj.h / 2
-        #         dx = obj.dx
-        #         dy = obj.dy
-
-        #         # Draw an 'X' at object center
-        #         pygame.draw.line(screen, color=(255, 255, 255),
-        #                         start_pos=(x - 2, y - 2), end_pos=(x + 2, y + 2))
-        #         pygame.draw.line(screen, color=(255, 255, 255),
-        #                         start_pos=(x - 2, y + 2), end_pos=(x + 2, y - 2))
-
-        #         # Draw velocity vector
-        #         if dx != 0 or dy != 0:
-        #             pygame.draw.line(screen, color=(100, 200, 255),
-        #                             start_pos=(float(x), float(y)), end_pos=(x + 8 * dx, y + 8 * dy))
-        
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
         obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
         self.detect_objects(self._objects, obs, self.game_name, self.hud)
         self._fill_buffer()
-        # if self.obs_mode in ["dqn", "ori"]:
-        #     obs = self._get_buffer_as_stack()
         return obs, reward, truncated, terminated, info
 
     def _step_test(self, *args, **kwargs):

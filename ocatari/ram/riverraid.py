@@ -44,6 +44,7 @@ class Player(GameObject):
     """
     
     def __init__(self):
+        super().__init__()
         self._xy = 77, 145
         self.wh = 7, 13
         self.rgb = 232, 232, 74
@@ -56,6 +57,7 @@ class PlayerMissile(GameObject):
     """
     
     def __init__(self):
+        super().__init__()
         self._xy = 0, 0
         self.wh = 1, 8
         self.rgb = 232, 232, 74
@@ -145,6 +147,7 @@ class PlayerScore(GameObject):
     """
     
     def __init__(self):
+        super().__init__()
         self._xy = 97, 165
         self.rgb = 232, 232, 74
         self.wh = 6, 8
@@ -160,6 +163,7 @@ class Lives(GameObject):
     """
     
     def __init__(self):
+        super().__init__()
         self._xy = 57, 192
         self.rgb = 232, 232, 74
         self.wh = 6, 8

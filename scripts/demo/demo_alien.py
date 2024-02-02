@@ -38,10 +38,7 @@ for i in range(1000000):
         action = agent.draw_action(env.dqn_obs)
     else:
         action = 0
-    obs, reward, terminated, truncated, info = env.step(action2)
-
-    if i > 300:
-        action2 = 3
+    obs, reward, terminated, truncated, info = env.step(action)
 
     if i%51 == 0 and i > 5:
         # action2 = 4
@@ -54,17 +51,7 @@ for i in range(1000000):
         ram = env._env.unwrapped.ale.getRAM()
         # print(ram[65], ram[78])
         print(format(int(ram[65]), 'b').zfill(8))
-
-        # print("    elif ram_state[65] < " + str(4+rs) + ":")
-        # k = 0
-        # for obj in env.objects:
-        #     print("        egg" + str(k) +" = Egg()")
-        #     print("        objects[" + str(k+5) + "] = egg" + str(k))
-        #     x, y = obj.xy
-        #     print("        egg" + str(k) + ".xy = " + str(x) + ", " + str(y))
-        #     k += 1
-
-        # rs += 4
+        
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210:
