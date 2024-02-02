@@ -58,11 +58,14 @@ year={2023}
 ```
 
 ###  List of covered games
-- [ ] Alien (only vision)
+- [X] Alien
+- [X] Amidar
 - [X] Assault
 - [X] Asterix
-- [ ] Asteroids  (only vision)
+- [X] Asteroids  (only vision)
 - [X] Atlantis
+- [ ] BattleZone (in progress)
+- [ ] Bankheist (in progress)
 - [ ] BeamRider  (only vision)
 - [X] Berzerk
 - [X] Bowling
@@ -70,16 +73,22 @@ year={2023}
 - [X] Breakout
 - [X] Carnival
 - [X] Centipede
-- [X] Chopper Command 
+- [X] Chopper Command
+- [X] Crazy Climbers
 - [X] DemonAttack
 - [X] Fishing Derby  
 - [X] Freeway
-- [X] Frostbite 
+- [X] Frostbite
+- [X] Gopher
+- [X] Hero
+- [X] IceHockey
 - [X] Kangaroo
+- [X] Krull
 - [X] MontezumaRevenge
 - [X] MsPacman
 - [X] Pitfall
 - [X] Pong
+- [X] PrivateEye
 - [X] Q\*Bert  
 - [X] RiverRaid  
 - [X] RoadRunner  
@@ -87,16 +96,20 @@ year={2023}
 - [X] Skiing
 - [X] Space Invaders
 - [X] Tennis
+- [X] Time Pilot
+- [ ] Up n Down (in progress)
 - [X] Venture
 - [X] VideoPinball
-- [ ] YarsRevenge
+- [ ] YarsRevenge (in progress)
+
+A list of all gymnasium games can be found in the [Gymnasium Documentation](https://gymnasium.farama.org/environments/atari/)
 
 ### The two modes of OCAtari
 OCAtari supports two different modes to extract objects from the current state:
 
-**Vision Extraction Mode:** Return a list of objects currently on the screen with their X, Y, Width, Height, R, G, B Values, based on handwritten rules used on the visual representation. 
+**Vision Extraction Mode (VEM):** Return a list of objects currently on the screen with their X, Y, Width, Height, R, G, B Values, based on handwritten rules used on the visual representation. 
 
-**Ram Extraction Mode:** Uses the object values stored in the RAM to detect the objects currently on the screen.
+**Ram Extraction Mode (REM):** Uses the object values stored in the RAM to detect the objects currently on the screen.
 
 ### Use these trained agents and the demo script:
 
@@ -109,6 +122,7 @@ Here is an example:
 `python demo_pong.py -p models/Pong/model_50000000.gz`
 
 More information can be found in this [ReadMe](scripts/demo/README%20Demos.md)
+
 ### Extract the objects from a state 
 
 With `env.objects` one can access the list of objects found in the current state. Note that these lists can differ depending on the mode you used initiating the environment
