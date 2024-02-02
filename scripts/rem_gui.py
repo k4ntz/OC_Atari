@@ -4,12 +4,25 @@ from matplotlib import pyplot as plt
 from tqdm import tqdm
 import pygame
 from ocatari.core import OCAtari, UPSCALE_FACTOR
+from gymnasium.error import NameNotFound
 
 """
 This script can be used to identify any RAM positions that
 influence the color of a specific pixel. This can be used to
 identify the values that belong to a GameObject.
 """
+
+
+import pygame
+from ocatari.core import OCAtari, DEVICE
+import numpy as np
+import torch
+import cv2
+import random
+
+
+get_bin = lambda x: format(x, 'b').zfill(8)
+
 
 
 RAM_RENDER_WIDTH = 1000
@@ -24,8 +37,11 @@ class Renderer:
     env: gym.Env
 
     def __init__(self, env_name: str):
-        self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
-                           render_oc_overlay=True, frameskip=1)
+        try:
+            self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+                            render_oc_overlay=True, frameskip=1)
+        except NameNotFound:
+            self.env = gym.make(env_name, render_mode="rgb_array", frameskip=1)
         self.env.reset(seed=42)[0]
         self.current_frame = self.env.render()
         self._init_pygame(self.current_frame)
@@ -58,7 +74,10 @@ class Renderer:
             self._handle_user_input()
             if not self.paused:
                 action = self._get_action()
-                self.env.step(action)
+                tuple = self.env.step(action)
+                rew = tuple[1]
+                if rew != 0:
+                    print(rew)
                 self.current_frame = self.env.render().copy()
             self._render()
         pygame.quit()
@@ -222,6 +241,7 @@ class Renderer:
             else:
                 color = (200, 200, 200)
             text = self.ram_cell_value_font.render(str(value), True, color, None)
+            # text = self.ram_cell_value_font.render(get_bin(value), True, color, None)
             text_rect = text.get_rect()
             text_rect.bottomright = (x + w - 2, y + h - 2)
             self.window.blit(text, text_rect)
@@ -265,7 +285,7 @@ class Renderer:
         for changes at pixel x, y.
         """
         ale = self.env.unwrapped.ale
-
+        sys_state = ale.cloneSystemState()
         ram = ale.getRAM().copy()
         self.env.step(0)
         original_pixel = ale.getScreenRGB()[y, x]
@@ -282,6 +302,7 @@ class Renderer:
                 self._render()
                 new_pixel = new_frame[y, x]
                 self._set_ram(ram)  # restore original RAM
+                ale.restoreSystemState(sys_state)
                 if np.any(new_pixel != original_pixel):
                     self.candidate_cell_ids.append(i)
                     break
@@ -291,5 +312,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer("Pitfall")
+    # renderer = Renderer("Pong")
+    # renderer = Renderer("DemonAttack")
+    renderer = Renderer("ALE/Pacman-v5")
     renderer.run()

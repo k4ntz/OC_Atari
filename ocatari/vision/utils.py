@@ -133,7 +133,8 @@ def mark_bb(image_array, bb, color=(255, 0, 0), surround=True):
         image_array[y, x:right + 1] = color
         image_array[bottom, x:right + 1] = color
     except IndexError:
-        import ipdb; ipdb.set_trace()
+        pass
+        # import ipdb; ipdb.set_trace()
 
 
 def plot_bounding_boxes(obs, bbs, objects_colors):
@@ -212,6 +213,9 @@ def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2,
             if mask.max() == 0:
                 return []
     mask = sum(masks)
+    # if mask.max() > 0:
+        # showim(mask)
+        # import ipdb; ipdb.set_trace()
     # if not all_colors and mask.max():
     #     import ipdb;ipdb.set_trace()
     if closing_active:
@@ -243,7 +247,28 @@ def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2,
         # if x < minx or x+w > maxx or y < miny or y+h > maxy:
         #     continue
         # detected.append((y, x, h, w))
-        detected.append((x, y, w, h))
+        if all_colors:
+            all_contained = True
+            for k in range(len(masks)):
+                contained = False
+                for i in range(w):
+                    for j in range(h):
+                        try:
+                            if masks[k][y+j-miny][x+i-minx]:
+                                contained = True
+                                break
+                        except:
+                            continue
+
+                    if contained:
+                        break
+                if not contained:
+                    all_contained = False
+                    break
+            if all_contained:
+                detected.append((x, y, w, h))
+        else:
+            detected.append((x, y, w, h))
     return detected
 
 

@@ -430,14 +430,14 @@ def _get_fruit_properties(ram_value):
     Returns (wh, rgb) or None if no Fruit there."""
 
     if ram_value < 128:
-        if ram_value%4== 0:
-                return (7, 11), (214, 92, 92)
-        elif ram_value%4== 1:
-                return (7, 9), (214, 92, 92)
-        elif ram_value%4==  2:
-                return (8, 11), (214, 92, 92)
-        elif ram_value%4== 3:
-                return (8, 11), (195, 144, 61)
+        if ram_value % 4 == 0:
+            return (7, 11), (214, 92, 92)
+        elif ram_value % 4 == 1:
+            return (7, 9), (214, 92, 92)
+        elif ram_value % 4 == 2:
+            return (8, 11), (214, 92, 92)
+        if ram_value % 4 == 3:
+            return (8, 11), (195, 144, 61)
     else:
         return None
 

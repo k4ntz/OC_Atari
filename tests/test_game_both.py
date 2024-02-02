@@ -4,6 +4,7 @@ import sys
 import random
 import matplotlib.pyplot as plt
 from os import path
+import pathlib
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
@@ -31,7 +32,8 @@ parser.add_argument("-snap", "--snapshot", type=str, default="",
 opts = parser.parse_args()
 
 
-env = OCAtari(opts.game+"NoFrameskip", mode="both", render_mode='rgb_array', hud=opts.hud)
+# env = OCAtari(opts.game+"NoFrameskip", mode="both", render_mode='rgb_array', hud=opts.hud)
+env = OCAtari(opts.game, mode="both", render_mode='rgb_array', hud=opts.hud)
 
 observation, info = env.reset()
 if opts.snapshot:
@@ -39,8 +41,14 @@ if opts.snapshot:
     env._env.env.env.ale.restoreState(snapshot)
 
 if opts.dqn:
+    opts.game = opts.game
     opts.path = f"models/{opts.game}/dqn.gz"
-    dqn_agent = load_agent(opts, env.action_space.n)
+    try:
+        dqn_agent = load_agent(opts, env.action_space.n)
+    except FileNotFoundError:
+        oc_atari_dir = pathlib.Path(__file__).parents[1].resolve()
+        opts.path = str(oc_atari_dir / 'models' / f"{opts.game}" / 'dqn.gz')
+        dqn_agent = load_agent(opts, env.action_space.n)
 
 make_deterministic(0, env)
 

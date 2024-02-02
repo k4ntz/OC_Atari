@@ -417,23 +417,15 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     if room == 0:
         if level == 0:
             # ruby
-            if not rubys_collected[1]:
+            if ram_state[67]&16:
                 ruby = Ruby()
                 ruby.xy = ram_state[44] - 1, 56
-                if get_iou(player, ruby) > 0.3:
-                    rubys_collected[1] = 1
-                    objects[2] = None
-                else:
-                    objects[2] = ruby
+                objects[2] = ruby
             else:
                 objects[2] = None
         elif level == 1:
                 # sword
-            if last_inventory != ram_state[65]:
-                collected[2] = 1
-                last_inventory = ram_state[65]
-                objects[1] = None
-            if not collected[1]:
+            if ram_state[67]&16:
                 item = Sword()
                 item.xy = ram_state[44] - 1, 56
                 objects[1] = item
@@ -441,17 +433,10 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
                 objects[1] = None
         elif level == 2:
             # skulls
-            if enemys_in_room[1]:
+            if ram_state[67]&16:
                 enemy = Skull()
                 enemy.xy = ram_state[44] - 1, 55 + (255 - ram_state[45])
-                if ram_state[30] == 221 and not ram_state[84]:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[1] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
             else:
                 objects[4] = None
 
@@ -484,26 +469,15 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
 
     elif room == 1:
         # skull
-        if enemys_in_room[0]:
+        if ram_state[67]&2:
             enemy = Skull()
             enemy.xy = ram_state[47] + 32, ram_state[46] - 74
-            if ram_state[30] == 221 and not ram_state[84]:
-                hit = True
-            if hit and ram_state[30] == 0:
-                hit = False
-                enemys_in_room[0] = 0
-                objects[4] = None
-            else:
-                objects[4] = enemy
+            objects[4] = enemy
         else:
             objects[4] = None
 
         # key
-        if last_inventory != ram_state[65]:
-            collected[0] = 1
-            last_inventory = ram_state[65]
-            objects[1] = None
-        elif not collected[0]:
+        if ram_state[67]&1:
             item = Key()
             item.xy = ram_state[44] - 1, 98 + (255 - ram_state[45]) 
             objects[1] = item
@@ -545,17 +519,10 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     elif room == 2:
         if level == 0:
             # skulls
-            if enemys_in_room[1]:
+            if ram_state[68]&16 or ram_state[68]&32:
                 enemy = Skull()
                 enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45])
-                if ram_state[30] == 221 and not ram_state[84]:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[1] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
                 if ram_state[84] > 0:
                     enemy2 = Skull()
                     enemy2.xy = ram_state[44] + 15, 53 + (255 - ram_state[45])
@@ -567,33 +534,24 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
                 objects[5] = None
         elif level == 1:
             # ruby
-            if not rubys_collected[3]:
+            if ram_state[68]&16:
                 ruby = Ruby()
                 ruby.xy = ram_state[44] - 1, 54
-                if get_iou(player, ruby) > 0.3:
-                    rubys_collected[3] = 1
-                    objects[2] = None
-                else:
-                    objects[2] = ruby
+                objects[2] = ruby
             else:
                 objects[2] = None
         elif level == 2:
             # snakes
-            if enemys_in_room[2]:
+            if ram_state[68]&16:
                 enemy = Snake()
                 enemy.xy = ram_state[44], 53 + (255 - ram_state[45])
                 enemy2 = Snake()
                 enemy2.xy = ram_state[44] + 16, 53 + (255 - ram_state[45])
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[2] = 0
-                    objects[4] = None
-                    objects[5] = None
-                else:
-                    objects[4] = enemy
-                    objects[5] = enemy2
+                objects[4] = enemy
+                objects[5] = enemy2
+            else:
+                objects[4] = None
+                objects[5] = None
 
         objects[18] = Platform(x=4, y=93, w=154, h=1)
         objects[19] = Ladder(x=72, y=93, w=16, h=102)
@@ -601,41 +559,31 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     elif room == 3:
         if level == 0:
             # skulls
-            if enemys_in_room[2]:
+            if ram_state[68]&1 or ram_state[68]&2:
                 enemy = Skull()
                 enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45]) 
-                if ram_state[30] == 221 and not ram_state[84]:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[2] = 0
-                    objects[4] = None
+                objects[4] = enemy
+                if ram_state[84] > 0:
+                    enemy2 = Skull()
+                    enemy2.xy = ram_state[44] + 15, 53 + (255 - ram_state[45])
+                    objects[5] = enemy2
                 else:
-                    objects[4] = enemy
-                    if ram_state[84] > 0:
-                        enemy2 = Skull()
-                        enemy2.xy = ram_state[44] + 15, 53 + (255 - ram_state[45])
-                    else:
-                        objects[5] = None
+                    objects[5] = None
             else:
                 objects[4] = None
                 objects[5] = None
 
         elif level == 1 or level == 2:
-            if not rubys_collected[1]:
+            if ram_state[68]&1 or ram_state[68]&2:
                 ruby = Ruby()
                 ruby.xy = ram_state[44] - 1, 53 + (255 - ram_state[45])
-                if get_iou(player, ruby) > 0.3 and not ram_state[84]:
-                    rubys_collected[1] = 1
-                    objects[2] = None
+                objects[2] = ruby
+                if ram_state[84] > 0:
+                    ruby2 = Ruby()
+                    ruby2.xy = ram_state[44] + 15, 53 + (255 - ram_state[45])
+                    objects[3] = ruby2
                 else:
-                    objects[2] = ruby
-                    if ram_state[84] > 0:
-                        ruby2 = Ruby()
-                        ruby2.xy = ram_state[44] + 15, 53 + (255 - ram_state[45])
-                        objects[3] = ruby2
-                    else:
-                        objects[3] = None
+                    objects[3] = None
             else:
                 objects[2] = None
                 objects[3] = None
@@ -646,47 +594,26 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     elif room == 4:
         if level == 0:
             # spider
-            if enemys_in_room[3]:
+            if ram_state[69]&16:
                 enemy = Spider()
                 enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45]) 
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[3] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
             else:
                 objects[4] = None
         elif level == 1:
             # snek
-            if enemys_in_room[1]:
+            if ram_state[69]&16:
                 enemy = Snake()
                 enemy.xy = ram_state[44] , 53 + (255 - ram_state[45]) 
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[1] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
             else:
                 objects[4] = None
         elif level == 2:
             # snakes
-            if enemys_in_room[3]:
+            if ram_state[69]&16:
                 enemy = Snake()
                 enemy.xy = ram_state[44], 53 + (255 - ram_state[45])
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[3] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
             else:
                 objects[4] = None
         
@@ -695,10 +622,7 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
         objects[20] = Ladder(x=72, y=93, w=16, h=102)
 
     elif room == 5:
-        if  last_inventory != ram_state[65]:
-            collected[1] = 1
-            last_inventory = ram_state[65]
-        if not collected[1]:
+        if ram_state[69]&1:
             # torch
             item = Torch()
             item.xy = ram_state[44] - 1, 53 + (255 - ram_state[45]) 
@@ -707,17 +631,10 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
             objects[1] = None
 
         # skull
-        if enemys_in_room[4]:
+        if ram_state[69]&2:
             enemy = Skull()
             enemy.xy = ram_state[47] + 33, 103 + (255 - ram_state[46]) 
-            if ram_state[30] == 221:
-                hit = True
-            if hit and ram_state[30] == 0:
-                hit = False
-                enemys_in_room[4] = 0
-                objects[4] = None
-            else:
-                objects[4] = enemy
+            objects[4] = enemy
         else:
             objects[4] = None
         
@@ -760,10 +677,7 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     elif room == 6:
         if level == 0:
             # sword
-            if  last_inventory != ram_state[65]:
-                collected[2] = 1
-                last_inventory = ram_state[65]
-            if not collected[2]:
+            if ram_state[70]&16:
                 item = Sword()
                 item.xy = ram_state[44] - 1, 53 + (255 - ram_state[45]) 
                 objects[1] = item
@@ -771,54 +685,33 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
                 objects[1] = None
         elif level == 1:
             # skull
-            if enemys_in_room[2]:
+            if ram_state[70]&16:
                 enemy = Skull()
                 enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45]) 
-                if ram_state[30] == 221 and not ram_state[84]:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[2] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
         elif level == 2:
             # spider
-            if enemys_in_room[5]:
+            if ram_state[70]&16:
                 enemy = Spider()
                 enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45]) 
-                if ram_state[30] == 221 and not ram_state[84]:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[5] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
         objects[18] = Platform(x=0, y=93, w=160, h=1)
         objects[19] = Ladder(x=72, y=53, w=16, h=38)
 
     elif room == 7:
         if level == 0 or level == 2:
             # key
-            if  last_inventory != ram_state[65]:
-                collected[3] = 1
-                last_inventory = ram_state[65]
-            if not collected[3]:
+            if ram_state[70]&1:
                 item = Key()
                 item.xy = ram_state[44] - 1, 54 + (255 - ram_state[45]) 
                 objects[1] = item
             else:
                 objects[1] = None
         elif level == 1:
-            if not rubys_collected[4]:
+            if ram_state[70]&1:
                 ruby = Ruby()
                 ruby.xy = ram_state[44] - 1, 54 + (255 - ram_state[45])
-                if get_iou(player, ruby) > 0.3:
-                    rubys_collected[4] = 1
-                    objects[2] = None
-                else:
-                    objects[2] = ruby
+                objects[2] = ruby
             else:
                 objects[2] = None
 
@@ -851,32 +744,22 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     elif room == 8:
         if level == 0:
             # key
-            if  last_inventory != ram_state[65]:
-                collected[4] = 1
-                last_inventory = ram_state[65]
-            if not collected[4]:
+            if ram_state[71]&16:
                 item = Key()
                 item.xy = ram_state[44] - 1, 53 + (255 - ram_state[45]) 
                 objects[1] = item
             else:
                 objects[1] = None
         elif level == 1:
-            if not rubys_collected[5]:
+            if ram_state[71]&16:
                 ruby = Ruby()
                 ruby.xy = ram_state[44] - 1, 53 + (255 - ram_state[45])
-                if get_iou(player, ruby) > 0.3:
-                    rubys_collected[5] = 1
-                    objects[2] = None
-                else:
-                    objects[2] = ruby
+                objects[2] = ruby
             else:
                 objects[2] = None
         if level == 2:
             # key
-            if  last_inventory != ram_state[65]:
-                collected[2] = 1
-                last_inventory = ram_state[65]
-            if not collected[2]:
+            if ram_state[71]&16:
                 item = Key()
                 item.xy = ram_state[44] - 1, 53 + (255 - ram_state[45]) 
                 objects[1] = item
@@ -918,17 +801,10 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     elif room == 9:
         if level == 0:
             # snakes
-            if enemys_in_room[5]:
+            if ram_state[71]&1 or ram_state[71]&4:
                 enemy = Snake()
                 enemy.xy = ram_state[44], 53 + (255 - ram_state[45])
-                if ram_state[30] == 221 and not ram_state[84]:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[5] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
                 if ram_state[84] > 0:
                     enemy2 = Snake()
                     enemy2.xy = ram_state[44] + 32, 53 + (255 - ram_state[45])
@@ -938,34 +814,12 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
             else:
                 objects[4] = None
                 objects[5] = None
-        if level == 1:
+        if level == 1 or level == 2:
             # spider
-            if enemys_in_room[3]:
+            if ram_state[71]&1:
                 enemy = Spider()
                 enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45])
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[3] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
-            else:
-                objects[4] = None
-        elif level == 2:
-            # spider
-            if enemys_in_room[6]:
-                enemy = Spider()
-                enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45])
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[6] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
             else:
                 objects[4] = None
 
@@ -976,22 +830,15 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     elif room == 10:
         if level == 0:
             # ruby
-            if not rubys_collected[3]:
+            if ram_state[72]&16:
                 ruby = Ruby()
                 ruby.xy = ram_state[44] - 1, 54
-                if get_iou(player, ruby) > 0.3:
-                    rubys_collected[3] = 1
-                    objects[2] = None
-                else:
-                    objects[2] = ruby
+                objects[2] = ruby
             else:
                 objects[2] = None
         elif level == 1:
             # key
-            if  last_inventory != ram_state[65]:
-                collected[3] = 1
-                last_inventory = ram_state[65]
-            if not collected[3]:
+            if ram_state[72]&16:
                 item = Key()
                 item.xy = ram_state[44] - 1, 54 
                 objects[1] = item
@@ -999,10 +846,7 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
                 objects[1] = None
         elif level == 2:
             # sword
-            if  last_inventory != ram_state[65]:
-                collected[3] = 1
-                last_inventory = ram_state[65]
-            if not collected[3]:
+            if ram_state[72]&16:
                 item = Sword()
                 item.xy = ram_state[44] - 1, 54 
                 objects[1] = item
@@ -1020,32 +864,22 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     elif room == 11:
         if level == 0:
             # snakes
-            if enemys_in_room[6]:
+            if ram_state[72]&1 or ram_state[72]&8:
                 enemy = Snake()
                 enemy.xy = ram_state[44], 53 + (255 - ram_state[45])
-                if ram_state[30] == 221 and not ram_state[84]:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[6] = 0
-                    objects[4] = None
+                objects[4] = enemy
+                if ram_state[84] > 0:
+                    enemy2 = Snake()
+                    enemy2.xy = ram_state[44] + 64, 53 + (255 - ram_state[45])
+                    objects[5] = enemy2
                 else:
-                    objects[4] = enemy
-                    if ram_state[84] > 0:
-                        enemy2 = Snake()
-                        enemy2.xy = ram_state[44] + 64, 53 + (255 - ram_state[45])
-                        objects[5] = enemy2
-                    else:
-                        objects[5] = None
+                    objects[5] = None
             else:
                 objects[4] = None
                 objects[5] = None
         elif level == 1:
             # amulet
-            if  last_inventory != ram_state[65]:
-                collected[4] = 1
-                last_inventory = ram_state[65]
-            if not collected[4]:
+            if ram_state[72]&1:
                 item = Amulet()
                 item.xy = ram_state[44] - 1, 53 + (255 - ram_state[45])
                 objects[1] = item
@@ -1053,21 +887,14 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
                 objects[1] = None
         if level == 2:
             # skulls
-            if enemys_in_room[7]:
+            if ram_state[72]&1:
                 enemy = Skull()
                 enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45])
                 enemy2 = Skull()
                 enemy2.xy = ram_state[44] - 97, 53 + (255 - ram_state[45])
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[7] = 0
-                    objects[4] = None
-                    objects[5] = None
-                else:
-                    objects[4] = enemy
-                    objects[5] = enemy2
+                
+                objects[4] = enemy
+                objects[5] = enemy2
             else:
                 objects[4] = None
                 objects[5] = None
@@ -1112,32 +939,18 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     elif room == 13:
         if level == 0:
             # spider
-            if enemys_in_room[7]:
+            if ram_state[73]&1:
                 enemy = Spider()
                 enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45])
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[7] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
             else:
                 objects[4] = None
         elif level == 1:
             # snakes
-            if enemys_in_room[5]:
+            if ram_state[73]&1 or ram_state[73]&8:
                 enemy = Snake()
                 enemy.xy = ram_state[44], 53 + (255 - ram_state[45]) 
-                if ram_state[30] == 221 and not ram_state[84]:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[5] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
                 if ram_state[84] > 0:
                     enemy2 = Snake()
                     enemy2.xy = ram_state[44] + 64, 53 + (255 - ram_state[45])
@@ -1149,17 +962,10 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
                 objects[5] = None
         elif level == 2:
             # skull
-            if enemys_in_room[9]:
+            if ram_state[73]&1:
                 enemy = Skull()
                 enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45])
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    objects[4] = enemy
-                else:
-                    enemys_in_room[9] = 0
-                    objects[4] = None
+                objects[4] = enemy
             else:
                 objects[4] = None
 
@@ -1169,10 +975,7 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     
     elif room == 14:
         # key
-        if  last_inventory != ram_state[65]:
-            collected[5] = 1
-            last_inventory = ram_state[65]
-        if not collected[5]:
+        if ram_state[74]&16:
             if level == 2:
                 item = Amulet()
             else:
@@ -1229,17 +1032,10 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     
     elif room ==  18:
         # skull
-        if enemys_in_room[8]:
+        if ram_state[76]&32:
             enemy = Skull()
             enemy.xy = ram_state[47] - 1, ram_state[46] - 147
-            if ram_state[30] == 221:
-                hit = True
-            if hit and ram_state[30] == 0:
-                hit = False
-                enemys_in_room[8] = 0
-                objects[4] = None
-            else:
-                objects[4] = enemy
+            objects[4] = enemy
         else:
             objects[4] = None
 
@@ -1251,10 +1047,7 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     elif room == 19:
         if level == 0:
             # amulet
-            if  last_inventory != ram_state[65]:
-                collected[6] = 1
-                last_inventory = ram_state[65]
-            if not collected[6]:
+            if ram_state[76]&1:
                 item = Amulet()
                 item.xy = ram_state[44] - 1, 53 + (255 - ram_state[45]) 
                 objects[1] = item
@@ -1262,33 +1055,19 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
                 objects[1] = None
         if level == 1:
             # skull
-            if enemys_in_room[6]:
+            if ram_state[76]&1:
                 enemy = Skull()
                 enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45])
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[6] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
             else:
                 objects[4] = None
 
         if level == 2:
             # spider
-            if enemys_in_room[10]:
+            if ram_state[76]&1:
                 enemy = Spider()
                 enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45])
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[10] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
             else:
                 objects[4] = None
 
@@ -1297,30 +1076,23 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     
     elif room == 20:
         if level == 0 or level == 1:
-            if not rubys_collected[2]:
+            if ram_state[77]&16 or ram_state[77]&128:
                 # ruby
                 ruby = Ruby()
                 ruby.xy = ram_state[44] - 1, 54
-                if get_iou(player, ruby) > 0.3:
-                    rubys_collected[2] = 1
-                    objects[2] = None
+                objects[2] = ruby
+                if ram_state[84] > 0:
+                    ruby2 = Ruby()
+                    ruby2.xy = ram_state[44] + 63, 53 + (255 - ram_state[45])
+                    objects[3] = ruby2
                 else:
-                    objects[2] = ruby
-                    if ram_state[84] > 0:
-                        ruby2 = Ruby()
-                        ruby2.xy = ram_state[44] + 63, 53 + (255 - ram_state[45])
-                        objects[3] = ruby2
-                    else:
-                        objects[3] = None
+                    objects[3] = None
             else:
                     objects[2] = None
                     objects[3] = None    
         elif level == 2:
             # key
-            if  last_inventory != ram_state[65]:
-                collected[0] = 1
-                last_inventory = ram_state[65]
-            if not collected[6]:
+            if ram_state[77]&16:
                 item = Key()
                 item.xy = ram_state[44] - 1, 54 
                 objects[1] = item
@@ -1336,26 +1108,16 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     elif room == 21:
         if level == 0:
             # spider
-            if enemys_in_room[9]:
+            if ram_state[77]&1:
                 enemy = Spider()
                 enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45])
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[9] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
             else:
                 objects[4] = None
 
         elif level == 1:
             # key
-            if last_inventory != ram_state[65]:
-                collected[6] = 1
-                last_inventory = ram_state[65]
-            if not collected[6]:
+            if ram_state[77]&1:
                 item = Key() 
                 item.xy = ram_state[44] - 1, 53 + (255 - ram_state[45])
                 objects[1] = item
@@ -1363,17 +1125,10 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
                 objects[1] = None
         elif level == 2:
             # snek
-            if enemys_in_room[12]:
+            if ram_state[77]&1:
                 enemy = Snake()
                 enemy.xy = ram_state[44], 53 + (255 - ram_state[45])
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[12] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
             else:
                 objects[4] = None
 
@@ -1384,47 +1139,26 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
     elif room == 22:
         if level == 0:
             # snakes
-            if enemys_in_room[10]:
+            if ram_state[78]&16:
                 enemy = Snake()
                 enemy.xy = ram_state[44], 53 + (255 - ram_state[45]) 
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[10] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
             else:
                 objects[4] = None
         elif level == 1:
             # spider
-            if enemys_in_room[7]:
+            if ram_state[78]&16:
                 enemy = Spider()
                 enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45]) 
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[7] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
             else:
                 objects[4] = None
         elif level == 2:
             # skull
-            if enemys_in_room[11]:
+            if ram_state[78]&16:
                 enemy = Skull()
                 enemy.xy = ram_state[44] - 1, 53 + (255 - ram_state[45]) 
-                if ram_state[30] == 221:
-                    hit = True
-                if hit and ram_state[30] == 0:
-                    hit = False
-                    enemys_in_room[11] = 0
-                    objects[4] = None
-                else:
-                    objects[4] = enemy
+                objects[4] = enemy
             else:
                 objects[4] = None
 
@@ -1436,26 +1170,28 @@ def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
 
     elif room == 23:
         # ruby
-        if not rubys_collected[0]:
+        if ram_state[78]&1 or ram_state[78]&2 or ram_state[78]&4:
             ruby = Ruby()
             ruby.xy = ram_state[44] - 1, 54
-            if get_iou(player, ruby) > 0.3 and not ram_state[84]:
-                rubys_collected[0] = 1
-                objects[2] = None
+            objects[2] = ruby
+            if ram_state[84] > 0 and ram_state[78]&2:
+                ruby2 = Ruby()
+                ruby2.xy = ram_state[44] + 15, 53 + (255 - ram_state[45])
+                objects[3] = ruby2
+                if ram_state[84] > 1 and ram_state[78]&4:
+                    ruby3 = Ruby()
+                    ruby3.xy = ram_state[44] + 31, 53 + (255 - ram_state[45])
+                    objects[4] = ruby3
+                else:
+                    objects[4] = None
             else:
-                objects[2] = ruby
-                if ram_state[84] > 0:
-                    ruby2 = Ruby()
-                    ruby2.xy = ram_state[44] + 15, 53 + (255 - ram_state[45])
-                    objects[3] = ruby2
-                    if ram_state[84] > 1:
+                    objects[3] = None
+                    if ram_state[84] > 0 and ram_state[78]&4:
                         ruby3 = Ruby()
                         ruby3.xy = ram_state[44] + 31, 53 + (255 - ram_state[45])
                         objects[4] = ruby3
                     else:
                         objects[4] = None
-                else:
-                        objects[3] = None
         else:
             objects[2] = None
             objects[3] = None

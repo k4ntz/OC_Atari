@@ -20,7 +20,7 @@ scripts/general/testSkriptNr5.py
 scripts/agents/baseline_checkpoints
 scripts/agents/baseline_logs
 scripts/agents/logs
-
+scripts/demo/demo_assault.py
 scripts/various/env_screenshots
 scripts/various/env_descriptions
 
@@ -32,3 +32,5 @@ scripts/various/env_descriptions
 reports
 
 .dataset_generation/.*
+
+*.pickle

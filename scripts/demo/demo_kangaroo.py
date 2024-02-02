@@ -24,8 +24,8 @@ if opts.path:
     agent = load_agent(opts, env.action_space.n)
 
 # env._env.unwrapped.ale.setRAM(36, 1)
-snapshot = pickle.load(open("lvl3.pkl", "rb"))
-env._env.env.env.ale.restoreState(snapshot)
+# snapshot = pickle.load(open("lvl3.pkl", "rb"))
+# env._env.env.env.ale.restoreState(snapshot)
 
 for i in range(1000):
     if opts.path is not None:

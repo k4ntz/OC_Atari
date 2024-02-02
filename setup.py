@@ -1,13 +1,16 @@
 from setuptools import setup, find_packages
 
 
+__version__ = '1.0.2'
+
+
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 
 setup(
     name='ocatari',
-    version='0.1.3',
+    version=__version__,
     author='Quentin Delfosse',
     author_email='quentin.delfosse@cs.tu-darmstadt.de',
     packages=find_packages(),
