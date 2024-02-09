@@ -11,6 +11,7 @@ from .tennis import _detect_objects_tennis
 from .spaceinvaders import _detect_objects_spaceinvaders
 from .kangaroo import _detect_objects_kangaroo
 from .mspacman import _detect_objects_mspacman
+from .pacman import _detect_objects_pacman
 from .centipede import _detect_objects_centipede
 from .carnival import _detect_objects_carnival
 from .berzerk import _detect_objects_berzerk
@@ -71,6 +72,8 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_breakout(objects, obs, hud)
     elif game_name.lower() == "mspacman":
         return _detect_objects_mspacman(objects, obs, hud)
+    elif game_name.lower() == "pacman":
+        return _detect_objects_pacman(objects, obs, hud)
     elif game_name.lower() == "centipede":
         return _detect_objects_centipede(objects, obs, hud)
     elif game_name.lower() == "carnival":

@@ -39,7 +39,7 @@ DEVICE = "cpu" if torch.cuda.is_available() else "cpu"
 
 AVAILABLE_GAMES = ["Alien", "Amidar", "Assault", "Asterix", "Asteroids", "Atlantis", "BattleZone","BeamRider", "Berzerk", "Bowling", "Boxing",
                    "Breakout", "Carnival", "Centipede", "ChoppperCommand", "CrazyClimber", "DemonAttack", "Enduro", "FishingDerby", "Freeway",
-                   "Frostbite", "Gopher", "Hero", "IceHockey", "Kangaroo", "MontezumaRevenge", "MsPacman","Pitfall", "Pong", "PrivateEye",
+                   "Frostbite", "Gopher", "Hero", "IceHockey", "Kangaroo", "MontezumaRevenge", "MsPacman","Pacman", "Pitfall", "Pong", "PrivateEye",
                    "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "Videocube", "VideoPinball", "Venture", "Yarsrevenge"]
 
 
@@ -82,9 +82,11 @@ class OCAtari:
         self.hud = hud
         self.max_objects = []
         if not self._covered_game:
+            print(colored("\n\n\tUncovered game !!!!!\n\n", "red"))
             global init_objects
             init_objects = lambda *args, **kwargs: []
             self.detect_objects = lambda *args, **kwargs: None
+            self.objects_v = []
             self.step = self._step_ram
         elif mode == "vision":
             self.detect_objects = detect_objects_vision

@@ -56,6 +56,7 @@ from .venture import _init_objects_venture_ram, _detect_objects_venture_revised
 from .crazyclimber import _init_objects_crazyclimber_ram, _detect_objects_crazyclimber_revised
 from .amidar import _init_objects_amidar_ram, _detect_objects_amidar_revised
 from .battlezone import _init_objects_battlezone_ram, _detect_objects_battlezone_revised
+from .pacman import _init_objects_pacman_ram, _detect_objects_pacman_revised
 
 # calls the respective _get_max_objects from the game modules
 def get_max_objects(game_name, hud):
@@ -102,6 +103,8 @@ def init_objects(game_name, hud):
         return _init_objects_demon_attack_ram(hud)
     elif game_name.lower() == "mspacman":
         return _init_objects_mspacman_ram(hud)
+    elif game_name.lower() == "pacman":
+        return _init_objects_pacman_ram(hud)
     elif game_name.lower() == "centipede":
         return _init_objects_centipede_ram(hud)
     elif game_name.lower() == "carnival":
@@ -250,6 +253,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_demon_attack_revised(objects, ram_state, hud)
     elif game_name.lower() == "mspacman":
         _detect_objects_mspacman_revised(objects, ram_state, hud)
+    elif game_name.lower() == "pacman":
+        _detect_objects_pacman_revised(objects, ram_state, hud)
     elif game_name.lower() == "centipede":
         _detect_objects_centipede_revised(objects, ram_state, hud)
     elif game_name.lower() == "carnival":
