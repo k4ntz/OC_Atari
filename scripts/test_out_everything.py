@@ -47,7 +47,7 @@ random.seed(0)
 
 INTERACTIVE = False
 ONE_CHANGE = False
-initial_ram_n = 15
+initial_ram_n = 23
 
 
 make_deterministic(0, env)

@@ -22,6 +22,7 @@ class Renderer:
         self.paused = False
         self.current_keys_down = set()
         self.keys2actions = self.env.unwrapped.get_keys_to_action()
+        print(self.keys2actions)
 
     def run(self):
         self.running = True
@@ -66,5 +67,6 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer("Seaquest")
+    # renderer = Renderer("Seaquest")
+    renderer = Renderer("ALE/DonkeyKong-v5")
     renderer.run()
