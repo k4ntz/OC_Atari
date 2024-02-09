@@ -16,7 +16,7 @@ game_name = "VentureNoFrameskip"
 MODE = "vision"
 MODE = "revised"
 HUD = True
-env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='human')
+env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
 observation, info = env.reset()
 
 opts = parser.parse_args()
@@ -24,8 +24,8 @@ opts = parser.parse_args()
 if opts.path:
     agent = load_agent(opts, env.action_space.n)
 
-# snapshot = pickle.load(open("save_pe.pickle", "rb"))
-# env._env.env.env.ale.restoreState(snapshot)
+snapshot = pickle.load(open("save_ve.pickle", "rb"))
+env._env.env.env.ale.restoreState(snapshot)
 
 action2 = 2
 
@@ -164,7 +164,7 @@ for i in range(1000000):
     #         env._env.unwrapped.ale.setRAM(26, 51)
     #         action2 = 2
 
-    if i%5 == 0 and i > 57:
+    if i%1 == 0 and i > 57:
         # action2 = 4
         # with open('save_ve.pickle', 'wb') as handle:
         #     pickle.dump(env._env.env.env.ale.cloneState(), handle, protocol=pickle.HIGHEST_PROTOCOL)

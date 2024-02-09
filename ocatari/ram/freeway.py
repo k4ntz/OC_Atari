@@ -1,5 +1,5 @@
 from ._helper_methods import _convert_number
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 import sys
 
 """
@@ -30,12 +30,12 @@ class Car(GameObject):
     def __init__(self):
         super(Car, self).__init__()
         self._xy = 0, 0
-        self.wh = 7, 10
+        self.wh = 8, 10
         self.rgb = 167, 26, 26
         self.hud = False
 
 
-class Score(GameObject):
+class Score(ValueObject):
     """
     The player's score display (HUD).
     """
@@ -46,6 +46,7 @@ class Score(GameObject):
         self.wh = 6, 8
         self.rgb = 228, 111, 111
         self.hud = True
+        self.value = 0
 
 
 car_colors = {"car1": [167, 26, 26], "car2": [180, 231, 117], "car3": [105, 105, 15],
@@ -100,30 +101,22 @@ def _detect_objects_freeway_revised(objects, ram_state, hud=False):
     """
     c1, c2 = objects[:2]
     cars = objects[2:12]
-    scores = objects[12:]
+    scores = objects[12:14]
 
     c1.xy = 44, 193 - ram_state[14]
     c2.xy = 108, 193 - ram_state[15]
 
-    for i in range(10):
-        car = cars[i]
-        x = ram_state[117 - i] - 2
-        if x < 2:   # Edges
-            x = 160 + x - 1
-            car.wh = 160 - x, car.h
-        elif x <= 7:
-            w = x - 1
-            x = 8
-            car.wh = w, car.h
-        else:
-            car.wh = 7, car.h
-        car.xy = x, car.y
+    for i, car in enumerate(cars):
+        x = ram_state[117 - i] - 3
+        car.x = x
 
     if hud:
-        if len(scores) < 3 and _convert_number(ram_state[103]) > 10:
-            s = Score()
-            s.xy = 41, 5
-            objects.append(s)
+        for i, score in enumerate(scores):
+            score_value = _convert_number(ram_state[103 + i])
+            if score_value is not None and score_value >= 10:
+                score.x = 41 + i * 64
+                score.w = 14
+            score.value = score_value
 
 
 def _detect_objects_freeway_raw(info, ram_state):
