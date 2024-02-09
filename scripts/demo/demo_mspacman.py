@@ -20,15 +20,20 @@ opts = parser.parse_args()
 if opts.path:
     agent = load_agent(opts, env.action_space.n)
 
-for i in range(10000):
+for i in range(10000000):
+    env._env.unwrapped.ale.setRAM(63, 0)
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
         action = random.randint(0, 4)
     obs, reward, terminated, truncated, info = env.step(action)
-    if i % 50 == 0 and i > 200:
+
+    
+    if i % 1 == 0 and i > 50:
         # obse2 = deepcopy(obse)
         print(env.objects)
+        ram = env._env.unwrapped.ale.getRAM()
+        print(format(int(ram[63]), 'b').zfill(8))
         for obj in env.objects:
             x, y = obj.xy
             if x < 160 and y < 210:

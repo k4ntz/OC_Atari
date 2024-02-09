@@ -17,29 +17,53 @@ from .carnival import _detect_objects_carnival
 from .berzerk import _detect_objects_berzerk
 from .beamrider import _detect_objects_beamrider
 from .asterix import _detect_objects_asterix
+
 from . import choppercommand
-from .qbert import _detect_objects_qbert
-from .montezumarevenge import _detect_objects_montezumarevenge
-from .boxing import _detect_objects_boxing
-from .atlantis import _detect_objects_atlantis
-from .asteroids import _detect_objects_asteroids
-from .riverraid import _detect_objects_riverraid
-from .assault import _detect_objects_assault
-from .roadrunner import _detect_objects_roadrunner
-from .fishingderby import _detect_objects_fishingderby
+from .adventure import _detect_objects_adventure
 from .alien import _detect_objects_alien
-from .frostbite import _detect_objects_frostbite
-from .pitfall import _detect_objects_pitfall
-from .yarsrevenge import _detect_objects_yarsrevenge
-from .icehockey import _detect_objects_icehockey
-from .venture import _detect_objects_venture
-from .privateeye import _detect_objects_privateeye
-from .gopher import _detect_objects_gopher
-from .enduro import _detect_objects_enduro
-from .videopinball import _detect_objects_videopinball
-from .crazyclimber import _detect_objects_crazyclimber
 from .amidar import _detect_objects_amidar
+from .assault import _detect_objects_assault
+from .asterix import _detect_objects_asterix
+from .asteroids import _detect_objects_asteroids
+from .atlantis import _detect_objects_atlantis
+from .bankheist import _detect_objects_bankheist
 from .battlezone import _detect_objects_battlezone
+from .beamrider import _detect_objects_beamrider
+from .berzerk import _detect_objects_berzerk
+from .bowling import _detect_objects_bowling
+from .boxing import _detect_objects_boxing
+from .breakout import _detect_objects_breakout
+from .carnival import _detect_objects_carnival
+from .centipede import _detect_objects_centipede
+from .crazyclimber import _detect_objects_crazyclimber
+from .demonattack import _detect_objects_demon_attack
+from .enduro import _detect_objects_enduro
+from .fishingderby import _detect_objects_fishingderby
+from .freeway import _detect_objects_freeway
+from .frostbite import _detect_objects_frostbite
+from .gopher import _detect_objects_gopher
+from .hero import _detect_objects_hero
+from .icehockey import _detect_objects_icehockey
+from .jamesbond import _detect_objects_jamesbond
+from .kangaroo import _detect_objects_kangaroo
+from .krull import _detect_objects_krull
+from .montezumarevenge import _detect_objects_montezumarevenge
+from .mspacman import _detect_objects_mspacman
+from .pitfall import _detect_objects_pitfall
+from .pong import _detect_objects_pong
+from .privateeye import _detect_objects_privateeye
+from .qbert import _detect_objects_qbert
+from .riverraid import _detect_objects_riverraid
+from .roadrunner import _detect_objects_roadrunner
+from .seaquest import _detect_objects_seaquest
+from .skiing import _detect_objects_skiing
+from .spaceinvaders import _detect_objects_spaceinvaders
+from .tennis import _detect_objects_tennis
+from .timepilot import _detect_objects_timepilot
+from .upndown import _detect_objects_upndown
+from .venture import _detect_objects_venture
+from .videopinball import _detect_objects_videopinball
+from .yarsrevenge import _detect_objects_yarsrevenge
 
 def detect_objects_vision(objects, obs, game_name, hud=False):
     if game_name.lower() == "atlantis":
@@ -128,5 +152,17 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_amidar(objects, obs, hud)
     elif game_name.lower() == "battlezone":
         return _detect_objects_battlezone(objects, obs, hud)
+    elif game_name.lower() == "bankheist":
+        return _detect_objects_bankheist(objects, obs, hud)
+    elif game_name.lower() == "adventure":
+        return _detect_objects_adventure(objects, obs, hud)
+    elif game_name.lower() == "jamesbond":
+        return _detect_objects_jamesbond(objects, obs, hud)
+    elif game_name.lower() == "krull":
+        return _detect_objects_krull(objects, obs, hud)
+    elif game_name.lower() == "timepilot":
+        return _detect_objects_timepilot(objects, obs, hud)
+    elif game_name.lower() == "upndown":
+        return _detect_objects_upndown(objects, obs, hud)
     else:
         raise NotImplementedError(colored("Uncovered game in vision mode", "red"))

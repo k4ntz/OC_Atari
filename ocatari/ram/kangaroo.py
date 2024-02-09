@@ -1,6 +1,6 @@
 from typing import Type, Sequence, Dict
 
-from .game_objects import GameObject, ValueObject
+from .game_objects import GameObject, ValueObject, Orientation
 from ._helper_methods import _convert_number
 import sys
 
@@ -43,6 +43,7 @@ class Player(GameObject):
         self.wh = 8, 24
         self.rgb = 223, 183, 85
         self.hud = False
+        self.crashed = False
 
 
 class Child(GameObject):
@@ -179,7 +180,7 @@ class Life(GameObject):
         self.hud = False
 
 
-class Time(GameObject):
+class Time(ValueObject):
     """
     The time indicator (HUD).
     """
@@ -190,6 +191,7 @@ class Time(GameObject):
         self.wh = 15, 5
         self.rgb = 160, 171, 79
         self.hud = False
+        self.value = 20
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -270,6 +272,7 @@ def _update_objects(ram_state, hud=True):
     _detect_bell(ram_state)
     _detect_platforms(ram_state)
     _detect_lives(ram_state)
+    _detect_time(ram_state)
 
     if hud:
         _detect_score(ram_state)
@@ -277,18 +280,26 @@ def _update_objects(ram_state, hud=True):
 
 def _detect_player(ram_state):
     x = ram_state[17] + 15
-    y = ram_state[16] * 8 + 5
+    y = ram_state[16] * 8 + 4
 
-    # Detect jump animation
-    if ram_state[19] > 16 and ram_state[19] < 24:
-        h = 13
-    elif ram_state[19] == 31:
-        h = 15
+    orientation = Orientation.E if ram_state[18] in [8, 9, 28, 73, 74] else Orientation.W
+
+    crashed = ram_state[54] in [1, 128]
+
+    # Determine height during jump animation or during duck
+    if ram_state[18] in [20, 28]:
+        h = 16  # ducking
+    elif ram_state[18] in [66, 74]:
+        h = 15  # jump stooped
+    elif ram_state[18] in [65, 73]:
+        h = 23  # jump stretched
     else:
-        h = 24
+        h = 24  # default
 
     _update_object(Player, "xy", (x, y))
-    _update_object(Player, "wh", (8, h))
+    _update_object(Player, "wh", (8 , h))
+    _update_object(Player, "orientation", orientation)
+    _update_object(Player, "crashed", crashed)
 
 
 def _detect_child(ram_state):
@@ -366,12 +377,21 @@ def _detect_platforms(ram_state):
 def _detect_lives(ram_state):
     n_lives = ram_state[45]
     for i in range(MAX_ESSENTIAL_OBJECTS["Life"]):
-        if i < n_lives:
+        if i < n_lives and n_lives != 255:
             x = 16 + (i * 8)
             y = 183
             _update_object(Life, "xy", (x, y), idx=i)
         else:
             _remove_object(Life, idx=i)
+
+
+def _detect_time(ram_state):
+    time_value = ram_state[59]
+    if time_value <= 32:
+        time_remaining = _convert_number(time_value)
+    else:
+        time_remaining = time_value - 160
+    _update_object(Time, "value", time_remaining)
 
 
 def _detect_score(ram_state):
@@ -396,6 +416,7 @@ def _detect_score(ram_state):
 
     _update_object(Score, "xy", (x, 183))
     _update_object(Score, "wh", (w, 7))
+    _update_object(Score, "value", score_value)
 
 
 def _detect_objects_kangaroo_raw(info, ram_state):

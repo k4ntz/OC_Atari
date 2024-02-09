@@ -550,7 +550,7 @@ def _detect_objects_pitfall_revised(objects, ram_state, hud=False):
         objects.extend([None] * 10)
         # PlayerScores related to ram_state 86 and 87
         p1 = PlayerScore()
-        p1.value = _convert_number(ram_state[85])*1000 + _convert_number(ram_state[86]) *100 + _convert_number(ram_state[87])
+        p1.value = _convert_number(ram_state[85])*1000 + _convert_number(ram_state[86]) * 100 + _convert_number(ram_state[87])
         size = 0
         if p1.value != 0:
             size = math.ceil(np.log10(p1.value)) * 8 - int(0.5*math.ceil(np.log10(p1.value)))

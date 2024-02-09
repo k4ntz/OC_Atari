@@ -1,62 +1,71 @@
 import sys
+
 from termcolor import colored
 
-from .game_objects import GameObject
 from . import choppercommand
-from .asterix import _detect_objects_asterix_revised, _detect_objects_asterix_raw,\
+from .adventure import _detect_objects_adventure_revised, _init_objects_adventure_ram
+from .alien import _init_objects_alien_ram, _detect_objects_alien_revised
+from .amidar import _init_objects_amidar_ram, _detect_objects_amidar_revised
+from .assault import _detect_objects_assault_raw, _detect_objects_assault_revised, _init_objects_assault_ram
+from .asterix import _detect_objects_asterix_revised, _detect_objects_asterix_raw, \
     _init_objects_asterix_ram
+from .asteroids import _detect_objects_asteroids_raw, _detect_objects_asteroids_revised, _init_objects_asteroids_ram
+from .atlantis import _detect_objects_atlantis_raw, \
+    _detect_objects_atlantis_revised, \
+    _init_objects_atlantis_ram
+from .bankheist import _init_objects_bankheist_ram, _detect_objects_bankheist_revised
+from .battlezone import _init_objects_battlezone_ram, _detect_objects_battlezone_revised
+from .beamrider import _detect_objects_beamrider_raw, _detect_objects_beamrider_revised, _init_objects_beamrider_ram
 from .berzerk import _detect_objects_berzerk_raw, _detect_objects_berzerk_revised, _init_objects_berzerk_ram
-from .boxing import _detect_objects_boxing_raw, _detect_objects_boxing_revised, _init_objects_boxing_ram
-from .freeway import _detect_objects_freeway_raw, _detect_objects_freeway_revised, _init_objects_freeway_ram
 from .bowling import _detect_objects_bowling_raw, _detect_objects_bowling_revised, _init_objects_bowling_ram
+from .boxing import _detect_objects_boxing_raw, _detect_objects_boxing_revised, _init_objects_boxing_ram
 from .breakout import _detect_objects_breakout_raw, _detect_objects_breakout_revised, _init_objects_breakout_ram
+from .carnival import _init_objects_carnival_ram, _detect_objects_carnival_raw, _detect_objects_carnival_revised
+from .centipede import _detect_objects_centipede_raw, _detect_objects_centipede_revised, _init_objects_centipede_ram
+from .choppercommand import _detect_objects_revised, _detect_objects_raw
+from .crazyclimber import _init_objects_crazyclimber_ram, _detect_objects_crazyclimber_revised
+from .demonattack import _detect_objects_demon_attack_raw, \
+    _detect_objects_demon_attack_revised, \
+    _init_objects_demon_attack_ram
+from .enduro import _init_objects_enduro_ram, _detect_objects_enduro_revised
+from .fishingderby import _init_objects_fishingderby_ram, _detect_objects_fishingderby_revised
+from .freeway import _detect_objects_freeway_raw, _detect_objects_freeway_revised, _init_objects_freeway_ram
+from .frostbite import _init_objects_frostbite_ram, _detect_objects_frostbite_revised
+from .gopher import _init_objects_gopher_ram, _detect_objects_gopher_revised
+from .hero import _init_objects_hero_ram, _detect_objects_hero_revised
+from .icehockey import _init_objects_icehockey_ram, _detect_objects_icehockey_revised
+from .jamesbond import _init_objects_jamesbond_ram, _detect_objects_jamesbond_revised
+from .kangaroo import _detect_objects_kangaroo_raw, \
+    _detect_objects_kangaroo_revised, \
+    _init_objects_kangaroo_ram
+from .krull import _init_objects_krull_ram, _detect_objects_krull_revised
+from .montezumarevenge import _init_objects_montezumarevenge_ram, _detect_objects_montezumarevenge_revised
+from .mspacman import _detect_objects_mspacman_raw, \
+    _detect_objects_mspacman_revised, \
+    _init_objects_mspacman_ram
+from .pitfall import _init_objects_pitfall_ram, _detect_objects_pitfall_revised
 from .pong import _detect_objects_pong_raw, _detect_objects_pong_revised, _init_objects_pong_ram
+from .privateeye import _init_objects_privateeye_ram, _detect_objects_privateeye_revised
+from .qbert import _detect_objects_qbert_raw, \
+    _detect_objects_qbert_revised, \
+    _init_objects_qbert_ram
+from .riverraid import _detect_objects_riverraid_raw, _detect_objects_riverraid_revised, _init_objects_riverraid_ram
+from .roadrunner import _init_objects_roadrunner_ram, _detect_objects_roadrunner_revised
 from .seaquest import _detect_objects_seaquest_raw, _detect_objects_seaquest_revised, _init_objects_seaquest_ram
 from .skiing import _detect_objects_skiing_raw, _detect_objects_skiing_revised, _init_objects_skiing_ram
 from .spaceinvaders import _detect_objects_spaceinvaders_raw, \
-                            _detect_objects_spaceinvaders_revised, \
-                            _init_objects_spaceinvaders_ram
+    _detect_objects_spaceinvaders_revised, \
+    _init_objects_spaceinvaders_ram
 from .tennis import _detect_objects_tennis_raw, _detect_objects_tennis_revised, _init_objects_tennis_ram
-from .demonattack import _detect_objects_demon_attack_raw, \
-                         _detect_objects_demon_attack_revised, \
-                         _init_objects_demon_attack_ram
-from .mspacman import _detect_objects_mspacman_raw, \
-                      _detect_objects_mspacman_revised, \
-                      _init_objects_mspacman_ram
-from .centipede import _detect_objects_centipede_raw, _detect_objects_centipede_revised, _init_objects_centipede_ram
-from .carnival import _init_objects_carnival_ram, _detect_objects_carnival_raw, _detect_objects_carnival_revised
-from .kangaroo import _detect_objects_kangaroo_raw, \
-                      _detect_objects_kangaroo_revised, \
-                      _init_objects_kangaroo_ram
-from .qbert import _detect_objects_qbert_raw, \
-                      _detect_objects_qbert_revised, \
-                      _init_objects_qbert_ram
-from .atlantis import _detect_objects_atlantis_raw, \
-                      _detect_objects_atlantis_revised, \
-                      _init_objects_atlantis_ram
-from .beamrider import _detect_objects_beamrider_raw, _detect_objects_beamrider_revised, _init_objects_beamrider_ram
-from .asteroids import _detect_objects_asteroids_raw, _detect_objects_asteroids_revised, _init_objects_asteroids_ram
-from .riverraid import _detect_objects_riverraid_raw, _detect_objects_riverraid_revised, _init_objects_riverraid_ram
-from .assault import _detect_objects_assault_raw, _detect_objects_assault_revised, _init_objects_assault_ram
-from .roadrunner import _init_objects_roadrunner_ram, _detect_objects_roadrunner_revised
-from .alien import _init_objects_alien_ram, _detect_objects_alien_revised
-from .frostbite import _init_objects_frostbite_ram, _detect_objects_frostbite_revised
-from .fishingderby import _init_objects_fishingderby_ram, _detect_objects_fishingderby_revised
-from .montezumarevenge import _init_objects_montezumarevenge_ram, _detect_objects_montezumarevenge_revised
-from .choppercommand import _init_objects_ram, _detect_objects_revised, _detect_objects_raw
-from .hero import _init_objects_hero_ram, _detect_objects_hero_revised
-from .pitfall import _init_objects_pitfall_ram, _detect_objects_pitfall_revised
-from .yarsrevenge import _init_objects_yarsrevenge_ram, _detect_objects_yarsrevenge_revised
-from .icehockey import _init_objects_icehockey_ram, _detect_objects_icehockey_revised
-from .privateeye import _init_objects_privateeye_ram, _detect_objects_privateeye_revised
-from .gopher import _init_objects_gopher_ram, _detect_objects_gopher_revised
-from .enduro import _init_objects_enduro_ram, _detect_objects_enduro_revised
-from .videopinball import _init_objects_videopinball_ram, _detect_objects_videopinball_revised
 from .venture import _init_objects_venture_ram, _detect_objects_venture_revised
 from .crazyclimber import _init_objects_crazyclimber_ram, _detect_objects_crazyclimber_revised
 from .amidar import _init_objects_amidar_ram, _detect_objects_amidar_revised
 from .battlezone import _init_objects_battlezone_ram, _detect_objects_battlezone_revised
 from .pacman import _init_objects_pacman_ram, _detect_objects_pacman_revised
+from .timepilot import _init_objects_timepilot_ram, _detect_objects_timepilot_revised
+from .upndown import _init_objects_upndown_ram, _detect_objects_upndown_revised
+from .videopinball import _init_objects_videopinball_ram, _detect_objects_videopinball_revised
+from .yarsrevenge import _init_objects_yarsrevenge_ram, _detect_objects_yarsrevenge_revised
 
 # calls the respective _get_max_objects from the game modules
 def get_max_objects(game_name, hud):
@@ -161,9 +170,20 @@ def init_objects(game_name, hud):
         return _init_objects_amidar_ram(hud)
     elif game_name.lower() == "battlezone":
         return _init_objects_battlezone_ram(hud)
+    elif game_name.lower() == "bankheist":
+        return _init_objects_bankheist_ram(hud)
+    elif game_name.lower() == "adventure":
+        return _init_objects_adventure_ram(hud)
+    elif game_name.lower() == "jamesbond":
+        return _init_objects_jamesbond_ram(hud)
+    elif game_name.lower() == "krull":
+        return _init_objects_krull_ram(hud)
+    elif game_name.lower() == "timepilot":
+        return _init_objects_timepilot_ram(hud)
+    elif game_name.lower() == "upndown":
+        return _init_objects_upndown_ram(hud)
     else:
         raise NotImplementedError(colored("Uncovered init objects", "red"))
-        
 
 
 def detect_objects_raw(info, ram_state, game_name):
@@ -228,7 +248,7 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
     """
     Augment the info dictionary with object centric information
     """
-    for obj in objects: # saving the previsous positions
+    for obj in objects:  # saving the previsous positions
         if obj is not None:
             obj._save_prev()
     if game_name.lower() == "boxing":
@@ -313,6 +333,18 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_amidar_revised(objects, ram_state, hud)
     elif game_name.lower() == "battlezone":
         _detect_objects_battlezone_revised(objects, ram_state, hud)
+    elif game_name.lower() == "bankheist":
+        _detect_objects_bankheist_revised(objects, ram_state, hud)
+    elif game_name.lower() == "adventure":
+        _detect_objects_adventure_revised(objects, ram_state, hud)
+    elif game_name.lower() == "jamesbond":
+        _detect_objects_jamesbond_revised(objects, ram_state, hud)
+    elif game_name.lower() == "krull":
+        _detect_objects_krull_revised(objects, ram_state, hud)
+    elif game_name.lower() == "timepilot":
+        _detect_objects_timepilot_revised(objects, ram_state, hud)
+    elif game_name.lower() == "upndown":
+        _detect_objects_upndown_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
