@@ -45,9 +45,9 @@ env = OCAtari(opts.game, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
 
-INTERACTIVE = False
-ONE_CHANGE = False
-initial_ram_n = 23
+INTERACTIVE = True
+ONE_CHANGE = True
+initial_ram_n = 26
 
 
 make_deterministic(0, env)
@@ -77,7 +77,7 @@ if snapshot is None:
 
 base_next_obs, _, _, _, _ = env.step(0)
 base_objects = deepcopy(env.objects)
-binary_mode = False
+binary_mode = True
 
 # MAX_DIFF = 200
 original_ram, ram_n = 0, 0
@@ -165,6 +165,9 @@ while ram_n < 127:
                         ram_n = int(input("which ram pos to jump to ?")) - 1
                         askinput = False
                         break
+                    elif el == "s":
+                        env.step(0)
+                        snapshot = env._ale.cloneState()
                     else:
                         askinput = False
                         break
