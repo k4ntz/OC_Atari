@@ -74,9 +74,9 @@ class Renderer:
             self._handle_user_input()
             if not self.paused:
                 action = self._get_action()
-                for i in range(4):
-                    self.env.set_ram(6+i, 0)
-                    self.env.set_ram(12+i, 0)
+                # for i in range(4):
+                #     self.env.set_ram(6+i, 0)
+                #     self.env.set_ram(12+i, 0)
                 tuple = self.env.step(action)
                 rew = tuple[1]
                 if rew != 0:
@@ -320,4 +320,5 @@ if __name__ == "__main__":
     # renderer = Renderer("ALE/Pacman-v5")
     renderer = Renderer("ALE/DonkeyKong-v5")
     # renderer = Renderer("MsPacman-v4")
+    # renderer = Renderer("Kangaroo-v4")
     renderer.run()
