@@ -82,8 +82,8 @@ class Renderer:
                 if rew != 0:
                     print(rew)
                 self.current_frame = self.env.render().copy()
-                for i in range(4):
-                    self.env.set_ram(0+i, 0)
+                # for i in range(4):
+                #     self.env.set_ram(0+i, 0)
                     # self.env.set_ram(0+i, 0)
             self._render()
         pygame.quit()
