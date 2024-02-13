@@ -2,10 +2,12 @@
 RAM Extraction submodule of OCAtari
 """
 
+from os.path import dirname, basename, isfile, join
+import glob
+modules = glob.glob(join(dirname(__file__), "*.py"))
+modules = [mod for mod in modules if not "_old" in mod]
 
-from .extract_ram_info_short import detect_objects_raw, detect_objects_revised
-from .game_objects import GameObject
+__all__ = [basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]
 
-__all__ = [
-    "detect_objects_raw", "detect_objects_revised"
-    ]
+from .game_objects import GameObject  # To avoid circular imports
+from . import *

@@ -45,9 +45,9 @@ env = OCAtari(opts.game, mode=MODE, render_mode=RENDER_MODE)
 random.seed(0)
 
 
-INTERACTIVE = True
+INTERACTIVE = False
 ONE_CHANGE = True
-initial_ram_n = 26
+initial_ram_n = 0
 
 
 make_deterministic(0, env)
@@ -77,7 +77,7 @@ if snapshot is None:
 
 base_next_obs, _, _, _, _ = env.step(0)
 base_objects = deepcopy(env.objects)
-binary_mode = True
+binary_mode = False
 
 # MAX_DIFF = 200
 original_ram, ram_n = 0, 0

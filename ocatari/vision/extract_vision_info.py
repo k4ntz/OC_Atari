@@ -1,22 +1,4 @@
 from termcolor import colored
-from .hero import _detect_objects_hero
-from .pong import _detect_objects_pong
-from .skiing import _detect_objects_skiing
-from .freeway import _detect_objects_freeway
-from .seaquest import _detect_objects_seaquest
-from .bowling import _detect_objects_bowling
-from .demonattack import _detect_objects_demon_attack
-from .breakout import _detect_objects_breakout
-from .tennis import _detect_objects_tennis
-from .spaceinvaders import _detect_objects_spaceinvaders
-from .kangaroo import _detect_objects_kangaroo
-from .mspacman import _detect_objects_mspacman
-from .pacman import _detect_objects_pacman
-from .centipede import _detect_objects_centipede
-from .carnival import _detect_objects_carnival
-from .berzerk import _detect_objects_berzerk
-from .beamrider import _detect_objects_beamrider
-from .asterix import _detect_objects_asterix
 
 from . import choppercommand
 from .adventure import _detect_objects_adventure
@@ -36,6 +18,7 @@ from .breakout import _detect_objects_breakout
 from .carnival import _detect_objects_carnival
 from .centipede import _detect_objects_centipede
 from .crazyclimber import _detect_objects_crazyclimber
+from .donkeykong import _detect_objects_donkeykong
 from .demonattack import _detect_objects_demon_attack
 from .enduro import _detect_objects_enduro
 from .fishingderby import _detect_objects_fishingderby
@@ -49,6 +32,7 @@ from .kangaroo import _detect_objects_kangaroo
 from .krull import _detect_objects_krull
 from .montezumarevenge import _detect_objects_montezumarevenge
 from .mspacman import _detect_objects_mspacman
+from .pacman import _detect_objects_pacman
 from .pitfall import _detect_objects_pitfall
 from .pong import _detect_objects_pong
 from .privateeye import _detect_objects_privateeye
@@ -102,6 +86,8 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_centipede(objects, obs, hud)
     elif game_name.lower() == "carnival":
         return _detect_objects_carnival(objects, obs, hud)
+    elif game_name.lower() == "donkeykong":
+        return _detect_objects_donkeykong(objects, obs, hud)
     elif game_name.lower() == "berzerk":
         return _detect_objects_berzerk(objects, obs, hud)
     elif game_name.lower() == "beamrider":
