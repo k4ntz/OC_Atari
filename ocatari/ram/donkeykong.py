@@ -124,9 +124,9 @@ class Score(ValueObject):
 
     def __init__(self):
         super(Score, self).__init__()
-        self._xy = 129, 183
-        self.wh = 15, 7
-        self.rgb = 160, 171, 79
+        self._xy = 72, 7
+        self.wh = 30, 7
+        self.rgb = 158, 208, 201
         self.hud = True
         self.value = 0
 
@@ -138,24 +138,24 @@ class Life(GameObject):
 
     def __init__(self):
         super(Life, self).__init__()
-        self._xy = 16, 183
-        self.wh = 4, 7
-        self.rgb = 160, 171, 79
-        self.hud = False
+        self._xy = 116, 23
+        self.wh = 12, 8
+        self.rgb = 181, 108, 224
+        self.hud = True
 
 
-class Time(ValueObject):
-    """
-    The time indicator (HUD).
-    """
+# class Time(ValueObject):
+#     """
+#     The time indicator (HUD).
+#     """
 
-    def __init__(self):
-        super(Time, self).__init__()
-        self._xy = 80, 191
-        self.wh = 15, 5
-        self.rgb = 160, 171, 79
-        self.hud = False
-        self.value = 20
+#     def __init__(self):
+#         super(Time, self).__init__()
+#         self._xy = 80, 191
+#         self.wh = 15, 5
+#         self.rgb = 160, 171, 79
+#         self.hud = False
+#         self.value = 20
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -191,6 +191,8 @@ def _init_objects_donkeykong_ram(hud=True):
     # objects[Time][0] = Time()
     objects = [Player(), DonkeyKong(), Girlfriend(), Hammer()] + [None] * 4 + \
         [Ladder(*xy) for xy in ladders]
+    if hud:
+        objects.extend([Life(), Score()])
     return objects
     # manage_platforms(0, init_obj)
     # global prev_level
@@ -231,6 +233,7 @@ def _detect_objects_donkeykong_revised(objects, ram_state, hud=True):
                 objects[4+i] = None
     if hud:
         pass
+        # score -> ram[36]
 
 # def manage_platforms(current_lvl_val, _):
 #     objects[Platform][:2] = [
