@@ -5,7 +5,7 @@ from tqdm import tqdm
 import pygame
 from ocatari.core import OCAtari, UPSCALE_FACTOR
 from gymnasium.error import NameNotFound
-
+import pickle
 """
 This script can be used to identify any RAM positions that
 influence the color of a specific pixel. This can be used to
@@ -79,7 +79,6 @@ class Renderer:
                 if rew != 0:
                     print(rew)
                 self.current_frame = self.env.render().copy()
-                import ipdb;ipdb.set_trace()
                 print(self.env.objects)
             self._render()
         pygame.quit()
@@ -123,8 +122,13 @@ class Renderer:
                 if event.key == pygame.K_p:  # 'P': pause/resume
                     self.paused = not self.paused
 
-                if event.key == pygame.K_r:  # 'R': reset
+                elif event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
+                
+                elif event.key == pygame.K_m:  # 'M': save snapshot
+                    snapshot = self.env._ale.cloneState()
+                    pickle.dump(snapshot, open("snapshot.pkl", "wb"))
+                    print("Saved snapshot.pkl")
 
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
                     self._unselect_active_cell()
@@ -319,4 +323,5 @@ if __name__ == "__main__":
     # renderer = Renderer("ALE/Pacman-v5")
     renderer = Renderer("ALE/DonkeyKong-v5")
     # renderer = Renderer("MsPacman-v4")
+    # renderer = Renderer("Kangaroo-v4")
     renderer.run()

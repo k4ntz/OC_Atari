@@ -27,6 +27,7 @@ from .crazyclimber import _init_objects_crazyclimber_ram, _detect_objects_crazyc
 from .demonattack import _detect_objects_demon_attack_raw, \
     _detect_objects_demon_attack_revised, \
     _init_objects_demon_attack_ram
+from .donkeykong import _init_objects_donkeykong_ram, _detect_objects_donkeykong_revised
 from .enduro import _init_objects_enduro_ram, _detect_objects_enduro_revised
 from .fishingderby import _init_objects_fishingderby_ram, _detect_objects_fishingderby_revised
 from .freeway import _detect_objects_freeway_raw, _detect_objects_freeway_revised, _init_objects_freeway_ram
@@ -108,6 +109,8 @@ def init_objects(game_name, hud):
         return _init_objects_tennis_ram(hud)
     elif game_name.lower() == "bowling":
         return _init_objects_bowling_ram(hud)
+    elif game_name.lower() == "donkeykong":
+        return _init_objects_donkeykong_ram(hud)
     elif game_name.lower() == "demonattack":
         return _init_objects_demon_attack_ram(hud)
     elif game_name.lower() == "mspacman":
@@ -261,6 +264,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_pong_revised(objects, ram_state, hud)
     elif game_name.lower() == "skiing":
         _detect_objects_skiing_revised(objects, ram_state, hud)
+    elif game_name.lower() == "donkeykong":
+        _detect_objects_donkeykong_revised(objects, ram_state, hud)
     elif game_name.lower() == "seaquest":
         _detect_objects_seaquest_revised(objects, ram_state, hud)
     elif game_name.lower() == "spaceinvaders":
