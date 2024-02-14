@@ -74,17 +74,13 @@ class Renderer:
             self._handle_user_input()
             if not self.paused:
                 action = self._get_action()
-                for i in range(4):
-                    self.env.set_ram(6+i, 0)
-                    self.env.set_ram(12+i, 0)
                 tuple = self.env.step(action)
                 rew = tuple[1]
                 if rew != 0:
                     print(rew)
                 self.current_frame = self.env.render().copy()
-                for i in range(4):
-                    self.env.set_ram(50+i, 76)
-                    self.env.set_ram(55+i, 33)
+                import ipdb;ipdb.set_trace()
+                print(self.env.objects)
             self._render()
         pygame.quit()
 
@@ -320,7 +316,7 @@ class Renderer:
 if __name__ == "__main__":
     # renderer = Renderer("Pong")
     # renderer = Renderer("DemonAttack")
-    renderer = Renderer("ALE/Pacman-v5")
-    # renderer = Renderer("ALE/DonkeyKong-v5")
+    # renderer = Renderer("ALE/Pacman-v5")
+    renderer = Renderer("ALE/DonkeyKong-v5")
     # renderer = Renderer("MsPacman-v4")
     renderer.run()
