@@ -14,7 +14,7 @@ identify the values that belong to a GameObject.
 
 
 import pygame
-from ocatari.core import OCAtari, DEVICE
+from ocatari.core import OCAtari, DEVICE, EasyDonkey
 import numpy as np
 import torch
 import cv2
@@ -38,7 +38,9 @@ class Renderer:
 
     def __init__(self, env_name: str):
         try:
-            self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+            # self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+            #                 render_oc_overlay=True, frameskip=1)
+            self.env = EasyDonkey(env_name, mode="revised", hud=True, render_mode="rgb_array",
                             render_oc_overlay=True, frameskip=1)
         except NameNotFound:
             self.env = gym.make(env_name, render_mode="rgb_array", frameskip=1)
@@ -79,7 +81,6 @@ class Renderer:
                 if rew != 0:
                     print(rew)
                 self.current_frame = self.env.render().copy()
-                print(self.env.objects)
             self._render()
         pygame.quit()
 
