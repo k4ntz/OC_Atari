@@ -496,3 +496,21 @@ class HideEnemyPong(OCAtari):
         )
         self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
                                                device=DEVICE))
+
+
+class EasyDonkey(OCAtari):
+    def __init__(self, env_name="ALE/DonkeyKong", mode="raw", hud=False, obs_mode="dqn", render_mode=None, render_oc_overlay=False, *args, **kwargs):
+        self.miny = 176
+        super().__init__(env_name, mode, hud, obs_mode, render_mode, render_oc_overlay, *args, **kwargs)
+
+    def _step_ram(self, *args, **kwargs):
+        obs, reward, truncated, terminated, info = super()._step_ram(*args, **kwargs)
+        for obj in self.objects:
+            if "Player" in str(obj):
+                # return obj.y
+                if obj.y < self.miny:
+                    rew = self.miny - obj.y
+                    self.miny = obj.y
+                    reward += 100*rew
+        return obs, reward, truncated, terminated, info
+        
