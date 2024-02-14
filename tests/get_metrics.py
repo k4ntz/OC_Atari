@@ -46,6 +46,7 @@ MODE = "both"
 HUD = True
 env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array', obs_mode='dqn')
 observation, info = env.reset()
+game_name = game_name.split("/")[-1]
 NB_SAMPLES = 500
 
 MIN_ACCEPTABLE_IOU = 0.5
@@ -64,7 +65,8 @@ if ONLYBOTHDEFINEDOBJECTS:
 
 
 opts.path = f"models/{opts.game}/dqn.gz"
-dqn_agent = load_agent(opts, env.action_space.n)
+# dqn_agent = load_agent(opts, env.action_space.n)
+dqn_agent = None
 opts.path = f"models/{opts.game}/c51.gz"
 try:
     c51_agent = load_agent(opts, env.action_space.n)
@@ -135,10 +137,9 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
                         axes[2].set_title("difference")
                         plt.tight_layout()
                         plt.savefig(f"{SAVE_IMAGE_FOLDER}/{game_name}_{meth_name}_{image_n}.png")
-                        if ""
-                            plt.show()
-                            print(env.objects)
-                            print(env.objects_v)
+                        # plt.show()
+                        # print(env.objects)
+                        # print(env.objects_v)
                         fig, axes = plt.subplots(1, 3, figsize=(20, 10))
                         im_reports += f"{image_n} (iou={stats['mean_iou']:.3f}),  "
                         report_bad[f"Image_{image_n}"] = stats
@@ -191,7 +192,7 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
     else:
         df_finals.append(pd.DataFrame(columns=['Precision', 'Recall', 'F-score', 'IOU']))
 
-
+exit()
 df = pd.concat(df_finals, axis=1, keys=["Random", "DQN", "C51"])
 styler = df.style
 styler.background_gradient(cmap="RdYlGn", vmin=0, vmax=100)

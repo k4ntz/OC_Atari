@@ -6,7 +6,7 @@ import random
 # like it would have been installed as a package
 import sys
 from copy import deepcopy
-from os import path
+from os import path, makedirs
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -17,6 +17,9 @@ from ocatari.utils import load_agent, parser, make_deterministic
 # from ocatari.vision.space_invaders import objects_colors
 from ocatari.vision.pong import objects_colors
 from ocatari.vision.utils import mark_bb, make_darker
+import pickle
+from tqdm import tqdm
+
 
 parser.add_argument("-g", "--game", type=str, default="Pong",
                     help="game to evaluate (e.g. 'Pong')")
@@ -44,10 +47,14 @@ make_deterministic(42, env)
 # Init an empty dataset
 game_nr = 0
 turn_nr = 0
-dataset = {"INDEX": [], "OBS": [], "RAM": [], "VIS": [], "HUD": []}
+dataset = {"INDEX": [], #"OBS": [], 
+           "RAM": [], "VIS": [], "HUD": []}
+frames = []
+r_objs = []
+v_objs = []
 
 # Generate 10,000 samples
-for i in range(10000):
+for i in tqdm(range(10000)):
     action = dqn_agent.draw_action(env.dqn_obs)
     obs, reward, terminated, truncated, info = env.step(action)
 
@@ -55,8 +62,12 @@ for i in range(10000):
     # if i % 1000 == 0:
     #    print(f"{i} done")
 
-    dataset["INDEX"].append(f"{'%0.5d' % (game_nr)}_{'%0.5d' % (turn_nr)}")
-    dataset["OBS"].append(obs.flatten().tolist())
+    step = f"{'%0.5d' % (game_nr)}_{'%0.5d' % (turn_nr)}"
+    dataset["INDEX"].append(step)
+    frames.append(deepcopy(obs))
+    r_objs.append(deepcopy(env.objects))
+    v_objs.append(deepcopy(env.objects_v))
+    # dataset["OBS"].append(obs.flatten().tolist())
     dataset["RAM"].append([x for x in sorted(env.objects, key=lambda o: str(o)) if x.hud == False])
     dataset["VIS"].append([x for x in sorted(env.objects_v, key=lambda o: str(o))])
     dataset["HUD"].append([x for x in sorted(env.objects, key=lambda o: str(o)) if x.hud == True])
@@ -114,6 +125,11 @@ for i in range(10000):
         """
 env.close()
 
-df = pd.DataFrame(dataset, columns=['INDEX', 'OBS', 'RAM', 'HUD', 'VIS'])
-df.to_csv(f"/data/datasets/{opts.game}.csv", index=False)
+df = pd.DataFrame(dataset, columns=['INDEX', 'RAM', 'HUD', 'VIS'])
+makedirs("data/datasets/", exist_ok=True)
+prefix = f"{opts.game}_dqn" if opts.dqn else f"{opts.game}_random" 
+df.to_csv(f"data/datasets/{prefix}.csv", index=False)
+pickle.dump(v_objs, open(f"data/datasets/{prefix}_objects_v.pkl", "wb"))
+pickle.dump(r_objs, open(f"data/datasets/{prefix}_objects_r.pkl", "wb"))
+pickle.dump(frames, open(f"data/datasets/{prefix}_frames.pkl", "wb"))
 print(f"Finished {opts.game}")

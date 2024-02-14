@@ -8,8 +8,8 @@ RAM extraction for the game Ms. Pac-Man.
 """
 
 # not sure about this one TODO: validate
-MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4, 'Fruit': 1, 'Score': 3, 'Life': 2}
+MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4, 'PowerPill': 4}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4, 'PowerPill': 4, 'Score': 3, 'Life': 2}
 
 gcolor = [(111, 111, 215), (144, 144, 252)]
 ghost_vulnerable = False
@@ -41,17 +41,17 @@ class Ghost(GameObject):
         self.hud = False
 
 
-class Fruit(GameObject):
-    """
-    The collectable fruits.
-    """
+# class Fruit(GameObject):
+#     """
+#     The collectable fruits.
+#     """
     
-    def __init__(self):
-        super(Fruit, self).__init__()
-        self._xy = 125, 173
-        self.wh = 9, 10
-        self.rgb = 252, 144, 200
-        self.hud = False
+#     def __init__(self):
+#         super(Fruit, self).__init__()
+#         self._xy = 125, 173
+#         self.wh = 9, 10
+#         self.rgb = 252, 144, 200
+#         self.hud = False
 
 
 pps = [(6, 39), (6, 171), (150, 39), (150, 171)]
@@ -77,7 +77,7 @@ class Score(GameObject):
         super(Score, self).__init__()
         self._xy = 96, 207
         self.wh = 6, 7
-        self.rgb = 195, 144, 61
+        self.rgb = 0, 0, 0
         self.hud = True
 
 
@@ -90,7 +90,7 @@ class Life(GameObject):
         super(Life, self).__init__()
         self._xy = 8, 217
         self.wh = 20, 6
-        self.rgb = 187, 187, 53
+        self.rgb = 72, 176, 110
         self.hud = True
         self.value = 3
 
@@ -128,7 +128,7 @@ get_bin = lambda x: format(int(x), 'b').zfill(8)
 def _detect_objects_pacman_revised(objects, ram_state, hud=True):
     player = objects[0]
     ghosts = objects[1:5]
-    pcmn_invsbl = ram_state[59] == 97 or ram_state[59] == 161
+    pcmn_invsbl = ram_state[59] in [96, 97, 160, 161]
     # player
     if pcmn_invsbl:
         if player is not None:
@@ -136,6 +136,7 @@ def _detect_objects_pacman_revised(objects, ram_state, hud=True):
     else:
         if player is None:
             player = Player()
+            objects[0] = player
         player.xy = ram_state[49], 2*ram_state[89]+1
     # ghosts
     ghst_bs = get_bin(ram_state[26])
