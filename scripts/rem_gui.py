@@ -82,6 +82,7 @@ class Renderer:
                 if rew != 0:
                     print(rew)
                 self.current_frame = self.env.render().copy()
+                self.env.set_ram(35, 3)
                 # for i in range(4):
                 #     self.env.set_ram(0+i, 0)
                     # self.env.set_ram(0+i, 0)
@@ -325,8 +326,8 @@ class Renderer:
 if __name__ == "__main__":
     # renderer = Renderer("Pong")
     # renderer = Renderer("DemonAttack")
-    # renderer = Renderer("ALE/Pacman-v5")
-    renderer = Renderer("ALE/DonkeyKong-v5")
+    renderer = Renderer("ALE/Pacman-v5")
+    # renderer = Renderer("ALE/DonkeyKong-v5")
     # renderer = Renderer("MsPacman-v4")
     # renderer = Renderer("Kangaroo-v4")
     renderer.run()
