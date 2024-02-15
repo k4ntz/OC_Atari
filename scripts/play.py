@@ -1,3 +1,6 @@
+"""
+This script is used to simply play the Atari games manually.
+"""
 import gymnasium as gym
 import numpy as np
 from matplotlib import pyplot as plt
@@ -5,10 +8,18 @@ from tqdm import tqdm
 import pygame
 from ocatari.core import OCAtari
 
-"""
-This script is used to simply play the Atari games manually.
-"""
+from argparse import ArgumentParser
 
+parser = ArgumentParser()
+parser.add_argument("-g", "--game", type=str, default="Pong")
+parser.add_argument("-r", "--record", action="store_true")
+
+args = parser.parse_args()
+
+import imageio
+
+def save_rgb_array_as_png(rgb_array, filename):
+    imageio.imwrite(filename, rgb_array)
 
 class Renderer:
     env: gym.Env
@@ -22,6 +33,7 @@ class Renderer:
         self.paused = False
         self.current_keys_down = set()
         self.keys2actions = self.env.unwrapped.get_keys_to_action()
+        self.frame = 0
 
     def run(self):
         self.running = True
@@ -31,6 +43,10 @@ class Renderer:
                 action = self._get_action()
                 self.env.step(action)
                 self.env.render()
+                if args.record and self.frame % 4 == 0:
+                    frame = self.env.unwrapped.ale.getScreenRGB()
+                    save_rgb_array_as_png(frame, f'frames/{args.game}_{self.frame}.png')
+                self.frame += 1
         pygame.quit()
 
     def _get_action(self):
@@ -57,6 +73,7 @@ class Renderer:
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
 
+
                 elif (event.key,) in self.keys2actions.keys():  # env action
                     self.current_keys_down.add(event.key)
 
@@ -66,5 +83,5 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer("Seaquest")
+    renderer = Renderer(args.game)
     renderer.run()
