@@ -60,7 +60,7 @@ class OCAtari:
     the remaining \*args and \**kwargs will be passed to the \
         `gymnasium.make <https://gymnasium.farama.org/api/registry/#gymnasium.make>`_ function.
     """
-    def __init__(self, env_name, mode="raw", hud=False, obs_mode="dqn",
+    def __init__(self, env_name, mode="revised", hud=False, obs_mode="dqn",
                  render_mode=None, render_oc_overlay=False, *args, **kwargs):
         if "ALE/" in env_name: #case if v5 specified
             to_check = env_name[4:8]
@@ -499,7 +499,7 @@ class HideEnemyPong(OCAtari):
 
 
 class EasyDonkey(OCAtari):
-    def __init__(self, env_name="ALE/DonkeyKong", mode="raw", hud=False, obs_mode="dqn", render_mode=None, render_oc_overlay=False, *args, **kwargs):
+    def __init__(self, env_name="ALE/DonkeyKong", mode="revised", hud=False, obs_mode="dqn", render_mode=None, render_oc_overlay=False, *args, **kwargs):
         self.miny = 176
         super().__init__(env_name, mode, hud, obs_mode, render_mode, render_oc_overlay, *args, **kwargs)
 

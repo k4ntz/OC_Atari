@@ -38,10 +38,10 @@ class Renderer:
 
     def __init__(self, env_name: str):
         try:
-            # self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+            self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+                                render_oc_overlay=True, frameskip=1)
+            # self.env = EasyDonkey(env_name, mode="revised", hud=True, render_mode="rgb_array",
             #                 render_oc_overlay=True, frameskip=1)
-            self.env = EasyDonkey(env_name, mode="revised", hud=True, render_mode="rgb_array",
-                            render_oc_overlay=True, frameskip=1)
         except NameNotFound:
             self.env = gym.make(env_name, render_mode="rgb_array", frameskip=1)
         self.env.reset(seed=42)[0]
@@ -321,8 +321,8 @@ class Renderer:
 if __name__ == "__main__":
     # renderer = Renderer("Pong")
     # renderer = Renderer("DemonAttack")
-    renderer = Renderer("ALE/Pacman-v5")
+    # renderer = Renderer("ALE/Pacman-v5")
     # renderer = Renderer("ALE/DonkeyKong-v5")
     # renderer = Renderer("MsPacman-v4")
-    # renderer = Renderer("Kangaroo-v4")
+    renderer = Renderer("Asterix-v4")
     renderer.run()
