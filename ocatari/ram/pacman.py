@@ -60,7 +60,7 @@ class PowerPill(GameObject):
     The collectable fruits.
     """
     
-    def __init__(self, x, y):
+    def __init__(self, x=0, y=0):
         super(PowerPill, self).__init__()
         self._xy = x, y
         self.wh = 4, 10
