@@ -52,7 +52,6 @@ def make_deterministic(seed, mdp, states_dict=None):
 
 
 if torch_imported:
-
     class QNetwork(nn.Module):
         def __init__(self, action_no):
             super().__init__()
@@ -176,9 +175,9 @@ class HumanAgent():
 #     ckpt_path = Path(opt.path)
 
 
-def load_agent(opt, nb_actions=None, ale=False):
+def load_agent(opt, nb_actions=None):
     pth = opt if isinstance(opt, str) else opt.path
-    if ale:
+    if "ALE/" in opt.game:
         agent = AtariNet(nb_actions)
         ckpt = torch.load(pth, map_location=torch.device('cpu'))
         agent.load_state_dict(ckpt)
