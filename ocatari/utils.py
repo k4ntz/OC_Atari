@@ -52,6 +52,32 @@ def make_deterministic(seed, mdp, states_dict=None):
 
 
 if torch_imported:
+
+    class QNetwork(nn.Module):
+        def __init__(self, action_no):
+            super().__init__()
+            # get the feature extractor and fully connected layers
+            self.__features = nn.Sequential(
+                nn.Conv2d(4, 32, kernel_size=8, stride=4),
+                nn.ReLU(inplace=True),
+                nn.Conv2d(32, 64, kernel_size=4, stride=2),
+                nn.ReLU(inplace=True),
+                nn.Conv2d(64, 64, kernel_size=3, stride=1),
+                nn.ReLU(inplace=True),
+            )
+            self.__head = nn.Sequential(
+                nn.Linear(64 * 7 * 7, 512), nn.ReLU(inplace=True), nn.Linear(512, action_no),
+            )
+
+        def forward(self, x):
+            y = self.__features(x / 255.0)
+            return self.__head(y.view(y.size(0), -1))
+        
+        def draw_action(self, state):
+            probs = self.forward(state)
+            return probs.argmax()
+
+
     class AtariNet(nn.Module):
         """ Estimator used by DQN-style algorithms for ATARI games.
             Works with DQN, M-DQN and C51.
@@ -150,11 +176,17 @@ class HumanAgent():
 #     ckpt_path = Path(opt.path)
 
 
-def load_agent(opt, nb_actions=None):
+def load_agent(opt, nb_actions=None, ale=False):
     pth = opt if isinstance(opt, str) else opt.path
-    agent = AtariNet(nb_actions, distributional="c51" in pth)
-    ckpt = _load_checkpoint(pth)
-    agent.load_state_dict(ckpt["estimator_state"])
+    if ale:
+        agent = AtariNet(nb_actions)
+        ckpt = torch.load(pth, map_location=torch.device('cpu'))
+        agent.load_state_dict(ckpt)
+        #agent.load_state_dict(ckpt["model_weights"])
+    else:
+        agent = AtariNet(nb_actions, distributional="c51" in pth)
+        ckpt = _load_checkpoint(pth)
+        agent.load_state_dict(ckpt["estimator_state"])
     return agent
 
 

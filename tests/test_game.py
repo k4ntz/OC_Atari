@@ -31,7 +31,7 @@ observation, info = env.reset()
 
 
 if opts.path:
-    agent = load_agent(opts, env.action_space.n)
+    agent = load_agent(opts, env.action_space.n, ale=True)
     print(f"Loaded agents from {opts.path}")
 
 
