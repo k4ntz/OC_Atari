@@ -53,6 +53,38 @@ def make_deterministic(seed, mdp, states_dict=None):
 
 if torch_imported:
     
+    class QNetwork(nn.Module):
+        def __init__(self, nb_actions, n_atoms=51, v_min=-10, v_max=10):
+            super().__init__()
+            self.n_atoms = n_atoms
+            self.register_buffer("atoms", torch.linspace(v_min, v_max, steps=n_atoms))
+            self.n = nb_actions
+            
+            self.__features = nn.Sequential(
+                nn.Conv2d(4, 32, kernel_size=8, stride=4),
+                nn.ReLU(inplace=True),
+                nn.Conv2d(32, 64, kernel_size=4, stride=2),
+                nn.ReLU(inplace=True),
+                nn.Conv2d(64, 64, kernel_size=3, stride=1),
+                nn.ReLU(inplace=True),
+            )
+            self.__head = nn.Sequential(
+                nn.Linear(64 * 7 * 7, 512), nn.ReLU(inplace=True), nn.Linear(512, self.n * n_atoms),
+            )
+
+        def get_action(self, x, action=None):
+            y = self.__features(x / 255.0)
+            logits = self.__head(y.view(y.size(0), -1))
+            # probability mass function for each action
+            pmfs = torch.softmax(logits.view(len(x), self.n, self.n_atoms), dim=2)
+            q_values = (pmfs * self.atoms).sum(2)
+            if action is None:
+                action = torch.argmax(q_values, 1)
+            return action, pmfs[torch.arange(len(x)), action]
+        
+        def draw_action(self, state):
+            return self.get_action(state)[0]
+    
     class AtariNet(nn.Module):
         """ Estimator used by DQN-style algorithms for ATARI games.
             Works with DQN, M-DQN and C51.
@@ -164,16 +196,21 @@ def load_agent(opt, nb_actions=None):
             for el in ckpt:
                 el2 = el.replace("_QNetwork__", "_AtariNet__")
                 ckpt2[el2] = ckpt[el]
+            agent.load_state_dict(ckpt2)
     
         if "c51" in pth:
-            return None
-            ckpt2 = ckpt["model_weights"].copy()
-            ckpt2.clear()
-            for el in ckpt:
-                el2 = el.replace("_QNetwork__", "_AtariNet__")
-                ckpt2[el2] = ckpt[el]
+            # return None
+            # ckpt2 = ckpt["model_weights"].copy()
+            # ckpt2.clear()
+            # for el in ckpt:
+            #     el2 = el.replace("_QNetwork__", "_AtariNet__")
+            #     ckpt2[el2] = ckpt[el]
+            agent = QNetwork(nb_actions)
+            ckpt = torch.load(opt.path, map_location=torch.device('cpu'))
+            agent.load_state_dict(ckpt["model_weights"])
+            
         
-        agent.load_state_dict(ckpt2)
+        
         
     else:
         agent = AtariNet(nb_actions, distributional="c51" in pth)

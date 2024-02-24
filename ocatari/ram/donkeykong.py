@@ -22,6 +22,7 @@ MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items(
 obj_tracker = {}
 
 
+
 class Player(GameObject):
     """
     The player figure: Mother Kangaroo.
@@ -58,8 +59,8 @@ class Barrel(GameObject):
         super(Barrel, self).__init__()
         super().__init__()
         self._xy = 0, 0
-        self.wh = 10, 10
-        self.rgb = 227, 159, 89
+        self.wh = 8, 8
+        self.rgb = 236, 200, 96
         self.hud = False
 
 
@@ -111,8 +112,8 @@ class DonkeyKong(GameObject):
 
     def __init__(self):
         super(DonkeyKong, self).__init__()
-        self._xy = 33, 14
-        self.wh = 18, 21
+        self._xy = 34, 15
+        self.wh = 16, 19
         self.rgb = 181, 83, 40
         self.hud = False
 
@@ -227,7 +228,7 @@ def _detect_objects_donkeykong_revised(objects, ram_state, hud=True):
             if bar is None:
                 bar = Barrel()
                 objects[4+i] = bar
-            bar.xy = ram_state[65+i]-5, ram_state[0+i]+39
+            bar.xy = ram_state[65+i]-4, ram_state[0+i]+40
         else:
             if bar is not None:
                 objects[4+i] = None
