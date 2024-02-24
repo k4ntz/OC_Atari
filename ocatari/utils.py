@@ -154,6 +154,8 @@ class HumanAgent():
 def load_agent(opt, nb_actions=None):
     pth = opt if isinstance(opt, str) else opt.path
     if "ALE/" in opt.game:
+        game = opt.game.replace("ALE/", "")
+        pth = pth.replace("ALE/", "").replace(".gz", f"_{game.lower()}.cleanrl")
         agent = AtariNet(nb_actions, distributional="c51" in pth)
         ckpt = torch.load(pth, map_location=torch.device('cpu'))
         if "dqn" in pth:
@@ -164,6 +166,7 @@ def load_agent(opt, nb_actions=None):
                 ckpt2[el2] = ckpt[el]
     
         if "c51" in pth:
+            return None
             ckpt2 = ckpt["model_weights"].copy()
             ckpt2.clear()
             for el in ckpt:
