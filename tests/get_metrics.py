@@ -192,7 +192,7 @@ for agent, meth_name in zip(agents, ["Random", "DQN", "C51"]):
     else:
         df_finals.append(pd.DataFrame(columns=['Precision', 'Recall', 'F-score', 'IOU']))
 
-exit()
+# exit()
 df = pd.concat(df_finals, axis=1, keys=["Random", "DQN", "C51"])
 styler = df.style
 styler.background_gradient(cmap="RdYlGn", vmin=0, vmax=100)

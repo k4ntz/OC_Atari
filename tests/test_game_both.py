@@ -59,12 +59,11 @@ for i in range(100000):
             action = dqn_agent.draw_action(env.dqn_obs)
         else:
             action = random.randint(0, env.nb_actions-1)
+        
         obs1, reward, terminated, truncated, info = env.step(action)
         obs2 = deepcopy(obs1)
         if i >= opts.start and i % opts.interval == 0:
             fig, axes = plt.subplots(1, 2)
-            # for robj in env.objects:
-            #     print(robj, robj.closest_object(env.objects_v))
             print(env.objects)
             print(env.objects_v)
             for obs, objects_list, title, ax in zip([obs1, obs2], [env.objects, env.objects_v], ["ram", "vision"], axes):
