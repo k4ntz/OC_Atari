@@ -143,6 +143,7 @@ class Life(GameObject):
         self.wh = 12, 8
         self.rgb = 181, 108, 224
         self.hud = True
+        self.value = 2
 
 
 # class Time(ValueObject):
@@ -233,8 +234,22 @@ def _detect_objects_donkeykong_revised(objects, ram_state, hud=True):
             if bar is not None:
                 objects[4+i] = None
     if hud:
-        pass
-        # score -> ram[36]
+        score = objects[-1]
+        score.value = ram_state[36]
+        lives = objects[-2]
+        nb_lives = ram_state[35]
+        if lives is not None and nb_lives != lives.value:
+            if nb_lives == 0:
+                objects[-2] = None
+                return
+            else:
+                if lives is None:
+                    lives = Life()
+                    objects[-2] = lives
+                lives.value = nb_lives
+                lives.xy = 108 + 8 * (3 - nb_lives), 23
+                lives.wh = 4 + 8 * (nb_lives-1), 8
+
 
 # def manage_platforms(current_lvl_val, _):
 #     objects[Platform][:2] = [

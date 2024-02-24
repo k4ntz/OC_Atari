@@ -1,7 +1,7 @@
 from .utils import find_objects, find_mc_objects
 from .game_objects import GameObject
 
-objects_colors = {"player": [[200, 72, 72], [236, 236, 236]], 
+objects_colors = {"player": [[200, 72, 72], [236, 236, 236], [66, 136, 176]], 
                   "barrel": [236, 200, 96], 
                   "score": [158, 208, 101],
                   "girlfriend": [[252, 252, 84], [84, 160, 197], [200, 72, 72]],
@@ -157,9 +157,9 @@ def _detect_objects_donkeykong(objects, obs, hud=True):
     objects.extend([Ladder(*xy) for xy in ladders])
 
     if hud:
-        score = find_objects(obs, objects_colors["score"], maxy=15)
+        score = find_objects(obs, objects_colors["score"], maxy=25)
         for bb in score:
-            objects.append(Barrel(*bb))
+            objects.append(Score(*bb))
         life = find_objects(obs, objects_colors["life"], miny=20, maxy=32, minx=90, closing_dist=5)
         for bb in life:
             objects.append(Life(*bb))

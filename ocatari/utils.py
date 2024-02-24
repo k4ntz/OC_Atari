@@ -185,8 +185,8 @@ class HumanAgent():
 
 def load_agent(opt, nb_actions=None):
     pth = opt if isinstance(opt, str) else opt.path
+    game = opt.game.replace("ALE/", "")
     if "ALE/" in opt.game:
-        game = opt.game.replace("ALE/", "")
         pth = pth.replace("ALE/", "").replace(".gz", f"_{game.lower()}.cleanrl")
         agent = AtariNet(nb_actions, distributional="c51" in pth)
         ckpt = torch.load(pth, map_location=torch.device('cpu'))
@@ -199,19 +199,10 @@ def load_agent(opt, nb_actions=None):
             agent.load_state_dict(ckpt2)
     
         if "c51" in pth:
-            # return None
-            # ckpt2 = ckpt["model_weights"].copy()
-            # ckpt2.clear()
-            # for el in ckpt:
-            #     el2 = el.replace("_QNetwork__", "_AtariNet__")
-            #     ckpt2[el2] = ckpt[el]
             agent = QNetwork(nb_actions)
-            ckpt = torch.load(opt.path, map_location=torch.device('cpu'))
-            agent.load_state_dict(ckpt["model_weights"])
-            
-        
-        
-        
+            pth = pth.replace("ALE/", "").replace(".gz", f"_{game.lower()}.cleanrl")
+            ckpt = torch.load(pth, map_location=torch.device('cpu'))
+            agent.load_state_dict(ckpt["model_weights"])   
     else:
         agent = AtariNet(nb_actions, distributional="c51" in pth)
         ckpt = _load_checkpoint(pth)
