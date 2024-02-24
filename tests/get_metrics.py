@@ -65,8 +65,8 @@ if ONLYBOTHDEFINEDOBJECTS:
 
 
 opts.path = f"models/{opts.game}/dqn.gz"
-# dqn_agent = load_agent(opts, env.action_space.n)
-dqn_agent = None
+dqn_agent = load_agent(opts, env.action_space.n)
+# dqn_agent = None
 opts.path = f"models/{opts.game}/c51.gz"
 try:
     c51_agent = load_agent(opts, env.action_space.n)
