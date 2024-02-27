@@ -76,6 +76,7 @@ year={2023}
 - [X] Chopper Command
 - [X] Crazy Climbers
 - [X] DemonAttack
+- [X] DonkeyKong
 - [X] Fishing Derby  
 - [X] Freeway
 - [X] Frostbite
@@ -86,6 +87,7 @@ year={2023}
 - [X] Krull
 - [X] MontezumaRevenge
 - [X] MsPacman
+- [X] Pacman
 - [X] Pitfall
 - [X] Pong
 - [X] PrivateEye
@@ -97,7 +99,7 @@ year={2023}
 - [X] Space Invaders
 - [X] Tennis
 - [X] Time Pilot
-- [ ] Up n Down (in progress)
+- [X] Up n Down (in progress)
 - [X] Venture
 - [X] VideoPinball
 - [ ] YarsRevenge (in progress)
