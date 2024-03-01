@@ -303,8 +303,8 @@ class OCAtari:
                 draw_label(self.window, label, position=(x, y + h + 4), font=self.label_font)
 
                 # Draw object orientation
-                if game_object.orientation is not None:
-                    draw_orientation_indicator(overlay_surface, game_object.orientation.value, x_c, y_c, w, h)
+                # if game_object.orientation is not None:
+                #     draw_orientation_indicator(overlay_surface, game_object.orientation.value, x_c, y_c, w, h)
 
                 # Draw velocity vector
                 if dx != 0 or dy != 0:

@@ -242,6 +242,7 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = (ram_state[25], ram_state[26]-80)
     player.orientation = ram_state[15]
+    print(player.orientation)
     # info["speed"] = ram_state[14] or ram[20] both seem to have very similar behavior
     # info["time"] = _time_skiing(ram_state)
     offset = 1 if not hud else 11
