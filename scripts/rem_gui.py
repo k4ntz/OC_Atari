@@ -325,4 +325,5 @@ if __name__ == "__main__":
     # renderer = Renderer("ALE/DonkeyKong-v5")
     # renderer = Renderer("MsPacman-v4")
     renderer = Renderer("Skiing-v4")
+    renderer = Renderer("Boxing-v4")
     renderer.run()

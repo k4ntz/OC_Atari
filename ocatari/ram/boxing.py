@@ -152,7 +152,12 @@ def _detect_objects_boxing_revised(objects, ram_state, hud=False):
     """
     player, enemy = objects[:2]
     player.xy = ram_state[32]+5, ram_state[34]+38
+    player.right_arm_length = ram_state[57] # from 0 to 72
+    player.left_arm_length = ram_state[55] # from 0 to 72
     enemy.xy = ram_state[33]+4, ram_state[35]+38
+    enemy.left_arm_length = ram_state[61] # from 0 to 72
+    enemy.right_arm_length = ram_state[59]
+    print(player.left_arm_length, player.right_arm_length)
     if hud:
         # scores
         global plscore
