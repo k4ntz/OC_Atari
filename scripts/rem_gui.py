@@ -69,11 +69,14 @@ class Renderer:
         self.clock = pygame.time.Clock()
         self.ram_cell_id_font = pygame.font.SysFont('Pixel12x10', 16)
         self.ram_cell_value_font = pygame.font.SysFont('Pixel12x10', 30)
+        
 
     def run(self):
         self.running = True
         while self.running:
             self._handle_user_input()
+            ram = self.env.unwrapped.ale.getRAM()
+            print(ram[19], ram[27])
             if not self.paused:
                 action = self._get_action()
                 tuple = self.env.step(action)
@@ -322,8 +325,8 @@ if __name__ == "__main__":
     # renderer = Renderer("Pong")
     # renderer = Renderer("DemonAttack")
     # renderer = Renderer("ALE/Pacman-v5")
-    # renderer = Renderer("ALE/DonkeyKong-v5")
+    renderer = Renderer("ALE/DonkeyKong-v5")
     # renderer = Renderer("MsPacman-v4")
-    renderer = Renderer("Skiing-v4")
-    renderer = Renderer("Boxing-v4")
+    # renderer = Renderer("Skiing-v4")
+    # renderer = Renderer("Boxing-v4")
     renderer.run()
