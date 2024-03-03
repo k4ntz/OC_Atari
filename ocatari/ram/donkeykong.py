@@ -203,7 +203,6 @@ def _init_objects_donkeykong_ram(hud=True):
     #     init_obj.extend([Score()])
     # return init_obj
 
-
 def _detect_objects_donkeykong_revised(objects, ram_state, hud=True):
     player = objects[0]
     if 1 < ram_state[11] < 255: # jumping

@@ -501,10 +501,22 @@ class HideEnemyPong(OCAtari):
 class EasyDonkey(OCAtari):
     def __init__(self, env_name="ALE/DonkeyKong", mode="revised", hud=False, obs_mode="dqn", render_mode=None, render_oc_overlay=False, *args, **kwargs):
         self.miny = 176
+        self.nb_lives = 2
         super().__init__(env_name, mode, hud, obs_mode, render_mode, render_oc_overlay, *args, **kwargs)
-
+        
+    def reset(self, *args, **kwargs):
+        ret = super().reset(*args, **kwargs)
+        self._randomize_pos()
+        return ret
+        
     def _step_ram(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = super()._step_ram(*args, **kwargs)
+        ram = self.get_ram()
+        if self.nb_lives != ram[35]:
+            self._randomize_pos()
+            self.nb_lives = ram[35]
+        self.nb_lives = ram[35]
+        # print(ram[19], ram[27])
         for obj in self.objects:
             if "Player" in str(obj):
                 # return obj.y
@@ -512,5 +524,14 @@ class EasyDonkey(OCAtari):
                     rew = self.miny - obj.y
                     self.miny = obj.y
                     reward += 100*rew
-        return obs, reward, truncated, terminated, info
         
+        return obs, reward, truncated, terminated, info
+    
+    def _randomize_pos(self):
+        pot_start_pos = [(49, 154), (110, 154), (49, 124), (111, 132), (111, 99),
+                         (50, 71), (53, 48), (111, 43), (111, 21), (78, 21)]
+        startp = pot_start_pos[np.random.randint(0, len(pot_start_pos))]
+        for rp, sp in zip([19, 27], startp):
+            self.set_ram(rp, sp)
+        
+    
