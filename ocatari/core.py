@@ -500,7 +500,7 @@ class HideEnemyPong(OCAtari):
 
 class EasyDonkey(OCAtari):
     def __init__(self, env_name="ALE/DonkeyKong", mode="revised", hud=False, obs_mode="dqn", render_mode=None, render_oc_overlay=False, *args, **kwargs):
-        self.miny = 176
+        self.lasty = 154
         self.nb_lives = 2
         super().__init__(env_name, mode, hud, obs_mode, render_mode, render_oc_overlay, *args, **kwargs)
         
@@ -512,26 +512,34 @@ class EasyDonkey(OCAtari):
     def _step_ram(self, *args, **kwargs):
         obs, reward, truncated, terminated, info = super()._step_ram(*args, **kwargs)
         ram = self.get_ram()
+        for obj in self.objects:
+            if "Player" in str(obj):
+                rew = obj.y - self.lasty
+                self.miny = obj.y
+                reward += 10*rew
+                self.lasty = obj.y
         if self.nb_lives != ram[35]:
             self._randomize_pos()
             self.nb_lives = ram[35]
+            reward = 0
         self.nb_lives = ram[35]
-        # print(ram[19], ram[27])
-        for obj in self.objects:
-            if "Player" in str(obj):
-                # return obj.y
-                if obj.y < self.miny:
-                    rew = self.miny - obj.y
-                    self.miny = obj.y
-                    reward += 100*rew
         
         return obs, reward, truncated, terminated, info
     
     def _randomize_pos(self):
-        pot_start_pos = [(49, 154), (110, 154), (49, 124), (111, 132), (111, 99),
-                         (50, 71), (53, 48), (111, 43), (111, 21), (78, 21)]
+        pot_start_pos = [(49, 154), (110, 154), (49, 124), (111, 132), (111, 96),
+                         (50, 69), (53, 48), (111, 43), (111, 21), (78, 21)]
         startp = pot_start_pos[np.random.randint(0, len(pot_start_pos))]
+        print(startp)
         for rp, sp in zip([19, 27], startp):
             self.set_ram(rp, sp)
-        
-    
+        self.lasty = startp[1]
+
+# if __name__ == "__main__":
+#     env = EasyDonkey(render_mode="human")
+#     env.reset()
+#     for _ in range(1000):
+#         _, rew, _, _, _ = env.step(env.action_space.sample())
+#         if rew:
+#             print(rew)
+#         env.render()
