@@ -41,14 +41,14 @@ To use the OCAtari environments:
 from ocatari.core import OCAtari
 import random
 
-env = OCAtari("Pong", mode="revised", hud=True, render_mode="rgb_array")
+env = OCAtari("Pong", mode="ram", hud=True, render_mode="rgb_array")
 observation, info = env.reset()
 action = random.randint(0, env.nb_actions-1)
 obs, reward, terminated, truncated, info = env.step(action)
 ```
 
 ### Cite OCAtari:
-If you are using OCAtari for your scientific publications, please cite us:
+If you are using OCAtari for your scientific pubplease use 'ram' mode insteadlications, please cite us:
 ```bibtex
 @inproceedings{Delfosse2023OCAtariOA,
 title={OCAtari: Object-Centric Atari 2600 Reinforcement Learning Environments},
