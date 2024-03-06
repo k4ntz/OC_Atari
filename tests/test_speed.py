@@ -17,7 +17,7 @@ nb_actions = OCAtari(f'{opts.game}-ram-v4').nb_actions - 1
 
 setp = "from ocatari.core import OCAtari\nimport random\n"
 if opts.ram:
-    setp +=f'env = OCAtari("{opts.game}-ram-v4", "revised", obs_mode=None, hud=True)\n'
+    setp +=f'env = OCAtari("{opts.game}-ram-v4", "ram", obs_mode=None, hud=True)\n'
 else:
     setp +=f'env = OCAtari("{opts.game}-v4", "vision", obs_mode=None, hud=True)\n'
 setp +="obs, infos = env.reset()"

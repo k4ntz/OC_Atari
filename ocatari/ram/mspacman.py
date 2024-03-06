@@ -119,7 +119,7 @@ def _init_objects_mspacman_ram(hud=False):
     return objects
 
 
-def _detect_objects_mspacman_revised(objects, ram_state, hud=True):
+def _detect_objects_mspacman_ram(objects, ram_state, hud=True):
     player, g1, g2, g3, g4 = objects[:5]
 
     player.xy = ram_state[10] - 13, ram_state[16] + 1

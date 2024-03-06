@@ -108,7 +108,7 @@ def _init_objects_icehockey_ram(hud=False):
     return objects
 
 
-def _detect_objects_icehockey_revised(objects, ram_state, hud=False):
+def _detect_objects_icehockey_ram(objects, ram_state, hud=False):
     """
     For all 3 objects:
     (x, y, w, h, r, g, b)

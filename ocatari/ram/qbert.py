@@ -3,7 +3,7 @@ import numpy as np
 import sys
 from .utils import _color_conversion
 """
-RAM extraction for the game Q*BERT. Supported modes: raw, revised.
+RAM extraction for the game Q*BERT. Supported modes: ram.
 
 """
 
@@ -210,7 +210,7 @@ def _init_objects_qbert_ram(hud=True):
     return objects
 
 
-def _detect_objects_qbert_revised(objects, ram_state, hud=True):
+def _detect_objects_qbert_ram(objects, ram_state, hud=True):
     player = objects[0]
     cubes = objects[1:22]
     for cube, ccinf in zip(cubes, _cubes_cinfo):
