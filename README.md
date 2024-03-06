@@ -41,9 +41,9 @@ To use the OCAtari environments:
 from ocatari.core import OCAtari
 import random
 
-env = OCAtari("Pong", mode="ram", hud=True, render_mode="rgb_array")
+env = OCAtari("Pong", mode="revised", hud=True, render_mode="rgb_array")
 observation, info = env.reset()
-action = random.randint(env.nb_actions-1)
+action = random.randint(0, env.nb_actions-1)
 obs, reward, terminated, truncated, info = env.step(action)
 ```
 
