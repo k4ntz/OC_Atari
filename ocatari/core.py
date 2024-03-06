@@ -94,11 +94,12 @@ class OCAtari:
             self.detect_objects = detect_objects_vision
             self.step = self._step_vision
         elif mode == "raw":
+            warnings.warn("'raw' mode will deprecate with the next major update, use gymnasium,'ram' or 'vision' mode instead.", DeprecationWarning)
             self.detect_objects = detect_objects_raw
             self.step = self._step_ram
         elif mode == "revised" or mode== "ram" :
             if mode == "revised":
-                warnings.warn("'revised' mode will deprecate in the next major update, please use 'ram' mode instead.", DeprecationWarning)
+                warnings.warn("'revised' mode will deprecate with the next major update, please use 'ram' mode instead.", DeprecationWarning)
             self.max_objects = get_max_objects(self.game_name, self.hud)
             self.detect_objects = detect_objects_ram
             self.step = self._step_ram
