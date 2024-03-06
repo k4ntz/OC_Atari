@@ -3,7 +3,7 @@ from ._helper_methods import _convert_number
 from .game_objects import GameObject
 
 """
-RAM extraction for the game BOWLING. Supported modes: raw, revised.
+RAM extraction for the game BOWLING. Supported modes: ram
 """
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Ball': 1, 'Pin': 10}
@@ -120,7 +120,7 @@ def _init_objects_bowling_ram(hud=False):
     return objects
 
 
-def _detect_objects_bowling_revised(objects, ram_state, hud=False):
+def _detect_objects_bowling_ram(objects, ram_state, hud=False):
     """
     For all objects:
     (x, y, w, h, r, g, b)

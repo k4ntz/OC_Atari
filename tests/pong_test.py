@@ -17,9 +17,9 @@ render_mode = 'human'
 render_mode = 'rgb_array'
 
 if "hide" in sys.argv:
-    env = HideEnemyPong("PongDeterministic-v0", mode="revised", render_mode=render_mode, hud=False, obs_mode='dqn')
+    env = HideEnemyPong("PongDeterministic-v0", mode="ram", render_mode=render_mode, hud=False, obs_mode='dqn')
 else:
-    env = OCAtari("PongDeterministic-v0", mode="revised", render_mode=render_mode, hud=False, obs_mode='dqn')
+    env = OCAtari("PongDeterministic-v0", mode="ram", render_mode=render_mode, hud=False, obs_mode='dqn')
 observation, info = env.reset()
 AGENT_TYPE = "dqn"
 agent = AtariNet(env.nb_actions, distributional=False)

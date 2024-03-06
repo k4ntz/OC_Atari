@@ -6,10 +6,10 @@ sys.path.insert(0, '../..') # noqa
 from ocatari.core import OCAtari
 
 """
-Test raw/revised mode with a human render_mode and ipdb debugger.
+Test ram mode with a human render_mode and ipdb debugger.
 """
 
-env = OCAtari("Pong", mode="raw", render_mode="human")  # Breakout
+env = OCAtari("Pong", mode="ram", render_mode="human")  # Breakout
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []

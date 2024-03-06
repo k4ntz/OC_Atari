@@ -3,7 +3,7 @@ from ._helper_methods import _convert_number
 import sys
 
 """
-RAM extraction for the game CARNIVAL. Supported modes: raw, revised.
+RAM extraction for the game CARNIVAL. Supported modes: ram.
 """
 
 MAX_NB_OBJECTS =  {'Player': 1, 'PlayerMissile': 1, 'Rabbit': 6, 'Duck': 5, 'ExtraBullets': 4, 'Owl': 3, 'Wheel': 1, 'FlyingDuck': 6}
@@ -209,7 +209,7 @@ def _init_objects_carnival_ram(hud=False):
     return objects
 
 
-def _detect_objects_carnival_revised(objects, ram_state, hud=False):
+def _detect_objects_carnival_ram(objects, ram_state, hud=False):
     """
        For all objects:
        (x, y, w, h, r, g, b)

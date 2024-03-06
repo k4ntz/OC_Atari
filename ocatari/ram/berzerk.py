@@ -4,7 +4,7 @@ import numpy as np
 import sys
 
 """
-RAM extraction for the game BERZERK. Supported modes: raw, revised.
+RAM extraction for the game BERZERK. Supported modes: ram.
 Attention: EvilOtto enemy not implemented due to not getting it spawned during development.
 """
 
@@ -140,7 +140,7 @@ prev_enemy_missile = [0, 0]
 two_prev_enemy_missiles = [0, 0]
 
 
-def _detect_objects_berzerk_revised(objects, ram_state, hud=False):
+def _detect_objects_berzerk_ram(objects, ram_state, hud=False):
     """
     For all objects:
     (x, y, w, h, r, g, b)

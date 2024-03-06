@@ -5,7 +5,7 @@ from ._helper_methods import _convert_number
 import sys
 
 """
-RAM extraction for the game DONKEYKONG. Supported modes: raw, revised.
+RAM extraction for the game DONKEYKONG. Supported modes: ram.
 
 """
 
@@ -203,7 +203,7 @@ def _init_objects_donkeykong_ram(hud=True):
     #     init_obj.extend([Score()])
     # return init_obj
 
-def _detect_objects_donkeykong_revised(objects, ram_state, hud=True):
+def _detect_objects_donkeykong_ram(objects, ram_state, hud=True):
     player = objects[0]
     if 1 < ram_state[11] < 255: # jumping
         player.xy = ram_state[19]-4, ram_state[27]+24

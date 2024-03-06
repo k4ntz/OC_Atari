@@ -16,8 +16,8 @@ parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
 parser.add_argument("-i", "--interval", type=str, default=10,
                     help="The frame interval (default 10)")
-parser.add_argument("-m", "--mode", choices=["vision", "revised"],
-                    default="revised", help="The frame interval")
+parser.add_argument("-m", "--mode", choices=["vision", "ram"],
+                    default="ram", help="The frame interval")
 parser.add_argument("-hud", "--hud", action="store_true", help="Detect HUD")
 
 opts = parser.parse_args()
@@ -61,5 +61,5 @@ if opts.hud:
     print("MAX_NB_OBJECTS_HUD = ", max_number_objs)
 else:
     print("MAX_NB_OBJECTS = ", max_number_objs)
-folder = "ram" if opts.mode == "revised" else "vision"
+folder = "ram" if opts.mode == "ram" else "vision"
 print(f"to ocatari/{folder}/{opts.game.lower()}.py")
