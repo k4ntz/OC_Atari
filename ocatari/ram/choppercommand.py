@@ -261,7 +261,7 @@ def _detect_objects_raw(info, ram_state):
     info["relevant_objects"] = relevant_objects
 
 
-def _detect_objects_revised(objects, ram_state, hud):
+def _detect_objects_ram(objects, ram_state, hud):
 
     global last_30
     global last_31

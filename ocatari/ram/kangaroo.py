@@ -5,7 +5,7 @@ from ._helper_methods import _convert_number
 import sys
 
 """
-RAM extraction for the game KANGAROO. Supported modes: raw, revised.
+RAM extraction for the game KANGAROO. Supported modes: ram.
 
 """
 

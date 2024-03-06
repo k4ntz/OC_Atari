@@ -15,7 +15,7 @@ I divided the variables in 6 blocks. Each fulfills a different purpose.
    - The game and render mode as well as the reset seed or fps of the gym environment
 
 3. the OCAtari modes:
-   - There are the modes raw, revised, vision, test and HUD. 
+   - There are the modes raw, ram, vision, test and HUD. 
 
 4. actions that will be performed each step. 
    - You can play the game, define an action sequence or let it run randomly.

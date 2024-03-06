@@ -38,9 +38,9 @@ class Renderer:
 
     def __init__(self, env_name: str):
         try:
-            self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+            self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="rgb_array",
                                 render_oc_overlay=True, frameskip=1)
-            # self.env = EasyDonkey(env_name, mode="revised", hud=True, render_mode="rgb_array",
+            # self.env = EasyDonkey(env_name, mode="ram", hud=True, render_mode="rgb_array",
             #                 render_oc_overlay=True, frameskip=1)
         except NameNotFound:
             self.env = gym.make(env_name, render_mode="rgb_array", frameskip=1)

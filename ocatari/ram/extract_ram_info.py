@@ -3,7 +3,7 @@ import sys
 from termcolor import colored
 
 from . import choppercommand
-from .adventure import _detect_objects_adventure_revised, _init_objects_adventure_ram
+from .adventure import _detect_objects_adventure_ram, _init_objects_adventure_ram
 from .alien import _init_objects_alien_ram, _detect_objects_alien_revised
 from .amidar import _init_objects_amidar_ram, _detect_objects_amidar_revised
 from .assault import _detect_objects_assault_raw, _detect_objects_assault_revised, _init_objects_assault_ram
@@ -341,7 +341,7 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
     elif game_name.lower() == "bankheist":
         _detect_objects_bankheist_revised(objects, ram_state, hud)
     elif game_name.lower() == "adventure":
-        _detect_objects_adventure_revised(objects, ram_state, hud)
+        _detect_objects_adventure_ram(objects, ram_state, hud)
     elif game_name.lower() == "jamesbond":
         _detect_objects_jamesbond_revised(objects, ram_state, hud)
     elif game_name.lower() == "krull":

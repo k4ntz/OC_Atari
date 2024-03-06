@@ -4,7 +4,7 @@ from ._helper_methods import _convert_number
 import sys
 
 """
-RAM extraction for the game BREAKOUT. Supported modes: raw, revised.
+RAM extraction for the game BREAKOUT. Supported modes: ram
 """
 
 # might be wrong
@@ -164,7 +164,7 @@ def _make_block_bitmap(ram_state):
     return blocks_int
 
 
-def _detect_objects_breakout_revised(objects, ram_state, hud=False):
+def _detect_objects_breakout_ram(objects, ram_state, hud=False):
     """
        For all objects:
        (x, y, w, h, r, g, b)

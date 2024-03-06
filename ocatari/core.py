@@ -3,7 +3,7 @@ from collections import deque
 import gymnasium as gym
 from termcolor import colored
 import numpy as np
-from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects, get_max_objects
+from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
 from ocatari.ram.game_objects import GameObject, ValueObject
@@ -11,6 +11,8 @@ from ocatari.utils import draw_label, draw_arrow, draw_orientation_indicator
 from gymnasium.error import NameNotFound
 
 from ale_py import ALEInterface
+
+import warnings
 
 UPSCALE_FACTOR = 4
 
@@ -50,7 +52,7 @@ class OCAtari:
 
     :param env_name: The name of the Atari gymnasium environment e.g. "Pong" or "PongNoFrameskip-v5"
     :type env_name: str
-    :param mode: The detection method type: one of `raw`, `revised`, or `vision`, or `both` (i.e. `revised` + `vision`)
+    :param mode: The detection method type: one of `raw`, `ram`, or `vision`, or `both` (i.e. `ram` + `vision`)
     :type mode: str
     :param hud: Whether to include or not objects from the HUD (e.g. scores, lives)
     :type hud: bool
@@ -60,7 +62,7 @@ class OCAtari:
     the remaining \*args and \**kwargs will be passed to the \
         `gymnasium.make <https://gymnasium.farama.org/api/registry/#gymnasium.make>`_ function.
     """
-    def __init__(self, env_name, mode="revised", hud=False, obs_mode="dqn",
+    def __init__(self, env_name, mode="ram", hud=False, obs_mode="dqn",
                  render_mode=None, render_oc_overlay=False, *args, **kwargs):
         if "ALE/" in env_name: #case if v5 specified
             to_check = env_name[4:8]
@@ -94,13 +96,15 @@ class OCAtari:
         elif mode == "raw":
             self.detect_objects = detect_objects_raw
             self.step = self._step_ram
-        elif mode == "revised":
+        elif mode == "revised" or mode== "ram" :
+            if mode == "revised":
+                warnings.warn("'revised' mode will deprecate in the next major update, please use 'ram' mode instead.", DeprecationWarning)
             self.max_objects = get_max_objects(self.game_name, self.hud)
-            self.detect_objects = detect_objects_revised
+            self.detect_objects = detect_objects_ram
             self.step = self._step_ram
         elif mode == "both":
             self.detect_objects_v = detect_objects_vision
-            self.detect_objects_r = detect_objects_revised
+            self.detect_objects_r = detect_objects_ram
             self.objects_v = init_objects(self.game_name, self.hud)
             self.step = self._step_test
         else:
@@ -152,7 +156,7 @@ class OCAtari:
 
     def _step_ram(self, *args, **kwargs):
         obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
-        if self.mode == "revised":
+        if self.mode == "ram":
             self.detect_objects(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         else:  # mode == "raw" because in raw mode we augment the info dictionary
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
@@ -499,7 +503,7 @@ class HideEnemyPong(OCAtari):
 
 
 class EasyDonkey(OCAtari):
-    def __init__(self, env_name="ALE/DonkeyKong", mode="revised", hud=False, obs_mode="dqn", render_mode=None, render_oc_overlay=False, *args, **kwargs):
+    def __init__(self, env_name="ALE/DonkeyKong", mode="ram", hud=False, obs_mode="dqn", render_mode=None, render_oc_overlay=False, *args, **kwargs):
         self.lasty = 154
         self.nb_lives = 2
         super().__init__(env_name, mode, hud, obs_mode, render_mode, render_oc_overlay, *args, **kwargs)
