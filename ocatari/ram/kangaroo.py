@@ -251,7 +251,7 @@ def _init_objects_kangaroo_ram(hud=True):
     return init_obj
 
 
-def _detect_objects_kangaroo_revised(objects_old, ram_state, hud=True):
+def _detect_objects_kangaroo_ram(objects_old, ram_state, hud=True):
     _update_objects(ram_state, hud)
     existing_objects = []
     object_categories = list(objects.values())

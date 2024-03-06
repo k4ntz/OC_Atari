@@ -3,7 +3,7 @@ import sys
 """
 RAM extraction for the game RIVER RAID. Supported modes: raw
 
-Revised mode does not seem feasible for this game. The problem is that for the objects like Helicopter, FuelDepot etc.
+ram mode does not seem feasible for this game. The problem is that for the objects like Helicopter, FuelDepot etc.
 only a relative x-Position is found in the RAM. How the exact position is calculated is unknown, it is possible that
 the size of the objects (is stored in the RAM) somehow affects the x-Position.
 Furthermore there was no y-Position for the Objects found in the RAM. It could be the case that their y-Position is like
@@ -205,7 +205,7 @@ def _init_objects_riverraid_ram(hud=False):
     return objects
 
 
-def _detect_objects_riverraid_revised(objects, ram_state, hud=False):
+def _detect_objects_riverraid_ram(objects, ram_state, hud=False):
     player = objects[0]
     if ram_state[70] or ram_state[58] == 0:
         objects[0] = None

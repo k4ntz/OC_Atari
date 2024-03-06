@@ -12,7 +12,7 @@ it can also give you the meaning for the RAM states, due to the changes you can 
 game after the value is set.
 """
 
-env = OCAtari("Assault", mode="raw", render_mode="human")  # set game
+env = OCAtari("Assault", mode="ram", render_mode="human")  # set game
 observation, info = env.reset()
 prevRam = None
 already_figured_out = []

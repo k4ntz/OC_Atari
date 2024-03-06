@@ -2,7 +2,7 @@ from .game_objects import GameObject
 import sys
 
 """
-RAM extraction for the game Atlantis. Supported modes: raw, revised.
+RAM extraction for the game Atlantis. Supported modes: ram.
 
 """
 
