@@ -38,9 +38,9 @@ class Renderer:
 
     def __init__(self, env_name: str):
         try:
-            self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+            self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="rgb_array",
                                 render_oc_overlay=True, frameskip=1)
-            # self.env = EasyDonkey(env_name, mode="revised", hud=True, render_mode="rgb_array",
+            # self.env = EasyDonkey(env_name, mode="ram", hud=True, render_mode="rgb_array",
             #                 render_oc_overlay=True, frameskip=1)
         except NameNotFound:
             self.env = gym.make(env_name, render_mode="rgb_array", frameskip=1)
@@ -69,11 +69,14 @@ class Renderer:
         self.clock = pygame.time.Clock()
         self.ram_cell_id_font = pygame.font.SysFont('Pixel12x10', 16)
         self.ram_cell_value_font = pygame.font.SysFont('Pixel12x10', 30)
+        
 
     def run(self):
         self.running = True
         while self.running:
             self._handle_user_input()
+            ram = self.env.unwrapped.ale.getRAM()
+            print(ram[19], ram[27])
             if not self.paused:
                 action = self._get_action()
                 tuple = self.env.step(action)
@@ -325,5 +328,6 @@ if __name__ == "__main__":
     # renderer = Renderer("ALE/DonkeyKong-v5")
     renderer = Renderer("ALE/MontezumaRevenge-v5")
     # renderer = Renderer("MsPacman-v4")
-    # renderer = Renderer("Asterix-v4")
+    # renderer = Renderer("Skiing-v4")
+    # renderer = Renderer("Boxing-v4")
     renderer.run()

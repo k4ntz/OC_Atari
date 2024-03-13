@@ -116,7 +116,7 @@ def _init_objects_asteroids_ram(hud=False):
     return objects
 
 
-def _detect_objects_asteroids_revised(objects, ram_state, hud=False):
+def _detect_objects_asteroids_ram(objects, ram_state, hud=False):
     """
        For all objects:
        (x, y, w, h, r, g, b)
@@ -318,7 +318,7 @@ def _x_position(value):
         mult = ((ls-1)/2)-1
         return 10 + 15 * mult + add - sub
 
-def _augment_info_asteroids_revised(info, ram_state):
+def _augment_info_asteroids_ram(info, ram_state):
     """
     For all objects:
     (x, y, w, h, r, g, b)

@@ -3,7 +3,7 @@ from .game_objects import GameObject, ValueObject
 import sys
 
 """
-RAM extraction for the game ASSAULT. Supported modes: raw, revised.
+RAM extraction for the game ASSAULT. Supported modes: ram.
 """
 
 MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissileVertical': 1, 'PlayerMissileHorizontal': 1, 'MotherShip': 1,
@@ -166,7 +166,7 @@ horizontal_pos = 0
 enemy_missile_x = 0
 
 
-def _detect_objects_assault_revised(objects, ram_state, hud=False):
+def _detect_objects_assault_ram(objects, ram_state, hud=False):
     """
     For all objects:
     (x, y, w, h, r, g, b)

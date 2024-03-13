@@ -102,7 +102,7 @@ def _detect_objects_asterix_raw(info, ram_state):
     # ram_state[7]
     # not known what they are for exactly
 
-def _detect_objects_asterix_revised(objects, ram_state, hud=False):
+def _detect_objects_asterix_ram(objects, ram_state, hud=False):
     # player
     player = objects[0]
     player.xy = ram_state[41], 26 + ram_state[39] * 16

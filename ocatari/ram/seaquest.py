@@ -6,7 +6,7 @@ from .game_objects import GameObject, ValueObject, Orientation
 from itertools import chain
 
 """
-RAM extraction for the game SEAQUEST. Supported modes: raw, revised.
+RAM extraction for the game SEAQUEST. Supported modes: ram.
 """
 
 MAX_ESSENTIAL_OBJECTS = {
@@ -254,7 +254,7 @@ def _init_objects_seaquest_ram(hud=False):
     return objects
 
 
-def _detect_objects_seaquest_revised(objects_old, ram_state, hud=False):
+def _detect_objects_seaquest_ram(objects_old, ram_state, hud=False):
     _update_objects(ram_state, hud)
     existing_objects = []
     object_categories = list(objects.values())

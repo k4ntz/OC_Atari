@@ -231,7 +231,7 @@ sat_ctr = 1
 global shields
 
 
-def _detect_objects_spaceinvaders_revised(objects, ram_state, hud=False):
+def _detect_objects_spaceinvaders_ram(objects, ram_state, hud=False):
     global firstCall
     global aliens
     global prevRam

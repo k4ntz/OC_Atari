@@ -110,7 +110,7 @@ def _init_objects_fishingderby_ram(hud=False):
     return objects
 
 
-def _detect_objects_fishingderby_revised(objects, ram_state, hud=False):
+def _detect_objects_fishingderby_ram(objects, ram_state, hud=False):
     # Ram state of the fishing poles
     p1s, p2s = objects[0:2]
     coeff_1 = 1

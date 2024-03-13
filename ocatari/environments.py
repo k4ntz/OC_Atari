@@ -16,7 +16,7 @@ class PositionHistoryEnv(gym.Env):
     """
     def __init__(self, env_name : str) -> None:
         super().__init__()
-        self.ocatari_env = OCAtari(env_name, mode="revised", hud=False, obs_mode=None)
+        self.ocatari_env = OCAtari(env_name, mode="ram", hud=False, obs_mode=None)
         self.reference_list = self._init_ref_vector()
         self.current_vector = np.zeros(4 * len(self.reference_list), dtype=np.float32)
 

@@ -94,7 +94,7 @@ def _init_objects_freeway_ram(hud=False):
     return objects
 
 
-def _detect_objects_freeway_revised(objects, ram_state, hud=False):
+def _detect_objects_freeway_ram(objects, ram_state, hud=False):
     """
     For all objects:
     (x, y, w, h, r, g, b)

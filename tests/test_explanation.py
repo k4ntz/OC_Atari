@@ -15,8 +15,8 @@ parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
 parser.add_argument("-i", "--interval", type=str, default=10,
                     help="The frame interval (default 10)")
-parser.add_argument("-m", "--mode", choices=["vision", "revised"],
-                    default="revised", help="The frame interval")
+parser.add_argument("-m", "--mode", choices=["vision", "ram"],
+                    default="ram", help="The frame interval")
 parser.add_argument("-hud", "--hud", action="store_true", help="Detect HUD")
 parser.add_argument("-om", "--observation_mode", default="ori", help="Observation mode")
 

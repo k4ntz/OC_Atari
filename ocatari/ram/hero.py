@@ -186,7 +186,7 @@ number_of_added_enemies = 0
 objects_map = {}
 
 
-def _detect_objects_hero_revised(objects, ram_state, hud=False):
+def _detect_objects_hero_ram(objects, ram_state, hud=False):
     objects[0].xy = ram_state[27] + 1, 135 - ram_state[31]
     base_length = 1 if not hud else 5
     global objects_map

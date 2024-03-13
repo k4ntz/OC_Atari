@@ -18,8 +18,8 @@ useOCAtari = True                # if True, running this file will execute the O
 printEnvInfo = False             # if True, the extracted objects or the environment info will be printed
 
 # OCAtari modes
-mode = "vision"                    # raw, revised, vision, test
-mode = "revised"                    # raw, revised, vision, test
+mode = "vision"                    # ram, vision, test
+mode = "ram"                    # ram, vision, test
 HUD = True                      # if True, the returned objects are only the necessary ones
 
 # gym[atari]/gymnasium
@@ -268,7 +268,7 @@ def print_environment_info(env, observation, reward, info):
         # Besides the extraction, ocatari gives back valuable information
         if mode == "raw":
             print("raw data:\n", info)
-        elif mode == "revised":
+        elif mode == "ram":
             print("objects revised:\n", env.objects)
         elif mode == "vision":
             print("objects vision:\n", env.objects)
