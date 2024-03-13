@@ -15,7 +15,7 @@ import ipdb
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
 from ocatari.utils import *
-from ocatari.core import OCAtari
+from ocatari.core import OCAtari, EasyDonkey
 from matplotlib import pyplot as plt
 from pynput import keyboard
 
@@ -121,7 +121,9 @@ def withocatari():
     """
     # set up environment
     global env
-    oc = OCAtari(env_name=game_name, mode=mode, hud=HUD, render_mode=render_mode,
+    # oc = OCAtari(env_name=game_name, mode=mode, hud=HUD, render_mode=render_mode,
+    #              render_oc_overlay=useOCAtari)
+    oc = EasyDonkey(mode=mode, hud=HUD, render_mode=render_mode,
                  render_oc_overlay=useOCAtari)
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
@@ -207,6 +209,8 @@ def run(env):
 
         # do a step with the given action
         observation, reward, terminated, truncated, info = env.step(action)
+        if reward:
+            print(reward)
         if terminated or truncated:
             observation, info = env.reset()
 

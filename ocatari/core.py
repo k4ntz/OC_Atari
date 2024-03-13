@@ -519,9 +519,9 @@ class EasyDonkey(OCAtari):
         ram = self.get_ram()
         for obj in self.objects:
             if "Player" in str(obj):
-                rew = obj.y - self.lasty
+                rew = self.lasty - obj.y
                 self.miny = obj.y
-                reward += 10*rew
+                reward += rew
                 self.lasty = obj.y
         if self.nb_lives != ram[35]:
             self._randomize_pos()
@@ -532,10 +532,13 @@ class EasyDonkey(OCAtari):
         return obs, reward, truncated, terminated, info
     
     def _randomize_pos(self):
-        pot_start_pos = [(49, 154), (110, 154), (49, 124), (111, 132), (111, 96),
-                         (50, 69), (53, 48), (111, 43), (111, 21), (78, 21)]
-        startp = pot_start_pos[np.random.randint(0, len(pot_start_pos))]
-        print(startp)
+        pot_start_pos = [(49, 154), (110, 154), (49, 127), (111, 132), (111, 99),
+                         (50, 71), (53, 48), (111, 43), (111, 21)] #(78, 21)]
+        rndinit = np.random.randint(0, len(pot_start_pos))
+        if rndinit:
+            self._env.step(1) # activate the game
+            [self._env.step(0) for _ in range(8)] 
+        startp = pot_start_pos[rndinit]
         for rp, sp in zip([19, 27], startp):
             self.set_ram(rp, sp)
         self.lasty = startp[1]
@@ -544,7 +547,9 @@ if __name__ == "__main__":
     env = EasyDonkey(render_mode="human")
     env.reset()
     for _ in range(1000):
-        _, rew, _, _, _ = env.step(env.action_space.sample())
+        _, rew, truncated, terminated, _ = env.step(env.action_space.sample())
         if rew:
             print(rew)
+        if truncated or terminated:
+            env.reset()
         env.render()
