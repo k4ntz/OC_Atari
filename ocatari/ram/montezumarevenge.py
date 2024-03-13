@@ -375,7 +375,7 @@ def _init_objects_montezumarevenge_ram(hud=True):
 
 
 # levels: ram_state[36], total of 3 levels: 0,1 and 2
-def _detect_objects_montezumarevenge_revised(objects, ram_state, hud=True):
+def _detect_objects_montezumarevenge_ram(objects, ram_state, hud=True):
     player = objects[0]
     item = objects[1]
     ruby, ruby2, ruby3 = objects[2], objects[3], objects[4]

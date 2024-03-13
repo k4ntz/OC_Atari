@@ -125,7 +125,7 @@ global object1
 global object2
 object1 = 1
 object2 = 2
-def _detect_objects_adventure_revised(objects, ram_state, hud=False):
+def _detect_objects_adventure_ram(objects, ram_state, hud=False):
     objects[0].xy = ram_state[11] - 0.5, 238 - 2 * ram_state[12]
     while len(objects) > 1:
         objects.pop()

@@ -3,7 +3,7 @@ from ._helper_methods import _convert_number, get_iou
 import sys
 
 """
-RAM extraction for the game PrivateEye. Supported modes: raw, revised.
+RAM extraction for the game PrivateEye. Supported modes: ram.
 
 """
 
@@ -389,7 +389,7 @@ def _init_objects_privateeye_ram(hud=True):
 
 
 # levels: ram_state[36], total of 3 levels: 0,1 and 2
-def _detect_objects_privateeye_revised(objects, ram_state, hud=True):
+def _detect_objects_privateeye_ram(objects, ram_state, hud=True):
     player = objects[0]
 
     if ram_state[97] == 0:

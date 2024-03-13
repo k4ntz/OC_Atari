@@ -2,7 +2,7 @@ from .game_objects import GameObject
 import sys
 
 """
-RAM extraction for the game Atlantis. Supported modes: raw, revised.
+RAM extraction for the game Atlantis. Supported modes: ram.
 
 """
 
@@ -237,7 +237,7 @@ def missile_pos(rs):
         return 208 - rs
 
 
-def _detect_objects_atlantis_revised(objects, ram_state, hud=True):
+def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
     del objects[2:]
 
     buildings_count = 0

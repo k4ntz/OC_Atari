@@ -28,7 +28,7 @@ class Renderer:
     env: gym.Env
 
     def __init__(self, env_name: str):
-        self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+        self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="rgb_array",
                            render_oc_overlay=True, frameskip=1)
         self.env_name = env_name
         self.env.reset(seed=42)[0]

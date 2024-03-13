@@ -25,8 +25,8 @@ parser.add_argument("-g", "--game", type=str, default="Pong",
                     help="game to evaluate (e.g. 'Pong')")
 parser.add_argument("-i", "--interval", type=int, default=1000,
                     help="The frame interval (default 10)")
-# parser.add_argument("-m", "--mode", choices=["vision", "revised"],
-#                     default="revised", help="The frame interval")
+# parser.add_argument("-m", "--mode", choices=["vision", "ram"],
+#                     default="ram", help="The frame interval")
 parser.add_argument("-hud", "--hud", action="store_true", default=True, help="Detect HUD")
 parser.add_argument("-dqn", "--dqn", action="store_true", default=True, help="Use DQN agent")
 opts = parser.parse_args()

@@ -87,7 +87,7 @@ def _init_objects_alien_ram(hud=False):
     return objects
 
 
-def _detect_objects_alien_revised(objects, ram_state, hud=False):
+def _detect_objects_alien_ram(objects, ram_state, hud=False):
     """
     For all 3 objects:
     (x, y, w, h, r, g, b)

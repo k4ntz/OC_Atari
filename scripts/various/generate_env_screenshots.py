@@ -19,14 +19,14 @@ envs = ["Assault", "Asterix", "Atlantis", "Berzerk", "Bowling",
         "Freeway", "Frostbite", "Kangaroo", "MontezumaRevenge", "MsPacman", 
         "Pong", "Qbert", "Riverraid", "Seaquest", "Skiing", "SpaceInvaders", "Tennis"]
 
-opt_mode = "revised"
+opt_mode = "ram"
 agent_dir = None
 save_steps = [1000, 2000, 3000, 5000, 10_000]
 shots_dir = Path("env_screenshots")
 shots_dir.mkdir(exist_ok=True)
 
 for env_str in envs:
-    env = OCAtari(env_str + "-v4", "revised", render_mode='rgb_array', hud=True)
+    env = OCAtari(env_str + "-v4", "ram", render_mode='rgb_array', hud=True)
     observation, info = env.reset()
 
     if agent_dir:
@@ -48,7 +48,7 @@ for env_str in envs:
         if i in save_steps:
             for obs, objects_list, title in zip([obs],
                                                     [env.objects],
-                                                    ["ram"] if opt_mode == "revised" else ["vision"]):
+                                                    ["ram"] if opt_mode == "ram" else ["vision"]):
                 for obj in objects_list:
                     opos = obj.xywh
                     ocol = obj.rgb
