@@ -209,8 +209,8 @@ def run(env):
 
         # do a step with the given action
         observation, reward, terminated, truncated, info = env.step(action)
-        if reward:
-            print(reward)
+        # if reward:
+        #     print(reward)
         if terminated or truncated:
             observation, info = env.reset()
 
