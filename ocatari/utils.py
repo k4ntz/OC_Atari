@@ -2,7 +2,6 @@ from argparse import ArgumentParser
 from functools import partial
 from gzip import GzipFile
 from pathlib import Path
-import keyboard
 import numpy as np
 import random
 import sys
