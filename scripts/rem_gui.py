@@ -327,7 +327,7 @@ if __name__ == "__main__":
     # renderer = Renderer("ALE/Pacman-v5")
     # renderer = Renderer("ALE/DonkeyKong-v5")
     # renderer = Renderer("ALE/MontezumaRevenge-v5")
-    renderer = Renderer("Freeway-v4")
+    renderer = Renderer("Assault-v4")
     # renderer = Renderer("MsPacman-v4")
     # renderer = Renderer("Skiing-v4")
     # renderer = Renderer("Boxing-v4")
