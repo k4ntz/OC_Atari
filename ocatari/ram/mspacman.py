@@ -112,7 +112,7 @@ def _init_objects_mspacman_ram(hud=False):
 
     objects = [Player(), Ghost(), Ghost(), Ghost(), Ghost()]
 
-    objects.extend([None]*4)
+    objects.extend([None]*5)
 
     if hud:
         objects.extend([None]*10)
