@@ -280,7 +280,7 @@ def _detect_objects_skiing_revised(objects, ram_state, hud=False):
                 if currobj._ram_id != 2:
                     if y == 29:  # bug fix
                         continue
-                    import ipdb; ipdb.set_trace()   # noqa
+                    # import ipdb; ipdb.set_trace()   # noqa
             offset += 1
         elif type == 5:     # mogul
             if currobj is None:
