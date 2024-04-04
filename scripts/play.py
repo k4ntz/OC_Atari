@@ -83,5 +83,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer(args.game)
+    # renderer = Renderer(args.game)
+    # renderer = Renderer("Seaquest")
+    renderer = Renderer("ALE/DonkeyKong-v5")
     renderer.run()

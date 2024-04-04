@@ -18,6 +18,7 @@ from .breakout import _detect_objects_breakout
 from .carnival import _detect_objects_carnival
 from .centipede import _detect_objects_centipede
 from .crazyclimber import _detect_objects_crazyclimber
+from .donkeykong import _detect_objects_donkeykong
 from .demonattack import _detect_objects_demon_attack
 from .enduro import _detect_objects_enduro
 from .fishingderby import _detect_objects_fishingderby
@@ -26,9 +27,12 @@ from .frostbite import _detect_objects_frostbite
 from .gopher import _detect_objects_gopher
 from .hero import _detect_objects_hero
 from .icehockey import _detect_objects_icehockey
+from .jamesbond import _detect_objects_jamesbond
 from .kangaroo import _detect_objects_kangaroo
+from .krull import _detect_objects_krull
 from .montezumarevenge import _detect_objects_montezumarevenge
 from .mspacman import _detect_objects_mspacman
+from .pacman import _detect_objects_pacman
 from .pitfall import _detect_objects_pitfall
 from .pong import _detect_objects_pong
 from .privateeye import _detect_objects_privateeye
@@ -39,10 +43,11 @@ from .seaquest import _detect_objects_seaquest
 from .skiing import _detect_objects_skiing
 from .spaceinvaders import _detect_objects_spaceinvaders
 from .tennis import _detect_objects_tennis
+from .timepilot import _detect_objects_timepilot
+from .upndown import _detect_objects_upndown
 from .venture import _detect_objects_venture
 from .videopinball import _detect_objects_videopinball
 from .yarsrevenge import _detect_objects_yarsrevenge
-
 
 def detect_objects_vision(objects, obs, game_name, hud=False):
     if game_name.lower() == "atlantis":
@@ -75,10 +80,14 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_breakout(objects, obs, hud)
     elif game_name.lower() == "mspacman":
         return _detect_objects_mspacman(objects, obs, hud)
+    elif game_name.lower() == "pacman":
+        return _detect_objects_pacman(objects, obs, hud)
     elif game_name.lower() == "centipede":
         return _detect_objects_centipede(objects, obs, hud)
     elif game_name.lower() == "carnival":
         return _detect_objects_carnival(objects, obs, hud)
+    elif game_name.lower() == "donkeykong":
+        return _detect_objects_donkeykong(objects, obs, hud)
     elif game_name.lower() == "berzerk":
         return _detect_objects_berzerk(objects, obs, hud)
     elif game_name.lower() == "beamrider":
@@ -133,5 +142,13 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_bankheist(objects, obs, hud)
     elif game_name.lower() == "adventure":
         return _detect_objects_adventure(objects, obs, hud)
+    elif game_name.lower() == "jamesbond":
+        return _detect_objects_jamesbond(objects, obs, hud)
+    elif game_name.lower() == "krull":
+        return _detect_objects_krull(objects, obs, hud)
+    elif game_name.lower() == "timepilot":
+        return _detect_objects_timepilot(objects, obs, hud)
+    elif game_name.lower() == "upndown":
+        return _detect_objects_upndown(objects, obs, hud)
     else:
         raise NotImplementedError(colored("Uncovered game in vision mode", "red"))

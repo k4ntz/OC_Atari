@@ -26,7 +26,11 @@ def _convert_number(number):
         if count > 1:
             number_str += x
         count += 1
-    return int(number_str)
+    try:
+        number = int(number_str)
+    except ValueError as e:
+        number = None
+    return number
 
 
 def number_to_bitfield(n):

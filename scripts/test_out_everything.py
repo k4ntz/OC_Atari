@@ -46,8 +46,8 @@ random.seed(0)
 
 
 INTERACTIVE = False
-ONE_CHANGE = False
-initial_ram_n = 15
+ONE_CHANGE = True
+initial_ram_n = 0
 
 
 make_deterministic(0, env)
@@ -165,6 +165,9 @@ while ram_n < 127:
                         ram_n = int(input("which ram pos to jump to ?")) - 1
                         askinput = False
                         break
+                    elif el == "s":
+                        env.step(0)
+                        snapshot = env._ale.cloneState()
                     else:
                         askinput = False
                         break

@@ -1,8 +1,8 @@
 import sys
-from typing import Type
+from typing import Type, Sequence, Dict
 
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, ValueObject
+from .game_objects import GameObject, ValueObject, Orientation
 from itertools import chain
 
 """
@@ -43,7 +43,8 @@ class Player(GameObject):
         self.wh = 16, 11
         self.rgb = 187, 187, 53
         self.hud = False
-        self.orientation = 0  # O is right, 8 is left
+        self.orientation = Orientation.E  # E is right, W is left
+        self.crashed = False
 
 
 class Diver(GameObject):
@@ -217,7 +218,7 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_ESSENTIAL_OBJECTS)
 
 
-def _init_all_objects():
+def _init_all_objects() -> Dict[Type[GameObject], Sequence[GameObject]]:
     mod = sys.modules[__name__]
     all_objects = {}
     for obj_cls_name, max_obj_count in MAX_ALL_OBJECTS.items():
@@ -245,10 +246,10 @@ def _remove_object(obj_cls: Type[GameObject], idx: int = 0):
 
 def _init_objects_seaquest_ram(hud=False):
     """(Re)Initialize the objects."""
-    objects = [Player()]
+    objects = [Player(), Lives(), OxygenBar()]
 
     if hud:
-        objects.extend([PlayerScore(), Lives(), OxygenBar(), OxygenBarDepleted(), OxygenBarLogo()])
+        objects.extend([PlayerScore(), OxygenBarDepleted(), OxygenBarLogo()])
 
     return objects
 
@@ -271,20 +272,23 @@ def _update_objects(ram_state, hud=False):
     _update_player_missile(ram_state)
     _update_divers_and_enemy_missiles(ram_state)
     _update_surface_submarine(ram_state)
+    _update_lives(ram_state)
+    _update_oxygen_bar(ram_state)
+    _update_collected_divers(ram_state)
 
     if hud:
         _update_score(ram_state)
-        _update_lives(ram_state)
-        _update_oxygen_bar(ram_state)
         _update_depleted_oxygen_bar(ram_state)
-        _update_collected_divers(ram_state)
 
 
 def _update_player(ram_state):
-    new_xy = ram_state[70], ram_state[97] + 32
-    new_orientation = ram_state[86]
-    _update_object(Player, "xy", new_xy)
-    _update_object(Player, "orientation", new_orientation)
+    xy = ram_state[70], ram_state[97] + 32
+    orientation = Orientation.E if ram_state[86] == 0 else Orientation.W
+    crashed = ram_state[105] > 0
+
+    _update_object(Player, "xy", xy)
+    _update_object(Player, "orientation", orientation)
+    _update_object(Player, "crashed", crashed)
 
 
 def _update_score(ram_state):
@@ -338,6 +342,7 @@ def _update_oxygen_bar(ram_state):
         else:
             new_wh = ram_state[102], 5
         _update_object(OxygenBar, "wh", new_wh)
+        _update_object(OxygenBar, "value", new_wh[0])
     else:
         _remove_object(OxygenBar)
 
@@ -348,6 +353,7 @@ def _update_depleted_oxygen_bar(ram_state):
         new_wh = 63 - ram_state[102], 5
         _update_object(OxygenBarDepleted, "xy", new_xy)
         _update_object(OxygenBarDepleted, "wh", new_wh)
+        _update_object(OxygenBarDepleted, "value", new_wh[0])
     else:
         _remove_object(OxygenBarDepleted)
 

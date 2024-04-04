@@ -1,10 +1,13 @@
 from .game_objects import GameObject
+import sys
 
 """
 RAM extraction for the game KANGUROO. Supported modes: raw, revised.
 
 """
 
+MAX_NB_OBJECTS = {'Player': 1, 'Player_Projectile':1, 'Torpedos': 1}  # Asteroid count can get really high
+MAX_NB_OBJECTS_HUD = {'Life': 1, 'HUD': 1}
 
 class Player(GameObject):
     """
@@ -176,6 +179,21 @@ class Life(GameObject):
         self.rgb = 210, 210, 64
 
 
+def _get_max_objects(hud=False):
+
+    def fromdict(max_obj_dict):
+        objects = []
+        mod = sys.modules[__name__]
+        for k, v in max_obj_dict.items():
+            for _ in range(0, v):
+                objects.append(getattr(mod, k)())    
+        return objects
+
+    if hud:
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
+
+
 def _init_objects_beamrider_ram(hud=True):
     """
     (Re)Initialize the objects
@@ -184,7 +202,6 @@ def _init_objects_beamrider_ram(hud=True):
     objects = [Player()]
 
     return objects
-
 
 # levels: ram_state[36], total of 3 levels: 0,1 and 2
 def _detect_objects_beamrider_revised(objects, ram_state, hud=True):
@@ -198,7 +215,7 @@ def _detect_objects_beamrider_revised(objects, ram_state, hud=True):
         if ram_state[33+i] != 0:
             enemy = Saucer()
             objects.append(enemy)
-            enemy.xy = _get_x_position(ram_state[33+i]), ram_state[25+i]-63
+            enemy.xy = _get_x_position(ram_state[33+i]), (ram_state[25+i]*0.5) + 15
             enemy.wh = 2, 2
 
     return objects
