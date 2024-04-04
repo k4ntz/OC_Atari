@@ -56,7 +56,7 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 
 # OCAtari modes
-mode = "vision"                    # raw, revised, vision, test
+mode = "vision"                    # ram, vision, test
 HUD = False                      # if True, the returned objects contain only the necessary information to play the game
 
 # get valuable information for reversed engineering purposes
@@ -352,7 +352,7 @@ def printEnvironmentInfo(env, observation, reward, info):
 
         if mode == "raw":
             print("raw data:\n", info)
-        elif mode == "revised":
+        elif mode == "ram":
             print("objects revised:\n", env.objects)
         elif mode == "vision":
             print("objects vision:\n", env.objects)

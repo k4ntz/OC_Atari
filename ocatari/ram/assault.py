@@ -3,7 +3,7 @@ from .game_objects import GameObject, ValueObject
 import sys
 
 """
-RAM extraction for the game ASSAULT. Supported modes: raw, revised.
+RAM extraction for the game ASSAULT. Supported modes: ram.
 """
 
 MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissileVertical': 1, 'PlayerMissileHorizontal': 1, 'MotherShip': 1,
@@ -17,6 +17,7 @@ class Player(GameObject):
     """
     
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 8, 8
@@ -30,6 +31,7 @@ class PlayerMissileVertical(GameObject):
     """
     
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 1, 8
@@ -43,6 +45,7 @@ class PlayerMissileHorizontal(GameObject):
     """
      
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self._prev_xy = None
@@ -57,6 +60,7 @@ class MotherShip(GameObject):
     """
     
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 32, 16
@@ -70,6 +74,7 @@ class Enemy(GameObject):
     """
     
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 16, 8
@@ -83,6 +88,7 @@ class EnemyMissile(GameObject):
     """
     
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.wh = 1, 6
@@ -96,6 +102,7 @@ class PlayerScore(ValueObject):
     """
     
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.rgb = 195, 144, 61
@@ -113,6 +120,7 @@ class Lives(GameObject):
     """
 
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 0, 0
         self.rgb = 170, 170, 170
@@ -126,6 +134,7 @@ class Health(GameObject):
     """
     
     def __init__(self):
+        super().__init__()
         self.visible = True
         self._xy = 96, 192
         self.rgb = 72, 160, 72
@@ -137,9 +146,10 @@ def _init_objects_assault_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), PlayerMissileVertical(), Enemy(), EnemyMissile(), MotherShip()]
+    objects = [] #Player(), PlayerMissileVertical(), Enemy(), EnemyMissile(), MotherShip()
+    objects.extend([None] * 8)
     if hud:
-        objects.extend([PlayerScore(), Health(), Lives()])
+        objects.extend([None] * 15) #[PlayerScore(), Health(), Lives()]
     return objects
 
 
@@ -166,7 +176,7 @@ horizontal_pos = 0
 enemy_missile_x = 0
 
 
-def _detect_objects_assault_revised(objects, ram_state, hud=False):
+def _detect_objects_assault_ram(objects, ram_state, hud=False):
     """
     For all objects:
     (x, y, w, h, r, g, b)

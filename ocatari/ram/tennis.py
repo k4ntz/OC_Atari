@@ -3,7 +3,7 @@ import sys
 from .game_objects import GameObject
 
 """
-RAM extraction for the game TENNIS. Supported modes: raw, revised.
+RAM extraction for the game TENNIS. Supported modes: ram.
 """
 
 
@@ -128,7 +128,7 @@ def _init_objects_tennis_ram(hud=False):
     return objects
 
 
-def _detect_objects_tennis_revised(objects, ram_state, hud=False):
+def _detect_objects_tennis_ram(objects, ram_state, hud=False):
     player, enemy = objects[0:2]
 
     del objects[2:]
@@ -227,7 +227,7 @@ def _detect_objects_tennis_revised(objects, ram_state, hud=False):
             objects.append(enemy_score)
 
 
-def _old_detect_objects_tennis_revised(info, ram_state):
+def _old_detect_objects_tennis_ram(info, ram_state):
     """
     For all 3 objects:
     (x, y, w, h, r, g, b)

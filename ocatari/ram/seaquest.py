@@ -6,7 +6,7 @@ from .game_objects import GameObject, ValueObject, Orientation
 from itertools import chain
 
 """
-RAM extraction for the game SEAQUEST. Supported modes: raw, revised.
+RAM extraction for the game SEAQUEST. Supported modes: ram.
 """
 
 MAX_ESSENTIAL_OBJECTS = {
@@ -254,7 +254,7 @@ def _init_objects_seaquest_ram(hud=False):
     return objects
 
 
-def _detect_objects_seaquest_revised(objects_old, ram_state, hud=False):
+def _detect_objects_seaquest_ram(objects_old, ram_state, hud=False):
     _update_objects(ram_state, hud)
     existing_objects = []
     object_categories = list(objects.values())
@@ -373,7 +373,7 @@ def _update_enemies(ram_state):
     arbitrarily filled up by enemies. Consequently, there are 8 possible
     combinations (formations) of enemy/empty slots for each batch. For each lane,
     one single RAM value determines the current formation. Moreover, each
-    batch consits purely of sharks or of submarines, determined by another value."""
+    batch consists purely of sharks or of submarines, determined by another value."""
 
     for i in range(4):  # for each of the 4 lanes (from bottom to top lane)
         present_enemy_type = Submarine if _is_submarine(i, ram_state) else Shark
@@ -389,7 +389,10 @@ def _update_enemies(ram_state):
                 if present_enemy_type == Shark:
                     # Sharks float up and down, determined by an offset
                     y += ram_state[93] - 4
-                _update_object(present_enemy_type, "xy", (x, y), idx=idx)
+                if -5 <= x <= 165:  # Only track objects that are on the screen
+                    _update_object(present_enemy_type, "xy", (x, y), idx=idx)
+                else:
+                    _remove_object(present_enemy_type, idx)
             else:
                 _remove_object(present_enemy_type, idx)
             _remove_object(hidden_enemy_type, idx)  # always remove the invisible enemy

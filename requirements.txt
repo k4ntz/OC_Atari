@@ -1,15 +1,27 @@
-gymnasium
+ale_py==0.8.1
+# alive_progress==3.1.5
+beautifulsoup4==4.12.3
+gymnasium==0.29.1
+ipdb==0.13.13
+keyboard==0.13.5
+matplotlib==3.8.0
+numpy==1.26.4
+opencv_python==4.8.1.78
+pandas==2.2.0
+Pillow==10.0.1
+# Pillow==10.2.0
+pyfiglet==1.0.2
+pygame==2.5.2
+pynput==1.7.6
+Requests==2.31.0
+rtpt==0.0.4
+scikit_learn==1.3.2
+scipy==1.12.0
+seaborn==0.13.2
+# setuptools==56.0.0
+scikit-image==0.22.0
+stable_baselines3==2.2.1
+termcolor==2.4.0
+torch==2.1.0
+tqdm==4.66.1
 gymnasium[atari, accept-rom-license]
-matplotlib
-numpy
-opencv_python
-scikit_image
-termcolor
-#torch
-seaborn
-pandas
-scikit-learn
-tqdm
-ipdb
-pyfiglet
-keyboard

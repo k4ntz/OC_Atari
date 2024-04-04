@@ -20,20 +20,36 @@ nb_games = len(df)
 print(colored(f"{nb_games} out of 35 done !"))
 
 # df.fillna("N/A", inplace=True)
+
 dfT = df.T
+
+cols = dfT.columns.tolist()
+capnames = {}
+for col in cols:
+    if "ALE" in col:
+        bcol = col[4:]
+    else:
+        bcol = col
+    if len(col) > 13:
+        capnames[col] = bcol[0:12] + "."
+    else:
+        capnames[col] = bcol
+
+dfT = dfT.rename(columns=capnames)
+dfT = dfT.reindex(sorted(dfT.columns), axis=1)
+
 dfT["mean"] = dfT.mean(axis=1)
 df = dfT.T
 
 df = df.round(1)
 
-import ipdb; ipdb.set_trace()
-x_axis_labels = df.index.to_list()
-ax = sns.heatmap(dfT, cmap="Spectral", annot=False, xticklabels=x_axis_labels, vmin=0, vmax=100)
-ax.xaxis.tick_top() # x axis on top
-ax.xaxis.set_label_position('top')
-plt.xticks(rotation=90)
-plt.savefig("heatmap.svg")
-plt.show()
+# x_axis_labels = df.index.to_list()
+# ax = sns.heatmap(dfT, cmap="Spectral", annot=False, xticklabels=x_axis_labels, vmin=0, vmax=100)
+# ax.xaxis.tick_top() # x axis on top
+# ax.xaxis.set_label_position('top')
+# plt.xticks(rotation=90)
+# plt.savefig("heatmap.svg")
+# plt.show()
 
 styler = df.style
 styler.background_gradient(cmap='Spectral', vmin=0, vmax=100)
