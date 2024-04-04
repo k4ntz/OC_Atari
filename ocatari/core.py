@@ -161,7 +161,7 @@ class OCAtari:
         if self.mode == "ram" or self.mode == "revised":
             self.detect_objects(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         else:  # mode == "raw" because in raw mode we augment the info dictionary
-            self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
+            self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self._fill_buffer()
         return obs, reward, truncated, terminated, info
 
