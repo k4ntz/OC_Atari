@@ -48,26 +48,27 @@ for i in tqdm(range(10000)):
     obs, reward, terminated, truncated, info = env.step(action)
     if i % opts.interval == 0:
         # print(sorted(env.objects, key=lambda o:str(o)))
-        for obj in env.objects:
-            if len(env.objects) == 3:
-                if "Ene" in str(obj):
-                    # print("Done")
-                    enemyy.append(obj.y)
-                elif "Ball" in str(obj):
-                    bally.append(obj.y)
-        # for obs, objects_list, title in zip([obs], [env.objects],
-        #                                     ["ram"] if opts.mode == "revised" else ["vision"]):
-        #     for obj in objects_list:
-        #         opos = obj.xywh
-        #         ocol = obj.rgb
-        #         sur_col = make_darker(ocol)
-        #         mark_bb(obs, opos, color=sur_col)
+        # for obj in env.objects:
+        #     if len(env.objects) == 3:
+        #         if "Ene" in str(obj):
+        #             # print("Done")
+        #             enemyy.append(obj.y)
+        #         elif "Ball" in str(obj):
+        #             bally.append(obj.y)
+        for obs, objects_list, title in zip([obs], [env.objects],
+                                            ["ram"] if opts.mode == "revised" else ["vision"]):
+            print(objects_list)
+            for obj in objects_list:
+                opos = obj.xywh
+                ocol = obj.rgb
+                sur_col = make_darker(ocol)
+                mark_bb(obs, opos, color=sur_col)
                 # mark_point(obs, *opos[:2], color=(255, 255, 0))
-        # ax.set_xticks([])
-        # ax.set_yticks([])
-        # plt.title(f"{opts.mode}: {opts.mode} mode (frame {i})", fontsize=20)
-        # plt.imshow(obs)
-        # plt.show()
+        ax.set_xticks([])
+        ax.set_yticks([])
+        plt.title(f"{opts.mode}: {opts.mode} mode (frame {i})", fontsize=20)
+        plt.imshow(obs)
+        plt.show()
             
 
     if terminated or truncated:

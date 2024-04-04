@@ -37,6 +37,9 @@ test_parser.add_argument("-s", "--seed", type=float, default=None,
                          help="If provided, set the seed")
 
 
+ROT_MATRIX = np.array([[0, -1], [1, 0]])
+
+
 def make_deterministic(seed, mdp, states_dict=None):
     random.seed(seed)
     np.random.seed(seed)
@@ -180,10 +183,9 @@ def draw_arrow(surface: pygame.Surface, start_pos: (float, float), end_pos: (flo
     arrow_dir = end_pos - start_pos
     arrow_dir_norm = arrow_dir / np.linalg.norm(arrow_dir)
     tip_anchor = end_pos - tip_length * arrow_dir_norm
-    rot_matrix = np.array([[0, -1], [1, 0]])
 
-    left_tip_end = tip_anchor + tip_width / 2 * np.matmul(rot_matrix, arrow_dir_norm)
-    right_tip_end = tip_anchor - tip_width / 2 * np.matmul(rot_matrix, arrow_dir_norm)
+    left_tip_end = tip_anchor + tip_width / 2 * np.matmul(ROT_MATRIX, arrow_dir_norm)
+    right_tip_end = tip_anchor - tip_width / 2 * np.matmul(ROT_MATRIX, arrow_dir_norm)
 
     pygame.draw.line(surface, start_pos=left_tip_end, end_pos=end_pos, **kwargs)
     pygame.draw.line(surface, start_pos=right_tip_end, end_pos=end_pos, **kwargs)
@@ -209,3 +211,20 @@ def draw_label(surface: pygame.Surface, text: str, position: (int, int), font: p
     # Draw text
     text_rect.topleft = position[0] + 3, position[1] + 3
     surface.blit(text, text_rect)
+
+
+def draw_orientation_indicator(surface: pygame.Surface, orientation_value: int,
+                               x_c: int, y_c: int, w: int, h: int):
+    center = np.asarray([x_c, y_c])
+    alpha = orientation_value / 8 * np.pi  # orientation angle (in radians)
+
+    triangle = np.array([[0, -18], [-6, -7], [6, -7]])
+    rot = get_rotation_matrix(alpha)
+    triangle = center + np.dot(rot, triangle.T).T  # transform
+
+    pygame.draw.circle(surface, (255, 30, 180), (x_c, y_c), 10)
+    pygame.draw.polygon(surface, (255, 30, 180), triangle)
+
+
+def get_rotation_matrix(rad: float):
+    return np.array([[np.cos(rad), -np.sin(rad)], [np.sin(rad), np.cos(rad)]])

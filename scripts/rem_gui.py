@@ -5,7 +5,7 @@ from tqdm import tqdm
 import pygame
 from ocatari.core import OCAtari, UPSCALE_FACTOR
 from gymnasium.error import NameNotFound
-
+import pickle
 """
 This script can be used to identify any RAM positions that
 influence the color of a specific pixel. This can be used to
@@ -14,7 +14,7 @@ identify the values that belong to a GameObject.
 
 
 import pygame
-from ocatari.core import OCAtari, DEVICE
+from ocatari.core import OCAtari, DEVICE, EasyDonkey
 import numpy as np
 import torch
 import cv2
@@ -38,7 +38,9 @@ class Renderer:
 
     def __init__(self, env_name: str):
         try:
-            self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+            # self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+            #                 render_oc_overlay=True, frameskip=1)
+            self.env = EasyDonkey(env_name, mode="revised", hud=True, render_mode="rgb_array",
                             render_oc_overlay=True, frameskip=1)
         except NameNotFound:
             self.env = gym.make(env_name, render_mode="rgb_array", frameskip=1)
@@ -121,8 +123,13 @@ class Renderer:
                 if event.key == pygame.K_p:  # 'P': pause/resume
                     self.paused = not self.paused
 
-                if event.key == pygame.K_r:  # 'R': reset
+                elif event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
+                
+                elif event.key == pygame.K_m:  # 'M': save snapshot
+                    snapshot = self.env._ale.cloneState()
+                    pickle.dump(snapshot, open("snapshot.pkl", "wb"))
+                    print("Saved snapshot.pkl")
 
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
                     self._unselect_active_cell()
@@ -314,5 +321,8 @@ class Renderer:
 if __name__ == "__main__":
     # renderer = Renderer("Pong")
     # renderer = Renderer("DemonAttack")
-    renderer = Renderer("ALE/Pacman-v5")
+    # renderer = Renderer("ALE/Pacman-v5")
+    renderer = Renderer("ALE/DonkeyKong-v5")
+    # renderer = Renderer("MsPacman-v4")
+    # renderer = Renderer("Kangaroo-v4")
     renderer.run()

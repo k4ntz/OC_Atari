@@ -4,7 +4,8 @@ import numpy as np
 
 objects_colors = {"player": [[26, 102, 26], [111, 111, 111], [74, 74, 74]], "radar":[111, 210, 111], "radar_hud": [236, 236, 236], "tank_blue1": [24, 80, 128],
                   "tank_blue2": [66, 136, 176], "tank_grey": [142, 142, 142], "tank_grey2": [170, 170, 170], "tank_yellow": [195, 144, 61],
-                  "crosshair1": [0, 0, 0], "crosshair2": [236, 200, 96], "red": [[228, 111, 111], [200, 72, 72], [148, 0, 0]], "hud_green": [45, 129, 105]}
+                  "crosshair1": [0, 0, 0], "crosshair2": [236, 200, 96], "red": [[228, 111, 111], [200, 72, 72], [148, 0, 0]], "hud_green": [45, 129, 105],
+                  "boss_yellow": [223, 183, 85]}
                   #"red": [[228, 111, 111], [214, 92, 92], [200, 72, 72], [184, 50, 50], [167, 26, 26], [148, 0, 0]]}
 
 
@@ -56,6 +57,11 @@ class Red_Thing(GameObject):
         self.rgb = [200, 72, 72]
 
 
+class Boss(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = [223, 183, 85]
+
 #  ---- HUD -----
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
@@ -80,11 +86,11 @@ def _detect_objects_battlezone(objects, obs, hud=False):
     for bb in shot:
             objects.append(Shot(*bb))
     
-    crosshair = find_objects(obs, objects_colors["crosshair1"], miny=79, maxy=175)
+    crosshair = find_objects(obs, objects_colors["crosshair1"], miny=79, maxy=175, size=(1,6), tol_s=1)
     for bb in crosshair:
             objects.append(Crosshair(*bb))
     
-    crosshair = find_objects(obs, objects_colors["crosshair2"], miny=79, maxy=175)
+    crosshair = find_objects(obs, objects_colors["crosshair2"], miny=79, maxy=175, size=(1,6), tol_s=1)
     for bb in crosshair:
             cr = Crosshair(*bb)
             cr.rgb = objects_colors["crosshair2"]
@@ -109,6 +115,11 @@ def _detect_objects_battlezone(objects, obs, hud=False):
     red = find_mc_objects(obs, objects_colors["red"], miny=78, maxy=175, closing_dist=5)
     for bb in red:
             objects.append(Red_Thing(*bb))
+    
+    boss = find_mc_objects(obs, [objects_colors["boss_yellow"], objects_colors["crosshair1"]], miny=78, maxy=175)
+    for bb in boss:
+            if bb[2] > 1:
+                objects.append(Boss(*bb))
 
     if hud:
         score = find_objects(obs, objects_colors["hud_green"], closing_dist=4, miny=178, maxy=188)

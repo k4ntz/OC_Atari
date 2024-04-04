@@ -6,8 +6,8 @@ import numpy as np
 from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_revised, init_objects, get_max_objects
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
-from ocatari.ram.game_objects import GameObject
-from ocatari.utils import draw_label, draw_arrow
+from ocatari.ram.game_objects import GameObject, ValueObject
+from ocatari.utils import draw_label, draw_arrow, draw_orientation_indicator
 from gymnasium.error import NameNotFound
 
 from ale_py import ALEInterface
@@ -38,9 +38,9 @@ except ModuleNotFoundError:
 DEVICE = "cpu" if torch.cuda.is_available() else "cpu"
 
 AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix", "Asteroids", "Atlantis", "Bankheist", "BattleZone","BeamRider", "Berzerk", "Bowling", "Boxing",
-                   "Breakout", "Carnival", "Centipede", "ChoppperCommand", "CrazyClimber", "DemonAttack", "Enduro", "FishingDerby", "Freeway",
-                   "Frostbite", "Gopher", "Hero", "IceHockey", "Kangaroo", "MontezumaRevenge", "MsPacman","Pitfall", "Pong", "PrivateEye",
-                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "Videocube", "VideoPinball", "Venture", "Yarsrevenge"]
+                   "Breakout", "Carnival", "Centipede", "ChoppperCommand", "CrazyClimber", "DemonAttack", "DonkeyKong", "Enduro", "FishingDerby", "Freeway",                   
+                   "Frostbite", "Gopher", "Hero", "IceHockey", "Jamesbond", "Kangaroo", "Krull", "MontezumaRevenge", "MsPacman", "Pacman", "Pitfall", "Pong", "PrivateEye",
+                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "TimePilot", "UpNDown", "Videocube", "VideoPinball", "Venture", "Yarsrevenge"]
 
 
 # TODO: complete the docstring 
@@ -82,9 +82,11 @@ class OCAtari:
         self.hud = hud
         self.max_objects = []
         if not self._covered_game:
+            print(colored("\n\n\tUncovered game !!!!!\n\n", "red"))
             global init_objects
             init_objects = lambda *args, **kwargs: []
             self.detect_objects = lambda *args, **kwargs: None
+            self.objects_v = []
             self.step = self._step_ram
         elif mode == "vision":
             self.detect_objects = detect_objects_vision
@@ -294,6 +296,16 @@ class OCAtari:
                 pygame.draw.rect(overlay_surface, color=(255, 255, 255),
                                  rect=(x, y, w, h), width=2)
 
+                # Draw object category label (optional with value)
+                label = game_object.category
+                if isinstance(game_object, ValueObject):
+                    label += f" ({game_object.value})"
+                draw_label(self.window, label, position=(x, y + h + 4), font=self.label_font)
+
+                # Draw object orientation
+                if game_object.orientation is not None:
+                    draw_orientation_indicator(overlay_surface, game_object.orientation.value, x_c, y_c, w, h)
+
                 # Draw velocity vector
                 if dx != 0 or dy != 0:
                     draw_arrow(overlay_surface,
@@ -302,14 +314,11 @@ class OCAtari:
                                color=(100, 200, 255),
                                width=2)
 
-                # Draw object type label
-                object_type_str = game_object.category
-                draw_label(self.window, object_type_str, position=(x, y + h + 4), font=self.label_font)
-
             self.window.blit(overlay_surface, (0, 0))
 
             if self.render_mode == "human":
-                self.clock.tick(60 // self._env.unwrapped._frameskip)  # limit FPS to avoid super fast movement
+                frameskip = self._env.unwrapped._frameskip if isinstance(self._env.unwrapped._frameskip, int) else 1
+                self.clock.tick(60 // frameskip)  # limit FPS to avoid super fast movement
                 pygame.display.flip()
                 pygame.event.pump()
 
@@ -487,3 +496,21 @@ class HideEnemyPong(OCAtari):
         )
         self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
                                                device=DEVICE))
+
+
+class EasyDonkey(OCAtari):
+    def __init__(self, env_name="ALE/DonkeyKong", mode="raw", hud=False, obs_mode="dqn", render_mode=None, render_oc_overlay=False, *args, **kwargs):
+        self.miny = 176
+        super().__init__(env_name, mode, hud, obs_mode, render_mode, render_oc_overlay, *args, **kwargs)
+
+    def _step_ram(self, *args, **kwargs):
+        obs, reward, truncated, terminated, info = super()._step_ram(*args, **kwargs)
+        for obj in self.objects:
+            if "Player" in str(obj):
+                # return obj.y
+                if obj.y < self.miny:
+                    rew = self.miny - obj.y
+                    self.miny = obj.y
+                    reward += 100*rew
+        return obs, reward, truncated, terminated, info
+        

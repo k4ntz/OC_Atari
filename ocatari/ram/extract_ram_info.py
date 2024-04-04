@@ -27,6 +27,7 @@ from .crazyclimber import _init_objects_crazyclimber_ram, _detect_objects_crazyc
 from .demonattack import _detect_objects_demon_attack_raw, \
     _detect_objects_demon_attack_revised, \
     _init_objects_demon_attack_ram
+from .donkeykong import _init_objects_donkeykong_ram, _detect_objects_donkeykong_revised
 from .enduro import _init_objects_enduro_ram, _detect_objects_enduro_revised
 from .fishingderby import _init_objects_fishingderby_ram, _detect_objects_fishingderby_revised
 from .freeway import _detect_objects_freeway_raw, _detect_objects_freeway_revised, _init_objects_freeway_ram
@@ -34,9 +35,11 @@ from .frostbite import _init_objects_frostbite_ram, _detect_objects_frostbite_re
 from .gopher import _init_objects_gopher_ram, _detect_objects_gopher_revised
 from .hero import _init_objects_hero_ram, _detect_objects_hero_revised
 from .icehockey import _init_objects_icehockey_ram, _detect_objects_icehockey_revised
+from .jamesbond import _init_objects_jamesbond_ram, _detect_objects_jamesbond_revised
 from .kangaroo import _detect_objects_kangaroo_raw, \
     _detect_objects_kangaroo_revised, \
     _init_objects_kangaroo_ram
+from .krull import _init_objects_krull_ram, _detect_objects_krull_revised
 from .montezumarevenge import _init_objects_montezumarevenge_ram, _detect_objects_montezumarevenge_revised
 from .mspacman import _detect_objects_mspacman_raw, \
     _detect_objects_mspacman_revised, \
@@ -56,9 +59,14 @@ from .spaceinvaders import _detect_objects_spaceinvaders_raw, \
     _init_objects_spaceinvaders_ram
 from .tennis import _detect_objects_tennis_raw, _detect_objects_tennis_revised, _init_objects_tennis_ram
 from .venture import _init_objects_venture_ram, _detect_objects_venture_revised
+from .crazyclimber import _init_objects_crazyclimber_ram, _detect_objects_crazyclimber_revised
+from .amidar import _init_objects_amidar_ram, _detect_objects_amidar_revised
+from .battlezone import _init_objects_battlezone_ram, _detect_objects_battlezone_revised
+from .pacman import _init_objects_pacman_ram, _detect_objects_pacman_revised
+from .timepilot import _init_objects_timepilot_ram, _detect_objects_timepilot_revised
+from .upndown import _init_objects_upndown_ram, _detect_objects_upndown_revised
 from .videopinball import _init_objects_videopinball_ram, _detect_objects_videopinball_revised
 from .yarsrevenge import _init_objects_yarsrevenge_ram, _detect_objects_yarsrevenge_revised
-
 
 # calls the respective _get_max_objects from the game modules
 def get_max_objects(game_name, hud):
@@ -101,10 +109,14 @@ def init_objects(game_name, hud):
         return _init_objects_tennis_ram(hud)
     elif game_name.lower() == "bowling":
         return _init_objects_bowling_ram(hud)
+    elif game_name.lower() == "donkeykong":
+        return _init_objects_donkeykong_ram(hud)
     elif game_name.lower() == "demonattack":
         return _init_objects_demon_attack_ram(hud)
     elif game_name.lower() == "mspacman":
         return _init_objects_mspacman_ram(hud)
+    elif game_name.lower() == "pacman":
+        return _init_objects_pacman_ram(hud)
     elif game_name.lower() == "centipede":
         return _init_objects_centipede_ram(hud)
     elif game_name.lower() == "carnival":
@@ -165,6 +177,14 @@ def init_objects(game_name, hud):
         return _init_objects_bankheist_ram(hud)
     elif game_name.lower() == "adventure":
         return _init_objects_adventure_ram(hud)
+    elif game_name.lower() == "jamesbond":
+        return _init_objects_jamesbond_ram(hud)
+    elif game_name.lower() == "krull":
+        return _init_objects_krull_ram(hud)
+    elif game_name.lower() == "timepilot":
+        return _init_objects_timepilot_ram(hud)
+    elif game_name.lower() == "upndown":
+        return _init_objects_upndown_ram(hud)
     else:
         raise NotImplementedError(colored("Uncovered init objects", "red"))
 
@@ -244,6 +264,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_pong_revised(objects, ram_state, hud)
     elif game_name.lower() == "skiing":
         _detect_objects_skiing_revised(objects, ram_state, hud)
+    elif game_name.lower() == "donkeykong":
+        _detect_objects_donkeykong_revised(objects, ram_state, hud)
     elif game_name.lower() == "seaquest":
         _detect_objects_seaquest_revised(objects, ram_state, hud)
     elif game_name.lower() == "spaceinvaders":
@@ -256,6 +278,8 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_demon_attack_revised(objects, ram_state, hud)
     elif game_name.lower() == "mspacman":
         _detect_objects_mspacman_revised(objects, ram_state, hud)
+    elif game_name.lower() == "pacman":
+        _detect_objects_pacman_revised(objects, ram_state, hud)
     elif game_name.lower() == "centipede":
         _detect_objects_centipede_revised(objects, ram_state, hud)
     elif game_name.lower() == "carnival":
@@ -318,6 +342,14 @@ def detect_objects_revised(objects, ram_state, game_name, hud):
         _detect_objects_bankheist_revised(objects, ram_state, hud)
     elif game_name.lower() == "adventure":
         _detect_objects_adventure_revised(objects, ram_state, hud)
+    elif game_name.lower() == "jamesbond":
+        _detect_objects_jamesbond_revised(objects, ram_state, hud)
+    elif game_name.lower() == "krull":
+        _detect_objects_krull_revised(objects, ram_state, hud)
+    elif game_name.lower() == "timepilot":
+        _detect_objects_timepilot_revised(objects, ram_state, hud)
+    elif game_name.lower() == "upndown":
+        _detect_objects_upndown_revised(objects, ram_state, hud)
     else:
         print(colored("Uncovered game in revised mode", "red"))
         exit(1)
