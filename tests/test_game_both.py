@@ -59,16 +59,18 @@ for i in range(100000):
             action = dqn_agent.draw_action(env.dqn_obs)
         else:
             action = random.randint(0, env.nb_actions-1)
-        obs, reward, terminated, truncated, info = env.step(action)
-        obs2 = deepcopy(obs)
+        
+        obs1, reward, terminated, truncated, info = env.step(action)
+        obs2 = deepcopy(obs1)
         if i >= opts.start and i % opts.interval == 0:
             fig, axes = plt.subplots(1, 2)
-            # for robj in env.objects:
-            #     print(robj, robj.closest_object(env.objects_v))
-            for obs, objects_list, title, ax in zip([obs, obs2], [env.objects, env.objects_v], ["ram", "vision"], axes):
+            print(env.objects)
+            print(env.objects_v)
+            for obs, objects_list, title, ax in zip([obs1, obs2], [env.objects, env.objects_v], ["ram", "vision"], axes):
                 toprint = sorted(objects_list, key=lambda o: str(o))
                 # print([o for o in toprint if "Fuel" in str(o)])
-                print(toprint)
+                # print(title, end=": ")
+                # print(toprint)
                 for obj in objects_list:
                     opos = obj.xywh
                     ocol = obj.rgb
@@ -79,8 +81,8 @@ for i in range(100000):
                 ax.set_yticks([])
                 ax.imshow(obs)
                 ax.set_title(title)
-                im = Image.fromarray(obs)
-                cv2.imwrite(f"frames/{title}_frame_{i}.png", obs, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+                # im = Image.fromarray(obs)
+                # cv2.imwrite(f"frames/{title}_frame_{i}.png", obs, [cv2.IMWRITE_PNG_COMPRESSION, 0])
                 # im.save()
             fig.suptitle(f"frame {i}", fontsize=20)
             plt.show()

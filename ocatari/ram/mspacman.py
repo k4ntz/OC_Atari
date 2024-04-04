@@ -8,8 +8,8 @@ RAM extraction for the game Ms. Pac-Man.
 """
 
 # not sure about this one TODO: validate
-MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4, 'Fruit': 1, 'Score': 3, 'Life': 2}
+MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4, 'PowerPill': 4}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4,'PowerPill':4, 'Fruit': 1, 'Score': 3, 'Life': 2}
 
 class Player(GameObject):
     """
@@ -112,14 +112,14 @@ def _init_objects_mspacman_ram(hud=False):
 
     objects = [Player(), Ghost(), Ghost(), Ghost(), Ghost()]
 
-    objects.extend([None]*4)
+    objects.extend([None]*5)
 
     if hud:
         objects.extend([None]*10)
     return objects
 
 
-def _detect_objects_mspacman_revised(objects, ram_state, hud=True):
+def _detect_objects_mspacman_ram(objects, ram_state, hud=True):
     player, g1, g2, g3, g4 = objects[:5]
 
     player.xy = ram_state[10] - 13, ram_state[16] + 1

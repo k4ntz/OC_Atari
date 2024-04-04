@@ -18,8 +18,8 @@ parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
 parser.add_argument("-i", "--interval", type=int, default=10,
                     help="The frame interval (default 10)")
-parser.add_argument("-m", "--mode", choices=["vision", "revised"],
-                    default="revised", help="The extraction mode")
+parser.add_argument("-m", "--mode", choices=["vision", "ram"],
+                    default="ram", help="The extraction mode")
 parser.add_argument("-hud", "--hud", action="store_true", help="If provided, detect objects from HUD")
 
 opts = parser.parse_args()
@@ -56,7 +56,7 @@ for i in tqdm(range(10000)):
         #         elif "Ball" in str(obj):
         #             bally.append(obj.y)
         for obs, objects_list, title in zip([obs], [env.objects],
-                                            ["ram"] if opts.mode == "revised" else ["vision"]):
+                                            ["ram"] if opts.mode == "ram" else ["vision"]):
             print(objects_list)
             for obj in objects_list:
                 opos = obj.xywh

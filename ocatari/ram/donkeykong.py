@@ -5,7 +5,7 @@ from ._helper_methods import _convert_number
 import sys
 
 """
-RAM extraction for the game DONKEYKONG. Supported modes: raw, revised.
+RAM extraction for the game DONKEYKONG. Supported modes: ram.
 
 """
 
@@ -20,6 +20,7 @@ MAX_OPTIONAL_OBJECTS = {
 MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
 
 obj_tracker = {}
+
 
 
 class Player(GameObject):
@@ -58,8 +59,8 @@ class Barrel(GameObject):
         super(Barrel, self).__init__()
         super().__init__()
         self._xy = 0, 0
-        self.wh = 10, 10
-        self.rgb = 227, 159, 89
+        self.wh = 8, 8
+        self.rgb = 236, 200, 96
         self.hud = False
 
 
@@ -111,8 +112,8 @@ class DonkeyKong(GameObject):
 
     def __init__(self):
         super(DonkeyKong, self).__init__()
-        self._xy = 33, 14
-        self.wh = 18, 21
+        self._xy = 34, 15
+        self.wh = 16, 19
         self.rgb = 181, 83, 40
         self.hud = False
 
@@ -142,6 +143,7 @@ class Life(GameObject):
         self.wh = 12, 8
         self.rgb = 181, 108, 224
         self.hud = True
+        self.value = 2
 
 
 # class Time(ValueObject):
@@ -201,8 +203,7 @@ def _init_objects_donkeykong_ram(hud=True):
     #     init_obj.extend([Score()])
     # return init_obj
 
-
-def _detect_objects_donkeykong_revised(objects, ram_state, hud=True):
+def _detect_objects_donkeykong_ram(objects, ram_state, hud=True):
     player = objects[0]
     if 1 < ram_state[11] < 255: # jumping
         player.xy = ram_state[19]-4, ram_state[27]+24
@@ -227,13 +228,27 @@ def _detect_objects_donkeykong_revised(objects, ram_state, hud=True):
             if bar is None:
                 bar = Barrel()
                 objects[4+i] = bar
-            bar.xy = ram_state[65+i]-5, ram_state[0+i]+39
+            bar.xy = ram_state[65+i]-4, ram_state[0+i]+40
         else:
             if bar is not None:
                 objects[4+i] = None
     if hud:
-        pass
-        # score -> ram[36]
+        score = objects[-1]
+        score.value = ram_state[36]
+        lives = objects[-2]
+        nb_lives = ram_state[35]
+        if lives is not None and nb_lives != lives.value:
+            if nb_lives == 0:
+                objects[-2] = None
+                return
+            else:
+                if lives is None:
+                    lives = Life()
+                    objects[-2] = lives
+                lives.value = nb_lives
+                lives.xy = 108 + 8 * (3 - nb_lives), 23
+                lives.wh = 4 + 8 * (nb_lives-1), 8
+
 
 # def manage_platforms(current_lvl_val, _):
 #     objects[Platform][:2] = [

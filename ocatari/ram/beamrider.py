@@ -2,7 +2,7 @@ from .game_objects import GameObject
 import sys
 
 """
-RAM extraction for the game KANGUROO. Supported modes: raw, revised.
+RAM extraction for the game KANGUROO. Supported modes: ram.
 
 """
 
@@ -204,7 +204,7 @@ def _init_objects_beamrider_ram(hud=True):
     return objects
 
 # levels: ram_state[36], total of 3 levels: 0,1 and 2
-def _detect_objects_beamrider_revised(objects, ram_state, hud=True):
+def _detect_objects_beamrider_ram(objects, ram_state, hud=True):
     objects.clear()
 
     player = Player()
