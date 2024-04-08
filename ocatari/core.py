@@ -124,6 +124,14 @@ class OCAtari:
         elif obs_mode == "ori":
             self._fill_buffer = self._fill_buffer_ori
             self._reset_buffer = self._reset_buffer_ori
+        elif obs_mode == "obj":
+            print("Using OBJ State Representation")
+            if mode == "ram":
+                self._fill_buffer = self._fill_buffer_obj
+                self._reset_buffer = self._reset_buffer_obj
+            else:
+                print(colored("This obs mode is only available in ram mode", "red"))
+                exit(1)
         elif obs_mode is not None:
             print(colored("Undefined mode for observation (obs_mode), has to be one of ['dqn', 'ori', None]", "red"))
             exit(1)
@@ -192,6 +200,12 @@ class OCAtari:
                 torch.zeros(210, 160, 3, device=DEVICE, dtype=torch.uint8)
             )
 
+    def _reset_buffer_obj(self):
+        for _ in range(self.buffer_window_size):
+            self._state_buffer.append(
+                torch.zeros(len(self._objects), 4, device=DEVICE, dtype=torch.uint8)
+            )
+
     def reset(self, *args, **kwargs):
         """
         Resets the buffer and environment to an initial internal state, returning an initial observation and info.
@@ -210,6 +224,14 @@ class OCAtari:
 
     def _fill_buffer_ori(self):
         state = self._ale.getScreenRGB()
+        self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
+                                               device=DEVICE))
+
+    def _fill_buffer_obj(self):
+        tensor = []
+        for obj in self._objects:
+            tensor.append(np.asarray(obj.xywh))
+        state = np.asarray(tensor)
         self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
                                                device=DEVICE))
 
