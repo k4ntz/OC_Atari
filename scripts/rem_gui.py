@@ -76,7 +76,6 @@ class Renderer:
         while self.running:
             self._handle_user_input()
             ram = self.env.unwrapped.ale.getRAM()
-            print(ram[19], ram[27])
             if not self.paused:
                 action = self._get_action()
                 tuple = self.env.step(action)
@@ -327,8 +326,8 @@ if __name__ == "__main__":
     # renderer = Renderer("ALE/Pacman-v5")
     # renderer = Renderer("ALE/DonkeyKong-v5")
     # renderer = Renderer("ALE/MontezumaRevenge-v5")
-    renderer = Renderer("Assault-v4")
-    # renderer = Renderer("MsPacman-v4")
+    # renderer = Renderer("Assault-v4")
+    renderer = Renderer("Pong-v4")
     # renderer = Renderer("Skiing-v4")
     # renderer = Renderer("Boxing-v4")
     renderer.run()
