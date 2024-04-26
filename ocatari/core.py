@@ -127,6 +127,7 @@ class OCAtari:
         elif obs_mode == "obj":
             print("Using OBJ State Representation")
             if mode == "ram":
+                self._env.observation_space = gym.spaces.Box(0,255.0,(4,3,4))
                 self._fill_buffer = self._fill_buffer_obj
                 self._reset_buffer = self._reset_buffer_obj
             else:
@@ -171,6 +172,12 @@ class OCAtari:
         else:  # mode == "raw" because in raw mode we augment the info dictionary
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self._fill_buffer()
+        if self.obs_mode == "obj":
+            tensor = []
+            for obj in self._objects:
+                tensor.append(np.asarray(obj.xywh))
+            obs = np.asarray(tensor)
+            obs = self.dqn_obs[0]
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
