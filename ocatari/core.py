@@ -119,6 +119,7 @@ class OCAtari:
             if torch_imported:
                 self._fill_buffer = self._fill_buffer_dqn
                 self._reset_buffer = self._reset_buffer_dqn
+                self._env.observation_space = gym.spaces.Box(0,255.0,(4,84,84))
             else:
                 print("To use the buffer of OCAtari, you need to install torch.")
         elif obs_mode == "ori":
@@ -172,12 +173,14 @@ class OCAtari:
         else:  # mode == "raw" because in raw mode we augment the info dictionary
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self._fill_buffer()
+        if self.obs_mode == "dqn":
+            obs = self.dqn_obs[0]
         if self.obs_mode == "obj":
             tensor = []
             for obj in self._objects:
                 tensor.append(np.asarray(obj.xywh))
             obs = np.asarray(tensor)
-            obs = self.dqn_obs[0]
+            #obs = self.dqn_obs[0]
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
@@ -226,6 +229,16 @@ class OCAtari:
         state = cv2.resize(
             self._ale.getScreenGrayscale(), (84, 84), interpolation=cv2.INTER_AREA,
         )
+        if self.game_name == "Skiing":
+            #import ipdb;ipdb.set_trace()
+            tmp = self._state_buffer[1]
+            tmp[tmp >= 0] = self.objects[0].orientation
+            self._state_buffer[1] = tmp
+        elif self.game_name == "Seaquest":
+            #import ipdb;ipdb.set_trace()
+            tmp = self._state_buffer[1]
+            tmp[tmp >= 0] = self.objects[0].orientation.value
+            self._state_buffer[1] = tmp
         self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
                                                device=DEVICE))
 
@@ -387,7 +400,7 @@ class OCAtari:
         :type: torch.tensor
         """
         return self._get_buffer_as_stack()
-
+    
     def set_ram(self, target_ram_position, new_value):
         """
         Directly set a given value at a targeted RAM position.
