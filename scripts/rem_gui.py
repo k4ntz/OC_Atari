@@ -233,7 +233,7 @@ class Renderer:
         elif is_candidate:
             color = (20, 60, 200)
         else:
-            color = (50, 50, 50)
+            color = (50, 150, 150)
         text = self.ram_cell_id_font.render(str(cell_idx), True, color, None)
         text_rect = text.get_rect()
         text_rect.topleft = (x + 2, y + 2)
@@ -327,6 +327,7 @@ if __name__ == "__main__":
     # renderer = Renderer("ALE/DonkeyKong-v5")
     # renderer = Renderer("ALE/MontezumaRevenge-v5")
     # renderer = Renderer("Assault-v4")
+    renderer = Renderer("ChopperCommand-v4")
     renderer = Renderer("Pong-v4")
     # renderer = Renderer("Skiing-v4")
     # renderer = Renderer("Boxing-v4")

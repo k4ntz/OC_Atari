@@ -15,7 +15,6 @@ MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Truck': 3, 'MiniPlayer': 1, 'MiniEnemy': 12
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
-
     def fromdict(max_obj_dict):
         objects = []
         mod = sys.modules[__name__]
