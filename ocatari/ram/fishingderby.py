@@ -133,7 +133,7 @@ def _detect_objects_fishingderby_ram(objects, ram_state, hud=False):
     # Considering that the first fish is the one at the top layer and
     fishes_hooked = []
     if ram_state[112] != 0:
-        fishes_hooked.append([6 - ram_state[112]])
+        fishes_hooked.append(6 - ram_state[112])
     if ram_state[113] != 0:
         fishes_hooked.append(6 - ram_state[113])
 
