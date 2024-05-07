@@ -15,8 +15,8 @@ def make_bitmap(alien_states):
     emptc = 6 - int(max(alien_states)).bit_length()  # nb empty columns
     return [(format(el, '06b')[emptc:] + "0" * emptc) for el in alien_states], emptc
 
-def print_bmp(bmp):
-    print(colored("\n".join(bmp)[::-1], "green"))
+# def print_bmp(bmp):
+#     print(colored("\n".join(bmp)[::-1], "green"))
 
 
 class Player(GameObject):
@@ -195,7 +195,6 @@ def _detect_objects_spaceinvaders_raw(info, ram_state):
     # info["score_player_yellow"] = {ram_state[103], ram_state[105]}  # score is saved in hexadecimal
     # # 200 points for destroying satellite dish
     # # x*5 points for destroying an alien from row_x
-    # print(ram_state)
 
 
 def _init_objects_spaceinvaders_ram(hud=False):
@@ -281,8 +280,6 @@ def _detect_objects_spaceinvaders_ram(objects, ram_state, hud=False):
     bitmap, emptc = make_bitmap(ram_state[18:24])
 
     # aliens (permanent) deletion from array aliens:
-    #print("-"*6)
-    #print_bmp(bitmap)
     for i in range(6):
         for j in range(6):
             if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):  # enemies alive are saved in ram_state[18:24]

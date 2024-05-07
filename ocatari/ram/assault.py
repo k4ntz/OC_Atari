@@ -266,7 +266,6 @@ def _detect_objects_assault_ram(objects, ram_state, hud=False):
     if ram_state[24] == 88:
         mis = PlayerMissileHorizontal()
         mis_offset = 2
-        # print(horizontal_pos)
         #if horizontal_pos == 0 or horizontal_pos > 130 or horizontal_pos < 20:
         #    horizontal_pos = player.x
         if horizontal_pos == 0:
