@@ -221,27 +221,19 @@ class HumanAgent():
 
 def load_agent(opt, nb_actions=None):
     pth = opt if isinstance(opt, str) else opt.path
-    game = opt.game.replace("ALE/", "")
-    if "ALE/" in opt.game:
-        pth = pth.replace("ALE/", "").replace(".gz", f"_{game.lower()}.cleanrl")
-        ckpt = torch.load(pth, map_location=torch.device('cpu'))
-    
-    if "dqn" in pth:
+    if pth.endswith("dqn") or pth.endswith("c51"):
+        pth = pth.replace("ALE/", "")
         agent = AtariNet(nb_actions, distributional="c51" in pth)
-        ckpt2 = ckpt.copy()
-        ckpt2.clear()
-        for el in ckpt:
-            el2 = el.replace("_QNetwork__", "_AtariNet__")
-            ckpt2[el2] = ckpt[el]
-        agent.load_state_dict(ckpt2)
-    elif "c51" in pth:
-        agent = QNetwork(nb_actions)
-        agent.load_state_dict(ckpt["model_weights"])   
-    elif "ppo" in pth:
-        agent = PPOAgent(nb_actions)
-        agent.load_state_dict(ckpt["model_weights"]) 
-    else:
-        return None
+    elif pth.endswith("cleanrl_model"):
+        ckpt = torch.load(pth, map_location=torch.device('cpu'))
+        if "c51" in pth:
+            agent = QNetwork(nb_actions)
+            agent.load_state_dict(ckpt["model_weights"])   
+        elif "ppo" in pth:
+            agent = PPOAgent(nb_actions)
+            agent.load_state_dict(ckpt["model_weights"]) 
+        else:
+            return None
     
     return agent
 

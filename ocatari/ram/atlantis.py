@@ -262,7 +262,6 @@ def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
         proj = Projectile()
         if prev_x_p2 < ram_state[61]:
             proj.xy = ram_state[61]-3, missile_pos(ram_state[59])-1
-            # print("LEFT 2")
         elif prev_x_p2 == ram_state[61]:
             # proj.xy = ram_state[61], int(214 - 1.0775 * ram_state[59])
             proj.xy = ram_state[61], missile_pos(ram_state[59])
@@ -278,15 +277,12 @@ def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
             #     proj.xy = ram_state[61], 210 - ram_state[59] - 5
             # else:
             #     proj.xy = ram_state[61], 210 - ram_state[59] - 4
-            # print("CENTER 2")
         else:
             proj.xy = ram_state[61]+3, missile_pos(ram_state[59])-1
-            # print("RIGHT 2")
         objects.append(proj)
 
     prev_x_p2 = ram_state[61]
 
-    # print('-'*20)
     # The visual representation of the Sprite relative to the ram_state
     # seems to differ depending on the ship entering on the left/right.
     # These variables help to determine where the ship entered
@@ -461,7 +457,6 @@ def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
         ray = Deathray()
         if prev_x4 < ram_state[36]:
             ray.xy = ram_state[36] - 1, 92
-            #print(ray.xy)
         else:
             ray.xy = ram_state[36] + 1, 92
         objects.append(ray)
