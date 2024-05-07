@@ -22,6 +22,6 @@ seaborn==0.13.2
 scikit-image==0.22.0
 stable_baselines3==2.2.1
 termcolor==2.4.0
-torch==2.1.0
+# torch==2.1.0
 tqdm==4.66.1
 gymnasium[atari, accept-rom-license]
