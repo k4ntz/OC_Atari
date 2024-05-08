@@ -3,10 +3,11 @@ import numpy as np
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 import pygame
-import pickle
 import sys
 sys.path.insert(0, '../') # noqa
 from ocatari.core import OCAtari, UPSCALE_FACTOR
+from gymnasium.error import NameNotFound
+import pickle
 from ocatari.vision.utils import mark_bb, make_darker
 
 """
@@ -15,6 +16,12 @@ influence the color of a specific pixel. This can be used to
 identify the values that belong to a GameObject.
 """
 
+import pygame
+from ocatari.core import OCAtari, DEVICE, EasyDonkey
+import numpy as np
+import torch
+import cv2
+import random
 
 RAM_RENDER_WIDTH = 1000
 RAM_N_COLS = 8
@@ -28,15 +35,19 @@ class Renderer:
     env: gym.Env
 
     def __init__(self, env_name: str):
-        self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="rgb_array",
-                           render_oc_overlay=True, frameskip=1)
-        self.env_name = env_name
+        try:
+            self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+                                render_oc_overlay=True, frameskip=1)
+            self.env_name = env_name
+            # self.env = EasyDonkey(env_name, mode="revised", hud=True, render_mode="rgb_array",
+            #                 render_oc_overlay=True, frameskip=1)
+        except NameNotFound:
+            self.env = gym.make(env_name, render_mode="rgb_array", frameskip=1)
+            self.env_name = env_name
         self.env.reset(seed=42)[0]
         self.current_frame = self.env.render()
         self._init_pygame(self.current_frame)
         self.paused = False
-        obs, info = self.env.reset()
-        self.obs = obs
 
         self.current_keys_down = set()
         self.current_mouse_pos = None
@@ -334,5 +345,5 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer("BattleZone")
+    renderer = Renderer("Assault")
     renderer.run()

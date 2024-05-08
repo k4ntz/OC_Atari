@@ -1,14 +1,26 @@
+"""
+This script is used to simply play the Atari games manually.
+"""
 import gymnasium as gym
 import numpy as np
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 import pygame
-from ocatari.core import OCAtari
+from ocatari.core import OCAtari, EasyKangaroo
 
-"""
-This script is used to simply play the Atari games manually.
-"""
+from argparse import ArgumentParser
 
+parser = ArgumentParser()
+parser.add_argument("-g", "--game", type=str, default="Pong")
+parser.add_argument("-r", "--record", action="store_true")
+parser.add_argument("-pr", "--print-reward", action="store_true")
+
+args = parser.parse_args()
+
+import imageio
+
+def save_rgb_array_as_png(rgb_array, filename):
+    imageio.imwrite(filename, rgb_array)
 
 class Renderer:
     env: gym.Env
@@ -16,13 +28,15 @@ class Renderer:
     def __init__(self, env_name: str):
         self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="human",
                            render_oc_overlay=True, frameskip=1)
+        self.env = EasyKangaroo(mode="ram", hud=True, render_mode="human",
+                           render_oc_overlay=True, frameskip=1)
         self.env.reset()
         self.env.render()  # initialize pygame video system
 
         self.paused = False
         self.current_keys_down = set()
         self.keys2actions = self.env.unwrapped.get_keys_to_action()
-        print(self.keys2actions)
+        self.frame = 0
 
     def run(self):
         self.running = True
@@ -30,8 +44,14 @@ class Renderer:
             self._handle_user_input()
             if not self.paused:
                 action = self._get_action()
-                self.env.step(action)
+                obs, reward, term, trunc, info = self.env.step(action)
                 self.env.render()
+                if args.record and self.frame % 4 == 0:
+                    frame = self.env.unwrapped.ale.getScreenRGB()
+                    save_rgb_array_as_png(frame, f'frames/{args.game}_{self.frame}.png')
+                if args.print_reward and reward != 0:
+                    print(reward)
+                self.frame += 1
         pygame.quit()
 
     def _get_action(self):
@@ -58,6 +78,7 @@ class Renderer:
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
 
+
                 elif (event.key,) in self.keys2actions.keys():  # env action
                     self.current_keys_down.add(event.key)
 
@@ -67,6 +88,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
+    # renderer = Renderer(args.game)
     # renderer = Renderer("Seaquest")
     renderer = Renderer("ALE/DonkeyKong-v5")
     renderer.run()

@@ -130,7 +130,7 @@ def _detect_objects_pong_ram(objects, ram_state, hud=False):
         ball.xy = ram_state[49]-49, ram_state[54]-14
 
     # enemy
-    if ram_state[50] > 18:  # otherwise no enemy
+    if ram_state[50] > 18:  # otherwise no enemy # could be ram pos 21 as well
         if ram_state[50] - 15 < 34:
             enemy.xy = 16, 34
             enemy.wh = 4, ram_state[50]-33

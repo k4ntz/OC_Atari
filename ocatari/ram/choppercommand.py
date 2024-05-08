@@ -15,7 +15,6 @@ MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Truck': 3, 'MiniPlayer': 1, 'MiniEnemy': 12
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
-
     def fromdict(max_obj_dict):
         objects = []
         mod = sys.modules[__name__]
@@ -522,7 +521,7 @@ def _detect_objects_ram(objects, ram_state, hud):
             w = w + 4
         elif w > 0:
             shot = Shot()
-            shot.xy = x-w, player.y + 5 # last_y
+            shot.xy = x-w, 210-ram_state[65]-43 # player.y + 5 # last_y
             shot.wh = w, 1
             objects[3] = shot
             w = 0
@@ -964,7 +963,10 @@ def _detect_objects_ram(objects, ram_state, hud):
         else:
             score = Score()
             objects[42] = score
-        score.value = _convert_number(ram_state[108]) * 10000 + _convert_number(ram_state[110]) * 100 + _convert_number(ram_state[112])
+        try:
+            score.value = _convert_number(ram_state[108]) * 10000 + _convert_number(ram_state[110]) * 100 + _convert_number(ram_state[112])
+        except:
+            pass
 
     # score
     # x: value 35+i*8
