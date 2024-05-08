@@ -56,11 +56,11 @@ except ModuleNotFoundError:
         "Try `pip install pygame`.\n",
     )
 
-
 AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix", "Asteroids", "Atlantis", "Bankheist", "BattleZone","BeamRider", "Berzerk", "Bowling", "Boxing",
                    "Breakout", "Carnival", "Centipede", "ChoppperCommand", "CrazyClimber", "DemonAttack", "DonkeyKong", "Enduro", "FishingDerby", "Freeway",                   
                    "Frostbite", "Gopher", "Hero", "IceHockey", "Jamesbond", "Kangaroo", "Krull", "MontezumaRevenge", "MsPacman", "Pacman", "Pitfall", "Pong", "PrivateEye",
-                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "TimePilot", "UpNDown", "Videocube", "VideoPinball", "Venture", "Yarsrevenge"]
+                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "TimePilot", "UpNDown", "Videocube", "VideoPinball", "Venture",
+                   "Yarsrevenge", "Zaxxon"]
 
 
 # TODO: complete the docstring 
@@ -136,11 +136,21 @@ class OCAtari:
             if torch_imported:
                 self._fill_buffer = self._fill_buffer_dqn
                 self._reset_buffer = self._reset_buffer_dqn
+                self._env.observation_space = gym.spaces.Box(0,255.0,(4,84,84))
             else:
                 print("To use the buffer of OCAtari, you need to install torch.")
         elif obs_mode == "ori":
             self._fill_buffer = self._fill_buffer_ori
             self._reset_buffer = self._reset_buffer_ori
+        elif obs_mode == "obj":
+            print("Using OBJ State Representation")
+            if mode == "ram":
+                self._env.observation_space = gym.spaces.Box(0,255.0,(4,3,4))
+                self._fill_buffer = self._fill_buffer_obj
+                self._reset_buffer = self._reset_buffer_obj
+            else:
+                print(colored("This obs mode is only available in ram mode", "red"))
+                exit(1)
         elif obs_mode is not None:
             print(colored("Undefined mode for observation (obs_mode), has to be one of ['dqn', 'ori', None]", "red"))
             exit(1)
@@ -175,11 +185,19 @@ class OCAtari:
 
     def _step_ram(self, *args, **kwargs):
         obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
-        if self.mode == "ram":
+        if self.mode == "ram" or self.mode == "revised":
             self.detect_objects(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         else:  # mode == "raw" because in raw mode we augment the info dictionary
-            self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name)
+            self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self._fill_buffer()
+        if self.obs_mode == "dqn":
+            obs = self.dqn_obs[0]
+        if self.obs_mode == "obj":
+            tensor = []
+            for obj in self._objects:
+                tensor.append(np.asarray(obj.xywh))
+            obs = np.asarray(tensor)
+            #obs = self.dqn_obs[0]
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
@@ -209,6 +227,12 @@ class OCAtari:
                 _zeros(210, 160, 3, device=DEVICE, dtype=uint8)
             )
 
+    def _reset_buffer_obj(self):
+        for _ in range(self.buffer_window_size):
+            self._state_buffer.append(
+                torch.zeros(len(self._objects), 4, device=DEVICE, dtype=torch.uint8)
+            )
+
     def reset(self, *args, **kwargs):
         """
         Resets the buffer and environment to an initial internal state, returning an initial observation and info.
@@ -222,12 +246,29 @@ class OCAtari:
         state = cv2.resize(
             self._ale.getScreenGrayscale(), (84, 84), interpolation=cv2.INTER_AREA,
         )
+        self._state_buffer.append(_tensor(state, dtype=_uint8, device=DEVICE))
+        if self.game_name == "Skiing":
+            tmp = self._state_buffer[1]
+            tmp[tmp >= 0] = self.objects[0].orientation
+            self._state_buffer[1] = tmp
+        elif self.game_name == "Seaquest":
+            tmp = self._state_buffer[1]
+            tmp[tmp >= 0] = self.objects[0].orientation.value
+            self._state_buffer[1] = tmp
         self._state_buffer.append(_tensor(state, dtype=_uint8,
                                                device=DEVICE))
 
     def _fill_buffer_ori(self):
         state = self._ale.getScreenRGB()
         self._state_buffer.append(_tensor(state, dtype=_uint8,
+                                               device=DEVICE))
+
+    def _fill_buffer_obj(self):
+        tensor = []
+        for obj in self._objects:
+            tensor.append(np.asarray(obj.xywh))
+        state = np.asarray(tensor)
+        self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
                                                device=DEVICE))
 
     def _get_buffer_as_stack(self):
@@ -365,7 +406,7 @@ class OCAtari:
 
         :type: int
         """
-        return self._env.unwrapped.action_space.n
+        return self.action_space.n
 
     @property
     def dqn_obs(self):
@@ -375,7 +416,7 @@ class OCAtari:
         :type: torch.tensor
         """
         return self._get_buffer_as_stack()
-
+    
     def set_ram(self, target_ram_position, new_value):
         """
         Directly set a given value at a targeted RAM position.
@@ -561,13 +602,55 @@ class EasyDonkey(OCAtari):
             self.set_ram(rp, sp)
         self.lasty = startp[1]
 
+
+def extra_rew(game_objects, episode_starts, last_crashed):
+    player = [o for o in game_objects if "Player" in str(o)][0]
+    # Get current platform
+    platform = np.ceil((player.xy[1] - player.h - 16) / 48)  # 0: topmost, 3: lowest platform
+
+    # Encourage moving to the child
+    if not episode_starts and not last_crashed:
+        if platform % 2 == 0:  # even platform, encourage left movement
+            reward = - player.dx
+        else:  # encourage right movement
+            reward = player.dx
+
+        # Encourage upward movement
+        reward -= player.dy / 5
+    else:
+        reward = 0
+    return reward
+
+
+class EasyKangaroo(OCAtari):
+    def __init__(self, env_name="ALE/Kangaroo", mode="ram", hud=False, obs_mode="dqn", render_mode=None, render_oc_overlay=False, *args, **kwargs):
+        self.lasty = 154
+        self.nb_lives = 2
+        super().__init__(env_name, mode, hud, obs_mode, render_mode, render_oc_overlay, *args, **kwargs)
+
+    def _step_ram(self, *args, **kwargs):
+        obs, reward, truncated, terminated, info = super()._step_ram(*args, **kwargs)
+        last_crashed = self.nb_lives != info["lives"]
+        self.nb_lives = info["lives"]
+        reward += extra_rew(self.objects, last_crashed, last_crashed)
+        
+        return obs, reward, truncated, terminated, info
+
+
 if __name__ == "__main__":
-    env = EasyDonkey(render_mode="human")
+    env = EasyKangaroo(render_mode="human")
     env.reset()
-    for _ in range(1000):
-        _, rew, truncated, terminated, _ = env.step(env.action_space.sample())
-        # if rew:
-        #     print(rew)
+    for st in range(1000):
+        # _, rew, truncated, terminated, _ = env.step(env.action_space.sample())
+        if st < 120:
+            action = 3
+        elif st < 150:
+            action = 2
+        else:
+            action = 4
+        _, rew, truncated, terminated, _ = env.step(action)
+        if rew:
+            print(rew)
         if truncated or terminated:
             env.reset()
         env.render()

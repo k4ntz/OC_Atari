@@ -67,7 +67,7 @@ class Renderer:
         window_size = (self.env_render_shape[0] + RAM_RENDER_WIDTH, self.env_render_shape[1])
         self.window = pygame.display.set_mode(window_size)
         self.clock = pygame.time.Clock()
-        self.ram_cell_id_font = pygame.font.SysFont('Pixel12x10', 16)
+        self.ram_cell_id_font = pygame.font.SysFont('Pixel12x10', 26)
         self.ram_cell_value_font = pygame.font.SysFont('Pixel12x10', 30)
         
 
@@ -76,11 +76,12 @@ class Renderer:
         while self.running:
             self._handle_user_input()
             ram = self.env.unwrapped.ale.getRAM()
-            print(ram[19], ram[27])
             if not self.paused:
                 action = self._get_action()
                 tuple = self.env.step(action)
                 rew = tuple[1]
+                # self.env.set_ram(33, 100)
+                # self.env.set_ram(57, 204)
                 if rew != 0:
                     print(rew)
                 self.current_frame = self.env.render().copy()
@@ -234,7 +235,7 @@ class Renderer:
         elif is_candidate:
             color = (20, 60, 200)
         else:
-            color = (50, 50, 50)
+            color = (150, 150, 150)
         text = self.ram_cell_id_font.render(str(cell_idx), True, color, None)
         text_rect = text.get_rect()
         text_rect.topleft = (x + 2, y + 2)
@@ -322,13 +323,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    # renderer = Renderer("Pong")
-    # renderer = Renderer("DemonAttack")
     # renderer = Renderer("ALE/Pacman-v5")
-    # renderer = Renderer("ALE/DonkeyKong-v5")
-    # renderer = Renderer("ALE/MontezumaRevenge-v5")
-    renderer = Renderer("Pong-v4")
-    # renderer = Renderer("MsPacman-v4")
-    # renderer = Renderer("Skiing-v4")
     # renderer = Renderer("Boxing-v4")
+    renderer = Renderer("Kangaroo-v4")
     renderer.run()
