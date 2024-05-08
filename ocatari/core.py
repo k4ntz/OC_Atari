@@ -10,7 +10,13 @@ from ocatari.ram.game_objects import GameObject, ValueObject
 from ocatari.utils import draw_label, draw_arrow, draw_orientation_indicator
 from gymnasium.error import NameNotFound
 
-from ale_py import ALEInterface
+try:
+    import ale_py
+except ModuleNotFoundError:
+    print(
+        '\nALE is required when using the ALE env wrapper. ',
+        'Try `pip install "gymnasium[atari, accept-rom-license]"`.\n',
+    )
 
 import warnings
 
@@ -26,8 +32,21 @@ except ModuleNotFoundError:
 try:
     import torch
     torch_imported = True
+    _tensor = torch.tensor
+    _uint8 = torch.uint8
+    _zeros = torch.zeros
+    _zeros_like = torch.zeros_like
+    _stack = torch.stack
+    DEVICE = "cpu" if torch.cuda.is_available() else "cpu"
 except ModuleNotFoundError:
     torch_imported = False
+    _tensor = np.array
+    _uint8 = np.uint8
+    _zeros = np.zeros
+    _zeros_like = np.zeros_like
+    _stack = np.stack
+    DEVICE = "cpu"
+    warnings.warn("pytorch installation not found, using numpy instead of torch")
 
 try:
     import pygame
@@ -37,7 +56,6 @@ except ModuleNotFoundError:
         "Try `pip install pygame`.\n",
     )
 
-DEVICE = "cpu" if torch.cuda.is_available() else "cpu"
 
 AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix", "Asteroids", "Atlantis", "Bankheist", "BattleZone","BeamRider", "Berzerk", "Bowling", "Boxing",
                    "Breakout", "Carnival", "Centipede", "ChoppperCommand", "CrazyClimber", "DemonAttack", "DonkeyKong", "Enduro", "FishingDerby", "Freeway",                   
@@ -182,13 +200,13 @@ class OCAtari:
     def _reset_buffer_dqn(self):
         for _ in range(self.buffer_window_size):
             self._state_buffer.append(
-                torch.zeros(84, 84, device=DEVICE, dtype=torch.uint8)
+                _zeros(84, 84, device=DEVICE, dtype=_uint8)
             )
 
     def _reset_buffer_ori(self):
         for _ in range(self.buffer_window_size):
             self._state_buffer.append(
-                torch.zeros(210, 160, 3, device=DEVICE, dtype=torch.uint8)
+                _zeros(210, 160, 3, device=DEVICE, dtype=uint8)
             )
 
     def reset(self, *args, **kwargs):
@@ -204,16 +222,16 @@ class OCAtari:
         state = cv2.resize(
             self._ale.getScreenGrayscale(), (84, 84), interpolation=cv2.INTER_AREA,
         )
-        self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
+        self._state_buffer.append(_tensor(state, dtype=_uint8,
                                                device=DEVICE))
 
     def _fill_buffer_ori(self):
         state = self._ale.getScreenRGB()
-        self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
+        self._state_buffer.append(_tensor(state, dtype=_uint8,
                                                device=DEVICE))
 
     def _get_buffer_as_stack(self):
-        return torch.stack(list(self._state_buffer), 0).unsqueeze(0).byte()
+        return _stack(list(self._state_buffer), 0).unsqueeze(0).byte()
 
     window : pygame.Surface = None
     clock : pygame.time.Clock = None
@@ -414,7 +432,7 @@ class OCAtari:
 
     def render_explanations(self):
         coefs = [0.05, 0.1, 0.25, 0.6]
-        rendered = torch.zeros_like(self._state_buffer[0]).float()
+        rendered = _zeros_like(self._state_buffer[0]).float()
         for coef, state_i in zip(coefs, self._state_buffer):
             rendered += coef * state_i
         rendered = rendered.cpu().detach().to(int).numpy()
@@ -443,7 +461,7 @@ class OCAtari:
 
 
     def aggregated_render(self, coefs=[0.05, 0.1, 0.25, 0.6]):
-        rendered = torch.zeros_like(self._state_buffer[0]).float()
+        rendered = zeros_like(self._state_buffer[0]).float()
         for coef, state_i in zip(coefs, self._state_buffer):
             rendered += coef * state_i
         rendered = rendered.cpu().detach().to(int).numpy()
@@ -499,7 +517,7 @@ class HideEnemyPong(OCAtari):
         state = cv2.resize(
             image, (84, 84), interpolation=cv2.INTER_AREA,
         )
-        self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
+        self._state_buffer.append(_tensor(state, dtype=_uint8,
                                                device=DEVICE))
 
 
