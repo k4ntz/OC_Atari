@@ -38,6 +38,7 @@ try:
     _zeros_like = torch.zeros_like
     _stack = torch.stack
     DEVICE = "cpu" if torch.cuda.is_available() else "cpu"
+    _tensor_kwargs = {"device": DEVICE}
 except ModuleNotFoundError:
     torch_imported = False
     _tensor = np.array
@@ -46,6 +47,7 @@ except ModuleNotFoundError:
     _zeros_like = np.zeros_like
     _stack = np.stack
     DEVICE = "cpu"
+    _tensor_kwargs = {}
     warnings.warn("pytorch installation not found, using numpy instead of torch")
 
 try:
@@ -218,19 +220,19 @@ class OCAtari:
     def _reset_buffer_dqn(self):
         for _ in range(self.buffer_window_size):
             self._state_buffer.append(
-                _zeros(84, 84, device=DEVICE, dtype=_uint8)
+                _zeros((84, 84), dtype=_uint8, **_tensor_kwargs)
             )
 
     def _reset_buffer_ori(self):
         for _ in range(self.buffer_window_size):
             self._state_buffer.append(
-                _zeros(210, 160, 3, device=DEVICE, dtype=uint8)
+                _zeros((210, 160, 3), dtype=_uint8, **_tensor_kwargs)
             )
 
     def _reset_buffer_obj(self):
         for _ in range(self.buffer_window_size):
             self._state_buffer.append(
-                torch.zeros(len(self._objects), 4, device=DEVICE, dtype=torch.uint8)
+                _zeros((len(self._objects), 4), dtype=_uint8, **_tensor_kwargs)
             )
 
     def reset(self, *args, **kwargs):
@@ -246,7 +248,7 @@ class OCAtari:
         state = cv2.resize(
             self._ale.getScreenGrayscale(), (84, 84), interpolation=cv2.INTER_AREA,
         )
-        self._state_buffer.append(_tensor(state, dtype=_uint8, device=DEVICE))
+        self._state_buffer.append(_tensor(state, dtype=_uint8, **_tensor_kwargs))
         if self.game_name == "Skiing":
             tmp = self._state_buffer[1]
             tmp[tmp >= 0] = self.objects[0].orientation
@@ -255,21 +257,21 @@ class OCAtari:
             tmp = self._state_buffer[1]
             tmp[tmp >= 0] = self.objects[0].orientation.value
             self._state_buffer[1] = tmp
-        self._state_buffer.append(_tensor(state, dtype=_uint8,
-                                               device=DEVICE))
+        self._state_buffer.append(_tensor(state, dtype=_uint8
+                                          , **_tensor_kwargs))
 
     def _fill_buffer_ori(self):
         state = self._ale.getScreenRGB()
         self._state_buffer.append(_tensor(state, dtype=_uint8,
-                                               device=DEVICE))
+                                          **_tensor_kwargs))
 
     def _fill_buffer_obj(self):
         tensor = []
         for obj in self._objects:
             tensor.append(np.asarray(obj.xywh))
         state = np.asarray(tensor)
-        self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
-                                               device=DEVICE))
+        self._state_buffer.append(_tensor(state, dtype=_uint8,
+                                          **_tensor_kwargs))
 
     def _get_buffer_as_stack(self):
         return _stack(list(self._state_buffer), 0).unsqueeze(0).byte()
@@ -502,7 +504,7 @@ class OCAtari:
 
 
     def aggregated_render(self, coefs=[0.05, 0.1, 0.25, 0.6]):
-        rendered = zeros_like(self._state_buffer[0]).float()
+        rendered = _zeros_like(self._state_buffer[0]).float()
         for coef, state_i in zip(coefs, self._state_buffer):
             rendered += coef * state_i
         rendered = rendered.cpu().detach().to(int).numpy()
@@ -559,7 +561,7 @@ class HideEnemyPong(OCAtari):
             image, (84, 84), interpolation=cv2.INTER_AREA,
         )
         self._state_buffer.append(_tensor(state, dtype=_uint8,
-                                               device=DEVICE))
+                                          **_tensor_kwargs))
 
 
 class EasyDonkey(OCAtari):
