@@ -65,6 +65,7 @@ AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix", "Astero
                    "Yarsrevenge", "Zaxxon"]
 
 
+
 # TODO: complete the docstring 
 class OCAtari:
     """
@@ -471,6 +472,18 @@ class OCAtari:
 
         :type: list of GameObjects
         """
+        return [obj for obj in self._objects if obj] # filtering out None objects
+
+
+    @property
+    def ocstate(self):
+        """
+        A list of the object present in the environment. The objects are either \
+        ocatari.vision.GameObject or ocatari.ram.GameObject, depending on the extraction method.
+
+        :type: list of GameObjects
+        """
+        import ipdb; ipdb.set_trace()
         return [obj for obj in self._objects if obj] # filtering out None objects
 
     def render_explanations(self):
