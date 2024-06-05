@@ -113,7 +113,7 @@ def _detect_objects_amidar_ram(objects, ram_state, hud=False):
             fig = objects[0]
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
 
-    # 6-49 purple lines; first 4 ==> lines, remaining for ==> pillars
+    # 6-49 purple lines; first 4 ==> lines, remaining ==> pillars
     # even numbers are inverted
 
     # for i in range(6):
