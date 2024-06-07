@@ -161,10 +161,9 @@ def _init_objects_atlantis_ram(hud=True):
     """
 
     objects = [Sentry(), Sentry()]
-
     objects[1].xy = 152, 112
 
-    objects.extend([None] * 13)
+    objects.extend([None] * 14)
     if hud:
         objects.extend([None] * 1)
 
@@ -229,7 +228,7 @@ def missile_pos(rs):
 
 
 def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
-    for i in range(20):
+    for i in range(13):
         objects[2+i] = None
 
     buildings_count = 0
@@ -284,7 +283,6 @@ def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
             ship = _get_ship_type(ram_state, 0+i, 128+i)
             g_s = None
             if ship is None:
-                print(ship)
                 continue
 
             # calc speed and orientation offset
