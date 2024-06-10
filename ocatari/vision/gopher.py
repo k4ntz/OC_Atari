@@ -44,7 +44,7 @@ class Score(GameObject):
         self.hud = True
 
 
-def _detect_objects_gopher(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
     player = find_mc_objects(obs, player_colors, size=(11,50),tol_s=2, closing_dist=1)

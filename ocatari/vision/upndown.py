@@ -50,7 +50,7 @@ class Life(GameObject):
         self.rgb = [198, 108, 58]
 
 
-def _detect_objects_upndown(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     player = find_mc_objects(obs, [objects_colors["player_white"], [0, 0, 0]], minx=8, miny=26, maxy=193)

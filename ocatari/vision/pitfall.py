@@ -133,7 +133,7 @@ class Timer(GameObject):
         self.rgb =214,214,214
         self.hud = True
 
-def _detect_objects_pitfall(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
     # Rope and wall is not working 

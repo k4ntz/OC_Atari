@@ -74,7 +74,7 @@ class DifficultyLevel(GameObject):
         self.hud = True
         
 
-def _detect_objects_videopinball(objects, obs, hud=True):
+def _detect_objects(objects, obs, hud=True):
     objects.clear()
     ball_h = 6
     ball_w = 4

@@ -64,18 +64,20 @@ else:
     DEVICE = "cpu" 
     
 AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix", 
-                   "Asteroids", "Atlantis", "Bankheist", "BattleZone",
+                   "Asteroids", "Atlantis", "BankHeist", "BattleZone",
                    "BeamRider", "Berzerk", "Bowling", "Boxing",
-                   "Breakout", "Carnival", "Centipede", "ChoppperCommand", 
+                   "Breakout", "Carnival", "Centipede", "ChopperCommand", 
                    "CrazyClimber", "DemonAttack", "DonkeyKong", 
                    "Enduro", "FishingDerby", "Freeway",                   
                    "Frostbite", "Galaxian", "Gopher", "Hero", "IceHockey", 
                    "Jamesbond", "Kangaroo", "Krull", "MontezumaRevenge", 
                    "MsPacman", "Pacman", "Pitfall", "Pong", "PrivateEye",
                    "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", 
-                   "SpaceInvaders", "Tennis", "TimePilot", "UpNDown", 
-                   "Videocube", "VideoPinball", "Venture",
-                   "Yarsrevenge", "Zaxxon"]
+                   "SpaceInvaders", "Tennis", "TimePilot", "UpNDown", "Venture", 
+                   #"Videocube", 
+                   "VideoPinball", 
+                   "YarsRevenge"] 
+                   #"Zaxxon"]
 
 
 # TODO: complete the docstring 
@@ -464,6 +466,9 @@ class OCAtari:
 
     def _get_obs(self):
         return self._env.env.env.unwrapped._get_obs()
+
+    def getScreenRGB(self):
+        return self.env.unwrapped.ale.getScreenRGB()
 
     def _clone_state(self):
         """

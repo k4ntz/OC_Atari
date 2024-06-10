@@ -51,7 +51,7 @@ class Live(GameObject):
         self.rgb = 240, 128, 128
 
 
-def _detect_objects_demon_attack(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     player = find_objects(obs, objects_colors["player"], min_distance=1)

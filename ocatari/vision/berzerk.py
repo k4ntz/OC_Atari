@@ -52,7 +52,7 @@ class RoomCleared(GameObject):
         self.rgb = 232, 232, 74
 
 
-def _detect_objects_berzerk(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
     player = find_objects(obs, objects_colors["player"], min_distance=0.1)
     for p in player:

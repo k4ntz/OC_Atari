@@ -75,7 +75,7 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_NB_OBJECTS)
 
 
-def _init_objects_amidar_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -86,7 +86,7 @@ def _init_objects_amidar_ram(hud=False):
     return objects
 
 
-def _detect_objects_amidar_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     """
     For all 3 objects:
     (x, y, w, h, r, g, b)

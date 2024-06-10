@@ -120,7 +120,7 @@ class Degree(GameObject):
 #         self.rgb = 0,0,0
 #         self.hud = True
 
-def _detect_objects_frostbite(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
 

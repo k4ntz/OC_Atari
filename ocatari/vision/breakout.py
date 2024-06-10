@@ -46,7 +46,7 @@ class PlayerNumber(GameObject):
         self.rgb = 142, 142, 142
 
 
-def _detect_objects_breakout(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     player = find_objects(obs, objects_colors["player"], min_distance=1, maxx=151)

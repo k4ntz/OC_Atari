@@ -190,7 +190,7 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_NB_OBJECTS)
 
 
-def _init_objects_riverraid_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -205,7 +205,7 @@ def _init_objects_riverraid_ram(hud=False):
     return objects
 
 
-def _detect_objects_riverraid_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     player = objects[0]
     if ram_state[70] or ram_state[58] == 0:
         objects[0] = None

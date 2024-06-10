@@ -134,7 +134,7 @@ def _get_max_objects(hud=False):
     return
 
 
-def _init_objects_videopinball_ram(hud=False):
+def _init_objects_ram(hud=False):
     objects = [Flipper(True), Flipper(False), Ball(), Spinner(True), Spinner(False)]
     objects.extend([None for _ in dp_follow_list])
     for b_xy, b_wh in bumpers:
@@ -145,7 +145,7 @@ def _init_objects_videopinball_ram(hud=False):
     return objects
 
 
-def _detect_objects_videopinball_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     flipl, flipr, ball = objects[:3]
     flipl.xy = left_flip_map[ram_state[98]][:2]
     flipl.wh = left_flip_map[ram_state[98]][2:]

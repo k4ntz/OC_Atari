@@ -85,7 +85,7 @@ for i in range(100000):
                 # cv2.imwrite(f"frames/{title}_frame_{i}.png", obs, [cv2.IMWRITE_PNG_COMPRESSION, 0])
                 # im.save()
             fig.suptitle(f"frame {i}", fontsize=20)
-            plt.show()
+            # plt.show()
             # import ipdb; ipdb.set_trace()
 
         if terminated or truncated:

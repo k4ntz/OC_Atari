@@ -48,7 +48,7 @@ class PlayerScore(GameObject):
         self.rgb = 240, 128, 128
 
 
-def _detect_objects_tennis(objects, obs, hud):
+def _detect_objects(objects, obs, hud):
     objects.clear()
 
     player = find_objects(obs, objects_colors["player"], min_distance=1, closing_dist=1)

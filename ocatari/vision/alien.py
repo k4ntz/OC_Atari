@@ -61,7 +61,7 @@ class Life(GameObject):
 #             objects.append(eg)
     
 
-def _detect_objects_alien(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
     for color in player_colors:

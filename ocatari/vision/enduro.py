@@ -41,7 +41,7 @@ class Level(GameObject):
         self.hud = True 
 
 
-def _detect_objects_enduro(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
     player = find_objects(obs, objects_colors["Player"], size=(16,11), tol_s=3,closing_dist=2)

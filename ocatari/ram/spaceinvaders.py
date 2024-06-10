@@ -197,7 +197,7 @@ def _detect_objects_spaceinvaders_raw(info, ram_state):
     # # x*5 points for destroying an alien from row_x
 
 
-def _init_objects_spaceinvaders_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -230,7 +230,7 @@ sat_ctr = 1
 global shields
 
 
-def _detect_objects_spaceinvaders_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     global firstCall
     global aliens
     global prevRam
