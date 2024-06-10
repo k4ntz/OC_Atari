@@ -235,7 +235,7 @@ def _remove_object(obj_cls: Type[GameObject], idx: int = 0):
     objects[obj_cls][idx] = None
 
 
-def _init_objects_kangaroo_ram(hud=True):
+def _init_objects_ram(hud=True):
     """
     (Re)Initialize the objects
     """
@@ -251,7 +251,7 @@ def _init_objects_kangaroo_ram(hud=True):
     return init_obj
 
 
-def _detect_objects_kangaroo_ram(objects_old, ram_state, hud=True):
+def _detect_objects_ram(objects_old, ram_state, hud=True):
     _update_objects(ram_state, hud)
     existing_objects = []
     object_categories = list(objects.values())
