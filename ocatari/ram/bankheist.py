@@ -2,7 +2,7 @@ from .game_objects import GameObject, ValueObject
 from ._helper_methods import number_to_bitfield
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1}
+MAX_NB_OBJECTS = {"Player": 1, "Bank": 3, "Police": 3}
 MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
 
 class Player(GameObject):

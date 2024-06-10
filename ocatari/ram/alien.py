@@ -1,7 +1,7 @@
 from .game_objects import GameObject, ValueObject
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1}
+MAX_NB_OBJECTS = {"Player": 1, "Alien": 3, "Pulsar": 1, "Egg": 156}
 MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
 
 class Player(GameObject):
