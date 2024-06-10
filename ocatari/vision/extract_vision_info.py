@@ -24,6 +24,7 @@ from .enduro import _detect_objects_enduro
 from .fishingderby import _detect_objects_fishingderby
 from .freeway import _detect_objects_freeway
 from .frostbite import _detect_objects_frostbite
+from .galaxian import _detect_objects_galaxian
 from .gopher import _detect_objects_gopher
 from .hero import _detect_objects_hero
 from .icehockey import _detect_objects_icehockey
@@ -48,6 +49,7 @@ from .upndown import _detect_objects_upndown
 from .venture import _detect_objects_venture
 from .videopinball import _detect_objects_videopinball
 from .yarsrevenge import _detect_objects_yarsrevenge
+
 
 def detect_objects_vision(objects, obs, game_name, hud=False):
     if game_name.lower() == "atlantis":
@@ -88,6 +90,8 @@ def detect_objects_vision(objects, obs, game_name, hud=False):
         return _detect_objects_carnival(objects, obs, hud)
     elif game_name.lower() == "donkeykong":
         return _detect_objects_donkeykong(objects, obs, hud)
+    elif game_name.lower() == "galaxian":
+        return _detect_objects_galaxian(objects, obs, hud)
     elif game_name.lower() == "berzerk":
         return _detect_objects_berzerk(objects, obs, hud)
     elif game_name.lower() == "beamrider":

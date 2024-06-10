@@ -323,7 +323,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    # renderer = Renderer("ALE/Pacman-v5")
+    renderer = Renderer("ALE/Galaxian-v5")
     # renderer = Renderer("Boxing-v4")
-    renderer = Renderer("Kangaroo-v4")
+    # renderer = Renderer("Kangaroo-v4")
     renderer.run()
