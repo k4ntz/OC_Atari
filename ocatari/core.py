@@ -38,13 +38,14 @@ except ModuleNotFoundError:
     )
 
 if torch_imported:
-    DEVICE = "gpu" if torch.cuda.is_available() else "cpu"
+    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 else:
     DEVICE = "cpu" 
     
 AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix", "Asteroids", "Atlantis", "Bankheist", "BattleZone","BeamRider", "Berzerk", "Bowling", "Boxing",
                    "Breakout", "Carnival", "Centipede", "ChoppperCommand", "CrazyClimber", "DemonAttack", "DonkeyKong", "Enduro", "FishingDerby", "Freeway",                   
-                   "Frostbite", "Gopher", "Hero", "IceHockey", "Jamesbond", "Kangaroo", "Krull", "MontezumaRevenge", "MsPacman", "Pacman", "Pitfall", "Pong", "PrivateEye",
+                   "Frostbite", "Gopher", "Hero", "IceHockey", "Jamesbond", "Kangaroo", "Krull", "MontezumaRevenge", 
+                   "MsPacman", "Pacman", "Pitfall", "Pong", "PrivateEye",
                    "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "TimePilot", "UpNDown", "Videocube", "VideoPinball", "Venture",
                    "Yarsrevenge", "Zaxxon"]
 
@@ -180,7 +181,7 @@ class OCAtari:
             obs = self.dqn_obs[0]
         if self.obs_mode == "obj":
             tensor = []
-            for obj in self._objects:
+            for obj in self.objects:
                 tensor.append(np.asarray(obj.xywh))
             obs = np.asarray(tensor)
             #obs = self.dqn_obs[0]
@@ -252,7 +253,8 @@ class OCAtari:
 
     def _fill_buffer_obj(self):
         tensor = []
-        for obj in self._objects:
+        for obj in self.objects:
+            # import ipdb; ipdb.set_trace()
             tensor.append(np.asarray(obj.xywh))
         state = np.asarray(tensor)
         self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
