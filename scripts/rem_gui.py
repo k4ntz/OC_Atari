@@ -6,6 +6,7 @@ import pygame
 from ocatari.core import OCAtari, UPSCALE_FACTOR
 from gymnasium.error import NameNotFound
 import pickle
+import sys
 """
 This script can be used to identify any RAM positions that
 influence the color of a specific pixel. This can be used to
@@ -323,16 +324,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    # renderer = Renderer("Pong")
-    # renderer = Renderer("DemonAttack")
-    # renderer = Renderer("ALE/Pacman-v5")
-    # renderer = Renderer("ALE/DonkeyKong-v5")
-    renderer = Renderer("ALE/MiniatureGolf-v5")
-    # renderer = Renderer("ChopperCommand-v4")
-    # renderer = Renderer("Pong-v4")
-    # renderer = Renderer("Skiing-v4")
-    # renderer = Renderer("Pacman-v4")
-    # renderer = Renderer("MsPacman-v4")
+    renderer = Renderer(sys.argv[1])
     # renderer = Renderer("Boxing-v4")
     # renderer = Renderer("Kangaroo-v4")
     renderer.run()
