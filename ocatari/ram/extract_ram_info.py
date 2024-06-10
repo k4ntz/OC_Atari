@@ -32,6 +32,7 @@ from .enduro import _init_objects_enduro_ram, _detect_objects_enduro_ram
 from .fishingderby import _init_objects_fishingderby_ram, _detect_objects_fishingderby_ram
 from .freeway import _detect_objects_freeway_raw, _detect_objects_freeway_ram, _init_objects_freeway_ram
 from .frostbite import _init_objects_frostbite_ram, _detect_objects_frostbite_ram
+from .galaxian import _init_objects_galaxian_ram, _detect_objects_galaxian_ram
 from .gopher import _init_objects_gopher_ram, _detect_objects_gopher_ram
 from .hero import _init_objects_hero_ram, _detect_objects_hero_ram
 from .icehockey import _init_objects_icehockey_ram, _detect_objects_icehockey_ram
@@ -129,6 +130,8 @@ def init_objects(game_name, hud):
         return _init_objects_beamrider_ram(hud)
     elif game_name.lower() == "asterix":
         return _init_objects_asterix_ram(hud)
+    elif game_name.lower() == "galaxian":
+        return _init_objects_galaxian_ram(hud)
     elif game_name.lower() == "choppercommand":
         return choppercommand._init_objects_ram(hud)
     elif game_name.lower() == "qbert":
@@ -222,6 +225,8 @@ def detect_objects_raw(info, ram_state, game_name):
         _detect_objects_centipede_raw(info, ram_state)
     elif game_name.lower() == "carnival":
         _detect_objects_carnival_raw(info, ram_state)
+    # elif game_name.lower() == "galaxian":
+    #     _detect_objects_galaxian_raw(info, ram_state)
     elif game_name.lower() == "kangaroo":
         _detect_objects_kangaroo_raw(info, ram_state)
     elif game_name.lower() == "berzerk":
@@ -322,6 +327,8 @@ def detect_objects_ram(objects, ram_state, game_name, hud):
         _detect_objects_icehockey_ram(objects, ram_state, hud)
     elif game_name.lower() == "privateeye":
         _detect_objects_privateeye_ram(objects, ram_state, hud)
+    elif game_name.lower() == "galaxian":
+        _detect_objects_galaxian_ram(objects, ram_state, hud)
     elif game_name.lower() == "gopher":
         _detect_objects_gopher_ram(objects, ram_state, hud)
     elif game_name.lower() == "enduro":
