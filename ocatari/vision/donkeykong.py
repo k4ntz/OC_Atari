@@ -136,7 +136,7 @@ ladders = [(108, 176), (48, 148), (80, 148), (88, 120), (108, 120),
            (48, 92), (68, 92), (108, 64), (76, 40), (32, 40)]
 
 
-def _detect_objects_donkeykong(objects, obs, hud=True):
+def _detect_objects(objects, obs, hud=True):
     objects.clear()
     player = find_mc_objects(obs, objects_colors["player"], size=(8, 15), tol_s=4)
     for bb in player:

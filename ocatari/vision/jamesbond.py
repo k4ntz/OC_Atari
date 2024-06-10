@@ -74,7 +74,7 @@ class Life(GameObject):
         self.rgb = [180, 122, 48]
 
 
-def _detect_objects_jamesbond(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     player = find_objects(obs, objects_colors["orange"])

@@ -186,7 +186,7 @@ def _get_max_objects(hud=False):
 
 ladders = [(108, 176), (48, 148), (80, 148), (88, 120), (108, 120),
            (48, 92), (68, 92), (108, 64), (76, 40), (32, 40)]
-def _init_objects_donkeykong_ram(hud=True):
+def _init_objects_ram(hud=True):
     """
     (Re)Initialize the objects
     """
@@ -203,7 +203,7 @@ def _init_objects_donkeykong_ram(hud=True):
     #     init_obj.extend([Score()])
     # return init_obj
 
-def _detect_objects_donkeykong_ram(objects, ram_state, hud=True):
+def _detect_objects_ram(objects, ram_state, hud=True):
     player = objects[0]
     if 1 < ram_state[11] < 255: # jumping
         player.xy = ram_state[19]-4, ram_state[27]+24

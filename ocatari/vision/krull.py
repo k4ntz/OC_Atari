@@ -121,7 +121,7 @@ class Weapon_HUD(GameObject):
         self.rgb = [92, 186, 92]
 
 
-def _detect_objects_krull(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     player = find_mc_objects(obs, [objects_colors["orange1"], objects_colors["orange2"], objects_colors["orange3"], objects_colors["orange4"]], miny=12, maxy=174)

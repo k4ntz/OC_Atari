@@ -155,7 +155,7 @@ class Score(GameObject):
         self.hud = False
 
 
-def _init_objects_atlantis_ram(hud=True):
+def _init_objects_ram(hud=True):
     """
     (Re)Initialize the objects
     """
@@ -227,7 +227,7 @@ def missile_pos(rs):
         return 208 - rs
 
 
-def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
+def _detect_objects_ram(objects, ram_state, hud=True):
     for i in range(13):
         objects[2+i] = None
 

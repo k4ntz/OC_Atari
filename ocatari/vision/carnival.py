@@ -89,7 +89,7 @@ class Wheel(GameObject):
         self.rgb = 45, 87, 176
 
 
-def _detect_objects_carnival(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     player = find_objects(obs, objects_colors["player"], min_distance=1)

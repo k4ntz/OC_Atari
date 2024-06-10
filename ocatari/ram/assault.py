@@ -142,7 +142,7 @@ class Health(GameObject):
         self.hud = True
 
 
-def _init_objects_assault_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -176,7 +176,7 @@ horizontal_pos = 0
 enemy_missile_x = 0
 
 
-def _detect_objects_assault_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     """
     For all objects:
     (x, y, w, h, r, g, b)

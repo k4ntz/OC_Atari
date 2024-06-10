@@ -274,7 +274,7 @@ def _create_life_objects(life):
     return ret
 
 
-def _init_objects_centipede_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -292,7 +292,7 @@ def _init_objects_centipede_ram(hud=False):
 prev_centipede_x = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 
-def _detect_objects_centipede_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     player, projectile = objects[:2]  # bug, ghost, crab1, crab2, crab3
     ground = objects[-1]
 

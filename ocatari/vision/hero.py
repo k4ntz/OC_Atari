@@ -113,7 +113,7 @@ class Score(GameObject):
         self.value = 0
 
 
-def _detect_objects_hero(objects, obs, hud=True):
+def _detect_objects(objects, obs, hud=True):
     objects.clear()
     possible_wall_colors = ["brown", "green", "blue", "grey"]
     stage_zone_y = [20, 60, 100, 150]

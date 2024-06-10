@@ -74,7 +74,7 @@ class Life(GameObject):
         self.rgb = [72, 160, 72]
 
 
-def _detect_objects_crazyclimber(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     player = find_mc_objects(obs, [objects_colors["green"], objects_colors["red"]], miny=40)

@@ -105,7 +105,7 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_NB_OBJECTS)
 
 
-def _init_objects_mspacman_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -119,7 +119,7 @@ def _init_objects_mspacman_ram(hud=False):
     return objects
 
 
-def _detect_objects_mspacman_ram(objects, ram_state, hud=True):
+def _detect_objects_ram(objects, ram_state, hud=True):
     player, g1, g2, g3, g4 = objects[:5]
 
     player.xy = ram_state[10] - 13, ram_state[16] + 1

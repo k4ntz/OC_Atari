@@ -170,7 +170,7 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_NB_OBJECTS)
 
 
-def _init_objects_qbert_ram(hud=True):
+def _init_objects_ram(hud=True):
     """
     (Re)Initialize the objects
     """
@@ -210,7 +210,7 @@ def _init_objects_qbert_ram(hud=True):
     return objects
 
 
-def _detect_objects_qbert_ram(objects, ram_state, hud=True):
+def _detect_objects_ram(objects, ram_state, hud=True):
     player = objects[0]
     cubes = objects[1:22]
     for cube, ccinf in zip(cubes, _cubes_cinfo):

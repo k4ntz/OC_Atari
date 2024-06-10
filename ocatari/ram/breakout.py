@@ -115,7 +115,7 @@ def _get_max_objects(hud=False):
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
 
-def _init_objects_breakout_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -164,7 +164,7 @@ def _make_block_bitmap(ram_state):
     return blocks_int
 
 
-def _detect_objects_breakout_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     """
        For all objects:
        (x, y, w, h, r, g, b)
