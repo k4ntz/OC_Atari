@@ -8,7 +8,7 @@ RAM extraction for the game Demon Attack.
 """
 
 # TODO: populate 
-MAX_NB_OBJECTS =  {}
+MAX_NB_OBJECTS =  {"Player": 1}
 MAX_NB_OBJECTS_HUD = {}
 
 class Player(GameObject):

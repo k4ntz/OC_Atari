@@ -184,6 +184,7 @@ def _detect_objects_assault_ram(objects, ram_state, hud=False):
 
     # player
     player = Player()
+    objects[0] = player
     x_mod = ram_state[16]
     x_diff = (x_mod // 16) % 8
     if ram_state[16] < 128:
@@ -193,7 +194,6 @@ def _detect_objects_assault_ram(objects, ram_state, hud=False):
         player.xy = x, 178
     else:
         player.xy = player_x_pos_128[ram_state[16] % 16] - x_diff, 178
-    objects[0] = player
 
     # player missile
     missile = PlayerMissileVertical()

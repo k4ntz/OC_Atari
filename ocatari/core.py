@@ -83,7 +83,7 @@ class OCAtari:
     the remaining \*args and \**kwargs will be passed to the \
         `gymnasium.make <https://gymnasium.farama.org/api/registry/#gymnasium.make>`_ function.
     """
-    def __init__(self, env_name, mode="ram", hud=False, obs_mode="dqn",
+    def __init__(self, env_name, mode="ram", hud=False, obs_mode="ori",
                  render_mode=None, render_oc_overlay=False, *args, **kwargs):
         if "ALE/" in env_name: #case if v5 specified
             to_check = env_name[4:8]
@@ -148,7 +148,7 @@ class OCAtari:
         elif obs_mode == "obj":
             print("Using OBJ State Representation")
             if mode == "ram":
-                self._env.observation_space = gym.spaces.Box(0,255.0,(4,3,4))
+                self._env.observation_space = gym.spaces.Box(0,255.0,(4,len(self.max_objects),4))
                 self._fill_buffer = self._fill_buffer_obj
                 self._reset_buffer = self._reset_buffer_obj
             else:
@@ -198,7 +198,11 @@ class OCAtari:
         if self.obs_mode == "obj":
             tensor = []
             for obj in self._objects:
-                tensor.append(np.asarray(obj.xywh))
+                if obj is None:
+                    tensor.append(np.array([0, 0, 0, 0]))
+                else:
+                    tensor.append(np.asarray(obj.xywh))
+                # tensor.append(np.asarray(obj.xywh))
             obs = np.asarray(tensor)
             #obs = self.dqn_obs[0]
         return obs, reward, truncated, terminated, info
@@ -268,8 +272,12 @@ class OCAtari:
 
     def _fill_buffer_obj(self):
         tensor = []
+        print(self._objects)
         for obj in self._objects:
-            tensor.append(np.asarray(obj.xywh))
+            if obj is None:
+                tensor.append(np.array([0, 0, 0, 0]))
+            else:
+                tensor.append(np.asarray(obj.xywh))
         state = np.asarray(tensor)
         self._state_buffer.append(_tensor(state, dtype=_uint8,
                                           **_tensor_kwargs))
