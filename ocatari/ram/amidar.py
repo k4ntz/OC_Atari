@@ -2,8 +2,8 @@ from .game_objects import GameObject, ValueObject
 from ._helper_methods import number_to_bitfield
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1, "Moster": 6}
-MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
+MAX_NB_OBJECTS = {"Player": 1, "Monster_green": 6}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Monster_green": 6, "Score": 1, "Life": 3}
 
 class Player(GameObject):
     def __init__(self):
@@ -95,10 +95,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # x == 66-72; y == 59-65; type 73-79
     k = 0
     for i in range(7):
-        objects[1+i] = None
+        objects[1+k] = None
         if ram_state[73+i]&16 and ram_state[73+i]&32:
             fig = Monster_red()
-            objects[1+i] = fig
+            objects[1+k] = fig
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
             k+=1
         elif ram_state[73+i]&32:
@@ -106,10 +106,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[1+k] = fig
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
             k+=1
-        # elif ram_state[73+i]&16:
-        #     fig = Monster_yellow()
-        #     objects[1+i] = fig
-        #     fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
         else:
             fig = objects[0]
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
