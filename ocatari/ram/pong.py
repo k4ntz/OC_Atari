@@ -107,7 +107,7 @@ def _get_max_objects(hud=False):
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
 
-def _init_objects_pong_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -117,7 +117,7 @@ def _init_objects_pong_ram(hud=False):
     return objects
 
 
-def _detect_objects_pong_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     """
     For all 3 objects:
     (x, y, w, h, r, g, b)
@@ -130,7 +130,7 @@ def _detect_objects_pong_ram(objects, ram_state, hud=False):
         ball.xy = ram_state[49]-49, ram_state[54]-14
 
     # enemy
-    if ram_state[50] > 18:  # otherwise no enemy
+    if ram_state[50] > 18:  # otherwise no enemy # could be ram pos 21 as well
         if ram_state[50] - 15 < 34:
             enemy.xy = 16, 34
             enemy.wh = 4, ram_state[50]-33

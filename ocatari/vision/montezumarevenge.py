@@ -121,7 +121,7 @@ class Amulet_HUD(GameObject):
         self.rgb = [232, 204, 99]
 
 
-def _detect_objects_montezumarevenge(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     players = find_mc_objects(obs, objects_colors['playercolors'], miny=25)

@@ -62,6 +62,19 @@ class PositionHistoryEnv(gym.Env):
         for k in list(obj_counter.keys()):
             reference_list.extend([k for i in range(obj_counter[k])])
         return reference_list
+    
+    
+    @property
+    def enumerated_reference_list(self):
+        nb_entities = {}
+        erl = []
+        for o in self.reference_list:
+            if o not in nb_entities.keys():
+                nb_entities[o] = 0
+            erl.append(f"{o}_{nb_entities[o]}")
+            nb_entities[o] += 1
+        return erl
+        
 
 
     def _obj2vec(self):

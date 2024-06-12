@@ -129,7 +129,7 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_NB_OBJECTS)
 
 
-def _init_objects_boxing_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -145,7 +145,7 @@ def _init_objects_boxing_ram(hud=False):
     return objects
 
 
-def _detect_objects_boxing_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     """
     For all 3 objects:
     (x, y, w, h, r, g, b)
@@ -157,7 +157,6 @@ def _detect_objects_boxing_ram(objects, ram_state, hud=False):
     enemy.xy = ram_state[33]+4, ram_state[35]+38
     enemy.left_arm_length = ram_state[61] # from 0 to 72
     enemy.right_arm_length = ram_state[59]
-    print(player.left_arm_length, player.right_arm_length)
     if hud:
         # scores
         global plscore

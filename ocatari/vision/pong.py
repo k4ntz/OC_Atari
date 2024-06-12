@@ -41,7 +41,7 @@ class EnemyScore(GameObject):
         self.hud = True
 
 
-def _detect_objects_pong(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
     enemy = find_objects(obs, objects_colors["enemy"], min_distance=1, miny=30)

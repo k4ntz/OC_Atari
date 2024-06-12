@@ -43,7 +43,7 @@ class Player2Round(GameObject):
         self.rgb = 45, 50, 184
 
 
-def _detect_objects_bowling(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
     ball = find_objects(obs, objects_colors["ball"], min_distance=0.1, closing_dist=1)
     for bb in ball:

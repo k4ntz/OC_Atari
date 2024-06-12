@@ -162,7 +162,7 @@ class Score(GameObject):
 global static_bricks
 static_bricks = None
 
-def _detect_objects_privateeye(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     car = find_objects(obs, objects_colors['black'], minx=8, miny=130, maxx=159, maxy=182, size=(20, 14), tol_s=5, min_distance=2, closing_dist=2)

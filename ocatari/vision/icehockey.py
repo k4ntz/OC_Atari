@@ -43,7 +43,7 @@ class Timer(GameObject):
         self.hud = True
 
 
-def _detect_objects_icehockey(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
     player = find_mc_objects(obs, player_colors, size=(16, 20), tol_s=10, closing_dist=3)

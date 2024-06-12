@@ -75,7 +75,7 @@ class Life(GameObject):
         self.rgb = [252, 252, 84]
 
 
-def _detect_objects_battlezone(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     player = find_mc_objects(obs, objects_colors["player"], miny=110, maxy=178)

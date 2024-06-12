@@ -40,7 +40,7 @@ class PlayerMissile(GameObject):
         self.rgb = 117, 181, 239
 
 
-def _detect_objects_asteroids(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     player = find_objects(obs, objects_colors["player"], min_distance=1)

@@ -155,29 +155,23 @@ class Score(GameObject):
         self.hud = False
 
 
-def _init_objects_atlantis_ram(hud=True):
+def _init_objects_ram(hud=True):
     """
     (Re)Initialize the objects
     """
 
     objects = [Sentry(), Sentry()]
-
     objects[1].xy = 152, 112
+
+    objects.extend([None] * 14)
+    if hud:
+        objects.extend([None] * 1)
 
     global ray_available
     ray_available = True
 
     global buildings_amount
     buildings_amount = 7
-
-    global prev_x1
-    global prev_x2
-    global prev_x3
-    global prev_x4
-    prev_x1 = 0
-    prev_x2 = 0
-    prev_x3 = 0
-    prev_x4 = 0
 
     global prev_x_p1
     global prev_x_p2
@@ -209,11 +203,7 @@ def _get_max_objects(hud=False):
 global ray_available
 # Saves the previous amount of buildings that are still standing
 global buildings_amount
-# Saves the previous x-values of the ships
-global prev_x1
-global prev_x2
-global prev_x3
-global prev_x4
+
 global prev_x_p1
 global prev_x_p2
 
@@ -237,8 +227,9 @@ def missile_pos(rs):
         return 208 - rs
 
 
-def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
-    del objects[2:]
+def _detect_objects_ram(objects, ram_state, hud=True):
+    for i in range(13):
+        objects[2+i] = None
 
     buildings_count = 0
 
@@ -254,7 +245,7 @@ def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
         else:
             proj.xy = ram_state[60]+3, missile_pos(ram_state[58])-1
         proj.rgb = (200, 200, 200)
-        objects.append(proj)
+        objects[14] = proj
 
     prev_x_p1 = ram_state[60]
 
@@ -262,7 +253,6 @@ def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
         proj = Projectile()
         if prev_x_p2 < ram_state[61]:
             proj.xy = ram_state[61]-3, missile_pos(ram_state[59])-1
-            # print("LEFT 2")
         elif prev_x_p2 == ram_state[61]:
             # proj.xy = ram_state[61], int(214 - 1.0775 * ram_state[59])
             proj.xy = ram_state[61], missile_pos(ram_state[59])
@@ -278,140 +268,64 @@ def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
             #     proj.xy = ram_state[61], 210 - ram_state[59] - 5
             # else:
             #     proj.xy = ram_state[61], 210 - ram_state[59] - 4
-            # print("CENTER 2")
         else:
             proj.xy = ram_state[61]+3, missile_pos(ram_state[59])-1
-            # print("RIGHT 2")
-        objects.append(proj)
+        objects[15] = proj
 
     prev_x_p2 = ram_state[61]
-
-    # print('-'*20)
-    # The visual representation of the Sprite relative to the ram_state
-    # seems to differ depending on the ship entering on the left/right.
-    # These variables help to determine where the ship entered
-    global prev_x1
-    global prev_x2
-    global prev_x3
-    global prev_x4
 
     global ray_available
     global buildings_amount
 
-    # Ships from top to bottom
-    # lane 1
-    if ram_state[39] != 0:
-        ship = _get_ship_type(ram_state, 3, 131)
-        g_s = None
-        if ship == 64:
-            g_s = GorgonShip()
-            if prev_x1 < ram_state[39]:
-                g_s.xy = ram_state[39] - 8, 19
-            else:
-                g_s.xy = ram_state[39] - 7, 19
-        elif ship == 32 or ship == 48:
-            g_s = GorgonShip()
-            g_s.wh = 15, 7
-            if prev_x1 < ram_state[39]:
-                g_s.xy = ram_state[39] - 8, 20
-            else:
-                g_s.xy = ram_state[39] - 7, 20
-        elif ship == 80:
-            g_s = BanditBomber()
-            if prev_x1 < ram_state[39]:
-                g_s.xy = ram_state[39] - 7, 20
-            else:
-                g_s.xy = ram_state[39] - 2, 20
-        if g_s:
-            objects.append(g_s)
 
-    prev_x1 = ram_state[39]
+    for i in range(4):
+        if ram_state[36+i]:
+            ship = _get_ship_type(ram_state, 0+i, 128+i)
+            g_s = None
+            if ship is None:
+                continue
 
-    # lane2
-    if ram_state[38] != 0:
-        ship = _get_ship_type(ram_state, 2, 130)
-        g_s = None
-        if ship == 64:
-            g_s = GorgonShip()
-            if prev_x2 < ram_state[38]:
-                g_s.xy = ram_state[38] - 8, 40
+            # calc speed and orientation offset
+            if not ram_state[75+ship]&128:
+                offset = ram_state[75+ship]
+                if ram_state[79+ship] == 64:
+                    g_s = GorgonShip()
+                    g_s.xy = ram_state[36+i] - 7 - offset, 82 - 21*i
+                elif ram_state[79+ship] == 32 or ram_state[79+ship] == 48:
+                    g_s = GorgonShip()
+                    g_s.wh = 15, 7
+                    g_s.xy = ram_state[36+i] - 7 - offset, 83 - 21*i
+                elif ram_state[79+ship] == 80:
+                    g_s = BanditBomber()
+                    g_s.xy = ram_state[36+i] - 5 - offset, 83 - 21*i
             else:
-                g_s.xy = ram_state[38] - 7, 40
-        elif ship == 32 or ship == 48:
-            g_s = GorgonShip()
-            g_s.wh = 15, 7
-            if prev_x2 < ram_state[38]:
-                g_s.xy = ram_state[38] - 8, 41
-            else:
-                g_s.xy = ram_state[38] - 7, 41
-        elif ship == 80:
-            g_s = BanditBomber()
-            if prev_x2 < ram_state[38]:
-                g_s.xy = ram_state[38] - 7, 41
-            else:
-                g_s.xy = ram_state[38] - 2, 41
-        if g_s:
-            objects.append(g_s)
+                offset = 255 - ram_state[75+ship]
+                if ram_state[79+ship] == 64:
+                    g_s = GorgonShip()
+                    g_s.xy = ram_state[36+i] - 7 + offset, 82 - 21*i
+                elif ram_state[79+ship] == 32 or ram_state[79+ship] == 48:
+                    g_s = GorgonShip()
+                    g_s.wh = 15, 7
+                    g_s.xy = ram_state[36+i] - 7 + offset, 83 - 21*i
+                elif ram_state[79+ship] == 80:
+                    g_s = BanditBomber()
+                    g_s.xy = ram_state[36+i] - 3 + offset, 83 - 21*i
+            if g_s:
+                objects[2+i] = g_s
+            
+            # Deathray can only be shot by ships on lane 4
+            if not i and ram_state[30] < 152 and ray_available:
+                ray = Deathray()
+                if not ram_state[75+ship]&128:
+                    ray.xy = ram_state[36] - 1, 92
+                else:
+                    ray.xy = ram_state[36] + 1, 92
+                objects[13] = ray
 
-    prev_x2 = ram_state[38]
-
-    # lane3
-    if ram_state[37] != 0:
-        ship = _get_ship_type(ram_state, 1, 129)
-        g_s = None
-        if ship == 64:
-            g_s = GorgonShip()
-            if prev_x3 < ram_state[37]:
-                g_s.xy = ram_state[37] - 8, 61
-            else:
-                g_s.xy = ram_state[37] - 7, 61
-        elif ship == 32 or ship == 48:
-            g_s = GorgonShip()
-            g_s.wh = 15, 7
-            if prev_x3 < ram_state[37]:
-                g_s.xy = ram_state[37] - 8, 62
-            else:
-                g_s.xy = ram_state[37] - 7, 62
-        elif ship == 80:
-            g_s = BanditBomber()
-            if prev_x3 < ram_state[37]:
-                g_s.xy = ram_state[37] - 7, 62
-            else:
-                g_s.xy = ram_state[37] - 2, 62
-        if g_s:
-            objects.append(g_s)
-
-    prev_x3 = ram_state[37]
-
-    # lane4
-    if ram_state[36] != 0:
-        ship = _get_ship_type(ram_state, 0, 128)
-        g_s = None
-        if ship == 64:
-            g_s = GorgonShip()
-            if prev_x4 < ram_state[36]:
-                g_s.xy = ram_state[36] - 8, 82
-            else:
-                g_s.xy = ram_state[36] - 7, 82
-        elif ship == 32 or ship == 48:
-            g_s = GorgonShip()
-            g_s.wh = 15, 7
-            if prev_x4 < ram_state[36]:
-                g_s.xy = ram_state[36] - 8, 83
-            else:
-                g_s.xy = ram_state[36] - 7, 83
-        elif ship == 80:
-            g_s = BanditBomber()
-            if prev_x4 < ram_state[36]:
-                g_s.xy = ram_state[36] - 7, 83
-            else:
-                g_s.xy = ram_state[36] - 2, 83
-        if g_s:
-            objects.append(g_s)
 
     # Command-Post center building with gun
     if ram_state[84] == 0:
-        objects.append(AcropolisCommandPost())
+        objects[6] = AcropolisCommandPost()
         buildings_count += 1
 
     # Generator left
@@ -419,12 +333,12 @@ def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
         gen = Generator()
         gen.xy = 82, 124
         gen.rgb = 111, 210, 111
-        objects.append(gen)
+        objects[7] = gen
         buildings_count += 1
 
     # Generator Command-Post
     if ram_state[23] < 152:
-        objects.append(Generator())
+        objects[8] = Generator()
         buildings_count += 1
 
     # Generator right
@@ -432,22 +346,22 @@ def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
         gen = Generator()
         gen.xy = 142, 137
         gen.rgb = 188, 144, 252
-        objects.append(gen)
+        objects[9] = gen
         buildings_count += 1
 
     # Domed-Palace building with dome
     if ram_state[25] < 152:
-        objects.append(DomedPalace())
+        objects[10] = DomedPalace()
         buildings_count += 1
 
     # Bridged-Bazaar rightmost building
     if ram_state[26] < 152:
-        objects.append(BridgedBazaar())
+        objects[11] = BridgedBazaar()
         buildings_count += 1
 
     # Aqua-Plane leftmost building
     if ram_state[27] < 152:
-        objects.append(AquaPlane())
+        objects[12] = AquaPlane()
         buildings_count += 1
 
     # Determines if the deathray is usable
@@ -456,17 +370,6 @@ def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
     elif buildings_count < buildings_amount:
         ray_available = False
 
-    # Deathray can only be shot by ships on lane 4
-    if ram_state[30] < 152 and ray_available:
-        ray = Deathray()
-        if prev_x4 < ram_state[36]:
-            ray.xy = ram_state[36] - 1, 92
-            #print(ray.xy)
-        else:
-            ray.xy = ram_state[36] + 1, 92
-        objects.append(ray)
-
-    prev_x4 = ram_state[36]
     buildings_amount = buildings_count
 
     # global vert_proj
@@ -505,7 +408,7 @@ def _detect_objects_atlantis_ram(objects, ram_state, hud=True):
             if ram_state[35] >= 16:
                 score.wh = 47, 10
                 score.xy = 56, 188
-            objects.append(score)
+            objects[16] = score
 
     return objects
 
@@ -515,9 +418,9 @@ def _get_ship_type(ram_state, height1, height2):
     Determines the type of ship by its sprite index
     """
     for i in range(4):
-        if ram_state[71+i] == height1 or ram_state[71 + i] == height2:
-            return ram_state[79+i]
-    return 0
+        if ram_state[71+i] == height1 or ram_state[71+i] == height2:
+            return i
+    return None
 
 
 def _detect_objects_atlantis_raw(info, ram_state):

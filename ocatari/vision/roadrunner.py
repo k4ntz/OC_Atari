@@ -115,7 +115,7 @@ class PlayerScore(GameObject):
         self.hud = True
 
 
-def _detect_objects_roadrunner(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
     player = find_mc_objects(obs, playercolors, size=(8, 28), tol_s=8, miny=37, min_distance=1)

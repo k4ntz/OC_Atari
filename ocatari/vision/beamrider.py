@@ -108,7 +108,7 @@ class Life(GameObject):
         self.rgb = 210, 210, 64
 
 
-def _detect_objects_beamrider(objects, obs, hud=True):
+def _detect_objects(objects, obs, hud=True):
     objects.clear()
 
     for i in objects_colors["player"]:

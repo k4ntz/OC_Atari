@@ -375,7 +375,7 @@ def _get_max_objects(hud=False):
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
 
-def _init_objects_privateeye_ram(hud=True):
+def _init_objects_ram(hud=True):
     """
     (Re)Initialize the objects
     """
@@ -389,7 +389,7 @@ def _init_objects_privateeye_ram(hud=True):
 
 
 # levels: ram_state[36], total of 3 levels: 0,1 and 2
-def _detect_objects_privateeye_ram(objects, ram_state, hud=True):
+def _detect_objects_ram(objects, ram_state, hud=True):
     player = objects[0]
 
     if ram_state[97] == 0:

@@ -8,7 +8,7 @@ RAM extraction for the game Demon Attack.
 """
 
 # TODO: populate 
-MAX_NB_OBJECTS =  {}
+MAX_NB_OBJECTS =  {"Player": 1}
 MAX_NB_OBJECTS_HUD = {}
 
 class Player(GameObject):
@@ -162,7 +162,7 @@ def _get_score(ram_state):
            _convert_number(ram_state[5])
 
 
-def _init_objects_demon_attack_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -179,7 +179,7 @@ def _init_objects_demon_attack_ram(hud=False):
     return objects
 
 
-def _detect_objects_demon_attack_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     player, proj_friendly = objects[:2]
     if hud:
         score = objects[2]

@@ -73,7 +73,7 @@ class Ground(GameObject):
         self.rgb = [110, 156, 66]
 
 
-def _detect_objects_centipede(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
     mccolor = most_common_color(obs[0:182, :, :])
     lvl = base_colors.index(mccolor)

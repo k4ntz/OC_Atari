@@ -145,7 +145,7 @@ class Renderer:
                     if self.active_cell_idx is not None:
                         self.current_active_cell_input = self.current_active_cell_input[:-1]
 
-                elif event.key == pygame.K_RETURN:
+                elif event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
                     if self.active_cell_idx is not None:
                         if len(self.current_active_cell_input) > 0:
                             new_cell_value = int(self.current_active_cell_input)
@@ -345,5 +345,5 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer("Assault")
+    renderer = Renderer("Atlantis")
     renderer.run()

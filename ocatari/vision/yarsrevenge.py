@@ -58,7 +58,7 @@ class Canon(GameObject):
 
 
 # List of objects to detect: Player, Enemy, Swirl, fired bullets by Player, missile by Enemy, Cannon that appears, Shield chunks, Barrier
-def _detect_objects_yarsrevenge(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
     ################################

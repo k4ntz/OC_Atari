@@ -39,7 +39,7 @@ class Life(GameObject):
         self.rgb = 187, 187, 53
 
 
-def _detect_objects_mspacman(objects, obs, hud=True):
+def _detect_objects(objects, obs, hud=True):
     objects.clear()
 
     player = find_objects(obs, objects_colors["player"], min_distance=1)

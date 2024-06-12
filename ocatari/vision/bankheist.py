@@ -42,7 +42,7 @@ class Gas_Tank(GameObject):
         self.rgb = [167, 26, 26]
 
 
-def _detect_objects_bankheist(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     orange = find_objects(obs, objects_colors["orange"])

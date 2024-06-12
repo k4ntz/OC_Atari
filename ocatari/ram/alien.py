@@ -1,7 +1,7 @@
 from .game_objects import GameObject, ValueObject
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1}
+MAX_NB_OBJECTS = {"Player": 1, "Alien": 3, "Pulsar": 1, "Egg": 156}
 MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
 
 class Player(GameObject):
@@ -75,7 +75,7 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_NB_OBJECTS)
 
 
-def _init_objects_alien_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -87,7 +87,7 @@ def _init_objects_alien_ram(hud=False):
     return objects
 
 
-def _detect_objects_alien_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     """
     For all 3 objects:
     (x, y, w, h, r, g, b)

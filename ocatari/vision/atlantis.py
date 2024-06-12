@@ -97,7 +97,7 @@ class Score(GameObject):
         self.rgb = 252, 188, 116
 
 
-def _detect_objects_atlantis(objects, obs, hud=True):
+def _detect_objects(objects, obs, hud=True):
     objects.clear()
 
     sentry = find_mc_objects(obs, objects_colors["sentry"], min_distance=1, maxx=10, miny=110)

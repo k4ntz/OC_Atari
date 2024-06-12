@@ -42,7 +42,7 @@ class Life(GameObject):
         self.rgb = [252, 252, 84]
 
 
-def _detect_objects_amidar(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     yellow = find_objects(obs, objects_colors["yellow"], maxy=170)

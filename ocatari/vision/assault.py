@@ -75,7 +75,7 @@ class Health(GameObject):
         self.rgb = 72, 160, 72
 
 
-def _detect_objects_assault(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
     player = find_mc_objects(obs, objects_colors["player"], min_distance=1)
     for p in player:
