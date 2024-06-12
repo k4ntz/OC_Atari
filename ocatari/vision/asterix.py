@@ -134,7 +134,7 @@ class Reward500(GameObject):
         self.rgb = 163, 57, 21
 
 
-def _detect_objects_asterix(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     player = find_objects(obs, objects_colors["player"], maxy=160, tol_p=20, tol_s=(9, 1), size=(8, 11))

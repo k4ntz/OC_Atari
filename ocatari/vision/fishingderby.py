@@ -47,7 +47,7 @@ class ScorePlayerOne(GameObject):
         self.rgb = 167, 26, 26
 
 
-def _detect_objects_fishingderby(objects, obs, hud=True):
+def _detect_objects(objects, obs, hud=True):
     objects.clear()
     modified_obs = obs.copy()
 

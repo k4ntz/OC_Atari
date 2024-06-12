@@ -99,7 +99,7 @@ def _get_max_objects(hud=False):
     return
 
 
-def _init_objects_fishingderby_ram(hud=False):
+def _init_objects_ram(hud=False):
     if hud:
         objects = [PlayerOneHook(), PlayerTwoHook(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
                    Shark(),
@@ -110,7 +110,7 @@ def _init_objects_fishingderby_ram(hud=False):
     return objects
 
 
-def _detect_objects_fishingderby_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     # Ram state of the fishing poles
     p1s, p2s = objects[0:2]
     coeff_1 = 1
@@ -133,7 +133,7 @@ def _detect_objects_fishingderby_ram(objects, ram_state, hud=False):
     # Considering that the first fish is the one at the top layer and
     fishes_hooked = []
     if ram_state[112] != 0:
-        fishes_hooked.append([6 - ram_state[112]])
+        fishes_hooked.append(6 - ram_state[112])
     if ram_state[113] != 0:
         fishes_hooked.append(6 - ram_state[113])
 

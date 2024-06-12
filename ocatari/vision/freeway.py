@@ -27,7 +27,7 @@ class Score(GameObject):
         self.rgb = 228, 111, 111
 
 
-def _detect_objects_freeway(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     chickens = find_objects(obs, objects_colors["chicken"], size=(7, 8), tol_s=3)

@@ -83,7 +83,7 @@ class EnemyMissile(GameObject):
         self.rgb = 66, 72, 200
 
 
-def _detect_objects_seaquest(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     for color in objects_colors["player"]:

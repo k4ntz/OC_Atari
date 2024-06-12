@@ -21,6 +21,9 @@ from ocatari.utils import parser, load_agent, make_deterministic
 import pickle
 import gymnasium as gym
 
+import os 
+os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = r'/home/quentin/bin/sysenv/lib/python3.11/site-packages/PyQt5/Qt5/plugins/platforms'
+
 def ransac_regression(x, y):
     ransac = RANSACRegressor(estimator=LinearRegression(),
                              min_samples=6, max_trials=100,
@@ -46,8 +49,8 @@ random.seed(0)
 
 
 INTERACTIVE = False
-ONE_CHANGE = True
-initial_ram_n = 0
+ONE_CHANGE = False
+initial_ram_n = 26
 
 
 make_deterministic(0, env)

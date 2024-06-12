@@ -82,7 +82,7 @@ class Life(GameObject):
         self.rgb = [101, 111, 228]
 
 
-def _detect_objects_timepilot(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     mcc = most_common_color(obs, exclude_black=False)

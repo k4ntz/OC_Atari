@@ -45,7 +45,7 @@ class PowerPill(GameObject):
 
 
 pps = [(6, 39), (6, 171), (150, 39), (150, 171)]
-def _detect_objects_pacman(objects, obs, hud=True):
+def _detect_objects(objects, obs, hud=True):
     objects.clear()
     player = find_objects(obs, objects_colors["player"], min_distance=1)
     for bb in player:

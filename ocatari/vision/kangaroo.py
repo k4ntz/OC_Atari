@@ -88,7 +88,7 @@ class Time(GameObject):
         self.rgb = 160, 171, 79
 
 
-def _detect_objects_kangaroo(objects, obs, hud=True):
+def _detect_objects(objects, obs, hud=True):
     objects.clear()
 
     player = find_objects(obs, objects_colors["kangaroo"], min_distance=1, miny=28)

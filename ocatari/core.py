@@ -10,7 +10,13 @@ from ocatari.ram.game_objects import GameObject, ValueObject
 from ocatari.utils import draw_label, draw_arrow, draw_orientation_indicator
 from gymnasium.error import NameNotFound
 
-from ale_py import ALEInterface
+try:
+    import ale_py
+except ModuleNotFoundError:
+    print(
+        '\nALE is required when using the ALE env wrapper. ',
+        'Try `pip install "gymnasium[atari, accept-rom-license]"`.\n',
+    )
 
 import warnings
 
@@ -26,8 +32,23 @@ except ModuleNotFoundError:
 try:
     import torch
     torch_imported = True
+    _tensor = torch.tensor
+    _uint8 = torch.uint8
+    _zeros = torch.zeros
+    _zeros_like = torch.zeros_like
+    _stack = torch.stack
+    DEVICE = "cpu" if torch.cuda.is_available() else "cpu"
+    _tensor_kwargs = {"device": DEVICE}
 except ModuleNotFoundError:
     torch_imported = False
+    _tensor = np.array
+    _uint8 = np.uint8
+    _zeros = np.zeros
+    _zeros_like = np.zeros_like
+    _stack = np.stack
+    DEVICE = "cpu"
+    _tensor_kwargs = {}
+    warnings.warn("pytorch installation not found, using numpy instead of torch")
 
 try:
     import pygame
@@ -37,13 +58,26 @@ except ModuleNotFoundError:
         "Try `pip install pygame`.\n",
     )
 
-DEVICE = "cpu" if torch.cuda.is_available() else "cpu"
-
-AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix", "Asteroids", "Atlantis", "Bankheist", "BattleZone","BeamRider", "Berzerk", "Bowling", "Boxing",
-                   "Breakout", "Carnival", "Centipede", "ChoppperCommand", "CrazyClimber", "DemonAttack", "DonkeyKong", "Enduro", "FishingDerby", "Freeway",                   
-                   "Frostbite", "Gopher", "Hero", "IceHockey", "Jamesbond", "Kangaroo", "Krull", "MontezumaRevenge", "MsPacman", "Pacman", "Pitfall", "Pong", "PrivateEye",
-                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "TimePilot", "UpNDown", "Videocube", "VideoPinball", "Venture",
-                   "Yarsrevenge", "Zaxxon"]
+if torch_imported:
+    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+else:
+    DEVICE = "cpu" 
+    
+AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix", 
+                   "Asteroids", "Atlantis", "BankHeist", "BattleZone",
+                   "BeamRider", "Berzerk", "Bowling", "Boxing",
+                   "Breakout", "Carnival", "Centipede", "ChopperCommand", 
+                   "CrazyClimber", "DemonAttack", "DonkeyKong",
+                   "DoubleDunk", "Enduro", "FishingDerby", "Freeway",                   
+                   "Frostbite", "Galaxian", "Gopher", "Hero", "IceHockey", 
+                   "Jamesbond", "Kangaroo", "Krull", "MontezumaRevenge", 
+                   "MsPacman", "Pacman", "Pitfall", "Pong", "PrivateEye",
+                   "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", 
+                   "SpaceInvaders", "Tennis", "TimePilot", "UpNDown", "Venture", 
+                   #"Videocube", 
+                   "VideoPinball", 
+                   "YarsRevenge"] 
+                   #"Zaxxon"]
 
 
 # TODO: complete the docstring 
@@ -63,7 +97,7 @@ class OCAtari:
     the remaining \*args and \**kwargs will be passed to the \
         `gymnasium.make <https://gymnasium.farama.org/api/registry/#gymnasium.make>`_ function.
     """
-    def __init__(self, env_name, mode="ram", hud=False, obs_mode="dqn",
+    def __init__(self, env_name, mode="ram", hud=False, obs_mode="ori",
                  render_mode=None, render_oc_overlay=False, *args, **kwargs):
         if "ALE/" in env_name: #case if v5 specified
             to_check = env_name[4:8]
@@ -119,6 +153,7 @@ class OCAtari:
             if torch_imported:
                 self._fill_buffer = self._fill_buffer_dqn
                 self._reset_buffer = self._reset_buffer_dqn
+                self._env.observation_space = gym.spaces.Box(0,255.0,(4,84,84))
             else:
                 print("To use the buffer of OCAtari, you need to install torch.")
         elif obs_mode == "ori":
@@ -127,6 +162,7 @@ class OCAtari:
         elif obs_mode == "obj":
             print("Using OBJ State Representation")
             if mode == "ram":
+                self._env.observation_space = gym.spaces.Box(0,255.0,(4,len(self.max_objects),4))
                 self._fill_buffer = self._fill_buffer_obj
                 self._reset_buffer = self._reset_buffer_obj
             else:
@@ -171,6 +207,18 @@ class OCAtari:
         else:  # mode == "raw" because in raw mode we augment the info dictionary
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self._fill_buffer()
+        if self.obs_mode == "dqn":
+            obs = self.dqn_obs[0]
+        if self.obs_mode == "obj":
+            tensor = []
+            for obj in self._objects:
+                if obj is None:
+                    tensor.append(np.array([0, 0, 0, 0]))
+                else:
+                    tensor.append(np.asarray(obj.xywh))
+                # tensor.append(np.asarray(obj.xywh))
+            obs = np.asarray(tensor)
+            #obs = self.dqn_obs[0]
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
@@ -191,19 +239,19 @@ class OCAtari:
     def _reset_buffer_dqn(self):
         for _ in range(self.buffer_window_size):
             self._state_buffer.append(
-                torch.zeros(84, 84, device=DEVICE, dtype=torch.uint8)
+                _zeros((84, 84), dtype=_uint8, **_tensor_kwargs)
             )
 
     def _reset_buffer_ori(self):
         for _ in range(self.buffer_window_size):
             self._state_buffer.append(
-                torch.zeros(210, 160, 3, device=DEVICE, dtype=torch.uint8)
+                _zeros((210, 160, 3), dtype=_uint8, **_tensor_kwargs)
             )
 
     def _reset_buffer_obj(self):
         for _ in range(self.buffer_window_size):
             self._state_buffer.append(
-                torch.zeros(len(self._objects), 4, device=DEVICE, dtype=torch.uint8)
+                _zeros((len(self._objects), 4), dtype=_uint8, **_tensor_kwargs)
             )
 
     def reset(self, *args, **kwargs):
@@ -219,24 +267,36 @@ class OCAtari:
         state = cv2.resize(
             self._ale.getScreenGrayscale(), (84, 84), interpolation=cv2.INTER_AREA,
         )
-        self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
-                                               device=DEVICE))
+        self._state_buffer.append(_tensor(state, dtype=_uint8, **_tensor_kwargs))
+        if self.game_name == "Skiing":
+            tmp = self._state_buffer[1]
+            tmp[tmp >= 0] = self.objects[0].orientation
+            self._state_buffer[1] = tmp
+        elif self.game_name == "Seaquest":
+            tmp = self._state_buffer[1]
+            tmp[tmp >= 0] = self.objects[0].orientation.value
+            self._state_buffer[1] = tmp
+        self._state_buffer.append(_tensor(state, dtype=_uint8
+                                          , **_tensor_kwargs))
 
     def _fill_buffer_ori(self):
         state = self._ale.getScreenRGB()
-        self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
-                                               device=DEVICE))
+        self._state_buffer.append(_tensor(state, dtype=_uint8,
+                                          **_tensor_kwargs))
 
     def _fill_buffer_obj(self):
         tensor = []
         for obj in self._objects:
-            tensor.append(np.asarray(obj.xywh))
+            if obj is None:
+                tensor.append(np.array([0, 0, 0, 0]))
+            else:
+                tensor.append(np.asarray(obj.xywh))
         state = np.asarray(tensor)
-        self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
-                                               device=DEVICE))
+        self._state_buffer.append(_tensor(state, dtype=_uint8,
+                                          **_tensor_kwargs))
 
     def _get_buffer_as_stack(self):
-        return torch.stack(list(self._state_buffer), 0).unsqueeze(0).byte()
+        return _stack(list(self._state_buffer), 0).unsqueeze(0).byte()
 
     window : pygame.Surface = None
     clock : pygame.time.Clock = None
@@ -380,7 +440,7 @@ class OCAtari:
         :type: torch.tensor
         """
         return self._get_buffer_as_stack()
-
+    
     def set_ram(self, target_ram_position, new_value):
         """
         Directly set a given value at a targeted RAM position.
@@ -406,6 +466,9 @@ class OCAtari:
 
     def _get_obs(self):
         return self._env.env.env.unwrapped._get_obs()
+
+    def getScreenRGB(self):
+        return self.env.unwrapped.ale.getScreenRGB()
 
     def _clone_state(self):
         """
@@ -435,9 +498,21 @@ class OCAtari:
         """
         return [obj for obj in self._objects if obj] # filtering out None objects
 
+
+    @property
+    def ocstate(self):
+        """
+        A list of the object present in the environment. The objects are either \
+        ocatari.vision.GameObject or ocatari.ram.GameObject, depending on the extraction method.
+
+        :type: list of GameObjects
+        """
+        import ipdb; ipdb.set_trace()
+        return [obj for obj in self._objects if obj] # filtering out None objects
+
     def render_explanations(self):
         coefs = [0.05, 0.1, 0.25, 0.6]
-        rendered = torch.zeros_like(self._state_buffer[0]).float()
+        rendered = _zeros_like(self._state_buffer[0]).float()
         for coef, state_i in zip(coefs, self._state_buffer):
             rendered += coef * state_i
         rendered = rendered.cpu().detach().to(int).numpy()
@@ -466,7 +541,7 @@ class OCAtari:
 
 
     def aggregated_render(self, coefs=[0.05, 0.1, 0.25, 0.6]):
-        rendered = torch.zeros_like(self._state_buffer[0]).float()
+        rendered = _zeros_like(self._state_buffer[0]).float()
         for coef, state_i in zip(coefs, self._state_buffer):
             rendered += coef * state_i
         rendered = rendered.cpu().detach().to(int).numpy()
@@ -522,8 +597,8 @@ class HideEnemyPong(OCAtari):
         state = cv2.resize(
             image, (84, 84), interpolation=cv2.INTER_AREA,
         )
-        self._state_buffer.append(torch.tensor(state, dtype=torch.uint8,
-                                               device=DEVICE))
+        self._state_buffer.append(_tensor(state, dtype=_uint8,
+                                          **_tensor_kwargs))
 
 
 class EasyDonkey(OCAtari):

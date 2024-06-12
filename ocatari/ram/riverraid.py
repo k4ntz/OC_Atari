@@ -190,7 +190,7 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_NB_OBJECTS)
 
 
-def _init_objects_riverraid_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -205,7 +205,7 @@ def _init_objects_riverraid_ram(hud=False):
     return objects
 
 
-def _detect_objects_riverraid_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     player = objects[0]
     if ram_state[70] or ram_state[58] == 0:
         objects[0] = None
@@ -231,11 +231,6 @@ def _detect_objects_riverraid_ram(objects, ram_state, hud=False):
         speed = 1
     else: # hasn't fired yet
         speed = 0
-    # print(framskips)
-    # print(ram_state[70])
-    # if prev70 == 0 and ram_state[70]:
-    #     objects[2:8] = [None] * 6
-    # print(ram_state[11])
     if ram_state[11] < prev11: # every object drop
         enemies = enemies[1:] + [None]
         

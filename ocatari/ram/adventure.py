@@ -114,7 +114,7 @@ def _get_max_objects(hud=False):
     return
 
 
-def _init_objects_adventure_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -125,7 +125,7 @@ global object1
 global object2
 object1 = 1
 object2 = 2
-def _detect_objects_adventure_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     objects[0].xy = ram_state[11] - 0.5, 238 - 2 * ram_state[12]
     while len(objects) > 1:
         objects.pop()
@@ -241,9 +241,9 @@ def _detect_objects_adventure_ram(objects, ram_state, hud=False):
 
     #objects[2].xy = object2_pos
     # print(f"height object 1 : {ram_state[16]}, height object 2 : {ram_state[17]} ")
-    print(objects)
-    print(f"type object 1 : {ram_state[21]}, type object 2 : {ram_state[22]} ")
-    print(f"level number : {ram_state[93]}, room number: {ram_state[10]}")
+    # print(objects)
+    # print(f"type object 1 : {ram_state[21]}, type object 2 : {ram_state[22]} ")
+    # print(f"level number : {ram_state[93]}, room number: {ram_state[10]}")
     if hud:
         return
 

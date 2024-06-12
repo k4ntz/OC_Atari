@@ -244,7 +244,7 @@ def _remove_object(obj_cls: Type[GameObject], idx: int = 0):
     objects[obj_cls][idx] = None
 
 
-def _init_objects_seaquest_ram(hud=False):
+def _init_objects_ram(hud=False):
     """(Re)Initialize the objects."""
     objects = [Player(), Lives(), OxygenBar()]
 
@@ -254,7 +254,7 @@ def _init_objects_seaquest_ram(hud=False):
     return objects
 
 
-def _detect_objects_seaquest_ram(objects_old, ram_state, hud=False):
+def _detect_objects_ram(objects_old, ram_state, hud=False):
     _update_objects(ram_state, hud)
     existing_objects = []
     object_categories = list(objects.values())

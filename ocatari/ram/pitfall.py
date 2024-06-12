@@ -317,7 +317,7 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_NB_OBJECTS)
 
 
-def _init_objects_pitfall_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -336,7 +336,7 @@ def _init_objects_pitfall_ram(hud=False):
     return objects
 
 
-def _detect_objects_pitfall_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     """
     For all 3 objects:
     (x, y, w, h, r, g, b)
@@ -541,10 +541,7 @@ def _detect_objects_pitfall_ram(objects, ram_state, hud=False):
         # r.xy = 78,106
         # if r.xy == (109,96):
         #     get_pos_rope(25, 67, 4)
-        #     print(ram_state[88],ram_state[89],ram_state[90])
         objects[10] = r
-        # print(r.xy)
-        # print(get_pos_rope(ram_state[88],ram_state[89],ram_state[90]))
 
     if hud:
         objects.extend([None] * 10)

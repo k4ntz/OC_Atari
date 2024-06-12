@@ -78,7 +78,7 @@ class Chalice(GameObject):
         self.rgb = [168, 72, 158]
 
 
-def _detect_objects_adventure(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     GAMEZONE_Y_MIN = 27
     GAMEZONE_Y_MAX = 225
     player_previous_position = 0, 0

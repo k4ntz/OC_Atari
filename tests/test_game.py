@@ -46,15 +46,8 @@ for i in tqdm(range(10000)):
     else:
         action = random.randint(0, env.nb_actions-1)
     obs, reward, terminated, truncated, info = env.step(action)
+    obs = env.getScreenRGB()
     if i % opts.interval == 0:
-        # print(sorted(env.objects, key=lambda o:str(o)))
-        # for obj in env.objects:
-        #     if len(env.objects) == 3:
-        #         if "Ene" in str(obj):
-        #             # print("Done")
-        #             enemyy.append(obj.y)
-        #         elif "Ball" in str(obj):
-        #             bally.append(obj.y)
         for obs, objects_list, title in zip([obs], [env.objects],
                                             ["ram"] if opts.mode == "ram" else ["vision"]):
             print(objects_list)

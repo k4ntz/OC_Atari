@@ -118,7 +118,7 @@ class Life(GameObject):
 global static_bricks
 static_bricks = None
 
-def _detect_objects_venture(objects, obs, hud=False):
+def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     mcc = most_common_color(obs, True)

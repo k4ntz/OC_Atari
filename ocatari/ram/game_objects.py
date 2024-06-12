@@ -119,6 +119,14 @@ class GameObject:
     @prev_xy.setter
     def prev_xy(self, newval):
         self._prev_xy = newval
+    
+    @property
+    def prev_x(self):
+        return self.prev_xy[0]
+    
+    @property
+    def prev_y(self):
+        return self.prev_xy[1]
 
     @property
     def xy(self):

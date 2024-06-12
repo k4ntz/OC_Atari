@@ -9,26 +9,6 @@ RAM extraction for the game Skiing.
 MAX_NB_OBJECTS =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4, 'Score': 2, 'Clock': 7}
 
-# from termcolor import colored
-# def print_state(state):
-#     print("-"*10)
-#     for el in state:
-#         x, y, type = el
-#         coord = el[0:2]
-#         attr = []
-#         if y > 177 or y < 25 or x == 155:
-#             attr.append("dark")
-#         if type == 2:
-#             print(colored(coord, "blue", attrs=attr))
-#         elif type == 5:
-#             print(colored(coord, "grey", attrs=attr))
-#         elif type == 85:
-#             print(colored(coord, "green", attrs=attr))
-#         else:
-#             print(colored("Error in print_state", "red"))
-#             exit(1)
-#     print("-"*10)
-
 
 TREE_COLOR = {
     2: (110, 156, 66),
@@ -222,7 +202,7 @@ def _get_max_objects(hud=False):
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
 
-def _init_objects_skiing_ram(hud=False):
+def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
@@ -238,18 +218,11 @@ def _init_objects_skiing_ram(hud=False):
 
 
 # import numpy as np
-def _detect_objects_skiing_ram(objects, ram_state, hud=False):
+def _detect_objects_ram(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = (ram_state[25], ram_state[26]-80)
     player.orientation = ram_state[15]
-    # info["speed"] = ram_state[14] or ram[20] both seem to have very similar behavior
-    # info["time"] = _time_skiing(ram_state)
     offset = 1 if not hud else 11
-    # xs = ram_state[62:70]
-    # ys = 178-ram_state[86:94]
-    # types = ram_state[70:78]
-    # state = np.array([xs, ys, types]).T
-    # print_state(state)
     for i in range(8):
         height = 75 - ram_state[90+i]
         type = ram_state[70+i]
@@ -300,7 +273,6 @@ def _detect_objects_skiing_ram(objects, ram_state, hud=False):
                 if y <= 28:
                     currobj.wh = currobj.wh[0], height+2
         offset += 1
-    # print(objects)
 
 
 def _detect_objects_skiing_raw(info, ram_state):
@@ -315,8 +287,7 @@ def _detect_objects_skiing_raw(info, ram_state):
     # info["object_x"] = ram_state[62:69]  # 69 is the newest object, 62 is the oldest
     # info["object_y"] = ram_state[86:94]  # 93 is the newest object, 86 is the oldest
     # info["object_type"] = ram_state[70:78]  # 77 is the newest object, 70 is the oldest | 85 tree | 2 flag | 5 mogul
-    # info["object_colour"] = ram_state[79:86]  # 85 is the newest object, 78 is the oldest  |probably not important
-    # print(ram_state)
+    # info["object_colour"] = ram_state[78:86]  # 85 is the newest object, 78 is the oldest  |probably not important
 
 
 def _time_skiing(ram_state):

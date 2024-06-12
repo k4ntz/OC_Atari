@@ -44,6 +44,7 @@ class Player(GameObject):
         self.rgb = 223, 183, 85
         self.hud = False
         self.crashed = False
+        self.climbing = False
 
 
 class Child(GameObject):
@@ -235,7 +236,7 @@ def _remove_object(obj_cls: Type[GameObject], idx: int = 0):
     objects[obj_cls][idx] = None
 
 
-def _init_objects_kangaroo_ram(hud=True):
+def _init_objects_ram(hud=True):
     """
     (Re)Initialize the objects
     """
@@ -251,7 +252,7 @@ def _init_objects_kangaroo_ram(hud=True):
     return init_obj
 
 
-def _detect_objects_kangaroo_ram(objects_old, ram_state, hud=True):
+def _detect_objects_ram(objects_old, ram_state, hud=True):
     _update_objects(ram_state, hud)
     existing_objects = []
     object_categories = list(objects.values())
@@ -283,6 +284,7 @@ def _detect_player(ram_state):
     y = ram_state[16] * 8 + 4
 
     orientation = Orientation.E if ram_state[18] in [8, 9, 28, 73, 74] else Orientation.W
+    climbing = ram_state[18] in [39,47]
 
     crashed = ram_state[54] in [1, 128]
 
@@ -300,6 +302,7 @@ def _detect_player(ram_state):
     _update_object(Player, "wh", (8 , h))
     _update_object(Player, "orientation", orientation)
     _update_object(Player, "crashed", crashed)
+    _update_object(Player, "climbing", climbing)
 
 
 def _detect_child(ram_state):
