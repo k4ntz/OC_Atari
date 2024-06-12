@@ -44,6 +44,7 @@ class Player(GameObject):
         self.rgb = 223, 183, 85
         self.hud = False
         self.crashed = False
+        self.climbing = False
 
 
 class Child(GameObject):
@@ -283,6 +284,7 @@ def _detect_player(ram_state):
     y = ram_state[16] * 8 + 4
 
     orientation = Orientation.E if ram_state[18] in [8, 9, 28, 73, 74] else Orientation.W
+    climbing = ram_state[18] in [39,47]
 
     crashed = ram_state[54] in [1, 128]
 
@@ -300,6 +302,7 @@ def _detect_player(ram_state):
     _update_object(Player, "wh", (8 , h))
     _update_object(Player, "orientation", orientation)
     _update_object(Player, "crashed", crashed)
+    _update_object(Player, "climbing", climbing)
 
 
 def _detect_child(ram_state):

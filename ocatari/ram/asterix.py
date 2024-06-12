@@ -62,7 +62,6 @@ class Reward(GameObject):
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
-
     def fromdict(max_obj_dict):
         objects = []
         mod = sys.modules[__name__]
@@ -113,8 +112,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             player.wh = 6, 11
     else:  # player is wide (is dying)
         player.wh = 16, 11
-    player.rgb = 187, 187, 53
-
 
     lives_nr = ram_state[83]
     #reward_class = (Reward50, Reward100, Reward200, Reward300, Reward400, Reward500)  # , Reward500, Reward500)
@@ -165,15 +162,20 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             digits = int(math.log10(dec_value))
             score.xy = 96 - digits * 8, 184
             score.wh = 6 + digits * 8, 7
-
         if lives_nr >= 2:
             lives = objects[2]
+            if lives is None:
+                lives = Lives()
+                objects[2] = lives
             lives.xy = 60, 169
             lives.wh = 8, 11
         elif isinstance(objects[2], Lives):
             del objects[2]
         if lives_nr >= 3:
             lives = objects[3]
+            if lives is None:
+                lives = Lives()
+                objects[3] = lives
             lives.xy = 60 + 16, 169
             lives.wh = 8, 11
         elif isinstance(objects[3], Lives):
