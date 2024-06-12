@@ -221,10 +221,10 @@ class HumanAgent():
 
 def load_agent(opt, nb_actions=None):
     pth = opt if isinstance(opt, str) else opt.path
-    if pth.endswith("dqn") or pth.endswith("c51"):
+    if "dqn" in pth or "c51" in pth:
         pth = pth.replace("ALE/", "")
         agent = AtariNet(nb_actions, distributional="c51" in pth)
-    elif pth.endswith("cleanrl_model"):
+    elif "cleanrl" in pth:
         ckpt = torch.load(pth, map_location=torch.device('cpu'))
         if "c51" in pth:
             agent = QNetwork(nb_actions)
