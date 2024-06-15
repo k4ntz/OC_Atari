@@ -137,7 +137,7 @@ def _get_max_objects(hud=False):
 
 
 
-def _init_objects_mariobros_ram(hud=True):
+def _init_objects_ram(hud=True):
     """
     (Re)Initialize the objects
     """
@@ -153,7 +153,7 @@ def _init_objects_mariobros_ram(hud=True):
     return objects
 
 
-def _detect_objects_mariobros_ram(objects, ram_state, hud=True):
+def _detect_objects_ram(objects, ram_state, hud=True):
     # Handle Player
     # after jumping player moves +2 in x direction
     # when moving adds 7/8 onto x coordiante
