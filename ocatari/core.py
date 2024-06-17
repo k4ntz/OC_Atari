@@ -3,7 +3,7 @@ from collections import deque
 import gymnasium as gym
 from termcolor import colored
 import numpy as np
-from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects
+from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects, get_object_state
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
 from ocatari.ram.game_objects import GameObject, ValueObject
@@ -266,13 +266,15 @@ class OCAtari:
                                           **_tensor_kwargs))
 
     def _fill_buffer_obj(self):
-        tensor = []
-        for obj in self._objects:
-            if obj is None:
-                tensor.append(np.array([0, 0, 0, 0]))
-            else:
-                tensor.append(np.asarray(obj.xywh))
-        state = np.asarray(tensor)
+        state = []
+        get_object_state(state, self._objects, self.game_name)
+        # tensor = []
+        # for obj in self._objects:
+        #     if obj is None:
+        #         tensor.append(np.array([0, 0, 0, 0]))
+        #     else:
+        #         tensor.append(np.asarray(obj.xywh))
+        
         self._state_buffer.append(_tensor(state, dtype=_uint8,
                                           **_tensor_kwargs))
 
