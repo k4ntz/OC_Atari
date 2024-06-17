@@ -165,6 +165,14 @@ class OCAtari:
                 self._env.observation_space = gym.spaces.Box(0,255.0,(4,len(self.max_objects),4))
                 self._fill_buffer = self._fill_buffer_obj
                 self._reset_buffer = self._reset_buffer_obj
+                self.reference_list = []
+                obj_counter = {}
+                for o in self.max_objects:
+                    if o.category not in obj_counter.keys():
+                        obj_counter[o.category] = 0
+                    obj_counter[o.category] += 1
+                for k in list(obj_counter.keys()):
+                    self.reference_list.extend([k for i in range(obj_counter[k])])
             else:
                 print(colored("This obs mode is only available in ram mode", "red"))
                 exit(1)
@@ -241,7 +249,7 @@ class OCAtari:
     def _reset_buffer_obj(self):
         for _ in range(self.buffer_window_size):
             self._state_buffer.append(
-                _zeros((len(self._objects), 4), dtype=_uint8, **_tensor_kwargs)
+                get_object_state(game_name=self.game_name, objects=self._objects, reference_list=self.reference_list)
             )
 
     def reset(self, *args, **kwargs):
@@ -266,8 +274,7 @@ class OCAtari:
                                           **_tensor_kwargs))
 
     def _fill_buffer_obj(self):
-        state = []
-        get_object_state(state, self._objects, self.game_name)
+        state = get_object_state(self.reference_list, self._objects, self.game_name)
         # tensor = []
         # for obj in self._objects:
         #     if obj is None:
