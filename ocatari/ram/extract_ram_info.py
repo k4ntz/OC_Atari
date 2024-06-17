@@ -1,5 +1,6 @@
 import sys
 from termcolor import colored
+import numpy as np
 
 def get_max_objects(game_name, hud):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
@@ -56,3 +57,26 @@ def detect_objects_ram(objects, ram_state, game_name, hud):
     except AttributeError as err:
         print(colored(f"_detect_objects_ram not implemented for game: {game_name}", "red"))
         raise err
+
+def get_object_state(state, objects, game_name):
+    p_module = __name__.split('.')[:-1] + [game_name.lower()]
+    game_module = '.'.join(p_module)
+
+    try:
+        mod = sys.modules[game_module]
+        mod._get_object_state(state, objects)
+    except KeyError as err:
+        print(colored(f"Game module does not exist: {game_module}", "red"))
+        raise err
+    except AttributeError as err:
+        #print(colored(f"_get_object_state not implemented for game: {game_name}", "red"))
+        #print(colored(f"Try Default get_object_state", "red"))
+        try:
+            for obj in objects:
+                if obj is None:
+                    state.append(np.array([0, 0, 0, 0]))
+                else:
+                    state.append(np.asarray(obj.xywh))
+            state = np.asarray(state)
+        except _ as err:
+            raise err

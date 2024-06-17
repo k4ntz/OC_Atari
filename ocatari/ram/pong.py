@@ -1,5 +1,6 @@
 import sys
 from .game_objects import GameObject
+import numpy as np
 
 """
 RAM extraction for the game Pong.
@@ -183,6 +184,15 @@ def _detect_objects_pong_raw(info, ram_state):
     info["ball_y"] = ram_state[54]
     info["enemy_y"] = ram_state[50]
     info["player_y"] = ram_state[51]
+
+def _get_object_state(state, objects):
+    for obj in objects:
+            if obj is None:
+                state.append(np.array([0, 0, 0, 0]))
+            else:
+                state.append(np.asarray(obj.xywh))
+    state = np.asarray(state)
+    
 
 
 # def _detect_objects_pong_revised_old(info, ram_state, hud=False):
