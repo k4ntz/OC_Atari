@@ -207,18 +207,7 @@ class OCAtari:
         else:  # mode == "raw" because in raw mode we augment the info dictionary
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self._fill_buffer()
-        if self.obs_mode == "dqn":
-            obs = self.dqn_obs[0]
-        if self.obs_mode == "obj":
-            tensor = []
-            for obj in self._objects:
-                if obj is None:
-                    tensor.append(np.array([0, 0, 0, 0]))
-                else:
-                    tensor.append(np.asarray(obj.xywh))
-                # tensor.append(np.asarray(obj.xywh))
-            obs = np.asarray(tensor)
-            #obs = self.dqn_obs[0]
+        obs = np.array(self._state_buffer)
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
@@ -267,15 +256,6 @@ class OCAtari:
         state = cv2.resize(
             self._ale.getScreenGrayscale(), (84, 84), interpolation=cv2.INTER_AREA,
         )
-        self._state_buffer.append(_tensor(state, dtype=_uint8, **_tensor_kwargs))
-        if self.game_name == "Skiing":
-            tmp = self._state_buffer[1]
-            tmp[tmp >= 0] = self.objects[0].orientation
-            self._state_buffer[1] = tmp
-        elif self.game_name == "Seaquest":
-            tmp = self._state_buffer[1]
-            tmp[tmp >= 0] = self.objects[0].orientation.value
-            self._state_buffer[1] = tmp
         self._state_buffer.append(_tensor(state, dtype=_uint8
                                           , **_tensor_kwargs))
 
