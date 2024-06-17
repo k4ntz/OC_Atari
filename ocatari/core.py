@@ -207,7 +207,8 @@ class OCAtari:
         else:  # mode == "raw" because in raw mode we augment the info dictionary
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self._fill_buffer()
-        obs = np.array(self._state_buffer)
+        if self.obs_mode == "dqn" or self.obs_mode == "obj":
+            obs = np.array(self._state_buffer)
         return obs, reward, truncated, terminated, info
 
     def _step_vision(self, *args, **kwargs):
