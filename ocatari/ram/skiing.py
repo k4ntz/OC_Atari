@@ -1,7 +1,7 @@
 import sys
 from ._helper_methods import _convert_number
 from .game_objects import GameObject
-
+import numpy as np
 """
 RAM extraction for the game Skiing.
 """
@@ -299,3 +299,24 @@ def _time_skiing(ram_state):
     # milliseconds
     time["milli_seconds"] = _convert_number(ram_state[106])
     return time
+
+def _get_object_state(reference_list, objects):
+
+    #import ipdb; ipdb.set_trace()
+    temp_ref_list = reference_list.copy()
+    state = reference_list.copy()
+    for o in objects: # populate out_vector with object instance
+        idx = temp_ref_list.index(o.category) #at position of first category occurance
+        flat = [item for sublist in o.h_coords for item in sublist]
+        if o.category == "Player":
+            state.append([o.orientation, o.orientation, o.orientation, o.orientation])
+        state[idx] = flat #write the slice
+        temp_ref_list[idx] = "" #remove reference from reference list
+    for i, d in enumerate(temp_ref_list):
+        if d != "": #fill not populated category instances wiht 0.0's
+            state[i] = [0.0, 0.0, 0.0, 0.0]
+            if d == "Player":
+                state.append([0.0,0.0,0.0,0.0])
+    return np.asarray(state)
+    
+    
