@@ -73,9 +73,12 @@ def get_object_state(reference_list, objects, game_name):
         #print(colored(f"_get_object_state not implemented for game: {game_name}", "red"))
         #print(colored(f"Try Default get_object_state", "red"))
         try:
+            import ipdb;ipdb.set_trace()
             temp_ref_list = reference_list.copy()
             state = reference_list.copy()
             for o in objects: # populate out_vector with object instance
+                if o is None:
+                    continue
                 idx = temp_ref_list.index(o.category) #at position of first category occurance
                 state[idx] = o.xywh #write the slice
                 temp_ref_list[idx] = "" #remove reference from reference list
