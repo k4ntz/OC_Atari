@@ -111,6 +111,7 @@ class OCAtari:
             self._covered_game = False
         else:
             self._covered_game = True
+        
         gym_render_mode = "rgb_array" if render_oc_overlay else render_mode
         self._env = gym.make(env_name, render_mode=gym_render_mode, *args, **kwargs)
         self.game_name = game_name
@@ -118,6 +119,8 @@ class OCAtari:
         self.obs_mode = obs_mode
         self.hud = hud
         self.max_objects = []
+        self.buffer_window_size = 4
+        
         if not self._covered_game:
             print(colored("\n\n\tUncovered game !!!!!\n\n", "red"))
             global init_objects
@@ -162,7 +165,7 @@ class OCAtari:
         elif obs_mode == "obj":
             print("Using OBJ State Representation")
             if mode == "ram":
-                self._env.observation_space = gym.spaces.Box(0,255.0,(4,len(self.max_objects),4))
+                self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size,len(self.max_objects),4))
                 self._fill_buffer = self._fill_buffer_obj
                 self._reset_buffer = self._reset_buffer_obj
                 self.reference_list = []
@@ -184,7 +187,6 @@ class OCAtari:
         self.render_oc_overlay = render_oc_overlay
         self.rendering_initialized = False
 
-        self.buffer_window_size = 4
         self._state_buffer = deque([], maxlen=self.buffer_window_size)
         self.action_space = self._env.action_space
         self._ale = self._env.unwrapped.ale
@@ -215,7 +217,9 @@ class OCAtari:
         else:  # mode == "raw" because in raw mode we augment the info dictionary
             self.detect_objects(info, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
         self._fill_buffer()
-        if self.obs_mode == "dqn" or self.obs_mode == "obj":
+        if self.obs_mode == "dqn":
+            obs = self.dqn_obs[0]
+        if self.obs_mode == "obj":
             obs = np.array(self._state_buffer)
         return obs, reward, truncated, terminated, info
 
@@ -282,8 +286,7 @@ class OCAtari:
         #     else:
         #         tensor.append(np.asarray(obj.xywh))
         
-        self._state_buffer.append(_tensor(state, dtype=_uint8,
-                                          **_tensor_kwargs))
+        self._state_buffer.append(state)
 
     def _get_buffer_as_stack(self):
         return _stack(list(self._state_buffer), 0).unsqueeze(0).byte()
