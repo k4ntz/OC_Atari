@@ -2,12 +2,10 @@ from .utils import find_objects, find_mc_objects
 from .game_objects import GameObject
 
 objects_colors = {
-    "player": [236, 236, 236], 
-    "sentry": [135, 183, 84],
-                  "deathray": [[101, 209, 174], [72, 160, 72]], "score": [252, 188, 116],
-                  "projectile": [[45, 109, 152], [84, 138, 210], [125, 48, 173], [127, 92, 213],
-                                 [158, 208, 101], [164, 89, 208], [184, 70, 162], [187, 187, 53],
-                                 [227, 151, 89], [228, 11, 111], [252, 188, 116]]
+    "Player": [236, 236, 236], 
+    "DivingEnemy": [135, 183, 84],
+    "PlayerMissile": [210, 164, 74],
+    "EnemyShip": [[110, 156, 66], [232, 204, 99], [192, 192, 192]]
                   }
 
 
@@ -17,16 +15,34 @@ class Player(GameObject):
         self.rgb = 236, 236, 236
 
 
-class Sentry(GameObject):
+class DivingEnemy(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 135, 183, 84
 
+
+class PlayerMissile(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 210, 164, 74
+
+
+class EnemyShip(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 110, 156, 66
+
 def _detect_objects(objects, obs, hud=True):
     objects.clear()
-    player = find_objects(obs, objects_colors["player"], miny=166)
+    player = find_objects(obs, objects_colors["Player"], miny=166)
     for play in player:
         objects.append(Player(*play))
-    sentries = find_objects(obs, objects_colors["sentry"])
-    for sent in sentries:
-        objects.append(Sentry(*sent))
+    diving_enemies = find_objects(obs, objects_colors["DivingEnemy"])
+    for sent in diving_enemies:
+        objects.append(DivingEnemy(*sent))
+    player_missiles = find_objects(obs, objects_colors["PlayerMissile"]) #size=(1,39)
+    for missile in player_missiles:
+        objects.append(PlayerMissile(*missile))
+    enemy_ships = find_objects(obs, objects_colors["EnemyShip"])
+    for enemy in enemy_ships:
+        objects.append(EnemyShip(*enemy))
