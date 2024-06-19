@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="python3.9" >
+<html class="writer-html5" lang="python3.9" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ocatari.vision.utils &mdash; OCAtari  documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=478102dd" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=03ece63d"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -53,6 +55,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/automated_analysis.html">Automated Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/find_causative_ram.html">Causative RAM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/rem_gui.html">REM GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/reverse_engineering_helper.html">Reverse Engineering Helper</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/test_scripts.html">The test scripts</a></li>
 </ul>
@@ -104,7 +107,9 @@
     <span class="n">labels</span><span class="p">[</span><span class="s1">&#39;bbs&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="o">*</span><span class="n">bb</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span> <span class="k">if</span> <span class="n">stationary</span> <span class="k">else</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">bb</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">[</span><span class="n">key</span><span class="p">]])</span>
 
 
-<div class="viewcode-block" id="most_common_color"><a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.most_common_color">[docs]</a><span class="k">def</span> <span class="nf">most_common_color</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">exclude_black</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="most_common_color">
+<a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.most_common_color">[docs]</a>
+<span class="k">def</span> <span class="nf">most_common_color</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">exclude_black</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the most common color in the image.</span>
 
@@ -119,6 +124,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">a1D</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">(),</span> <span class="n">col_range</span><span class="p">)</span></div>
 
 
+
 <span class="c1"># to be removed</span>
 <span class="k">def</span> <span class="nf">bb_by_color</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">closing_active</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n\n</span><span class="s2"> PLEASE DON&#39;T USE, USE &#39;find_objects&#39; instead</span><span class="se">\n\n\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">))</span>
@@ -126,7 +132,9 @@
     <span class="n">bbs_extend</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="assert_in"><a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.assert_in">[docs]</a><span class="k">def</span> <span class="nf">assert_in</span><span class="p">(</span><span class="n">observed</span><span class="p">,</span> <span class="n">expected</span><span class="p">,</span> <span class="n">tol</span><span class="p">):</span>
+<div class="viewcode-block" id="assert_in">
+<a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.assert_in">[docs]</a>
+<span class="k">def</span> <span class="nf">assert_in</span><span class="p">(</span><span class="n">observed</span><span class="p">,</span> <span class="n">expected</span><span class="p">,</span> <span class="n">tol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Asserts if the observed point is equal to the expected one with a given tolerance.</span>
 <span class="sd">    True if ||observed - expected|| &lt;= tol, with || the maximum over the two dimensions.</span>
@@ -146,7 +154,10 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">expected</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">tol</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">observed</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">expected</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">tol</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span></div>
 
 
-<div class="viewcode-block" id="iou"><a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.iou">[docs]</a><span class="k">def</span> <span class="nf">iou</span><span class="p">(</span><span class="n">bb</span><span class="p">,</span> <span class="n">gt_bb</span><span class="p">):</span>
+
+<div class="viewcode-block" id="iou">
+<a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.iou">[docs]</a>
+<span class="k">def</span> <span class="nf">iou</span><span class="p">(</span><span class="n">bb</span><span class="p">,</span> <span class="n">gt_bb</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the intersection over union between two bounding boxes. </span>
 <span class="sd">    |iou_image|</span>
@@ -165,7 +176,10 @@
     <span class="k">return</span> <span class="n">intersection</span> <span class="o">/</span> <span class="p">((</span><span class="n">bb</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">bb</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span><span class="n">gt_bb</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">gt_bb</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">-</span> <span class="n">intersection</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="mark_point"><a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.mark_point">[docs]</a><span class="k">def</span> <span class="nf">mark_point</span><span class="p">(</span><span class="n">image_array</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cross</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="mark_point">
+<a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.mark_point">[docs]</a>
+<span class="k">def</span> <span class="nf">mark_point</span><span class="p">(</span><span class="n">image_array</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cross</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Marks a point on the image at the (x,y) position (inplace)</span>
 
@@ -194,7 +208,10 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="mark_bb"><a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.mark_bb">[docs]</a><span class="k">def</span> <span class="nf">mark_bb</span><span class="p">(</span><span class="n">image_array</span><span class="p">,</span> <span class="n">bb</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">surround</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="mark_bb">
+<a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.mark_bb">[docs]</a>
+<span class="k">def</span> <span class="nf">mark_bb</span><span class="p">(</span><span class="n">image_array</span><span class="p">,</span> <span class="n">bb</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">surround</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Marks a bounding box on the image.</span>
 
@@ -225,7 +242,9 @@
         <span class="n">image_array</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span><span class="n">right</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
         <span class="n">image_array</span><span class="p">[</span><span class="n">bottom</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span><span class="n">right</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
     <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">ipdb</span><span class="p">;</span> <span class="n">ipdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span></div>
+        <span class="k">pass</span></div>
+
+        <span class="c1"># import ipdb; ipdb.set_trace()</span>
 
 
 <span class="k">def</span> <span class="nf">plot_bounding_boxes</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">bbs</span><span class="p">,</span> <span class="n">objects_colors</span><span class="p">):</span>
@@ -237,7 +256,9 @@
             <span class="n">mark_bb</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">bb</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">]))</span>
 
 
-<div class="viewcode-block" id="showim"><a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.showim">[docs]</a><span class="k">def</span> <span class="nf">showim</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+<div class="viewcode-block" id="showim">
+<a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.showim">[docs]</a>
+<span class="k">def</span> <span class="nf">showim</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Display the given in a matplolib.pyplot plot.</span>
 
@@ -248,7 +269,10 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="find_mc_objects"><a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.find_mc_objects">[docs]</a><span class="k">def</span> <span class="nf">find_mc_objects</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_s</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> 
+
+<div class="viewcode-block" id="find_mc_objects">
+<a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.find_mc_objects">[docs]</a>
+<span class="k">def</span> <span class="nf">find_mc_objects</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_s</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> 
                     <span class="n">min_distance</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">closing_active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">closing_dist</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                     <span class="n">minx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">miny</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxx</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">maxy</span><span class="o">=</span><span class="mi">210</span><span class="p">,</span> <span class="n">all_colors</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -304,6 +328,9 @@
             <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">[]</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+    <span class="c1"># if mask.max() &gt; 0:</span>
+        <span class="c1"># showim(mask)</span>
+        <span class="c1"># import ipdb; ipdb.set_trace()</span>
     <span class="c1"># if not all_colors and mask.max():</span>
     <span class="c1">#     import ipdb;ipdb.set_trace()</span>
     <span class="k">if</span> <span class="n">closing_active</span><span class="p">:</span>
@@ -335,11 +362,35 @@
         <span class="c1"># if x &lt; minx or x+w &gt; maxx or y &lt; miny or y+h &gt; maxy:</span>
         <span class="c1">#     continue</span>
         <span class="c1"># detected.append((y, x, h, w))</span>
-        <span class="n">detected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">all_colors</span><span class="p">:</span>
+            <span class="n">all_contained</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">masks</span><span class="p">)):</span>
+                <span class="n">contained</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">masks</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">y</span><span class="o">+</span><span class="n">j</span><span class="o">-</span><span class="n">miny</span><span class="p">][</span><span class="n">x</span><span class="o">+</span><span class="n">i</span><span class="o">-</span><span class="n">minx</span><span class="p">]:</span>
+                                <span class="n">contained</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="k">break</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="n">contained</span><span class="p">:</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">contained</span><span class="p">:</span>
+                    <span class="n">all_contained</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">all_contained</span><span class="p">:</span>
+                <span class="n">detected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">detected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">detected</span></div>
 
 
-<div class="viewcode-block" id="color_analysis"><a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.color_analysis">[docs]</a><span class="k">def</span> <span class="nf">color_analysis</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">[]):</span>
+
+<div class="viewcode-block" id="color_analysis">
+<a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.color_analysis">[docs]</a>
+<span class="k">def</span> <span class="nf">color_analysis</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">[]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a Counter of all the detected colors in the bounding box</span>
 
@@ -363,7 +414,10 @@
     <span class="k">return</span> <span class="n">Counter</span><span class="p">(</span><span class="n">subpart</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="find_objects"><a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.find_objects">[docs]</a><span class="k">def</span> <span class="nf">find_objects</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_s</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+
+<div class="viewcode-block" id="find_objects">
+<a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.find_objects">[docs]</a>
+<span class="k">def</span> <span class="nf">find_objects</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_s</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                  <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                  <span class="n">closing_active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">closing_dist</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                  <span class="n">minx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">miny</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxx</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">maxy</span><span class="o">=</span><span class="mi">210</span><span class="p">):</span>
@@ -436,7 +490,10 @@
     <span class="k">return</span> <span class="n">detected</span></div>
 
 
-<div class="viewcode-block" id="find_rope_segments"><a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.find_rope_segments">[docs]</a><span class="k">def</span> <span class="nf">find_rope_segments</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">seg_height</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">minx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">miny</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxx</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">maxy</span><span class="o">=</span><span class="mi">210</span><span class="p">):</span>
+
+<div class="viewcode-block" id="find_rope_segments">
+<a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.find_rope_segments">[docs]</a>
+<span class="k">def</span> <span class="nf">find_rope_segments</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">seg_height</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">minx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">miny</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxx</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">maxy</span><span class="o">=</span><span class="mi">210</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds the rope segments (max rope width of 1) of a displayed rope.</span>
 <span class="sd">    </span>
@@ -480,7 +537,10 @@
     <span class="k">return</span> <span class="n">detected</span></div>
 
 
-<div class="viewcode-block" id="find_rectangle_objects"><a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.find_rectangle_objects">[docs]</a><span class="k">def</span> <span class="nf">find_rectangle_objects</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">miny</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxx</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">maxy</span><span class="o">=</span><span class="mi">210</span><span class="p">):</span>
+
+<div class="viewcode-block" id="find_rectangle_objects">
+<a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.find_rectangle_objects">[docs]</a>
+<span class="k">def</span> <span class="nf">find_rectangle_objects</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">miny</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxx</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">maxy</span><span class="o">=</span><span class="mi">210</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds rectangle objects with a given maximum size.</span>
 <span class="sd">    </span>
@@ -515,6 +575,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">detected</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_find_rectangles_in_bb</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">),</span> <span class="n">max_size</span><span class="p">,</span> <span class="n">minx</span><span class="p">,</span> <span class="n">miny</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">detected</span></div>
+
 
 <span class="k">def</span> <span class="nf">_find_rectangles_in_bb</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">bb</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">minx</span><span class="p">,</span> <span class="n">miny</span><span class="p">):</span>
     <span class="n">bounding_boxes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -558,7 +619,9 @@
     <span class="k">return</span> <span class="n">bounding_boxes</span>
 
 
-<div class="viewcode-block" id="find_objects_in_color_range"><a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.find_objects_in_color_range">[docs]</a><span class="k">def</span> <span class="nf">find_objects_in_color_range</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color_min</span><span class="p">,</span> <span class="n">color_max</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_s</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<div class="viewcode-block" id="find_objects_in_color_range">
+<a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.find_objects_in_color_range">[docs]</a>
+<span class="k">def</span> <span class="nf">find_objects_in_color_range</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color_min</span><span class="p">,</span> <span class="n">color_max</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_s</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                                 <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                                 <span class="n">closing_active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">closing_dist</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                                 <span class="n">minx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">miny</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxx</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">maxy</span><span class="o">=</span><span class="mi">210</span><span class="p">):</span>
@@ -634,7 +697,10 @@
 
 
 
-<div class="viewcode-block" id="make_darker"><a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.make_darker">[docs]</a><span class="k">def</span> <span class="nf">make_darker</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">col_precent</span><span class="o">=</span><span class="mf">0.8</span><span class="p">):</span>
+
+<div class="viewcode-block" id="make_darker">
+<a class="viewcode-back" href="../../../ocatari/vision.html#ocatari.vision.utils.make_darker">[docs]</a>
+<span class="k">def</span> <span class="nf">make_darker</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">col_precent</span><span class="o">=</span><span class="mf">0.8</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a darker color.</span>
 
@@ -650,6 +716,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No color passed, using default black&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">col</span> <span class="o">*</span> <span class="n">col_precent</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">color</span><span class="p">]</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">to_rgba</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>

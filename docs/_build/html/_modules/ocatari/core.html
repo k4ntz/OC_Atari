@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="python3.9" >
+<html class="writer-html5" lang="python3.9" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ocatari.core &mdash; OCAtari  documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=478102dd" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=03ece63d"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -53,6 +55,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/automated_analysis.html">Automated Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/find_causative_ram.html">Causative RAM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/rem_gui.html">REM GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/reverse_engineering_helper.html">Reverse Engineering Helper</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/test_scripts.html">The test scripts</a></li>
 </ul>
@@ -95,9 +98,24 @@
 <span class="kn">import</span> <span class="nn">gymnasium</span> <span class="k">as</span> <span class="nn">gym</span>
 <span class="kn">from</span> <span class="nn">termcolor</span> <span class="kn">import</span> <span class="n">colored</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">ocatari.ram.extract_ram_info</span> <span class="kn">import</span> <span class="n">detect_objects_raw</span><span class="p">,</span> <span class="n">detect_objects_revised</span><span class="p">,</span> <span class="n">init_objects</span><span class="p">,</span> <span class="n">get_max_objects</span>
+<span class="kn">from</span> <span class="nn">ocatari.ram.extract_ram_info</span> <span class="kn">import</span> <span class="n">detect_objects_raw</span><span class="p">,</span> <span class="n">detect_objects_ram</span><span class="p">,</span> <span class="n">init_objects</span><span class="p">,</span> <span class="n">get_max_objects</span>
 <span class="kn">from</span> <span class="nn">ocatari.vision.extract_vision_info</span> <span class="kn">import</span> <span class="n">detect_objects_vision</span>
 <span class="kn">from</span> <span class="nn">ocatari.vision.utils</span> <span class="kn">import</span> <span class="n">mark_bb</span><span class="p">,</span> <span class="n">to_rgba</span>
+<span class="kn">from</span> <span class="nn">ocatari.ram.game_objects</span> <span class="kn">import</span> <span class="n">GameObject</span><span class="p">,</span> <span class="n">ValueObject</span>
+<span class="kn">from</span> <span class="nn">ocatari.utils</span> <span class="kn">import</span> <span class="n">draw_label</span><span class="p">,</span> <span class="n">draw_arrow</span><span class="p">,</span> <span class="n">draw_orientation_indicator</span>
+<span class="kn">from</span> <span class="nn">gymnasium.error</span> <span class="kn">import</span> <span class="n">NameNotFound</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">ale_py</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">ALE is required when using the ALE env wrapper. &#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Try `pip install &quot;gymnasium[atari, accept-rom-license]&quot;`.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="n">UPSCALE_FACTOR</span> <span class="o">=</span> <span class="mi">4</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">cv2</span>
@@ -109,36 +127,75 @@
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">torch</span>
     <span class="n">torch_imported</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span>
+    <span class="n">_uint8</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">uint8</span>
+    <span class="n">_zeros</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span>
+    <span class="n">_zeros_like</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span>
+    <span class="n">_stack</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span>
+    <span class="n">DEVICE</span> <span class="o">=</span> <span class="s2">&quot;cpu&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
+    <span class="n">_tensor_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;device&quot;</span><span class="p">:</span> <span class="n">DEVICE</span><span class="p">}</span>
 <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
     <span class="n">torch_imported</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span>
+    <span class="n">_uint8</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span>
+    <span class="n">_zeros</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span>
+    <span class="n">_zeros_like</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span>
+    <span class="n">_stack</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span>
+    <span class="n">DEVICE</span> <span class="o">=</span> <span class="s2">&quot;cpu&quot;</span>
+    <span class="n">_tensor_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;pytorch installation not found, using numpy instead of torch&quot;</span><span class="p">)</span>
 
-<span class="n">DEVICE</span> <span class="o">=</span> <span class="s2">&quot;cpu&quot;</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pygame</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">pygame is required for human rendering. &quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Try `pip install pygame`.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
-<span class="n">AVAILABLE_GAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Alien&quot;</span><span class="p">,</span> <span class="s2">&quot;Assault&quot;</span><span class="p">,</span> <span class="s2">&quot;Asterix&quot;</span><span class="p">,</span> <span class="s2">&quot;Asteroids&quot;</span><span class="p">,</span> <span class="s2">&quot;Atlantis&quot;</span><span class="p">,</span> <span class="s2">&quot;BeamRider&quot;</span><span class="p">,</span> <span class="s2">&quot;Berzerk&quot;</span><span class="p">,</span> <span class="s2">&quot;Bowling&quot;</span><span class="p">,</span> <span class="s2">&quot;Boxing&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;Breakout&quot;</span><span class="p">,</span> <span class="s2">&quot;Carnival&quot;</span><span class="p">,</span> <span class="s2">&quot;Centipede&quot;</span><span class="p">,</span> <span class="s2">&quot;ChoppperCommand&quot;</span><span class="p">,</span> <span class="s2">&quot;DemonAttack&quot;</span><span class="p">,</span> <span class="s2">&quot;FishingDerby&quot;</span><span class="p">,</span> <span class="s2">&quot;Freeway&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;Frostbite&quot;</span><span class="p">,</span> <span class="s2">&quot;Gopher&quot;</span><span class="p">,</span><span class="s2">&quot;Hero&quot;</span><span class="p">,</span> <span class="s2">&quot;IceHockey&quot;</span><span class="p">,</span> <span class="s2">&quot;Kangaroo&quot;</span><span class="p">,</span> <span class="s2">&quot;MontezumaRevenge&quot;</span><span class="p">,</span> <span class="s2">&quot;MsPacman&quot;</span><span class="p">,</span><span class="s2">&quot;Pitfall&quot;</span><span class="p">,</span> <span class="s2">&quot;Pong&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;PrivateEye&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;Qbert&quot;</span><span class="p">,</span> <span class="s2">&quot;Riverraid&quot;</span><span class="p">,</span> <span class="s2">&quot;RoadRunner&quot;</span><span class="p">,</span> <span class="s2">&quot;Seaquest&quot;</span><span class="p">,</span> <span class="s2">&quot;Skiing&quot;</span><span class="p">,</span> <span class="s2">&quot;SpaceInvaders&quot;</span><span class="p">,</span> <span class="s2">&quot;Tennis&quot;</span><span class="p">,</span> <span class="s2">&quot;Yarsrevenge&quot;</span><span class="p">]</span>
+<span class="k">if</span> <span class="n">torch_imported</span><span class="p">:</span>
+    <span class="n">DEVICE</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">DEVICE</span> <span class="o">=</span> <span class="s2">&quot;cpu&quot;</span> 
+    
+<span class="n">AVAILABLE_GAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Adventure&quot;</span><span class="p">,</span> <span class="s2">&quot;Alien&quot;</span><span class="p">,</span> <span class="s2">&quot;Amidar&quot;</span><span class="p">,</span> <span class="s2">&quot;Assault&quot;</span><span class="p">,</span> <span class="s2">&quot;Asterix&quot;</span><span class="p">,</span> 
+                   <span class="s2">&quot;Asteroids&quot;</span><span class="p">,</span> <span class="s2">&quot;Atlantis&quot;</span><span class="p">,</span> <span class="s2">&quot;BankHeist&quot;</span><span class="p">,</span> <span class="s2">&quot;BattleZone&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;BeamRider&quot;</span><span class="p">,</span> <span class="s2">&quot;Berzerk&quot;</span><span class="p">,</span> <span class="s2">&quot;Bowling&quot;</span><span class="p">,</span> <span class="s2">&quot;Boxing&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;Breakout&quot;</span><span class="p">,</span> <span class="s2">&quot;Carnival&quot;</span><span class="p">,</span> <span class="s2">&quot;Centipede&quot;</span><span class="p">,</span> <span class="s2">&quot;ChopperCommand&quot;</span><span class="p">,</span> 
+                   <span class="s2">&quot;CrazyClimber&quot;</span><span class="p">,</span> <span class="s2">&quot;DemonAttack&quot;</span><span class="p">,</span> <span class="s2">&quot;DonkeyKong&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;DoubleDunk&quot;</span><span class="p">,</span> <span class="s2">&quot;Enduro&quot;</span><span class="p">,</span> <span class="s2">&quot;FishingDerby&quot;</span><span class="p">,</span> <span class="s2">&quot;Freeway&quot;</span><span class="p">,</span>                   
+                   <span class="s2">&quot;Frostbite&quot;</span><span class="p">,</span> <span class="s2">&quot;Galaxian&quot;</span><span class="p">,</span> <span class="s2">&quot;Gopher&quot;</span><span class="p">,</span> <span class="s2">&quot;Hero&quot;</span><span class="p">,</span> <span class="s2">&quot;IceHockey&quot;</span><span class="p">,</span> 
+                   <span class="s2">&quot;Jamesbond&quot;</span><span class="p">,</span> <span class="s2">&quot;Kangaroo&quot;</span><span class="p">,</span> <span class="s2">&quot;Krull&quot;</span><span class="p">,</span> <span class="s2">&quot;MontezumaRevenge&quot;</span><span class="p">,</span> 
+                   <span class="s2">&quot;MsPacman&quot;</span><span class="p">,</span> <span class="s2">&quot;Pacman&quot;</span><span class="p">,</span> <span class="s2">&quot;Pitfall&quot;</span><span class="p">,</span> <span class="s2">&quot;Pong&quot;</span><span class="p">,</span> <span class="s2">&quot;PrivateEye&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;Qbert&quot;</span><span class="p">,</span> <span class="s2">&quot;Riverraid&quot;</span><span class="p">,</span> <span class="s2">&quot;RoadRunner&quot;</span><span class="p">,</span> <span class="s2">&quot;Seaquest&quot;</span><span class="p">,</span> <span class="s2">&quot;Skiing&quot;</span><span class="p">,</span> 
+                   <span class="s2">&quot;SpaceInvaders&quot;</span><span class="p">,</span> <span class="s2">&quot;Tennis&quot;</span><span class="p">,</span> <span class="s2">&quot;TimePilot&quot;</span><span class="p">,</span> <span class="s2">&quot;UpNDown&quot;</span><span class="p">,</span> <span class="s2">&quot;Venture&quot;</span><span class="p">,</span> 
+                   <span class="c1">#&quot;Videocube&quot;, </span>
+                   <span class="s2">&quot;VideoPinball&quot;</span><span class="p">,</span> 
+                   <span class="s2">&quot;YarsRevenge&quot;</span><span class="p">]</span> 
+                   <span class="c1">#&quot;Zaxxon&quot;]</span>
 
 
 <span class="c1"># TODO: complete the docstring </span>
-<div class="viewcode-block" id="OCAtari"><a class="viewcode-back" href="../../ocatari/core.html#ocatari.core.OCAtari">[docs]</a><span class="k">class</span> <span class="nc">OCAtari</span><span class="p">:</span>
+<div class="viewcode-block" id="OCAtari">
+<a class="viewcode-back" href="../../ocatari/core.html#ocatari.core.OCAtari">[docs]</a>
+<span class="k">class</span> <span class="nc">OCAtari</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The OCAtari environment. Initialize it to get a Atari environments with objects tracked.</span>
 
 <span class="sd">    :param env_name: The name of the Atari gymnasium environment e.g. &quot;Pong&quot; or &quot;PongNoFrameskip-v5&quot;</span>
 <span class="sd">    :type env_name: str</span>
-<span class="sd">    :param mode: The detection method type: one of `raw`, `revised`, or `vision`, or `both` (i.e. `revised` + `vision`)</span>
+<span class="sd">    :param mode: The detection method type: one of `raw`, `ram`, or `vision`, or `both` (i.e. `ram` + `vision`)</span>
 <span class="sd">    :type mode: str</span>
-<span class="sd">    :param hud: Wether to include or not objects from the HUD (e.g. scores, lives)</span>
+<span class="sd">    :param hud: Whether to include or not objects from the HUD (e.g. scores, lives)</span>
 <span class="sd">    :type hud: bool</span>
-<span class="sd">    :param obs_mode: How to fill the image buffer (contaning the 4 last frames): one of `None`, `dqn`, `ori` </span>
+<span class="sd">    :param obs_mode: How to fill the image buffer (containing the 4 last frames): one of `None`, `dqn`, `ori`</span>
 <span class="sd">    :type obs_mode: str</span>
 <span class="sd">    </span>
 <span class="sd">    the remaining \*args and \**kwargs will be passed to the \</span>
 <span class="sd">        `gymnasium.make &lt;https://gymnasium.farama.org/api/registry/#gymnasium.make&gt;`_ function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">obs_mode</span><span class="o">=</span><span class="s2">&quot;dqn&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;ram&quot;</span><span class="p">,</span> <span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">obs_mode</span><span class="o">=</span><span class="s2">&quot;ori&quot;</span><span class="p">,</span>
+                 <span class="n">render_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">render_oc_overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="s2">&quot;ALE/&quot;</span> <span class="ow">in</span> <span class="n">env_name</span><span class="p">:</span> <span class="c1">#case if v5 specified</span>
             <span class="n">to_check</span> <span class="o">=</span> <span class="n">env_name</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
             <span class="n">game_name</span> <span class="o">=</span> <span class="n">env_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;No&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;Deterministic&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -146,53 +203,81 @@
             <span class="n">to_check</span> <span class="o">=</span> <span class="n">env_name</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
             <span class="n">game_name</span> <span class="o">=</span> <span class="n">env_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;No&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;Deterministic&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">to_check</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">gn</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">gn</span> <span class="ow">in</span> <span class="n">AVAILABLE_GAMES</span><span class="p">]:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="s2">&quot;Game not available in OCAtari&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Game &#39;</span><span class="si">{</span><span class="n">env_name</span><span class="si">}</span><span class="s2">&#39; not covered yet by OCAtari&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">))</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Available games: &quot;</span><span class="p">,</span> <span class="n">AVAILABLE_GAMES</span><span class="p">)</span>
-            <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">env_name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_covered_game</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_covered_game</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">gym_render_mode</span> <span class="o">=</span> <span class="s2">&quot;rgb_array&quot;</span> <span class="k">if</span> <span class="n">render_oc_overlay</span> <span class="k">else</span> <span class="n">render_mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">env_name</span><span class="p">,</span> <span class="n">render_mode</span><span class="o">=</span><span class="n">gym_render_mode</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">game_name</span> <span class="o">=</span> <span class="n">game_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span> <span class="o">=</span> <span class="n">obs_mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="n">hud</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_objects</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span> <span class="o">=</span> <span class="n">init_objects</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hud</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;vision&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_covered_game</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n\t</span><span class="s2">Uncovered game !!!!!</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">))</span>
+            <span class="k">global</span> <span class="n">init_objects</span>
+            <span class="n">init_objects</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">detect_objects</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">objects_v</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_ram</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;vision&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">detect_objects</span> <span class="o">=</span> <span class="n">detect_objects_vision</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_vision</span>
         <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;raw&quot;</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;&#39;raw&#39; mode will deprecate with the next major update, use gymnasium,&#39;ram&#39; or &#39;vision&#39; mode instead.&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">detect_objects</span> <span class="o">=</span> <span class="n">detect_objects_raw</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_ram</span>
-        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;revised&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;revised&quot;</span> <span class="ow">or</span> <span class="n">mode</span><span class="o">==</span> <span class="s2">&quot;ram&quot;</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;revised&quot;</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;&#39;revised&#39; mode will deprecate with the next major update, please use &#39;ram&#39; mode instead.&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">max_objects</span> <span class="o">=</span> <span class="n">get_max_objects</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hud</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">detect_objects</span> <span class="o">=</span> <span class="n">detect_objects_revised</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">detect_objects</span> <span class="o">=</span> <span class="n">detect_objects_ram</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_ram</span>
         <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">detect_objects_v</span> <span class="o">=</span> <span class="n">detect_objects_vision</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">detect_objects_r</span> <span class="o">=</span> <span class="n">detect_objects_revised</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">detect_objects_r</span> <span class="o">=</span> <span class="n">detect_objects_ram</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">objects_v</span> <span class="o">=</span> <span class="n">init_objects</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hud</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_test</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="s2">&quot;Undefined mode for information extraction&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">))</span>
             <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span> <span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">GameObject</span><span class="p">]</span> <span class="o">=</span> <span class="n">init_objects</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hud</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fill_buffer</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset_buffer</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">obs_mode</span> <span class="o">==</span> <span class="s2">&quot;dqn&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">torch_imported</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_fill_buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_buffer_dqn</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_reset_buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_buffer_dqn</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">255.0</span><span class="p">,(</span><span class="mi">4</span><span class="p">,</span><span class="mi">84</span><span class="p">,</span><span class="mi">84</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;To use the buffer of OCAtari, you need to install torch.&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">obs_mode</span> <span class="o">==</span> <span class="s2">&quot;ori&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_fill_buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_buffer_ori</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_reset_buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_buffer_ori</span>
+        <span class="k">elif</span> <span class="n">obs_mode</span> <span class="o">==</span> <span class="s2">&quot;obj&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using OBJ State Representation&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;ram&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">255.0</span><span class="p">,(</span><span class="mi">4</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_objects</span><span class="p">),</span><span class="mi">4</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fill_buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_buffer_obj</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_reset_buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_buffer_obj</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="s2">&quot;This obs mode is only available in ram mode&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">))</span>
+                <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">obs_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="s2">&quot;Undefined mode for observation (obs_mode), has to be one of [&#39;dqn&#39;, &#39;ori&#39;, None]&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">))</span>
             <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="mi">4</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([],</span> <span class="n">maxlen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_mode</span> <span class="o">=</span> <span class="n">render_mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_oc_overlay</span> <span class="o">=</span> <span class="n">render_oc_overlay</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rendering_initialized</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer_window_size</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([],</span> <span class="n">maxlen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_window_size</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">action_space</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">ale</span>
-        <span class="c1">#inhererit every attribute and method of env</span>
+        <span class="c1"># inhererit every attribute and method of env</span>
         <span class="k">for</span> <span class="n">meth</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">meth</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -200,7 +285,9 @@
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="k">pass</span>
 
-<div class="viewcode-block" id="OCAtari.step"><a class="viewcode-back" href="../../ocatari/core.html#ocatari.core.OCAtari.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="OCAtari.step">
+<a class="viewcode-back" href="../../ocatari/core.html#ocatari.core.OCAtari.step">[docs]</a>
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run one timestep of the environment&#39;s dynamics using the agent actions. \</span>
 <span class="sd">        Extracts the objects, using RAM or vision based on the `mode` variable set at initialization. \</span>
@@ -212,27 +299,36 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
+
     <span class="k">def</span> <span class="nf">_step_ram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;revised&quot;</span><span class="p">:</span>
+        <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;ram&quot;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;revised&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">detect_objects</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">ale</span><span class="o">.</span><span class="n">getRAM</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hud</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># mode == &quot;raw&quot; because in raw mode we augment the info dictionary</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">detect_objects</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">ale</span><span class="o">.</span><span class="n">getRAM</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">detect_objects</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">ale</span><span class="o">.</span><span class="n">getRAM</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hud</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fill_buffer</span><span class="p">()</span>
-        <span class="c1"># if self.obs_mode in [&quot;dqn&quot;, &quot;ori&quot;]:</span>
-        <span class="c1">#     obs = self._get_buffer_as_stack()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span> <span class="o">==</span> <span class="s2">&quot;dqn&quot;</span><span class="p">:</span>
+            <span class="n">obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dqn_obs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span> <span class="o">==</span> <span class="s2">&quot;obj&quot;</span><span class="p">:</span>
+            <span class="n">tensor</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">tensor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">tensor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">xywh</span><span class="p">))</span>
+                <span class="c1"># tensor.append(np.asarray(obj.xywh))</span>
+            <span class="n">obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
+            <span class="c1">#obs = self.dqn_obs[0]</span>
         <span class="k">return</span> <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">info</span>
 
     <span class="k">def</span> <span class="nf">_step_vision</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">detect_objects</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hud</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fill_buffer</span><span class="p">()</span>
-        <span class="c1"># if self.obs_mode in [&quot;dqn&quot;, &quot;ori&quot;]:</span>
-        <span class="c1">#     obs = self._get_buffer_as_stack()</span>
         <span class="k">return</span> <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">info</span>
 
     <span class="k">def</span> <span class="nf">_step_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">detect_objects_r</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">ale</span><span class="o">.</span><span class="n">getRAM</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hud</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">detect_objects_v</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objects_v</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hud</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fill_buffer</span><span class="p">()</span>
@@ -241,18 +337,26 @@
         <span class="k">return</span> <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">info</span>
 
     <span class="k">def</span> <span class="nf">_reset_buffer_dqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_window_size</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">DEVICE</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+                <span class="n">_zeros</span><span class="p">((</span><span class="mi">84</span><span class="p">,</span> <span class="mi">84</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_uint8</span><span class="p">,</span> <span class="o">**</span><span class="n">_tensor_kwargs</span><span class="p">)</span>
             <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_reset_buffer_ori</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_window_size</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">210</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">DEVICE</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+                <span class="n">_zeros</span><span class="p">((</span><span class="mi">210</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_uint8</span><span class="p">,</span> <span class="o">**</span><span class="n">_tensor_kwargs</span><span class="p">)</span>
             <span class="p">)</span>
 
-<div class="viewcode-block" id="OCAtari.reset"><a class="viewcode-back" href="../../ocatari/core.html#ocatari.core.OCAtari.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_reset_buffer_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_window_size</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">_zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">),</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_uint8</span><span class="p">,</span> <span class="o">**</span><span class="n">_tensor_kwargs</span><span class="p">)</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="OCAtari.reset">
+<a class="viewcode-back" href="../../ocatari/core.html#ocatari.core.OCAtari.reset">[docs]</a>
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Resets the buffer and environment to an initial internal state, returning an initial observation and info.</span>
 <span class="sd">        See `env.reset() &lt;https://gymnasium.farama.org/api/env/#gymnasium.Env.reset&gt;`_ for gymnasium details.</span>
@@ -261,34 +365,169 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span> <span class="o">=</span> <span class="n">init_objects</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hud</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
+
     <span class="k">def</span> <span class="nf">_fill_buffer_dqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ale</span><span class="o">.</span><span class="n">getScreenGrayscale</span><span class="p">(),</span> <span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="mi">84</span><span class="p">),</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span>
-                                               <span class="n">device</span><span class="o">=</span><span class="n">DEVICE</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_tensor</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_uint8</span><span class="p">,</span> <span class="o">**</span><span class="n">_tensor_kwargs</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_name</span> <span class="o">==</span> <span class="s2">&quot;Skiing&quot;</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">tmp</span><span class="p">[</span><span class="n">tmp</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">orientation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_name</span> <span class="o">==</span> <span class="s2">&quot;Seaquest&quot;</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">tmp</span><span class="p">[</span><span class="n">tmp</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">orientation</span><span class="o">.</span><span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_tensor</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_uint8</span>
+                                          <span class="p">,</span> <span class="o">**</span><span class="n">_tensor_kwargs</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_fill_buffer_ori</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ale</span><span class="o">.</span><span class="n">getScreenRGB</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span>
-                                               <span class="n">device</span><span class="o">=</span><span class="n">DEVICE</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_tensor</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_uint8</span><span class="p">,</span>
+                                          <span class="o">**</span><span class="n">_tensor_kwargs</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_fill_buffer_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tensor</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tensor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tensor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">xywh</span><span class="p">))</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_tensor</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_uint8</span><span class="p">,</span>
+                                          <span class="o">**</span><span class="n">_tensor_kwargs</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_get_buffer_as_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">byte</span><span class="p">()</span>
-    
-<div class="viewcode-block" id="OCAtari.render"><a class="viewcode-back" href="../../ocatari/core.html#ocatari.core.OCAtari.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_stack</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">byte</span><span class="p">()</span>
+
+    <span class="n">window</span> <span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">clock</span> <span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">Clock</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_initialize_rendering</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_image</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">sample_image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_mode</span> <span class="o">==</span> <span class="s2">&quot;human&quot;</span><span class="p">:</span>
+            <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_caption</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">sample_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sample_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">sample_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">UPSCALE_FACTOR</span><span class="p">,</span>
+                            <span class="n">sample_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">UPSCALE_FACTOR</span><span class="p">)</span>  <span class="c1"># render with higher res</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_font</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">SysFont</span><span class="p">(</span><span class="s1">&#39;Pixel12x10&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_mode</span> <span class="o">==</span> <span class="s2">&quot;human&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_mode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clock</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">Clock</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rendering_initialized</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="OCAtari.render">
+<a class="viewcode-back" href="../../ocatari/core.html#ocatari.core.OCAtari.render">[docs]</a>
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the render frames (as specified by render_mode during the</span>
+<span class="sd">        initialization of the environment). If activated, adds an overlay visualizing</span>
+<span class="sd">        object properties like position, velocity vector, orientation, name, etc.</span>
+<span class="sd">        See `env.render() &lt;https://gymnasium.farama.org/api/env/#gymnasium.Env.render&gt;`_</span>
+<span class="sd">        for gymnasium details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_oc_overlay</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">image</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Prepare screen if not initialized</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">rendering_initialized</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_rendering</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+
+            <span class="c1"># Render env RGB image</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="n">image_surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_size</span><span class="p">)</span>
+            <span class="n">pygame</span><span class="o">.</span><span class="n">pixelcopy</span><span class="o">.</span><span class="n">array_to_surface</span><span class="p">(</span><span class="n">image_surface</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span>
+            <span class="n">upscaled_image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">image_surface</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">upscaled_image</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+            <span class="c1"># Init overlay surface</span>
+            <span class="n">overlay_surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">)</span>
+            <span class="n">overlay_surface</span><span class="o">.</span><span class="n">set_colorkey</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+            <span class="c1"># For each object, render its position and velocity vector</span>
+            <span class="k">for</span> <span class="n">game_object</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">game_object</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">game_object</span><span class="o">.</span><span class="n">xy</span>
+                <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">game_object</span><span class="o">.</span><span class="n">wh</span>
+
+                <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Object velocity</span>
+                <span class="n">dx</span> <span class="o">=</span> <span class="n">game_object</span><span class="o">.</span><span class="n">dx</span>
+                <span class="n">dy</span> <span class="o">=</span> <span class="n">game_object</span><span class="o">.</span><span class="n">dy</span>
+
+                <span class="c1"># Transform to upscaled screen resolution</span>
+                <span class="n">x</span> <span class="o">*=</span> <span class="n">UPSCALE_FACTOR</span>
+                <span class="n">y</span> <span class="o">*=</span> <span class="n">UPSCALE_FACTOR</span>
+                <span class="n">w</span> <span class="o">*=</span> <span class="n">UPSCALE_FACTOR</span>
+                <span class="n">h</span> <span class="o">*=</span> <span class="n">UPSCALE_FACTOR</span>
+                <span class="n">dx</span> <span class="o">*=</span> <span class="n">UPSCALE_FACTOR</span>
+                <span class="n">dy</span> <span class="o">*=</span> <span class="n">UPSCALE_FACTOR</span>
+
+                <span class="c1"># Compute center coordinates</span>
+                <span class="n">x_c</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">w</span> <span class="o">//</span> <span class="mi">2</span>
+                <span class="n">y_c</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span> <span class="o">//</span> <span class="mi">2</span>
+
+                <span class="c1"># Draw an &#39;X&#39; at object center</span>
+                <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">overlay_surface</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                 <span class="n">start_pos</span><span class="o">=</span><span class="p">(</span><span class="n">x_c</span> <span class="o">-</span> <span class="mi">4</span><span class="p">,</span> <span class="n">y_c</span> <span class="o">-</span> <span class="mi">4</span><span class="p">),</span> <span class="n">end_pos</span><span class="o">=</span><span class="p">(</span><span class="n">x_c</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">y_c</span> <span class="o">+</span> <span class="mi">4</span><span class="p">))</span>
+                <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">overlay_surface</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                 <span class="n">start_pos</span><span class="o">=</span><span class="p">(</span><span class="n">x_c</span> <span class="o">-</span> <span class="mi">4</span><span class="p">,</span> <span class="n">y_c</span> <span class="o">+</span> <span class="mi">4</span><span class="p">),</span> <span class="n">end_pos</span><span class="o">=</span><span class="p">(</span><span class="n">x_c</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">y_c</span> <span class="o">-</span> <span class="mi">4</span><span class="p">))</span>
+
+                <span class="c1"># Draw bounding box</span>
+                <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">overlay_surface</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+                                 <span class="n">rect</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+                <span class="c1"># Draw object category label (optional with value)</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">game_object</span><span class="o">.</span><span class="n">category</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">game_object</span><span class="p">,</span> <span class="n">ValueObject</span><span class="p">):</span>
+                    <span class="n">label</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (</span><span class="si">{</span><span class="n">game_object</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">)&quot;</span>
+                <span class="n">draw_label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">4</span><span class="p">),</span> <span class="n">font</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">label_font</span><span class="p">)</span>
+
+                <span class="c1"># Draw object orientation</span>
+                <span class="c1"># if game_object.orientation is not None:</span>
+                <span class="c1">#     draw_orientation_indicator(overlay_surface, game_object.orientation.value, x_c, y_c, w, h)</span>
+
+                <span class="c1"># Draw velocity vector</span>
+                <span class="k">if</span> <span class="n">dx</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">dy</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">draw_arrow</span><span class="p">(</span><span class="n">overlay_surface</span><span class="p">,</span>
+                               <span class="n">start_pos</span><span class="o">=</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x_c</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">y_c</span><span class="p">)),</span>
+                               <span class="n">end_pos</span><span class="o">=</span><span class="p">(</span><span class="n">x_c</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dx</span><span class="p">,</span> <span class="n">y_c</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dy</span><span class="p">),</span>
+                               <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+                               <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">overlay_surface</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_mode</span> <span class="o">==</span> <span class="s2">&quot;human&quot;</span><span class="p">:</span>
+                <span class="n">frameskip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">_frameskip</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">_frameskip</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clock</span><span class="o">.</span><span class="n">tick</span><span class="p">(</span><span class="mi">60</span> <span class="o">//</span> <span class="n">frameskip</span><span class="p">)</span>  <span class="c1"># limit FPS to avoid super fast movement</span>
+                <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+                <span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">pump</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_mode</span> <span class="o">==</span> <span class="s2">&quot;rgb_array&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">surfarray</span><span class="o">.</span><span class="n">array3d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OCAtari.close">
+<a class="viewcode-back" href="../../ocatari/core.html#ocatari.core.OCAtari.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        After the user has finished using the environment, close contains the code necessary to &quot;clean up&quot; the environment.</span>
-<span class="sd">        See `env.render() &lt;https://gymnasium.farama.org/api/env/#gymnasium.Env.render&gt;`_ for gymnasium details.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="OCAtari.close"><a class="viewcode-back" href="../../ocatari/core.html#ocatari.core.OCAtari.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the render frames as specified by render_mode during the initialization of the environment.</span>
 <span class="sd">        See `env.close() &lt;https://gymnasium.farama.org/api/env/#gymnasium.Env.close&gt;`_ for gymnasium details.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="nf">seed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -300,7 +539,7 @@
 
 <span class="sd">        :type: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dqn_obs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -310,8 +549,10 @@
 <span class="sd">        :type: torch.tensor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_buffer_as_stack</span><span class="p">()</span>
-
-<div class="viewcode-block" id="OCAtari.set_ram"><a class="viewcode-back" href="../../ocatari/core.html#ocatari.core.OCAtari.set_ram">[docs]</a>    <span class="k">def</span> <span class="nf">set_ram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_ram_position</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
+    
+<div class="viewcode-block" id="OCAtari.set_ram">
+<a class="viewcode-back" href="../../ocatari/core.html#ocatari.core.OCAtari.set_ram">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_ram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_ram_position</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Directly set a given value at a targeted RAM position.</span>
 
@@ -322,7 +563,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">ale</span><span class="o">.</span><span class="n">setRAM</span><span class="p">(</span><span class="n">target_ram_position</span><span class="p">,</span> <span class="n">new_value</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="OCAtari.get_ram"><a class="viewcode-back" href="../../ocatari/core.html#ocatari.core.OCAtari.get_ram">[docs]</a>    <span class="k">def</span> <span class="nf">get_ram</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="OCAtari.get_ram">
+<a class="viewcode-back" href="../../ocatari/core.html#ocatari.core.OCAtari.get_ram">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_ram</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the RAM state</span>
 
@@ -331,11 +575,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ale</span><span class="o">.</span><span class="n">getRAM</span><span class="p">()</span></div>
 
+
     <span class="k">def</span> <span class="nf">get_action_meanings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">get_action_meanings</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_obs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">_get_obs</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">getScreenRGB</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">unwrapped</span><span class="o">.</span><span class="n">ale</span><span class="o">.</span><span class="n">getScreenRGB</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_clone_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -365,9 +613,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">obj</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span> <span class="k">if</span> <span class="n">obj</span><span class="p">]</span> <span class="c1"># filtering out None objects</span>
 
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ocstate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A list of the object present in the environment. The objects are either \</span>
+<span class="sd">        ocatari.vision.GameObject or ocatari.ram.GameObject, depending on the extraction method.</span>
+
+<span class="sd">        :type: list of GameObjects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">ipdb</span><span class="p">;</span> <span class="n">ipdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">obj</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span> <span class="k">if</span> <span class="n">obj</span><span class="p">]</span> <span class="c1"># filtering out None objects</span>
+
     <span class="k">def</span> <span class="nf">render_explanations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">coefs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">]</span>
-        <span class="n">rendered</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="n">rendered</span> <span class="o">=</span> <span class="n">_zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">coef</span><span class="p">,</span> <span class="n">state_i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">coefs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="p">):</span>
             <span class="n">rendered</span> <span class="o">+=</span> <span class="n">coef</span> <span class="o">*</span> <span class="n">state_i</span>
         <span class="n">rendered</span> <span class="o">=</span> <span class="n">rendered</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
@@ -396,11 +656,159 @@
 
 
     <span class="k">def</span> <span class="nf">aggregated_render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coefs</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">]):</span>
-        <span class="n">rendered</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="n">rendered</span> <span class="o">=</span> <span class="n">_zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">coef</span><span class="p">,</span> <span class="n">state_i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">coefs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="p">):</span>
             <span class="n">rendered</span> <span class="o">+=</span> <span class="n">coef</span> <span class="o">*</span> <span class="n">state_i</span>
         <span class="n">rendered</span> <span class="o">=</span> <span class="n">rendered</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">rendered</span></div>
+
+
+
+<span class="k">class</span> <span class="nc">HideEnemyPong</span><span class="p">(</span><span class="n">OCAtari</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">obs_mode</span><span class="o">=</span><span class="s2">&quot;dqn&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_mode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;render_mode&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;render_mode&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_mode</span> <span class="o">==</span> <span class="s2">&quot;human&quot;</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;render_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_mode</span><span class="p">((</span><span class="mi">160</span><span class="p">,</span> <span class="mi">210</span><span class="p">),</span> <span class="n">flags</span><span class="o">=</span><span class="n">pygame</span><span class="o">.</span><span class="n">SCALED</span><span class="p">)</span>
+            <span class="n">pygame</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">env_name</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">hud</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_step_ram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_make_rendering</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_step_ram</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_make_rendering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">rgb_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ale</span><span class="o">.</span><span class="n">getScreenRGB</span><span class="p">()</span>
+        <span class="n">rgb_array</span><span class="p">[</span><span class="mi">34</span><span class="p">:</span><span class="mi">194</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">144</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">17</span><span class="p">]</span>
+
+        <span class="c1"># Render RGB image</span>
+        <span class="n">rgb_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">rgb_array</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">pixelcopy</span><span class="o">.</span><span class="n">array_to_surface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="p">,</span> <span class="n">rgb_array</span><span class="p">)</span>
+
+
+        <span class="c1"># # Render object coordinates and velocity vectors</span>
+        <span class="c1"># for obj in self.objects:</span>
+        <span class="c1">#     x = obj.x + obj.w / 2</span>
+        <span class="c1">#     y = obj.y + obj.h / 2</span>
+        <span class="c1">#     dx = obj.dx</span>
+        <span class="c1">#     dy = obj.dy</span>
+
+        <span class="c1">#     # Draw an &#39;X&#39; at object center</span>
+        <span class="c1">#     pygame.draw.line(self.screen, color=(255, 255, 255),</span>
+        <span class="c1">#                     start_pos=(x - 2, y - 2), end_pos=(x + 2, y + 2))</span>
+        <span class="c1">#     pygame.draw.line(self.screen, color=(255, 255, 255),</span>
+        <span class="c1">#                     start_pos=(x - 2, y + 2), end_pos=(x + 2, y - 2))</span>
+
+        <span class="c1">#     # Draw velocity vector</span>
+        <span class="c1">#     if dx != 0 or dy != 0:</span>
+        <span class="c1">#         pygame.draw.line(self.screen, color=(100, 200, 255),</span>
+        <span class="c1">#                         start_pos=(float(x), float(y)), end_pos=(x + 8 * dx, y + 8 * dy))</span>
+
+        <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">pump</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">_fill_buffer_dqn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ale</span><span class="o">.</span><span class="n">getScreenGrayscale</span><span class="p">()</span>
+        <span class="n">image</span><span class="p">[</span><span class="mi">34</span><span class="p">:</span><span class="mi">194</span><span class="p">,</span> <span class="mi">8</span><span class="p">:</span><span class="mi">24</span><span class="p">]</span> <span class="o">=</span> <span class="mi">87</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span>
+            <span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="mi">84</span><span class="p">),</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_tensor</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_uint8</span><span class="p">,</span>
+                                          <span class="o">**</span><span class="n">_tensor_kwargs</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">EasyDonkey</span><span class="p">(</span><span class="n">OCAtari</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_name</span><span class="o">=</span><span class="s2">&quot;ALE/DonkeyKong&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;ram&quot;</span><span class="p">,</span> <span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">obs_mode</span><span class="o">=</span><span class="s2">&quot;dqn&quot;</span><span class="p">,</span> <span class="n">render_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">render_oc_overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lasty</span> <span class="o">=</span> <span class="mi">154</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_lives</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">env_name</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">hud</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">,</span> <span class="n">render_mode</span><span class="p">,</span> <span class="n">render_oc_overlay</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_randomize_pos</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ret</span>
+        
+    <span class="k">def</span> <span class="nf">_step_ram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_step_ram</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ram</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ram</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;Player&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+                <span class="n">rew</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lasty</span> <span class="o">-</span> <span class="n">obj</span><span class="o">.</span><span class="n">y</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">miny</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">y</span>
+                <span class="n">reward</span> <span class="o">+=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">rew</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lasty</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">y</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_lives</span> <span class="o">!=</span> <span class="n">ram</span><span class="p">[</span><span class="mi">35</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_randomize_pos</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nb_lives</span> <span class="o">=</span> <span class="n">ram</span><span class="p">[</span><span class="mi">35</span><span class="p">]</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_lives</span> <span class="o">=</span> <span class="n">ram</span><span class="p">[</span><span class="mi">35</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">info</span>
+    
+    <span class="k">def</span> <span class="nf">_randomize_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pot_start_pos</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">49</span><span class="p">,</span> <span class="mi">154</span><span class="p">),</span> <span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">154</span><span class="p">),</span> <span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="mi">127</span><span class="p">),</span> <span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="mi">132</span><span class="p">),</span> <span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="mi">99</span><span class="p">),</span>
+                         <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">71</span><span class="p">),</span> <span class="p">(</span><span class="mi">53</span><span class="p">,</span> <span class="mi">48</span><span class="p">),</span> <span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="mi">43</span><span class="p">),</span> <span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="mi">21</span><span class="p">)]</span> <span class="c1">#+ [(49, 154) for _ in range(10)] #(78, 21)] </span>
+                        
+        <span class="n">rndinit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pot_start_pos</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># activate the game</span>
+        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)]</span> 
+        <span class="n">startp</span> <span class="o">=</span> <span class="n">pot_start_pos</span><span class="p">[</span><span class="n">rndinit</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">rp</span><span class="p">,</span> <span class="n">sp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="mi">19</span><span class="p">,</span> <span class="mi">27</span><span class="p">],</span> <span class="n">startp</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_ram</span><span class="p">(</span><span class="n">rp</span><span class="p">,</span> <span class="n">sp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lasty</span> <span class="o">=</span> <span class="n">startp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">extra_rew</span><span class="p">(</span><span class="n">game_objects</span><span class="p">,</span> <span class="n">episode_starts</span><span class="p">,</span> <span class="n">last_crashed</span><span class="p">):</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">game_objects</span> <span class="k">if</span> <span class="s2">&quot;Player&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Get current platform</span>
+    <span class="n">platform</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">player</span><span class="o">.</span><span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">player</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span> <span class="mi">16</span><span class="p">)</span> <span class="o">/</span> <span class="mi">48</span><span class="p">)</span>  <span class="c1"># 0: topmost, 3: lowest platform</span>
+
+    <span class="c1"># Encourage moving to the child</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">episode_starts</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">last_crashed</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">platform</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># even platform, encourage left movement</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="o">-</span> <span class="n">player</span><span class="o">.</span><span class="n">dx</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># encourage right movement</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">dx</span>
+
+        <span class="c1"># Encourage upward movement</span>
+        <span class="n">reward</span> <span class="o">-=</span> <span class="n">player</span><span class="o">.</span><span class="n">dy</span> <span class="o">/</span> <span class="mi">5</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">reward</span>
+
+
+<span class="k">class</span> <span class="nc">EasyKangaroo</span><span class="p">(</span><span class="n">OCAtari</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_name</span><span class="o">=</span><span class="s2">&quot;ALE/Kangaroo&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;ram&quot;</span><span class="p">,</span> <span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">obs_mode</span><span class="o">=</span><span class="s2">&quot;dqn&quot;</span><span class="p">,</span> <span class="n">render_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">render_oc_overlay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lasty</span> <span class="o">=</span> <span class="mi">154</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_lives</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">env_name</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">hud</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">,</span> <span class="n">render_mode</span><span class="p">,</span> <span class="n">render_oc_overlay</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_step_ram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_step_ram</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">last_crashed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_lives</span> <span class="o">!=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;lives&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_lives</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;lives&quot;</span><span class="p">]</span>
+        <span class="n">reward</span> <span class="o">+=</span> <span class="n">extra_rew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objects</span><span class="p">,</span> <span class="n">last_crashed</span><span class="p">,</span> <span class="n">last_crashed</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">info</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">EasyKangaroo</span><span class="p">(</span><span class="n">render_mode</span><span class="o">=</span><span class="s2">&quot;human&quot;</span><span class="p">)</span>
+    <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="c1"># _, rew, truncated, terminated, _ = env.step(env.action_space.sample())</span>
+        <span class="k">if</span> <span class="n">st</span> <span class="o">&lt;</span> <span class="mi">120</span><span class="p">:</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">elif</span> <span class="n">st</span> <span class="o">&lt;</span> <span class="mi">150</span><span class="p">:</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">rew</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rew</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">rew</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">truncated</span> <span class="ow">or</span> <span class="n">terminated</span><span class="p">:</span>
+            <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="n">env</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
 </pre></div>
 
            </div>

@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="python3.9" >
+<html class="writer-html5" lang="python3.9" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ocatari.ram._helper_methods &mdash; OCAtari  documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=478102dd" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=03ece63d"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -53,6 +55,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/automated_analysis.html">Automated Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/find_causative_ram.html">Causative RAM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/rem_gui.html">REM GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/reverse_engineering_helper.html">Reverse Engineering Helper</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/test_scripts.html">The test scripts</a></li>
 </ul>
@@ -118,10 +121,16 @@
         <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">number_str</span> <span class="o">+=</span> <span class="n">x</span>
         <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">number_str</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">number_str</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">number</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">number</span>
 
 
-<div class="viewcode-block" id="number_to_bitfield"><a class="viewcode-back" href="../../../ocatari/ram.html#ocatari.ram._helper_methods.number_to_bitfield">[docs]</a><span class="k">def</span> <span class="nf">number_to_bitfield</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="number_to_bitfield">
+<a class="viewcode-back" href="../../../ocatari/ram.html#ocatari.ram._helper_methods.number_to_bitfield">[docs]</a>
+<span class="k">def</span> <span class="nf">number_to_bitfield</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert number to 8 bit bitfield.</span>
 
@@ -140,7 +149,10 @@
     <span class="k">return</span> <span class="n">buffer</span></div>
 
 
-<div class="viewcode-block" id="bitfield_to_number"><a class="viewcode-back" href="../../../ocatari/ram.html#ocatari.ram._helper_methods.bitfield_to_number">[docs]</a><span class="k">def</span> <span class="nf">bitfield_to_number</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="bitfield_to_number">
+<a class="viewcode-back" href="../../../ocatari/ram.html#ocatari.ram._helper_methods.bitfield_to_number">[docs]</a>
+<span class="k">def</span> <span class="nf">bitfield_to_number</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts an int to a list of 1s and 0s which represent each bit of the input.</span>
 
@@ -167,7 +179,10 @@
 
     <span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="get_iou"><a class="viewcode-back" href="../../../ocatari/ram.html#ocatari.ram._helper_methods.get_iou">[docs]</a><span class="k">def</span> <span class="nf">get_iou</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_iou">
+<a class="viewcode-back" href="../../../ocatari/ram.html#ocatari.ram._helper_methods.get_iou">[docs]</a>
+<span class="k">def</span> <span class="nf">get_iou</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the intersection over union between two GameObjects. </span>
 <span class="sd">    |iou_image|</span>
@@ -194,6 +209,7 @@
     <span class="n">iou</span> <span class="o">=</span> <span class="n">interArea</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">boxAArea</span> <span class="o">+</span> <span class="n">boxBArea</span> <span class="o">-</span> <span class="n">interArea</span><span class="p">)</span>
     <span class="c1"># return the intersection over union value</span>
     <span class="k">return</span> <span class="n">iou</span></div>
+
 </pre></div>
 
            </div>

@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="python3.9" >
+<html class="writer-html5" lang="python3.9" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ocatari.ram.assault &mdash; OCAtari  documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=478102dd" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=03ece63d"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -53,6 +55,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/automated_analysis.html">Automated Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/find_causative_ram.html">Causative RAM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/rem_gui.html">REM GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/reverse_engineering_helper.html">Reverse Engineering Helper</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/test_scripts.html">The test scripts</a></li>
 </ul>
@@ -91,11 +94,11 @@
              
   <h1>Source code for ocatari.ram.assault</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">._helper_methods</span> <span class="kn">import</span> <span class="n">_convert_number</span>
-<span class="kn">from</span> <span class="nn">.game_objects</span> <span class="kn">import</span> <span class="n">GameObject</span><span class="p">,</span> <span class="n">ScoreObject</span>
+<span class="kn">from</span> <span class="nn">.game_objects</span> <span class="kn">import</span> <span class="n">GameObject</span><span class="p">,</span> <span class="n">ValueObject</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">RAM extraction for the game ASSAULT. Supported modes: raw, revised.</span>
+<span class="sd">RAM extraction for the game ASSAULT. Supported modes: ram.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="n">MAX_NB_OBJECTS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Player&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;PlayerMissileVertical&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;PlayerMissileHorizontal&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;MotherShip&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
@@ -103,12 +106,15 @@
 <span class="n">MAX_NB_OBJECTS_HUD</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;PlayerScore&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;Lives&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;Health&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
 
 
-<div class="viewcode-block" id="Player"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.Player">[docs]</a><span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<div class="viewcode-block" id="Player">
+<a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.Player">[docs]</a>
+<span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The player figure i.e., the cannon. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span>
@@ -116,12 +122,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="PlayerMissileVertical"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.PlayerMissileVertical">[docs]</a><span class="k">class</span> <span class="nc">PlayerMissileVertical</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PlayerMissileVertical">
+<a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.PlayerMissileVertical">[docs]</a>
+<span class="k">class</span> <span class="nc">PlayerMissileVertical</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The projectile shot in the vertical direction from the cannon. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span>
@@ -129,25 +139,34 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="PlayerMissileHorizontal"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.PlayerMissileHorizontal">[docs]</a><span class="k">class</span> <span class="nc">PlayerMissileHorizontal</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PlayerMissileHorizontal">
+<a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.PlayerMissileHorizontal">[docs]</a>
+<span class="k">class</span> <span class="nc">PlayerMissileHorizontal</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The projectiles shot in the horizontal direction from the cannon. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
      
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_xy</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">214</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="MotherShip"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.MotherShip">[docs]</a><span class="k">class</span> <span class="nc">MotherShip</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MotherShip">
+<a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.MotherShip">[docs]</a>
+<span class="k">class</span> <span class="nc">MotherShip</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The mother ship at the top, that continually deploys the smaller drones. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">16</span>
@@ -155,12 +174,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="Enemy"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.Enemy">[docs]</a><span class="k">class</span> <span class="nc">Enemy</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Enemy">
+<a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.Enemy">[docs]</a>
+<span class="k">class</span> <span class="nc">Enemy</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The enemy drones deployed by the mother ship. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">8</span>
@@ -168,12 +191,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="EnemyMissile"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.EnemyMissile">[docs]</a><span class="k">class</span> <span class="nc">EnemyMissile</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EnemyMissile">
+<a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.EnemyMissile">[docs]</a>
+<span class="k">class</span> <span class="nc">EnemyMissile</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The projectiles shot at the player by the enemy drones.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span>
@@ -181,12 +208,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="PlayerScore"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.PlayerScore">[docs]</a><span class="k">class</span> <span class="nc">PlayerScore</span><span class="p">(</span><span class="n">ScoreObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PlayerScore">
+<a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.PlayerScore">[docs]</a>
+<span class="k">class</span> <span class="nc">PlayerScore</span><span class="p">(</span><span class="n">ValueObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The player&#39;s score display (HUD). </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">195</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">61</span>
@@ -198,12 +229,16 @@
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">PlayerScore</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">xy</span> <span class="o">==</span> <span class="n">o</span><span class="o">.</span><span class="n">xy</span></div>
 
 
-<div class="viewcode-block" id="Lives"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.Lives">[docs]</a><span class="k">class</span> <span class="nc">Lives</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Lives">
+<a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.Lives">[docs]</a>
+<span class="k">class</span> <span class="nc">Lives</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The indicator for the remaining lives of the player (HUD). </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">170</span>
@@ -211,12 +246,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="Health"><a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.Health">[docs]</a><span class="k">class</span> <span class="nc">Health</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Health">
+<a class="viewcode-back" href="../../../ocatari/games/assault.html#ocatari.ram.assault.Health">[docs]</a>
+<span class="k">class</span> <span class="nc">Health</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The temperature meter of the cannon (HUD). </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">192</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">72</span>
@@ -224,13 +263,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
-<span class="k">def</span> <span class="nf">_init_objects_assault_ram</span><span class="p">(</span><span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">_init_objects_ram</span><span class="p">(</span><span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Re)Initialize the objects</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">objects</span> <span class="o">=</span> <span class="p">[</span><span class="n">Player</span><span class="p">(),</span> <span class="n">PlayerMissileVertical</span><span class="p">(),</span> <span class="n">Enemy</span><span class="p">(),</span> <span class="n">EnemyMissile</span><span class="p">(),</span> <span class="n">MotherShip</span><span class="p">()]</span>
+    <span class="n">objects</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1">#Player(), PlayerMissileVertical(), Enemy(), EnemyMissile(), MotherShip()</span>
+    <span class="n">objects</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">hud</span><span class="p">:</span>
-        <span class="n">objects</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">PlayerScore</span><span class="p">(),</span> <span class="n">Health</span><span class="p">(),</span> <span class="n">Lives</span><span class="p">()])</span>
+        <span class="n">objects</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">15</span><span class="p">)</span> <span class="c1">#[PlayerScore(), Health(), Lives()]</span>
     <span class="k">return</span> <span class="n">objects</span>
 
 
@@ -257,15 +298,15 @@
 <span class="n">enemy_missile_x</span> <span class="o">=</span> <span class="mi">0</span>
 
 
-<span class="k">def</span> <span class="nf">_detect_objects_assault_revised</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">ram_state</span><span class="p">,</span> <span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_detect_objects_ram</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">ram_state</span><span class="p">,</span> <span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    For all objects:</span>
 <span class="sd">    (x, y, w, h, r, g, b)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">del</span> <span class="n">objects</span><span class="p">[</span><span class="mi">0</span><span class="p">:]</span>
 
     <span class="c1"># player</span>
     <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">()</span>
+    <span class="n">objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">player</span>
     <span class="n">x_mod</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span>
     <span class="n">x_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_mod</span> <span class="o">//</span> <span class="mi">16</span><span class="p">)</span> <span class="o">%</span> <span class="mi">8</span>
     <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">128</span><span class="p">:</span>
@@ -275,7 +316,6 @@
         <span class="n">player</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="mi">178</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">player</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">player_x_pos_128</span><span class="p">[</span><span class="n">ram_state</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">%</span> <span class="mi">16</span><span class="p">]</span> <span class="o">-</span> <span class="n">x_diff</span><span class="p">,</span> <span class="mi">178</span>
-    <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
 
     <span class="c1"># player missile</span>
     <span class="n">missile</span> <span class="o">=</span> <span class="n">PlayerMissileVertical</span><span class="p">()</span>
@@ -336,22 +376,40 @@
                 <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">9</span>
 
             <span class="n">missile</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span>
-        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">missile</span><span class="p">)</span>
+        <span class="n">objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">missile</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">global</span> <span class="n">horizontal_pos</span>
+    <span class="k">global</span> <span class="n">horizontal_pos_right</span>
+    <span class="k">global</span> <span class="n">horizontal_pos_left</span>
+
     <span class="c1"># player missile horizontal</span>
     <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">24</span><span class="p">]</span> <span class="o">==</span> <span class="mi">88</span><span class="p">:</span>
         <span class="n">mis</span> <span class="o">=</span> <span class="n">PlayerMissileHorizontal</span><span class="p">()</span>
-        <span class="c1"># print(horizontal_pos)</span>
-        <span class="k">if</span> <span class="n">horizontal_pos</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">horizontal_pos</span> <span class="o">&gt;</span> <span class="mi">130</span> <span class="ow">or</span> <span class="n">horizontal_pos</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">:</span>
-            <span class="n">horizontal_pos</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">x</span>
-        <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">26</span><span class="p">]</span> <span class="o">==</span> <span class="mi">128</span><span class="p">:</span>    <span class="c1"># shoot to the right</span>
-            <span class="n">horizontal_pos</span> <span class="o">=</span> <span class="n">horizontal_pos</span> <span class="o">+</span> <span class="mi">10</span>
-        <span class="k">elif</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">26</span><span class="p">]</span> <span class="o">==</span> <span class="mi">64</span><span class="p">:</span>
-            <span class="n">horizontal_pos</span> <span class="o">=</span> <span class="n">horizontal_pos</span> <span class="o">-</span> <span class="mi">10</span>
-        <span class="n">mis</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">horizontal_pos</span><span class="p">,</span> <span class="mi">181</span>
-        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mis</span><span class="p">)</span>
+        <span class="n">mis_offset</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="c1">#if horizontal_pos == 0 or horizontal_pos &gt; 130 or horizontal_pos &lt; 20:</span>
+        <span class="c1">#    horizontal_pos = player.x</span>
+        <span class="k">if</span> <span class="n">horizontal_pos</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">horizontal_pos_right</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">player</span><span class="o">.</span><span class="n">w</span> <span class="o">+</span> <span class="n">mis_offset</span>
+            <span class="n">horizontal_pos_left</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">x</span>
+
+        <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">26</span><span class="p">]</span> <span class="o">==</span> <span class="mi">128</span><span class="p">:</span>    <span class="c1"># shot to the right</span>
+            
+            <span class="n">horizontal_pos_right</span> <span class="o">=</span>  <span class="n">horizontal_pos_right</span> <span class="o">+</span> <span class="mi">8</span>
+            <span class="n">horizontal_pos</span> <span class="o">=</span> <span class="n">horizontal_pos_right</span>
+            <span class="n">mis</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">horizontal_pos_right</span><span class="p">,</span> <span class="mi">181</span>   
+
+        <span class="k">elif</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">26</span><span class="p">]</span> <span class="o">==</span> <span class="mi">64</span><span class="p">:</span>   <span class="c1"># shot to the left</span>
+
+            <span class="n">horizontal_pos_left</span> <span class="o">=</span> <span class="n">horizontal_pos_left</span> <span class="o">-</span> <span class="mi">8</span>
+            <span class="n">horizontal_pos</span> <span class="o">=</span> <span class="n">horizontal_pos_left</span>
+            <span class="n">mis</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">horizontal_pos_left</span><span class="p">,</span> <span class="mi">181</span>
+        
+        <span class="n">objects</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">mis</span>
+        
     <span class="k">else</span><span class="p">:</span>
+        <span class="n">objects</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">horizontal_pos</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="c1"># mother ship</span>
@@ -368,7 +426,7 @@
 
     <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">==</span> <span class="mi">112</span><span class="p">:</span>    <span class="c1"># mother ship changes color</span>
         <span class="n">mother_ship</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">184</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">162</span>
-    <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mother_ship</span><span class="p">)</span>
+    <span class="n">objects</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">mother_ship</span>
 
     <span class="c1"># enemy</span>
     <span class="k">global</span> <span class="n">enemy_missile_x</span>
@@ -448,10 +506,10 @@
             <span class="k">elif</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">40</span><span class="p">]</span> <span class="o">==</span> <span class="mi">212</span><span class="p">:</span>  <span class="c1"># set enemy color</span>
                 <span class="n">enemy2</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">20</span>
 
-            <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">enemy2</span><span class="p">)</span>
+            <span class="n">objects</span><span class="p">[</span><span class="mi">4</span><span class="o">+</span><span class="n">en</span><span class="p">]</span> <span class="o">=</span> <span class="n">enemy2</span>
 
         <span class="k">if</span> <span class="n">enemy_appearance</span> <span class="o">!=</span> <span class="mi">96</span><span class="p">:</span>
-            <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">enemy</span><span class="p">)</span>
+            <span class="n">objects</span><span class="p">[</span><span class="mi">4</span><span class="o">+</span><span class="n">en</span><span class="p">]</span> <span class="o">=</span> <span class="n">enemy</span>
 
         <span class="k">if</span> <span class="n">en</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">enemy_missile_x</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">75</span><span class="p">]</span> <span class="o">==</span> <span class="mi">128</span>\
                 <span class="ow">and</span> <span class="p">(</span><span class="n">enemy_appearance</span> <span class="o">==</span> <span class="mi">192</span> <span class="ow">or</span> <span class="n">enemy_appearance</span> <span class="o">==</span> <span class="mi">160</span> <span class="ow">or</span> <span class="n">enemy_appearance</span> <span class="o">==</span> <span class="mi">224</span><span class="p">):</span>
@@ -485,7 +543,7 @@
             <span class="n">missile</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">enemy_missile_x</span><span class="p">,</span> <span class="mi">60</span> <span class="o">+</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">110</span><span class="p">]</span>
             <span class="n">missile</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">53</span>
 
-        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">missile</span><span class="p">)</span>
+        <span class="n">objects</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="n">missile</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">enemy_missile_x</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -494,13 +552,13 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
             <span class="n">sc</span> <span class="o">=</span> <span class="n">PlayerScore</span><span class="p">()</span>
             <span class="n">sc</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="mi">96</span> <span class="o">-</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">i</span><span class="p">,</span> <span class="mi">2</span>
-            <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+            <span class="n">objects</span><span class="p">[</span><span class="mi">8</span><span class="o">+</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sc</span>
 
         <span class="c1"># lives</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ram_state</span><span class="p">[</span><span class="mi">101</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
             <span class="n">liv</span> <span class="o">=</span> <span class="n">Lives</span><span class="p">()</span>
             <span class="n">liv</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="mi">15</span> <span class="o">+</span> <span class="mi">16</span> <span class="o">*</span> <span class="n">i</span><span class="p">,</span> <span class="mi">192</span>
-            <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">liv</span><span class="p">)</span>
+            <span class="n">objects</span><span class="p">[</span><span class="mi">14</span><span class="o">+</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">liv</span>
 
         <span class="c1"># health</span>
         <span class="n">health</span> <span class="o">=</span> <span class="n">Health</span><span class="p">()</span>
@@ -537,7 +595,7 @@
 
         <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">21</span><span class="p">]</span> <span class="o">==</span> <span class="mi">70</span><span class="p">:</span>
             <span class="n">health</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">72</span>
-        <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">health</span><span class="p">)</span>
+        <span class="n">objects</span><span class="p">[</span><span class="mi">14</span><span class="o">+</span><span class="n">ram_state</span><span class="p">[</span><span class="mi">101</span><span class="p">]]</span> <span class="o">=</span> <span class="n">health</span>
 
 
 <span class="k">def</span> <span class="nf">_detect_objects_assault_raw</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">ram_state</span><span class="p">):</span>

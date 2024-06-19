@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="python3.9" >
+<html class="writer-html5" lang="python3.9" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ocatari.ram.asterix &mdash; OCAtari  documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=478102dd" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=03ece63d"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -53,6 +55,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/automated_analysis.html">Automated Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/find_causative_ram.html">Causative RAM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/rem_gui.html">REM GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/reverse_engineering_helper.html">Reverse Engineering Helper</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/test_scripts.html">The test scripts</a></li>
 </ul>
@@ -95,12 +98,14 @@
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="n">MAX_NB_OBJECTS</span> <span class="o">=</span>  <span class="p">{</span><span class="s2">&quot;Player&quot;</span> <span class="p">:</span>  <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Enemy&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Cauldron&quot;</span> <span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Reward50&quot;</span> <span class="p">:</span> <span class="mi">8</span><span class="p">}</span>
-<span class="n">MAX_NB_OBJECTS_HUD</span> <span class="o">=</span>  <span class="p">{</span><span class="s2">&quot;Player&quot;</span> <span class="p">:</span>  <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Enemy&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Cauldron&quot;</span> <span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Reward50&quot;</span> <span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Score&quot;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+
+<span class="n">MAX_NB_OBJECTS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Player&quot;</span> <span class="p">:</span>  <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Enemy&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Reward&quot;</span> <span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Consumable&quot;</span> <span class="p">:</span> <span class="mi">8</span><span class="p">}</span>
+<span class="n">MAX_NB_OBJECTS_HUD</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Player&quot;</span> <span class="p">:</span>  <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Enemy&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Reward&quot;</span> <span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Consumable&quot;</span> <span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;Score&quot;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
 
 
-
-<div class="viewcode-block" id="Player"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Player">[docs]</a><span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<div class="viewcode-block" id="Player">
+<a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Player">[docs]</a>
+<span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">53</span>
@@ -109,16 +114,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="Cauldron"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Cauldron">[docs]</a><span class="k">class</span> <span class="nc">Cauldron</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">167</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">26</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">10</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
-
-
-<div class="viewcode-block" id="Enemy"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Enemy">[docs]</a><span class="k">class</span> <span class="nc">Enemy</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<div class="viewcode-block" id="Enemy">
+<a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Enemy">[docs]</a>
+<span class="k">class</span> <span class="nc">Enemy</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">228</span><span class="p">,</span> <span class="mi">111</span><span class="p">,</span> <span class="mi">111</span>
@@ -127,16 +125,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="Score"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Score">[docs]</a><span class="k">class</span> <span class="nc">Score</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Score">
+<a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Score">[docs]</a>
+<span class="k">class</span> <span class="nc">Score</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">53</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">True</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="Lives"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Lives">[docs]</a><span class="k">class</span> <span class="nc">Lives</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Lives">
+<a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Lives">[docs]</a>
+<span class="k">class</span> <span class="nc">Lives</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">53</span>
@@ -145,126 +150,31 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="Helmet"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Helmet">[docs]</a><span class="k">class</span> <span class="nc">Helmet</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<div class="viewcode-block" id="Consumable">
+<a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Consumable">[docs]</a>
+<span class="k">class</span> <span class="nc">Consumable</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span> <span class="c1">#can have different colors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="Shield"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Shield">[docs]</a><span class="k">class</span> <span class="nc">Shield</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<div class="viewcode-block" id="Reward">
+<a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Reward">[docs]</a>
+<span class="k">class</span> <span class="nc">Reward</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">214</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">11</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
-
-
-<div class="viewcode-block" id="Lamp"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Lamp">[docs]</a><span class="k">class</span> <span class="nc">Lamp</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="mi">53</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span> <span class="c1">#can have different colors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
 
-
-<div class="viewcode-block" id="Apple"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Apple">[docs]</a><span class="k">class</span> <span class="nc">Apple</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">184</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
-
-
-<div class="viewcode-block" id="Fish"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Fish">[docs]</a><span class="k">class</span> <span class="nc">Fish</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">198</span><span class="p">,</span> <span class="mi">89</span><span class="p">,</span> <span class="mi">179</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">5</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
-
-
-<div class="viewcode-block" id="Meat"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Meat">[docs]</a><span class="k">class</span> <span class="nc">Meat</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">184</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">11</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
-
-
-<div class="viewcode-block" id="Mug"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Mug">[docs]</a><span class="k">class</span> <span class="nc">Mug</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">184</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
-
-
-<div class="viewcode-block" id="Reward50"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Reward50">[docs]</a><span class="k">class</span> <span class="nc">Reward50</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">198</span><span class="p">,</span> <span class="mi">89</span><span class="p">,</span> <span class="mi">179</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">11</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
-
-
-<div class="viewcode-block" id="Reward100"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Reward100">[docs]</a><span class="k">class</span> <span class="nc">Reward100</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">135</span><span class="p">,</span> <span class="mi">183</span><span class="p">,</span> <span class="mi">84</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
-
-
-<div class="viewcode-block" id="Reward200"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Reward200">[docs]</a><span class="k">class</span> <span class="nc">Reward200</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">195</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">61</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
-
-
-<div class="viewcode-block" id="Reward300"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Reward300">[docs]</a><span class="k">class</span> <span class="nc">Reward300</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">213</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">74</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
-
-
-<div class="viewcode-block" id="Reward400"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Reward400">[docs]</a><span class="k">class</span> <span class="nc">Reward400</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">135</span><span class="p">,</span> <span class="mi">183</span><span class="p">,</span> <span class="mi">84</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
-
-
-<div class="viewcode-block" id="Reward500"><a class="viewcode-back" href="../../../ocatari/games/asterix.html#ocatari.ram.asterix.Reward500">[docs]</a><span class="k">class</span> <span class="nc">Reward500</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">163</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">21</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
 <span class="c1"># parses MAX_NB* dicts, returns default init list of objects</span>
 <span class="k">def</span> <span class="nf">_get_max_objects</span><span class="p">(</span><span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-
     <span class="k">def</span> <span class="nf">fromdict</span><span class="p">(</span><span class="n">max_obj_dict</span><span class="p">):</span>
         <span class="n">objects</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">mod</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">]</span>
@@ -278,7 +188,7 @@
     <span class="k">return</span> <span class="n">fromdict</span><span class="p">(</span><span class="n">MAX_NB_OBJECTS</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_init_objects_asterix_ram</span><span class="p">(</span><span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_init_objects_ram</span><span class="p">(</span><span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Re)Initialize the objects</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -304,7 +214,7 @@
     <span class="c1"># ram_state[7]</span>
     <span class="c1"># not known what they are for exactly</span>
 
-<span class="k">def</span> <span class="nf">_detect_objects_asterix_revised</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">ram_state</span><span class="p">,</span> <span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_detect_objects_ram</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">ram_state</span><span class="p">,</span> <span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="c1"># player</span>
     <span class="n">player</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">player</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">41</span><span class="p">],</span> <span class="mi">26</span> <span class="o">+</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">39</span><span class="p">]</span> <span class="o">*</span> <span class="mi">16</span>
@@ -315,38 +225,25 @@
             <span class="n">player</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">11</span>
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># player is wide (is dying)</span>
         <span class="n">player</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">11</span>
-    <span class="n">player</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">53</span>
-
 
     <span class="n">lives_nr</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">83</span><span class="p">]</span>
-    <span class="n">reward_class</span> <span class="o">=</span> <span class="p">(</span><span class="n">Reward50</span><span class="p">,</span> <span class="n">Reward100</span><span class="p">,</span> <span class="n">Reward200</span><span class="p">,</span> <span class="n">Reward300</span><span class="p">,</span> <span class="n">Reward400</span><span class="p">,</span> <span class="n">Reward500</span><span class="p">)</span>  <span class="c1"># , Reward500, Reward500)</span>
-    <span class="n">eatable_class</span> <span class="o">=</span> <span class="p">(</span><span class="n">Cauldron</span><span class="p">,</span> <span class="n">Helmet</span><span class="p">,</span> <span class="n">Shield</span><span class="p">,</span> <span class="n">Lamp</span><span class="p">,</span> <span class="n">Apple</span><span class="p">,</span> <span class="n">Fish</span><span class="p">,</span> <span class="n">Meat</span><span class="p">,</span> <span class="n">Mug</span><span class="p">)</span>
+    <span class="c1">#reward_class = (Reward50, Reward100, Reward200, Reward300, Reward400, Reward500)  # , Reward500, Reward500)</span>
+    <span class="c1">#eatable_class = (Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat, Mug)</span>
     <span class="c1"># get lanes</span>
     <span class="k">if</span> <span class="n">hud</span><span class="p">:</span>
         <span class="n">offset</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">lives_nr</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">offset</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">lanes</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="n">offset</span><span class="p">:]</span>
-    <span class="n">const</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">54</span><span class="p">]</span> <span class="o">%</span> <span class="mi">8</span>
+    <span class="c1">#const = ram_state[54] % 8</span>
     <span class="n">reward_lanes</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">18</span><span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">11</span><span class="p">:</span>
             <span class="n">objects</span><span class="p">[</span><span class="n">offset</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">elif</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">73</span> <span class="o">+</span> <span class="n">i</span><span class="p">]:</span>  <span class="c1"># set to lane number if there is reward in that lane</span>
             <span class="n">reward_lanes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>  <span class="c1"># 0-7 instead actual 1-8</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">lanes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">reward_class</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">const</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># 50 reward</span>
-                    <span class="n">rew</span> <span class="o">=</span> <span class="n">Reward50</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">const</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># 100 reward</span>
-                    <span class="n">rew</span> <span class="o">=</span> <span class="n">Reward100</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">const</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># 200 reward</span>
-                    <span class="n">rew</span> <span class="o">=</span> <span class="n">Reward200</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">const</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># 300 reward</span>
-                    <span class="n">rew</span> <span class="o">=</span> <span class="n">Reward300</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">const</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>  <span class="c1"># 400 reward</span>
-                    <span class="n">rew</span> <span class="o">=</span> <span class="n">Reward400</span><span class="p">()</span>
-                <span class="k">else</span><span class="p">:</span>  <span class="c1"># 500 reward</span>
-                    <span class="n">rew</span> <span class="o">=</span> <span class="n">Reward500</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">lanes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Reward</span><span class="p">:</span>
+                <span class="n">rew</span> <span class="o">=</span> <span class="n">Reward</span><span class="p">()</span>
                 <span class="n">objects</span><span class="p">[</span><span class="n">offset</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rew</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">rew</span> <span class="o">=</span> <span class="n">lanes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -359,23 +256,8 @@
                 <span class="n">en</span> <span class="o">=</span> <span class="n">lanes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">en</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">42</span> <span class="o">+</span> <span class="n">i</span><span class="p">],</span> <span class="mi">26</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">16</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">lanes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">eatable_class</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">const</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">instance</span> <span class="o">=</span> <span class="n">Cauldron</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">const</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">instance</span> <span class="o">=</span> <span class="n">Helmet</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">const</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="n">instance</span> <span class="o">=</span> <span class="n">Shield</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">const</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-                    <span class="n">instance</span> <span class="o">=</span> <span class="n">Lamp</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">const</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-                    <span class="n">instance</span> <span class="o">=</span> <span class="n">Apple</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">const</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
-                    <span class="n">instance</span> <span class="o">=</span> <span class="n">Fish</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">const</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-                    <span class="n">instance</span> <span class="o">=</span> <span class="n">Meat</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="n">const</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
-                    <span class="n">instance</span> <span class="o">=</span> <span class="n">Mug</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">lanes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Consumable</span><span class="p">:</span>
+                <span class="n">instance</span> <span class="o">=</span> <span class="n">Consumable</span><span class="p">()</span>
                 <span class="n">objects</span><span class="p">[</span><span class="n">offset</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">instance</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">instance</span> <span class="o">=</span> <span class="n">lanes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -385,6 +267,7 @@
         <span class="n">score</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">dec_value</span> <span class="o">=</span> <span class="n">_convert_number</span><span class="p">(</span><span class="n">ram_state</span><span class="p">[</span><span class="mi">94</span><span class="p">])</span> <span class="o">*</span> <span class="mi">10000</span> <span class="o">+</span> <span class="n">_convert_number</span><span class="p">(</span><span class="n">ram_state</span><span class="p">[</span><span class="mi">95</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> <span class="n">_convert_number</span><span class="p">(</span>
             <span class="n">ram_state</span><span class="p">[</span><span class="mi">96</span><span class="p">])</span>
+        <span class="n">score</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">dec_value</span>
         <span class="k">if</span> <span class="n">dec_value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">score</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">184</span>
             <span class="n">score</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span>
@@ -392,15 +275,20 @@
             <span class="n">digits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">dec_value</span><span class="p">))</span>
             <span class="n">score</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="mi">96</span> <span class="o">-</span> <span class="n">digits</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">184</span>
             <span class="n">score</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">+</span> <span class="n">digits</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">7</span>
-
         <span class="k">if</span> <span class="n">lives_nr</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">lives</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">lives</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">lives</span> <span class="o">=</span> <span class="n">Lives</span><span class="p">()</span>
+                <span class="n">objects</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">lives</span>
             <span class="n">lives</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">169</span>
             <span class="n">lives</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objects</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">Lives</span><span class="p">):</span>
             <span class="k">del</span> <span class="n">objects</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">lives_nr</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
             <span class="n">lives</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">lives</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">lives</span> <span class="o">=</span> <span class="n">Lives</span><span class="p">()</span>
+                <span class="n">objects</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">lives</span>
             <span class="n">lives</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">+</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">169</span>
             <span class="n">lives</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objects</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">Lives</span><span class="p">):</span>

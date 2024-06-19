@@ -13,9 +13,6 @@ Game Objects Details
 
 
 
-
-
-
 .. .. automodule:: ocatari.ram.berzerk
 ..     :members:
 ..     :inherited-members: Module
