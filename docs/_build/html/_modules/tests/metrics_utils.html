@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="python3.9" >
+<html class="writer-html5" lang="python3.9" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tests.metrics_utils &mdash; OCAtari  documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=478102dd" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=03ece63d"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -53,6 +55,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/automated_analysis.html">Automated Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/find_causative_ram.html">Causative RAM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/rem_gui.html">REM GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/reverse_engineering_helper.html">Reverse Engineering Helper</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/test_scripts.html">The test scripts</a></li>
 </ul>
@@ -111,7 +114,9 @@
     <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))}</span>
 
 
-<div class="viewcode-block" id="DetectionScores"><a class="viewcode-back" href="../../tests/tests_utils.html#tests.metrics_utils.DetectionScores">[docs]</a><span class="k">class</span> <span class="nc">DetectionScores</span><span class="p">():</span>
+<div class="viewcode-block" id="DetectionScores">
+<a class="viewcode-back" href="../../tests/tests_utils.html#tests.metrics_utils.DetectionScores">[docs]</a>
+<span class="k">class</span> <span class="nc">DetectionScores</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Keeps track of true positives, false positive and false negative of the detected objects. </span>
 <span class="sd">    Allow to fast compute precision, recall, and f1 scores.</span>
@@ -121,7 +126,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">false_pos</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">false_neg</span> <span class="o">=</span> <span class="p">{}</span>
 
-<div class="viewcode-block" id="DetectionScores.update"><a class="viewcode-back" href="../../tests/tests_utils.html#tests.metrics_utils.DetectionScores.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">det_dict</span><span class="p">):</span>
+<div class="viewcode-block" id="DetectionScores.update">
+<a class="viewcode-back" href="../../tests/tests_utils.html#tests.metrics_utils.DetectionScores.update">[docs]</a>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">det_dict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -134,6 +141,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">true_pos</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">+=</span> <span class="n">TP</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">false_pos</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">+=</span> <span class="n">FP</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">false_neg</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">+=</span> <span class="n">FN</span></div>
+
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">cat_precisions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -157,10 +165,13 @@
         <span class="n">prec</span><span class="p">,</span> <span class="n">rec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cat_precisions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cat_recalls</span>
         <span class="n">f_scores</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">prec</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">prec</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">rec</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">prec</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">rec</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">f_scores</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">f_scores</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">prec</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">*</span> <span class="n">rec</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">prec</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">+</span> <span class="n">rec</span><span class="p">[</span><span class="n">cat</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="n">f_scores</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">f_scores</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">prec</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">*</span> <span class="n">rec</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">prec</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">+</span> <span class="n">rec</span><span class="p">[</span><span class="n">cat</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">f_scores</span>
 
     <span class="nd">@property</span>
@@ -196,9 +207,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;precision&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_precision</span><span class="p">,</span> <span class="s2">&quot;recall&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_recall</span><span class="p">,</span> <span class="s2">&quot;f-score&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_f_score</span><span class="p">,</span>
                 <span class="s2">&quot;iou&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">iou</span><span class="p">}</span></div>
+
     
 
-<div class="viewcode-block" id="print_all_stats"><a class="viewcode-back" href="../../tests/tests_utils.html#tests.metrics_utils.print_all_stats">[docs]</a><span class="k">def</span> <span class="nf">print_all_stats</span><span class="p">(</span><span class="n">all_stats</span><span class="p">):</span>
+<div class="viewcode-block" id="print_all_stats">
+<a class="viewcode-back" href="../../tests/tests_utils.html#tests.metrics_utils.print_all_stats">[docs]</a>
+<span class="k">def</span> <span class="nf">print_all_stats</span><span class="p">(</span><span class="n">all_stats</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Nicely prints the stats in the terminal.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -236,7 +250,10 @@
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="n">linelength</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_iou"><a class="viewcode-back" href="../../tests/tests_utils.html#tests.metrics_utils.get_iou">[docs]</a><span class="k">def</span> <span class="nf">get_iou</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_iou">
+<a class="viewcode-back" href="../../tests/tests_utils.html#tests.metrics_utils.get_iou">[docs]</a>
+<span class="k">def</span> <span class="nf">get_iou</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the intersection over union between two GameObjects. </span>
 
@@ -264,6 +281,7 @@
     <span class="k">return</span> <span class="n">iou</span></div>
 
 
+
 <span class="k">def</span> <span class="nf">_make_class_lists</span><span class="p">(</span><span class="n">ram_list</span><span class="p">,</span> <span class="n">vision_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a dictionary of object category liked with both the ram objs of this </span>
@@ -285,7 +303,9 @@
     <span class="k">return</span> <span class="n">cat_lists</span>
 
 
-<div class="viewcode-block" id="detection_stats"><a class="viewcode-back" href="../../tests/tests_utils.html#tests.metrics_utils.detection_stats">[docs]</a><span class="k">def</span> <span class="nf">detection_stats</span><span class="p">(</span><span class="n">ram_list</span><span class="p">,</span> <span class="n">vision_list</span><span class="p">):</span>
+<div class="viewcode-block" id="detection_stats">
+<a class="viewcode-back" href="../../tests/tests_utils.html#tests.metrics_utils.detection_stats">[docs]</a>
+<span class="k">def</span> <span class="nf">detection_stats</span><span class="p">(</span><span class="n">ram_list</span><span class="p">,</span> <span class="n">vision_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the Precision, Recall and F1_score via comparing the RAM and vision lists.</span>
 <span class="sd">    These metrics are computed based on MIN_DIST_DETECTION (default =5).</span>
@@ -320,7 +340,10 @@
     <span class="k">return</span> <span class="n">dets</span></div>
 
 
-<div class="viewcode-block" id="get_all_metrics"><a class="viewcode-back" href="../../tests/tests_utils.html#tests.metrics_utils.get_all_metrics">[docs]</a><span class="k">def</span> <span class="nf">get_all_metrics</span><span class="p">(</span><span class="n">ram_list</span><span class="p">,</span> <span class="n">vision_list</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_all_metrics">
+<a class="viewcode-back" href="../../tests/tests_utils.html#tests.metrics_utils.get_all_metrics">[docs]</a>
+<span class="k">def</span> <span class="nf">get_all_metrics</span><span class="p">(</span><span class="n">ram_list</span><span class="p">,</span> <span class="n">vision_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the:</span>
 
@@ -379,6 +402,7 @@
             <span class="s2">&quot;objs_in_ram&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">ram_list</span><span class="p">],</span>
             <span class="s2">&quot;objs_in_vision&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">vision_list</span><span class="p">],</span> 
             <span class="s2">&quot;dets&quot;</span><span class="p">:</span> <span class="n">dets</span><span class="p">}</span></div>
+
 </pre></div>
 
            </div>

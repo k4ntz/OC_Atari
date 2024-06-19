@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="python3.9" >
+<html class="writer-html5" lang="python3.9" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ocatari.ram.beamrider &mdash; OCAtari  documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=478102dd" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=03ece63d"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -53,6 +55,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/automated_analysis.html">Automated Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/find_causative_ram.html">Causative RAM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/rem_gui.html">REM GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/reverse_engineering_helper.html">Reverse Engineering Helper</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts/test_scripts.html">The test scripts</a></li>
 </ul>
@@ -91,14 +94,19 @@
              
   <h1>Source code for ocatari.ram.beamrider</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">.game_objects</span> <span class="kn">import</span> <span class="n">GameObject</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">RAM extraction for the game KANGUROO. Supported modes: raw, revised.</span>
+<span class="sd">RAM extraction for the game KANGUROO. Supported modes: ram.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="n">MAX_NB_OBJECTS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Player&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Player_Projectile&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Torpedos&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>  <span class="c1"># Asteroid count can get really high</span>
+<span class="n">MAX_NB_OBJECTS_HUD</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Life&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;HUD&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
 
-<div class="viewcode-block" id="Player"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Player">[docs]</a><span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+<div class="viewcode-block" id="Player">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Player">[docs]</a>
+<span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The player figure i.e., the space ship. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -112,7 +120,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="Player_Projectile"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Player_Projectile">[docs]</a><span class="k">class</span> <span class="nc">Player_Projectile</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Player_Projectile">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Player_Projectile">[docs]</a>
+<span class="k">class</span> <span class="nc">Player_Projectile</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The laser lariats that can be fired from the space ship. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -122,7 +133,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">198</span><span class="p">,</span> <span class="mi">108</span><span class="p">,</span> <span class="mi">58</span></div>
 
 
-<div class="viewcode-block" id="Torpedos"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Torpedos">[docs]</a><span class="k">class</span> <span class="nc">Torpedos</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Torpedos">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Torpedos">[docs]</a>
+<span class="k">class</span> <span class="nc">Torpedos</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The limited torpedoes that can be fired from the space ship. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -132,7 +146,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">164</span><span class="p">,</span> <span class="mi">89</span><span class="p">,</span> <span class="mi">208</span></div>
 
 
-<div class="viewcode-block" id="Saucer"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Saucer">[docs]</a><span class="k">class</span> <span class="nc">Saucer</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Saucer">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Saucer">[docs]</a>
+<span class="k">class</span> <span class="nc">Saucer</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The White Enemy Saucers. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -146,7 +163,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hud</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="Rejuvenator"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Rejuvenator">[docs]</a><span class="k">class</span> <span class="nc">Rejuvenator</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Rejuvenator">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Rejuvenator">[docs]</a>
+<span class="k">class</span> <span class="nc">Rejuvenator</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The Yellow Rejuvinators occasionally floating through the beam matrix. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -156,7 +176,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">53</span></div>
 
 
-<div class="viewcode-block" id="Sentinel"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Sentinel">[docs]</a><span class="k">class</span> <span class="nc">Sentinel</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Sentinel">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Sentinel">[docs]</a>
+<span class="k">class</span> <span class="nc">Sentinel</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The Sector Sentinel Ship, which appears once a sector has been cleared. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -166,7 +189,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">184</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span></div>
 
 
-<div class="viewcode-block" id="Blocker"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Blocker">[docs]</a><span class="k">class</span> <span class="nc">Blocker</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Blocker">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Blocker">[docs]</a>
+<span class="k">class</span> <span class="nc">Blocker</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The Green Blocker Ships (sector 6). </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -176,13 +202,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">135</span><span class="p">,</span> <span class="mi">183</span><span class="p">,</span> <span class="mi">84</span></div>
 
 
-<div class="viewcode-block" id="Jumper"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Jumper">[docs]</a><span class="k">class</span> <span class="nc">Jumper</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Jumper">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Jumper">[docs]</a>
+<span class="k">class</span> <span class="nc">Jumper</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="Charger"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Charger">[docs]</a><span class="k">class</span> <span class="nc">Charger</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Charger">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Charger">[docs]</a>
+<span class="k">class</span> <span class="nc">Charger</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The Blue Chargers (sector 10). </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -192,7 +224,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="Bouncecraft"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Bouncecraft">[docs]</a><span class="k">class</span> <span class="nc">Bouncecraft</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Bouncecraft">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Bouncecraft">[docs]</a>
+<span class="k">class</span> <span class="nc">Bouncecraft</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The Green Bounce Craft (sector 8). </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -202,7 +237,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="Chriper"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Chriper">[docs]</a><span class="k">class</span> <span class="nc">Chriper</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Chriper">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Chriper">[docs]</a>
+<span class="k">class</span> <span class="nc">Chriper</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The Yellow Chirper Ships (sector 4). </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -212,7 +250,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="Rock"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Rock">[docs]</a><span class="k">class</span> <span class="nc">Rock</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Rock">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Rock">[docs]</a>
+<span class="k">class</span> <span class="nc">Rock</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The Brown Space Debris (sector 2). </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -222,7 +263,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">29</span></div>
 
 
-<div class="viewcode-block" id="Torpedos_Available"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Torpedos_Available">[docs]</a><span class="k">class</span> <span class="nc">Torpedos_Available</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Torpedos_Available">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Torpedos_Available">[docs]</a>
+<span class="k">class</span> <span class="nc">Torpedos_Available</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The torpedoe availability display.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -232,7 +276,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">154</span></div>
 
 
-<div class="viewcode-block" id="Enemy_Projectile"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Enemy_Projectile">[docs]</a><span class="k">class</span> <span class="nc">Enemy_Projectile</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Enemy_Projectile">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Enemy_Projectile">[docs]</a>
+<span class="k">class</span> <span class="nc">Enemy_Projectile</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enemy projectiles. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -242,13 +289,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">164</span><span class="p">,</span> <span class="mi">89</span><span class="p">,</span> <span class="mi">208</span></div>
 
 
-<div class="viewcode-block" id="HUD"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.HUD">[docs]</a><span class="k">class</span> <span class="nc">HUD</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="HUD">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.HUD">[docs]</a>
+<span class="k">class</span> <span class="nc">HUD</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">164</span><span class="p">,</span> <span class="mi">74</span></div>
 
 
-<div class="viewcode-block" id="Enemy_Amount"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Enemy_Amount">[docs]</a><span class="k">class</span> <span class="nc">Enemy_Amount</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Enemy_Amount">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Enemy_Amount">[docs]</a>
+<span class="k">class</span> <span class="nc">Enemy_Amount</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The count display for the remaining Enemy Saucers in the current sector. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -258,7 +311,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">126</span><span class="p">,</span> <span class="mi">45</span></div>
 
 
-<div class="viewcode-block" id="Life"><a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Life">[docs]</a><span class="k">class</span> <span class="nc">Life</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Life">
+<a class="viewcode-back" href="../../../ocatari/games/beamrider.html#ocatari.ram.beamrider.Life">[docs]</a>
+<span class="k">class</span> <span class="nc">Life</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The lives-indicator of the player. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -268,7 +324,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rgb</span> <span class="o">=</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">64</span></div>
 
 
-<span class="k">def</span> <span class="nf">_init_objects_beamrider_ram</span><span class="p">(</span><span class="n">hud</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">_get_max_objects</span><span class="p">(</span><span class="n">hud</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">fromdict</span><span class="p">(</span><span class="n">max_obj_dict</span><span class="p">):</span>
+        <span class="n">objects</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mod</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">max_obj_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+                <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">k</span><span class="p">)())</span>    
+        <span class="k">return</span> <span class="n">objects</span>
+
+    <span class="k">if</span> <span class="n">hud</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fromdict</span><span class="p">(</span><span class="n">MAX_NB_OBJECTS_HUD</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fromdict</span><span class="p">(</span><span class="n">MAX_NB_OBJECTS</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_init_objects_ram</span><span class="p">(</span><span class="n">hud</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Re)Initialize the objects</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -277,9 +349,8 @@
 
     <span class="k">return</span> <span class="n">objects</span>
 
-
 <span class="c1"># levels: ram_state[36], total of 3 levels: 0,1 and 2</span>
-<span class="k">def</span> <span class="nf">_detect_objects_beamrider_revised</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">ram_state</span><span class="p">,</span> <span class="n">hud</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_detect_objects_ram</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">ram_state</span><span class="p">,</span> <span class="n">hud</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">objects</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
     <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">()</span>
@@ -290,7 +361,7 @@
         <span class="k">if</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">33</span><span class="o">+</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">enemy</span> <span class="o">=</span> <span class="n">Saucer</span><span class="p">()</span>
             <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">enemy</span><span class="p">)</span>
-            <span class="n">enemy</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">_get_x_position</span><span class="p">(</span><span class="n">ram_state</span><span class="p">[</span><span class="mi">33</span><span class="o">+</span><span class="n">i</span><span class="p">]),</span> <span class="n">ram_state</span><span class="p">[</span><span class="mi">25</span><span class="o">+</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="mi">63</span>
+            <span class="n">enemy</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">_get_x_position</span><span class="p">(</span><span class="n">ram_state</span><span class="p">[</span><span class="mi">33</span><span class="o">+</span><span class="n">i</span><span class="p">]),</span> <span class="p">(</span><span class="n">ram_state</span><span class="p">[</span><span class="mi">25</span><span class="o">+</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">+</span> <span class="mi">15</span>
             <span class="n">enemy</span><span class="o">.</span><span class="n">wh</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span>
 
     <span class="k">return</span> <span class="n">objects</span>

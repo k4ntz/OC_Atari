@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="python3.9" >
+<html class="writer-html5" lang="python3.9" data-content_root="../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>&lt;no title&gt; &mdash; OCAtari  documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=478102dd" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=03ece63d"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -47,12 +49,12 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../core.html">The OCAtari Environments</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../game_objects.html">Game Objects Details</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="alien.html"><code class="docutils literal notranslate"><span class="pre">Birdseeds</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="alien.html#ocatari.ram.alien.Cactus"><code class="docutils literal notranslate"><span class="pre">Cactus</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="alien.html#ocatari.ram.alien.Enemy"><code class="docutils literal notranslate"><span class="pre">Enemy</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alien.html"><code class="docutils literal notranslate"><span class="pre">Alien</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alien.html#ocatari.ram.alien.Egg"><code class="docutils literal notranslate"><span class="pre">Egg</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alien.html#ocatari.ram.alien.Life"><code class="docutils literal notranslate"><span class="pre">Life</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="alien.html#ocatari.ram.alien.Player"><code class="docutils literal notranslate"><span class="pre">Player</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="alien.html#ocatari.ram.alien.ThisWaySign"><code class="docutils literal notranslate"><span class="pre">ThisWaySign</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="alien.html#ocatari.ram.alien.Truck"><code class="docutils literal notranslate"><span class="pre">Truck</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alien.html#ocatari.ram.alien.Pulsar"><code class="docutils literal notranslate"><span class="pre">Pulsar</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alien.html#ocatari.ram.alien.Score"><code class="docutils literal notranslate"><span class="pre">Score</span></code></a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">Enemy</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.assault.Enemy.closest_object"><code class="docutils literal notranslate"><span class="pre">Enemy.closest_object()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.assault.Enemy.is_on_top"><code class="docutils literal notranslate"><span class="pre">Enemy.is_on_top()</span></code></a></li>
@@ -107,24 +109,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#ocatari.ram.assault.PlayerScore.manathan_distance"><code class="docutils literal notranslate"><span class="pre">PlayerScore.manathan_distance()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="asterix.html"><code class="docutils literal notranslate"><span class="pre">Apple</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Cauldron"><code class="docutils literal notranslate"><span class="pre">Cauldron</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="asterix.html"><code class="docutils literal notranslate"><span class="pre">Consumable</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Enemy"><code class="docutils literal notranslate"><span class="pre">Enemy</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Fish"><code class="docutils literal notranslate"><span class="pre">Fish</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Helmet"><code class="docutils literal notranslate"><span class="pre">Helmet</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Lamp"><code class="docutils literal notranslate"><span class="pre">Lamp</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Lives"><code class="docutils literal notranslate"><span class="pre">Lives</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Meat"><code class="docutils literal notranslate"><span class="pre">Meat</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Mug"><code class="docutils literal notranslate"><span class="pre">Mug</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Player"><code class="docutils literal notranslate"><span class="pre">Player</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Reward100"><code class="docutils literal notranslate"><span class="pre">Reward100</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Reward200"><code class="docutils literal notranslate"><span class="pre">Reward200</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Reward300"><code class="docutils literal notranslate"><span class="pre">Reward300</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Reward400"><code class="docutils literal notranslate"><span class="pre">Reward400</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Reward50"><code class="docutils literal notranslate"><span class="pre">Reward50</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Reward500"><code class="docutils literal notranslate"><span class="pre">Reward500</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Reward"><code class="docutils literal notranslate"><span class="pre">Reward</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Score"><code class="docutils literal notranslate"><span class="pre">Score</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="asterix.html#ocatari.ram.asterix.Shield"><code class="docutils literal notranslate"><span class="pre">Shield</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="atlantis.html"><code class="docutils literal notranslate"><span class="pre">AcropolisCommandPost</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="atlantis.html#ocatari.ram.atlantis.AquaPlane"><code class="docutils literal notranslate"><span class="pre">AquaPlane</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="atlantis.html#ocatari.ram.atlantis.BanditBomber"><code class="docutils literal notranslate"><span class="pre">BanditBomber</span></code></a></li>
@@ -164,6 +154,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/automated_analysis.html">Automated Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/find_causative_ram.html">Causative RAM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/rem_gui.html">REM GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/reverse_engineering_helper.html">Reverse Engineering Helper</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/test_scripts.html">The test scripts</a></li>
 </ul>
@@ -201,48 +192,48 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-ocatari.ram.assault"></span><dl class="py class">
+  <dl class="py class" id="module-ocatari.ram.assault">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Enemy">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">Enemy</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#Enemy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.Enemy" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">Enemy</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#Enemy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.Enemy" title="Link to this definition"></a></dt>
 <dd><p>The enemy drones deployed by the mother ship.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Enemy.closest_object">
-<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Enemy.closest_object" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Enemy.closest_object" title="Link to this definition"></a></dt>
 <dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>(Index, Object) from others</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Enemy.is_on_top">
-<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Enemy.is_on_top" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Enemy.is_on_top" title="Link to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Enemy.manathan_distance">
-<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Enemy.manathan_distance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Enemy.manathan_distance" title="Link to this definition"></a></dt>
 <dd><p>Returns the manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -251,46 +242,46 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ocatari.ram.assault.EnemyMissile">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">EnemyMissile</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#EnemyMissile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.EnemyMissile" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">EnemyMissile</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#EnemyMissile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.EnemyMissile" title="Link to this definition"></a></dt>
 <dd><p>The projectiles shot at the player by the enemy drones.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.EnemyMissile.closest_object">
-<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.EnemyMissile.closest_object" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.EnemyMissile.closest_object" title="Link to this definition"></a></dt>
 <dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>(Index, Object) from others</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.EnemyMissile.is_on_top">
-<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.EnemyMissile.is_on_top" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.EnemyMissile.is_on_top" title="Link to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.EnemyMissile.manathan_distance">
-<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.EnemyMissile.manathan_distance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.EnemyMissile.manathan_distance" title="Link to this definition"></a></dt>
 <dd><p>Returns the manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -299,46 +290,46 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Health">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">Health</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#Health"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.Health" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">Health</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#Health"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.Health" title="Link to this definition"></a></dt>
 <dd><p>The temperature meter of the cannon (HUD).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Health.closest_object">
-<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Health.closest_object" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Health.closest_object" title="Link to this definition"></a></dt>
 <dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>(Index, Object) from others</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Health.is_on_top">
-<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Health.is_on_top" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Health.is_on_top" title="Link to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Health.manathan_distance">
-<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Health.manathan_distance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Health.manathan_distance" title="Link to this definition"></a></dt>
 <dd><p>Returns the manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -347,46 +338,46 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Lives">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">Lives</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#Lives"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.Lives" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">Lives</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#Lives"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.Lives" title="Link to this definition"></a></dt>
 <dd><p>The indicator for the remaining lives of the player (HUD).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Lives.closest_object">
-<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Lives.closest_object" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Lives.closest_object" title="Link to this definition"></a></dt>
 <dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>(Index, Object) from others</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Lives.is_on_top">
-<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Lives.is_on_top" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Lives.is_on_top" title="Link to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Lives.manathan_distance">
-<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Lives.manathan_distance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Lives.manathan_distance" title="Link to this definition"></a></dt>
 <dd><p>Returns the manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -395,46 +386,46 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ocatari.ram.assault.MotherShip">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">MotherShip</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#MotherShip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.MotherShip" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">MotherShip</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#MotherShip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.MotherShip" title="Link to this definition"></a></dt>
 <dd><p>The mother ship at the top, that continually deploys the smaller drones.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.MotherShip.closest_object">
-<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.MotherShip.closest_object" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.MotherShip.closest_object" title="Link to this definition"></a></dt>
 <dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>(Index, Object) from others</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.MotherShip.is_on_top">
-<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.MotherShip.is_on_top" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.MotherShip.is_on_top" title="Link to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.MotherShip.manathan_distance">
-<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.MotherShip.manathan_distance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.MotherShip.manathan_distance" title="Link to this definition"></a></dt>
 <dd><p>Returns the manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -443,46 +434,46 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Player">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">Player</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#Player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.Player" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">Player</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#Player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.Player" title="Link to this definition"></a></dt>
 <dd><p>The player figure i.e., the cannon.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Player.closest_object">
-<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Player.closest_object" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Player.closest_object" title="Link to this definition"></a></dt>
 <dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>(Index, Object) from others</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Player.is_on_top">
-<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Player.is_on_top" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Player.is_on_top" title="Link to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.Player.manathan_distance">
-<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Player.manathan_distance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.Player.manathan_distance" title="Link to this definition"></a></dt>
 <dd><p>Returns the manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -491,46 +482,46 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ocatari.ram.assault.PlayerMissileHorizontal">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">PlayerMissileHorizontal</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#PlayerMissileHorizontal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileHorizontal" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">PlayerMissileHorizontal</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#PlayerMissileHorizontal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileHorizontal" title="Link to this definition"></a></dt>
 <dd><p>The projectiles shot in the horizontal direction from the cannon.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.PlayerMissileHorizontal.closest_object">
-<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileHorizontal.closest_object" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileHorizontal.closest_object" title="Link to this definition"></a></dt>
 <dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>(Index, Object) from others</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.PlayerMissileHorizontal.is_on_top">
-<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileHorizontal.is_on_top" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileHorizontal.is_on_top" title="Link to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.PlayerMissileHorizontal.manathan_distance">
-<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileHorizontal.manathan_distance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileHorizontal.manathan_distance" title="Link to this definition"></a></dt>
 <dd><p>Returns the manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -539,46 +530,46 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ocatari.ram.assault.PlayerMissileVertical">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">PlayerMissileVertical</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#PlayerMissileVertical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileVertical" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">PlayerMissileVertical</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#PlayerMissileVertical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileVertical" title="Link to this definition"></a></dt>
 <dd><p>The projectile shot in the vertical direction from the cannon.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.PlayerMissileVertical.closest_object">
-<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileVertical.closest_object" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileVertical.closest_object" title="Link to this definition"></a></dt>
 <dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>(Index, Object) from others</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.PlayerMissileVertical.is_on_top">
-<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileVertical.is_on_top" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileVertical.is_on_top" title="Link to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.PlayerMissileVertical.manathan_distance">
-<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileVertical.manathan_distance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerMissileVertical.manathan_distance" title="Link to this definition"></a></dt>
 <dd><p>Returns the manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -587,46 +578,46 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ocatari.ram.assault.PlayerScore">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">PlayerScore</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#PlayerScore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.PlayerScore" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ocatari.ram.assault.</span></span><span class="sig-name descname"><span class="pre">PlayerScore</span></span><a class="reference internal" href="../../_modules/ocatari/ram/assault.html#PlayerScore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ocatari.ram.assault.PlayerScore" title="Link to this definition"></a></dt>
 <dd><p>The player's score display (HUD).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.PlayerScore.closest_object">
-<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerScore.closest_object" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">closest_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerScore.closest_object" title="Link to this definition"></a></dt>
 <dd><p>Returns the closest object from others, based on manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>(Index, Object) from others</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.PlayerScore.is_on_top">
-<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerScore.is_on_top" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">is_on_top</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerScore.is_on_top" title="Link to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this and another gameobject overlap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ocatari.ram.assault.PlayerScore.manathan_distance">
-<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerScore.manathan_distance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">manathan_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ocatari.ram.assault.PlayerScore.manathan_distance" title="Link to this definition"></a></dt>
 <dd><p>Returns the manathan distance between the center of both objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if objects overlap</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>

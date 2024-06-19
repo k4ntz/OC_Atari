@@ -21,7 +21,7 @@ ___
 `TestSkriptNr3` does the same as TestSkriptNr1, but instead of using gymnasium it will call the OCAtari-wrapper.
 Use:
 ```python
-env = OCAtari("insert game name here", mode="raw/revised/vision", render_mode="human/rgb_array")
+env = OCAtari("insert game name here", mode="raw/ram/vision", render_mode="human/rgb_array")
 ```
 
 to set up the environment.

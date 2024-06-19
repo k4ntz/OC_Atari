@@ -5,7 +5,9 @@ objects_colors = {
     "Player": [236, 236, 236], 
     "DivingEnemy": [135, 183, 84],
     "PlayerMissile": [210, 164, 74],
-    "EnemyShip": [[110, 156, 66], [232, 204, 99], [192, 192, 192]]
+    "EnemyShip": [[[110, 156, 66], [232, 204, 99], [192, 192, 192]], 
+                 [[84, 92, 214], [232, 204, 99], [184, 70, 162]]]
+    
                   }
 
 
@@ -43,6 +45,7 @@ def _detect_objects(objects, obs, hud=True):
     player_missiles = find_objects(obs, objects_colors["PlayerMissile"]) #size=(1,39)
     for missile in player_missiles:
         objects.append(PlayerMissile(*missile))
-    enemy_ships = find_objects(obs, objects_colors["EnemyShip"])
-    for enemy in enemy_ships:
-        objects.append(EnemyShip(*enemy))
+    for color in objects_colors["EnemyShip"]:
+        enemy_ships = find_mc_objects(obs, color)
+        for enemy in enemy_ships:
+            objects.append(EnemyShip(*enemy))

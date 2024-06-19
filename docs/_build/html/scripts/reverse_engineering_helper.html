@@ -1,27 +1,29 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="python3.9" >
+<html class="writer-html5" lang="python3.9" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reverse Engineering Helper &mdash; OCAtari  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=478102dd" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=03ece63d"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="The test scripts" href="test_scripts.html" />
-    <link rel="prev" title="Find Correlation" href="find_correlation.html" /> 
+    <link rel="prev" title="REM GUI" href="rem_gui.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -56,6 +58,7 @@
 <li class="toctree-l1"><a class="reference internal" href="automated_analysis.html">Automated Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="find_causative_ram.html">Causative RAM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="find_correlation.html">Find Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rem_gui.html">REM GUI</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Reverse Engineering Helper</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#generally">Generally</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#variables">Variables</a></li>
@@ -111,16 +114,16 @@
            <div itemprop="articleBody">
              
   <section id="reverse-engineering-helper">
-<h1>Reverse Engineering Helper<a class="headerlink" href="#reverse-engineering-helper" title="Permalink to this heading"></a></h1>
+<h1>Reverse Engineering Helper<a class="headerlink" href="#reverse-engineering-helper" title="Link to this heading"></a></h1>
 <section id="generally">
-<h2>Generally<a class="headerlink" href="#generally" title="Permalink to this heading"></a></h2>
+<h2>Generally<a class="headerlink" href="#generally" title="Link to this heading"></a></h2>
 <p>If you run the file 'ReverseEngineeringHelper', the environment will be set up and
 will loop threw an amount of steps while giving back valuable information based
 on the given actions.<br>
 'ReverseEngineeringHelper' is a tool to provide useful access to the games of atari
 for reverse engineering purposes!</p>
 <section id="variables">
-<h3>Variables<a class="headerlink" href="#variables" title="Permalink to this heading"></a></h3>
+<h3>Variables<a class="headerlink" href="#variables" title="Link to this heading"></a></h3>
 <p>I divided the variables in 6 blocks. Each fulfills a different purpose.</p>
 <ol class="arabic simple">
 <li><p>the basics:</p>
@@ -136,7 +139,7 @@ for reverse engineering purposes!</p>
 </li>
 <li><p>the OCAtari modes:</p>
 <ul class="simple">
-<li><p>There are the modes raw, revised, vision, test and HUD.</p></li>
+<li><p>There are the modes raw, ram, vision, test and HUD.</p></li>
 </ul>
 </li>
 <li><p>actions that will be performed each step.</p>
@@ -149,7 +152,7 @@ for reverse engineering purposes!</p>
 </ol>
 </section>
 <section id="how-to-use-gym-with-a-certain-game">
-<h3>How to use gym with a certain game<a class="headerlink" href="#how-to-use-gym-with-a-certain-game" title="Permalink to this heading"></a></h3>
+<h3>How to use gym with a certain game<a class="headerlink" href="#how-to-use-gym-with-a-certain-game" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
 <li><p>set useOCAtari to False</p></li>
 <li><p>set game_name to your game</p></li>
@@ -158,7 +161,7 @@ for reverse engineering purposes!</p>
 </ol>
 </section>
 <section id="how-to-play-a-game">
-<h3>How to play a game<a class="headerlink" href="#how-to-play-a-game" title="Permalink to this heading"></a></h3>
+<h3>How to play a game<a class="headerlink" href="#how-to-play-a-game" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
 <li><p>Get the list of inputs for the game and assign it to the INPUTS variable <br>
 (atari game controls are quite the same, so this step might not be necessary, but better take a look)</p></li>
@@ -175,7 +178,7 @@ side notes:</p></li>
 </ul>
 </section>
 <section id="how-to-get-the-list-of-inputs-for-the-game">
-<h3>How to get the list of inputs for the game<a class="headerlink" href="#how-to-get-the-list-of-inputs-for-the-game" title="Permalink to this heading"></a></h3>
+<h3>How to get the list of inputs for the game<a class="headerlink" href="#how-to-get-the-list-of-inputs-for-the-game" title="Link to this heading"></a></h3>
 <ol class="arabic simple">
 <li><p>set useOCAtari to False</p></li>
 <li><p>set game_name to your game</p></li>
@@ -185,7 +188,7 @@ side notes:</p></li>
 </ol>
 </section>
 <section id="how-to-bind-actions-to-a-key">
-<h3>How to bind actions to a key<a class="headerlink" href="#how-to-bind-actions-to-a-key" title="Permalink to this heading"></a></h3>
+<h3>How to bind actions to a key<a class="headerlink" href="#how-to-bind-actions-to-a-key" title="Link to this heading"></a></h3>
 <p>There is key_map that maps the keys to a given basic operation.
 A basic operation is directly related to an action name or part of an action name.<br>
 For example: you map 'w' to 'UP' and 'd' to 'RIGHT' <br></p>
@@ -199,7 +202,7 @@ avoid mapping the keys to an action.</p></li>
 </ul>
 </section>
 <section id="what-can-i-do-while-the-game-runs">
-<h3>What can I do while the game runs?<a class="headerlink" href="#what-can-i-do-while-the-game-runs" title="Permalink to this heading"></a></h3>
+<h3>What can I do while the game runs?<a class="headerlink" href="#what-can-i-do-while-the-game-runs" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>play (pressing the keys you bound actions to, when none of these keys is pressed, the default_action will occur)</p></li>
 <li><p>freeze the game (pressing tab) and look at the current frame</p></li>
@@ -208,7 +211,7 @@ avoid mapping the keys to an action.</p></li>
 </ul>
 </section>
 <section id="ipdb-interrupts-but-the-plot-doesn-t-react">
-<h3>ipdb interrupts but the plot doesn't react<a class="headerlink" href="#ipdb-interrupts-but-the-plot-doesn-t-react" title="Permalink to this heading"></a></h3>
+<h3>ipdb interrupts but the plot doesn't react<a class="headerlink" href="#ipdb-interrupts-but-the-plot-doesn-t-react" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Don't use ipdb.set_trace directly, press i instead or use ipdb_interrupt(0)</p></li>
 <li><p>Unfortunately, the plot and the run are on the same thread, that's why the plotting
@@ -220,7 +223,7 @@ with ipdb, then set ipdb_delay to your wished delay.</p></li>
 </ul>
 </section>
 <section id="what-is-an-action-sequence">
-<h3>What is an action sequence?<a class="headerlink" href="#what-is-an-action-sequence" title="Permalink to this heading"></a></h3>
+<h3>What is an action sequence?<a class="headerlink" href="#what-is-an-action-sequence" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>An action sequence is a list of Strings that describe actions that the environment will do repeatedly.</p></li>
 <li><p>Let's say you set actionSequence to ['RIGHT', 'FIRE', 'LEFT'], then the actions will
@@ -230,7 +233,7 @@ be ['RIGHT', 'FIRE', 'LEFT', 'RIGHT', 'FIRE', 'LEFT', 'RIGHT',...]</p></li>
 </ul>
 </section>
 <section id="what-is-valuable-information-and-how-can-i-get-it">
-<h3>What is valuable information and how can I get it?<a class="headerlink" href="#what-is-valuable-information-and-how-can-i-get-it" title="Permalink to this heading"></a></h3>
+<h3>What is valuable information and how can I get it?<a class="headerlink" href="#what-is-valuable-information-and-how-can-i-get-it" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>the possible inputs =&gt; showInputs</p></li>
 <li><p>the action of the current environment step =&gt; showActions</p></li>
@@ -240,7 +243,7 @@ be ['RIGHT', 'FIRE', 'LEFT', 'RIGHT', 'FIRE', 'LEFT', 'RIGHT',...]</p></li>
 <li><p>normal game =&gt; render_mode='human'</p></li>
 </ul>
 <section id="ram-manipulation">
-<h4>RAM manipulation<a class="headerlink" href="#ram-manipulation" title="Permalink to this heading"></a></h4>
+<h4>RAM manipulation<a class="headerlink" href="#ram-manipulation" title="Link to this heading"></a></h4>
 <ul class="simple">
 <li><p>You can set the ram, if manipulateRAM is True. The RAM will be set at the index to a value.</p></li>
 <li><p>If the value is negative, then the ram value will instead be increased by 1 with every step of the environment</p></li>
@@ -251,7 +254,7 @@ You can get these changes by setting showDelta to True</p></li>
 </ul>
 </section>
 <section id="what-else">
-<h4>What else?<a class="headerlink" href="#what-else" title="Permalink to this heading"></a></h4>
+<h4>What else?<a class="headerlink" href="#what-else" title="Link to this heading"></a></h4>
 <ul class="simple">
 <li><p>slowDownPlot can be set to a value, which will act like plt.pause(slowDownPlot) for every step of the environment</p></li>
 <li><p>everything that will be displayed is at runtime</p></li>
@@ -265,7 +268,7 @@ You can get these changes by setting showDelta to True</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="find_correlation.html" class="btn btn-neutral float-left" title="Find Correlation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rem_gui.html" class="btn btn-neutral float-left" title="REM GUI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="test_scripts.html" class="btn btn-neutral float-right" title="The test scripts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
