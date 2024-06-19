@@ -91,7 +91,7 @@ class OCAtari:
     :type mode: str
     :param hud: Whether to include or not objects from the HUD (e.g. scores, lives)
     :type hud: bool
-    :param obs_mode: How to fill the image buffer (containing the 4 last frames): one of `None`, `dqn`, `ori`
+    :param obs_mode: Define the observation mode. Set to `dqn` (84x84, grayscaled), `ori` (210x160x3, RGB image), `obj` (#Objectsx4). `dqn` and `ori` are also organized in a stack of the last 4 frames.
     :type obs_mode: str
     
     the remaining \*args and \**kwargs will be passed to the \
@@ -202,8 +202,8 @@ class OCAtari:
         """
         Run one timestep of the environment's dynamics using the agent actions. \
         Extracts the objects, using RAM or vision based on the `mode` variable set at initialization. \
-        Fills the buffer if `obs_mode` was not None at initialization. \
-        The runs the Atari environment `env.step() <https://gymnasium.farama.org/api/env/#gymnasium.Env.step>`_ method
+        Fills the buffer if `obs_mode` was not None at initialization. The observations follow the `obs_mode`. \
+        The method runs the Atari environment `env.step() <https://gymnasium.farama.org/api/env/#gymnasium.Env.step>`_ method
         
         :param action: The action to perform at this step.
         :type action: int
