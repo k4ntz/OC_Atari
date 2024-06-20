@@ -3,7 +3,7 @@ from collections import deque
 import gymnasium as gym
 from termcolor import colored
 import numpy as np
-from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects, get_object_state
+from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects, get_object_state, get_object_state_size
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
 from ocatari.ram.game_objects import GameObject, ValueObject
@@ -70,14 +70,12 @@ AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix",
                    "CrazyClimber", "DemonAttack", "DonkeyKong",
                    "DoubleDunk", "Enduro", "FishingDerby", "Freeway",                   
                    "Frostbite", "Galaxian", "Gopher", "Hero", "IceHockey", 
-                   "Jamesbond", "Kangaroo", "Krull", "MontezumaRevenge", 
+                   "Jamesbond", "Kangaroo", "Krull", "KungFuMaster", "MontezumaRevenge", 
                    "MsPacman", "Pacman", "Pitfall", "Pong", "PrivateEye",
                    "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", 
                    "SpaceInvaders", "Tennis", "TimePilot", "UpNDown", "Venture", 
                    #"Videocube", 
-                   "VideoPinball", 
-                   "YarsRevenge"] 
-                   #"Zaxxon"]
+                   "VideoPinball", "YarsRevenge", "Zaxxon"]
 
 
 # TODO: complete the docstring 
@@ -165,7 +163,7 @@ class OCAtari:
         elif obs_mode == "obj":
             print("Using OBJ State Representation")
             if mode == "ram":
-                self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size,len(self.max_objects),4))
+                self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size,get_object_state_size(self.game_name,self.hud),4))
                 self._fill_buffer = self._fill_buffer_obj
                 self._reset_buffer = self._reset_buffer_obj
                 self.reference_list = []

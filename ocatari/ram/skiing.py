@@ -7,7 +7,7 @@ RAM extraction for the game Skiing.
 """
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4, 'Score': 2, 'Clock': 7}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4, 'Score': 2, 'Clock': 8}
 
 
 TREE_COLOR = {
@@ -300,6 +300,11 @@ def _time_skiing(ram_state):
     time["milli_seconds"] = _convert_number(ram_state[106])
     return time
 
+def _get_object_state_size(hud):
+    objects = _get_max_objects(hud)
+    additional_feature = ["orientation"]
+    return len(objects)+len(additional_feature)
+
 def _get_object_state(reference_list, objects):
 
     #import ipdb; ipdb.set_trace()
@@ -308,10 +313,10 @@ def _get_object_state(reference_list, objects):
     for o in objects: # populate out_vector with object instance
         idx = temp_ref_list.index(o.category) #at position of first category occurance
         flat = [item for sublist in o.h_coords for item in sublist]
-        if o.category == "Player":
-            state.append([o.orientation, o.orientation, o.orientation, o.orientation])
         state[idx] = flat #write the slice
         temp_ref_list[idx] = "" #remove reference from reference list
+        if o.category is "Player":
+            state.append([o.orientation, o.orientation, o.orientation, o.orientation])    
     for i, d in enumerate(temp_ref_list):
         if d != "": #fill not populated category instances wiht 0.0's
             state[i] = [0.0, 0.0, 0.0, 0.0]

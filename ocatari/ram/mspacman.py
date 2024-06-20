@@ -8,7 +8,7 @@ RAM extraction for the game Ms. Pac-Man.
 """
 
 # not sure about this one TODO: validate
-MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4, 'PowerPill': 4}
+MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4, 'PowerPill': 4, 'Fruit': 1}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4,'PowerPill':4, 'Fruit': 1, 'Score': 3, 'Life': 2}
 
 class Player(GameObject):
@@ -110,12 +110,12 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
 
-    objects = [Player(), Ghost(), Ghost(), Ghost(), Ghost()]
+    objects = [Player()] #, Ghost(), Ghost(), Ghost(), Ghost()]
 
-    objects.extend([None]*5)
+    objects.extend([None]*9)
 
     if hud:
-        objects.extend([None]*10)
+        objects.extend([None]*5)
     return objects
 
 
@@ -124,14 +124,34 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
     player.xy = ram_state[10] - 13, ram_state[16] + 1
 
-    g1.xy = ram_state[6] - 13, ram_state[12] + 1
-    g1.rgb = 180, 122, 48
-    g2.xy = ram_state[7] - 13, ram_state[13] + 1
-    g2.rgb = 84, 184, 153
-    g3.xy = ram_state[8] - 13, ram_state[14] + 1
-    g3.rgb = 198, 89, 179
-    g4.xy = ram_state[9] - 13, ram_state[15] + 1
-    # no rgb adjustment, since this colour is the default one
+    if ram_state[47] > 0:
+        g1 = Ghost()
+        objects[1] =  g1
+        g1.xy = ram_state[6] - 13, ram_state[12] + 1
+        g1.rgb = 180, 122, 48
+        if ram_state[19] > 0:
+            g2 = Ghost()
+            objects[2] =  g2
+            g2.xy = ram_state[7] - 13, ram_state[13] + 1
+            g2.rgb = 84, 184, 153
+        else:
+            g2 = None
+        if ram_state[19] > 1:
+            g3 = Ghost()
+            objects[3] =  g3
+            g3.xy = ram_state[8] - 13, ram_state[14] + 1
+            g3.rgb = 198, 89, 179
+        else:
+            g3 = None
+        if ram_state[19] > 2:
+            g4 = Ghost()
+            objects[4] =  g4
+            g4.xy = ram_state[9] - 13, ram_state[15] + 1
+        else:
+            g4 = None
+        # no rgb adjustment, since this color is the default one
+    else:
+        g1, g2, g3, g4 = None, None, None, None
 
     if ram_state[11] > 0 and ram_state[17] > 0:
         fruit = Fruit()
@@ -176,19 +196,19 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         score = _convert_number(ram_state[122]) * 10000 + _convert_number(ram_state[121]) * 100 +\
                 _convert_number(ram_state[120])
         sc = Score()
-        if ram_state[122] > 16:
+        if ram_state[122] > 15:
             sc.xy =  55, 187
             sc.wh = 47, 7
         elif ram_state[122]:
             sc.xy =  63, 187
             sc.wh = 39, 7
-        elif ram_state[121] > 16:
+        elif ram_state[121] > 15:
             sc.xy =  71, 187
             sc.wh = 31, 7
         elif ram_state[121]:
             sc.xy =  79, 187
             sc.wh = 23, 7
-        elif ram_state[120] > 16:
+        elif ram_state[120] > 15:
             sc.xy =  87, 187
             sc.wh = 15, 7
         elif ram_state[120]:
@@ -219,7 +239,7 @@ def _detect_objects_mspacman_raw(info, ram_state):
                                         "pink": ram_state[8],
                                         "red": ram_state[9]
                                         }
-    object_info["enemy_position_y"] = {"orange": ram_state[12],
+    object_info["ghosts_position_y"] = {"orange": ram_state[12],
                                        "cyan": ram_state[13],
                                        "pink": ram_state[14],
                                        "red": ram_state[15]

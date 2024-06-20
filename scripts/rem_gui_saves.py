@@ -36,7 +36,7 @@ class Renderer:
 
     def __init__(self, env_name: str):
         try:
-            self.env = OCAtari(env_name, mode="revised", hud=True, render_mode="rgb_array",
+            self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="rgb_array",
                                 render_oc_overlay=True, frameskip=1)
             self.env_name = env_name
             # self.env = EasyDonkey(env_name, mode="revised", hud=True, render_mode="rgb_array",
@@ -128,7 +128,7 @@ class Renderer:
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
                     self._unselect_active_cell()
 
-                elif (event.key,) in self.keys2actions.keys():  # env action
+                elif [x for x in self.keys2actions.keys() if event.key in x]: #(event.key,) in self.keys2actions.keys() or [x for x in self.keys2actions.keys() if event.key in x]:  # env action
                     self.current_keys_down.add(event.key)
 
                 elif pygame.K_0 <= event.key <= pygame.K_9:  # enter digit
@@ -152,6 +152,7 @@ class Renderer:
                             if new_cell_value < 256:
                                 self._set_ram_value_at(self.active_cell_idx, new_cell_value)
                         self._unselect_active_cell()
+                
                 elif event.key == pygame.K_g:
                     print(self.env.objects)
                     for obj in self.env.objects:
@@ -184,7 +185,7 @@ class Renderer:
                         print("No Save_State set")
 
             elif event.type == pygame.KEYUP:  # keyboard key released
-                if (event.key,) in self.keys2actions.keys():
+                if [x for x in self.keys2actions.keys() if event.key in x]: #(event.key,) in self.keys2actions.keys():
                     self.current_keys_down.remove(event.key)
 
     def _render(self, frame = None):
@@ -345,5 +346,5 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer("Atlantis")
+    renderer = Renderer("KungFuMaster")
     renderer.run()
