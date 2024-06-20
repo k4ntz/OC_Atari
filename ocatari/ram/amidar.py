@@ -2,8 +2,8 @@ from .game_objects import GameObject, ValueObject
 from ._helper_methods import number_to_bitfield
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1, "Monster_green": 6}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Monster_green": 6, "Score": 1, "Life": 3}
+MAX_NB_OBJECTS = {"Player": 1, "Monster_green": 6, "Monster_red": 6}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Monster_green": 6, "Monster_red": 6, "Score": 1, "Life": 3}
 
 class Player(GameObject):
     def __init__(self):
@@ -20,15 +20,6 @@ class Monster_green(GameObject):
         self._xy = 0, 160
         self.wh = (7, 7)
         self.rgb = 135, 183, 84
-        self.hud = False
-
-
-class Monster_yellow(GameObject):
-    def __init__(self):
-        super(Monster_yellow, self).__init__()
-        self._xy = 0, 160
-        self.wh = (7, 7)
-        self.rgb = 252, 252, 84
         self.hud = False
 
 
@@ -83,6 +74,7 @@ def _init_objects_ram(hud=False):
 
     if hud:
         objects.extend([None] * 4)
+        # objects.extend([Score(), Life(), Life(), Life()])
     return objects
 
 

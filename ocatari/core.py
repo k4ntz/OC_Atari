@@ -70,14 +70,12 @@ AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix",
                    "CrazyClimber", "DemonAttack", "DonkeyKong",
                    "DoubleDunk", "Enduro", "FishingDerby", "Freeway",                   
                    "Frostbite", "Galaxian", "Gopher", "Hero", "IceHockey", 
-                   "Jamesbond", "Kangaroo", "Krull", "MontezumaRevenge", 
+                   "Jamesbond", "Kangaroo", "Krull", "KungFuMaster", "MontezumaRevenge", 
                    "MsPacman", "Pacman", "Pitfall", "Pong", "PrivateEye",
                    "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", 
                    "SpaceInvaders", "Tennis", "TimePilot", "UpNDown", "Venture", 
                    #"Videocube", 
-                   "VideoPinball", 
-                   "YarsRevenge"] 
-                   #"Zaxxon"]
+                   "VideoPinball", "YarsRevenge", "Zaxxon"]
 
 
 # TODO: complete the docstring 
