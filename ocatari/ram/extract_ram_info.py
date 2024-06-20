@@ -47,7 +47,9 @@ def detect_objects_raw(info, ram_state, game_name):
 def detect_objects_ram(objects, ram_state, game_name, hud):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
-
+    for obj in objects:  # saving the previsous positions
+        if obj is not None:
+            obj._save_prev()
     try:
         mod = sys.modules[game_module]
         mod._detect_objects_ram(objects, ram_state, hud)
