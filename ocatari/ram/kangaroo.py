@@ -285,7 +285,6 @@ def _detect_player(ram_state):
 
     orientation = Orientation.E if ram_state[18] in [8, 9, 28, 73, 74] else Orientation.W
     climbing = ram_state[18] in [39,47]
-
     crashed = ram_state[54] in [1, 128]
 
     # Determine height during jump animation or during duck
@@ -363,9 +362,13 @@ def _detect_fruits(ram_state):
 
 
 def _detect_bell(ram_state):
-    x = ram_state[82] + 16
-    y = 36
-    _update_object(Bell, "xy", (x, y))
+    if ram_state[41] == 128:
+        _remove_object(Bell)
+    else:
+        lvl = ram_state[36]
+        x = [93, 31, 130][lvl]
+        y = 36
+        _update_object(Bell, "xy", (x, y))
 
 
 def _detect_platforms(ram_state):
