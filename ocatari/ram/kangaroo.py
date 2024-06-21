@@ -305,9 +305,22 @@ def _detect_player(ram_state):
 
 
 def _detect_child(ram_state):
-    x = ram_state[83] + 15
-    y = 12
-    _update_object(Child, "xy", (x, y))
+    # if ram_state[16] > 3 or (ram_state[83] != ram_state[17]):
+    if ram_state[16] > 3:
+        x = ram_state[83] + 15
+        y = 12
+        _update_object(Child, "xy", (x, y))
+    else:
+        fruits = 0
+        for i in range(3):
+            if ram_state[42+i]&128:
+                fruits +=1
+        if fruits == 0:
+            fruits = 1
+        if ram_state[68] == fruits:         
+            x = ram_state[83] + 15
+            y = 12
+            _update_object(Child, "xy", (x, y))
 
 
 def _detect_monkeys(ram_state):
