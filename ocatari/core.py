@@ -163,7 +163,7 @@ class OCAtari:
         elif obs_mode == "obj":
             print("Using OBJ State Representation")
             if mode == "ram":
-                self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size,get_object_state_size(self.game_name,self.hud),4))
+                self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size, get_object_state_size(self.game_name,self.hud),4))
                 self._fill_buffer = self._fill_buffer_obj
                 self._reset_buffer = self._reset_buffer_obj
                 self.reference_list = []
