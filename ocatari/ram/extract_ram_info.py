@@ -60,10 +60,9 @@ def detect_objects_ram(objects, ram_state, game_name, hud):
         print(colored(f"_detect_objects_ram not implemented for game: {game_name}", "red"))
         raise err
 
-def get_object_state_size(game_name,hud):
+def get_object_state_size(game_name, hud):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
-
     try:
         mod = sys.modules[game_module]
         return mod._get_object_state_size(hud)
@@ -72,7 +71,7 @@ def get_object_state_size(game_name,hud):
         raise err
     except AttributeError as err:
         try:
-            return mod._get_max_objects(hud)
+            return len(mod._get_max_objects(hud))
         except AssertionError as err:
             raise err
     
