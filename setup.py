@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-__version__ = '1.1.2'
+__version__ = '1.1.3'
 
 
 with open("README.md", "r", encoding="utf-8") as fh:
