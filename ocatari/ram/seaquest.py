@@ -25,7 +25,6 @@ MAX_ESSENTIAL_OBJECTS = {
 MAX_OPTIONAL_OBJECTS = {
     'PlayerScore': 1,
     'OxygenBarDepleted': 1,
-    'OxygenBarLogo': 1,
 }
 
 # MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
