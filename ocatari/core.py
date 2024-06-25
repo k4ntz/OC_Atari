@@ -432,6 +432,14 @@ class OCAtari:
         """
         return self._get_buffer_as_stack()
     
+    @property
+    def get_rgb_state(self):
+        """
+        :type: np.array
+        """
+        return self._ale.getScreenRGB()
+    
+
     def set_ram(self, target_ram_position, new_value):
         """
         Directly set a given value at a targeted RAM position.
