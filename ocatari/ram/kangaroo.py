@@ -375,10 +375,10 @@ def _detect_fruits(ram_state):
 
 
 def _detect_bell(ram_state):
+    lvl = ram_state[36]
     if ram_state[41] == 128:
         _remove_object(Bell)
-    else:
-        lvl = ram_state[36]
+    elif lvl < 3:
         x = [93, 31, 130][lvl]
         y = 36
         _update_object(Bell, "xy", (x, y))
