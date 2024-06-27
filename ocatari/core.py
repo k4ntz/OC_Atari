@@ -226,30 +226,27 @@ class OCAtari:
 
     def _reset_buffer_dqn(self):
         for _ in range(self.buffer_window_size):
-            self._state_buffer.append(
-                _zeros((84, 84), dtype=_uint8, **_tensor_kwargs)
-            )
+            self._fill_buffer_dqn()
 
     def _reset_buffer_ori(self):
         for _ in range(self.buffer_window_size):
-            self._state_buffer.append(
-                _zeros((210, 160, 3), dtype=_uint8, **_tensor_kwargs)
-            )
+            self._fill_buffer_ori()
+        
 
     def _reset_buffer_obj(self):
         for _ in range(self.buffer_window_size):
-            self._state_buffer.append(
-                get_object_state(game_name=self.game_name, objects=self._objects, reference_list=self.reference_list)
-            )
+            self._fill_buffer_obj()
 
     def reset(self, *args, **kwargs):
         """
         Resets the buffer and environment to an initial internal state, returning an initial observation and info.
         See `env.reset() <https://gymnasium.farama.org/api/env/#gymnasium.Env.reset>`_ for gymnasium details.
         """
-        self._reset_buffer()
+        ret = self._env.reset(*args, **kwargs)
         self._objects = init_objects(self.game_name, self.hud)
-        return self._env.reset(*args, **kwargs)
+        self.detect_objects(self._objects, self._getRAMorScreen(), self.game_name, self.hud)
+        self._reset_buffer()
+        return ret
 
     def _fill_buffer_dqn(self):
         state = cv2.resize(
@@ -264,14 +261,7 @@ class OCAtari:
                                           **_tensor_kwargs))
 
     def _fill_buffer_obj(self):
-        state = get_object_state(self.reference_list, self._objects, self.game_name)
-        # tensor = []
-        # for obj in self._objects:
-        #     if obj is None:
-        #         tensor.append(np.array([0, 0, 0, 0]))
-        #     else:
-        #         tensor.append(np.asarray(obj.xywh))
-        
+        state = get_object_state(self.reference_list, self._objects, self.game_name)        
         self._state_buffer.append(state)
 
     def _get_buffer_as_stack(self):
