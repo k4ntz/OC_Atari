@@ -152,3 +152,18 @@ class GameObject:
         if len(others) == 0:
             return None
         return min(enumerate(others), key=lambda item: self.manathan_distance(item[1]))
+
+    @property
+    def properties(self):
+        """
+        All the properties of the object in a list.
+
+        :return: The properties of the object.
+        :rtype: list
+        """
+        ignore = ["properties", "GET_COLOR", "GET_WH", "xy", "wh", "prev_xy", "h_coords", "xywh"]
+        properties = [prop for prop in self.__dir__()]
+        [properties.remove(p) for p in ignore if p in properties]
+        return [prop for prop in properties
+                if not prop.startswith("_") and 
+                not callable(self.__getattribute__(prop))]
