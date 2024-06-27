@@ -315,7 +315,7 @@ def _get_object_state(reference_list, objects):
         flat = [item for sublist in o.h_coords for item in sublist]
         state[idx] = flat #write the slice
         temp_ref_list[idx] = "" #remove reference from reference list
-        if o.category is "Player":
+        if o.category == "Player":
             state.append([o.orientation, o.orientation, o.orientation, o.orientation])    
     for i, d in enumerate(temp_ref_list):
         if d != "": #fill not populated category instances wiht 0.0's
