@@ -125,6 +125,7 @@ class OCAtari:
             init_objects = lambda *args, **kwargs: []
             self.detect_objects = lambda *args, **kwargs: None
             self.objects_v = []
+            self._getRAMorScreen = self._env.env.unwrapped.ale.getRAM
         elif mode == "vision":
             self.detect_objects = detect_objects_vision
             self._getRAMorScreen = self._env.env.unwrapped.ale.getScreenRGB
