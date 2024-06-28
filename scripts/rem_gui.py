@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 import pygame
-from ocatari.core import OCAtari, UPSCALE_FACTOR
+from ocatari.core import OCAtari, UPSCALE_FACTOR, DEVICE
 from gymnasium.error import NameNotFound
 import pickle
 import sys
@@ -12,14 +12,6 @@ This script can be used to identify any RAM positions that
 influence the color of a specific pixel. This can be used to
 identify the values that belong to a GameObject.
 """
-
-
-import pygame
-from ocatari.core import OCAtari, DEVICE, EasyDonkey
-import numpy as np
-import torch
-import cv2
-import random
 
 
 get_bin = lambda x: format(x, 'b').zfill(8)

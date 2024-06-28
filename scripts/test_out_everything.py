@@ -22,7 +22,7 @@ import pickle
 import gymnasium as gym
 
 import os 
-os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = r'/home/quentin/bin/sysenv/lib/python3.11/site-packages/PyQt5/Qt5/plugins/platforms'
+# os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = r'/home/quentin/bin/sysenv/lib/python3.11/site-packages/PyQt5/Qt5/plugins/platforms'
 
 def ransac_regression(x, y):
     ransac = RANSACRegressor(estimator=LinearRegression(),
@@ -37,20 +37,42 @@ parser.add_argument("-g", "--game", type=str, required=True,
 parser.add_argument("-s", "--snapshot", type=str, default=None,
                     help="Path to snapshot to start from.")
 parser.add_argument("-dqn", "--dqn", action="store_true", help="Use DQN agent")
+parser.add_argument("-po", "--print-options", action="store_true", help="Use DQN agent")
 
 opts = parser.parse_args()
 
-MODE = "vision"
-RENDER_MODE = "human"
+if opts.print_options:
+    print("MODE: ram or vision for the object detection")
+    print()
+    print("INTERACTIVE: if False, loop from 0 to 255 for each ram_n")
+    print("\t else, ask for input after each ram_n change")
+    print()
+    print("ONE_CHANGE: if True, shows the image after each iteration (even if no difference)")
+    print("\t else, shows the image only if there is a difference with *ALL* the previous images")
+    print()
+    print("COMPARE_WITH_PREVIOUS: if True, updates the base image and ram_n after each display")
+    print("\telse: keeps the base image and ram_n values")
+    print()
+    print("initial_ram_n: the initial ram_n to start from")
+    print()
+    print("binary_mode: if True, shows the ram_n in binary format in the plots")
+    print("\t else, shows the ram_n in decimal format in the plots")
+    
+    exit()
+
+# RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
-env = OCAtari(opts.game, mode=MODE, render_mode=RENDER_MODE)
+env = OCAtari(opts.game, mode=MODE, render_mode=RENDER_MODE, frameskip=1)
 # env = gym.make(opts.game, render_mode=RENDER_MODE, frameskip=1)
 random.seed(0)
 
 
+MODE = "vision"
 INTERACTIVE = False
 ONE_CHANGE = False
-initial_ram_n = 26
+COMPARE_WITH_PREVIOUS = True
+initial_ram_n = 64
+binary_mode = False
 
 
 make_deterministic(0, env)
@@ -74,16 +96,20 @@ if opts.snapshot:
     env._ale.restoreState(snapshot)
 
 if snapshot is None:
+    print("No snapshot provided,running for 20 frames")
     for _ in range(20):
         resulting_obs, _, _, _, _ = env.step(random.randint(0, env.nb_actions-1))
         snapshot = env._ale.cloneState()
 
 base_next_obs, _, _, _, _ = env.step(0)
+base_next_obs = deepcopy(base_next_obs)
 base_objects = deepcopy(env.objects)
-binary_mode = False
+
 
 # MAX_DIFF = 200
-original_ram, ram_n = 0, 0
+ram_n = initial_ram_n
+original_ram = env.get_ram()[ram_n]
+
 def show_ims(obs_list, new_ram):
     _, axes = plt.subplots(1, len(obs_list))
     for ax, im in zip(axes, obs_list):
@@ -94,16 +120,15 @@ def show_ims(obs_list, new_ram):
         plt.suptitle(f"{ram_n} set to {new_ram} (instead of {original_ram})", fontsize=20)
     plt.show()
 
-ram_n = initial_ram_n-1
+
 while ram_n < 127:
-    ram_n += 1
+    print('Testing ram_n:', ram_n)
     askinput = True
     already_seen_frames = []
     shown = 0
     for i in range(255):
         already_seen = False
         env._ale.restoreState(snapshot)
-        original_ram = env.get_ram()[ram_n]
         env.set_ram(ram_n, i)
         resulting_obs, _, _, _, _ = env.step(0)
         im_diff = resulting_obs - base_next_obs
@@ -113,6 +138,11 @@ while ram_n < 127:
                 if ONE_CHANGE:
                     print(f"{ram_n} set to {i} (instead of {original_ram})")
                     show_ims([base_next_obs, resulting_obs, im_diff], i)
+                    if COMPARE_WITH_PREVIOUS:
+                            base_next_obs = deepcopy(resulting_obs)
+                            base_objects = deepcopy(env.objects)
+                            original_ram = i
+                            print("updated ram")
                     break
                 else:
                     for frame in already_seen_frames:
@@ -123,11 +153,17 @@ while ram_n < 127:
                         already_seen_frames.append(deepcopy(resulting_obs))
                         print(f"{ram_n} set to {i} (instead of {original_ram})")
                         show_ims([base_next_obs, resulting_obs, im_diff], i)
+                        if COMPARE_WITH_PREVIOUS:
+                            base_next_obs = deepcopy(resulting_obs)
+                            base_objects = deepcopy(env.objects)
+                            original_ram = i
+                            print("updated ram")
                         shown += 1
                     if shown and shown % 5 == 0:
                         ans = input("Loop on the same ram_state ? (y/n)")
                         if ans == "n":
                             break
+                
             else:
                 if binary_mode:
                     print(f"{ram_n} set to {get_bin(i)} (instead of {get_bin(original_ram)})")
@@ -176,3 +212,4 @@ while ram_n < 127:
                         break
                 if not askinput:
                     break
+    ram_n += 1
