@@ -138,6 +138,8 @@ class OCAtari:
         elif mode == "both":
             self.detect_objects_v = detect_objects_vision
             self.detect_objects_r = detect_objects_ram
+            self.detect_objects = detect_objects_ram
+            self._getRAMorScreen = self._env.env.unwrapped.ale.getRAM
             self.objects_v = init_objects(self.game_name, self.hud)
             self.step = self._step_test
         else:
