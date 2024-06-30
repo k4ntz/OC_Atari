@@ -23,7 +23,21 @@ setup(
     description='Object Centric Atari 2600',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    install_requires=reqs
+        install_requires=[
+        "gymnasium",
+        "matplotlib",
+        "numpy<2.0.0",
+        "opencv_python",
+        "scikit_image",
+        "termcolor",
+        "seaborn",
+        "pandas",
+        "scikit-learn",
+        "keyboard",
+        "tqdm",
+        "pygame",
+        "pyfiglet",
+    ]
 )
 
 print("Please install gymnasium atari dependencies, using:\n", 
