@@ -284,7 +284,7 @@ def _detect_player(ram_state):
     y = ram_state[16] * 8 + 4
 
     orientation = Orientation.E if ram_state[18] in [8, 9, 28, 73, 74] else Orientation.W
-    climbing = ram_state[18] in [39,47]
+    climbing = ram_state[18] in [39, 47]
     crashed = ram_state[54] in [1, 128]
 
     # Determine height during jump animation or during duck
