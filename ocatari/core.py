@@ -245,11 +245,12 @@ class OCAtari:
         Resets the buffer and environment to an initial internal state, returning an initial observation and info.
         See `env.reset() <https://gymnasium.farama.org/api/env/#gymnasium.Env.reset>`_ for gymnasium details.
         """
-        ret = self._env.reset(*args, **kwargs)
+        obs, info = self._env.reset(*args, **kwargs)
         self._objects = init_objects(self.game_name, self.hud)
         self.detect_objects(self._objects, self._getRAMorScreen(), self.game_name, self.hud)
         self._reset_buffer()
-        return ret
+        obs = _post_step(obs)
+        return obs, info
 
     def _fill_buffer_dqn(self):
         state = cv2.resize(
