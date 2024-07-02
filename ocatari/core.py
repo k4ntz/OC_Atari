@@ -249,7 +249,7 @@ class OCAtari:
         self._objects = init_objects(self.game_name, self.hud)
         self.detect_objects(self._objects, self._getRAMorScreen(), self.game_name, self.hud)
         self._reset_buffer()
-        obs = _post_step(obs)
+        obs = self._post_step(obs)
         return obs, info
 
     def _fill_buffer_dqn(self):
