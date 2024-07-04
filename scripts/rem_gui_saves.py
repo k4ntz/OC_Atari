@@ -17,7 +17,7 @@ identify the values that belong to a GameObject.
 """
 
 import pygame
-from ocatari.core import OCAtari, DEVICE, EasyDonkey
+from ocatari.core import OCAtari #, DEVICE, EasyDonkey
 import numpy as np
 import torch
 import cv2
@@ -346,5 +346,5 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer("KungFuMaster")
+    renderer = Renderer("NameThisGame")
     renderer.run()
