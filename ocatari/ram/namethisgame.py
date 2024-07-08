@@ -7,13 +7,25 @@ MAX_NB_OBJECTS_HUD = {"Player": 1, "Oxygen_Boat": 1, "Oxygen_Pipe": 1, "Shark": 
     
 class Player(GameObject):
     """
-    Scubadiver protecting the treasure
+    Scubadiver protecting the treasure, by hitting the shark and the octopus tentacles
     """
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 76, 139
         self.wh = (16, 13)
         self.rgb = 92, 186, 92
+        self.hud = False
+
+
+class Shot(GameObject):
+    """
+    Projectile shot by player
+    """
+    def __init__(self):
+        super(Shot, self).__init__()
+        self._xy = 76, 35
+        self.wh = (1, 2)
+        self.rgb = 170, 170, 170
         self.hud = False
 
 
@@ -148,7 +160,7 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player(), Oxygen_Boat(), Oxygen_Pipe(), Shark(), Octopus(), Treasure()]
 
-    objects.extend([None] * 360)
+    objects.extend([None] * 361)
 
     if hud:
         objects.extend([Score(), Timer(), Oxygen_Meter()])
@@ -215,6 +227,14 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[5] = Treasure()
     
 
+    # ram[51], ram[50] == shot x, y
+    # 80 == 122, 23 == 54
+    if ram_state[50]:
+        if objects[6] is None:
+            objects[6] = Shot()
+        objects[6].xy = ram_state[51]-2, ((ram_state[50]) + 30) + (ram_state[50]>>5) + (ram_state[50]>>3)
+    else:
+        objects[6] = None
 
 
     # ram[0-49] octopus-tentacles bitrepresentation. Colum wise ram[0] has highest y and ram[9] lowest y,ram[10-19] is the second colum
@@ -228,7 +248,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     base_x = 16
     # bit read direction starting from msb
     msb = True
-    base_list = 6
+    base_list = 7
     for i in range(5):
         base_state = i*10
         for j in range(10):
