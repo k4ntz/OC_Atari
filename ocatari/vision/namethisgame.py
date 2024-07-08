@@ -12,6 +12,11 @@ class Player(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = [92, 186, 92]
 
+class Shot(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = [170, 170, 170]
+
 class Oxygen_Boat(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -75,7 +80,9 @@ def _detect_objects(objects, obs, hud=False):
     
     shark = find_objects(obs, objects_colors["Shark"])
     for bb in shark:
-        if bb[2] > 1:
+        if bb[3] <= 2:
+            objects.append(Shot(*bb))
+        elif bb[2] > 1:
             objects.append(Shark(*bb))
         elif bb[1] < 30:
             objects.append(Oxygen_Pipe(bb[0], bb[1]-5, bb[2], 123))
