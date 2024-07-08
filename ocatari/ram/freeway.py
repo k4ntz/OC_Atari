@@ -33,7 +33,6 @@ class Car(GameObject):
         self.wh = 8, 10
         self.rgb = 167, 26, 26
         self.hud = False
-        self.color = 0
 
 
 class Score(ValueObject):
@@ -55,14 +54,6 @@ car_colors = {"car1": [167, 26, 26], "car2": [180, 231, 117], "car3": [105, 105,
               "car7": [84, 92, 214], "car8": [184, 50, 50], "car9": [135, 183, 84],
               "car10": [210, 210, 64]
               }
-
-# ram colors 77-86
-# car_colors_ram = {"yellow": 26, "green": 216, "red": 68,
-#                   "light_blue": 136, "orange": 36, "dark_blue": 130,
-#                   "light_red": 74, "dark_green": 18, "light_green": 220,
-#                   "dark_red": 66
-#                  }
-car_colors_ram = [66, 220, 18, 74, 130, 36, 136, 68, 216, 26]
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -87,11 +78,10 @@ def _init_objects_ram(hud=False):
     """
     objects = [Chicken(), Chicken()]
     y = 27
-    for i, color in enumerate(car_colors.values()):
+    for color in car_colors.values():
         car = Car()
         car.rgb = (*color, )
         car.xy = 0, y
-        car.color = car_colors_ram[i]
         objects.append(car)
         y += 16
 
