@@ -39,7 +39,7 @@ parser.add_argument("-s", "--snapshot", type=str, default=None,
 parser.add_argument("-dqn", "--dqn", action="store_true", help="Use DQN agent")
 parser.add_argument("-po", "--print-options", action="store_true", help="Use DQN agent")
 
-# opts = parser.parse_args()
+opts = parser.parse_args()
 
 if opts.print_options:
     print("MODE: ram or vision for the object detection")
@@ -62,7 +62,7 @@ if opts.print_options:
 
 # RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
-env = OCAtari("ZaxxonNoFrameskip", mode=MODE, render_mode=RENDER_MODE)
+env = OCAtari(opts.game, mode=MODE, render_mode=RENDER_MODE, frameskip=1)
 # env = gym.make(opts.game, render_mode=RENDER_MODE, frameskip=1)
 random.seed(0)
 
@@ -71,7 +71,7 @@ MODE = "vision"
 INTERACTIVE = False
 ONE_CHANGE = False
 COMPARE_WITH_PREVIOUS = True
-initial_ram_n = 0
+initial_ram_n = 64
 binary_mode = False
 
 
@@ -91,17 +91,15 @@ class Options(object):
 
 snapshot = None
 
-# if opts.snapshot:
-#     snapshot = pickle.load(open(opts.snapshot, "rb"))
-#     env._ale.restoreState(snapshot)
+if opts.snapshot:
+    snapshot = pickle.load(open(opts.snapshot, "rb"))
+    env._ale.restoreState(snapshot)
 
-# if snapshot is None:
-#     for _ in range(20):
-#         resulting_obs, _, _, _, _ = env.step(random.randint(0, env.nb_actions-1))
-#         snapshot = env._ale.cloneState()
-
-snapshot = pickle.load(open("Zaxxon_save_state2.pickle", "rb"))
-env._ale.restoreState(snapshot)
+if snapshot is None:
+    print("No snapshot provided,running for 20 frames")
+    for _ in range(20):
+        resulting_obs, _, _, _, _ = env.step(random.randint(0, env.nb_actions-1))
+        snapshot = env._ale.cloneState()
 
 base_next_obs, _, _, _, _ = env.step(0)
 base_next_obs = deepcopy(base_next_obs)
