@@ -22,6 +22,7 @@ import warnings
 
 UPSCALE_FACTOR = 4
 
+
 try:
     import cv2
 except ModuleNotFoundError:
@@ -118,30 +119,23 @@ class OCAtari:
         self.hud = hud
         self.max_objects = []
         self.buffer_window_size = 4
-        self.step = self._step_single
+        self.step = self._step_impl
         if not self._covered_game:
             print(colored("\n\n\tUncovered game !!!!!\n\n", "red"))
             global init_objects
             init_objects = lambda *args, **kwargs: []
             self.detect_objects = lambda *args, **kwargs: None
             self.objects_v = []
-            self._getRAMorScreen = self._env.env.unwrapped.ale.getRAM
         elif mode == "vision":
-            self.detect_objects = detect_objects_vision
-            self._getRAMorScreen = self._env.env.unwrapped.ale.getScreenRGB
+            self.detect_objects = self._detect_objects_vision
         elif mode == "revised" or mode== "ram" :
             if mode == "revised":
                 warnings.warn("'revised' mode will deprecate with the next major update, please use 'ram' mode instead.", DeprecationWarning)
             self.max_objects = get_max_objects(self.game_name, self.hud)
-            self.detect_objects = detect_objects_ram
-            self._getRAMorScreen = self._env.env.unwrapped.ale.getRAM
+            self.detect_objects = self._detect_objects_ram
         elif mode == "both":
-            self.detect_objects_v = detect_objects_vision
-            self.detect_objects_r = detect_objects_ram
-            self.detect_objects = detect_objects_ram
-            self._getRAMorScreen = self._env.env.unwrapped.ale.getRAM
+            self.detect_objects = self._detect_objects_both
             self.objects_v = init_objects(self.game_name, self.hud)
-            self.step = self._step_test
         else:
             print(colored("Undefined mode for information extraction", "red"))
             exit(1)
@@ -214,18 +208,21 @@ class OCAtari:
             obs = np.array(self._state_buffer)
         return obs
 
-    def _step_single(self, *args, **kwargs):
+    def _step_impl(self, *args, **kwargs):
         obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
-        self.detect_objects(self._objects, self._getRAMorScreen(), self.game_name, self.hud)
+        self.detect_objects()
         obs = self._post_step(obs)
         return obs, reward, truncated, terminated, info
+    
+    def _detect_objects_ram(self):
+        detect_objects_ram(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
 
-    def _step_test(self, *args, **kwargs):
-        obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
-        self.detect_objects_r(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
-        self.detect_objects_v(self.objects_v, self._env.env.unwrapped.ale.getScreenRGB(), self.game_name, self.hud)
-        obs = self._post_step(obs)
-        return obs, reward, truncated, terminated, info
+    def _detect_objects_vision(self):
+        detect_objects_vision(self._objects, self._env.env.unwrapped.ale.getScreenRGB(), self.game_name, self.hud)
+
+    def _detect_objects_both(self):
+        detect_objects_ram(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
+        detect_objects_vision(self.objects_v, self._env.env.unwrapped.ale.getScreenRGB(), self.game_name, self.hud)
 
     def _reset_buffer_dqn(self):
         for _ in range(self.buffer_window_size):
@@ -247,9 +244,9 @@ class OCAtari:
         """
         obs, info = self._env.reset(*args, **kwargs)
         self._objects = init_objects(self.game_name, self.hud)
-        self.detect_objects(self._objects, self._getRAMorScreen(), self.game_name, self.hud)
+        self.detect_objects()
         self._reset_buffer()
-        obs = _post_step(obs)
+        obs = self._post_step(obs)
         return obs, info
 
     def _fill_buffer_dqn(self):
@@ -450,6 +447,11 @@ class OCAtari:
 
     def getScreenRGB(self):
         return self.env.unwrapped.ale.getScreenRGB()
+    
+    def detect_objects_both(self):
+        import ipdb; ipdb.set_trace()
+        detect_objects_ram(self.objects, self._env.env.unwrapped.ale.getRAM, self.game_name, self.hud)
+        detect_objects_vision(self.objects_v, self._env.env.unwrapped.ale.getScreenRGB, self.game_name, self.hud)
 
     def _clone_state(self):
         """

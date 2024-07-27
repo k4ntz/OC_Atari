@@ -158,7 +158,6 @@ def _detect_objects(objects, obs, hud=True):
     
     objects.append(Platform(16, 172, w=128))  # base platform
     objects.append(Platform(16, 28, w=128))  # top platform
-    # if lvl_value < 23:
     objects.append(Ladder(132, 132))
     objects.append(Platform(16, 76, w=128))
     objects.append(Ladder(20, 85))
