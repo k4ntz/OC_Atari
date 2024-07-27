@@ -92,7 +92,7 @@ class Ladder(GameObject):
     The ladders.
     """
 
-    def __init__(self, x=0, y=0, w=8, h=36):
+    def __init__(self, x=0, y=0, w=8, h=35):
         super(Ladder, self).__init__()
         self._xy = x, y
         self._prev_xy = x, y
@@ -240,15 +240,15 @@ def _init_objects_ram(hud=True):
     """
     (Re)Initialize the objects
     """
-    objects[Time][0] = Time()
     init_obj = [Player(), Child(), Monkey(), Monkey(), Monkey(), Monkey(),
                 FallingCoconut(), ThrownCoconut(), Fruit(), Fruit(), Fruit(), Bell(),
-                Platform(16, 172, w=128), Platform(16, 28, w=128), Time(), Life(), Life()]
+                Platform(16, 172, w=128), Platform(16, 28, w=128)]
     manage_platforms(0, init_obj)
     global prev_level
     prev_level = 0
     if hud:
-        init_obj.extend([Score()])
+        objects[Time][0] = Time()
+        init_obj.extend([Score(), Time(), Life(), Life()])
     return init_obj
 
 
@@ -272,10 +272,9 @@ def _update_objects(ram_state, hud=True):
     _detect_fruits(ram_state)
     _detect_bell(ram_state)
     _detect_platforms(ram_state)
-    _detect_lives(ram_state)
-    _detect_time(ram_state)
-
     if hud:
+        _detect_lives(ram_state)
+        _detect_time(ram_state)
         _detect_score(ram_state)
 
 
@@ -471,8 +470,8 @@ def manage_platforms(current_lvl_val, _):
     if current_lvl_val == 0:
         objects[Ladder] = [
             Ladder(132, 132),
-            Ladder(20, 84),
-            Ladder(132, 36),
+            Ladder(20, 85),
+            Ladder(132, 37),
             None,
             None,
             None,
