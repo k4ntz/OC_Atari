@@ -64,6 +64,20 @@ class PowerPill(GameObject):
         self.hud = False
 
 
+class Pill(GameObject):
+    """
+    The collectable fruits.
+    """
+    
+    def __init__(self, x=0, y=0, i=0, j=0):
+        super(Pill, self).__init__()
+        self._xy = x, y
+        self.wh = 4, 2
+        self.rgb = 228, 111, 111
+        self.hud = False
+        self.grid_ij = 0, 0
+
+
 class Score(GameObject):
     """
     The player's score display (HUD).
@@ -113,6 +127,43 @@ def _init_objects_ram(hud=False):
     objects = [Player()] #, Ghost(), Ghost(), Ghost(), Ghost()]
 
     objects.extend([None]*9)
+    # Pills
+    objects.extend([None]*252)
+
+    global GRID1, GRID2
+    GRID1 = [
+        [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+        [1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0],
+        [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1],
+        [0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+        [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+        [1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1],
+        [1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1],
+        [1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    ]
+
+    GRID2 = [
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+        [1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0],
+        [1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1],
+        [1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1],
+        [1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1],
+        [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+        [0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0],
+        [1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1],
+        [1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1],
+        [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1]
+    ]
 
     if hud:
         objects.extend([None]*5)
@@ -187,10 +238,43 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     else:
         objects[9] = None
 
+    for i in range(10, 262):
+        objects[i] = None
+
+    state = 59
+    global GRID1, GRID2
+    if ram_state[0] == 0:
+        grid = GRID1
+    else:
+        grid = GRID2
+
+    for i in range(14):
+        if ram_state[state]&16 and grid[i][17]:
+            objects[27+(i*18)] = Pill(148, 7+(12*i), i, 17)
+        if ram_state[state]&64 and grid[i][0]:
+            objects[10+(i*18)] = Pill(8, 7+(12*i), i, 0)
+        
+        state+=1
+        for j in range(8):
+            if ram_state[state]&(2**j):
+                if j&1 and grid[i][4-(j>>1)]:
+                    objects[14-(j>>1)+(i*18)] = Pill(40-(8*(j>>1)), 7+(12*i), i, 4-(j>>1))
+                elif not j&1 and grid[i][12-(j>>1)]:
+                    objects[22-(j>>1)+(i*18)] = Pill(108-(8*(j>>1)), 7+(12*i), i, 12-(j>>1))
+        
+        state+=1
+        for j in range(8):
+            if ram_state[state]&(2**j):
+                if not j&1 and grid[i][5+(j>>1)]:
+                    objects[15+(j>>1)+(i*18)] = Pill(48+(8*(j>>1)), 7+(12*i), i, 5+(j>>1))
+                elif j&1 and grid[i][13+(j>>1)]:
+                    objects[23+(j>>1)+(i*18)] = Pill(116+(8*(j>>1)), 7+(12*i), i, 13+(j>>1))
+        state+=1
+
 
     if hud:
         fruit_hud = Fruit()
-        objects[10] = fruit_hud
+        objects[262] = fruit_hud
         fruit_hud.rgb = get_fruit_rgb(ram_state[123])
 
         score = _convert_number(ram_state[122]) * 10000 + _convert_number(ram_state[121]) * 100 +\
@@ -214,15 +298,15 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         elif ram_state[120]:
             sc.xy =  95, 187
             sc.wh = 7, 7
-        objects[11] = sc
+        objects[263] = sc
 
         for i in range(3):
             if (ram_state[123]%4) > i:
                 life = Life()
-                objects[12+i] = life
+                objects[264+i] = life
                 life.xy = 12 + (i*16), 173
             else:
-               objects[12+i] = None 
+               objects[264+i] = None 
 
 
 def _detect_objects_mspacman_raw(info, ram_state):
