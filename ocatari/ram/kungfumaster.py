@@ -2,10 +2,13 @@ from .game_objects import GameObject, ValueObject
 from ._helper_methods import _convert_number
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1, "Enemy_Thrower": 1, "Enemy_Fighter": 3, "Snake": 1, "Dragon": 1, "Dragon_Smoke": 1, "Vase": 1, "Red_Thing": 1, "Airball": 1, "Enemy_Small_Fighter": 1, "Enemy_Final_Fighter": 1}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Enemy_Thrower": 1, "Enemy_Fighter": 3, "Snake": 1, "Dragon": 1, "Dragon_Smoke": 1, "Vase": 1, "Red_Thing": 1, "Airball": 1, "Enemy_Small_Fighter": 1, "Enemy_Final_Fighter": 1, "Score": 1, "Time": 1, "Lives": 1, "Player_Health_Bar": 1, "Enemy_Health_Bar": 1}
+MAX_NB_OBJECTS = {"Player": 1, "Knife_Throwers": 1, "Henchmen": 3, "Snake": 1, "Dragon": 1, "Dragon_Smoke": 1, "Dragon_Balls": 1, "Red_Ball": 1, "Airball": 1, "Small_Enemy": 1, "Enemy_Final_Fighter": 1, "Projectile": 1, "Dragon_Fire": 1}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Knife_Throwers": 1, "Henchmen": 3, "Snake": 1, "Dragon": 1, "Dragon_Smoke": 1, "Dragon_Balls": 1, "Red_Ball": 1, "Airball": 1, "Small_Enemy": 1, "Enemy_Final_Fighter": 1, "Projectile": 1, "Dragon_Fire": 1, "Score": 1, "Time": 1, "Lives": 1, "Player_Health_Bar": 1, "Enemy_Health_Bar": 1}
 
 class Player(GameObject):
+    """
+    Fighter fighting through the level
+    """
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 76, 100
@@ -14,6 +17,9 @@ class Player(GameObject):
         self.hud = False
 
 class Knife_Throwers(GameObject):
+    """
+    Enemy throwing knifes. Can throw low and on head hight
+    """
     def __init__(self):
         super(Knife_Throwers, self).__init__()
         self._xy = 76, 100
@@ -22,6 +28,9 @@ class Knife_Throwers(GameObject):
         self.hud = False
 
 class Henchmen(GameObject):
+    """
+    Basic enemy dealing damage when in contact with the player
+    """
     def __init__(self):
         super(Henchmen, self).__init__()
         self._xy = 76, 100
@@ -30,6 +39,9 @@ class Henchmen(GameObject):
         self.hud = False
 
 class Snake(GameObject):
+    """
+    Drops from the top and then crawls on the ground
+    """
     def __init__(self):
         super(Snake, self).__init__()
         self._xy = 76, 100
@@ -38,6 +50,9 @@ class Snake(GameObject):
         self.hud = False
 
 class Dragon(GameObject):
+    """
+    Appears out of smoke and shoots fire
+    """
     def __init__(self):
         super(Dragon, self).__init__()
         self._xy = 76, 100
@@ -46,6 +61,9 @@ class Dragon(GameObject):
         self.hud = False
 
 class Dragon_Smoke(GameObject):
+    """
+    Rises out of the dragon ball
+    """
     def __init__(self):
         super(Dragon_Smoke, self).__init__()
         self._xy = 76, 100
@@ -54,6 +72,9 @@ class Dragon_Smoke(GameObject):
         self.hud = False
 
 class Dragon_Balls(GameObject):
+    """
+    Drops from the ceiling to release the dragon
+    """
     def __init__(self):
         super(Dragon_Balls, self).__init__()
         self._xy = 76, 100
@@ -62,6 +83,9 @@ class Dragon_Balls(GameObject):
         self.hud = False
 
 class Red_Ball(GameObject):
+    """
+    Drops from the ceiling to hit the player
+    """
     def __init__(self):
         super(Red_Ball, self).__init__()
         self._xy = 76, 100
@@ -70,6 +94,9 @@ class Red_Ball(GameObject):
         self.hud = False
 
 class Airball(GameObject):
+    """
+    Flyies through the air to hit the player
+    """
     def __init__(self):
         super(Airball, self).__init__()
         self._xy = 76, 100
@@ -78,6 +105,9 @@ class Airball(GameObject):
         self.hud = False
 
 class Small_Enemy(GameObject):
+    """
+    Runs at player or jumps over them
+    """
     def __init__(self):
         super(Small_Enemy, self).__init__()
         self._xy = 76, 100
@@ -86,6 +116,9 @@ class Small_Enemy(GameObject):
         self.hud = False
 
 class Killer_Moth(GameObject):
+    """
+    Flies through the air to hit player
+    """
     def __init__(self):
         super(Killer_Moth, self).__init__()
         self._xy = 76, 100
@@ -94,6 +127,9 @@ class Killer_Moth(GameObject):
         self.hud = False
 
 class Enemy_Final_Fighter(GameObject):
+    """
+    Final fighter at the end of the level. Second final fighter throws boomerangs
+    """
     def __init__(self):
         super(Enemy_Final_Fighter, self).__init__()
         self._xy = 76, 100
@@ -101,15 +137,21 @@ class Enemy_Final_Fighter(GameObject):
         self.rgb = 74, 74, 74
         self.hud = False
 
-class Projectile(GameObject):
+class Knifes(GameObject):
+    """
+    Knifes throw by Knife_Throwers or Final_Fighters
+    """
     def __init__(self):
-        super(Projectile, self).__init__()
+        super(Knifes, self).__init__()
         self._xy = 76, 100
         self.wh = (5, 2)
         self.rgb = 74, 74, 74
         self.hud = False
 
 class Dragon_Fire(GameObject):
+    """
+    Fire spit by the dragon
+    """
     def __init__(self):
         super(Dragon_Fire, self).__init__()
         self._xy = 76, 100
@@ -119,6 +161,9 @@ class Dragon_Fire(GameObject):
 
 
 class Score(ValueObject):
+    """
+    Score of the game
+    """
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 63, 20
@@ -128,6 +173,9 @@ class Score(ValueObject):
         self.value = 0
 
 class Time(ValueObject):
+    """
+    Time left to beat the level
+    """
     def __init__(self):
         super(Time, self).__init__()
         self._xy = 63, 20
@@ -137,14 +185,21 @@ class Time(ValueObject):
         self.value = 0
 
 class Lives(GameObject):
+    """
+    Life value. Counts how many restarts are left before the game resets
+    """
     def __init__(self):
         super(Lives, self).__init__()
         self._xy = 99, 31
         self.wh = (6, 7)
         self.rgb = 214, 214, 214
         self.hud = True
+        self.value
 
 class Player_Health_Bar(GameObject):
+    """
+    Indicates how many hits the player can still take.
+    """
     def __init__(self):
         super(Player_Health_Bar, self).__init__()
         self._xy = 49, 41
@@ -153,6 +208,9 @@ class Player_Health_Bar(GameObject):
         self.hud = True
 
 class Enemy_Health_Bar(GameObject):
+    """
+    Indicates how many hits the enemy can still take.
+    """
     def __init__(self):
         super(Enemy_Health_Bar, self).__init__()
         self._xy = 49, 49
@@ -301,11 +359,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             else:
                 objects[4].xy = ram_state[73]-60, 121+ram_state[96]
         elif ram_state[50] == 204:
-            objects[4] = Projectile()
+            objects[4] = Knifes()
             objects[4].xy = ram_state[73]-50, 121+ram_state[96]
             objects[4].wh = 3, 4
         else:
-            objects[4] = Projectile()
+            objects[4] = Knifes()
             objects[4].xy = ram_state[73]-52, 123+ram_state[96]
     else:
         objects[4] = None
@@ -337,6 +395,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
         objects[7].xy = x2, 10
         objects[7].wh = w2, 7
+
+        objects[8].value = ram_state[29]
 
         # ram[75,76] life
         objects[9].wh = ram_state[75], 5

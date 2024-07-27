@@ -10,10 +10,10 @@ from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.utils import load_agent, parser
 
 game_name = "Pong"
-MODE = "vision"
-# MODE = "revised"
+# MODE = "vision"
+MODE = "ram"
 HUD = True
-env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array')
+env = OCAtari(game_name, mode=MODE, hud=HUD, render_mode='rgb_array', obs_mode='obj')
 observation, info = env.reset()
 
 opts = parser.parse_args()
@@ -25,21 +25,21 @@ for i in range(10000):
     if opts.path is not None:
         action = agent.draw_action(env.dqn_obs)
     else:
-        action = random.randint(0, 0)
+        action = random.randint(0, 5)
     obs, reward, terminated, truncated, info = env.step(action)
-    ram = env._env.unwrapped.ale.getRAM()
-    env.set_ram(14, 56)
-    if i % 10 == 0:
-        print(env.objects)
-        for obj in env.objects:
-            x, y = obj.xy
-            if x < 160 and y < 210:
-                opos = obj.xywh
-                ocol = obj.rgb
-                sur_col = make_darker(ocol)
-                mark_bb(obs, opos, color=sur_col)
-        plt.imshow(obs)
-        plt.show()
+    # ram = env._env.unwrapped.ale.getRAM()
+    # env.set_ram(14, 56)
+    # if i % 10 == 0:
+    #     print(env.objects)
+        # for obj in env.objects:
+        #     x, y = obj.xy
+        #     if x < 160 and y < 210:
+        #         opos = obj.xywh
+        #         ocol = obj.rgb
+        #         sur_col = make_darker(ocol)
+        #         mark_bb(obs, opos, color=sur_col)
+        # plt.imshow(obs)
+        # plt.show()
     if terminated or truncated:
         observation, info = env.reset()
 env.close()
