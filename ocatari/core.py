@@ -299,6 +299,8 @@ class OCAtari:
         image = self._env.render()
 
         if not self.render_oc_overlay:
+            if self.rendering_initialized:
+                return image.swapaxes(0,1).repeat(UPSCALE_FACTOR, axis=0).repeat(UPSCALE_FACTOR, axis=1)
             return image
 
         else:
@@ -318,9 +320,9 @@ class OCAtari:
             overlay_surface.set_colorkey((0, 0, 0))
 
             # For each object, render its position and velocity vector
-            for game_object in self._objects:
-                if game_object is None:
-                    continue
+            for game_object in self.objects:
+                # if game_object is None:
+                #     continue
 
                 x, y = game_object.xy
                 w, h = game_object.wh
