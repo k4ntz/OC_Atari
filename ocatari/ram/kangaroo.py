@@ -244,8 +244,6 @@ def _init_objects_ram(hud=True):
                 FallingCoconut(), ThrownCoconut(), Fruit(), Fruit(), Fruit(), Bell(),
                 Platform(16, 172, w=128), Platform(16, 28, w=128)]
     manage_platforms(0, init_obj)
-    global prev_level
-    prev_level = 0
     if hud:
         objects[Time][0] = Time()
         init_obj.extend([Score(), Time(), Life(), Life()])
@@ -386,10 +384,14 @@ def _detect_bell(ram_state):
 def _detect_platforms(ram_state):
     # Only on level change
     current_level = ram_state[36]
-    global prev_level
-    if current_level != prev_level:
+    if objects[Platform][2] is None:
         manage_platforms(current_level, objects)
-    prev_level = current_level
+    elif current_level == 0 and objects[Platform][2].xy[1] != 76:
+        manage_platforms(current_level, objects)
+    elif current_level == 1 and objects[Platform][2].xy[1] != 124:
+        manage_platforms(current_level, objects)
+    elif current_level == 2 and objects[Platform][2].xy[1] != 140:
+        manage_platforms(current_level, objects)
 
 
 def _detect_lives(ram_state):
