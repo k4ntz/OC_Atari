@@ -210,73 +210,34 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_ESSENTIAL_OBJECTS)
 
 
-def _init_all_objects() -> Dict[Type[GameObject], Sequence[GameObject]]:
-    mod = sys.modules[__name__]
-    all_objects = {}
-    for obj_cls_name, max_obj_count in MAX_ALL_OBJECTS.items():
-        obj_cls = getattr(mod, obj_cls_name)
-        all_objects[obj_cls] = max_obj_count * [None]
-    return all_objects
+# def _init_all_objects() -> Dict[Type[GameObject], Sequence[GameObject]]:
+#     mod = sys.modules[__name__]
+#     all_objects = {}
+#     for obj_cls_name, max_obj_count in MAX_ALL_OBJECTS.items():
+#         obj_cls = getattr(mod, obj_cls_name)
+#         all_objects[obj_cls] = max_obj_count * [None]
+#     return all_objects
 
-
-objects = _init_all_objects()
-
-
-def _update_object(obj_cls: Type[GameObject], attr: str, value, idx: int = 0):
-    game_object = objects[obj_cls][idx]
-    if game_object is None:
-        new_game_object = obj_cls()
-        new_game_object.__setattr__(attr, value)
-        objects[obj_cls][idx] = new_game_object
-    else:
-        game_object.__setattr__(attr, value)
-
-
-def _remove_object(obj_cls: Type[GameObject], idx: int = 0):
-    objects[obj_cls][idx] = None
 
 
 def _init_objects_ram(hud=True):
     """
     (Re)Initialize the objects
     """
-    init_obj = [Player(), Child(), Monkey(), Monkey(), Monkey(), Monkey(),
+    objects = [Player(), Child(), Monkey(), Monkey(), Monkey(), Monkey(),
                 FallingCoconut(), ThrownCoconut(), Fruit(), Fruit(), Fruit(), Bell(),
                 Platform(16, 172, w=128), Platform(16, 28, w=128)]
-    manage_platforms(0, init_obj)
-    if hud:
-        objects[Time][0] = Time()
-        init_obj.extend([Score(), Time(), Life(), Life()])
-    return init_obj
+    objects.extend([None]* 26)
+    if hud: 
+        objects.extend([Score(), Time(), Life(), Life()])
+        objects.extend([None]* 6)
+    return objects
 
 
-def _detect_objects_ram(objects_old, ram_state, hud=True):
-    _update_objects(ram_state, hud)
-    existing_objects = []
-    object_categories = list(objects.values())
-    for same_type_objects in object_categories:
-        for game_object in same_type_objects:
-            if game_object is not None:
-                existing_objects.append(game_object)
-    del objects_old[:]
-    objects_old.extend(existing_objects)
+def _detect_objects_ram(objects, ram_state, hud=True):
 
+    player = objects[0]
 
-def _update_objects(ram_state, hud=True):
-    _detect_player(ram_state)
-    _detect_child(ram_state)
-    _detect_monkeys(ram_state)
-    _detect_coconuts(ram_state)
-    _detect_fruits(ram_state)
-    _detect_bell(ram_state)
-    _detect_platforms(ram_state)
-    if hud:
-        _detect_lives(ram_state)
-        _detect_time(ram_state)
-        _detect_score(ram_state)
-
-
-def _detect_player(ram_state):
     x = ram_state[17] + 15
     y = ram_state[16] * 8 + 4
 
@@ -294,19 +255,16 @@ def _detect_player(ram_state):
     else:
         h = 24  # default
 
-    _update_object(Player, "xy", (x, y))
-    _update_object(Player, "wh", (8 , h))
-    _update_object(Player, "orientation", orientation)
-    _update_object(Player, "crashed", crashed)
-    _update_object(Player, "climbing", climbing)
+    player.xy = x, y
+    player.wh = 8, h
+    player.orientation = orientation
+    player.climbing = climbing
+    player.crashed = crashed
 
-
-def _detect_child(ram_state):
+    child = objects[1]
     # if ram_state[16] > 3 or (ram_state[83] != ram_state[17]):
     if ram_state[16] > 3:
-        x = ram_state[83] + 15
-        y = 12
-        _update_object(Child, "xy", (x, y))
+        child.xy = ram_state[83] + 15, 12
     else:
         fruits = 0
         for i in range(3):
@@ -315,29 +273,29 @@ def _detect_child(ram_state):
         if fruits == 0:
             fruits = 1
         if ram_state[68] == fruits:         
-            x = ram_state[83] + 15
-            y = 12
-            _update_object(Child, "xy", (x, y))
+            child.xy = ram_state[83] + 15, 12
 
+    monkey = objects[2:6]
 
-def _detect_monkeys(ram_state):
     for i in range(MAX_ESSENTIAL_OBJECTS["Monkey"]):
         if ram_state[11 - i] != 255 and ram_state[11 - i] != 127:
             x = ram_state[15 - i] + 16
             y = ram_state[11 - i] * 8 + 5
-            _update_object(Monkey, "xy", (x, y), idx=i)
+            if objects[2+i] is None:
+                objects[2+i] = Monkey()
+            objects[2+i].xy = x, y
         else:
-            _remove_object(Monkey, idx=i)
+            objects[2+i] = None
 
-
-def _detect_coconuts(ram_state):
     # Fallling coconut
     if ram_state[33] != 255:
         x = ram_state[34] + 14
         y = (ram_state[33] - 22 * ram_state[36]) * 8 + 9
-        _update_object(FallingCoconut, "xy", (x, y))
+        if objects[6] is None:
+            objects[6] = FallingCoconut()
+        objects[6].xy = x, y
     else:
-        _remove_object(FallingCoconut)
+        objects[6] = None
 
     # Thrown coconuts
     # This projectiles visual representation seems to differ from its RAM x position,
@@ -346,15 +304,17 @@ def _detect_coconuts(ram_state):
         if ram_state[25 + i] != 255:
             x = ram_state[28 + i] + 15
             y = (ram_state[25 + i] * 8) + 1
-            _update_object(ThrownCoconut, "xy", (x, y), idx=i)
+            if objects[7+i] is None:
+                objects[7+i] = ThrownCoconut()
+            objects[7+i].xy = x, y
         else:
-            _remove_object(ThrownCoconut, idx=i)
+            objects[7+i] = None
 
 
-def _detect_fruits(ram_state):
     for i in range(MAX_ESSENTIAL_OBJECTS["Fruit"]):
         properties = _get_fruit_properties(ram_state[42 + i])
         if properties is not None:
+            fruit = objects[10+i]
             wh, rgb = properties
             if ram_state[87] == ram_state[86]:
                 y = (ram_state[84 + i] * 8) + 4
@@ -364,79 +324,82 @@ def _detect_fruits(ram_state):
                 x = ram_state[89 + i] + 15
             else:
                 x = ram_state[90 + i] + 15
-            _update_object(Fruit, "xy", (x, y), idx=i)
-            _update_object(Fruit, "wh", wh, idx=i)
-            _update_object(Fruit, "rgb", rgb, idx=i)
+            if fruit is None:
+                fruit = Fruit()
+            fruit.xy = x, y
+            fruit.wh = wh
+            fruit.rgb = rgb
         else:
-            _remove_object(Fruit, idx=i)
+            objects[10+i] = None
 
 
-def _detect_bell(ram_state):
     lvl = ram_state[36]
     if ram_state[41] == 128:
-        _remove_object(Bell)
+        objects[13] = None
     elif lvl < 3:
         x = [93, 31, 130][lvl]
         y = 36
-        _update_object(Bell, "xy", (x, y))
+        objects[13].xy = x, y
 
-
-def _detect_platforms(ram_state):
     # Only on level change
     current_level = ram_state[36]
-    if objects[Platform][2] is None:
-        manage_platforms(current_level, objects)
-    elif current_level == 0 and objects[Platform][2].xy[1] != 76:
-        manage_platforms(current_level, objects)
-    elif current_level == 1 and objects[Platform][2].xy[1] != 124:
-        manage_platforms(current_level, objects)
-    elif current_level == 2 and objects[Platform][2].xy[1] != 140:
-        manage_platforms(current_level, objects)
+    if objects[17] is None \
+        or (current_level == 0 and objects[17].xy[1] != 76) \
+        or (current_level == 1 and objects[17].xy[1] != 124) \
+        or (current_level == 2 and objects[17].xy[1] != 140):
+        platform = manage_platforms(current_level, objects)
+        for i in range(26):
+            if platform[i]:
+                objects[13+i] = platform[i]
+            else:
+                objects[13+i] = None
 
 
-def _detect_lives(ram_state):
-    n_lives = ram_state[45]
-    for i in range(MAX_ESSENTIAL_OBJECTS["Life"]):
-        if i < n_lives and n_lives != 255:
-            x = 16 + (i * 8)
-            y = 183
-            _update_object(Life, "xy", (x, y), idx=i)
+    if hud:
+
+        # score
+        score_value = _convert_number(ram_state[39]) * 10000 + \
+                    _convert_number(ram_state[40]) * 100
+
+        if score_value < 100:
+            x = 129
+            w = 15
+        elif 100 <= score_value < 1000:
+            x = 121
+            w = 23
+        elif 1000 <= score_value < 10000:
+            x = 113
+            w = 31
+        elif 10000 <= score_value < 100000:
+            x = 105
+            w = 39
         else:
-            _remove_object(Life, idx=i)
+            x = 97
+            w = 47
 
+        objects[-10].xy = x, 183
+        objects[-10].wh = w, 7
+        objects[-10].value = score_value
 
-def _detect_time(ram_state):
-    time_value = ram_state[59]
-    if time_value <= 32:
-        time_remaining = _convert_number(time_value)
-    else:
-        time_remaining = time_value - 160
-    _update_object(Time, "value", time_remaining)
+        # time
+        time_value = ram_state[59]
+        if time_value <= 32:
+            time_remaining = _convert_number(time_value)
+        else:
+            time_remaining = time_value - 160
+        objects[-9].value = time_remaining
 
-
-def _detect_score(ram_state):
-    score_value = _convert_number(ram_state[39]) * 10000 + \
-                  _convert_number(ram_state[40]) * 100
-
-    if score_value < 100:
-        x = 129
-        w = 15
-    elif 100 <= score_value < 1000:
-        x = 121
-        w = 23
-    elif 1000 <= score_value < 10000:
-        x = 113
-        w = 31
-    elif 10000 <= score_value < 100000:
-        x = 105
-        w = 39
-    else:
-        x = 97
-        w = 47
-
-    _update_object(Score, "xy", (x, 183))
-    _update_object(Score, "wh", (w, 7))
-    _update_object(Score, "value", score_value)
+        # lives
+        n_lives = ram_state[45]
+        for i in range(MAX_ESSENTIAL_OBJECTS["Life"]):
+            if i < n_lives and n_lives != 255:
+                if objects[-8+i] is None:
+                    objects[-8+i] = Life()
+                x = 16 + (i * 8)
+                y = 183
+                objects[-8+i].xy = x, y
+            else:
+                objects[-8+i] = None
 
 
 def _detect_objects_kangaroo_raw(info, ram_state):
@@ -463,41 +426,30 @@ def _get_fruit_properties(ram_value):
 
 
 def manage_platforms(current_lvl_val, _):
-    objects[Platform][:2] = [
-        Platform(16, 172, w=128),
-        Platform(16, 28, w=128)
-    ]
+    platforms = [Platform(16, 172, w=128), Platform(16, 28, w=128)]
 
     # There is a total of 3 levels
     if current_lvl_val == 0:
-        objects[Ladder] = [
+        platforms.extend([
             Ladder(132, 132),
             Ladder(20, 85),
             Ladder(132, 37),
             None,
             None,
             None,
-        ]
-
-        objects[Platform][2:4] = [
             Platform(16, 76, w=128),
             Platform(16, 124, w=128),
-        ]
-
-        for i in range(4, MAX_ESSENTIAL_OBJECTS["Platform"]):
-            _remove_object(Platform, idx=i)
+        ])
+        platforms.extend([None]*16)
 
     elif current_lvl_val == 1:
-        objects[Ladder] = [
+        platforms.extend([
             Ladder(120, 132, h=4),
             Ladder(24, 116, h=4),
             Ladder(128, 36, h=4),
             None,
             None,
             None,
-        ]
-
-        objects[Platform][2:18] = [
             Platform(16, 124, w=28), Platform(52, 124, w=92),
             Platform(16, 76, w=60), Platform(84, 76, w=60),
             Platform(28, 164, w=24), Platform(112, 84, w=24),
@@ -506,24 +458,22 @@ def manage_platforms(current_lvl_val, _):
             Platform(16, 108, w=32), Platform(56, 100, w=20),
             Platform(84, 92, w=20), Platform(64, 60, w=20),
             Platform(92, 52, w=20), Platform(28, 68, w=28)
-        ]
-        objects[Platform][18:] = [None, None]
+        ])
+        platforms.extend([None]*10)
 
     else:  # current_lvl_val == 2
-        objects[Ladder] = [
+        platforms.extend([
             Ladder(20, 36, h=28),
             Ladder(20, 148, h=4),
             Ladder(36, 116, h=20),
             Ladder(104, 36, h=20),
             Ladder(120, 68, h=4),
-            Ladder(132, 84, h=4)
-        ]
-
-        objects[Platform][2:] = [
+            Ladder(132, 84, h=4),
             Platform(88, 140, w=16), Platform(64, 148, w=16), Platform(100, 116, w=16),
             Platform(48, 100, w=16), Platform(76, 52, w=16), Platform(80, 36, w=16),
             Platform(104, 132, w=20), Platform(84, 156, w=20), Platform(124, 124, w=20),
             Platform(52, 84, w=20), Platform(108, 164, w=36), Platform(16, 108, w=80),
             Platform(16, 92, w=28), Platform(76, 92, w=68), Platform(16, 140, w=32),
             Platform(96, 60, w=36), Platform(100, 76, w=44), Platform(60, 44, w=12)
-        ]
+        ])
+    return platforms
