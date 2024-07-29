@@ -29,8 +29,6 @@ MAX_OPTIONAL_OBJECTS = {
 
 MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
 
-obj_tracker = {}
-
 
 class Player(GameObject):
     """
