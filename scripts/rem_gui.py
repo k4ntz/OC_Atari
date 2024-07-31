@@ -25,8 +25,8 @@ class Renderer:
     clock: pygame.time.Clock
     env: OCAtari
 
-    def __init__(self, env_name: str, no_render: list = []):
-        self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="rgb_array",
+    def __init__(self, env_name: str, no_render: list = [], hud=False):
+        self.env = OCAtari(env_name, mode="ram", hud=hud, render_mode="rgb_array",
                              render_oc_overlay=True, frameskip=1, obs_mode="obj")
 
         self.env.reset(seed=42)
@@ -319,12 +319,14 @@ if __name__ == "__main__":
     parser.add_argument('-ls', '--load_state', type=str, default="")
     parser.add_argument('-hu', '--human', action='store_true',
                         help='Let user play the game.')
+    parser.add_argument('-hud', '--hud', action='store_true',
+                    help='Use HUD.')
     parser.add_argument('-nr', '--no_render', type=int, default=[],
                         help='Cells to not render.', nargs='+')
 
     args = parser.parse_args()
 
-    renderer = Renderer(args.game, args.no_render)
+    renderer = Renderer(args.game, args.no_render, hud=args.hud)
     if args.load_state:
         with open(args.load_state, "rb") as f:
             state = pkl.load(f)
