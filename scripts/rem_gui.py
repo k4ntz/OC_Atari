@@ -4,8 +4,7 @@ from ocatari.core import OCAtari, UPSCALE_FACTOR
 from tqdm import tqdm
 
 
-from hackatari.utils import load_color_swaps
-from hackatari.core import HackAtari
+from ocatari.core import OCAtari
 import atexit
 import pickle as pkl
 
@@ -26,8 +25,8 @@ class Renderer:
     clock: pygame.time.Clock
     env: OCAtari
 
-    def __init__(self, env_name: str, modifs: list, reward_function: str, color_swaps: dict, no_render: list = []):
-        self.env = HackAtari(env_name, modifs, reward_function, colorswaps=color_swaps, mode="ram", hud=True, render_mode="rgb_array",
+    def __init__(self, env_name: str, no_render: list = []):
+        self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="rgb_array",
                              render_oc_overlay=True, frameskip=1, obs_mode="obj")
 
         self.env.reset(seed=42)
@@ -317,23 +316,15 @@ if __name__ == "__main__":
     parser = ArgumentParser(description='Seaquest Game Argument Setter')
     parser.add_argument('-g', '--game', type=str, default="Seaquest",
                         help='Game to be run')
-    parser.add_argument('-m', '--modifs', nargs='+', default=[],
-                        help='List of the modifications to be brought to the game')
     parser.add_argument('-ls', '--load_state', type=str, default="")
     parser.add_argument('-hu', '--human', action='store_true',
                         help='Let user play the game.')
     parser.add_argument('-nr', '--no_render', type=int, default=[],
                         help='Cells to not render.', nargs='+')
-    parser.add_argument('-cs', '--color_swaps', default='',
-                        help='Colorswaps to be applied to the images.')
-    parser.add_argument('-rf','--reward_function', type=str, default='', 
-                        help="Replace the default reward fuction with new one in path rf") 
 
     args = parser.parse_args()
 
-    color_swaps = load_color_swaps(args.color_swaps)
-
-    renderer = Renderer(args.game, args.modifs, args.reward_function, color_swaps, args.no_render)
+    renderer = Renderer(args.game, args.no_render)
     if args.load_state:
         with open(args.load_state, "rb") as f:
             state = pkl.load(f)
