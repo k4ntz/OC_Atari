@@ -1,22 +1,19 @@
-import gymnasium as gym
 import numpy as np
-from matplotlib import pyplot as plt
-from tqdm import tqdm
 import pygame
-from ocatari.core import OCAtari, UPSCALE_FACTOR, DEVICE
-from gymnasium.error import NameNotFound
-import pickle
-import sys
+from ocatari.core import OCAtari, UPSCALE_FACTOR
+from tqdm import tqdm
+
+
+from hackatari.utils import load_color_swaps
+from hackatari.core import HackAtari
+import atexit
+import pickle as pkl
+
 """
 This script can be used to identify any RAM positions that
 influence the color of a specific pixel. This can be used to
 identify the values that belong to a GameObject.
 """
-
-
-get_bin = lambda x: format(x, 'b').zfill(8)
-
-
 
 RAM_RENDER_WIDTH = 1000
 RAM_N_COLS = 8
@@ -27,17 +24,13 @@ RAM_CELL_HEIGHT = 45
 class Renderer:
     window: pygame.Surface
     clock: pygame.time.Clock
-    env: gym.Env
+    env: OCAtari
 
-    def __init__(self, env_name: str):
-        try:
-            self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="rgb_array",
-                                render_oc_overlay=True, frameskip=1)
-            # self.env = EasyDonkey(env_name, mode="ram", hud=True, render_mode="rgb_array",
-            #                 render_oc_overlay=True, frameskip=1)
-        except NameNotFound:
-            self.env = gym.make(env_name, render_mode="rgb_array", frameskip=1)
-        self.env.reset(seed=42)[0]
+    def __init__(self, env_name: str, modifs: list, reward_function: str, color_swaps: dict, no_render: list = []):
+        self.env = HackAtari(env_name, modifs, reward_function, colorswaps=color_swaps, mode="ram", hud=True, render_mode="rgb_array",
+                             render_oc_overlay=True, frameskip=1, obs_mode="obj")
+
+        self.env.reset(seed=42)
         self.current_frame = self.env.render()
         self._init_pygame(self.current_frame)
         self.paused = False
@@ -52,6 +45,7 @@ class Renderer:
         self.active_cell_idx = None
         self.candidate_cell_ids = []
         self.current_active_cell_input : str = ""
+        self.no_render = no_render
 
     def _init_pygame(self, sample_image):
         pygame.init()
@@ -60,23 +54,19 @@ class Renderer:
         window_size = (self.env_render_shape[0] + RAM_RENDER_WIDTH, self.env_render_shape[1])
         self.window = pygame.display.set_mode(window_size)
         self.clock = pygame.time.Clock()
-        self.ram_cell_id_font = pygame.font.SysFont('Pixel12x10', 26)
+        self.ram_cell_id_font = pygame.font.SysFont('Pixel12x10', 25)
         self.ram_cell_value_font = pygame.font.SysFont('Pixel12x10', 30)
-        
 
     def run(self):
         self.running = True
         while self.running:
             self._handle_user_input()
-            ram = self.env.unwrapped.ale.getRAM()
             if not self.paused:
                 action = self._get_action()
-                tuple = self.env.step(action)
-                rew = tuple[1]
-                # self.env.set_ram(33, 100)
-                # self.env.set_ram(57, 204)
-                if rew != 0:
-                    print(rew)
+                reward = self.env.step(action)[1]
+                if reward != 0:
+                    print(reward)
+                    pass
                 self.current_frame = self.env.render().copy()
             self._render()
         pygame.quit()
@@ -107,6 +97,12 @@ class Renderer:
                     else:
                         self.active_cell_idx = self._get_cell_under_mouse()
                         self.current_active_cell_input = ""
+                elif event.button == 3:  # right mouse button pressed
+                    to_hide = self._get_cell_under_mouse()
+                    if to_hide in self.no_render:
+                        self.no_render.remove(to_hide)
+                    else:
+                        self.no_render.append(to_hide)
                 elif event.button == 4:  # mousewheel up
                     cell_idx = self._get_cell_under_mouse()
                     if cell_idx is not None:
@@ -119,14 +115,16 @@ class Renderer:
             elif event.type == pygame.KEYDOWN:  # keyboard key pressed
                 if event.key == pygame.K_p:  # 'P': pause/resume
                     self.paused = not self.paused
-
-                elif event.key == pygame.K_r:  # 'R': reset
-                    self.env.reset()
                 
-                elif event.key == pygame.K_m:  # 'M': save snapshot
-                    snapshot = self.env._ale.cloneState()
-                    pickle.dump(snapshot, open("snapshot.pkl", "wb"))
-                    print("Saved snapshot.pkl")
+                if event.key == pygame.K_s:  # 'S': save
+                    if self.paused:
+                        statepkl = self.env._ale.cloneState()
+                        with open(f"state_{self.env.game_name}.pkl", "wb") as f:
+                            pkl.dump(statepkl, f)
+                            print(f"State saved in state_{self.env.game_name}.pkl.")
+
+                if event.key == pygame.K_r:  # 'R': reset
+                    self.env.reset()
 
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
                     self._unselect_active_cell()
@@ -160,15 +158,15 @@ class Renderer:
                 if (event.key,) in self.keys2actions.keys():
                     self.current_keys_down.remove(event.key)
 
-    def _render(self, frame = None):
-        self.window.fill((0,0,0))  # clear the entire window
+    def _render(self, frame=None):
+        self.window.fill((0, 0, 0))  # clear the entire window
         self._render_atari(frame)
         self._render_ram()
         self._render_hover()
         pygame.display.flip()
         pygame.event.pump()
 
-    def _render_atari(self, frame = None):
+    def _render_atari(self, frame=None):
         if frame is None:
             frame = self.current_frame
         frame_surface = pygame.Surface(self.env_render_shape)
@@ -221,19 +219,19 @@ class Renderer:
         else:
             color = (20, 20, 20)
         pygame.draw.rect(self.window, color, [x, y, w, h])
-
+        if cell_idx in self.no_render:
+            return
         # Render cell ID label
         if is_active:
             color = (150, 150, 30)
         elif is_candidate:
             color = (20, 60, 200)
         else:
-            color = (150, 150, 150)
+            color = (100, 150, 150)
         text = self.ram_cell_id_font.render(str(cell_idx), True, color, None)
         text_rect = text.get_rect()
         text_rect.topleft = (x + 2, y + 2)
         self.window.blit(text, text_rect)
-
         # Render cell value label
         if is_active:
             value = self.current_active_cell_input
@@ -245,7 +243,6 @@ class Renderer:
             else:
                 color = (200, 200, 200)
             text = self.ram_cell_value_font.render(str(value), True, color, None)
-            # text = self.ram_cell_value_font.render(get_bin(value), True, color, None)
             text_rect = text.get_rect()
             text_rect.bottomright = (x + w - 2, y + h - 2)
             self.window.blit(text, text_rect)
@@ -289,7 +286,7 @@ class Renderer:
         for changes at pixel x, y.
         """
         ale = self.env.unwrapped.ale
-        sys_state = ale.cloneSystemState()
+
         ram = ale.getRAM().copy()
         self.env.step(0)
         original_pixel = ale.getScreenRGB()[y, x]
@@ -306,7 +303,6 @@ class Renderer:
                 self._render()
                 new_pixel = new_frame[y, x]
                 self._set_ram(ram)  # restore original RAM
-                ale.restoreSystemState(sys_state)
                 if np.any(new_pixel != original_pixel):
                     self.candidate_cell_ids.append(i)
                     break
@@ -316,7 +312,38 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer(sys.argv[1])
-    # renderer = Renderer("Boxing-v4")
-    # renderer = Renderer("Kangaroo-v4")
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser(description='Seaquest Game Argument Setter')
+    parser.add_argument('-g', '--game', type=str, default="Seaquest",
+                        help='Game to be run')
+    parser.add_argument('-m', '--modifs', nargs='+', default=[],
+                        help='List of the modifications to be brought to the game')
+    parser.add_argument('-ls', '--load_state', type=str, default="")
+    parser.add_argument('-hu', '--human', action='store_true',
+                        help='Let user play the game.')
+    parser.add_argument('-nr', '--no_render', type=int, default=[],
+                        help='Cells to not render.', nargs='+')
+    parser.add_argument('-cs', '--color_swaps', default='',
+                        help='Colorswaps to be applied to the images.')
+    parser.add_argument('-rf','--reward_function', type=str, default='', 
+                        help="Replace the default reward fuction with new one in path rf") 
+
+    args = parser.parse_args()
+
+    color_swaps = load_color_swaps(args.color_swaps)
+
+    renderer = Renderer(args.game, args.modifs, args.reward_function, color_swaps, args.no_render)
+    if args.load_state:
+        with open(args.load_state, "rb") as f:
+            state = pkl.load(f)
+            renderer.env._ale.restoreState(state)
+            print(f"State loaded from {args.load_state}")
+    def exit_handler():
+        if renderer.no_render:
+            print("\nno_render list: ")
+            for i in sorted(renderer.no_render):
+                print(i, end=" ")
+            print("")
+    atexit.register(exit_handler)
     renderer.run()
