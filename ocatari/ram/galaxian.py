@@ -7,10 +7,8 @@ import numpy as np
 RAM extraction for the game GALAXIAN. Supported modes: ram.
 """
 
-# TODO: Diving Enemies, Enemy Missiles, Enemy x pos, width of Score and Round
-
-MAX_NB_OBJECTS =  {'Player': 1, 'PlayerMissile': 1, 'EnemyMissile': 2, 'EnemyShip': 35}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerMissile': 1, 'EnemyMissile': 2, 'EnemyShip': 35, 'Score': 1, 'Round': 1, 'Lives': 1}
+MAX_NB_OBJECTS =  {'Player': 1, 'PlayerMissile': 1, 'EnemyMissile': 20, 'EnemyShip': 35, 'DivingEnemy': 10}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerMissile': 1, 'EnemyMissile': 20, 'EnemyShip': 35, 'Score': 1, 'Round': 1, 'Lives': 1, 'DivingEnemy': 10}
 
 class Player(GameObject):
     """
@@ -59,6 +57,18 @@ class EnemyShip(GameObject):
         super().__init__()
         self._xy = 66, 186
         self.wh = 6, 9
+        self.rgb = 232, 204, 99
+        self.hud = False
+
+class DivingEnemy(GameObject):
+    """
+    The Enemy which are currently attacing. 
+    """
+    
+    def __init__(self):
+        super().__init__()
+        self._xy = 66, 186
+        self.wh = 8, 11
         self.rgb = 232, 204, 99
         self.hud = False
 
@@ -158,6 +168,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if hud:
         lives = objects[2]
         if ram_state[57] != 0:
+            if lives is None:
+                lives = Lives()
             lives.w = ram_state[57] * 3 + (ram_state[57] - 1) * 2
             objects[2] = lives
         elif lives is not None:
@@ -172,24 +184,59 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # The 7 rightmost bits of the ram positions 38 to 44 represent a bitmap of the enemies. 
     # Each bit is 1 if there is an enemy in its position and 0 if there is not.
-    row_y = {0:19, 1:32, 2:43, 3:56, 4:67, 5:79} # the y-coordinates of the rows of enemies
     enemies = []
     for i in range(6):
         row = format(ram_state[38 + i] & 0x7F, '07b') #gets a string of the 7 relevant bits
         row = [int(x) for x in row]
+        row_y = 19 + i * 12
         for j in range(len(row)):
             if row[j] == 1:
                 enemy_ship = EnemyShip()
-                enemy_ship.y = row_y[i]
-                enemy_ship.x = 72 + 2 * ram_state[36] + j * 17
+                enemy_ship.y = row_y
+                enemy_ship.x = 19 + ram_state[36] / 2 + np.ceil(j * 16.5)
                 enemies.append(enemy_ship)
-                if i == 1 or i == 3:
-                    enemy_ship.h = 8
     objects.extend(enemies)
+
+    # DIVING ENEMIES
+    # enemies deletion from objects:
+    enemy_pos = np.where([isinstance(a, DivingEnemy) for a in objects])[0]
+    if len(enemy_pos) > 0:
+        del objects[enemy_pos[0]:enemy_pos[-1] + 1]
+
+    enemies = []
+    for i in range(5):
+        x_pos = ram_state[64 + i] + 8
+        y_pos = ram_state[69 + i] * 0.75 + 8
+        if y_pos > 8 and y_pos < 186: #the diving enemy is in the visible area
+            diving_enemy = DivingEnemy()
+            diving_enemy.x = x_pos
+            diving_enemy.y = y_pos
+            enemies.append(diving_enemy)
+    objects.extend(enemies)
+
+    # ENEMY MISSILES
+    # enemies deletion from objects:
+    missile_pos = np.where([isinstance(a, EnemyMissile) for a in objects])[0]
+    if len(missile_pos) > 0:
+        del objects[missile_pos[0]:missile_pos[-1] + 1]
+
+    missiles = []
+    missile_number = 0
+    for i in range(8):
+        if ram_state[25 + i] == 1:
+            missile_number += 1
+            enemy_missile = EnemyMissile()
+            enemy_missile.x = ram_state[102 + missile_number] + 11
+            enemy_missile.y = i * 16 + 80
+            missiles.append(enemy_missile)
+    objects.extend(missiles)
     
 
 def _detect_objects_galaxian_raw(info, ram_state):
     
-    info["score"] = _convert_number(ram_state[45]) * 10000 + _convert_number(ram_state[45]) * 100 + _convert_number(ram_state[46])
+    info["score"] = _convert_number(ram_state[44]) * 10000 + _convert_number(ram_state[45]) * 100 + _convert_number(ram_state[46])
     info["lives"] = ram_state[57]
     info["round"] = ram_state[47]
+
+
+    # -nr 0 or rightclick
