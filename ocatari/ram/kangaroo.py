@@ -223,7 +223,7 @@ def _init_objects_ram(hud=True):
     (Re)Initialize the objects
     """
     objects = [Player(), Child(), Monkey(), Monkey(), Monkey(), Monkey(),
-               FallingCoconut(), ThrownCoconut(), Fruit(), Fruit(), Fruit(), Bell(),
+               FallingCoconut(), ThrownCoconut(), ThrownCoconut(), ThrownCoconut(), Fruit(), Fruit(), Fruit(), Bell(),
                Platform(16, 172, w=128), Platform(16, 28, w=128)]
     objects.extend([None]* 26)
     if hud: 
@@ -331,6 +331,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             objects[10+i] = None
 
 
+    # bell
     lvl = ram_state[36]
     if ram_state[41] == 128:
         objects[13] = None
@@ -348,9 +349,9 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         platform = manage_platforms(current_level, objects)
         for i in range(26):
             if platform[i]:
-                objects[13+i] = platform[i]
+                objects[14+i] = platform[i]
             else:
-                objects[13+i] = None
+                objects[14+i] = None
 
 
     if hud:

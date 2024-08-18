@@ -217,162 +217,56 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_ESSENTIAL_OBJECTS)
 
 
-def _init_all_objects() -> Dict[Type[GameObject], Sequence[GameObject]]:
-    mod = sys.modules[__name__]
-    all_objects = {}
-    for obj_cls_name, max_obj_count in MAX_ALL_OBJECTS.items():
-        obj_cls = getattr(mod, obj_cls_name)
-        all_objects[obj_cls] = max_obj_count * [None]
-    return all_objects
+# def _init_all_objects() -> Dict[Type[GameObject], Sequence[GameObject]]:
+#     mod = sys.modules[__name__]
+#     all_objects = {}
+#     for obj_cls_name, max_obj_count in MAX_ALL_OBJECTS.items():
+#         obj_cls = getattr(mod, obj_cls_name)
+#         all_objects[obj_cls] = max_obj_count * [None]
+#     return all_objects
 
 
-objects = _init_all_objects()
+# def _update_object(obj_cls: Type[GameObject], attr: str, value, idx: int = 0):
+#     game_object = objects[obj_cls][idx]
+#     if game_object is None:
+#         new_game_object = obj_cls()
+#         new_game_object.__setattr__(attr, value)
+#         objects[obj_cls][idx] = new_game_object
+#     else:
+#         game_object.__setattr__(attr, value)
 
 
-def _update_object(obj_cls: Type[GameObject], attr: str, value, idx: int = 0):
-    game_object = objects[obj_cls][idx]
-    if game_object is None:
-        new_game_object = obj_cls()
-        new_game_object.__setattr__(attr, value)
-        objects[obj_cls][idx] = new_game_object
-    else:
-        game_object.__setattr__(attr, value)
-
-
-def _remove_object(obj_cls: Type[GameObject], idx: int = 0):
-    objects[obj_cls][idx] = None
+# def _remove_object(obj_cls: Type[GameObject], idx: int = 0):
+#     objects[obj_cls][idx] = None
 
 
 def _init_objects_ram(hud=False):
     """(Re)Initialize the objects."""
-    objects = [Player(), Lives(), OxygenBar()]
+    objects = [Player()]
+
+    objects.extend([None]*18)
+    objects.extend([OxygenBar()])
+    objects.extend([CollectedDiver()]*6)
 
     if hud:
-        objects.extend([PlayerScore(), OxygenBarDepleted(), OxygenBarLogo()])
+        objects.extend([PlayerScore(), Lives(), OxygenBarDepleted(), OxygenBarLogo()])
 
     return objects
 
 
-def _detect_objects_ram(objects_old, ram_state, hud=False):
-    _update_objects(ram_state, hud)
-    existing_objects = []
-    object_categories = list(objects.values())
-    for same_type_objects in object_categories:
-        for game_object in same_type_objects:
-            if game_object is not None:
-                existing_objects.append(game_object)
-    del objects_old[:]
-    objects_old.extend(existing_objects)
+def _detect_objects_ram(objects, ram_state, hud=False):
+    
+    player = objects[0]
+    player.xy = ram_state[70], ram_state[97] + 32
+    player.orientation = Orientation.E if ram_state[86] == 0 else Orientation.W
+    player.crashed = ram_state[105] > 0
 
-
-def _update_objects(ram_state, hud=False):
-    _update_player(ram_state)
-    _update_enemies(ram_state)
-    _update_player_missile(ram_state)
-    _update_divers_and_enemy_missiles(ram_state)
-    _update_surface_submarine(ram_state)
-    _update_lives(ram_state)
-    _update_oxygen_bar(ram_state)
-    _update_collected_divers(ram_state)
-
-    if hud:
-        _update_score(ram_state)
-        _update_depleted_oxygen_bar(ram_state)
-
-
-def _update_player(ram_state):
-    xy = ram_state[70], ram_state[97] + 32
-    orientation = Orientation.E if ram_state[86] == 0 else Orientation.W
-    crashed = ram_state[105] > 0
-
-    _update_object(Player, "xy", xy)
-    _update_object(Player, "orientation", orientation)
-    _update_object(Player, "crashed", crashed)
-
-
-def _update_score(ram_state):
-    score_value = _convert_number(ram_state[56]) * 10000 + \
-                  _convert_number(ram_state[57]) * 100 + \
-                  _convert_number(ram_state[58])
-
-    if score_value == 0:
-        x = 99
-        w = 6
-
-    elif 100 > score_value > 0:
-        x = 91
-        w = 14
-
-    elif 1000 > score_value >= 100:
-        x = 83
-        w = 22
-
-    elif 10000 > score_value >= 1000:
-        x = 75
-        w = 30
-
-    elif 100000 > score_value >= 10000:
-        x = 67
-        w = 38
-
-    else:  # highest possible score is 999_999
-        x = 59
-        w = 46
-
-    _update_object(PlayerScore, "value", score_value)
-    _update_object(PlayerScore, "xy", (x, 9))
-    _update_object(PlayerScore, "wh", (w, 8))
-
-
-def _update_lives(ram_state):
-    num_lives = ram_state[59]
-    if num_lives > 0:  # Up to 6 lives possible
-        new_wh = 7 + 8 * (num_lives - 1), 8
-        _update_object(Lives, "wh", new_wh)
-        _update_object(Lives, "value", num_lives)
-    else:
-        _remove_object(Lives)
-
-
-def _update_oxygen_bar(ram_state):
-    if ram_state[102] != 0:
-        if ram_state[102] == 64:
-            new_wh = 63, 5
-        else:
-            new_wh = ram_state[102], 5
-        _update_object(OxygenBar, "wh", new_wh)
-        _update_object(OxygenBar, "value", new_wh[0])
-    else:
-        _remove_object(OxygenBar)
-
-
-def _update_depleted_oxygen_bar(ram_state):
-    if ram_state[102] != 64:
-        new_xy = 49 + ram_state[102], 170
-        new_wh = 63 - ram_state[102], 5
-        _update_object(OxygenBarDepleted, "xy", new_xy)
-        _update_object(OxygenBarDepleted, "wh", new_wh)
-        _update_object(OxygenBarDepleted, "value", new_wh[0])
-    else:
-        _remove_object(OxygenBarDepleted)
-
-
-def _update_collected_divers(ram_state):
-    # If you have six collected divers they blink. Blinking is ignored here
-    for i in range(6):
-        if i < ram_state[62]:
-            _update_object(CollectedDiver, "xy", (58 + i * 8, 178), idx=i)
-        else:
-            _remove_object(CollectedDiver, idx=i)
-
-
-def _update_enemies(ram_state):
-    """The diving area is divided into 4 lanes (plus the surface lane).
-    Enemies come in batches. Each batch has three slots that can be
-    arbitrarily filled up by enemies. Consequently, there are 8 possible
-    combinations (formations) of enemy/empty slots for each batch. For each lane,
-    one single RAM value determines the current formation. Moreover, each
-    batch consists purely of sharks or of submarines, determined by another value."""
+    # """The diving area is divided into 4 lanes (plus the surface lane).
+    # Enemies come in batches. Each batch has three slots that can be
+    # arbitrarily filled up by enemies. Consequently, there are 8 possible
+    # combinations (formations) of enemy/empty slots for each batch. For each lane,
+    # one single RAM value determines the current formation. Moreover, each
+    # batch consists purely of sharks or of submarines, determined by another value."""
 
     for i in range(4):  # for each of the 4 lanes (from bottom to top lane)
         present_enemy_type = Submarine if _is_submarine(i, ram_state) else Shark
@@ -381,51 +275,138 @@ def _update_enemies(ram_state):
 
         for j in range(3):  # for each of the three slots (left to right)
             enemy_in_slot = (batch_formation // 2 ** (2 - j)) % 2
-            idx = i * 3 + j
+            idx = i * 3 + j + 1
             if enemy_in_slot:
                 x = (ram_state[30 + i] + 16 * j) % 256
                 y = 141 - i * 24
-                if present_enemy_type == Shark:
-                    # Sharks float up and down, determined by an offset
-                    y += ram_state[93] - 4
+                enemy = objects[idx]
                 if -5 <= x <= 165:  # Only track objects that are on the screen
-                    _update_object(present_enemy_type, "xy", (x, y), idx=idx)
+                    # Sharks float up and down, determined by an offset
+                    if present_enemy_type == Shark:
+                        if type(enemy) is not Shark:
+                            enemy = Shark()
+                        y += ram_state[93] - 4
+                    elif type(enemy) is not Submarine:
+                        enemy = Submarine()
+                    enemy.xy = x, y
+                    objects[idx] = enemy
                 else:
-                    _remove_object(present_enemy_type, idx)
+                    objects[idx] = None
             else:
-                _remove_object(present_enemy_type, idx)
-            _remove_object(hidden_enemy_type, idx)  # always remove the invisible enemy
+                objects[idx] = None
+            # _remove_object(hidden_enemy_type, idx)  # always remove the invisible enemy
 
-
-def _update_divers_and_enemy_missiles(ram_state):
     # divers and enemy_missiles share a ram position
     for i in range(4):
         if 0 < ram_state[71 + i] < 160:
             if _is_submarine(i, ram_state):  # then, it's an enemy missile
-                _update_object(EnemyMissile, "xy", (ram_state[71 + i] + 3, 145 - i * 24), idx=i)
-                _remove_object(Diver, i)
+                missile = objects[13+i]
+                if type(missile) != EnemyMissile:
+                    missile = EnemyMissile()
+                missile.xy = ram_state[71 + i] + 3, 145 - i * 24
+                objects[13+i] = missile
             else:
-                _update_object(Diver, "xy", (ram_state[71 + i], 141 - i * 24), idx=i)
-                _remove_object(EnemyMissile, i)
+                diver = objects[13+i]
+                if type(diver) != Diver:
+                    diver = Diver()
+                diver.xy = ram_state[71 + i], 141 - i * 24
+                objects[13+i] = diver
         else:
-            _remove_object(EnemyMissile, i)
-            _remove_object(Diver, i)
+            objects[13+i] = None
 
 
-def _update_surface_submarine(ram_state):
     # only spawns in late game
     if ram_state[60] >= 2 and ram_state[118] < 160:
-        _update_object(SurfaceSubmarine, "xy", (ram_state[118], 45))
+        if objects[17] is None:
+            objects[17] = SurfaceSubmarine()
+        objects[17].xy =  ram_state[118], 45
     else:
-        _remove_object(SurfaceSubmarine)
+        objects[17] = None
 
 
-def _update_player_missile(ram_state):
     if 0 < ram_state[103] < 160:
-        new_xy = ram_state[103], ram_state[97] + 40
-        _update_object(PlayerMissile, "xy", new_xy)
+        if objects[18] is None:
+            objects[18] = PlayerMissile()
+        objects[18].xy = ram_state[103], ram_state[97] + 40
     else:
-        _remove_object(PlayerMissile)
+        objects[18] = None
+
+    
+    if ram_state[102] != 0:
+        if type(objects[19]) != OxygenBar:
+            objects[19] = OxygenBar()
+        if ram_state[102] == 64:
+            new_wh = 63, 5
+        else:
+            new_wh = ram_state[102], 5
+        objects[19].wh = new_wh
+        objects[19].value = new_wh[0]
+    else:
+        objects[19] = None
+
+
+    # If you have six collected divers they blink. Blinking is ignored here
+    for i in range(6):
+        if i < ram_state[62]:
+            if type(objects[20+i]) != CollectedDiver:
+                objects[20+i] = CollectedDiver()
+                objects[20+i].xy = 58 + i * 8, 178
+        else:
+            objects[20+i] = None
+
+    if hud:
+        score_value = _convert_number(ram_state[56]) * 10000 + \
+                    _convert_number(ram_state[57]) * 100 + \
+                    _convert_number(ram_state[58])
+
+        if score_value == 0:
+            x = 99
+            w = 6
+
+        elif 100 > score_value > 0:
+            x = 91
+            w = 14
+
+        elif 1000 > score_value >= 100:
+            x = 83
+            w = 22
+
+        elif 10000 > score_value >= 1000:
+            x = 75
+            w = 30
+
+        elif 100000 > score_value >= 10000:
+            x = 67
+            w = 38
+
+        else:  # highest possible score is 999_999
+            x = 59
+            w = 46
+
+        score = objects[26]
+        score.value = score_value
+        score.xy = x, 9
+        score.wh = w, 8
+
+        #lives
+        num_lives = ram_state[59]
+        if num_lives > 0:  # Up to 6 lives possible
+            new_wh = 7 + 8 * (num_lives - 1), 8
+            if type(objects[27]) != Lives:
+                objects[27] = Lives() 
+            objects[27].wh = new_wh
+            objects[27].value = num_lives
+        else:
+            objects[27] = None
+
+    if ram_state[102] != 64:
+        if type(objects[28]) != OxygenBarDepleted:
+            objects[28] = OxygenBarDepleted()
+        objects[28].xy = 49 + ram_state[102], 170
+        objects[28].wh = 63 - ram_state[102], 5
+        objects[28].value = 63 - ram_state[102]
+    else:
+        objects[28]
 
 
 def _is_submarine(i: int, ram_state) -> bool:
