@@ -164,14 +164,19 @@ class GameObject:
     def _save_prev(self):
         self._prev_xy = self._xy
 
-    # @x.setter
-    # def x(self, x):
-
-    #     self._xy = x, self.xy[1]
+    @property
+    def _nsrepr(self):
+        return self.x, self.y
     
-    # @y.setter
-    # def y(self, y):
-    #     self._xy = self.xy[0], y
+    @property
+    def _ns_meaning(self):
+        return "x, y"
+
+
+    @property
+    def _nslen(self):
+        return len(self._nsrepr)
+
 
     @property
     def orientation(self):
@@ -230,6 +235,27 @@ class GameObject:
         return [prop for prop in properties
                 if not prop.startswith("_") and 
                 not callable(self.__getattribute__(prop))]
+
+
+class NoObject(GameObject):
+    """
+    This class represents a non-existent object. It is used to fill in the gaps when no object is detected.
+    """
+    def __init__(self, nslen=2):
+        super().__init__()
+        self._nslen = nslen
+
+    def __bool__(self):
+        return False
+    
+    def __eq__(self, other):
+        return isinstance(other, NoObject)
+    
+    def _nsrepr(self):
+        return [0 for _ in range(self._nslen)]
+    
+    def __repr__(self):
+        return "NoObject"
 
 
 class ValueObject(GameObject):

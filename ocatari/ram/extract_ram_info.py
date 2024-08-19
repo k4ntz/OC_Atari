@@ -97,11 +97,11 @@ def get_object_state(reference_list, objects, game_name):
                 if o is None:
                     continue
                 idx = temp_ref_list.index(o.category) #at position of first category occurance
-                state[idx] = o.xywh #write the slice
+                state[idx] = o.xy #write the slice
                 temp_ref_list[idx] = "" #remove reference from reference list
             for i, d in enumerate(temp_ref_list):
                 if d != "": #fill not populated category instances wiht 0.0's
-                    state[i] = [0.0, 0.0, 0.0, 0.0]
+                    state[i] = [0.0, 0.0]
             return state
         except AssertionError as err:
             raise err
