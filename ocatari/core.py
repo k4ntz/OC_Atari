@@ -139,6 +139,8 @@ class OCAtari:
         else:
             print(colored("Undefined mode for information extraction", "red"))
             exit(1)
+        self._ns_state = np.zeros(sum([len(o._nsrepr) for o in self.max_objects]))
+        self.ns_meaning = [f"{o.category} ({o._ns_meaning})" for o in self.max_objects]
         self._objects : list[GameObject] = init_objects(self.game_name, self.hud)
         self._fill_buffer = lambda *args, **kwargs: None
         self._reset_buffer = lambda *args, **kwargs: None
@@ -155,7 +157,8 @@ class OCAtari:
         elif obs_mode == "obj":
             print("Using OBJ State Representation")
             if mode == "ram":
-                self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size, get_object_state_size(self.game_name,self.hud),4))
+                self.buffer_window_size = 2
+                self._env.observation_space = gym.spaces.Box(0, 255.0,(self.buffer_window_size, get_object_state_size(self.game_name, self.hud), 2))
                 self._fill_buffer = self._fill_buffer_obj
                 self._reset_buffer = self._reset_buffer_obj
                 self.reference_list = []
@@ -212,9 +215,12 @@ class OCAtari:
         obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
         self.detect_objects()
         obs = self._post_step(obs)
+        if self.obs_mode == "obj":
+            obs = np.array(self._state_buffer)
         return obs, reward, truncated, terminated, info
     
     def _detect_objects_ram(self):
+        import ipdb; ipdb.set_trace()
         detect_objects_ram(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
 
     def _detect_objects_vision(self):
@@ -451,7 +457,6 @@ class OCAtari:
         return self.env.unwrapped.ale.getScreenRGB()
     
     def detect_objects_both(self):
-        import ipdb; ipdb.set_trace()
         detect_objects_ram(self.objects, self._env.env.unwrapped.ale.getRAM, self.game_name, self.hud)
         detect_objects_vision(self.objects_v, self._env.env.unwrapped.ale.getScreenRGB, self.game_name, self.hud)
 
@@ -472,6 +477,23 @@ class OCAtari:
         :type state: env_snapshot
         """
         return self._env.env.env.ale.cloneSystemState()
+    
+    @property
+    def ns_state(self):
+        """
+        Returns the current neurosymbolic state of the environment.
+        
+        :return: State snapshot
+        :rtype: env_snapshot
+        """
+        nss = self._ns_state
+        i = 0
+        for obj in self.objects:
+            nssl = len(obj._nsrepr)
+            nss[i:i+nssl] = obj._nsrepr
+            i += nssl
+        return nss
+        
 
     @property
     def objects(self):
@@ -492,7 +514,6 @@ class OCAtari:
 
         :type: list of GameObjects
         """
-        import ipdb; ipdb.set_trace()
         return [obj for obj in self._objects if obj] # filtering out None objects
 
     def render_explanations(self):
