@@ -10,6 +10,9 @@ RAM extraction for the game GALAXIAN. Supported modes: ram.
 MAX_NB_OBJECTS =  {'Player': 1, 'PlayerMissile': 1, 'EnemyMissile': 20, 'EnemyShip': 35, 'DivingEnemy': 10}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerMissile': 1, 'EnemyMissile': 20, 'EnemyShip': 35, 'Score': 1, 'Round': 1, 'Lives': 1, 'DivingEnemy': 10}
 
+# enemy_missiles saves the enemy missiles according to at which ram position their x positon is saved 
+enemy_missiles = [None] * 8
+
 class Player(GameObject):
     """
     The player figure i.e, the gun.
@@ -47,6 +50,7 @@ class EnemyMissile(GameObject):
         self.wh = 1, 4
         self.rgb = 228, 111, 111
         self.hud = False
+        self.y_ram_index = -1
 
 class EnemyShip(GameObject):
     """
@@ -215,21 +219,43 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     objects.extend(enemies)
 
     # ENEMY MISSILES
-    # enemies deletion from objects:
+    # enemy missiles deletion from objects
     missile_pos = np.where([isinstance(a, EnemyMissile) for a in objects])[0]
     if len(missile_pos) > 0:
         del objects[missile_pos[0]:missile_pos[-1] + 1]
 
-    missiles = []
-    missile_number = 0
-    for i in range(8):
-        if ram_state[25 + i] == 1:
-            missile_number += 1
-            enemy_missile = EnemyMissile()
-            enemy_missile.x = ram_state[102 + missile_number] + 11
-            enemy_missile.y = i * 16 + 80
-            missiles.append(enemy_missile)
-    objects.extend(missiles)
+
+    # TODO remove missile if it has reached the end
+
+    """
+    The missiles are setting ram_state[25:32] as they decend, so these are used for the y calculation. 
+    I am not sure if there is a ram state which has a value to add to the y position associated with the ram position, to make the movement smoother, as this is happening to quickly
+    The idea here was that the missiles might always use the first unused ram of ram_state[102 + i] to save their x position, but either this is not what is happening or the code is still incorrect.
+    """
+
+    while (np.count_nonzero(ram_state[25:32] != 0) - (8 - enemy_missiles.count(None)) > 0): # while there are fewer missiles in enemy_missiles than in the ram
+        enemy_missiles[enemy_missiles.index(None)] = EnemyMissile() # adds a missile at the first free index in enemy_missiles -> associated with the first unused x ram position
+
+    # update the y 
+    enemy_missiles_sorted_by_y = [i for i in enemy_missiles if i is not None]
+    enemy_missiles_sorted_by_y.sort(key=lambda missile:missile.y_ram_index)
+    generator = (i for i, v in enumerate(ram_state[25:32]) if v != 0)
+    for i in range(len(enemy_missiles_sorted_by_y)):
+        n = enemy_missiles.index(enemy_missiles_sorted_by_y[i]) # translate index i in the sorted list to the index in the general list
+        next_missile_y = next(generator, None)
+        if next_missile_y != None:
+            enemy_missiles[n].y_ram_index = next_missile_y
+        else: #removes last missiles if there are to many 
+            enemy_missiles[n] = None
+
+    for i in range(len(enemy_missiles)):
+        if enemy_missiles[i] is None:
+            continue
+        if enemy_missiles[i].y_ram_index is None: # a problem I encountered for a while and I am not sure if it still happens
+            breakpoint()
+        enemy_missiles[i].y = enemy_missiles[i].y_ram_index * 15 + 80
+        enemy_missiles[i].x = ram_state[102 + i] + 11
+    objects.extend([i for i in enemy_missiles if i is not None])
     
 
 def _detect_objects_galaxian_raw(info, ram_state):
@@ -237,6 +263,3 @@ def _detect_objects_galaxian_raw(info, ram_state):
     info["score"] = _convert_number(ram_state[44]) * 10000 + _convert_number(ram_state[45]) * 100 + _convert_number(ram_state[46])
     info["lives"] = ram_state[57]
     info["round"] = ram_state[47]
-
-
-    # -nr 0 or rightclick
