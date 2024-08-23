@@ -220,7 +220,6 @@ class OCAtari:
         return obs, reward, truncated, terminated, info
     
     def _detect_objects_ram(self):
-        import ipdb; ipdb.set_trace()
         detect_objects_ram(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
 
     def _detect_objects_vision(self):
@@ -476,7 +475,7 @@ class OCAtari:
         :param state: State snapshot to be restored
         :type state: env_snapshot
         """
-        return self._env.env.env.ale.cloneSystemState()
+        return self._env.env.env.ale.restoreSystemState(state)
     
     @property
     def ns_state(self):
