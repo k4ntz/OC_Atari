@@ -24,6 +24,12 @@ import gymnasium as gym
 import os 
 # os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = r'/home/quentin/bin/sysenv/lib/python3.11/site-packages/PyQt5/Qt5/plugins/platforms'
 
+def repeat_upsample(rgb_array, k=2, l=2, err=[]):
+    return np.repeat(np.repeat(rgb_array, k, axis=0), l, axis=1)
+
+
+exclude_all = [0, 1, 2, 3, 4, 5, 8, 18, 33, 44, 45, 46, 47, 48, 52, 57, 59, 60, 66, 68, 73, 92, 96, 100, 125] 
+
 def ransac_regression(x, y):
     ransac = RANSACRegressor(estimator=LinearRegression(),
                              min_samples=6, max_trials=100,
@@ -62,7 +68,6 @@ if opts.print_options:
 
 # RENDER_MODE = "human"
 RENDER_MODE = "rgb_array"
-env = OCAtari(opts.game, mode=MODE, render_mode=RENDER_MODE, frameskip=1)
 # env = gym.make(opts.game, render_mode=RENDER_MODE, frameskip=1)
 random.seed(0)
 
@@ -71,9 +76,10 @@ MODE = "vision"
 INTERACTIVE = False
 ONE_CHANGE = False
 COMPARE_WITH_PREVIOUS = True
-initial_ram_n = 64
+initial_ram_n = 25
 binary_mode = False
 
+env = OCAtari(opts.game, mode=MODE, render_mode=RENDER_MODE, frameskip=1)
 
 make_deterministic(0, env)
 
@@ -113,6 +119,7 @@ original_ram = env.get_ram()[ram_n]
 def show_ims(obs_list, new_ram):
     _, axes = plt.subplots(1, len(obs_list))
     for ax, im in zip(axes, obs_list):
+        im = repeat_upsample(im)
         ax.imshow(im)
     if binary_mode:
         plt.suptitle(f"{ram_n} set to {get_bin(new_ram)} (instead of {get_bin(original_ram)}, (={original_ram}))", fontsize=20)

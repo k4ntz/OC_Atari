@@ -27,8 +27,9 @@ class Renderer:
 
     def __init__(self, env_name: str, no_render: list = [], hud=False):
         self.env = OCAtari(env_name, mode="ram", hud=hud, render_mode="rgb_array",
-                             render_oc_overlay=True, frameskip=1, obs_mode="obj")
+                           render_oc_overlay=False, frameskip=1, obs_mode="obj")
 
+        self.env.rendering_initialized = True # Hacking bigger frames
         self.env.reset(seed=42)
         self.current_frame = self.env.render()
         self._init_pygame(self.current_frame)
@@ -45,6 +46,8 @@ class Renderer:
         self.candidate_cell_ids = []
         self.current_active_cell_input : str = ""
         self.no_render = no_render
+        self.frame_by_frame = False
+        self.next_frame = False
 
     def _init_pygame(self, sample_image):
         pygame.init()
@@ -60,7 +63,8 @@ class Renderer:
         self.running = True
         while self.running:
             self._handle_user_input()
-            if not self.paused:
+            if not (self.frame_by_frame and not(self.next_frame)) and not self.paused:
+                print(self.frame_by_frame, self.next_frame)
                 action = self._get_action()
                 reward = self.env.step(action)[1]
                 if reward != 0:
@@ -68,6 +72,7 @@ class Renderer:
                     pass
                 self.current_frame = self.env.render().copy()
             self._render()
+            self.next_frame = False
         pygame.quit()
 
     def _get_action(self):
@@ -115,12 +120,20 @@ class Renderer:
                 if event.key == pygame.K_p:  # 'P': pause/resume
                     self.paused = not self.paused
                 
-                if event.key == pygame.K_s:  # 'S': save
+                elif event.key == pygame.K_s:  # 'S': save
                     if self.paused:
                         statepkl = self.env._ale.cloneState()
                         with open(f"state_{self.env.game_name}.pkl", "wb") as f:
                             pkl.dump(statepkl, f)
                             print(f"State saved in state_{self.env.game_name}.pkl.")
+                
+                elif event.key == pygame.K_f: # Frame by frame
+                    self.frame_by_frame = not(self.frame_by_frame)
+                    self.next_frame = False
+                
+                elif event.key == pygame.K_n: # next
+                    print("next")
+                    self.next_frame = True
 
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()

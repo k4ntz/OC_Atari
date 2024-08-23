@@ -17,7 +17,6 @@ class Player(GameObject):
     """
     The player figure i.e, the gun.
     """
-    
     def __init__(self):
         super().__init__()
         self._xy = 66, 186
