@@ -399,14 +399,14 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         else:
             objects[27] = None
 
-    if ram_state[102] != 64:
-        if type(objects[28]) != OxygenBarDepleted:
-            objects[28] = OxygenBarDepleted()
-        objects[28].xy = 49 + ram_state[102], 170
-        objects[28].wh = 63 - ram_state[102], 5
-        objects[28].value = 63 - ram_state[102]
-    else:
-        objects[28]
+        if ram_state[102] != 64:
+            if type(objects[28]) != OxygenBarDepleted:
+                objects[28] = OxygenBarDepleted()
+            objects[28].xy = 49 + ram_state[102], 170
+            objects[28].wh = 63 - ram_state[102], 5
+            objects[28].value = 63 - ram_state[102]
+        else:
+            objects[28] = None
 
 
 def _is_submarine(i: int, ram_state) -> bool:
