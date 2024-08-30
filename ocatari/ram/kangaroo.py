@@ -90,7 +90,7 @@ class Ladder(GameObject):
     The ladders.
     """
 
-    def __init__(self, x=0, y=0, w=8, h=35):
+    def __init__(self, x=0, y=0, w=8, h=36):
         super(Ladder, self).__init__()
         self._xy = x, y
         self._prev_xy = x, y
@@ -431,8 +431,8 @@ def manage_platforms(current_lvl_val, _):
     if current_lvl_val == 0:
         platforms.extend([
             Ladder(132, 132),
-            Ladder(20, 85),
-            Ladder(132, 37),
+            Ladder(20, 84),
+            Ladder(132, 36),
             None,
             None,
             None,
