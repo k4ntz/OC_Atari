@@ -2,6 +2,7 @@ import numpy as np
 import pygame
 from ocatari.core import OCAtari, UPSCALE_FACTOR
 from tqdm import tqdm
+from collections import deque
 
 
 from ocatari.core import OCAtari
@@ -25,9 +26,11 @@ class Renderer:
     clock: pygame.time.Clock
     env: OCAtari
 
-    def __init__(self, env_name: str, no_render: list = [], hud=False):
+    def __init__(self, env_name: str, previous_frames: int, no_render: list = [], hud=False):
         self.env = OCAtari(env_name, mode="ram", hud=hud, render_mode="rgb_array",
                            render_oc_overlay=False, frameskip=1, obs_mode="obj")
+        
+        self.saved_frames = deque(maxlen=previous_frames)
 
         self.env.rendering_initialized = True # Hacking bigger frames
         self.env.reset(seed=42)
@@ -64,13 +67,14 @@ class Renderer:
         while self.running:
             self._handle_user_input()
             if not (self.frame_by_frame and not(self.next_frame)) and not self.paused:
-                print(self.frame_by_frame, self.next_frame)
+                #print(self.frame_by_frame, self.next_frame)
                 action = self._get_action()
                 reward = self.env.step(action)[1]
                 if reward != 0:
                     print(reward)
                     pass
                 self.current_frame = self.env.render().copy()
+                self.saved_frames.append(self.env._ale.cloneState())
             self._render()
             self.next_frame = False
         pygame.quit()
@@ -134,6 +138,17 @@ class Renderer:
                 elif event.key == pygame.K_n: # next
                     print("next")
                     self.next_frame = True
+
+                elif event.key == pygame.K_b:  # 'B': Backwards
+                    if self.frame_by_frame:
+                        if len(self.saved_frames) > 0:
+                            #breakpoint()
+                            self.env._ale.restoreState(self.saved_frames.pop())
+                            self.current_frame = self.env.render().copy()
+                            self._render()
+                            print("previous") 
+                        else: 
+                            print("There are no prior frames saved to go back to. Save more using the flag --previous_frames")
 
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
@@ -334,12 +349,14 @@ if __name__ == "__main__":
                         help='Let user play the game.')
     parser.add_argument('-hud', '--hud', action='store_true',
                     help='Use HUD.')
+    parser.add_argument('-pf', '--previous_frames', type=int, default=5, 
+                        help='Number of frames to save to be available when going to previous frames')
     parser.add_argument('-nr', '--no_render', type=int, default=[],
                         help='Cells to not render.', nargs='+')
 
     args = parser.parse_args()
 
-    renderer = Renderer(args.game, args.no_render, hud=args.hud)
+    renderer = Renderer(args.game, no_render=args.no_render, hud=args.hud, previous_frames=args.previous_frames)
     if args.load_state:
         with open(args.load_state, "rb") as f:
             state = pkl.load(f)
@@ -348,7 +365,7 @@ if __name__ == "__main__":
     def exit_handler():
         if renderer.no_render:
             print("\nno_render list: ")
-            for i in sorted(renderer.no_render):
+            for i in sorted(set(renderer.no_render)):
                 print(i, end=" ")
             print("")
     atexit.register(exit_handler)
