@@ -29,8 +29,6 @@ class Renderer:
     def __init__(self, env_name: str, previous_frames: int, no_render: list = [], hud=False):
         self.env = OCAtari(env_name, mode="ram", hud=hud, render_mode="rgb_array",
                            render_oc_overlay=False, frameskip=1, obs_mode="obj")
-        
-        self.saved_frames = deque(maxlen=previous_frames)
 
         self.env.rendering_initialized = True # Hacking bigger frames
         self.env.reset(seed=42)
@@ -51,6 +49,7 @@ class Renderer:
         self.no_render = no_render
         self.frame_by_frame = False
         self.next_frame = False
+        self.saved_frames = deque(maxlen=previous_frames) # tuples of ram, state, image
 
     def _init_pygame(self, sample_image):
         pygame.init()
@@ -68,13 +67,13 @@ class Renderer:
             self._handle_user_input()
             if not (self.frame_by_frame and not(self.next_frame)) and not self.paused:
                 #print(self.frame_by_frame, self.next_frame)
+                self.saved_frames.append((self.env.unwrapped.ale.getRAM(), self.env._ale.cloneState(), self.current_frame)) # ram, state, image (rgb)
                 action = self._get_action()
                 reward = self.env.step(action)[1]
                 if reward != 0:
                     print(reward)
                     pass
                 self.current_frame = self.env.render().copy()
-                self.saved_frames.append(self.env._ale.cloneState())
             self._render()
             self.next_frame = False
         pygame.quit()
@@ -142,9 +141,10 @@ class Renderer:
                 elif event.key == pygame.K_b:  # 'B': Backwards
                     if self.frame_by_frame:
                         if len(self.saved_frames) > 0:
-                            #breakpoint()
-                            self.env._ale.restoreState(self.saved_frames.pop())
-                            self.current_frame = self.env.render().copy()
+                            previous = self.saved_frames.pop()
+                            self._set_ram(previous[0]) #restore ram
+                            self.env._ale.restoreState(previous[1]) #restore state
+                            self.current_frame = previous[2].copy()
                             self._render()
                             print("previous") 
                         else: 
@@ -349,7 +349,7 @@ if __name__ == "__main__":
                         help='Let user play the game.')
     parser.add_argument('-hud', '--hud', action='store_true',
                     help='Use HUD.')
-    parser.add_argument('-pf', '--previous_frames', type=int, default=5, 
+    parser.add_argument('-pf', '--previous_frames', type=int, default=20, 
                         help='Number of frames to save to be available when going to previous frames')
     parser.add_argument('-nr', '--no_render', type=int, default=[],
                         help='Cells to not render.', nargs='+')
