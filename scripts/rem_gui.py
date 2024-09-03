@@ -26,11 +26,11 @@ class Renderer:
     clock: pygame.time.Clock
     env: OCAtari
 
-    def __init__(self, env_name: str, previous_frames: int, no_render: list = [], hud=False):
+    def __init__(self, env_name: str, no_render: list = [], hud=False):
         self.env = OCAtari(env_name, mode="ram", hud=hud, render_mode="rgb_array",
                            render_oc_overlay=False, frameskip=1, obs_mode="obj")
         
-        self.saved_frames = deque(maxlen=previous_frames)
+        self.saved_frames = deque(maxlen=20)
 
         self.env.rendering_initialized = True # Hacking bigger frames
         self.env.reset(seed=42)
@@ -74,7 +74,9 @@ class Renderer:
                     print(reward)
                     pass
                 self.current_frame = self.env.render().copy()
-                self.saved_frames.append(self.env._ale.cloneState())
+                sstate = self.env._ale.cloneState()
+                self.saved_frames.append(sstate)
+                print(f"Saved {sstate}")
             self._render()
             self.next_frame = False
         pygame.quit()
@@ -143,7 +145,10 @@ class Renderer:
                     if self.frame_by_frame:
                         if len(self.saved_frames) > 0:
                             #breakpoint()
-                            self.env._ale.restoreState(self.saved_frames.pop())
+                            sstate = self.saved_frames.pop()
+                            self.env._ale.restoreState(sstate)
+                            print(f"Restored {sstate}")
+                            import ipdb; ipdb.set_trace()
                             self.current_frame = self.env.render().copy()
                             self._render()
                             print("previous") 
@@ -349,14 +354,14 @@ if __name__ == "__main__":
                         help='Let user play the game.')
     parser.add_argument('-hud', '--hud', action='store_true',
                     help='Use HUD.')
-    parser.add_argument('-pf', '--previous_frames', type=int, default=5, 
+    parser.add_argument('-pf', '--previous_frames', type=int, default=20, 
                         help='Number of frames to save to be available when going to previous frames')
     parser.add_argument('-nr', '--no_render', type=int, default=[],
                         help='Cells to not render.', nargs='+')
 
     args = parser.parse_args()
 
-    renderer = Renderer(args.game, no_render=args.no_render, hud=args.hud, previous_frames=args.previous_frames)
+    renderer = Renderer(args.game, no_render=args.no_render, hud=args.hud)
     if args.load_state:
         with open(args.load_state, "rb") as f:
             state = pkl.load(f)
