@@ -4,7 +4,6 @@ from ocatari.core import OCAtari, UPSCALE_FACTOR
 from tqdm import tqdm
 from collections import deque
 
-
 from ocatari.core import OCAtari
 import atexit
 import pickle as pkl
@@ -19,14 +18,16 @@ RAM_RENDER_WIDTH = 1000
 RAM_N_COLS = 8
 RAM_CELL_WIDTH = 115
 RAM_CELL_HEIGHT = 45
-
+TRACK_RAM = False
+RAMS = []
+ACTIONS = []
 
 class Renderer:
     window: pygame.Surface
     clock: pygame.time.Clock
     env: OCAtari
 
-    def __init__(self, env_name: str, no_render: list = [], hud=False):
+    def __init__(self, env_name: str, no_render: list = [], hud=False, previous_frames=20):
         self.env = OCAtari(env_name, mode="ram", hud=hud, render_mode="rgb_array",
                            render_oc_overlay=False, frameskip=1, obs_mode="obj")
 
@@ -69,6 +70,9 @@ class Renderer:
                 #print(self.frame_by_frame, self.next_frame)
                 self.saved_frames.append((self.env.unwrapped.ale.getRAM(), self.env._ale.cloneState(), self.current_frame)) # ram, state, image (rgb)
                 action = self._get_action()
+                if TRACK_RAM:
+                    RAMS.append(self.env.unwrapped.ale.getRAM().copy())
+                    ACTIONS.append(action)
                 reward = self.env.step(action)[1]
                 if reward != 0:
                     print(reward)
@@ -353,8 +357,11 @@ if __name__ == "__main__":
                         help='Number of frames to save to be available when going to previous frames')
     parser.add_argument('-nr', '--no_render', type=int, default=[],
                         help='Cells to not render.', nargs='+')
+    parser.add_argument('-tr', '--track-ram', action='store_true')
 
     args = parser.parse_args()
+
+    TRACK_RAM = args.track_ram
 
     renderer = Renderer(args.game, no_render=args.no_render, hud=args.hud)
     if args.load_state:
@@ -363,6 +370,8 @@ if __name__ == "__main__":
             renderer.env._ale.restoreState(state)
             print(f"State loaded from {args.load_state}")
     def exit_handler():
+        if TRACK_RAM:
+            pkl.dump((ACTIONS, RAMS), open(f"{args.game}_rams_actions.pkl", "wb"))
         if renderer.no_render:
             print("\nno_render list: ")
             for i in sorted(set(renderer.no_render)):
