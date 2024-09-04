@@ -297,7 +297,6 @@ class OCAtari:
         """
 
         image = self._env.render()
-
         if not self.render_oc_overlay:
             if self.rendering_initialized:
                 return image.swapaxes(0,1).repeat(UPSCALE_FACTOR, axis=0).repeat(UPSCALE_FACTOR, axis=1)

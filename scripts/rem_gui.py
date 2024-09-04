@@ -29,9 +29,9 @@ class Renderer:
 
     def __init__(self, env_name: str, no_render: list = [], hud=False, previous_frames=20):
         self.env = OCAtari(env_name, mode="ram", hud=hud, render_mode="rgb_array",
-                           render_oc_overlay=False, frameskip=1, obs_mode="obj")
-
-        self.env.rendering_initialized = True # Hacking bigger frames
+                           render_oc_overlay=True, frameskip=1, obs_mode="obj")
+        if not self.env.render_oc_overlay:
+            self.env.rendering_initialized = True # Hacking bigger frames
         self.env.reset(seed=42)
         self.current_frame = self.env.render()
         self._init_pygame(self.current_frame)
