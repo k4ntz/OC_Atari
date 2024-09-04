@@ -10,7 +10,7 @@ RAM extraction for the game DONKEYKONG. Supported modes: ram.
 """
 
 MAX_ESSENTIAL_OBJECTS = {
-    'Player': 1,
+    'Player': 1, 'Girlfriend': 1, 'Ladder': 10, 'Hammer': 1, 'Barrels' : 10
 }
 
 MAX_OPTIONAL_OBJECTS = {
