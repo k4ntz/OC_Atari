@@ -27,7 +27,7 @@ class Renderer:
     clock: pygame.time.Clock
     env: OCAtari
 
-    def __init__(self, env_name: str, no_render: list = [], hud=False, previous_frames=20):
+    def __init__(self, env_name: str, no_render: list = [], hud=False, previous_frames=20, binary_mode=False):
         self.env = OCAtari(env_name, mode="ram", hud=hud, render_mode="rgb_array",
                            render_oc_overlay=True, frameskip=1, obs_mode="obj")
         if not self.env.render_oc_overlay:
@@ -51,6 +51,7 @@ class Renderer:
         self.frame_by_frame = False
         self.next_frame = False
         self.saved_frames = deque(maxlen=previous_frames) # tuples of ram, state, image
+        self.binary_mode = binary_mode
 
     def _init_pygame(self, sample_image):
         pygame.init()
@@ -165,12 +166,12 @@ class Renderer:
 
                 elif pygame.K_0 <= event.key <= pygame.K_9:  # enter digit
                     char = str(event.key - pygame.K_0)
-                    if self.active_cell_idx is not None:
+                    if self.active_cell_idx is not None and (not self.binary_mode or char in ['0', '1']):
                         self.current_active_cell_input += char
 
                 elif pygame.K_KP1 <= event.key <= pygame.K_KP0:  # enter digit
                     char = str((event.key - pygame.K_KP1 + 1) % 10)
-                    if self.active_cell_idx is not None:
+                    if self.active_cell_idx is not None and (not self.binary_mode or char in ['0', '1']):
                         self.current_active_cell_input += char
 
                 elif event.key == pygame.K_BACKSPACE:  # remove character
@@ -180,7 +181,7 @@ class Renderer:
                 elif event.key == pygame.K_RETURN:
                     if self.active_cell_idx is not None:
                         if len(self.current_active_cell_input) > 0:
-                            new_cell_value = int(self.current_active_cell_input)
+                            new_cell_value = int(self.current_active_cell_input, 2 if self.binary_mode else 10)
                             if new_cell_value < 256:
                                 self._set_ram_value_at(self.active_cell_idx, new_cell_value)
                         self._unselect_active_cell()
@@ -273,7 +274,7 @@ class Renderer:
                 color = (30, 90, 255)
             else:
                 color = (200, 200, 200)
-            text = self.ram_cell_value_font.render(str(value), True, color, None)
+            text = self.ram_cell_value_font.render(str(value) if (not self.binary_mode or type(value) == str) else (format(value, 'b').zfill(8)), True, color, None)
             text_rect = text.get_rect()
             text_rect.bottomright = (x + w - 2, y + h - 2)
             self.window.blit(text, text_rect)
@@ -358,12 +359,13 @@ if __name__ == "__main__":
     parser.add_argument('-nr', '--no_render', type=int, default=[],
                         help='Cells to not render.', nargs='+')
     parser.add_argument('-tr', '--track-ram', action='store_true')
+    parser.add_argument('-b', '--binary_mode', action='store_true')
 
     args = parser.parse_args()
 
     TRACK_RAM = args.track_ram
 
-    renderer = Renderer(args.game, no_render=args.no_render, hud=args.hud)
+    renderer = Renderer(args.game, no_render=args.no_render, hud=args.hud, binary_mode=args.binary_mode)
     if args.load_state:
         with open(args.load_state, "rb") as f:
             state = pkl.load(f)
