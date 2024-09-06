@@ -196,7 +196,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if row[j] == 1:
                 enemy_ship = EnemyShip()
                 enemy_ship.y = row_y
-                enemy_ship.x = 19 + ram_state[36] / 2 + np.ceil(j * 16.5)
+                enemy_ship.x = 19 + ram_state[35] * 0.8 + np.ceil(j * 16.5)
                 enemies.append(enemy_ship)
     objects.extend(enemies)
 
@@ -232,9 +232,17 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     The idea here was that the missiles might always use the first unused ram of ram_state[102 + i] to save their x position, but either this is not what is happening or the code is still incorrect.
     """
 
-    while (np.count_nonzero(ram_state[25:32] != 0) - (8 - enemy_missiles.count(None)) > 0): # while there are fewer missiles in enemy_missiles than in the ram
-        enemy_missiles[enemy_missiles.index(None)] = EnemyMissile() # adds a missile at the first free index in enemy_missiles -> associated with the first unused x ram position
 
+    k = 0
+    for i in range(25,33):
+        nr = ram_state[i]
+        nr_of_rockets = bin(nr).count("1")
+        for j in range(0,nr_of_rockets):
+            enemy_missiles[k] = EnemyMissile()
+            enemy_missiles[k].y_ram_index = i
+            k+=1
+
+   
     # update the y 
     enemy_missiles_sorted_by_y = [i for i in enemy_missiles if i is not None]
     enemy_missiles_sorted_by_y.sort(key=lambda missile:missile.y_ram_index)
@@ -242,20 +250,18 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     for i in range(len(enemy_missiles_sorted_by_y)):
         n = enemy_missiles.index(enemy_missiles_sorted_by_y[i]) # translate index i in the sorted list to the index in the general list
         next_missile_y = next(generator, None)
-        if next_missile_y != None:
-            enemy_missiles[n].y_ram_index = next_missile_y
-        else: #removes last missiles if there are to many 
-            enemy_missiles[n] = None
 
     for i in range(len(enemy_missiles)):
         if enemy_missiles[i] is None:
             continue
-        if enemy_missiles[i].y_ram_index is None: # a problem I encountered for a while and I am not sure if it still happens
-            breakpoint()
-        enemy_missiles[i].y = enemy_missiles[i].y_ram_index * 15 + 80
+        print(enemy_missiles[i].y_ram_index)
+        enemy_missiles[i].y = 180-(32-enemy_missiles[i].y_ram_index) * 10
+        print(enemy_missiles[i].y_ram_index)
         enemy_missiles[i].x = ram_state[102 + i] + 11
+        if enemy_missiles[i].y >= 180:
+            enemy_missiles[i] = None
+    print(enemy_missiles)
     objects.extend([i for i in enemy_missiles if i is not None])
-    
 
 def _detect_objects_galaxian_raw(info, ram_state):
     
