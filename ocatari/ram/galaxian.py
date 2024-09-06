@@ -238,8 +238,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         nr = ram_state[i]
         nr_of_rockets = bin(nr).count("1")
         for j in range(0,nr_of_rockets):
-            enemy_missiles[k] = EnemyMissile()
-            enemy_missiles[k].y_ram_index = i
+            if enemy_missiles[k] != None and enemy_missiles[k].y_ram_index >= i and enemy_missiles[k].y_ram_index < i+1 :
+                enemy_missiles[k].y_ram_index = enemy_missiles[k].y_ram_index + 0.10
+            else:
+                enemy_missiles[k] = EnemyMissile()
+                enemy_missiles[k].y_ram_index = i
             k+=1
 
    
@@ -254,15 +257,14 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     for i in range(len(enemy_missiles)):
         if enemy_missiles[i] is None:
             continue
-        print(enemy_missiles[i].y_ram_index)
-        enemy_missiles[i].y = 180-(32-enemy_missiles[i].y_ram_index) * 10
+        enemy_missiles[i].y = 188-(33-enemy_missiles[i].y_ram_index) * 11
         print(enemy_missiles[i].y_ram_index)
         enemy_missiles[i].x = ram_state[102 + i] + 11
-        if enemy_missiles[i].y >= 180:
+        if enemy_missiles[i].y >= 185:
             enemy_missiles[i] = None
     print(enemy_missiles)
     objects.extend([i for i in enemy_missiles if i is not None])
-
+    print(objects)
 def _detect_objects_galaxian_raw(info, ram_state):
     
     info["score"] = _convert_number(ram_state[44]) * 10000 + _convert_number(ram_state[45]) * 100 + _convert_number(ram_state[46])
