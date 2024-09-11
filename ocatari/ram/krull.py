@@ -2,8 +2,8 @@ from .game_objects import GameObject, ValueObject
 from ._helper_methods import number_to_bitfield
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1, 'Lyssa': 1, 'Slayer': 20, 'Slayer_Shot': 1, 'Weapon': 1, 'Beast': 1, 'Enemy_Weapon': 1, 'Wall': 64, 'Star': 1, 'Spider': 1, 'Window': 1, 'Line': 462, 'Fire_Mare': 1, 'Weapon': 1, 'Life': 1, 'Castle': 1}
-MAX_NB_OBJECTS_HUD = {"Player": 1, 'Lyssa': 1, 'Slayer': 20, 'Slayer_Shot': 1, 'Weapon': 1, 'Beast': 1, 'Enemy_Weapon': 1, 'Wall': 64, 'Star': 1, 'Spider': 1, 'Window': 1, 'Line': 462, 'Fire_Mare': 1, 'Weapon': 1, 'Life': 1, 'Castle': 1, 'Sun': 1, 'Hour_Glass': 1, 'Score': 1, 'Life_HUD': 3, 'Weapon_HUD': 3}# 'Score': 1}
+MAX_NB_OBJECTS = {"Player": 1, 'Lyssa': 1, 'Slayers': 20, 'Slayer_Shot': 1, 'Weapon': 1, 'Beast': 1, 'Enemy_Weapon': 1, 'Wall': 64, 'Star': 1, 'Spider': 1, 'Window': 1, 'Line': 462, 'Fire_Mare': 1, 'Weapon': 1, 'Life': 1, 'Castle': 1}
+MAX_NB_OBJECTS_HUD = {"Player": 1, 'Lyssa': 1, 'Slayers': 20, 'Slayer_Shot': 1, 'Weapon': 1, 'Beast': 1, 'Enemy_Weapon': 1, 'Wall': 64, 'Star': 1, 'Spider': 1, 'Window': 1, 'Line': 462, 'Fire_Mare': 1, 'Weapon': 1, 'Life': 1, 'Castle': 1, 'Sun': 1, 'Hour_Glass': 1, 'Score': 1, 'Life_HUD': 3, 'Weapon_HUD': 3}# 'Score': 1}
 
 class Player(GameObject):
     def __init__(self):
