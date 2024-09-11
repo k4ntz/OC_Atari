@@ -87,7 +87,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # x == 66-72; y == 59-65; type 73-79
     k = 0
     for i in range(7):
-        objects[1+k] = None
+        if k < 6:
+            objects[1+k] = None
         if ram_state[73+i]&16 and ram_state[73+i]&32:
             fig = Monster_red()
             objects[1+k] = fig
