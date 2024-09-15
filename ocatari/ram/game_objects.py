@@ -172,7 +172,6 @@ class GameObject:
     def _ns_meaning(self):
         return "x, y"
 
-
     @property
     def _nslen(self):
         return len(self._nsrepr)
