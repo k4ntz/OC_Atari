@@ -3,7 +3,8 @@ from collections import deque
 import gymnasium as gym
 from termcolor import colored
 import numpy as np
-from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects, get_object_state, get_object_state_size
+from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, \
+    get_max_objects, parse_max_objects, get_class_dict, get_object_state, get_object_state_size
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
 from ocatari.ram.game_objects import GameObject, ValueObject
@@ -117,7 +118,7 @@ class OCAtari:
         self.mode = mode
         self.obs_mode = obs_mode
         self.hud = hud
-        self.max_objects = []
+        self.max_objects_per_cat = get_max_objects(self.game_name, self.hud)
         self.buffer_window_size = 4
         self.step = self._step_impl
         if not self._covered_game:
@@ -131,7 +132,6 @@ class OCAtari:
         elif mode == "revised" or mode== "ram" :
             if mode == "revised":
                 warnings.warn("'revised' mode will deprecate with the next major update, please use 'ram' mode instead.", DeprecationWarning)
-            self.max_objects = get_max_objects(self.game_name, self.hud)
             self.detect_objects = self._detect_objects_ram
         elif mode == "both":
             self.detect_objects = self._detect_objects_both
@@ -139,8 +139,11 @@ class OCAtari:
         else:
             print(colored("Undefined mode for information extraction", "red"))
             exit(1)
-        self._ns_state = np.zeros(sum([len(o._nsrepr) for o in self.max_objects]))
-        self.ns_meaning = [f"{o.category} ({o._ns_meaning})" for o in self.max_objects]
+        self._class_dict = get_class_dict(self.game_name)
+        self._slots_str = [c for c, n in self.max_objects_per_cat.items() for i in range(n)]
+        self._slots = [self._class_dict[c]() for c in self._slots_str]
+        self._ns_state = np.zeros(sum([len(o._nsrepr) for o in self._slots]))
+        self.ns_meaning = [f"{o.category} ({o._ns_meaning})" for o in self._slots]
         self._objects : list[GameObject] = init_objects(self.game_name, self.hud)
         self._fill_buffer = lambda *args, **kwargs: None
         self._reset_buffer = lambda *args, **kwargs: None
@@ -162,13 +165,8 @@ class OCAtari:
                 self._fill_buffer = self._fill_buffer_obj
                 self._reset_buffer = self._reset_buffer_obj
                 self.reference_list = []
-                obj_counter = {}
-                for o in self.max_objects:
-                    if o.category not in obj_counter.keys():
-                        obj_counter[o.category] = 0
-                    obj_counter[o.category] += 1
-                for k in list(obj_counter.keys()):
-                    self.reference_list.extend([k for i in range(obj_counter[k])])
+                for k in list(self.max_objects_per_cat.keys()):
+                    self.reference_list.extend([k for i in range(self.max_objects_per_cat[k])])
             else:
                 print(colored("This obs mode is only available in ram mode", "red"))
                 exit(1)

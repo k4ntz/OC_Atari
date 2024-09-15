@@ -2,12 +2,42 @@ import sys
 from termcolor import colored
 import numpy as np
 
+
+# parses MAX_NB* dicts, returns default init list of objects
+def parse_max_objects(game_name, max_obj_dict):
+    objects = []
+    p_module = __name__.split('.')[:-1] + [game_name.lower()]
+    game_module = '.'.join(p_module)
+    mod = sys.modules[game_module]
+    for k, v in max_obj_dict.items():
+        for _ in range(0, v):
+            objects.append(getattr(mod, k)())
+    return objects
+
+def get_class_dict(game_name):
+    p_module = __name__.split('.')[:-1] + [game_name.lower()]
+    game_module = '.'.join(p_module)
+    try:
+        mod = sys.modules[game_module]
+        classes = {}
+        for name, number in mod.MAX_NB_OBJECTS_HUD.items():
+            classes[name] = getattr(mod, name)
+        return classes
+    except KeyError as err:
+        print(colored(f"Game module does not exist: {game_module}", "red"))
+        raise err
+    except AttributeError as err:
+        print(colored(f"_get_max_objects not implemented for game: {game_name}", "red"))
+        raise err
+
 def get_max_objects(game_name, hud):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
     try:
         mod = sys.modules[game_module]
-        return mod._get_max_objects(hud)
+        if hud:
+            return mod.MAX_NB_OBJECTS_HUD
+        return mod.MAX_NB_OBJECTS
     except KeyError as err:
         print(colored(f"Game module does not exist: {game_module}", "red"))
         raise err
