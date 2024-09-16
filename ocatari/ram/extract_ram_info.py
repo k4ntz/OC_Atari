@@ -82,7 +82,7 @@ def detect_objects_ram(objects, ram_state, game_name, hud):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
     for obj in objects:  # saving the previsous positions
-        if obj is not None:
+        if obj:
             obj._save_prev()
     try:
         mod = sys.modules[game_module]
@@ -128,7 +128,7 @@ def get_object_state(reference_list, objects, game_name):
             temp_ref_list = reference_list.copy()
             state = reference_list.copy()
             for o in objects: # populate out_vector with object instance
-                if o is None:
+                if not o:
                     continue
                 idx = temp_ref_list.index(o.category) # at position of first category occurance
                 state[idx] = o.xy # write the slice

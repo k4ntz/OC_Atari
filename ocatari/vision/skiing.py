@@ -70,9 +70,9 @@ def _detect_objects(objects, obs, hud=False):
         for el in moguls:
             objects.append(Mogul(*el, col))
     if hud:
-        scores = find_objects(obs, (0, 0, 0), miny=4, maxy=14, minx=50, maxx=100, closing_active=False) 
+        scores = find_objects(obs, (0, 0, 0), miny=4, maxy=14, minx=50, maxx=100, closing_active=True, closing_dist=5) 
         for sc in scores:
             objects.append(Score(*sc))
-        clocks = find_objects(obs, (0, 0, 0), miny=15, maxy=25, minx=50, maxx=100, closing_active=False) 
+        clocks = find_objects(obs, (0, 0, 0), miny=15, maxy=25, minx=50, maxx=100, closing_active=True, closing_dist=5) 
         for cl in clocks:
             objects.append(Clock(*cl))

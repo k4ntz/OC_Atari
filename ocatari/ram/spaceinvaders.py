@@ -7,8 +7,8 @@ import sys
 RAM extraction for the game Space Invaders.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Shield': 3, 'Alien': 36, 'Bullet': 3, 'Satellite': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Alien': 36, 'Bullet': 3, 'Satellite': 1, 'Score': 4, 'Lives': 2}
+MAX_NB_OBJECTS =  {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Alien': 36,'Satellite': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Alien': 36, 'Satellite': 1, 'Score': 1, 'Lives': 1}
 
 
 def make_bitmap(alien_states):
