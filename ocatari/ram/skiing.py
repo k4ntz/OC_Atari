@@ -227,6 +227,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     flag_slots = objects[8:12]
     tree_n, mogul_n, flag_n = _get_highest_idx(tree_slots), \
         _get_highest_idx(mogul_slots), _get_highest_idx(flag_slots)
+    print(tree_n)
+    # import ipdb;ipdb.set_trace()
     for i in range(8):
         type = ram_state[70+i]
         x, y = ram_state[62+i], 178-ram_state[86+i]
