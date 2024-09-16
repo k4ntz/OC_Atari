@@ -49,14 +49,14 @@ def _detect_objects(objects, obs, hud=False):
         if el[1] > 30:
             objects.append(Enemy(*el))
     if hud:
-        enemy_score = find_objects(obs, objects_colors["enemy"], min_distance=1, closing_active=False, maxy=30)
+        enemy_score = find_objects(obs, objects_colors["enemy"], closing_dist=10, closing_active=True, maxy=30)
         for el in enemy_score:
             objects.append(EnemyScore(*el))
     player = find_objects(obs, objects_colors["player"], min_distance=1, miny=30)
     for el in player:
         objects.append(Player(*el))
     if hud:
-        playerscore = find_objects(obs, objects_colors["player"], min_distance=1, closing_active=False, maxy=30)
+        playerscore = find_objects(obs, objects_colors["player"], closing_dist=16, closing_active=True, maxy=30)
         for el in playerscore:
             objects.append(PlayerScore(*el))
     ball = find_objects(obs, objects_colors["ball"], min_distance=None)

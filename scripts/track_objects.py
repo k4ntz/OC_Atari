@@ -12,9 +12,33 @@ This script can be used to display the n detected objects in the game.
 Each object will be filled with a 20x20 pixels image, replacing the RAM display.
 """
 
-OBJ_RENDER_WIDTH = 1000
-OBJ_CELL_WIDTH = 104
-OBJ_CELL_HEIGHT = 104
+OBJ_CELL_WIDTH = 100
+OBJ_CELL_HEIGHT = 100
+
+def _get_sides(obj):
+    if obj.w > obj.h:
+        xside = obj.w + 2
+        if xside <= 10:
+            xside, upscale = 10, 10
+        elif xside <= 20:
+            xside, upscale = 20, 5
+        elif xside <= 33:
+            xside, upscale = 33, 3
+        else: 
+            xside, upscale = 50, 2
+        yside = obj.h + 2
+    else:
+        yside = obj.h + 2
+        if yside <= 10:
+            yside, upscale = 10, 10
+        elif yside <= 20:
+            yside, upscale = 20, 5
+        elif yside <= 33:
+            yside, upscale = 33, 3
+        else: 
+            yside, upscale = 50, 2
+        xside = obj.w + 2
+    return xside, yside, upscale
 
 
 class Renderer:
@@ -22,12 +46,14 @@ class Renderer:
     clock: pygame.time.Clock
     env: OCAtari
 
-    def __init__(self, env_name: str):
-        self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="rgb_array",
+    def __init__(self, env_name: str, hud: bool):
+        self.env = OCAtari(env_name, mode="ram", hud=hud, render_mode="rgb_array",
                              render_oc_overlay=True, frameskip=1, obs_mode="obj")
 
         self.env.reset(seed=42)
         self.current_frame = self.env.render()
+        self.max_objects = len(self.env._slots) # maximum number of objects to display
+        self.obj_n_cols = self.max_objects // 7 + 1
         self._init_pygame(self.current_frame)
         self.paused = False
 
@@ -36,16 +62,19 @@ class Renderer:
         self.keys2actions = self.env.unwrapped.get_keys_to_action()
 
         self.obj_grid_anchor_left = self.env_render_shape[0] + 28
-        self.obj_grid_anchor_top = 28
+        self.obj_grid_anchor_top = 60
 
-        self.max_objects = len(self.env.ns_meaning) # maximum number of objects to display
-        self.obj_n_cols = self.max_objects // 7 + 1
+        
+        for i, obj in enumerate(self.env._slots):
+            x, y, w, h = self._get_obj_cell_rect(i)
+            obj_col = obj.rgb
+            pygame.draw.rect(self.window, obj_col, [x-2, y-2, w+4, h+4], 2)
 
     def _init_pygame(self, sample_image):
         pygame.init()
         pygame.display.set_caption("OCAtari Environment")
         self.env_render_shape = sample_image.shape[:2]
-        window_size = (self.env_render_shape[0] + OBJ_RENDER_WIDTH, self.env_render_shape[1])
+        window_size = (self.env_render_shape[0] + self.obj_n_cols * 105 + 50, self.env_render_shape[1])
         self.window = pygame.display.set_mode(window_size)
         self.clock = pygame.time.Clock()
         self.obj_font = pygame.font.SysFont('Pixel12x10', 25)
@@ -61,7 +90,7 @@ class Renderer:
                     print(reward)
                     pass
                 self.current_frame = self.env.render().copy()
-            self._render()
+                self._render()
         pygame.quit()
 
     def _get_action(self):
@@ -99,7 +128,7 @@ class Renderer:
                     self.current_keys_down.remove(event.key)
 
     def _render(self, frame=None):
-        self.window.fill((0, 0, 0))  # clear the entire window
+        # self.window.fill((0, 0, 0))  # clear the entire window
         self._render_atari(frame)
         self._render_objects()
         pygame.display.flip()
@@ -134,40 +163,23 @@ class Renderer:
         pygame.surfarray.blit_array(image_surface, img)
         self.window.blit(image_surface, (x, y))
 
-        # color = (200, 200, 200)
-        # text = self.obj_font.render(f"{obj}"[:4], True, color, None)
-        # text_rect = text.get_rect()
-        # text_rect.topleft = (x + 2, y + 2)
-        # self.window.blit(text, text_rect)
-    
+        if obj is not None:
+            obj_init_color = self.window.get_at((x - 2, y - 2))
+            border_color = obj.rgb
+            if obj_init_color[:3] != border_color:
+                pygame.draw.rect(self.window, (255, 20, 20), [x-2, y-2, w+4, h+4], 8)
+                self.paused = True
+                print(f"Object color changed for {obj}! Pausing the game. {obj_init_color} -> {border_color}")
+            else:
+                pygame.draw.rect(self.window, border_color, [x, y, w, h], 3)
+
     def _get_obj_sprite(self, obj):
         if obj is None:
             return np.ones((100, 100, 3), dtype=np.uint8) * 40
-        if obj.w > obj.h:
-            xside = obj.w + 2
-            if xside <= 10:
-                xside, upscale = 10, 10
-            elif xside <= 20:
-                xside, upscale = 20, 5
-            elif xside <= 33:
-                xside, upscale = 33, 3
-            else: 
-                xside, upscale = 50, 2
-            yside = obj.h + 2
-        else:
-            yside = obj.h + 2
-            if yside <= 10:
-                yside, upscale = 10, 10
-            elif yside <= 20:
-                yside, upscale = 20, 5
-            elif yside <= 33:
-                yside, upscale = 33, 3
-            else: 
-                yside, upscale = 50, 2
-            xside = obj.w + 2
-        x, y = obj.center
-        x = int(x - xside / 2)
-        y = int(y - yside / 2)
+        xside, yside, upscale = _get_sides(obj)
+        cx, cy = obj.center
+        x = max(0, int(cx - xside / 2))
+        y = max(0, int(cy - yside / 2))
         screen = self.env.getScreenRGB()
         sprite = screen[y:y+yside, x:x+xside,:].swapaxes(0,1).repeat(upscale, axis=0).repeat(upscale, axis=1)
         
@@ -204,28 +216,12 @@ if __name__ == "__main__":
 
     parser.add_argument('-g', '--game', type=str, default="Seaquest",
                         help='Game to be run')
-
-    # Argument to enable gravity for the player.
-    parser.add_argument('-m', '--modifs', nargs='+', default=[],
-                        help='List of the modifications to be brought to the game')
-    
-    parser.add_argument('-hu', '--human', action='store_true',
-                        help='Let user play the game.')
-    
-    parser.add_argument('-sm', '--switch_modifs', nargs='+', default=[],
-                        help='List of the modifications to be brought to the game after a certain frame')
-    parser.add_argument('-sf', '--switch_frame', type=int, default=0,
-                        help='Swicht_modfis are applied to the game after this frame-threshold')
-    parser.add_argument('-p', '--picture', type=int, default=0,
-                        help='Takes a picture after the number of steps provided.')
-    parser.add_argument('-rf','--reward_function', type=str, default='', 
-                        help="Replace the default reward function with new one in path rf")
-    parser.add_argument('-a','--agent', type=str, default='', 
-                        help="Path to the cleanrl trained agent to be loaded.")
+    parser.add_argument('-hud', '--hud', action='store_true',
+                        help='Display HUD')
 
 
     args = parser.parse_args()
 
-    renderer = Renderer(args.game)
+    renderer = Renderer(args.game, args.hud)
 
     renderer.run()

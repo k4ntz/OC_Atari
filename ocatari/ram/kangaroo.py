@@ -330,6 +330,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             fruit.xy = x, y
             fruit.wh = wh
             fruit.rgb = rgb
+            objects[10+i] = fruit
         else:
             objects[10+i] = None
 
