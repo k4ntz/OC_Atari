@@ -63,7 +63,7 @@ class Renderer:
 
         self.obj_grid_anchor_left = self.env_render_shape[0] + 28
         self.obj_grid_anchor_top = 60
-
+        self.track_color_change = False
         
         for i, obj in enumerate(self.env._slots):
             x, y, w, h = self._get_obj_cell_rect(i)
@@ -166,7 +166,7 @@ class Renderer:
         if obj is not None:
             obj_init_color = self.window.get_at((x - 2, y - 2))
             border_color = obj.rgb
-            if obj_init_color[:3] != border_color:
+            if self.track_color_change and obj_init_color[:3] != border_color:
                 pygame.draw.rect(self.window, (255, 20, 20), [x-2, y-2, w+4, h+4], 8)
                 self.paused = True
                 print(f"Object color changed for {obj}! Pausing the game. {obj_init_color} -> {border_color}")
