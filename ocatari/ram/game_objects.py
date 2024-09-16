@@ -234,6 +234,9 @@ class GameObject:
         return [prop for prop in properties
                 if not prop.startswith("_") and 
                 not callable(self.__getattribute__(prop))]
+    
+    def __bool__(self):
+        return True
 
 
 class NoObject(GameObject):
@@ -242,7 +245,10 @@ class NoObject(GameObject):
     """
     def __init__(self, nslen=2):
         super().__init__()
-        self._nslen = nslen
+        self.nslen = nslen
+    
+    def _save_prev(self):
+        pass
 
     def __bool__(self):
         return False
@@ -251,10 +257,10 @@ class NoObject(GameObject):
         return isinstance(other, NoObject)
     
     def _nsrepr(self):
-        return [0 for _ in range(self._nslen)]
+        return [0 for _ in range(self.nslen)]
     
     def __repr__(self):
-        return "NoObject"
+        return "NaO"
 
 
 class ValueObject(GameObject):
