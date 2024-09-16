@@ -137,8 +137,8 @@ class Tree(GameObject):
     @xy.setter
     def xy(self, xy):
         x, y = xy
-        if self._xy[0] == x + 2:    # bug correction
-            x += 5
+        # if self._xy[0] == x + 2:    # bug correction
+        #     x += 5
         self._prev_xy = self._xy
         if x > 158:
             self._xy = 8, y+4
@@ -344,8 +344,7 @@ def _get_object_state_size(hud):
     return len(objects)+len(additional_feature)
 
 def _get_object_state(reference_list, objects):
-
-    #import ipdb; ipdb.set_trace()
+    return
     temp_ref_list = reference_list.copy()
     state = reference_list.copy()
     for o in objects: # populate out_vector with object instance
