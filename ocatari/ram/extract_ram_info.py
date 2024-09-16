@@ -14,6 +14,7 @@ def parse_max_objects(game_name, max_obj_dict):
             objects.append(getattr(mod, k)())
     return objects
 
+
 def get_class_dict(game_name):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
@@ -29,6 +30,7 @@ def get_class_dict(game_name):
     except AttributeError as err:
         print(colored(f"_get_max_objects not implemented for game: {game_name}", "red"))
         raise err
+
 
 def get_max_objects(game_name, hud):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
@@ -60,6 +62,7 @@ def init_objects(game_name, hud):
         print(colored(f"_init_objects_ram not implemented for game: {game_name}", "red"))
         raise err
 
+
 def detect_objects_raw(info, ram_state, game_name):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
@@ -73,6 +76,7 @@ def detect_objects_raw(info, ram_state, game_name):
     except AttributeError as err:
         print(colored(f"_detect_objects_raw not implemented for game: {game_name}", "red"))
         raise err
+
 
 def detect_objects_ram(objects, ram_state, game_name, hud):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
@@ -89,6 +93,7 @@ def detect_objects_ram(objects, ram_state, game_name, hud):
     except AttributeError as err:
         print(colored(f"_detect_objects_ram not implemented for game: {game_name}", "red"))
         raise err
+
 
 def get_object_state_size(game_name, hud):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
@@ -109,7 +114,6 @@ def get_object_state_size(game_name, hud):
 def get_object_state(reference_list, objects, game_name):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
-
     try:
         mod = sys.modules[game_module]
         state = mod._get_object_state(reference_list, objects)
@@ -126,9 +130,9 @@ def get_object_state(reference_list, objects, game_name):
             for o in objects: # populate out_vector with object instance
                 if o is None:
                     continue
-                idx = temp_ref_list.index(o.category) #at position of first category occurance
-                state[idx] = o.xy #write the slice
-                temp_ref_list[idx] = "" #remove reference from reference list
+                idx = temp_ref_list.index(o.category) # at position of first category occurance
+                state[idx] = o.xy # write the slice
+                temp_ref_list[idx] = "" # remove reference from reference list
             for i, d in enumerate(temp_ref_list):
                 if d != "": #fill not populated category instances wiht 0.0's
                     state[i] = [0.0, 0.0]

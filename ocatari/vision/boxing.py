@@ -60,6 +60,6 @@ def _detect_objects(objects, obs, hud=False):
         elif hud:
             objects.append(PlayerScore(*el))
     if hud:
-        huds = find_objects(obs, objects_colors["hud_objs"], closing_active=False, maxy=25)
+        huds = find_objects(obs, objects_colors["hud_objs"], closing_active=True, maxy=25, closing_dist=15)
         for el in huds:
             objects.append(Clock(*el))
