@@ -349,14 +349,14 @@ class OCAtari:
                 x_c = x + w // 2
                 y_c = y + h // 2
 
-                # Draw an 'X' at object center
-                pygame.draw.line(overlay_surface, color=(255, 255, 255), width=2,
-                                 start_pos=(x_c - 4, y_c - 4), end_pos=(x_c + 4, y_c + 4))
-                pygame.draw.line(overlay_surface, color=(255, 255, 255), width=2,
-                                 start_pos=(x_c - 4, y_c + 4), end_pos=(x_c + 4, y_c - 4))
+                # # Draw an 'X' at object center
+                # pygame.draw.line(overlay_surface, color=(255, 255, 255), width=2,
+                #                  start_pos=(x_c - 4, y_c - 4), end_pos=(x_c + 4, y_c + 4))
+                # pygame.draw.line(overlay_surface, color=(255, 255, 255), width=2,
+                #                  start_pos=(x_c - 4, y_c + 4), end_pos=(x_c + 4, y_c - 4))
 
                 # Draw bounding box
-                pygame.draw.rect(overlay_surface, color=(255, 255, 255),
+                pygame.draw.rect(overlay_surface, color=game_object.rgb,
                                  rect=(x, y, w, h), width=2)
 
                 # Draw object category label (optional with value)
