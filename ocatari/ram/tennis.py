@@ -1,6 +1,6 @@
 
 import sys
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 
 """
 RAM extraction for the game TENNIS. Supported modes: ram.
@@ -129,9 +129,7 @@ def _init_objects_ram(hud=False):
 
 
 def _detect_objects_ram(objects, ram_state, hud=False):
-    player, enemy = objects[0:2]
-
-    del objects[2:]
+    player, enemy, ball, shadow = objects[0:4]
 
     # player and enemy based off on field orientation
     field_orientation = ram_state[80]
@@ -143,23 +141,25 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         enemy.xy = ram_state[26] - 1, 166 - ram_state[24]
 
     if ram_state[16] > 2:   # else ball and shadow are out
-        ball = Ball()
-        shadow = BallShadow()
-        ball.xy = ram_state[16] - 2, 189 - ram_state[54]
-        shadow.xy = ram_state[16] - 2, 189 - ram_state[55]
         if 99 < ball.y < 110:   # behind the net
-            pass
+            objects[2] = NoObject()
         else:
-            objects.append(ball)
+            ball = Ball()
+            ball.xy = ram_state[16] - 2, 189 - ram_state[54]
+            objects[2] = ball
 
         if 98 < shadow.y < 113 or shadow.y == ball.y:
-            pass
+            objects[3] = NoObject()
         else:
-            objects.append(shadow)
+            shadow = BallShadow()
+            shadow.xy = ram_state[16] - 2, 189 - ram_state[55]
+            objects[3] = shadow
+    else:
+        objects[2] = NoObject()
+        objects[3] = NoObject()
 
     if hud:
-        player_score = PlayerScore()
-        enemy_score = EnemyScore()
+        player_score,  enemy_score = objects[4:6]
         enemy_score_val = min(15 * ram_state[70], 40)
         player_score_val = min(15 * ram_state[69], 40)
         add_plr = True
@@ -221,10 +221,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             enemy_score.wh = 22, 7
             add_plr = False
 
-        if add_plr:
-            objects.append(player_score)
-        if add_emy:
-            objects.append(enemy_score)
 
 
 def _old_detect_objects_ram(info, ram_state):

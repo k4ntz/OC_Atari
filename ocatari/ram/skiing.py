@@ -6,7 +6,7 @@ import numpy as np
 RAM extraction for the game Skiing.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Tree': 4}#, 'Mogul': 3, 'Flag': 4}
+MAX_NB_OBJECTS =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4, 'Score': 1, 'Clock': 1}
 
 
@@ -69,7 +69,7 @@ class Flag(GameObject):
         self.wh = 5, min(177-y, 14)
 
     def __eq__(self, o):
-        return isinstance(o, Flag) and abs(self._xy[0] - o._xy[0]) < 5
+        return isinstance(o, Flag) and abs(self._xy[1] - o._xy[1]) < 5
 
 
 class Mogul(GameObject):
@@ -101,7 +101,7 @@ class Mogul(GameObject):
         self.wh = 16, min(176-y, 7, y-23)
 
     def __eq__(self, o):
-        return isinstance(o, Mogul) and abs(self._xy[0] - o._xy[0]) < 5
+        return isinstance(o, Mogul) and abs(self._xy[1] - o._xy[1]) < 5
 
 
 class Tree(GameObject):
@@ -128,7 +128,7 @@ class Tree(GameObject):
 
     def __eq__(self, o):
         return isinstance(o, Tree) and o._subtype == self._subtype \
-            and abs(self._xy[0] - o._xy[0]) < 7
+            and abs(self._xy[1] - o._xy[1]) < 7
 
     @property
     def xy(self):
@@ -137,15 +137,15 @@ class Tree(GameObject):
     @xy.setter
     def xy(self, xy):
         x, y = xy
-        # if self._xy[0] == x + 2:    # bug correction
-        #     x += 5
-        self._prev_xy = self._xy
+        if self._xy[0] == x + 2:    # bug correction
+            x += 5
+        # self._prev_xy = self._xy
         if x > 158:
             self._xy = 8, y+4
             self.wh = min(164-x, 16), min(175-y, 30)
         else:
             self._xy = x-3, y+4
-        self.wh = self.wh[0], min(175-y, 30)
+            self.wh = self.wh[0], min(175-y, 30)
 
 
 class Clock(GameObject):
@@ -177,7 +177,7 @@ class Score(GameObject):
 
 
 TYPE_TO_OBJ = {2: Flag, 5: Mogul, 85: Tree}
-
+TREE_N = 0
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
     def fromdict(max_obj_dict):
@@ -205,10 +205,13 @@ def _init_objects_ram(hud=False):
 
 
 def _get_highest_idx(slot_list):
+    if all(not obj for obj in slot_list):
+        return -1
     for i, obj in enumerate(slot_list):
         if obj and obj._highest:
             return i
-    return 0
+    import ipdb; ipdb.set_trace()
+    raise ValueError("No highest object in slot")
 
 MINIMAL_HEIGHT = {
     2: 16,
@@ -227,8 +230,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     flag_slots = objects[8:12]
     tree_n, mogul_n, flag_n = _get_highest_idx(tree_slots), \
         _get_highest_idx(mogul_slots), _get_highest_idx(flag_slots)
-    print(tree_n)
-    # import ipdb;ipdb.set_trace()
     for i in range(8):
         type = ram_state[70+i]
         x, y = ram_state[62+i], 178-ram_state[86+i]
@@ -237,23 +238,25 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if y > 177:
             continue
         if type == 85: # Tree
-            if y < 27:
+            if y < 27: # tree disappeared
                 if objects[1+tree_n] == Tree(x, y, subtype):
-                    objects[1+tree_n] = NoObject() # tree disappeared
+                    objects[1+tree_n] = NoObject()
                     next_tree = tree_slots[(tree_n+1) % 4]
                     if next_tree:
                         next_tree._highest = True 
-                    continue
             else:
-                if not tree_slots[tree_n]:
-                    # import ipdb;ipdb.set_trace()
+                if tree_n == -1: # no tree in any slot
+                    objects[1] = Tree(x, y, subtype)
+                    objects[1]._highest = True
+                    tree_n = 0
+                elif not tree_slots[tree_n]: # tree slot is empty
                     objects[1+tree_n] = Tree(x, y, subtype)
-                    if tree_n == 0:
+                    if tree_n == -1:
                         objects[1]._highest = True
-                else:
+                else: # update tree slot
                     tree = tree_slots[tree_n]
                     tree.xy = x, y
-                    if y <= 28:
+                    if y <= 29:
                         tree.wh = tree.wh[0], height+2
                         if height+2 < 0:
                             objects[1+tree_n] = NoObject() # tree disappeared
@@ -261,58 +264,56 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                             if next_tree:
                                 next_tree._highest = True 
                 tree_n = (tree_n+1) % 4
-
-
-    # for i in range(8):
-    #     height = 75 - ram_state[90+i]
-    #     type = ram_state[70+i]
-    #     subtype = ram_state[78+i]
-    #     x, y = ram_state[62+i], 178-ram_state[86+i]
-    #     if offset < len(objects):
-    #         currobj = objects[offset]
-    #     else:
-    #         currobj = None
-    #     if y > 177 or y < 27 or (y < 29 and height < MINIMAL_HEIGHT[type]):
-    #         if currobj:
-    #             removed_obj = TYPE_TO_OBJ[type](x, y, subtype)
-    #             if currobj == removed_obj:  # object disappeared
-    #                 if isinstance(objects[offset], Flag):
-    #                     objects.pop(offset+1)
-    #                 objects.pop(offset)
-    #         continue
-    #     if type == 2:  # flags
-    #         if currobj is None:
-    #             objects.append(Flag(x, y, subtype))
-    #             objects.append(Flag(x+32, y, subtype))
-    #         else:
-    #             currobj.xy = x, y
-    #             objects[offset+1].xy = x+32, y
-    #             if y <= 28:
-    #                 currobj.wh = currobj.wh[0], height-15
-    #                 objects[offset+1].wh = objects[offset+1].wh[0], height-15
-    #             if currobj._ram_id != 2:
-    #                 if y == 29:  # bug fix
-    #                     continue
-    #                 import ipdb; ipdb.set_trace()   # noqa
-    #         offset += 1
-    #     elif type == 5:     # mogul
-    #         if currobj is None:
-    #             objects.append(Mogul(x, y))
-    #         else:
-    #             if currobj._ram_id != 5:
-    #                 continue
-    #             currobj.xy = x, y
-    #             if y <= 28:
-    #                 currobj.wh = currobj.wh[0], height-23
-    #     elif type == 85:  # tree
-    #         if currobj is None:
-    #             if not y == 28 or y == 27:
-    #                 objects.append(Tree(x, y, subtype))
-    #         else:
-    #             currobj.xy = x, y
-    #             if y <= 28:
-    #                 currobj.wh = currobj.wh[0], height+2
-    #     offset += 1
+        elif type == 5: # Mogul
+            if y < 27: # mogul disappeared
+                if objects[5+mogul_n] == Mogul(x, y, subtype):
+                    objects[5+mogul_n] = NoObject()
+                    next_mogul = mogul_slots[(mogul_n+1) % 3]
+                    if next_mogul:
+                        next_mogul._highest = True 
+            else:
+                if mogul_n == -1: # no mogul in any slot
+                    objects[5] = Mogul(x, y)
+                    objects[5]._highest = True
+                    mogul_n = 0
+                elif not mogul_slots[mogul_n]: # mogul slot is empty
+                    objects[5+mogul_n] = Mogul(x, y)
+                    if mogul_n == -1:
+                        objects[5]._highest = True
+                else: # update mogul slot
+                    mogul = mogul_slots[mogul_n]
+                    mogul.xy = x, y
+                    if y <= 29:
+                        mogul.wh = mogul.wh[0], height-23
+                mogul_n = (mogul_n+1) % 3
+        elif type == 2: # Flag
+            if y < 27: # flag disappeared
+                if objects[8+flag_n] == Flag(x, y):
+                    objects[8+flag_n] = NoObject()
+                    objects[9+flag_n] = NoObject()
+                    next_flag = flag_slots[(flag_n+2) % 4]
+                    if next_flag:
+                        next_flag._highest = True
+            else:
+                if flag_n == -1: # no flag in any slot
+                    objects[8] = Flag(x, y, subtype)
+                    objects[9] = Flag(x+32, y, subtype)
+                    objects[8]._highest = True
+                    flag_n = 0
+                elif not flag_slots[flag_n]: # flag slot is empty
+                    objects[8+flag_n] = Flag(x, y, subtype)
+                    objects[9+flag_n] = Flag(x+32, y, subtype)
+                    if flag_n == -1:
+                        objects[8]._highest = True
+                else: # update flag slot
+                    flag1 = flag_slots[flag_n]
+                    flag2 = flag_slots[flag_n+1]
+                    flag1.xy = x, y
+                    flag2.xy = x+32, y
+                    if y <= 29:
+                        flag1.wh = flag1.wh[0], height-15
+                        flag2.wh = flag2.wh[0], height-15
+                flag_n = (flag_n+2) % 4
 
 
 def _detect_objects_skiing_raw(info, ram_state):
