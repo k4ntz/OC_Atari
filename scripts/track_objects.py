@@ -95,6 +95,7 @@ class Renderer:
                 self.saved_frames.append((deepcopy(self.slots_imgs), self.env._ale.cloneState(), self.current_frame)) # ram, state, image (rgb)
                 action = self._get_action()
                 reward = self.env.step(action)[1]
+                print(self.env._objects)
                 # if reward != 0:
                 #     print(reward)
                 #     pass
