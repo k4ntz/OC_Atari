@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 import numpy as np
 from termcolor import colored
 import sys
@@ -7,8 +7,8 @@ import sys
 RAM extraction for the game Space Invaders.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Alien': 36,'Satellite': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Alien': 36, 'Satellite': 1, 'Score': 1, 'Lives': 1}
+MAX_NB_OBJECTS = {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Satellite': 1, 'Alien': 36}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Satellite': 1, 'Alien': 36, 'Score': 1, 'Lives': 1}
 
 
 def make_bitmap(alien_states):
@@ -116,20 +116,6 @@ class Lives(GameObject):
         self.wh = 12, 10
         self.hud = True
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 def _detect_objects_spaceinvaders_raw(info, ram_state):
     info["aliens"] = ram_state[16:24]
@@ -201,78 +187,23 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(1)]
+    objects = [Player(1)] + [Shield() for _ in range(3)] + [Bullet() for _ in range(3)] + [Alien() for _ in range(36)]
 
     if hud:
         objects.extend([Score(1, 4), Score(2, 84), Lives()])
 
-    for i in range(3):
-        shield = Shield()
+    for i, shield in enumerate(objects[1:4]):
         shield.xy = 42 + i * 32, 157
-        objects.append(shield)
     return objects
 
 
-global aliens
-lives_ctr = 41
-firstCall = True
-global scores
-global prevRam
-prevRam = [i for i in range(256)]
-# global bullets
-global satellite
-satellite = Satellite()
-global score_ctr
-score_ctr = 1
-global bullets
-global sat_ctr
-sat_ctr = 1
-global shields
-
 
 def _detect_objects_ram(objects, ram_state, hud=False):
-    global firstCall
-    global aliens
-    global prevRam
-    global lives_ctr
-    global scores
-    global bullets
-    global satellite
-    global score_ctr
-    global sat_ctr
-    global shields
     player = objects[0]
-
-    if lives_ctr:
-        lives_ctr -= 1
-    else:
-        for i, obj in enumerate(objects):
-            if isinstance(obj, Lives):
-                objects.pop(i)
-    if not firstCall and hud:
-        if ram_state[73] != prevRam[73]:
-            lives_ctr = 22  # handle real visibility instead!
-            objects.append(Lives())
-    if firstCall:  # works correctly
-        player = objects[0]
-        aliens = [Alien() for _ in range(36)]  # ~ 1-dim
-        lives_ctr = 41
-        bullets = [Bullet() for _ in range(3)]
-        shields = [obj for obj in objects if isinstance(obj, Shield)]
-        if not hud and isinstance(objects[1], Score):
-            del objects[1:4]
-        else:
-            scores = objects[1:3]
-
-    # PLAYER
-    # updating player position
+    shields = objects[1:4]
+    bullets = objects[4:7]
+    aliens = objects[7:43]
     player.xy = ram_state[28] - 1, 185
-
-    # ALIENS
-    # aliens deletion from objects:
-    alien_poss = np.where([isinstance(a, Alien) for a in objects])[0]
-    if len(alien_poss) > 0:
-        del objects[alien_poss[0]:alien_poss[-1] + 1]  # faster
 
     # updating positions of aliens
     x, y = ram_state[26], ram_state[16]
@@ -283,49 +214,49 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     for i in range(6):
         for j in range(6):
             if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):  # enemies alive are saved in ram_state[18:24]
-                aliens[35 - (i * 6 + j)] = None  # 5 = max(range(6)) so we are counting lines in the other way around
+                aliens[35 - (i * 6 + j)] = NoObject()
             elif not aliens[35 - (i * 6 + j)] and int(bitmap[i][j]):
-                aliens[35 - (i * 6 + j)] = Alien() # 5 = max(range(6)) so we are counting lines in the other way around
-
+                aliens[35 - (i * 6 + j)] = Alien()  # 5 = max(range(6)) so we are counting lines in the other way around
+    print(aliens)
     for i in range(6):
         for j in range(6):
             if aliens[i * 6 + j]:
                 aliens[i * 6 + j].xy = x - 1 + (j - emptc) * 16, 31 + y * 2 + i * 18
 
+    return objects
     # adding aliens to array objects:
     objects.extend([x for x in aliens if x])
 
     # SCORE
-    if not firstCall:
-        if hud:
-            if ram_state[30] != prevRam[30]:
-                score_ctr = 3
-                satellite.xy = ram_state[30] - 1, 12
-                if satellite not in objects:
-                    objects.append(satellite)
-                for i in range(2):
-                    if scores[i] in objects:
-                        objects.remove(scores[i])
-            else:
-                score_ctr -= 1
-                if score_ctr == 0:
-                    score_ctr = 1
-                    if satellite in objects:
-                        objects.remove(satellite)
-                        objects.insert(1, scores[0])
-                        objects.insert(2, scores[1])
+    if hud:
+        if ram_state[30] != prevRam[30]:
+            score_ctr = 3
+            satellite.xy = ram_state[30] - 1, 12
+            if satellite not in objects:
+                objects.append(satellite)
+            for i in range(2):
+                if scores[i] in objects:
+                    objects.remove(scores[i])
         else:
-            if ram_state[30] != prevRam[30]:
-                satellite.xy = ram_state[30] - 1, 12
-                sat_ctr = 3
-                if satellite not in objects:
-                    objects.append(satellite)
-            else:
-                sat_ctr -= 1
-                if sat_ctr == 0:
-                    sat_ctr = 1
-                    if satellite in objects:
-                        objects.remove(satellite)
+            score_ctr -= 1
+            if score_ctr == 0:
+                score_ctr = 1
+                if satellite in objects:
+                    objects.remove(satellite)
+                    objects.insert(1, scores[0])
+                    objects.insert(2, scores[1])
+    else:
+        if ram_state[30] != prevRam[30]:
+            satellite.xy = ram_state[30] - 1, 12
+            sat_ctr = 3
+            if satellite not in objects:
+                objects.append(satellite)
+        else:
+            sat_ctr -= 1
+            if sat_ctr == 0:
+                sat_ctr = 1
+                if satellite in objects:
+                    objects.remove(satellite)
     # SHIELDS
     # visibility of shields
     for alien in aliens:

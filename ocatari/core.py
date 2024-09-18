@@ -4,7 +4,7 @@ import gymnasium as gym
 from termcolor import colored
 import numpy as np
 from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, \
-    get_max_objects, parse_max_objects, get_class_dict, get_object_state, get_object_state_size
+    get_max_objects, instantiate_max_objects, get_class_dict, get_object_state, get_object_state_size
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
 from ocatari.ram.game_objects import GameObject, ValueObject
@@ -161,7 +161,8 @@ class OCAtari:
             print("Using OBJ State Representation")
             if mode == "ram":
                 self.buffer_window_size = 2
-                self._env.observation_space = gym.spaces.Box(0, 255.0,(self.buffer_window_size, get_object_state_size(self.game_name, self.hud), 2))
+                ocss = get_object_state_size(self.game_name, self.hud)
+                self._env.observation_space = gym.spaces.Box(0, 255.0, (self.buffer_window_size, ocss))
                 self._fill_buffer = self._fill_buffer_obj
                 self._reset_buffer = self._reset_buffer_obj
                 self.reference_list = []

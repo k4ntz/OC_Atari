@@ -100,20 +100,6 @@ class EnemyScore(GameObject):
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 def _init_objects_ram(hud=False):
     """
@@ -141,19 +127,22 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         enemy.xy = ram_state[26] - 1, 166 - ram_state[24]
 
     if ram_state[16] > 2:   # else ball and shadow are out
-        if 99 < ball.y < 110:   # behind the net
+        ballx, ball_y = ram_state[16] - 2, 189 - ram_state[54]
+        shadowx, shadowy = ram_state[16] - 2, 189 - ram_state[55]
+        if 98 < ball_y < 113:   # behind the net
             objects[2] = NoObject()
         else:
-            ball = Ball()
-            ball.xy = ram_state[16] - 2, 189 - ram_state[54]
-            objects[2] = ball
-
-        if 98 < shadow.y < 113 or shadow.y == ball.y:
+            if not ball:
+                ball = Ball()
+                objects[2] = ball
+            ball.xy = ballx, ball_y
+        if 100 < shadowy < 113 or shadowy == ball_y or shadowy == 0:
             objects[3] = NoObject()
         else:
-            shadow = BallShadow()
-            shadow.xy = ram_state[16] - 2, 189 - ram_state[55]
-            objects[3] = shadow
+            if not shadow:
+                shadow = BallShadow()
+                objects[3] = shadow
+            shadow.xy = shadowx, shadowy
     else:
         objects[2] = NoObject()
         objects[3] = NoObject()
@@ -259,13 +248,13 @@ def _old_detect_objects_ram(info, ram_state):
         by -= 1
     if bx < 32 or bx > 127 or by < 99 or by > 112:  # not behind the net
         objects["ball"] = bx, by, 2, 2, 236, 236, 236
-    b_shadow_x = ram_state[16]-2
-    b_shadow_y = 190-ram_state[55]
-    if b_shadow_y < 99:
-        b_shadow_y -= 1
-    if b_shadow_x < 32 or b_shadow_x > 127 or b_shadow_y < 99 or \
-            b_shadow_y > 112 or (b_shadow_x == bx and b_shadow_y == by):  # not behind the net
-        objects["ball_shadow"] = b_shadow_x, b_shadow_y, 2, 2, 74, 74, 74
+    b_shadowx = ram_state[16]-2
+    b_shadowy = 190-ram_state[55]
+    if b_shadowy < 99:
+        b_shadowy -= 1
+    if b_shadowx < 32 or b_shadowx > 127 or b_shadowy < 99 or \
+            b_shadowy > 112 or (b_shadowx == bx and b_shadowy == by):  # not behind the net
+        objects["ball_shadow"] = b_shadowx, b_shadowy, 2, 2, 74, 74, 74
     info["objects"] = objects
 
 
@@ -279,8 +268,8 @@ def _detect_objects_tennis_raw(info, ram_state):
     upper_person = [ram_state[26], ram_state[24]]
     lower_person = [ram_state[27], ram_state[25]]
     ball = [ram_state[16], ram_state[54]]
-    ball_shadow_y = [ram_state[55]]
-    relevant_objects = upper_person + lower_person + ball + ball_shadow_y
+    ball_shadowy = [ram_state[55]]
+    relevant_objects = upper_person + lower_person + ball + ball_shadowy
     info["relevant_objects"] = relevant_objects
 
     # additional info
