@@ -35,6 +35,14 @@ class Player(GameObject):
         self.hud = False
         self.orientation = 8
 
+    @property
+    def _nsrepr(self):
+        return self.x, self.y, self.orientation
+    
+    @property
+    def _ns_meaning(self):
+        return "x, y, o"
+
 
 class Flag(GameObject):
     """
