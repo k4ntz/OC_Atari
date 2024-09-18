@@ -260,7 +260,7 @@ class NoObject(GameObject):
         return [0 for _ in range(self.nslen)]
     
     def __repr__(self):
-        return "NaO"
+        return '\e[0;31m' + "NaO" + '\e[0m'
 
 
 class ValueObject(GameObject):

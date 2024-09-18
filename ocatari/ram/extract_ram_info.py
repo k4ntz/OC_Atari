@@ -4,7 +4,7 @@ import numpy as np
 
 
 # parses MAX_NB* dicts, returns default init list of objects
-def parse_max_objects(game_name, max_obj_dict):
+def instantiate_max_objects(game_name, max_obj_dict):
     objects = []
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
@@ -28,7 +28,7 @@ def get_class_dict(game_name):
         print(colored(f"Game module does not exist: {game_module}", "red"))
         raise err
     except AttributeError as err:
-        print(colored(f"_get_max_objects not implemented for game: {game_name}", "red"))
+        print(colored(f"MAX_NB_OBJECTS_HUD not implemented for game: {game_name}", "red"))
         raise err
 
 
@@ -44,7 +44,7 @@ def get_max_objects(game_name, hud):
         print(colored(f"Game module does not exist: {game_module}", "red"))
         raise err
     except AttributeError as err:
-        print(colored(f"_get_max_objects not implemented for game: {game_name}", "red"))
+        print(colored(f"MAX_NB_OBJECTS(_HUD) not implemented for game: {game_name}", "red"))
         raise err
 
 
@@ -96,19 +96,10 @@ def detect_objects_ram(objects, ram_state, game_name, hud):
 
 
 def get_object_state_size(game_name, hud):
-    p_module = __name__.split('.')[:-1] + [game_name.lower()]
-    game_module = '.'.join(p_module)
-    try:
-        mod = sys.modules[game_module]
-        return mod._get_object_state_size(hud)
-    except KeyError as err:
-        print(colored(f"Game module does not exist: {game_module}", "red"))
-        raise err
-    except AttributeError as err:
-        try:
-            return len(mod._get_max_objects(hud))
-        except AssertionError as err:
-            raise err
+    max_obj = get_max_objects(game_name, hud)
+    iobjects = instantiate_max_objects(game_name, max_obj)
+    nsrepr_tot = [o._nsrepr for o in iobjects]
+    return sum(map(len, nsrepr_tot))
     
 
 def get_object_state(reference_list, objects, game_name):
