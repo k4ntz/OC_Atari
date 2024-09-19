@@ -179,7 +179,7 @@ class GameObject:
     def _nsrepr(self):
         if not self._visible:
             return [0, 0]
-        return self.x, self.y
+        return [self.x, self.y]
     
     @property
     def _ns_meaning(self):
@@ -279,6 +279,7 @@ class NoObject(GameObject):
     def __eq__(self, other):
         return isinstance(other, NoObject)
     
+    @property
     def _nsrepr(self):
         return [0 for _ in range(self.nslen)]
     

@@ -9,7 +9,7 @@ RAM extraction for the game Ms. Pac-Man.
 
 # not sure about this one TODO: validate
 MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4, 'Fruit': 1, 'PowerPill': 4, 'Pill': 252}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4,'PowerPill':4, 'Pill': 252, 'Fruit': 1, 'Score': 3, 'Life': 2}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4, 'Fruit': 1, 'PowerPill':4, 'Pill': 252, 'Score': 3, 'Life': 2}
 
 class Player(GameObject):
     """
