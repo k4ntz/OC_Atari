@@ -218,8 +218,8 @@ class Renderer:
                 pygame.draw.rect(self.window, border_color, [x, y, w, h], 3)
 
     def _get_obj_sprite(self, obj):
-        if obj is None:
-            return np.ones((100, 100, 3), dtype=np.uint8) * 40
+        if not obj:
+            return np.ones((100, 100, 3), dtype=np.uint8) * 20
         xside, yside, upscale = _get_sides(obj)
         cx, cy = obj.center
         x = max(0, int(cx - xside / 2))

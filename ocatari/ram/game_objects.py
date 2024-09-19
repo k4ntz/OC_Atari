@@ -71,15 +71,18 @@ class GameObject:
     GET_WH = False
 
     def __init__(self):
-        self.rgb = (0, 0, 0)
+        self._rgb = (0, 0, 0)
         self._xy = (0, 0)
         self.wh = (0, 0)
         self._prev_xy = None
         self._orientation = None
         self.hud = False
+        self._visible = True
 
     def __repr__(self):
-        return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}"
+        if self._visible:
+           return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}"
+        return "\033[34m" + "NaO" + "\033[39m" # blue color
 
     @property
     def category(self):
@@ -165,7 +168,17 @@ class GameObject:
         self._prev_xy = self._xy
 
     @property
+    def visible(self):
+        return self._visible
+
+    @visible.setter
+    def visible(self, v):
+        self._visible = v
+
+    @property
     def _nsrepr(self):
+        if not self._visible:
+            return [0, 0]
         return self.x, self.y
     
     @property
@@ -177,7 +190,16 @@ class GameObject:
     def _nslen(self):
         return len(self._nsrepr)
 
-
+    @property
+    def rgb(self):
+        if self.visible:
+            return self._rgb
+        return 0, 0, 0
+    
+    @rgb.setter
+    def rgb(self, rgb):
+        self._rgb = rgb
+    
     @property
     def orientation(self):
         return self._orientation
@@ -237,7 +259,7 @@ class GameObject:
                 not callable(self.__getattribute__(prop))]
     
     def __bool__(self):
-        return True
+        return self._visible
 
 
 class NoObject(GameObject):
@@ -261,8 +283,9 @@ class NoObject(GameObject):
         return [0 for _ in range(self.nslen)]
     
     def __repr__(self):
-        return "NaO"
-        return '\e[0;31m' + "NaO" + '\e[0m'
+        # return "NaO"
+        # return "\033[31m" + "NaO" + "\033[39m" # red color
+        return "\033[34m" + "NaO" + "\033[39m" # blue color
 
 
 class ValueObject(GameObject):
