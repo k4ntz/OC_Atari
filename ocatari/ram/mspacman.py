@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 from ._helper_methods import _convert_number
 import math
 import sys
@@ -8,7 +8,7 @@ RAM extraction for the game Ms. Pac-Man.
 """
 
 # not sure about this one TODO: validate
-MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4, 'PowerPill': 4, 'Pill': 252, 'Fruit': 1}
+MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4, 'Fruit': 1, 'PowerPill': 4, 'Pill': 252}
 MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4,'PowerPill':4, 'Pill': 252, 'Fruit': 1, 'Score': 3, 'Life': 2}
 
 class Player(GameObject):
@@ -31,8 +31,7 @@ class Ghost(GameObject):
     
     def __init__(self):
         super(Ghost, self).__init__()
-        super().__init__()
-        self._xy = 79, 57
+        self._xy = 0, 0
         self.wh = 9, 10
         self.rgb = 200, 72, 72
         self.hud = False
@@ -124,11 +123,10 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
 
-    objects = [Player()] #, Ghost(), Ghost(), Ghost(), Ghost()]
+    objects = [Player()] + [NoObject()] * 9
 
-    objects.extend([None]*9)
-    # Pills
-    objects.extend([None]*252)
+    #Pills
+    objects.extend([NoObject()]*252)
 
     global GRID1, GRID2
     GRID1 = [
@@ -166,81 +164,80 @@ def _init_objects_ram(hud=False):
     ]
 
     if hud:
-        objects.extend([None]*5)
+        objects.extend([NoObject()]*5)
     return objects
 
 
 def _detect_objects_ram(objects, ram_state, hud=True):
-    player, g1, g2, g3, g4 = objects[:5]
+    player, g1, g2, g3, g4, f, pp1, pp2, pp3, pp4 = objects[:10]
 
     # ram[56] == orientation (up 0, right 1, down 2, left 3)
-    player.xy = ram_state[10] - 13, ram_state[16] + 1
+    player._xy = ram_state[10] - 13, ram_state[16] + 1
 
     if ram_state[47] > 0:
-        g1 = Ghost()
-        objects[1] =  g1
+        if type(g1) is NoObject:
+            objects[1] = Ghost()
         g1.xy = ram_state[6] - 13, ram_state[12] + 1
         g1.rgb = 180, 122, 48
         if ram_state[19] > 0:
-            g2 = Ghost()
-            objects[2] =  g2
+            if type(g2) is NoObject:
+                objects[2] = Ghost()
             g2.xy = ram_state[7] - 13, ram_state[13] + 1
             g2.rgb = 84, 184, 153
         else:
-            g2 = None
+            objects[2] = NoObject()
         if ram_state[19] > 1:
-            g3 = Ghost()
-            objects[3] =  g3
+            if type(g3) is NoObject:
+                objects[3] = Ghost()
             g3.xy = ram_state[8] - 13, ram_state[14] + 1
             g3.rgb = 198, 89, 179
         else:
-            g3 = None
+            objects[3] = NoObject()
         if ram_state[19] > 2:
-            g4 = Ghost()
-            objects[4] =  g4
+            if type(g4) is NoObject:
+                objects[4] = Ghost()
             g4.xy = ram_state[9] - 13, ram_state[15] + 1
         else:
-            g4 = None
+            objects[4] = NoObject()
         # no rgb adjustment, since this color is the default one
     else:
-        g1, g2, g3, g4 = None, None, None, None
+        objects[1], objects[2], objects[3], objects[4] = NoObject(), NoObject(), NoObject(), NoObject()
 
     if ram_state[11] > 0 and ram_state[17] > 0:
-        fruit = Fruit()
-        fruit.xy = ram_state[11] - 13, ram_state[17] + 1
-        fruit.rgb = get_fruit_rgb(ram_state[123])
-        objects[5] = fruit
+        if type(f) is NoObject:
+            objects[5] = Fruit()
+        f.xy = ram_state[11] - 13, ram_state[17] + 1
+        f.rgb = get_fruit_rgb(ram_state[123])
+    else:
+        objects[5] = NoObject()
 
     if ram_state[117] & 4:
-        pp = PowerPill()
-        objects[6] = pp
-        pp.xy = 148, 146
+        if type(pp1) is NoObject:
+            objects[6] = PowerPill()
+        pp1.xy = 148, 146
     else:
-        objects[6] = None
+        objects[6] = NoObject()
 
     if ram_state[117] & 8:
-        pp = PowerPill()
-        objects[7] = pp
-        pp.xy = 148, 14
+        if type(pp2) is NoObject:
+            objects[7] = PowerPill()
+        pp2.xy = 148, 14
     else:
-        objects[7] = None
+        objects[7] = NoObject()
 
     if ram_state[117] & 16:
-        pp = PowerPill()
-        objects[8] = pp
-        pp.xy = 8, 147
+        if type(pp3) is NoObject:
+            objects[8] = PowerPill()
+        pp3.xy = 8, 147
     else:
-        objects[8] = None
+        objects[8] = NoObject()
 
     if ram_state[117] & 32:
-        pp = PowerPill()
-        objects[9] = pp
-        pp.xy = 8, 15
+        if type(pp4) is NoObject:
+            objects[9] = PowerPill()
+        pp4.xy = 8, 15
     else:
-        objects[9] = None
-
-    for i in range(10, 262):
-        objects[i] = None
+        objects[9] = NoObject()
 
     state = 59
     global GRID1, GRID2
@@ -251,31 +248,51 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
     for i in range(14):
         if ram_state[state]&16 and grid[i][17]:
-            objects[27+(i*18)] = Pill(148, 7+(12*i), i, 17)
+            if type(objects[27+(i*18)]) is NoObject:
+                objects[27+(i*18)] = Pill(148, 7+(12*i), i, 17)
+        else:
+            objects[27+(i*18)] = NoObject()
         if ram_state[state]&64 and grid[i][0]:
-            objects[10+(i*18)] = Pill(8, 7+(12*i), i, 0)
+            if type(objects[10+(i*18)]) is NoObject:
+                objects[10+(i*18)] = Pill(8, 7+(12*i), i, 0)
+        else:
+            objects[10+(i*18)] = NoObject()
         
         state+=1
         for j in range(8):
             if ram_state[state]&(2**j):
                 if j&1 and grid[i][4-(j>>1)]:
-                    objects[14-(j>>1)+(i*18)] = Pill(40-(8*(j>>1)), 7+(12*i), i, 4-(j>>1))
+                    if type(objects[14-(j>>1)+(i*18)]) is NoObject:
+                        objects[14-(j>>1)+(i*18)] = Pill(40-(8*(j>>1)), 7+(12*i), i, 4-(j>>1))
                 elif not j&1 and grid[i][12-(j>>1)]:
-                    objects[22-(j>>1)+(i*18)] = Pill(108-(8*(j>>1)), 7+(12*i), i, 12-(j>>1))
-        
+                    if type(objects[22-(j>>1)+(i*18)]) is NoObject:
+                        objects[22-(j>>1)+(i*18)] = Pill(108-(8*(j>>1)), 7+(12*i), i, 12-(j>>1))
+            else:
+                if j&1:
+                    objects[14-(j>>1)+(i*18)] = NoObject()
+                else:
+                    objects[22-(j>>1)+(i*18)] = NoObject()
         state+=1
+
         for j in range(8):
             if ram_state[state]&(2**j):
                 if not j&1 and grid[i][5+(j>>1)]:
-                    objects[15+(j>>1)+(i*18)] = Pill(48+(8*(j>>1)), 7+(12*i), i, 5+(j>>1))
+                    if type(objects[15+(j>>1)+(i*18)]) is NoObject:
+                        objects[15+(j>>1)+(i*18)] = Pill(48+(8*(j>>1)), 7+(12*i), i, 5+(j>>1))
                 elif j&1 and grid[i][13+(j>>1)]:
-                    objects[23+(j>>1)+(i*18)] = Pill(116+(8*(j>>1)), 7+(12*i), i, 13+(j>>1))
+                    if type(objects[23+(j>>1)+(i*18)]) is NoObject:
+                        objects[23+(j>>1)+(i*18)] = Pill(116+(8*(j>>1)), 7+(12*i), i, 13+(j>>1))
+            else:
+                if not j&1:
+                    objects[15+(j>>1)+(i*18)] = NoObject()
+                else:
+                    objects[23+(j>>1)+(i*18)] = NoObject()
         state+=1
 
 
     if hud:
         fruit_hud = Fruit()
-        objects[262] = fruit_hud
+        objects[-5] = fruit_hud
         fruit_hud.rgb = get_fruit_rgb(ram_state[123])
 
         score = _convert_number(ram_state[122]) * 10000 + _convert_number(ram_state[121]) * 100 +\
@@ -299,15 +316,15 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         elif ram_state[120]:
             sc.xy =  95, 187
             sc.wh = 7, 7
-        objects[263] = sc
+        objects[-4] = sc
 
         for i in range(3):
             if (ram_state[123]%4) > i:
                 life = Life()
-                objects[264+i] = life
+                objects[-3+i] = life
                 life.xy = 12 + (i*16), 173
             else:
-               objects[264+i] = None 
+               objects[-3+i] = NoObject() 
 
 
 def _detect_objects_mspacman_raw(info, ram_state):

@@ -1,6 +1,6 @@
 from typing import Type, Sequence, Dict
 
-from .game_objects import GameObject, ValueObject, Orientation
+from .game_objects import GameObject, NoObject, ValueObject, Orientation
 from ._helper_methods import _convert_number
 import sys
 
@@ -225,13 +225,14 @@ def _init_objects_ram(hud=True):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Child(), Monkey(), Monkey(), Monkey(), Monkey(),
-               FallingCoconut(), ThrownCoconut(), ThrownCoconut(), ThrownCoconut(), Fruit(), Fruit(), Fruit(), Bell(),
-               Platform(16, 172, w=128), Platform(16, 28, w=128)]
-    objects.extend([None]* 26)
+    # objects = [Player(), Child(), Monkey(), Monkey(), Monkey(), Monkey(),
+    #            FallingCoconut(), ThrownCoconut(), ThrownCoconut(), ThrownCoconut(), Fruit(), Fruit(), Fruit(), Bell(),
+    #            Platform(16, 172, w=128), Platform(16, 28, w=128)]
+    objects = [Player()] + [NoObject()] * 13 + [Platform(16, 172, w=128), Platform(16, 28, w=128)]
+    objects.extend([NoObject()]* 26)
     if hud: 
         objects.extend([Score(), Time(), Life(), Life()])
-        objects.extend([None]* 6)
+        objects.extend([NoObject()]* 6)
     return objects
 
 
@@ -276,27 +277,25 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         if ram_state[68] == fruits:         
             child.xy = ram_state[83] + 15, 12
 
-    monkey = objects[2:6]
-
     for i in range(MAX_ESSENTIAL_OBJECTS["Monkey"]):
         if ram_state[11 - i] != 255 and ram_state[11 - i] != 127:
             x = ram_state[15 - i] + 16
             y = ram_state[11 - i] * 8 + 5
-            if objects[2+i] is None:
+            if type(objects[2+i]) is NoObject:
                 objects[2+i] = Monkey()
             objects[2+i].xy = x, y
         else:
-            objects[2+i] = None
+            objects[2+i] = NoObject()
 
     # Fallling coconut
     if ram_state[33] != 255:
         x = ram_state[34] + 14
         y = (ram_state[33] - 22 * ram_state[36]) * 8 + 9
-        if objects[6] is None:
+        if type(objects[6]) is NoObject:
             objects[6] = FallingCoconut()
         objects[6].xy = x, y
     else:
-        objects[6] = None
+        objects[6] = NoObject()
 
     # Thrown coconuts
     # This projectiles visual representation seems to differ from its RAM x position,
@@ -305,11 +304,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         if ram_state[25 + i] != 255:
             x = ram_state[28 + i] + 15
             y = (ram_state[25 + i] * 8) + 1
-            if objects[7+i] is None:
+            if type(objects[7+i]) is NoObject:
                 objects[7+i] = ThrownCoconut()
             objects[7+i].xy = x, y
         else:
-            objects[7+i] = None
+            objects[7+i] = NoObject()
 
 
     for i in range(MAX_ESSENTIAL_OBJECTS["Fruit"]):
@@ -325,20 +324,20 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                 x = ram_state[89 + i] + 15
             else:
                 x = ram_state[90 + i] + 15
-            if fruit is None:
+            if type(fruit) is NoObject:
                 fruit = Fruit()
             fruit.xy = x, y
             fruit.wh = wh
             fruit.rgb = rgb
             objects[10+i] = fruit
         else:
-            objects[10+i] = None
+            objects[10+i] = NoObject()
 
 
     # bell
     lvl = ram_state[36]
     if ram_state[41] == 128:
-        objects[13] = None
+        objects[13] = NoObject()
     elif lvl < 3:
         x = [93, 31, 130][lvl]
         y = 36
@@ -346,7 +345,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
     # Only on level change
     current_level = ram_state[36]
-    if objects[17] is None \
+    if type(objects[17]) is NoObject \
         or (current_level == 0 and objects[17].xy[1] != 76) \
         or (current_level == 1 and objects[17].xy[1] != 124) \
         or (current_level == 2 and objects[17].xy[1] != 140):
@@ -355,7 +354,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             if platform[i]:
                 objects[14+i] = platform[i]
             else:
-                objects[14+i] = None
+                objects[14+i] = NoObject()
 
 
     if hud:
@@ -396,13 +395,13 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         n_lives = ram_state[45]
         for i in range(MAX_ESSENTIAL_OBJECTS["Life"]):
             if i < n_lives and n_lives != 255:
-                if objects[-8+i] is None:
+                if type(objects[-8+i]) is NoObject:
                     objects[-8+i] = Life()
                 x = 16 + (i * 8)
                 y = 183
                 objects[-8+i].xy = x, y
             else:
-                objects[-8+i] = None
+                objects[-8+i] = NoObject()
 
 
 def _detect_objects_kangaroo_raw(info, ram_state):
@@ -437,22 +436,22 @@ def manage_platforms(current_lvl_val, _):
             Ladder(132, 132),
             Ladder(20, 85),
             Ladder(132, 37),
-            None,
-            None,
-            None,
+            NoObject(),
+            NoObject(),
+            NoObject(),
             Platform(16, 76, w=128),
             Platform(16, 124, w=128),
         ])
-        platforms.extend([None]*16)
+        platforms.extend([NoObject()]*16)
 
     elif current_lvl_val == 1:
         platforms.extend([
             Ladder(120, 132, h=4),
             Ladder(24, 116, h=4),
             Ladder(128, 36, h=4),
-            None,
-            None,
-            None,
+            NoObject(),
+            NoObject(),
+            NoObject(),
             Platform(16, 124, w=28), Platform(52, 124, w=92),
             Platform(16, 76, w=60), Platform(84, 76, w=60),
             Platform(28, 164, w=24), Platform(112, 84, w=24),
@@ -462,7 +461,7 @@ def manage_platforms(current_lvl_val, _):
             Platform(84, 92, w=20), Platform(64, 60, w=20),
             Platform(92, 52, w=20), Platform(28, 68, w=28)
         ])
-        platforms.extend([None]*10)
+        platforms.extend([NoObject()]*10)
 
     else:  # current_lvl_val == 2
         platforms.extend([
