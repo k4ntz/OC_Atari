@@ -22,6 +22,8 @@ from ocatari.utils import parser, load_agent, make_deterministic
 import pickle
 from time import sleep
 
+def binarize(ram):
+    return np.unpackbits(ram).astype(int)
 
 def ransac_regression(x, y):
     ransac = RANSACRegressor(estimator=LinearRegression(),
@@ -51,15 +53,22 @@ parser.add_argument("-m", "--method", type=str, default="pearson", choices={"pea
                     help="The method to use for computing the correlation")
 parser.add_argument("-snap", "--snapshot", type=str, default=None,
                     help="Path to an emulator state snapshot to start from.")
+parser.add_argument("-hud", "--hud", action="store_true", help="Track HUD objects")
+parser.add_argument("-b", "--binary", action="store_true", help="Convert RAMs to binary")
+parser.add_argument("-pr", "--presence", action="store_true", help="Track presence/absence of objects")
 opts = parser.parse_args()
 
+if opts.binary:
+    _convert = binarize
+else:
+    _convert = lambda x: x
 
 MODE = "vision"
 if opts.render:
     RENDER_MODE = "human"
 else:
     RENDER_MODE = "rgb_array"
-env = OCAtari(opts.game, mode=MODE, render_mode=RENDER_MODE)
+env = OCAtari(opts.game, mode=MODE, render_mode=RENDER_MODE, hud=opts.hud)
 
 make_deterministic(opts.seed, env)
 
@@ -69,9 +78,13 @@ if opts.snapshot:
     env._env.env.env.ale.restoreState(snapshot)
 
 tracked_objects_infos = {}
-for objname in opts.tracked_objects:
-    for prop in opts.tracked_properties:
-        tracked_objects_infos[f"{objname}_{prop}"] = []
+if opts.presence:
+    for objname in opts.tracked_objects:
+        tracked_objects_infos[f"{objname}_presence"] = []
+else:
+    for objname in opts.tracked_objects:
+        for prop in opts.tracked_properties:
+            tracked_objects_infos[f"{objname}_{prop}"] = []
 
 subset = list(tracked_objects_infos.keys())
 
@@ -98,9 +111,14 @@ for i in tqdm(range(opts.nb_samples*5)):
     ram = env.get_ram()
     if random.random() < 1/5: # every 5 frames
         save = True
+        if opts.presence:
+            for objstr in opts.tracked_objects:
+                tracked_objects_infos[f"{objstr}_presence"].append(str(env.objects).count(f"{objstr} at"))
+            ram_saves.append(deepcopy(_convert(ram)))
+            continue
         for objstr in opts.tracked_objects:
             if str(env.objects).count(f"{objstr} at") != 1:
-                save = False # don't save anything
+                save = False # don't save anything      
         if not save:
             continue
         for obj in env.objects:
@@ -108,7 +126,7 @@ for i in tqdm(range(opts.nb_samples*5)):
             if objname in opts.tracked_objects:
                 for prop in opts.tracked_properties:
                     tracked_objects_infos[f"{objname}_{prop}"].append(obj.__getattribute__(prop))
-        ram_saves.append(deepcopy(ram))
+        ram_saves.append(deepcopy(_convert(ram)))
     if terminated or truncated:
         observation, info = env.reset()
         if opts.snapshot:
@@ -116,7 +134,6 @@ for i in tqdm(range(opts.nb_samples*5)):
 
     # modify and display render
 env.close()
-
 
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}

@@ -336,6 +336,8 @@ if __name__ == "__main__":
                         help="Use an alternative ALE difficulty for the game.")
     parser.add_argument('-nr', '--no_render', type=int, default=[],
                         help='Cells to not render.', nargs='+')
+    parser.add_argument('-nra', '--no_render_all', action='store_true',
+                        help='Not rendering any cell.')
 
 
 
@@ -343,8 +345,11 @@ if __name__ == "__main__":
 
     color_swaps = load_color_swaps(args.color_swaps)
 
-    renderer = Renderer(args.game, args.modifs, args.switch_modifs, args.switch_frame, args.reward_function, color_swaps, args.no_render, args.game_mode, args.difficulty )
+    if args.no_render_all:
+        args.no_render = list(range(128))
 
+    renderer = Renderer(args.game, args.modifs, args.switch_modifs, args.switch_frame, 
+                        args.reward_function, color_swaps, args.no_render, args.game_mode, args.difficulty )
     def exit_handler():
         if renderer.no_render:
             print("\nno_render list: ")

@@ -8,7 +8,7 @@ RAM extraction for the game Space Invaders.
 """
 
 MAX_NB_OBJECTS = {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Satellite': 1, 'Alien': 36}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Satellite': 1, 'Alien': 36, 'Score': 1, 'Lives': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Satellite': 1, 'Alien': 36, 'Score': 2, 'Lives': 1}
 
 
 def make_bitmap(alien_states):
@@ -34,8 +34,6 @@ class Player(GameObject):
         self._xy = 0, 185
         self.wh = 7, 10
         self.hud = False
-        self._p85 = 0
-        self._p30 = 0
 
 
 class Alien(GameObject):
@@ -83,7 +81,6 @@ class Bullet(GameObject):
     """
     
     def __init__(self):
-        self._p81 = 0
         super().__init__()
         self.rgb = 142, 142, 142
         self._xy = 0, 0
@@ -191,7 +188,6 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
     sat = NoObject()
-    sat._p30 = 0
     objects = [Player(1)] + [Shield() for _ in range(3)] + [Bullet() for _ in range(3)] + \
         [sat] + [Alien() for _ in range(36)]
 
@@ -252,15 +248,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # determining if bullets are visible
     bullets_visible = [False, False, False]
     for i in range(2):
-        bullets_visible[i] = True if ram_state[81 + i] != bullets[i]._p81 \
-                                        and 20 < bullets[i].xy[1] < 195 else False
-    bullets_visible[2] = True if ram_state[85] != player._p85 and 20 < bullets[2].xy[1] < 195 else False
-    player._p85 = ram_state[85]
+        bullets_visible[i] = 20 < bullets[i].xy[1] < 195
+    bullets_visible[2] = 20 < bullets[2].xy[1] < 195
     # appending bullets to objects
     for i in range(3):
         if bullets_visible[i]:
             if not bullets[i]:
-                objects[4+i] = Bullet()
+                bullet = Bullet()
+                objects[4+i] = bullet
+                bullets[i] = bullet
         else:
             if bullets[i]:
                 objects[4+i] = NoObject()
@@ -273,37 +269,22 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     bullets[i].wh = 1, 10
         else:
             bullets[2].xy = ram_state[87] - 2, 2 * ram_state[85] + 3  # for player        
-        objects[4+i]._p81 = ram_state[81 + i]
-    # if hud:
-    #     if ram_state[30] != player._p30:
-    #         score_ctr = 3
-    #         satellite.xy = ram_state[30] - 1, 12
-    #         if satellite not in objects:
-    #             objects.append(satellite)
-    #         for i in range(2):
-    #             if scores[i] in objects:
-    #                 objects.remove(scores[i])
-    #         else:
-    #             score_ctr -= 1
-    #             if score_ctr == 0:
-    #                 score_ctr = 1
-    #                 if satellite in objects:
-    #                     objects.remove(satellite)
-    #                     objects.insert(1, scores[0])
-    #                 objects.insert(2, scores[1])
-    # else:
-    #     if ram_state[30] != player._p30:
-    #         satellite.xy = ram_state[30] - 1, 12
-    #         sat_ctr = 3
-    #         if satellite not in objects:
-    #             objects.append(satellite)
-    #     else:
-    #         sat_ctr -= 1
-    #         if sat_ctr == 0:
-    #             sat_ctr = 1
-    #             if satellite in objects:
-    #                 objects.remove(satellite)
-    #     player._p30 = ram_state[30]
+    if ram_state[30] and ram_state[30] != 180:
+        if not satellite:
+            satellite = Satellite()
+            objects[7] = satellite
+        satellite.xy = ram_state[30] - 1, 12
+        if hud:
+            for s in range(2):
+                objects[44+s].visible = False
+    else:
+        if satellite in objects:
+            objects[7] = NoObject()
+        if hud:
+            for s in range(2):
+                objects[44+s].visible = True
+    if hud:
+        objects[46].visible = bool(ram_state[120]) # lives appear  
     return objects
     # adding aliens to array objects:
     objects.extend([x for x in aliens if x])
