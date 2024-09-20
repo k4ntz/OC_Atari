@@ -14,6 +14,21 @@ class GameObject:
 
     def __repr__(self):
         return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}"
+    
+    @property
+    def _nsrepr(self):
+        if not self._visible:
+            return [0, 0]
+        return [self.x, self.y]
+    
+    @property
+    def _ns_meaning(self):
+        """NeuroSymbolic Meaning"""
+        return "x, y"
+
+    @property
+    def _nslen(self):
+        return len(self._nsrepr)
 
     @property
     def category(self):
