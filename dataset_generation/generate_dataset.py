@@ -56,7 +56,6 @@ v_objs = []
 # Generate 10,000 samples
 for i in tqdm(range(10000)):
     action = dqn_agent.draw_action(env.dqn_obs)
-    print(action)
     obs, reward, terminated, truncated, info = env.step(action)
 
     # make a short print every 1000 steps
