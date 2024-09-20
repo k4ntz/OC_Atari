@@ -63,7 +63,7 @@ if opts.binary:
 else:
     _convert = lambda x: x
 
-MODE = "vision"
+MODE = "ram"
 if opts.render:
     RENDER_MODE = "human"
 else:
