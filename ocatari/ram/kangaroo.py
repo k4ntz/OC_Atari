@@ -228,7 +228,7 @@ def _init_objects_ram(hud=True):
     # objects = [Player(), Child(), Monkey(), Monkey(), Monkey(), Monkey(),
     #            FallingCoconut(), ThrownCoconut(), ThrownCoconut(), ThrownCoconut(), Fruit(), Fruit(), Fruit(), Bell(),
     #            Platform(16, 172, w=128), Platform(16, 28, w=128)]
-    objects = [Player()] + [NoObject()] * 13 + [Platform(16, 172, w=128), Platform(16, 28, w=128)]
+    objects = [Player(), Child()] + [NoObject()] * 11 + [Bell(), Platform(16, 172, w=128), Platform(16, 28, w=128)]
     objects.extend([NoObject()]* 26)
     if hud: 
         objects.extend([Score(), Time(), Life(), Life()])
