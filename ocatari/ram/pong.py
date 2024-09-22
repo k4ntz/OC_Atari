@@ -143,10 +143,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             enemy.wh = 4, 15
 
     # player
-    if ram_state[51] - 13 < 34:
+    if ram_state[51] < 47:
         player.xy = 140, 34
         player.wh = 4, ram_state[51]-33
-    elif ram_state[51] + 2 > 194:
+    elif ram_state[51] > 192:
         player.xy = 140, ram_state[51]-13
         player.wh = 4, 207 - ram_state[51]
     else:

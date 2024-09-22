@@ -6,7 +6,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 import pygame
-from ocatari.core import OCAtari, EasyKangaroo
+from ocatari.core import OCAtari
 
 from argparse import ArgumentParser
 
@@ -27,8 +27,6 @@ class Renderer:
 
     def __init__(self, env_name: str):
         self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="human",
-                           render_oc_overlay=True, frameskip=1)
-        self.env = EasyKangaroo(mode="ram", hud=True, render_mode="human",
                            render_oc_overlay=True, frameskip=1)
         self.env.reset()
         self.env.render()  # initialize pygame video system
@@ -78,7 +76,6 @@ class Renderer:
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
 
-
                 elif (event.key,) in self.keys2actions.keys():  # env action
                     self.current_keys_down.add(event.key)
 
@@ -90,5 +87,5 @@ class Renderer:
 if __name__ == "__main__":
     # renderer = Renderer(args.game)
     # renderer = Renderer("Seaquest")
-    renderer = Renderer("ALE/DonkeyKong-v5")
+    renderer = Renderer(args.game)
     renderer.run()

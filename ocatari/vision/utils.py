@@ -336,7 +336,6 @@ def find_objects(image, color, size=None, tol_s=10,
     mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color), np.array(color))
     if closing_active:
         closed = closing(mask, square(closing_dist))
-        # closed = closing(closed, square(closing_dist))
     else:
         closed = mask
     contours, _ = cv2.findContours(closed.copy(), cv2.RETR_EXTERNAL, 1)
@@ -358,9 +357,6 @@ def find_objects(image, color, size=None, tol_s=10,
                     break
             if too_close:
                 continue
-        # if x < minx or x+w > maxx or y < miny or y+h > maxy:
-        #     continue
-        # detected.append((y, x, h, w))
         detected.append((x, y, w, h))
     return detected
 

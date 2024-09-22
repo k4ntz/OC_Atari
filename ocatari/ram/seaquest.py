@@ -2,14 +2,14 @@ import sys
 from typing import Type, Sequence, Dict
 
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, ValueObject, Orientation
+from .game_objects import GameObject, ValueObject, Orientation, NoObject
 from itertools import chain
 
 """
 RAM extraction for the game SEAQUEST. Supported modes: ram.
 """
 
-MAX_ESSENTIAL_OBJECTS = {
+MAX_NB_OBJECTS = {
     'Player': 1,
     'Diver': 4,
     'Shark': 12,
@@ -22,13 +22,23 @@ MAX_ESSENTIAL_OBJECTS = {
     'CollectedDiver': 6,
 }
 
-MAX_OPTIONAL_OBJECTS = {
+MAX_NB_OBJECTS_HUD = {
+    'Player': 1,
+    'Diver': 4,
+    'Shark': 12,
+    'Submarine': 12,
+    'SurfaceSubmarine': 1,
+    'PlayerMissile': 1,
+    'EnemyMissile': 4,
+    'Lives': 1,
+    'OxygenBar': 1,
+    'CollectedDiver': 6,
     'PlayerScore': 1,
     'OxygenBarDepleted': 1,
 }
 
-# MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
-MAX_ALL_OBJECTS = dict(chain(MAX_ESSENTIAL_OBJECTS.items(),MAX_OPTIONAL_OBJECTS.items()))
+# # MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
+# MAX_ALL_OBJECTS = dict(chain(MAX_ESSENTIAL_OBJECTS.items(),MAX_OPTIONAL_OBJECTS.items()))
 
 
 class Player(GameObject):
@@ -244,7 +254,7 @@ def _init_objects_ram(hud=False):
     """(Re)Initialize the objects."""
     objects = [Player()]
 
-    objects.extend([None]*18)
+    objects.extend([NoObject()]*18)
     objects.extend([OxygenBar()])
     objects.extend([CollectedDiver()]*6)
 
@@ -291,9 +301,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     enemy.xy = x, y
                     objects[idx] = enemy
                 else:
-                    objects[idx] = None
+                    objects[idx] = NoObject()
             else:
-                objects[idx] = None
+                objects[idx] = NoObject()
             # _remove_object(hidden_enemy_type, idx)  # always remove the invisible enemy
 
     # divers and enemy_missiles share a ram position
@@ -312,24 +322,24 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 diver.xy = ram_state[71 + i], 141 - i * 24
                 objects[13+i] = diver
         else:
-            objects[13+i] = None
+            objects[13+i] = NoObject()
 
 
     # only spawns in late game
     if ram_state[60] >= 2 and ram_state[118] < 160:
-        if objects[17] is None:
+        if not objects[17]:
             objects[17] = SurfaceSubmarine()
         objects[17].xy =  ram_state[118], 45
     else:
-        objects[17] = None
+        objects[17] = NoObject()
 
 
     if 0 < ram_state[103] < 160:
-        if objects[18] is None:
+        if not objects[18]:
             objects[18] = PlayerMissile()
         objects[18].xy = ram_state[103], ram_state[97] + 40
     else:
-        objects[18] = None
+        objects[18] = NoObject()
 
     
     if ram_state[102] != 0:
@@ -342,7 +352,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[19].wh = new_wh
         objects[19].value = new_wh[0]
     else:
-        objects[19] = None
+        objects[19] = NoObject()
 
 
     # If you have six collected divers they blink. Blinking is ignored here
@@ -352,7 +362,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 objects[20+i] = CollectedDiver()
                 objects[20+i].xy = 58 + i * 8, 178
         else:
-            objects[20+i] = None
+            objects[20+i] = NoObject()
 
     if hud:
         score_value = _convert_number(ram_state[56]) * 10000 + \
@@ -397,7 +407,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[27].wh = new_wh
             objects[27].value = num_lives
         else:
-            objects[27] = None
+            objects[27] = NoObject()
 
         if ram_state[102] != 64:
             if type(objects[28]) != OxygenBarDepleted:
@@ -406,7 +416,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[28].wh = 63 - ram_state[102], 5
             objects[28].value = 63 - ram_state[102]
         else:
-            objects[28] = None
+            objects[28] = NoObject()
 
 
 def _is_submarine(i: int, ram_state) -> bool:
