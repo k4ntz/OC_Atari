@@ -4,8 +4,6 @@ from ocatari.core import OCAtari, UPSCALE_FACTOR
 from tqdm import tqdm
 
 
-from hackatari.utils import load_color_swaps
-from hackatari.core import HackAtari
 import atexit
 
 """
@@ -25,8 +23,8 @@ class Renderer:
     clock: pygame.time.Clock
     env: OCAtari
 
-    def __init__(self, env_name: str, modifs: list, switch_modifs: list, switch_frame: int,  reward_function: str, color_swaps: dict, no_render: list = [], variant: int = 0, difficulty: int = 0):
-        self.env = HackAtari(env_name, modifs, switch_modifs, switch_frame, reward_function, colorswaps=color_swaps, game_mode=variant, difficulty=difficulty, mode="ram", hud=True, render_mode="rgb_array",
+    def __init__(self, env_name, no_render=[]):
+        self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="rgb_array",
                              render_oc_overlay=True, frameskip=1, obs_mode="obj")
 
         self.env.reset(seed=42)
@@ -283,12 +281,14 @@ class Renderer:
         self.env.step(0)
         original_pixel = ale.getScreenRGB()[y, x]
         self._set_ram(ram)  # restore original RAM
+        state = self.env._clone_state()
 
         self.candidate_cell_ids = []
         for i in tqdm(range(len(ram))):
             self.active_cell_idx = i
-            for altered_value in [0]:  # adding values != 0 causes Atari to crash
+            for altered_value in [5]: #range(255):  # adding values != 0 causes Atari to crash
                 self.current_active_cell_input = str(altered_value)
+                self.env._restore_state(state)
                 ale.setRAM(i, altered_value)
                 self.env.step(0)
                 new_frame = ale.getScreenRGB()
@@ -298,7 +298,8 @@ class Renderer:
                 if np.any(new_pixel != original_pixel):
                     self.candidate_cell_ids.append(i)
                     break
-
+        
+        self.env._restore_state(state)
         self._unselect_active_cell()
         self._render()
 
@@ -306,50 +307,30 @@ class Renderer:
 if __name__ == "__main__":
     from argparse import ArgumentParser
 
-    parser = ArgumentParser(description='HackAtari remgui.py Argument Setter')
+    parser = ArgumentParser(description='OCAtari remgui.py Argument Setter')
 
     parser.add_argument('-g', '--game', type=str, default="Seaquest",
                         help='Game to be run')
-
-    # Argument to enable gravity for the player.
-    parser.add_argument('-m', '--modifs', nargs='+', default=[],
-                        help='List of the modifications to be brought to the game')
-    
     parser.add_argument('-hu', '--human', action='store_true',
                         help='Let user play the game.')
-    
-    parser.add_argument('-sm', '--switch_modifs', nargs='+', default=[],
-                        help='List of the modifications to be brought to the game after a certain frame')
     parser.add_argument('-sf', '--switch_frame', type=int, default=0,
                         help='Swicht_modfis are applied to the game after this frame-threshold')
     parser.add_argument('-p', '--picture', type=int, default=0,
                         help='Takes a picture after the number of steps provided.')
-    parser.add_argument('-cs', '--color_swaps', default='',
-                        help='Colorswaps to be applied to the images.')
-    parser.add_argument('-rf','--reward_function', type=str, default='', 
-                        help="Replace the default reward fuction with new one in path rf")
     parser.add_argument('-a','--agent', type=str, default='', 
                         help="Path to the cleanrl trained agent to be loaded.")
-    parser.add_argument('-mo','--game_mode', type=int, default=0, 
-                        help="Use an alternative ALE game mode")
-    parser.add_argument('-d','--difficulty', type=int, default=0, 
-                        help="Use an alternative ALE difficulty for the game.")
     parser.add_argument('-nr', '--no_render', type=int, default=[],
                         help='Cells to not render.', nargs='+')
     parser.add_argument('-nra', '--no_render_all', action='store_true',
                         help='Not rendering any cell.')
 
-
-
     args = parser.parse_args()
 
-    color_swaps = load_color_swaps(args.color_swaps)
 
     if args.no_render_all:
         args.no_render = list(range(128))
 
-    renderer = Renderer(args.game, args.modifs, args.switch_modifs, args.switch_frame, 
-                        args.reward_function, color_swaps, args.no_render, args.game_mode, args.difficulty )
+    renderer = Renderer(args.game, args.no_render)
     def exit_handler():
         if renderer.no_render:
             print("\nno_render list: ")
