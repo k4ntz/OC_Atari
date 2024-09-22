@@ -285,6 +285,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 objects[44+s].visible = True
     if hud:
         objects[46].visible = bool(ram_state[120]) # lives appear  
+        objects[46].value = ram_state[73]  # nb lives
     return objects
     # adding aliens to array objects:
     objects.extend([x for x in aliens if x])

@@ -14,6 +14,7 @@ import time
 import numpy as np
 from tqdm import tqdm
 
+
 parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
 parser.add_argument("-i", "--interval", type=int, default=10,

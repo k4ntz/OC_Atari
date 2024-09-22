@@ -63,7 +63,7 @@ if opts.binary:
 else:
     _convert = lambda x: x
 
-MODE = "ram"
+MODE = "vision"
 if opts.render:
     RENDER_MODE = "human"
 else:
@@ -80,11 +80,11 @@ if opts.snapshot:
 tracked_objects_infos = {}
 if opts.presence:
     for objname in opts.tracked_objects:
-        tracked_objects_infos[f"{objname}_presence"] = []
+        tracked_objects_infos[f"{objname}.is_present"] = []
 else:
     for objname in opts.tracked_objects:
         for prop in opts.tracked_properties:
-            tracked_objects_infos[f"{objname}_{prop}"] = []
+            tracked_objects_infos[f"{objname}.{prop}"] = []
 
 subset = list(tracked_objects_infos.keys())
 
@@ -113,7 +113,7 @@ for i in tqdm(range(opts.nb_samples*5)):
         save = True
         if opts.presence:
             for objstr in opts.tracked_objects:
-                tracked_objects_infos[f"{objstr}_presence"].append(str(env.objects).count(f"{objstr} at"))
+                tracked_objects_infos[f"{objstr}.is_present"].append(str(env.objects).count(f"{objstr} at"))
             ram_saves.append(deepcopy(_convert(ram)))
             continue
         for objstr in opts.tracked_objects:
@@ -125,7 +125,7 @@ for i in tqdm(range(opts.nb_samples*5)):
             objname = obj.category
             if objname in opts.tracked_objects:
                 for prop in opts.tracked_properties:
-                    tracked_objects_infos[f"{objname}_{prop}"].append(obj.__getattribute__(prop))
+                    tracked_objects_infos[f"{objname}.{prop}"].append(obj.__getattribute__(prop))
         ram_saves.append(deepcopy(_convert(ram)))
     if terminated or truncated:
         observation, info = env.reset()
@@ -134,6 +134,9 @@ for i in tqdm(range(opts.nb_samples*5)):
 
     # modify and display render
 env.close()
+
+
+import ipdb; ipdb.set_trace()
 
 ram_saves = np.array(ram_saves).T
 from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}

@@ -11,6 +11,7 @@ class GameObject:
         self.wh = w, h
         self._prev_xy = (0, 0)
         self.hud = False
+        self._visible = True
 
     def __repr__(self):
         return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}"
@@ -75,7 +76,6 @@ class GameObject:
         """
         return self.wh[1]
 
-
     @property
     def xy(self):
         """
@@ -117,6 +117,17 @@ class GameObject:
         :type: int
         """
         return self._xy[1] - self._prev_xy[1]
+
+    @property
+    def visible(self):
+        return self._visible
+
+    @visible.setter
+    def visible(self, v):
+        self._visible = v
+
+    def __bool__(self):
+        return self._visible
 
     @property
     def xywh(self):
