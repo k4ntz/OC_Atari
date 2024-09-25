@@ -11,6 +11,6 @@ class Frog(GameObject):
 def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
-    frog = find_objects(obs, objects_colors["frog"], size=(6, 6), tol_s=2)
+    frog = find_objects(obs, objects_colors["frog"], size=(7, 7), tol_s=2)
     for el in frog:
         objects.append(Frog(*el))
