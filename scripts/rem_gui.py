@@ -152,6 +152,7 @@ class Renderer:
                             self.current_frame = previous[2].copy()
                             self._render()
                             print("previous") 
+                            print(str(len(self.saved_frames)) + " frames left")
                         else: 
                             print("There are no prior frames saved to go back to. Save more using the flag --previous_frames")
 
@@ -365,7 +366,7 @@ if __name__ == "__main__":
 
     TRACK_RAM = args.track_ram
 
-    renderer = Renderer(args.game, no_render=args.no_render, hud=args.hud, binary_mode=args.binary_mode)
+    renderer = Renderer(args.game, no_render=args.no_render, hud=args.hud, binary_mode=args.binary_mode, previous_frames=args.previous_frames)
     if args.load_state:
         with open(args.load_state, "rb") as f:
             state = pkl.load(f)

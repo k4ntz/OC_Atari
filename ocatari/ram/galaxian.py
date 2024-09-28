@@ -6,9 +6,9 @@ import numpy as np
 """
 RAM extraction for the game GALAXIAN. Supported modes: ram.
 """
-
-MAX_NB_OBJECTS =  {'Player': 1, 'PlayerMissile': 1, 'EnemyMissile': 20, 'EnemyShip': 35, 'DivingEnemy': 10}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerMissile': 1, 'EnemyMissile': 20, 'EnemyShip': 35, 'Score': 1, 'Round': 1, 'Lives': 1, 'DivingEnemy': 10}
+#TODO: Enemy Ships could be up to 42, but that does not happen in an unmodified game > which one should be saved?
+MAX_NB_OBJECTS =  {'Player': 1, 'PlayerMissile': 1, 'EnemyShip': 35, 'DivingEnemy': 10, 'EnemyMissile': 20}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerMissile': 1, 'EnemyShip': 35, 'DivingEnemy': 10, 'EnemyMissile': 20, 'Score': 1, 'Round': 1, 'Lives': 1}
 
 # enemy_missiles saves the enemy missiles according to at which ram position their x positon is saved 
 enemy_missiles = [None] * 8
@@ -127,7 +127,7 @@ def _get_max_objects(hud=False):
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
 
-
+#TODO Update to fit current state
 def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
@@ -168,6 +168,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     elif player_missile is not None:
         objects[1] = None
 
+    #TODO put lives at the end since it is a hud
     if hud:
         lives = objects[2]
         if ram_state[57] != 0:
@@ -197,7 +198,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 enemy_ship = EnemyShip()
                 enemy_ship.y = row_y
                 enemy_ship.x = 19 + ram_state[35] * 0.8 + np.ceil(j * 16.5)
-                enemies.append(enemy_ship)
+            else:
+                enemy_ship = None
+            enemies.append(enemy_ship)
     objects.extend(enemies)
 
     # DIVING ENEMIES
@@ -223,15 +226,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if len(missile_pos) > 0:
         del objects[missile_pos[0]:missile_pos[-1] + 1]
 
-
-    # TODO remove missile if it has reached the end
-
     """
     The missiles are setting ram_state[25:32] as they decend, so these are used for the y calculation. 
-    I am not sure if there is a ram state which has a value to add to the y position associated with the ram position, to make the movement smoother, as this is happening to quickly
-    The idea here was that the missiles might always use the first unused ram of ram_state[102 + i] to save their x position, but either this is not what is happening or the code is still incorrect.
+    The idea here is that the missiles always use the first unused ram of ram_state[102 + i]
     """
-
 
     k = 0
     for i in range(25,33):
@@ -245,7 +243,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 enemy_missiles[k].y_ram_index = i
             k+=1
 
-   
     # update the y 
     enemy_missiles_sorted_by_y = [i for i in enemy_missiles if i is not None]
     enemy_missiles_sorted_by_y.sort(key=lambda missile:missile.y_ram_index)
@@ -258,15 +255,34 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if enemy_missiles[i] is None:
             continue
         enemy_missiles[i].y = 188-(33-enemy_missiles[i].y_ram_index) * 11
-        print(enemy_missiles[i].y_ram_index)
         enemy_missiles[i].x = ram_state[102 + i] + 11
-        if enemy_missiles[i].y >= 185:
+        if enemy_missiles[i].y >= 184:
             enemy_missiles[i] = None
-    print(enemy_missiles)
     objects.extend([i for i in enemy_missiles if i is not None])
-    print(objects)
+
+
 def _detect_objects_galaxian_raw(info, ram_state):
     
     info["score"] = _convert_number(ram_state[44]) * 10000 + _convert_number(ram_state[45]) * 100 + _convert_number(ram_state[46])
     info["lives"] = ram_state[57]
     info["round"] = ram_state[47]
+
+
+
+"""
+Other Information:
+
+ram 12-17 is another bitmap of the rows of enemies, but this time encoded differently:
+    if the bits in a ram cell are numbered like this: 8 7 6 5 4 3 2 1 
+    then a row of enemies is represented like this: 3 4 1 2 6 7 5 
+    example: if a ram cell holds 01111011, the corresponding row of enemies looks like this: ○ ● ● ● ● ● ● (the leftmost one is missing)
+    The benefit/use case of this representation in contrast to the other enemy bitmap is not clear at this point
+
+ram 19-24 changes the pose of the enemy rows (the shorter or taller one and sometimes moved by one pixel along the x-axis)
+
+ram 74-77 changes the direction of the diving enemies
+ram 79-82 changes direction and color of diving enemies (so most likely the skin)
+ram 86 seems to be related to the bitmap of the diving enemies, which is used when multiple enemies fall together and only use one x and y ram (often happens with one white and two red ones at the end of level 1 if only very few are left)
+ram 94 affects the "fall rate" of diving enemies
+
+"""
