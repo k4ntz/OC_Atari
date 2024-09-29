@@ -5,7 +5,8 @@ from skimage.morphology import (erosion, dilation, opening, closing, white_topha
 import matplotlib.pyplot as plt
 from termcolor import colored
 from collections import Counter
-
+from scipy.optimize import linear_sum_assignment
+from .game_objects import NoObject
 
 # to be removed
 def bbs_extend(labels, key: str, stationary=False):
@@ -579,3 +580,47 @@ def make_darker(color, col_precent=0.8):
 
 def to_rgba(color):
     return np.concatenate([np.array(color)/255, [.7]])
+
+
+def compute_cm(prev_objects, objects_bb):
+    cost_matrix = np.zeros((len(prev_objects), len(objects_bb)))
+    for i, prev_obj in enumerate(prev_objects):
+        for j, curr_obj in enumerate(objects_bb):
+            # L1 distance between previous object and current object
+            if not prev_obj:
+                cost_matrix[i, j] = 1000 # large value
+            else:
+                prev_pos = np.array(prev_obj._xy)
+                curr_pos = curr_obj[:2]  # x, y of current object
+                cost_matrix[i, j] = np.sum(np.abs(prev_pos - curr_pos))  # L1 distance
+    return cost_matrix
+
+def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
+    """
+    Runs hungarian matching algorithm to match objects of previous and current frames.
+    """
+    # start_idx = 0
+    # for obj_type_str, max_obj in max_objects.items():
+    #     class_hug_match(prev_objects[start_idx: max_obj], objects[start_idx: max_obj])
+    #     start_idx += max_obj
+    assert len(objects_bb) <= max_obj, "Number of objects detected exceeds the maximum number of objects allowed"
+    if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
+         for i, obj_bb in enumerate(objects_bb):
+            prev_objects[start_idx+i] = ObjClass(*obj_bb)
+    else:
+        try:
+            cost_matrix = compute_cm(prev_objects[start_idx: start_idx+max_obj], objects_bb)
+            # if len(objects_bb) < sum([bool(o) for o in prev_objects[start_idx: start_idx+max_obj]]):
+            #     import ipdb; ipdb.set_trace()
+            obj_idx, bbs_idx = linear_sum_assignment(cost_matrix)
+            for i in range(max_obj):
+                if i not in obj_idx and prev_objects[start_idx+i]:
+                    prev_objects[start_idx+i] = NoObject()
+            for i, j in zip(obj_idx, bbs_idx):
+                if prev_objects[start_idx+i]:   
+                    prev_objects[start_idx+i].xywh = objects_bb[j][:4]
+                else:
+                    prev_objects[start_idx+i] = ObjClass(*objects_bb[j])
+        except Exception as e:
+            print(e)
+            import ipdb; ipdb.set_trace()

@@ -1,6 +1,6 @@
 import sys
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject
 import numpy as np
 """
 RAM extraction for the game Skiing.
@@ -156,7 +156,7 @@ class Tree(GameObject):
             self.wh = self.wh[0], min(175-y, 30)
 
 
-class Clock(GameObject):
+class Clock(ValueObject):
     """
     The timer display (HUD).
     """
@@ -169,7 +169,7 @@ class Clock(GameObject):
         self.hud = True
 
 
-class Score(GameObject):
+class Score(ValueObject):
     """
     The counter display. This can either be the remaining number of gates (slalom mode) 
     or remaining meters (downhill racing) (HUD).
