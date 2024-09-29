@@ -2,7 +2,7 @@ import numpy as np
 import pygame
 from ocatari.core import OCAtari, UPSCALE_FACTOR
 from tqdm import tqdm
-
+import os
 
 from ocatari.core import OCAtari
 import atexit
@@ -18,6 +18,16 @@ RAM_RENDER_WIDTH = 1000
 RAM_N_COLS = 8
 RAM_CELL_WIDTH = 115
 RAM_CELL_HEIGHT = 45
+
+
+def save_ram(game, rams):
+    i = 0
+    while f"{game}_rams{i}.pkl" in os.listdir():
+        i += 1
+    filename = f"{game}_rams{i}.pkl"
+    with open(filename, "wb") as f:
+        pkl.dump(rams, f)
+        print(f"RAMs saved in {filename}.")
 
 
 class Renderer:
@@ -45,6 +55,8 @@ class Renderer:
         self.candidate_cell_ids = []
         self.current_active_cell_input : str = ""
         self.no_render = no_render
+        self.collect_ram = False
+        self.collected_rams = []
 
     def _init_pygame(self, sample_image):
         pygame.init()
@@ -55,6 +67,8 @@ class Renderer:
         self.clock = pygame.time.Clock()
         self.ram_cell_id_font = pygame.font.SysFont('Pixel12x10', 25)
         self.ram_cell_value_font = pygame.font.SysFont('Pixel12x10', 30)
+        [print(f"{i}, ", end="") for i in self.env.get_ram()]
+        exit()
 
     def run(self):
         self.running = True
@@ -66,6 +80,8 @@ class Renderer:
                 if reward != 0:
                     print(reward)
                     pass
+                if self.collect_ram:
+                    self.collected_rams.append(self.env.get_ram())
                 self.current_frame = self.env.render().copy()
             self._render()
         pygame.quit()
@@ -124,6 +140,12 @@ class Renderer:
 
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
+                
+                elif event.key == pygame.K_c:  # 'C': collect RAM
+                    self.collect_ram = not self.collect_ram
+                    if not self.collect_ram:
+                        save_ram(self.env.game_name, self.collected_rams)
+                        self.collected_rams = []
 
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
                     self._unselect_active_cell()
