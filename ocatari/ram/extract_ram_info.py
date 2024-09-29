@@ -52,13 +52,25 @@ def get_max_objects(game_name, hud):
         print(colored(f"MAX_NB_OBJECTS(_HUD) not implemented for game: {game_name}", "red"))
         raise err
 
+def use_vision_objects(objects, game_module):
+    """
+    replaces ram objects with their equivalent vision objects
+    """
+    game_module_vision = game_module.replace('ram', 'vision')
+    mod = sys.modules[game_module_vision]
+    for i, obj in enumerate(objects):
+        if obj: # skip None objects
+            objects[i] = getattr(mod, objects[i].category)(*obj.xywh)
+    return objects
 
-def init_objects(game_name, hud):
+
+def init_objects(game_name, hud, vision=False):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
-
     try:
         mod = sys.modules[game_module]
+        if vision:
+            return use_vision_objects(mod._init_objects_ram(hud), game_module)
         return mod._init_objects_ram(hud)
     except KeyError as err:
         print(colored(f"Game module does not exist: {game_module}", "red"))

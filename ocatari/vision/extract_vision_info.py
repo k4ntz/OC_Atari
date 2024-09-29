@@ -5,6 +5,9 @@ from termcolor import colored
 def detect_objects_vision(objects, obs, game_name, hud):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
+    for obj in objects:  # saving the previsous positions
+        if obj:
+            obj._save_prev()
     try:
         mod = sys.modules[game_module]
         return mod._detect_objects(objects, obs, hud)

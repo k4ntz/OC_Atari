@@ -3,11 +3,12 @@ from collections import deque
 import gymnasium as gym
 from termcolor import colored
 import numpy as np
-from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, \
+from ocatari.ram.extract_ram_info import detect_objects_ram, init_objects, \
     get_max_objects, instantiate_max_objects, get_class_dict, get_object_state, get_object_state_size
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
 from ocatari.ram.game_objects import GameObject, ValueObject
+from ocatari.vision.game_objects import GameObject as GameObjectVision
 from ocatari.utils import draw_label, draw_arrow, draw_orientation_indicator
 from gymnasium.error import NameNotFound
 from itertools import chain
@@ -130,10 +131,12 @@ class OCAtari:
             self.objects_v = []
         elif mode == "vision":
             self.detect_objects = self._detect_objects_vision
+            self._objects : list[GameObjectVision] = init_objects(self.game_name, self.hud, vision=True)
         elif mode == "revised" or mode== "ram" :
             if mode == "revised":
                 warnings.warn("'revised' mode will deprecate with the next major update, please use 'ram' mode instead.", DeprecationWarning)
             self.detect_objects = self._detect_objects_ram
+            self._objects : list[GameObject] = init_objects(self.game_name, self.hud)
         elif mode == "both":
             self.detect_objects = self._detect_objects_both
             self.objects_v = init_objects(self.game_name, self.hud)
@@ -146,7 +149,6 @@ class OCAtari:
         self._slots = [self._class_dict[c]() for c in self._slots_str]
         self._ns_state = np.zeros(sum([len(o._nsrepr) for o in self._slots]))
         self.ns_meaning = [f"{o.category} ({o._ns_meaning})" for o in self._slots]
-        self._objects : list[GameObject] = init_objects(self.game_name, self.hud)
         if obs_mode == "dqn":
             if torch_imported:
                 self._env.observation_space = gym.spaces.Box(0, 255, (4, 84, 84), dtype=np.uint8)
@@ -154,16 +156,16 @@ class OCAtari:
                 print("To use the buffer DQN of OCAtari, you need to install torch.")
         elif obs_mode == "obj":
             print("Using OBJ State Representation")
-            if mode == "ram":
-                self.buffer_window_size = 2
-                ocss = get_object_state_size(self.game_name, self.hud)
-                self._env.observation_space = gym.spaces.Box(0, 255, (self.buffer_window_size, ocss), dtype=np.uint8)
-                self.reference_list = []
-                for k in list(self.max_objects_per_cat.keys()):
-                    self.reference_list.extend([k for i in range(self.max_objects_per_cat[k])])
-            else:
-                print(colored("This obs mode is only available in ram mode", "red"))
-                exit(1)
+            # if mode == "ram":
+            self.buffer_window_size = 2
+            ocss = get_object_state_size(self.game_name, self.hud)
+            self._env.observation_space = gym.spaces.Box(0, 255, (self.buffer_window_size, ocss), dtype=np.uint8)
+            self.reference_list = []
+            for k in list(self.max_objects_per_cat.keys()):
+                self.reference_list.extend([k for i in range(self.max_objects_per_cat[k])])
+            # else:
+            #     print(colored("This obs mode is only available in ram mode", "red"))
+            #     exit(1)
         # elif obs_mode is not None:
             # import ipdb;ipdb.set_trace()
             # print(colored("Undefined mode for observation (obs_mode), has to be one of ['dqn', 'ori', None]", "red"))
@@ -224,7 +226,7 @@ class OCAtari:
         See `env.reset() <https://gymnasium.farama.org/api/env/#gymnasium.Env.reset>`_ for gymnasium details.
         """
         obs, info = self._env.reset(*args, **kwargs)
-        self._objects = init_objects(self.game_name, self.hud)
+        self._objects = init_objects(self.game_name, self.hud, vision=self.mode=="vision")
         self.detect_objects()
         self._reset_buffer()
         return obs, info
