@@ -67,8 +67,7 @@ class Renderer:
         self.clock = pygame.time.Clock()
         self.ram_cell_id_font = pygame.font.SysFont('Pixel12x10', 25)
         self.ram_cell_value_font = pygame.font.SysFont('Pixel12x10', 30)
-        [print(f"{i}, ", end="") for i in self.env.get_ram()]
-        exit()
+
 
     def run(self):
         self.running = True
