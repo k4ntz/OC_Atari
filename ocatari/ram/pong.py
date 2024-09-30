@@ -24,6 +24,16 @@ class Player(GameObject):
         self.hud = False
         self._above_10 = False
 
+    @property
+    def _nsrepr(self):
+        coords = self.h_coords
+        h_coords = tuple(coords[0] + coords[1])
+        return (self.x, self.y), h_coords, self.orientation, self.rgb
+
+    @property
+    def _ns_meaning(self):
+        return "(x, y), h_coords"
+
 
 class Enemy(GameObject):
     """
@@ -38,6 +48,16 @@ class Enemy(GameObject):
         self.hud = False
         self._above_10 = False
 
+    @property
+    def _nsrepr(self):
+        coords = self.h_coords
+        h_coords = tuple(coords[0] + coords[1])
+        return (self.x, self.y), h_coords, self.orientation, self.rgb
+
+    @property
+    def _ns_meaning(self):
+        return "(x, y), h_coords"
+
 
 class Ball(GameObject):
     """
@@ -50,6 +70,16 @@ class Ball(GameObject):
         self.wh = 2, 4
         self.rgb = 236, 236, 236
         self.hud = False
+
+    @property
+    def _nsrepr(self):
+        coords = self.h_coords
+        h_coords = tuple(coords[0] + coords[1])
+        return (self.x, self.y), h_coords, self.orientation, self.rgb
+
+    @property
+    def _ns_meaning(self):
+        return "(x, y), h_coords"
 
 
 class PlayerScore(GameObject):
@@ -68,6 +98,16 @@ class PlayerScore(GameObject):
         self.ten = ten
         self.rgb = 92, 186, 92
         self.hud = True
+
+    @property
+    def _nsrepr(self):
+        coords = self.h_coords
+        h_coords = tuple(coords[0] + coords[1])
+        return (self.x, self.y), h_coords, self.orientation, self.rgb
+
+    @property
+    def _ns_meaning(self):
+        return "(x, y), h_coords, o, rgb"
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
@@ -92,6 +132,16 @@ class EnemyScore(GameObject):
 
     def __eq__(self, o):
         return isinstance(o, EnemyScore) and self.xy == o.xy
+
+    @property
+    def _nsrepr(self):
+        coords = self.h_coords
+        h_coords = tuple(coords[0] + coords[1])
+        return (self.x, self.y), h_coords, self.orientation, self.rgb
+
+    @property
+    def _ns_meaning(self):
+        return "(x, y), h_coords, o, rgb"
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):

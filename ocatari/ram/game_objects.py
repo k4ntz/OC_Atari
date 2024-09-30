@@ -75,7 +75,7 @@ class GameObject:
         self._xy = (0, 0)
         self.wh = (0, 0)
         self._prev_xy = None
-        self._orientation = None
+        self._orientation = [] # might want to change that back to None, but works for now
         self.hud = False
         self._visible = True
 
