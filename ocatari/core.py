@@ -3,7 +3,7 @@ from collections import deque
 import gymnasium as gym
 from termcolor import colored
 import numpy as np
-from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects, get_object_state, get_object_state_size
+from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects, get_object_state, get_object_state_size, get_masked_dqn_state
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
 from ocatari.ram.game_objects import GameObject, ValueObject
@@ -115,6 +115,11 @@ class OCAtari:
         self._env = gym.make(env_name, render_mode=gym_render_mode, *args, **kwargs)
         self.game_name = game_name
         self.mode = mode
+
+        if obs_mode == "masked_dqn":
+            obs_mode = "obj"
+            self.obj_representation = "masked_dqn"
+
         self.obs_mode = obs_mode
         self.hud = hud
         self.max_objects = []
@@ -262,7 +267,10 @@ class OCAtari:
                                           **_tensor_kwargs))
 
     def _fill_buffer_obj(self):
-        state = get_object_state(self.reference_list, self._objects, self.game_name)        
+        if self.obj_representation == "masked_dqn":
+            state = get_masked_dqn_state(self._objects)     
+        else:
+            state = get_object_state(self.reference_list, self._objects, self.game_name)   
         self._state_buffer.append(state)
 
     def _get_buffer_as_stack(self):
