@@ -75,7 +75,7 @@ class GameObject:
         self._xy = (0, 0)
         self.wh = (0, 0)
         self._prev_xy = None
-        self._orientation = [] # might want to change that back to None, but works for now
+        self._orientation = None
         self.hud = False
         self._visible = True
 
@@ -266,7 +266,8 @@ class NoObject(GameObject):
     """
     This class represents a non-existent object. It is used to fill in the gaps when no object is detected.
     """
-    def __init__(self, nslen=2):
+    # def __init__(self, nslen=2):
+    def __init__(self, nslen=4):
         super().__init__()
         self.nslen = nslen
     
@@ -281,7 +282,9 @@ class NoObject(GameObject):
     
     @property
     def _nsrepr(self):
-        return [0 for _ in range(self.nslen)]
+        #TODO: This should return the same num of tuples as original, i think...
+        # -> check again
+        return ((0, ) for _ in range(self.nslen))
     
     def __repr__(self):
         # return "NaO"

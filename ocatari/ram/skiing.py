@@ -37,11 +37,13 @@ class Player(GameObject):
 
     @property
     def _nsrepr(self):
-        return self.x, self.y, self.orientation
+        coords = self.h_coords
+        h_coords = tuple(coords[0] + coords[1])
+        return (self.x, self.y), h_coords, (self.orientation,), self.rgb
     
     @property
     def _ns_meaning(self):
-        return "x, y, o"
+        return "(x, y), h_coords, o, rgb"
 
 
 class Flag(GameObject):
@@ -68,6 +70,16 @@ class Flag(GameObject):
     @property
     def xy(self):
         return self._xy
+
+    @property
+    def _nsrepr(self):
+        coords = self.h_coords
+        h_coords = tuple(coords[0] + coords[1])
+        return (self.x, self.y), h_coords, (self.orientation,), self.rgb
+    
+    @property
+    def _ns_meaning(self):
+        return "(x, y), h_coords, o, rgb"
 
     @xy.setter
     def xy(self, xy):
@@ -100,6 +112,16 @@ class Mogul(GameObject):
     @property
     def xy(self):
         return self._xy
+
+    @property
+    def _nsrepr(self):
+        coords = self.h_coords
+        h_coords = tuple(coords[0] + coords[1])
+        return (self.x, self.y), h_coords, (self.orientation,), self.rgb
+    
+    @property
+    def _ns_meaning(self):
+        return "(x, y), h_coords, o, rgb"
 
     @xy.setter
     def xy(self, xy):
@@ -141,6 +163,16 @@ class Tree(GameObject):
     @property
     def xy(self):
         return self._xy
+
+    @property
+    def _nsrepr(self):
+        coords = self.h_coords
+        h_coords = tuple(coords[0] + coords[1])
+        return (self.x, self.y), h_coords, (self.orientation,), self.rgb
+    
+    @property
+    def _ns_meaning(self):
+        return "(x, y), h_coords, o, rgb"
 
     @xy.setter
     def xy(self, xy):

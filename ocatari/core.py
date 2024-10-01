@@ -1,4 +1,5 @@
 from collections import deque
+from typing import Tuple
 
 import gymnasium as gym
 from termcolor import colored
@@ -457,6 +458,7 @@ class OCAtari:
         :return: State snapshot
         :rtype: env_snapshot
         """
+
         return list(chain.from_iterable([o._nsrepr for o in self._objects]))
         
     @property

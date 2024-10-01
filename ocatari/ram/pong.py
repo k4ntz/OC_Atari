@@ -1,6 +1,7 @@
 import sys
 from .game_objects import GameObject
 import numpy as np
+from typing import Tuple
 
 """
 RAM extraction for the game Pong.
@@ -28,11 +29,15 @@ class Player(GameObject):
     def _nsrepr(self):
         coords = self.h_coords
         h_coords = tuple(coords[0] + coords[1])
-        return (self.x, self.y), h_coords, self.orientation, self.rgb
+        return (self.x, self.y), h_coords, (self.orientation), self.rgb
 
     @property
     def _ns_meaning(self):
         return "(x, y), h_coords"
+
+    @property
+    def _ns_typing(self):
+        return [Tuple[int, int], Tuple[int, int, int, int], Tuple[int], Tuple[int, int, int]] 
 
 
 class Enemy(GameObject):
@@ -52,7 +57,7 @@ class Enemy(GameObject):
     def _nsrepr(self):
         coords = self.h_coords
         h_coords = tuple(coords[0] + coords[1])
-        return (self.x, self.y), h_coords, self.orientation, self.rgb
+        return (self.x, self.y), h_coords, (self.orientation), self.rgb
 
     @property
     def _ns_meaning(self):
@@ -75,11 +80,11 @@ class Ball(GameObject):
     def _nsrepr(self):
         coords = self.h_coords
         h_coords = tuple(coords[0] + coords[1])
-        return (self.x, self.y), h_coords, self.orientation, self.rgb
+        return (self.x, self.y), h_coords, (self.orientation), self.rgb
 
     @property
     def _ns_meaning(self):
-        return "(x, y), h_coords"
+        return "(x, y), h_coords, o, rgb"
 
 
 class PlayerScore(GameObject):
