@@ -105,3 +105,26 @@ def get_object_state(reference_list, objects, game_name):
             return state
         except AssertionError as err:
             raise err
+        
+def get_masked_dqn_state(objects):
+    try:
+        import cv2
+    except ModuleNotFoundError:
+        print(
+            "\nOpenCV is required when using the ALE env wrapper. ",
+            "Try `pip install opencv-python`.\n",
+        )
+    
+    state = np.zeros((210,160))
+    for o in objects:
+        if o is None:
+            continue
+        x,y,w,h = o.xywh
+
+        for i in range(y, y + h):
+            for j in range(x, x+w):
+                state[i][j] = 255
+    
+    state = cv2.resize(state, (84, 84), interpolation=cv2.INTER_AREA)
+
+    return state
