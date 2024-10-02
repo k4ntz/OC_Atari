@@ -29,7 +29,7 @@ class Renderer:
 
     def __init__(self, env_name: str, no_render: list = [], hud=False, previous_frames=20, binary_mode=False):
         self.env = OCAtari(env_name, mode="ram", hud=hud, render_mode="rgb_array",
-                           render_oc_overlay=True, frameskip=1, obs_mode="obj")
+                           render_oc_overlay=True, frameskip=1, obs_mode="masked_dqn")
         if not self.env.render_oc_overlay:
             self.env.rendering_initialized = True # Hacking bigger frames
         self.env.reset(seed=42)

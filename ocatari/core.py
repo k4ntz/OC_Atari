@@ -115,11 +115,12 @@ class OCAtari:
         self._env = gym.make(env_name, render_mode=gym_render_mode, *args, **kwargs)
         self.game_name = game_name
         self.mode = mode
+        self.obj_representation = ""
 
         if obs_mode == "masked_dqn":
             obs_mode = "obj"
             self.obj_representation = "masked_dqn"
-
+        
         self.obs_mode = obs_mode
         self.hud = hud
         self.max_objects = []
@@ -151,7 +152,7 @@ class OCAtari:
             if torch_imported:
                 self._fill_buffer = self._fill_buffer_dqn
                 self._reset_buffer = self._reset_buffer_dqn
-                self._env.observation_space = gym.spaces.Box(0,255.0,(4,84,84))
+                self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size,84,84))
             else:
                 print("To use the buffer of OCAtari, you need to install torch.")
         elif obs_mode == "ori":
@@ -161,6 +162,8 @@ class OCAtari:
             print("Using OBJ State Representation")
             if mode == "ram":
                 self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size, get_object_state_size(self.game_name,self.hud),4))
+                if self.obj_representation == "masked_dqn":
+                    self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size,84,84))
                 self._fill_buffer = self._fill_buffer_obj
                 self._reset_buffer = self._reset_buffer_obj
                 self.reference_list = []
@@ -267,10 +270,7 @@ class OCAtari:
                                           **_tensor_kwargs))
 
     def _fill_buffer_obj(self):
-        if self.obj_representation == "masked_dqn":
-            state = get_masked_dqn_state(self._objects)     
-        else:
-            state = get_object_state(self.reference_list, self._objects, self.game_name)   
+        state = get_object_state(self.reference_list, self._objects, self.game_name, self.obj_representation)   
         self._state_buffer.append(state)
 
     def _get_buffer_as_stack(self):
