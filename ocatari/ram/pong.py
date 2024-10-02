@@ -25,20 +25,6 @@ class Player(GameObject):
         self.hud = False
         self._above_10 = False
 
-    @property
-    def _nsrepr(self):
-        coords = self.h_coords
-        h_coords = tuple(coords[0] + coords[1])
-        return (self.x, self.y), h_coords, (self.orientation), self.rgb
-
-    @property
-    def _ns_meaning(self):
-        return "(x, y), h_coords"
-
-    @property
-    def _ns_typing(self):
-        return [Tuple[int, int], Tuple[int, int, int, int], Tuple[int], Tuple[int, int, int]] 
-
 
 class Enemy(GameObject):
     """
@@ -53,16 +39,6 @@ class Enemy(GameObject):
         self.hud = False
         self._above_10 = False
 
-    @property
-    def _nsrepr(self):
-        coords = self.h_coords
-        h_coords = tuple(coords[0] + coords[1])
-        return (self.x, self.y), h_coords, (self.orientation), self.rgb
-
-    @property
-    def _ns_meaning(self):
-        return "(x, y), h_coords"
-
 
 class Ball(GameObject):
     """
@@ -75,16 +51,6 @@ class Ball(GameObject):
         self.wh = 2, 4
         self.rgb = 236, 236, 236
         self.hud = False
-
-    @property
-    def _nsrepr(self):
-        coords = self.h_coords
-        h_coords = tuple(coords[0] + coords[1])
-        return (self.x, self.y), h_coords, (self.orientation), self.rgb
-
-    @property
-    def _ns_meaning(self):
-        return "(x, y), h_coords, o, rgb"
 
 
 class PlayerScore(GameObject):

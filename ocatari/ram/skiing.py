@@ -1,4 +1,5 @@
 import sys
+from typing import Tuple
 from ._helper_methods import _convert_number
 from .game_objects import GameObject, ValueObject, NoObject
 import numpy as np
@@ -37,13 +38,21 @@ class Player(GameObject):
 
     @property
     def _nsrepr(self):
-        coords = self.h_coords
-        h_coords = tuple(coords[0] + coords[1])
-        return (self.x, self.y), h_coords, (self.orientation,), self.rgb
+        h_coords = [c for coord in self.h_coords for c in coord]
+        return [self.x, self.y, *h_coords, self.orientation, *self.rgb]
     
     @property
     def _ns_meaning(self):
-        return "(x, y), h_coords, o, rgb"
+        return [
+            'POSITION',
+            'POSITION_HISTORY',
+            'ORIENTATION', 
+            'RGB', 
+        ]
+
+    @property
+    def _ns_types(self):
+        return [Tuple[int, int], Tuple[int, int, int, int], Tuple[int], Tuple[int, int, int]] 
 
 
 class Flag(GameObject):
@@ -73,13 +82,21 @@ class Flag(GameObject):
 
     @property
     def _nsrepr(self):
-        coords = self.h_coords
-        h_coords = tuple(coords[0] + coords[1])
-        return (self.x, self.y), h_coords, (self.orientation,), self.rgb
+        h_coords = [c for coord in self.h_coords for c in coord]
+        return [self.x, self.y, *h_coords, self.orientation, *self.rgb]
     
     @property
     def _ns_meaning(self):
-        return "(x, y), h_coords, o, rgb"
+        return [
+            'POSITION',
+            'POSITION_HISTORY',
+            'ORIENTATION', 
+            'RGB', 
+        ]
+
+    @property
+    def _ns_types(self):
+        return [Tuple[int, int], Tuple[int, int, int, int], Tuple[int], Tuple[int, int, int]] 
 
     @xy.setter
     def xy(self, xy):
@@ -115,13 +132,21 @@ class Mogul(GameObject):
 
     @property
     def _nsrepr(self):
-        coords = self.h_coords
-        h_coords = tuple(coords[0] + coords[1])
-        return (self.x, self.y), h_coords, (self.orientation,), self.rgb
-    
+        h_coords = [c for coord in self.h_coords for c in coord]
+        return [self.x, self.y, *h_coords, self.orientation, *self.rgb]
+
     @property
     def _ns_meaning(self):
-        return "(x, y), h_coords, o, rgb"
+        return [
+            'POSITION',
+            'POSITION_HISTORY',
+            'ORIENTATION', 
+            'RGB', 
+        ]
+
+    @property
+    def _ns_types(self):
+        return [Tuple[int, int], Tuple[int, int, int, int], Tuple[int], Tuple[int, int, int]] 
 
     @xy.setter
     def xy(self, xy):
@@ -166,13 +191,21 @@ class Tree(GameObject):
 
     @property
     def _nsrepr(self):
-        coords = self.h_coords
-        h_coords = tuple(coords[0] + coords[1])
-        return (self.x, self.y), h_coords, (self.orientation,), self.rgb
-    
+        h_coords = [c for coord in self.h_coords for c in coord]
+        return [self.x, self.y, *h_coords, self.orientation, *self.rgb]
+
     @property
     def _ns_meaning(self):
-        return "(x, y), h_coords, o, rgb"
+        return [
+            'POSITION',
+            'POSITION_HISTORY',
+            'ORIENTATION', 
+            'RGB', 
+        ]
+
+    @property
+    def _ns_types(self):
+        return [Tuple[int, int], Tuple[int, int, int, int], Tuple[int], Tuple[int, int, int]] 
 
     @xy.setter
     def xy(self, xy):

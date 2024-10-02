@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Tuple
 
 
 class Orientation(Enum):  # 16-wind compass directions
@@ -181,10 +182,20 @@ class GameObject:
             return [0, 0]
         return [self.x, self.y]
     
+    # @property
+    # def _ns_meaning(self):
+    #     return "x, y"
+
     @property
     def _ns_meaning(self):
         """NeuroSymbolic Meaning"""
-        return "x, y"
+        return [
+            'POSITION',
+        ]
+
+    @property
+    def _ns_types(self):
+        return [Tuple[int, int]] 
 
     @property
     def _nslen(self):
@@ -267,7 +278,7 @@ class NoObject(GameObject):
     This class represents a non-existent object. It is used to fill in the gaps when no object is detected.
     """
     # def __init__(self, nslen=2):
-    def __init__(self, nslen=4):
+    def __init__(self, nslen=10):
         super().__init__()
         self.nslen = nslen
     
@@ -280,11 +291,21 @@ class NoObject(GameObject):
     def __eq__(self, other):
         return isinstance(other, NoObject)
     
+    #TODO: Figure out how to get the following three for NoObj from original
     @property
     def _nsrepr(self):
-        #TODO: This should return the same num of tuples as original, i think...
-        # -> check again
-        return ((0, ) for _ in range(self.nslen))
+        return [0 for i in range(self.nslen)] 
+    
+    @property
+    def _ns_meaning(self):
+        return [
+            'POSITION',
+        ]
+
+    @property
+    def _ns_types(self):
+        return [Tuple[int, int]]
+
     
     def __repr__(self):
         # return "NaO"
