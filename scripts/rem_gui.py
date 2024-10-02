@@ -2,11 +2,9 @@ import numpy as np
 import pygame
 from ocatari.core import OCAtari, UPSCALE_FACTOR
 from tqdm import tqdm
-import os
 
-from ocatari.core import OCAtari
+
 import atexit
-import pickle as pkl
 
 """
 This script can be used to identify any RAM positions that
@@ -20,23 +18,13 @@ RAM_CELL_WIDTH = 115
 RAM_CELL_HEIGHT = 45
 
 
-def save_ram(game, rams):
-    i = 0
-    while f"{game}_rams{i}.pkl" in os.listdir():
-        i += 1
-    filename = f"{game}_rams{i}.pkl"
-    with open(filename, "wb") as f:
-        pkl.dump(rams, f)
-        print(f"RAMs saved in {filename}.")
-
-
 class Renderer:
     window: pygame.Surface
     clock: pygame.time.Clock
     env: OCAtari
 
-    def __init__(self, env_name: str, no_render: list = [], hud=False):
-        self.env = OCAtari(env_name, mode="ram", hud=hud, render_mode="rgb_array",
+    def __init__(self, env_name, no_render=[]):
+        self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="rgb_array",
                              render_oc_overlay=True, frameskip=1, obs_mode="obj")
 
         self.env.reset(seed=42)
@@ -55,8 +43,6 @@ class Renderer:
         self.candidate_cell_ids = []
         self.current_active_cell_input : str = ""
         self.no_render = no_render
-        self.collect_ram = False
-        self.collected_rams = []
 
     def _init_pygame(self, sample_image):
         pygame.init()
@@ -68,7 +54,6 @@ class Renderer:
         self.ram_cell_id_font = pygame.font.SysFont('Pixel12x10', 25)
         self.ram_cell_value_font = pygame.font.SysFont('Pixel12x10', 30)
 
-
     def run(self):
         self.running = True
         while self.running:
@@ -79,8 +64,6 @@ class Renderer:
                 if reward != 0:
                     print(reward)
                     pass
-                if self.collect_ram:
-                    self.collected_rams.append(self.env.get_ram())
                 self.current_frame = self.env.render().copy()
             self._render()
         pygame.quit()
@@ -129,27 +112,14 @@ class Renderer:
             elif event.type == pygame.KEYDOWN:  # keyboard key pressed
                 if event.key == pygame.K_p:  # 'P': pause/resume
                     self.paused = not self.paused
-                
-                if event.key == pygame.K_s:  # 'S': save
-                    if self.paused:
-                        statepkl = self.env._ale.cloneState()
-                        with open(f"state_{self.env.game_name}.pkl", "wb") as f:
-                            pkl.dump(statepkl, f)
-                            print(f"State saved in state_{self.env.game_name}.pkl.")
 
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
-                
-                elif event.key == pygame.K_c:  # 'C': collect RAM
-                    self.collect_ram = not self.collect_ram
-                    if not self.collect_ram:
-                        save_ram(self.env.game_name, self.collected_rams)
-                        self.collected_rams = []
 
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
                     self._unselect_active_cell()
 
-                elif (event.key,) in self.keys2actions.keys():  # env action
+                elif [x for x in self.keys2actions.keys() if event.key in x]: #(event.key,) in self.keys2actions.keys() or [x for x in self.keys2actions.keys() if event.key in x]:  # env action
                     self.current_keys_down.add(event.key)
 
                 elif pygame.K_0 <= event.key <= pygame.K_9:  # enter digit
@@ -166,7 +136,7 @@ class Renderer:
                     if self.active_cell_idx is not None:
                         self.current_active_cell_input = self.current_active_cell_input[:-1]
 
-                elif event.key == pygame.K_RETURN:
+                elif event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
                     if self.active_cell_idx is not None:
                         if len(self.current_active_cell_input) > 0:
                             new_cell_value = int(self.current_active_cell_input)
@@ -175,7 +145,7 @@ class Renderer:
                         self._unselect_active_cell()
 
             elif event.type == pygame.KEYUP:  # keyboard key released
-                if (event.key,) in self.keys2actions.keys():
+                if [x for x in self.keys2actions.keys() if event.key in x]: #(event.key,) in self.keys2actions.keys():
                     self.current_keys_down.remove(event.key)
 
     def _render(self, frame=None):
@@ -194,7 +164,7 @@ class Renderer:
         self.window.blit(frame_surface, (0, 0))
         self.clock.tick(60)
 
-    def _render_ram(self):
+    def _render_ram(self):        
         ale = self.env.unwrapped.ale
         ram = ale.getRAM()
 
@@ -287,7 +257,7 @@ class Renderer:
             self.window.blit(hover_surface, (x, y))
 
     def _get_cell_under_mouse(self):
-        x, y = self.current_mouse_pos
+        x, y = self.current_mouse_pos   
         if x > self.ram_grid_anchor_left and y > self.ram_grid_anchor_top:
             col = (x - self.ram_grid_anchor_left) // 120
             row = (y - self.ram_grid_anchor_top) // 50
@@ -311,12 +281,14 @@ class Renderer:
         self.env.step(0)
         original_pixel = ale.getScreenRGB()[y, x]
         self._set_ram(ram)  # restore original RAM
+        state = self.env._clone_state()
 
         self.candidate_cell_ids = []
         for i in tqdm(range(len(ram))):
             self.active_cell_idx = i
-            for altered_value in [0]:  # adding values != 0 causes Atari to crash
+            for altered_value in [5]: #range(255):  # adding values != 0 causes Atari to crash
                 self.current_active_cell_input = str(altered_value)
+                self.env._restore_state(state)
                 ale.setRAM(i, altered_value)
                 self.env.step(0)
                 new_frame = ale.getScreenRGB()
@@ -326,7 +298,8 @@ class Renderer:
                 if np.any(new_pixel != original_pixel):
                     self.candidate_cell_ids.append(i)
                     break
-
+        
+        self.env._restore_state(state)
         self._unselect_active_cell()
         self._render()
 
@@ -334,25 +307,42 @@ class Renderer:
 if __name__ == "__main__":
     from argparse import ArgumentParser
 
-    parser = ArgumentParser(description='Seaquest Game Argument Setter')
+    parser = ArgumentParser(description='OCAtari remgui.py Argument Setter')
+
     parser.add_argument('-g', '--game', type=str, default="Seaquest",
                         help='Game to be run')
-    parser.add_argument('-ls', '--load_state', type=str, default="")
     parser.add_argument('-hu', '--human', action='store_true',
                         help='Let user play the game.')
-    parser.add_argument('-hud', '--hud', action='store_true',
-                    help='Use HUD.')
+    parser.add_argument('-sf', '--switch_frame', type=int, default=0,
+                        help='Swicht_modfis are applied to the game after this frame-threshold')
+    parser.add_argument('-p', '--picture', type=int, default=0,
+                        help='Takes a picture after the number of steps provided.')
+    parser.add_argument('-a','--agent', type=str, default='', 
+                        help="Path to the cleanrl trained agent to be loaded.")
     parser.add_argument('-nr', '--no_render', type=int, default=[],
                         help='Cells to not render.', nargs='+')
+    parser.add_argument('-nra', '--no_render_all', action='store_true',
+                        help='Not rendering any cell.')
+    parser.add_argument('-ls', '--load_state', type=str, default=None,
+                        help='Path to the state to be loaded.')
 
     args = parser.parse_args()
 
-    renderer = Renderer(args.game, args.no_render, hud=args.hud)
+
+    if args.no_render_all:
+        args.no_render = list(range(128))
+
+    renderer = Renderer(args.game, args.no_render)
+
+
     if args.load_state:
         with open(args.load_state, "rb") as f:
-            state = pkl.load(f)
+            state, objects = pkl.load(f)
             renderer.env._ale.restoreState(state)
+            renderer.env._objects = objects
             print(f"State loaded from {args.load_state}")
+    
+
     def exit_handler():
         if renderer.no_render:
             print("\nno_render list: ")
@@ -360,4 +350,5 @@ if __name__ == "__main__":
                 print(i, end=" ")
             print("")
     atexit.register(exit_handler)
+
     renderer.run()
