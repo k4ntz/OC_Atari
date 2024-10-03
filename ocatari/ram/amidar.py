@@ -1,5 +1,6 @@
-from .game_objects import GameObject, ValueObject
+from .game_objects import GameObject, ValueObject, NoObject
 from ._helper_methods import number_to_bitfield
+from .utils import match_objects
 import sys 
 
 MAX_NB_OBJECTS = {"Player": 1, "Monster_green": 6, "Monster_red": 6}
@@ -15,19 +16,19 @@ class Player(GameObject):
 
 
 class Monster_green(GameObject):
-    def __init__(self):
+    def __init__(self, x=0, y=160, w=7, h=7):
         super(Monster_green, self).__init__()
-        self._xy = 0, 160
-        self.wh = (7, 7)
+        self._xy = x, y
+        self.wh = (w, h)
         self.rgb = 135, 183, 84
         self.hud = False
 
 
 class Monster_red(GameObject):
-    def __init__(self):
+    def __init__(self, x=0, y=160, w=7, h=7):
         super(Monster_red, self).__init__()
-        self._xy = 0, 160
-        self.wh = (7, 7)
+        self._xy = x, y
+        self.wh = (w, h)
         self.rgb = 214, 92, 92
         self.hud = False
 
@@ -71,9 +72,10 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player(), Monster_green(), Monster_green(), Monster_green(), Monster_green(), Monster_green(), Monster_green()]
+    objects.extend([NoObject()] * 6) # for the red monsters
 
     if hud:
-        objects.extend([None] * 4)
+        objects.extend([NoObject()] * 4)
         # objects.extend([Score(), Life(), Life(), Life()])
     return objects
 
@@ -86,22 +88,25 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # x == 66-72; y == 59-65; type 73-79
     k = 0
+    monster_red_bb = []
+    monster_green_bb = []
     for i in range(7):
-        if k < 6:
-            objects[1+k] = None
-        if ram_state[73+i]&16 and ram_state[73+i]&32:
+        if ram_state[73+i]&16 and ram_state[73+i]&32: #if the 4th and 5th bit is set, the monser is red
             fig = Monster_red()
-            objects[1+k] = fig
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
-            k+=1
-        elif ram_state[73+i]&32:
+            monster_red_bb.append(fig.xywh)
+        elif ram_state[73+i]&32: #if the 5th bit is set (but not the 4th), the monser is green
             fig = Monster_green()
-            objects[1+k] = fig
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
-            k+=1
-        else:
+            monster_green_bb.append(fig.xywh)
+        else: #the object is the player
             fig = objects[0]
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
+
+    match_objects(objects, monster_green_bb, 1, 6, Monster_green)
+    match_objects(objects, monster_red_bb, 7, 6, Monster_red)
+
+    #TODO Implement monsters not visible during jumping
 
     # 6-49 purple lines; first 4 ==> lines, remaining ==> pillars
     # even numbers are inverted
@@ -118,7 +123,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
         # Score
         score = Score()
-        objects[7] = score
+        objects[13] = score
         if ram_state[91] > 15:
             score.xy = 57, 176
             score.wh = 46, 7
@@ -142,7 +147,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         for i in range(3):
             if i < ram_state[86]&3:
                 life = Life()
-                objects[8+i] = life
+                objects[14+i] = life
                 life.xy = 148-(i*16), 175
             else:
-                objects[8+i] = None
+                objects[14+i] = NoObject()
