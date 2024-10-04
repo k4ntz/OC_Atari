@@ -32,7 +32,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     (x, y, w, h, r, g, b)
     """
     f = objects[0]
-    print(f.orientation)
     f.x = ram_state[48] - 1
     if ram_state[44] == 255:
         f.y = 171
