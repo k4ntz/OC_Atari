@@ -87,7 +87,6 @@ class GameObject:
 
     @xy.setter
     def xy(self, xy):
-        self._prev_xy = self._xy
         self._xy = xy
 
     # returns 2 lists with current and past coords
@@ -137,7 +136,14 @@ class GameObject:
         :type: (int, int, int, int)
         """
         return self._xy[0], self._xy[1], self.wh[0], self.wh[1]
+    
+    @xywh.setter
+    def xywh(self, xywh):
+        self._xy = xywh[0], xywh[1]
+        self.wh = xywh[2], xywh[3]
 
+    def _save_prev(self):
+        self._prev_xy = self._xy
 
     @property
     def center(self):
@@ -193,3 +199,29 @@ class GameObject:
         return [prop for prop in properties
                 if not prop.startswith("_") and 
                 not callable(self.__getattribute__(prop))]
+    
+class NoObject(GameObject):
+    """
+    This class represents a non-existent object. It is used to fill in the gaps when no object is detected.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(0, 0, 0, 0)
+        self.nslen = 2
+    
+    def _save_prev(self):
+        pass
+
+    def __bool__(self):
+        return False
+    
+    def __eq__(self, other):
+        return isinstance(other, NoObject)
+    
+    @property
+    def _nsrepr(self):
+        return [0 for _ in range(self.nslen)]
+    
+    def __repr__(self):
+        # return "NaO"
+        # return "\033[31m" + "NaO" + "\033[39m" # red color
+        return "\033[34m" + "NaO" + "\033[39m" # blue color

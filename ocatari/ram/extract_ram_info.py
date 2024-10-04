@@ -8,7 +8,10 @@ def instantiate_max_objects(game_name, max_obj_dict):
     objects = []
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
-    mod = sys.modules[game_module]
+    try:
+        mod = sys.modules[game_module]
+    except KeyError as err:
+        return []
     for k, v in max_obj_dict.items():
         for _ in range(0, v):
             objects.append(getattr(mod, k)())
@@ -26,7 +29,8 @@ def get_class_dict(game_name):
         return classes
     except KeyError as err:
         print(colored(f"Game module does not exist: {game_module}", "red"))
-        raise err
+        # raise err
+        return {}
     except AttributeError as err:
         print(colored(f"MAX_NB_OBJECTS_HUD not implemented for game: {game_name}", "red"))
         raise err
@@ -42,18 +46,31 @@ def get_max_objects(game_name, hud):
         return mod.MAX_NB_OBJECTS
     except KeyError as err:
         print(colored(f"Game module does not exist: {game_module}", "red"))
-        raise err
+        # raise err
+        return {}
     except AttributeError as err:
         print(colored(f"MAX_NB_OBJECTS(_HUD) not implemented for game: {game_name}", "red"))
         raise err
 
+def use_vision_objects(objects, game_module):
+    """
+    replaces ram objects with their equivalent vision objects
+    """
+    game_module_vision = game_module.replace('ram', 'vision')
+    mod = sys.modules[game_module_vision]
+    for i, obj in enumerate(objects):
+        if obj: # skip None objects
+            objects[i] = getattr(mod, objects[i].category)(*obj.xywh)
+    return objects
 
-def init_objects(game_name, hud):
+
+def init_objects(game_name, hud, vision=False):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
-
     try:
         mod = sys.modules[game_module]
+        if vision:
+            return use_vision_objects(mod._init_objects_ram(hud), game_module)
         return mod._init_objects_ram(hud)
     except KeyError as err:
         print(colored(f"Game module does not exist: {game_module}", "red"))
