@@ -1,7 +1,6 @@
 from ._helper_methods import _convert_number
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 import sys
-
 """
 RAM extraction for the game ASTEROIDS. Supported modes: raw
 
@@ -10,7 +9,7 @@ they were not interpretable. One x Value corresponds to multiple positions on th
 another RAM state which separates them into quadrants or the x-Axis is moving.
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Asteroid':30,'PlayerMissile': 2}  # Asteroid count can get really high
+MAX_NB_OBJECTS = {'Player': 1, 'Asteroid': 30,'PlayerMissile': 2}  # Asteroid count can get really high
 MAX_NB_OBJECTS_HUD = {'Lives': 1, 'PlayerScore': 1}
 
 
@@ -110,7 +109,7 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player()]
-    objects.extend([None] * 33)
+    objects.extend([NoObject()] * 33)
     if hud:
         objects.extend([Lives(), PlayerScore()])
     return objects
@@ -143,7 +142,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             player.xy = _x_position(ram_state[73]), 100 + (2 * (ram_state[74] - 41))
             player.wh = 6, 10
     else:
-        objects[0] = None
+        objects[0] = NoObject()
     
     player.orientation = ram_state[60]%16
 
@@ -153,7 +152,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         # 0010 1111
         # 1111 0010
         if ram_state[ast_list[i]+18] and not ram_state[ast_list[i]]&128:
-            ast2 = None
+            ast2 = NoObject()
             ast = Asteroid()
             objects[1+i] = ast
             x = int(_x_position(ram_state[ast_list[i]+18]))
@@ -169,7 +168,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     h -= (y+28)-194
                     split = True
                 if w < 0 or h < 0:
-                    ast = None
+                    ast = NoObject()
                 else:
                     ast.wh = w, h
                 if split and 16-w > 0 and 28-h > 0:
@@ -185,7 +184,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                         ast2.xy = 0, 18
                         ast2.wh = 16-w, 28-h
                 else:
-                    objects[16+i] = None
+                    objects[16+i] = NoObject()
 
             elif ram_state[ast_list[i]+36]&127 < 48:
                 split = False
@@ -198,7 +197,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     h -= (y+13)-194
                     split = True
                 if w < 0 or h < 0:
-                    ast = None
+                    ast = NoObject()
                 else:
                     ast.wh = w, h
                 if split and 8-w > 0 and 15-h > 0:
@@ -214,7 +213,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                         ast2.xy = 0, 18
                         ast2.wh = 8-w, 15-h
                 else:
-                    objects[16+i] = None
+                    objects[16+i] = NoObject()
             else:
                 split = False
                 ast.xy = x-1, y-1
@@ -226,7 +225,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     h -= (y+7)-194
                     split = True
                 if w < 0 or h < 0:
-                    ast = None
+                    ast = NoObject()
                 else:
                     ast.wh = w, h
                 if split and 4-w > 0 and 8-h > 0:
@@ -242,29 +241,29 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                         ast2.xy = 0, 18
                         ast2.wh = 4-w, 8-h
                 else:
-                    objects[16+i] = None
-            if ast is not None:
+                    objects[16+i] = NoObject()
+            if ast is not NoObject():
                 w1, h1 = ast.wh
                 if w1 < 0:
                     print(w1, "wtf w1?")
                 if h1 < 0:
                     print(h1, "wtf h1?")
-            if ast2 is not None:
+            if ast2:
                 w2, h2 = ast2.wh
                 if w2 < 0:
                     print(w2, "wtf w2?")
                 if h2 < 0:
                     print(h2, "wtf h2?")
         else:
-            objects[1+i] = None
-            objects[16+i] = None
+            objects[1+i] = NoObject()
+            objects[16+i] = NoObject()
     
     if ram_state[83] and not ram_state[86]&128:
         miss = PlayerMissile()
         objects[16] = miss
         miss.xy = _x_position(ram_state[83]) + 1, 175 - 2 * (80 - ram_state[86]) + 2
     else:
-        objects[16] = None
+        objects[16] = NoObject()
 
 
     if ram_state[84] and not ram_state[87]&128:
@@ -272,7 +271,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[17] = miss
         miss.xy = _x_position(ram_state[84]) + 1, 175 - 2 * (80 - ram_state[87]) + 2
     else:
-        objects[17] = None
+        objects[17] = NoObject()
 
     if hud:
         if ram_state[61] >= 16:
