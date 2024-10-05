@@ -34,3 +34,4 @@ reports
 .dataset_generation/.*
 
 *.pickle
+docs/_build

@@ -10,11 +10,12 @@ RAM extraction for the game DONKEYKONG. Supported modes: ram.
 """
 
 MAX_ESSENTIAL_OBJECTS = {
-    'Player': 1,
+    'Player': 1, 'Girlfriend': 1, 'Ladder': 10, 'Hammer': 1, 'Barrel' : 10, 'DonkeyKong': 1,
 }
 
 MAX_OPTIONAL_OBJECTS = {
     'Score': 1,
+    'Life':1, 
 }
 
 MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())

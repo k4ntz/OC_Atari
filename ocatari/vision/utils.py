@@ -311,10 +311,6 @@ def find_objects(image, color, size=None, tol_s=10,
     :type size: int or (int, int)
     :param tol_s: tolerance on the presupposed size of the targeted object
     :type tol_s: int or (int, int)
-    :param size: presupposed size of the targeted object (to detect)
-    :type size: int or (int, int)
-    :param tol_s: tolerance on the presupposed size of the targeted object
-    :type tol_s: int or (int, int)
     :param position: presupposed position of the targeted object (to detect)
     :type position: int or (int, int)
     :param tol_p: tolerance on the presupposed position of the targeted object

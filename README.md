@@ -1,9 +1,9 @@
 # Object-Centric Atari Environments
-Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia, Anurag Maurya, Kévin-Lâm Quesnel and Simon Wulf
+Quentin Delfosse, Jannis Blüml, Bjarne Gregori, Sebastian Sztwiertnia
 
 <img style="float: right;" width="400px" align="right" src="docs/_static/kangaroo.png">
 
-Inspired by thw work of [Anand et. al.](https://arxiv.org/abs/1906.08226), we present OCAtari, an improved, extended and object-centric version of their [ATARI ARI project](https://github.com/mila-iqia/atari-representation-learning). \
+Inspired by the work of [Anand et. al.](https://arxiv.org/abs/1906.08226), we present OCAtari, an improved, extended and object-centric version of their [ATARI ARI project](https://github.com/mila-iqia/atari-representation-learning). \
 The [Arcade Learning Environment](https://github.com/mgbellemare/Arcade-Learning-Environment) allows us to read the RAM state at any time of a game. 
 This repository provides a wrapper for the well known [Gynmasium project](https://github.com/Farama-Foundation/Gymnasium), that uses the state of the ram and reverse engineering to provide object centric representation of the screen. It provides code for benchmarking, testing and generating object-centric representations of states.
 
@@ -58,51 +58,9 @@ year={2023}
 ```
 
 ###  List of covered games
-- [X] Alien
-- [X] Amidar
-- [X] Assault
-- [X] Asterix
-- [X] Asteroids  (only vision)
-- [X] Atlantis
-- [ ] BattleZone (in progress)
-- [ ] Bankheist (in progress)
-- [ ] BeamRider  (only vision)
-- [X] Berzerk
-- [X] Bowling
-- [X] Boxing
-- [X] Breakout
-- [X] Carnival
-- [X] Centipede
-- [X] Chopper Command
-- [X] Crazy Climbers
-- [X] DemonAttack
-- [X] DonkeyKong
-- [X] Fishing Derby  
-- [X] Freeway
-- [X] Frostbite
-- [X] Gopher
-- [X] Hero
-- [X] IceHockey
-- [X] Kangaroo
-- [X] Krull
-- [X] MontezumaRevenge
-- [X] MsPacman
-- [X] Pacman
-- [X] Pitfall
-- [X] Pong
-- [X] PrivateEye
-- [X] Q\*Bert  
-- [X] RiverRaid  
-- [X] RoadRunner  
-- [X] Seaquest
-- [X] Skiing
-- [X] Space Invaders
-- [X] Tennis
-- [X] Time Pilot
-- [X] Up n Down (in progress)
-- [X] Venture
-- [X] VideoPinball
-- [ ] YarsRevenge (in progress)
+| Alien          | Amidar         | Assault        | Asterix        | Asteroids      | Atlantis       | BattleZone     | BankHeist      | BeamR.         | Berzerk        | Bowling        | Boxing         | Breakout       | Carnival       | Centipede      | ChopperC.      | CrazyC.        | DemonA.        | DonkeyK.       | FishingD.      | Freeway        | Frostbite      | Gopher       | Hero           | IceHockey      | Jamesbond      | Kangaroo       | Krull          | Montezum.      | MsPacman      | Pacman         | Pitfall        | Pong           | PrivateE.      | Q*Bert    | RiverRaid      | RoadR.         | Seaquest       | Skiing         | SpaceInv.      | Tennis         | TimePilot    | UpNDown      | Venture      | VideoP.      | YarsR.       |
+|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|--------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|--------------|--------------|--------------|--------------|--------------|
+| ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 
 A list of all gymnasium games can be found in the [Gymnasium Documentation](https://gymnasium.farama.org/environments/atari/)
 

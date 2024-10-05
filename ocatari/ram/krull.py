@@ -2,8 +2,8 @@ from .game_objects import GameObject, ValueObject
 from ._helper_methods import number_to_bitfield
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1}
-MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
+MAX_NB_OBJECTS = {"Player": 1, 'Lyssa': 1, 'Slayers': 20, 'Slayer_Shot': 1, 'Weapon': 1, 'Beast': 1, 'Enemy_Weapon': 1, 'Wall': 64, 'Star': 1, 'Spider': 1, 'Window': 1, 'Line': 462, 'Fire_Mare': 1, 'Weapon': 1, 'Life': 1, 'Castle': 1}
+MAX_NB_OBJECTS_HUD = {"Player": 1, 'Lyssa': 1, 'Slayers': 20, 'Slayer_Shot': 1, 'Weapon': 1, 'Beast': 1, 'Enemy_Weapon': 1, 'Wall': 64, 'Star': 1, 'Spider': 1, 'Window': 1, 'Line': 462, 'Fire_Mare': 1, 'Weapon': 1, 'Life': 1, 'Castle': 1, 'Sun': 1, 'Hour_Glass': 1, 'Score': 1, 'Life_HUD': 3, 'Weapon_HUD': 3}# 'Score': 1}
 
 class Player(GameObject):
     def __init__(self):
@@ -125,6 +125,15 @@ class Castle(GameObject):
         self.hud = False
 
 
+class Life(GameObject):
+    def __init__(self):
+        super(Life, self).__init__()
+        self._xy = 0, 0
+        self.wh = (6, 7)
+        self.rgb = 92, 186, 92
+        self.hud = False
+
+
 class Sun(ValueObject):
     def __init__(self):
         super(Sun, self).__init__()
@@ -152,9 +161,9 @@ class Score(ValueObject):
         self.hud = True
 
 
-class Life(GameObject):
+class Life_HUD(GameObject):
     def __init__(self):
-        super(Life, self).__init__()
+        super(Life_HUD, self).__init__()
         self._xy = 0, 0
         self.wh = (6, 7)
         self.rgb = 92, 186, 92
@@ -287,8 +296,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         else:
             objects[1] = None
 
+        lyssa = Lyssa()
+        objects[2] = lyssa
+        if ram_state[109] == 42:
+            lyssa.xy = ram_state[85] + 9, (ram_state[93]*2) + 15
+        else:
+            lyssa.xy = ram_state[85] + 8, (ram_state[93]*2) + 15
+
         boss = Beast()
-        objects[2] = boss
+        objects[3] = boss
         if ram_state[100] == 157:
             boss.xy = ram_state[84] + 13, (ram_state[92]*2) + 15
         else:
@@ -296,17 +312,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         
         if ram_state[77] < 83:
             bossw = Enemy_Weapon()
-            objects[3] = bossw
+            objects[4] = bossw
             bossw.xy = ram_state[79] + 7, (ram_state[77]*2) + 7
         else:
-            objects[3] = None
-
-        lyssa = Lyssa()
-        objects[4] = lyssa
-        if ram_state[109] == 42:
-            lyssa.xy = ram_state[85] + 9, (ram_state[93]*2) + 15
-        else:
-            lyssa.xy = ram_state[85] + 8, (ram_state[93]*2) + 15
+            objects[4] = None
 
         for j in range(4):
             for i in range(8):
@@ -479,7 +488,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         # Lives
         for i in range(3):
             if i < ram_state[31]:
-                life = Life()
+                life = Life_HUD()
                 objects[-6+i] = life
                 life.xy = 56+(i*8), 188
             else:

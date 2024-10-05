@@ -308,12 +308,12 @@ class Wall(GameObject):
     A class representing walls.
     """
     
-    def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
+    def __init__(self, x=0, y=0, w=8, h=4, rgb=(66, 158, 130), *args, **kwargs):
         super(Wall, self).__init__(*args, **kwargs)
         self._xy = x, y
         self._prev_xy = x, y
         self.wh = w, h
-        self.rgb = 66, 158, 130
+        self.rgb = rgb
         self.hud = False
 
 
@@ -353,7 +353,7 @@ def _init_objects_ram(hud=True):
 
     objects = [Player()]
 
-    objects.extend([None] * 35)
+    objects.extend([None] * 37)
     if hud:
         objects.extend([None] * 19)
     return objects
@@ -380,7 +380,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     player = objects[0]
     player.xy = ram_state[42] - 1, 255 - ram_state[43] + 53
 
-    for i in range(35):
+    for i in range(37):
         objects[i+1] = None
 
     # ram[49] == object typ and ram[50] == object color
@@ -496,6 +496,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         
         objects[18] = Platform(x=4, y=94, w=154, h=1)
         objects[19] = Ladder(x=72, y=94, w=16, h=102)
+        objects[20] = Wall(x=0, y=53, w=4, h=42, rgb=(101, 111, 228))
 
 
     elif room == 1:
@@ -525,8 +526,8 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         rope = Rope()
         objects[17] = rope
 
-        objects[18] = Platform(x=0, y=93, w=55, h=2)
-        objects[19] = Platform(x=104, y=93, w=55, h=2)
+        objects[18] = Platform(x=0, y=93, w=56, h=2)
+        objects[19] = Platform(x=104, y=93, w=56, h=2)
         objects[20] = Platform(x=68, y=93, w=23, h=2)
         objects[21] = Ladder(x=72, y=93, w=16, h=42)
         objects[22] = Platform(x=76, y=136, w=8, h=5)
@@ -537,14 +538,20 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         objects[27] = Platform(x=8, y=136, w=28, h=2)
         objects[28] = Platform(x=124, y=136, w=28, h=2)
         objects[29] = Platform(x=16, y=180, w=128, h=1)
+        objects[30] = Wall(x=0, y=96, w=8, h=40)
+        objects[31] = Wall(x=0, y=136, w=16, h=45)
+        objects[32] = Wall(x=152, y=96, w=8, h=40)
+        objects[33] = Wall(x=144, y=136, w=16, h=45)
 
     elif room == 2:
         objects[18] = Platform(x=4, y=93, w=154, h=1)
         objects[19] = Ladder(x=72, y=93, w=16, h=102)
+        objects[20] = Wall(x=156, y=52, w=4, h=42)
 
     elif room == 3:
         objects[18] = Platform(x=4, y=93, w=154, h=1)
         objects[19] = Ladder(x=72, y=93, w=16, h=102)
+        objects[20] = Wall(x=0, y=53, w=4, h=41)
             
     elif room == 4:
         objects[18] = Platform(x=4, y=93, w=154, h=1)
@@ -596,6 +603,8 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         objects[26] = Platform(x=76, y=93, w=8, h=5)
         objects[27] = Conveyer_Belt(x=60, y=93, w=15, h=5)
         objects[28] = Conveyer_Belt(x=85, y=93, w=15, h=5)
+        objects[29] = Wall(x=0, y=96, w=4, h=77)
+        objects[30] = Wall(x=156, y=96, w=4, h=77)
 
     elif room == 6:
         objects[18] = Platform(x=0, y=93, w=160, h=1)
@@ -627,6 +636,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
         objects[18] = Platform(x=4, y=94, w=154, h=1)
         objects[19] = Ladder(x=72, y=94, w=16, h=102)
+        objects[20] = Wall(x=156, y=53, w=4, h=42, rgb=(101, 111, 228))
     
     elif room == 8:
         #rope
@@ -659,11 +669,13 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         objects[33] = Platform(76, 93, 8, 3)
         objects[34] = Platform(112, 93, 48, 3)
         objects[35] = Platform(4, 173, 152, 1)
+        objects[36] = Wall(x=0, y=53, w=4, h=121)
+        objects[37] = Wall(x=156, y=97, w=4, h=77)
 
     elif room == 9:
         objects[18] = Platform(x=0, y=93, w=158, h=1)
         objects[19] = Ladder(x=72, y=53, w=16, h=38)
-        objects[20] = Wall(x=156, y=53, w=3, h=40)
+        objects[20] = Wall(x=156, y=52, w=3, h=41)
 
     elif room == 10:
         objects[18] = Wall(x=0, y=53, w=3, h=40)
@@ -728,6 +740,8 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         objects[20] = Platform(120, 93, 40, 3)
         objects[21] = Platform(16, 168, 128, 1)
         objects[22] = Ladder(72, 169, 16, 25)
+        objects[23] = Wall(x=0, y=97, w=16, h=73)
+        objects[24] = Wall(x=144, y=97, w=16, h=73)
     
     elif room == 15:
         objects[18] = Platform(x=0, y=94, w=160, h=1)
@@ -797,100 +811,100 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
     if hud:
         for i in range(19):
-            objects[i+36] = None
+            objects[i+38] = None
 
         x = 56
         y = 28
 
-        torch_h = objects[36]
+        torch_h = objects[38]
 
-        sword1_h, sword2_h = objects[37], objects[38]
+        sword1_h, sword2_h = objects[39], objects[40]
 
-        key1_h, key2_h, key3_h, key4_h = objects[39], objects[40], objects[41], objects[42]
+        key1_h, key2_h, key3_h, key4_h = objects[41], objects[42], objects[43], objects[44]
         
-        amulet_h = objects[43]
+        amulet_h = objects[45]
 
         if ram_state[65] & 128:
             torch_h = Torch_HUD()
-            objects[36] = torch_h
+            objects[38] = torch_h
             x = x + 8
 
         if ram_state[65] & 64:
             sword1_h = Sword_HUD()
             sword1_h.xy = x, y
-            objects[37] = sword1_h
+            objects[39] = sword1_h
             x = x + 8
 
         if ram_state[65] & 32:
             sword2_h = Sword_HUD()
             sword2_h.xy = x, y
-            objects[38] = sword2_h
+            objects[40] = sword2_h
             x = x + 8
 
         if ram_state[65] & 16:
             key1_h = Key_HUD()
             key1_h.xy = x, y
-            objects[39] = key1_h
+            objects[41] = key1_h
             x = x + 8
 
         if ram_state[65] & 8:
             key2_h = Key_HUD()
             key2_h.xy = x, y
-            objects[40] = key2_h
+            objects[42] = key2_h
             x = x + 8
 
         if ram_state[65] & 4:
             key3_h = Key_HUD()
             key3_h.xy = x, y
-            objects[41] = key3_h
+            objects[43] = key3_h
             x = x + 8
 
         if ram_state[65] & 2 and x < 104:
             key4_h = Key_HUD()
             key4_h.xy = x, y
-            objects[42] = key4_h
+            objects[44] = key4_h
             x = x + 8
 
         if ram_state[65] & 1 and x < 104:
             amulet_h = Amulet_HUD()
             amulet_h.xy = x, y
-            objects[43] = amulet_h
+            objects[45] = amulet_h
 
         # life
         for i in range(ram_state[58]):
             life = Life()
             life.xy = 56 + (i * 8), 15
-            objects[44+i] = life
+            objects[46+i] = life
 
         # score
         if ram_state[19] > 15:
             for i in range(6):
                 score = Score()
                 score.xy = 97 - (i * 8), 6
-                objects[49+i] = score
+                objects[51+i] = score
         elif ram_state[19] > 0:
             for i in range(5):
                 score = Score()
                 score.xy = 97 - (i * 8), 6
-                objects[49+i] = score
+                objects[51+i] = score
         elif ram_state[20] > 15:
             for i in range(4):
                 score = Score()
                 score.xy = 97 - (i * 8), 6
-                objects[49+i] = score
+                objects[51+i] = score
         elif ram_state[20] > 0:
             for i in range(3):
                 score = Score()
                 score.xy = 97 - (i * 8), 6
-                objects[49+i] = score
+                objects[51+i] = score
         elif ram_state[21] > 15:
             for i in range(2):
                 score = Score()
                 score.xy = 97 - (i * 8), 6
-                objects[49+i] = score
+                objects[51+i] = score
         else:
             score = Score()
-            objects[49] = score
+            objects[51] = score
 
     return objects
 

@@ -10,7 +10,7 @@ they were not interpretable. One x Value corresponds to multiple positions on th
 another RAM state which separates them into quadrants or the x-Axis is moving.
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Asteroids':30,'PlayerMissile': 2}  # Asteroid count can get really high
+MAX_NB_OBJECTS = {'Player': 1, 'Asteroid':30,'PlayerMissile': 2}  # Asteroid count can get really high
 MAX_NB_OBJECTS_HUD = {'Lives': 1, 'PlayerScore': 1}
 
 
