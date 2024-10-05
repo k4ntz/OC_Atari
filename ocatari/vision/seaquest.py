@@ -130,10 +130,10 @@ def _detect_objects(objects, obs, hud=False):
         for ox_depl in oxygen_bar_depl:
             objects.append(OxygenBarDepleted(*ox_depl))
 
-        oxygen_logo = find_objects(obs, objects_colors["oxygen_logo"], min_distance=1)
-        for ox_logo in oxygen_logo:
-            if ox_logo[0] > 0:
-                objects.append(OxygenBarLogo(*ox_logo))
+        # oxygen_logo = find_objects(obs, objects_colors["oxygen_logo"], min_distance=1)
+        # for ox_logo in oxygen_logo:
+        #     if ox_logo[0] > 0:
+        #         objects.append(OxygenBarLogo(*ox_logo))
 
         coll_diver = find_objects(obs, objects_colors["collected_diver"], min_distance=10)
         for div in coll_diver:

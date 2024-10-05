@@ -1,5 +1,6 @@
 import sys
 from .game_objects import GameObject
+import numpy as np
 
 """
 RAM extraction for the game Pong.
@@ -7,7 +8,7 @@ RAM extraction for the game Pong.
 """
 
 MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Enemy': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Enemy': 1, 'PlayerScore': 1, 'EnemyScore': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Enemy': 1, 'PlayerScore': 2, 'EnemyScore': 2}
 
 
 class Player(GameObject):
@@ -183,6 +184,9 @@ def _detect_objects_pong_raw(info, ram_state):
     info["ball_y"] = ram_state[54]
     info["enemy_y"] = ram_state[50]
     info["player_y"] = ram_state[51]
+
+
+    
 
 
 # def _detect_objects_pong_revised_old(info, ram_state, hud=False):

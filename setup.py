@@ -1,8 +1,10 @@
 from setuptools import setup, find_packages
+import os
 
+__version__ = '1.1.9'
 
-__version__ = '1.1.1'
-
+# with open('requirements.txt') as f:
+#     reqs = f.read().splitlines()
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -21,10 +23,10 @@ setup(
     description='Object Centric Atari 2600',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    install_requires=[
+        install_requires=[
         "gymnasium",
         "matplotlib",
-        "numpy",
+        "numpy<2.0.0",
         "opencv_python",
         "scikit_image",
         "termcolor",
