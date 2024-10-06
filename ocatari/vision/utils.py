@@ -8,10 +8,6 @@ from collections import Counter
 from scipy.optimize import linear_sum_assignment
 from .game_objects import NoObject
 
-# to be removed
-def bbs_extend(labels, key: str, stationary=False):
-    labels['bbs'].extend([(*bb, "S" if stationary else "M", key) for bb in labels[key]])
-
 
 def most_common_color(image, exclude_black=True):
     """
@@ -26,13 +22,6 @@ def most_common_color(image, exclude_black=True):
     if exclude_black:
         return np.unravel_index(np.bincount(a1D)[1:].argmax()+1, col_range) # removing first el
     return np.unravel_index(np.bincount(a1D).argmax(), col_range)
-
-
-# to be removed
-def bb_by_color(labels, obs, color, key, closing_active=True):
-    print(colored("\n\n\n PLEASE DON'T USE, USE 'find_objects' instead\n\n\n", "red"))
-    labels[key] = find_objects(obs, color, closing_active)
-    bbs_extend(labels, key)
 
 
 def assert_in(observed, expected, tol):
