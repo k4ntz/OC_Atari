@@ -114,12 +114,19 @@ class OCAtari:
         else:
             self._covered_game = True
         
-        gym_render_mode = "rgb_array" if render_oc_overlay else render_mode
-        self._env = gym.make(env_name, render_mode=gym_render_mode, *args, **kwargs)
+        self.env_name = env_name
         self.game_name = game_name
         self.mode = mode
         self.obs_mode = obs_mode
         self.hud = hud
+        gym_render_mode = "rgb_array" if render_oc_overlay else render_mode
+        try:
+            self._env = gym.make(env_name, render_mode=gym_render_mode, *args, **kwargs)
+        except NameNotFound:
+            cenv_name = f"ALE/{env_name}-v5"
+            self._env = gym.make(cenv_name, render_mode=gym_render_mode, *args, **kwargs)
+            warnings.warn(colored(f'Game "{env_name}" not found in gymnasium, automatically using "{cenv_name}" instead', "red"))
+            self.env_name = cenv_name
         self.max_objects_per_cat = get_max_objects(self.game_name, self.hud)
         self.buffer_window_size = 4
         self.step = self._step_impl
