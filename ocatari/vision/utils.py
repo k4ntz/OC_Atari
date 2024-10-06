@@ -214,17 +214,10 @@ def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2,
             if mask.max() == 0:
                 return []
     mask = sum(masks)
-    # if mask.max() > 0:
-        # showim(mask)
-        # import ipdb; ipdb.set_trace()
-    # if not all_colors and mask.max():
-    #     import ipdb;ipdb.set_trace()
-    if closing_active:
-        closed = closing(mask, square(closing_dist))
-        # closed = closing(closed, square(closing_dist))
-    else:
-        closed = mask
-    contours, _ = cv2.findContours(closed.copy(), cv2.RETR_EXTERNAL, 1)
+    contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, 1)
+    contours = [cv2.boundingRect(cnt) for cnt in contours]
+    if closing_active and len(contours) > 1:
+        contours = merge_close_contours(contours, closing_dist)
     detected = []
     # for contour in contours:
     #     cv2.drawContours(image, contour, -1, (0, 255, 0), 3)
@@ -297,6 +290,31 @@ def color_analysis(image, bbox, exclude=[]):
     return Counter(subpart)
 
 
+def merge_close_contours(contours, closing_dist):
+    merged_contours = []
+    while contours:
+        x, y, w, h = contours.pop(0)
+        merged = False
+        for i, (mx, my, mw, mh) in enumerate(merged_contours):
+            # Calculate distance between bounding boxes
+            dx = max(0, max(mx - (x + w), x - (mx + mw)))
+            dy = max(0, max(my - (y + h), y - (my + mh)))
+            distance = dx + dy # Manhattan distance
+
+            if distance < closing_dist:
+                # Merge the boxes
+                new_x = min(x, mx)
+                new_y = min(y, my)
+                new_w = max(x + w, mx + mw) - new_x
+                new_h = max(y + h, my + mh) - new_y
+                merged_contours[i] = (new_x, new_y, new_w, new_h)
+                merged = True
+                break
+        if not merged:
+            merged_contours.append((x, y, w, h))
+    return merged_contours
+
+
 def find_objects(image, color, size=None, tol_s=10,
                  position=None, tol_p=2, min_distance=10,
                  closing_active=True, closing_dist=3,
@@ -335,14 +353,13 @@ def find_objects(image, color, size=None, tol_s=10,
     :rtype: list of (int, int, int)
     """
     mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color), np.array(color))
-    if closing_active:
-        closed = closing(mask, square(closing_dist))
-    else:
-        closed = mask
-    contours, _ = cv2.findContours(closed.copy(), cv2.RETR_EXTERNAL, 1)
+    contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, 1)
+    contours = [cv2.boundingRect(cnt) for cnt in contours]
+    if closing_active and len(contours) > 1:
+        contours = merge_close_contours(contours, closing_dist)
     detected = []
     for cnt in contours:
-        x, y, w, h = cv2.boundingRect(cnt)
+        x, y, w, h = cnt
         x, y = x + minx, y + miny  # compensing cuttoff
         if size:
             if not assert_in((w, h), size, tol_s):
