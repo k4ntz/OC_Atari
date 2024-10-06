@@ -646,6 +646,8 @@ def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
             for i, j in zip(obj_idx, bbs_idx):
                 if prev_objects[start_idx+i]:   
                     prev_objects[start_idx+i].xywh = objects_bb[j][:4]
+                    if len(objects_bb[j]) > 4:
+                        prev_objects[start_idx+i].rgb = objects_bb[j][4]
                 else:
                     prev_objects[start_idx+i] = ObjClass(*objects_bb[j])
         except Exception as e:
