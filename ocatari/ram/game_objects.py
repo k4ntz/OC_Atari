@@ -163,6 +163,11 @@ class GameObject:
     @property
     def xywh(self):
         return self._xy[0], self._xy[1], self.wh[0], self.wh[1]
+    
+    @xywh.setter
+    def xywh(self, xywh):
+        self._xy = xywh[0], xywh[1]
+        self.wh = xywh[2], xywh[3]
 
     def _save_prev(self):
         self._prev_xy = self._xy

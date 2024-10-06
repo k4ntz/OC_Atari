@@ -10,9 +10,10 @@ def detect_objects_vision(objects, obs, game_name, hud):
             obj._save_prev()
     try:
         mod = sys.modules[game_module]
-        return mod._detect_objects(objects, obs, hud)
+        mod._detect_objects
     except KeyError:
         raise NotImplementedError(colored(f"Game module does not exist: {game_module}", "red"))
     except AttributeError:
         raise NotImplementedError(colored(f"_detect_objects not implemented for game: {game_name}", "red"))
+    return mod._detect_objects(objects, obs, hud)
         

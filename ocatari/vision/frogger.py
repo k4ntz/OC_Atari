@@ -17,8 +17,6 @@ class Car(GameObject):
         self.rgb = rgb
 
 def _detect_objects(objects, obs, hud=False):
-    # objects.clear()
-
     frog = objects[0]
     frog_bb = find_objects(obs, objects_colors["frog"], size=(7, 7), tol_s=2)
     if frog_bb:
@@ -26,6 +24,6 @@ def _detect_objects(objects, obs, hud=False):
 
     start_idx = 1
     for nbcars, color in zip(cars_per_line, car_colors):
-        cars_bb = [list(bb) + [color] for bb in find_objects(obs, color, minx=8, maxx=152, miny=104, maxy=170)]
+        cars_bb = [list(bb) + [color] for bb in find_objects(obs, color, closing_active=True, minx=8, maxx=152, miny=104, maxy=170)]
         match_objects(objects, cars_bb, start_idx, nbcars, Car)
         start_idx += nbcars
