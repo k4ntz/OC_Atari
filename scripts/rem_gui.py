@@ -24,8 +24,8 @@ class Renderer:
     env: OCAtari
 
     def __init__(self, env_name, no_render=[]):
-        self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="rgb_array",
-                             render_oc_overlay=True, frameskip=1, obs_mode="obj")
+        self.env = OCAtari(env_name, mode="vision", hud=True, render_mode="rgb_array",
+                             render_oc_overlay=True, frameskip=1, obs_mode="ori")
 
         self.env.reset(seed=42)
         self.current_frame = self.env.render()
