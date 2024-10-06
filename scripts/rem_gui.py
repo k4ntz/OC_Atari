@@ -116,11 +116,11 @@ class Renderer:
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
 
-                if event.key == pygame.K_c:  # 'C': save
+                if event.key == pygame.K_c:  # 'C': clone
                     if self.paused:
                         statepkl = self.env._ale.cloneState()
                         with open(f"state_{self.env.game_name}.pkl", "wb") as f:
-                            pkl.dump(statepkl, f)
+                            pkl.dump((statepkl, self.env._objects), f)
                             print(f"State cloned in state_{self.env.game_name}.pkl.")
 
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
