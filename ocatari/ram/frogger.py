@@ -5,8 +5,8 @@ RAM extraction for the game Frogger.
 
 """
 
-MAX_NB_OBJECTS = {'Frog': 1, 'Car': 12}
-MAX_NB_OBJECTS_HUD = {'Frog': 1, 'Car': 12}
+MAX_NB_OBJECTS = {'Frog': 1, 'Car': 12, 'Log': 6, 'Turtle': 8}
+MAX_NB_OBJECTS_HUD = {'Frog': 1, 'Car': 12, 'Log': 6, 'Turtle': 8}
 
 class Frog(GameObject):
     """
@@ -24,13 +24,85 @@ class Car(GameObject):
     """
     A car.
     """
-    
     def __init__(self):
         super(Car, self).__init__()
         self._xy = 0, 0
         self.wh = 14, 7
         self.rgb = 195, 144, 61
         self.hud = False
+
+
+class Log(GameObject):
+    def __init__(self):
+        super(Log).__init__()
+        self.rgb = 139, 69, 19        
+
+
+class Turtle(GameObject):
+    def __init__(self):
+        super(Turtle).__init__()
+        self.rgb = 144,72,17
+
+
+class Alligator(GameObject):
+    def __init__(self):
+        super(Alligator).__init__()
+        self.rgb = 105,105,15
+
+# class DivingTurtle(GameObject):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.rgb = 66,114,194
+
+# class LadyFrog(GameObject):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.rgb = 236,236,236
+
+
+
+# class Snake(GameObject):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.rgb = 82,126,45   
+        
+# class HappyFrog(GameObject):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.rgb = 82,126,45
+
+# class AlligatorHead(GameObject):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.rgb = 110,156,66
+
+# class Fly(GameObject):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.rgb = 110,156,66
+
+# class Car(GameObject):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.rgb = 195, 144, 61
+
+# class Score(GameObject):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.rgb = 195,144,61
+#         self.hud = True
+
+# class Lives(GameObject):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.rgb = 236,236,236
+#         self.hud = True
+                
+# class Time(GameObject):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.rgb = 0,0,0
+#         self.hud = True
 
 def _init_objects_ram(hud=False):
     """
