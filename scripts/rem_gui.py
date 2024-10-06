@@ -2,7 +2,7 @@ import numpy as np
 import pygame
 from ocatari.core import OCAtari, UPSCALE_FACTOR
 from tqdm import tqdm
-
+import pickle as pkl
 
 import atexit
 
@@ -116,12 +116,12 @@ class Renderer:
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
 
-                if event.key == pygame.K_s:  # 'S': save
+                if event.key == pygame.K_c:  # 'C': save
                     if self.paused:
                         statepkl = self.env._ale.cloneState()
                         with open(f"state_{self.env.game_name}.pkl", "wb") as f:
                             pkl.dump(statepkl, f)
-                            print(f"State saved in state_{self.env.game_name}.pkl.")
+                            print(f"State cloned in state_{self.env.game_name}.pkl.")
 
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
                     self._unselect_active_cell()
