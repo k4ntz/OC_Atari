@@ -61,18 +61,18 @@ if opts.print_options:
     exit()
 
 # RENDER_MODE = "human"
+MODE = "vision"
 RENDER_MODE = "rgb_array"
 env = OCAtari(opts.game, mode=MODE, render_mode=RENDER_MODE, frameskip=1)
 # env = gym.make(opts.game, render_mode=RENDER_MODE, frameskip=1)
 random.seed(0)
 
 
-MODE = "vision"
 INTERACTIVE = False
 ONE_CHANGE = False
-COMPARE_WITH_PREVIOUS = True
-initial_ram_n = 64
-binary_mode = False
+COMPARE_WITH_PREVIOUS = False
+initial_ram_n = 22
+binary_mode = True
 
 
 make_deterministic(0, env)
@@ -96,8 +96,8 @@ if opts.snapshot:
     env._ale.restoreState(snapshot)
 
 if snapshot is None:
-    print("No snapshot provided,running for 20 frames")
-    for _ in range(20):
+    print("No snapshot provided, running for 20 frames")
+    for _ in range(5):
         resulting_obs, _, _, _, _ = env.step(random.randint(0, env.nb_actions-1))
         snapshot = env._ale.cloneState()
 
@@ -126,7 +126,7 @@ while ram_n < 127:
     askinput = True
     already_seen_frames = []
     shown = 0
-    for i in range(255):
+    for i in range(0, 255, 16):
         already_seen = False
         env._ale.restoreState(snapshot)
         env.set_ram(ram_n, i)

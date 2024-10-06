@@ -5,8 +5,8 @@ RAM extraction for the game Frogger.
 
 """
 
-MAX_NB_OBJECTS = {'Frog': 1, 'Car': 12, 'Log': 6, 'Turtle': 8}
-MAX_NB_OBJECTS_HUD = {'Frog': 1, 'Car': 12, 'Log': 6, 'Turtle': 8}
+MAX_NB_OBJECTS = {'Frog': 1, 'Car': 12, 'Log': 8, 'Alligator': 2, 'Turtle': 10}
+MAX_NB_OBJECTS_HUD = {'Frog': 1, 'Car': 12, 'Log': 8, 'Alligator': 2, 'Turtle': 10}
 
 class Frog(GameObject):
     """
@@ -34,20 +34,20 @@ class Car(GameObject):
 
 class Log(GameObject):
     def __init__(self):
-        super(Log).__init__()
-        self.rgb = 139, 69, 19        
+        super().__init__()
+        self.rgb = 105, 105, 15        
 
 
 class Turtle(GameObject):
     def __init__(self):
-        super(Turtle).__init__()
-        self.rgb = 144,72,17
+        super().__init__()
+        self.rgb = 144, 72, 17
 
 
 class Alligator(GameObject):
     def __init__(self):
-        super(Alligator).__init__()
-        self.rgb = 105,105,15
+        super().__init__()
+        self.rgb = 105, 105, 15
 
 # class DivingTurtle(GameObject):
 #     def __init__(self, *args, **kwargs):
@@ -108,7 +108,11 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    return [Frog()] + [NoObject()] * 12
+    cars = [NoObject()] * 12
+    logs = [NoObject()] * 8
+    aligators = [NoObject()] * 2
+    turtles = [NoObject()] * 10
+    return [Frog()] + cars + logs + aligators + turtles
 
 def _detect_objects_ram(objects, ram_state, hud=False):
     """
