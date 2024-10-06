@@ -603,7 +603,7 @@ def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
     # for obj_type_str, max_obj in max_objects.items():
     #     class_hug_match(prev_objects[start_idx: max_obj], objects[start_idx: max_obj])
     #     start_idx += max_obj
-    assert len(objects_bb) <= max_obj, "Number of objects detected exceeds the maximum number of objects allowed"
+    assert len(objects_bb) <= max_obj, f"Number of objects detected exceeds the maximum number of objects allowed for {ObjClass}"
     if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
          for i, obj_bb in enumerate(objects_bb):
             prev_objects[start_idx+i] = ObjClass(*obj_bb)

@@ -23,8 +23,8 @@ class Renderer:
     clock: pygame.time.Clock
     env: OCAtari
 
-    def __init__(self, env_name, no_render=[]):
-        self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="rgb_array",
+    def __init__(self, env_name, mode='ram', no_render=[]):
+        self.env = OCAtari(env_name, mode=mode, hud=True, render_mode="rgb_array",
                              render_oc_overlay=True, frameskip=1, obs_mode="obj")
 
         self.env.reset(seed=42)
@@ -323,6 +323,8 @@ if __name__ == "__main__":
                         help='Cells to not render.', nargs='+')
     parser.add_argument('-nra', '--no_render_all', action='store_true',
                         help='Not rendering any cell.')
+    parser.add_argument('-m', '--mode', type=str, default='ram', choices=['ram', 'vision'],
+                        help='Extraction mode.')
 
     args = parser.parse_args()
 
@@ -330,7 +332,7 @@ if __name__ == "__main__":
     if args.no_render_all:
         args.no_render = list(range(128))
 
-    renderer = Renderer(args.game, args.no_render)
+    renderer = Renderer(args.game, args.mode, args.no_render)
     def exit_handler():
         if renderer.no_render:
             print("\nno_render list: ")

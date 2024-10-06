@@ -20,6 +20,18 @@ class Frog(GameObject):
         self.rgb = 110, 156, 66
         self.hud = False
 
+class Car(GameObject):
+    """
+    A car.
+    """
+    
+    def __init__(self):
+        super(Car, self).__init__()
+        self._xy = 0, 0
+        self.wh = 14, 7
+        self.rgb = 195, 144, 61
+        self.hud = False
+
 def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
