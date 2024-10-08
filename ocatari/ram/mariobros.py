@@ -4,22 +4,13 @@ from .game_objects import GameObject, ValueObject
 from ._helper_methods import _convert_number
 import sys
 
-MAX_ESSENTIAL_OBJECTS = {
-    'Player': 1,
-    'Pest': 3,
-    'Fireball': 1,
-    'BonusBlock': 1,
-    'Life': 5,
-    'PowBlock': 1
-}
 
-MAX_OPTIONAL_OBJECTS = {
-    'Score': 1,
-}
 
-MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
+MAX_NB_OBJECTS = {"Player": 1, "Pest": 3, "Fireball": 1, "PowBlock": 1, "BonusBlock": 1, "Platform": 7,
+                  "BonusCoin": 8, "Time": 1}
 
-obj_tracker = {}
+MAX_NB_OBJECTS_HUD = {"Life": 5, "Score": 6}
+
 
 
 class Player(GameObject):
@@ -104,7 +95,7 @@ class Pest(GameObject):
 
 
 class BonusCoin(GameObject):
-    def __init__(self,x,y):
+    def __init__(self,x=0,y=0):
         super(BonusCoin, self).__init__()
         self._xy = x, y
         self.wh = 9,13
@@ -132,8 +123,8 @@ def _get_max_objects(hud=False):
         return objects
 
     if hud:
-        return fromdict(MAX_ALL_OBJECTS)
-    return fromdict(MAX_ESSENTIAL_OBJECTS)
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
 
 
 
@@ -154,10 +145,6 @@ def _init_objects_ram(hud=True):
 
 
 def _detect_objects_ram(objects, ram_state, hud=True):
-    # Handle Player
-    # after jumping player moves +2 in x direction
-    # when moving adds 7/8 onto x coordiante
-    # Juming: 27 (between 194 and 160; between 160 and 128; 255 and 224;244 and 194 )
     player = objects[0]
     if 128 <= ram_state[27] <= 255:
         player.xy = ram_state[44]-6, ram_state[42]+13
