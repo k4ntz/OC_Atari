@@ -1,7 +1,5 @@
 import sys
 from .game_objects import GameObject
-import numpy as np
-from typing import Tuple
 
 """
 RAM extraction for the game Pong.
@@ -70,15 +68,15 @@ class PlayerScore(GameObject):
         self.rgb = 92, 186, 92
         self.hud = True
 
-    @property
-    def _nsrepr(self):
-        coords = self.h_coords
-        h_coords = tuple(coords[0] + coords[1])
-        return (self.x, self.y), h_coords, self.orientation, self.rgb
+    # @property
+    # def _nsrepr(self):
+    #     coords = self.h_coords
+    #     h_coords = tuple(coords[0] + coords[1])
+    #     return (self.x, self.y), h_coords, self.orientation, self.rgb
 
-    @property
-    def _ns_meaning(self):
-        return "(x, y), h_coords, o, rgb"
+    # @property
+    # def _ns_meaning(self):
+    #     return "(x, y), h_coords, o, rgb"
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
