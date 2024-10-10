@@ -19,12 +19,12 @@ MAX_ESSENTIAL_OBJECTS = {
     'Monkey': 4,
     'FallingCoconut': 1,
     'ThrownCoconut': 3,
-    'Life': 8,
+    'Lives': 1,
     'Time': 1,
 }
 
 MAX_OPTIONAL_OBJECTS = {
-    'Score': 1,
+    'Score': 1
 }
 
 MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
@@ -169,17 +169,18 @@ class Score(ValueObject):
         self.value = 0
 
 
-class Life(GameObject):
+class Lives(GameObject):
     """
     The player's remaining lives (HUD).
     """
 
     def __init__(self):
-        super(Life, self).__init__()
+        super(Lives, self).__init__()
         self._xy = 16, 183
         self.wh = 4, 7
         self.rgb = 160, 171, 79
         self.hud = False
+        self.value = 0
 
 
 class Time(ValueObject):
@@ -231,8 +232,7 @@ def _init_objects_ram(hud=True):
     objects = [Player(), Child()] + [NoObject()] * 11 + [Bell(), Platform(16, 172, w=128), Platform(16, 28, w=128)]
     objects.extend([NoObject()]* 26)
     if hud: 
-        objects.extend([Score(), Time(), Life(), Life()])
-        objects.extend([NoObject()]* 6)
+        objects.extend([Score(), Time(), Lives()])
     return objects
 
 
@@ -379,9 +379,9 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             x = 97
             w = 47
 
-        objects[-10].xy = x, 183
-        objects[-10].wh = w, 7
-        objects[-10].value = score_value
+        objects[-3].xy = x, 183
+        objects[-3].wh = w, 7
+        objects[-3].value = score_value
 
         # time
         time_value = ram_state[59]
@@ -389,19 +389,19 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             time_remaining = _convert_number(time_value)
         else:
             time_remaining = time_value - 160
-        objects[-9].value = time_remaining
+        objects[-2].value = time_remaining
 
         # lives
         n_lives = ram_state[45]
-        for i in range(MAX_ESSENTIAL_OBJECTS["Life"]):
-            if i < n_lives and n_lives != 255:
-                if type(objects[-8+i]) is NoObject:
-                    objects[-8+i] = Life()
-                x = 16 + (i * 8)
-                y = 183
-                objects[-8+i].xy = x, y
-            else:
-                objects[-8+i] = NoObject()
+        if n_lives > 0:
+            if type(objects[-1]) is NoObject:
+                objects[-1] = Lives()
+            w = 4 + (n_lives-1)*8
+            objects[-1].wh = w, 7
+            objects[-1].value = n_lives
+        else:
+            objects[-1] = NoObject()
+
 
 
 def _detect_objects_kangaroo_raw(info, ram_state):
