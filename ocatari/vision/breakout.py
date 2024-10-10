@@ -14,36 +14,42 @@ class Player(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 200, 72, 72
+        self._visible = True
 
 
 class Ball(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 200, 72, 72
+        self._visible = True
 
 
 class BlockRow(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 66, 72, 200
+        self._visible = True
 
 
 class PlayerScore(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
+        self._visible = True
 
 
 class Live(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
+        self._visible = True
 
 
 class PlayerNumber(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
+        self._visible = True
 
 
 def _detect_objects(objects, obs, hud=False):
