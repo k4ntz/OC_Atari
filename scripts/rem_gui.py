@@ -2,6 +2,8 @@ import numpy as np
 import pygame
 from ocatari.core import OCAtari, UPSCALE_FACTOR
 from tqdm import tqdm
+from collections import deque
+from copy import deepcopy
 
 
 import atexit
@@ -44,6 +46,10 @@ class Renderer:
         self.current_active_cell_input : str = ""
         self.no_render = no_render
 
+        self.saved_frames = deque(maxlen=20) # tuples of ram, state, image
+        self.frame_by_frame = False
+        self.next_frame = False
+
     def _init_pygame(self, sample_image):
         pygame.init()
         pygame.display.set_caption("OCAtari Environment")
@@ -58,13 +64,16 @@ class Renderer:
         self.running = True
         while self.running:
             self._handle_user_input()
-            if not self.paused:
+            if not (self.frame_by_frame and not(self.next_frame)) and not self.paused:
+                self.saved_frames.append((deepcopy(self.env.get_ram()), self.env._ale.cloneState(), self.current_frame)) # ram, state, image (rgb)
                 action = self._get_action()
                 reward = self.env.step(action)[1]
-                if reward != 0:
-                    print(reward)
-                    pass
+                # if reward != 0:
+                #     print(reward)
+                #     pass
                 self.current_frame = self.env.render().copy()
+                self._render()
+                self.next_frame = False
             self._render()
         pygame.quit()
 
@@ -112,6 +121,30 @@ class Renderer:
             elif event.type == pygame.KEYDOWN:  # keyboard key pressed
                 if event.key == pygame.K_p:  # 'P': pause/resume
                     self.paused = not self.paused
+
+                elif event.key == pygame.K_f: # Frame by frame
+                    self.frame_by_frame = not(self.frame_by_frame)
+                    self.next_frame = False
+                
+                elif event.key == pygame.K_n: # next
+                    print("next")
+                    self.next_frame = True
+
+                elif event.key == pygame.K_b:  # 'B': Backwards
+                    if self.frame_by_frame:
+                        if len(self.saved_frames) > 0:
+                            previous = self.saved_frames.pop()
+                            for i, ram_v in enumerate(previous[0]):
+                                self.env.set_ram(i, ram_v)
+                            for i, value in enumerate(previous[0]):
+                                self._render_ram_cell(i, value)
+                            self.env._ale.restoreState(previous[1]) #restore state
+                            self.current_frame = previous[2].copy()
+                            self._render_atari()
+                            pygame.display.flip()
+                            pygame.event.pump()
+                        else: 
+                            print("There are no prior frames saved to go back to. Save more using the flag --previous_frames")
 
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
