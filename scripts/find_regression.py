@@ -16,14 +16,15 @@ game = "PongDeterministic-v4"
 MODE = "both"
 # RENDER_MODE = "rgb_array"
 RENDER_MODE = "human"
-env = OCAtari(game, mode=MODE, render_mode=RENDER_MODE, frameskip=1)
+env = OCAtari(game, mode=MODE, render_mode=RENDER_MODE)
+# env = OCAtari(game, mode=MODE, render_mode=RENDER_MODE, frameskip=1)
 observation, info = env.reset()
 
-path = f"models/{game}/dqn.gz" # game will be cleaned by load_agent
+path = f"models/{game}/c51.gz" # game will be cleaned by load_agent
 dqn_agent = load_agent(path, env.action_space.n)
 
-env.step(2)
-make_deterministic(42, env)
+# env.step(2)
+make_deterministic(0, env)
 
 # skip first frames
 for _ in range(60):
@@ -31,7 +32,7 @@ for _ in range(60):
     action = dqn_agent.draw_action(env.dqn_obs)
     _, _, _, _, _ = env.step(action)
 
-N_FRAMES = 500
+N_FRAMES = 5000
 ram_states = np.empty((N_FRAMES, 128))
 colors = [[213, 130, 74], [92, 186, 92], [236, 236, 236]] # enemy, player, ball
 objects = np.empty((N_FRAMES, 4 * len(colors))) # record x and y positions + width and height
