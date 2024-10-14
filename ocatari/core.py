@@ -64,12 +64,12 @@ if torch_imported:
 else:
     DEVICE = "cpu" 
     
-AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix", 
+AVAILABLE_GAMES = ["Adventure", "AirRaid", "Alien", "Amidar", "Assault", "Asterix", 
                    "Asteroids", "Atlantis", "BankHeist", "BattleZone",
                    "BeamRider", "Berzerk", "Bowling", "Boxing",
                    "Breakout", "Carnival", "Centipede", "ChopperCommand", 
                    "CrazyClimber", "DemonAttack", "DonkeyKong",
-                   "DoubleDunk", "Enduro", "FishingDerby", "Freeway",                   
+                   "DoubleDunk", "Enduro", "FishingDerby", "Freeway", "Frogger",                 
                    "Frostbite", "Galaxian", "Gopher", "Hero", "IceHockey", 
                    "Jamesbond", "Kangaroo", "Krull", "KungFuMaster", "MontezumaRevenge", 
                    "MsPacman", "NameThisGame","Pacman", "Phoenix","Pitfall", "Pong", "Pooyan", "PrivateEye",
