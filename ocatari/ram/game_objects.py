@@ -274,6 +274,7 @@ class NoObject(GameObject):
     def __init__(self, nslen=2):
         super().__init__()
         self.nslen = nslen
+        self.rgb = (0, 0, 0)
     
     def _save_prev(self):
         pass
