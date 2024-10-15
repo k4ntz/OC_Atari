@@ -1,12 +1,12 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 import sys 
 
 """
 RAM extraction for the game Frostbite.
 """
 
-MAX_NB_OBJECTS = {"Player": 1, "Bird": 8, "Crab":8, "Clam":8,"GreenFish":8,"WhitePlate":24, "BluePlate":24,"Bear":1, "House":1,"CompletedHouse":1,"FrostBite":1}
-MAX_NB_OBJECTS_HUD = {"LifeCount":1, "PlayerScore":4, "Degree":2}# 'Score': 1}
+MAX_NB_OBJECTS = {"Player": 1, "Bird": 8, "Crab": 8, "Clam": 8, "GreenFish": 8, "WhitePlate": 24, "BluePlate": 24, "Bear": 1, "House": 1, "CompletedHouse": 1, "FrostBite": 1}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Bird": 8, "Crab": 8, "Clam": 8, "GreenFish": 8, "WhitePlate": 24, "BluePlate": 24, "Bear": 1, "House": 1, "CompletedHouse": 1, "FrostBite": 1, "LifeCount": 1, "Degree": 2, "PlayerScore": 4}
 
 class Player(GameObject):
     """
@@ -146,19 +146,10 @@ class LifeCount(GameObject):
     
     def __init__(self):
         super().__init__()
-        self.rgb =132,144,252
+        self.rgb = 132, 144, 252
         self.hud = True
         self.wh = (8, 18)
         self._xy = 0, 0
-
-
-# class Score(GameObject):
-#     def __init__(self):
-#         super().__init__()
-#         self.rgb =132,144,252
-#         self.hud = True
-#         self.wh = (8, 18)
-#         self._xy = 0, 0
 
 class Degree(GameObject):
     """
@@ -167,7 +158,7 @@ class Degree(GameObject):
     
     def __init__(self):
         super().__init__()
-        self.rgb =132,144,252
+        self.rgb = 132, 144, 252
         self.hud = True
         self.wh = (8, 18)
         self._xy = 0, 0
@@ -180,7 +171,7 @@ class PlayerScore(GameObject):
     
     def __init__(self):
         super().__init__()
-        self.rgb =132,144,252
+        self.rgb = 132, 144, 252
         self.hud = True
         self.wh = (8, 18)
         self._xy = 0, 0
@@ -209,11 +200,11 @@ def _init_objects_ram(hud=False):
     objects = [Player()]
     objects.extend([Bird()]*4)
     objects.extend([Bear()])
-    objects.extend([None]*24) #for the plates
-    objects.extend([None]*12) #for bird clams and crabs
-    objects.extend([House(),CompletedHouse(),None]) # None was frostbite before
+    objects.extend([NoObject()]*24) #for the plates
+    objects.extend([NoObject()]*12) #for bird clams and crabs
+    objects.extend([House(), CompletedHouse(), NoObject()]) # None was frostbite before
     if hud:
-        objects.extend([LifeCount(),Degree(),Degree(),PlayerScore(),PlayerScore(),PlayerScore(),PlayerScore()])
+        objects.extend([LifeCount(), Degree(), Degree(), PlayerScore(), PlayerScore(), PlayerScore(), PlayerScore()])
     return objects
 
 def _detect_objects_ram(objects, ram_state, hud=False):
@@ -222,9 +213,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     (x, y, w, h, r, g, b)
     """
     # 106 ram_state is somewhat controlling the y of the player when it's dying by sinking
-    player,bird1,bird2,bird3,bird4= objects[:5]
-    player.xy =  ram_state[102] -1,ram_state[100]+30
-    objects[0]=player
+    player, bird1, bird2, bird3, bird4 = objects[:5]
+    player.xy =  ram_state[102] -1, ram_state[100]+30
     # if ram_state[101]==0:
     #     f=FrostBite()
     #     f.xy=ram_state[102]-1,ram_state[100]+30
@@ -232,184 +222,246 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # else:
     #     objects[44]=None
     # Tackling enemies/birds here
-    if ram_state[35]<30 and ram_state[36]<30 and ram_state[37]<30 and ram_state[38]<30:
-        if ram_state[84]>7 and ram_state[84]<155:
-            bird1=WhatObject(ram_state[39])
-            bird1.xy=ram_state[84],160
-            bird1.wh=(8,7) if ram_state[35]!=26 else (7,6)
-            objects[1]=bird1
+    if ram_state[35] < 30 and ram_state[36] < 30 and ram_state[37] < 30 and ram_state[38] < 30:
+        if ram_state[84] > 7 and ram_state[84] < 155:
+            t = WhatObject(ram_state[39])
+            if t != type(bird1):
+                bird1 = t()
+            bird1.xy = ram_state[84], 160
+            bird1.wh = (8, 7) if ram_state[35] != 26 else (7, 6)
+            objects[1] = bird1
         else:
-            objects[1]=None
-        if ram_state[85]>7 and ram_state[85]<155:
-            bird2=WhatObject(ram_state[40])
-            bird2.xy=ram_state[85],134
-            bird2.wh=(8,7) if ram_state[36]!=26 else (7,6)
-            objects[2]=bird2
-        else:
-            objects[2]=None
-        if ram_state[86]>7 and ram_state[86]<155:
-            bird3=WhatObject(ram_state[41])
-            bird3.xy=ram_state[86],108
-            bird3.wh=(8,7) if ram_state[37]!=26 else (7,6)
-            objects[3]=bird3
-        else:
-            objects[3]=None
-        if ram_state[87]>7 and ram_state[86]<155:
-            bird4=WhatObject(ram_state[42])
-            bird4.xy=ram_state[87],82
-            bird4.wh=(8,7) if ram_state[38]!=26 else (7,6)
-            objects[4]=bird4
-        else:
-            objects[4]=None
-    else:
-        objects[1]=None; objects[2]=None; objects[3]=None;objects[4]=None
+            objects[1] = NoObject()
 
-        ram_state_list=[84,85,86,87]
-        object_list=[39,40,41,42]
-        wh_list=[35,36,37,38]
-        y_list=[160,134,108,82]
+        if ram_state[85]>7 and ram_state[85] < 155:
+            t = WhatObject(ram_state[40])
+            if t != type(bird2):
+                bird2 = t()
+            bird2.xy = ram_state[85], 134
+            bird2.wh = (8, 7) if ram_state[36] != 26 else (7, 6)
+            objects[2] = bird2
+        else:
+            objects[2] = NoObject()
+
+        if ram_state[86] > 7 and ram_state[86] < 155:
+            t = WhatObject(ram_state[41])
+            if t != type(bird3):
+                bird3 = t()
+            bird3.xy = ram_state[86], 108
+            bird3.wh = (8, 7) if ram_state[37] != 26 else (7, 6)
+            objects[3] = bird3
+        else:
+            objects[3] = NoObject()
+        
+        if ram_state[87] > 7 and ram_state[86] < 155:
+            t = WhatObject(ram_state[42])
+            if t != type(bird4):
+                bird4 = t()
+            bird4.xy = ram_state[87], 82
+            bird4.wh = (8, 7) if ram_state[38] != 26 else (7, 6)
+            objects[4] = bird4
+        else:
+            objects[4] = NoObject()
+    else:
+        objects[1], objects[2], objects[3], objects[4] = NoObject(), NoObject(), NoObject(), NoObject()
+
+        ram_state_list = [84, 85, 86, 87]
+        object_list= [39, 40, 41, 42]
+        wh_list= [35, 36, 37, 38]
+        y_list= [160, 134, 108, 82]
         for i in range(4):
-            if ram_state[ram_state_list[i]]>7 and ram_state[ram_state_list[i]]<155:
-                if ram_state[ram_state_list[i]]<35 or ram_state[ram_state_list[i]]>120:
-                    bird1=WhatObject(ram_state[object_list[i]])
-                    bird1.xy=ram_state[ram_state_list[i]],y_list[i]
-                    bird1.wh=(8,7) if ram_state[wh_list[i]]!=26 else (7,6)
-                    objects[30+2*i]=bird1
-                    objects[31+2*i]=None
+            if ram_state[ram_state_list[i]] > 7 and ram_state[ram_state_list[i]] < 155:
+                if ram_state[ram_state_list[i]] < 35 or ram_state[ram_state_list[i]] > 120:
+                    t = WhatObject(ram_state[object_list[i]])
+                    bird1 = objects[30+2*i]
+                    if t != type(bird1):
+                        bird1 = t()
+                    bird1.xy = ram_state[ram_state_list[i]], y_list[i]
+                    bird1.wh = (8, 7) if ram_state[wh_list[i]] != 26 else (7, 6)
+                    objects[30+2*i] = bird1
+                    objects[31+2*i] = NoObject()
                 else:
-                    bird1=WhatObject(ram_state[object_list[i]])
-                    bird1.xy=ram_state[ram_state_list[i]],y_list[i]
-                    bird1.wh=(8,7) if ram_state[wh_list[i]]!=26 else (7,6)
-                    bird2=WhatObject(ram_state[object_list[i]])
-                    bird2.xy=ram_state[ram_state_list[i]]+33,y_list[i]
-                    bird2.wh=(8,7) if ram_state[wh_list[i]]!=26 else (7,6)
-                    objects[30+2*i]=bird1
-                    objects[31+2*i]=bird2
+                    t = WhatObject(ram_state[object_list[i]])
+                    bird1 = objects[30+2*i]
+                    bird2 = objects[31+2*i]
+                    if t != type(bird1):
+                        bird1 = t()
+                    if t != type(bird2):
+                        bird2 = t()
+                    bird1.xy = ram_state[ram_state_list[i]], y_list[i]
+                    bird1.wh = (8, 7) if ram_state[wh_list[i]] != 26 else (7, 6)
+                    bird2.xy = ram_state[ram_state_list[i]]+33, y_list[i]
+                    bird2.wh = (8, 7) if ram_state[wh_list[i]] != 26 else (7, 6)
+                    objects[30+2*i] = bird1
+                    objects[31+2*i] = bird2
             else:
-                objects[30+2*i]=None
-                objects[31+2*i]=None 
+                objects[30+2*i] = NoObject()
+                objects[31+2*i] = NoObject() 
 
 
     # Adding the bear
-    if ram_state[104]==140:
-        objects[5]=None
+    if ram_state[104] == 140:
+        objects[5] = NoObject()
     else:
-        bear=Bear()
-        bear.xy=ram_state[104]+3,58
-        objects[5]=bear
+        bear = objects[5]
+        if type(bear) != Bear:
+            bear = Bear()
+        bear.xy = ram_state[104]+3, 58
+        objects[5] = bear
     
     # Adding the Plates
-    num_plates=3 if ram_state[30]==8 else 6
-    start_loc=9 if ram_state[30]==8 else 13
-    plate_diff=32 if ram_state[30]==8 else 16
-    size_plates=(24,7) if ram_state[30]==8 else (16,7)
-    ram_list=[31,32,33,34]
-    pos_list=[174,148,122,96]
-    which_plate=[43,44,45,46]
+    num_plates = 3 if ram_state[30] == 8 else 6
+    start_loc = 9 if ram_state[30] == 8 else 13
+    plate_diff = 32 if ram_state[30] == 8 else 16
+    size_plates = (24, 7) if ram_state[30] == 8 else (16, 7)
+    ram_list = [31, 32, 33, 34]
+    pos_list = [174, 148, 122, 96]
+    which_plate = [43, 44, 45, 46]
     for i in range(num_plates*4):
-        temp=whichPlate(ram_state[which_plate[int(i/num_plates)]])
-        temp.xy=correction(ram_state[ram_list[int(i/num_plates)]]+int(i%num_plates)*plate_diff-start_loc),pos_list[int(i/num_plates)]
-        temp.wh=size_plates
-        objects[6+i]=temp
+        t = whichPlate(ram_state[which_plate[int(i/num_plates)]])
+        temp = objects[6+i]
+        if type(temp) != t:
+            temp = t()
+        temp.xy = correction(ram_state[ram_list[int(i/num_plates)]]+int(i%num_plates)*plate_diff-start_loc), pos_list[int(i/num_plates)]
+        temp.wh = size_plates
+        objects[6+i] = temp
     
     # House 
-    position_list=[(112,51),(112,51),(112,51),(112,51),(112,47),(112,47),(112,47),(112,47),(112,42),(112,42),(112,42),(112,42),(112,39),(112,39),(112,35)]
-    size_list=[(8,4),(16,4),(24,4),(32,4),(32,8),(32,8),(32,8),(32,8),(32,13),(32,13),(32,13),(32,13),(32,16),(32,16),(32,20)]
-    if ram_state[77]==255 or ram_state[77]==15:
-        objects[42]=None
+    position_list = [(112, 51), (112, 51), (112, 51), (112, 51), (112, 47), (112, 47), (112, 47), (112, 47), (112, 42), (112, 42), (112, 42), (112, 42), (112, 39), (112, 39), (112, 35)]
+    size_list = [(8, 4), (16, 4), (24, 4), (32, 4), (32, 8), (32, 8), (32, 8), (32, 8), (32, 13), (32, 13), (32, 13), (32, 13), (32, 16), (32, 16), (32, 20)]
+    if ram_state[77] == 255 or ram_state[77] == 15:
+        objects[42] = NoObject()
     else:
-        h=House()
-        h.xy=position_list[ram_state[77]]
-        h.wh=size_list[ram_state[77]]
-        objects[42]=h
+        h = objects[42]
+        if type(h) != House:
+            h = House()
+        h.xy = position_list[ram_state[77]]
+        h.wh = size_list[ram_state[77]]
+        objects[42] = h
 
     # Completed House
-    if ram_state[77]==15:
-        c=CompletedHouse()
-        c.xy=112,35
-        c.wh=32,20
-        objects[43]=c
+    if ram_state[77] == 15:
+        c = objects[43]
+        if type(c) != CompletedHouse:
+            c = CompletedHouse()
+        c.xy = 112, 35
+        c.wh = 32, 20
+        objects[43] = c
     else:
-        objects[43]=None
+        objects[43] = NoObject()
 
     if hud:
         # LifeCount
-        if ram_state[76]!=0:
-            l=LifeCount()
-            l.xy=63,22
-            l.wh=(6,10)
-            objects[45]=l
+        if ram_state[76] != 0:
+            l = objects[45]
+            if type(l) != LifeCount:
+                l = LifeCount()
+            l.xy = 63, 22
+            l.wh = (6, 10)
+            objects[45] = l
         else:
-            objects[45]=None
+            objects[45] = NoObject()
+
         # Time or degrees
-        if ram_state[101]<=9:
-            d1=Degree()
-            d1.xy=31,22
-            d1.wh=(6,8)
-            objects[46]=None
-            objects[47]=d1
+        if ram_state[101] <= 9:
+            d1 = objects[47]
+            if type(d1) != Degree:
+                d1 = Degree()
+            d1 = Degree()
+            d1.xy = 31, 22
+            d1.wh = (6, 8)
+            objects[46] = NoObject()
+            objects[47] = d1
         else:
-            d1=Degree()
-            d1.xy=31,22
-            d1.wh=(6,8)
-            d2=Degree()
-            d2.xy=23,22
-            d2.wh=(6,8)
-            objects[46]=d2
-            objects[47]=d1
+            d1 = objects[47]
+            d2 = objects[46]
+            if type(d1) != Degree:
+                d1 = Degree()
+            if type(d2) != Degree:
+                d2 = Degree()
+            d1.xy = 31, 22
+            d1.wh = (6, 8)
+            d2.xy = 23, 22
+            d2.wh = (6, 8)
+            objects[46] = d2
+            objects[47] = d1
         
         # Player Score
-        if ram_state[73]==0 and ram_state[74]==0:
-            p=PlayerScore()
-            p.xy=63,10
-            p.wh=(6,8)
-            objects[51]=p
-            objects[50]=None ; objects[49]=None ; objects[48]=None 
-        elif ram_state[73]==0 and ram_state[74]!=0:
-            p1=PlayerScore()
-            p1.xy=63,10
-            p1.wh=(6,8)
-            objects[51]=p1
-            p2=PlayerScore()
-            p2.xy=55,10
-            p2.wh=(6,8)
-            objects[50]=p2
-            objects[49]=None; objects[48]=None
-        elif ram_state[72]==0 and ram_state[73]!=0:
-            p1=PlayerScore()
-            p1.xy=63,10
-            p1.wh=(6,8)
-            objects[51]=p1
-            p2=PlayerScore()
-            p2.xy=55,10
-            p2.wh=(6,8)
-            objects[50]=p2
-            p3=PlayerScore()
-            p3.xy=48,10
-            p3.wh=(6,8)
-            objects[49]=p3
-            objects[48]=None
+        if ram_state[73] ==0 and ram_state[74] == 0:
+            p = objects[51]
+            if type(p) != PlayerScore:
+                p = PlayerScore()
+            p.xy = 63, 10
+            p.wh = (6, 8)
+            objects[51] = p
+
+            objects[50] = NoObject() ; objects[49] = NoObject() ; objects[48] = NoObject()
+
+        elif ram_state[73] == 0 and ram_state[74] != 0:
+            p1 = objects[51]
+            if type(p1) != PlayerScore:
+                p1 = PlayerScore()
+            
+            p2 = objects[50]
+            if type(p2) != PlayerScore:
+                p2 = PlayerScore()
+
+            p1.xy = 63, 10
+            p1.wh = (6, 8)
+            objects[51] = p1
+
+            p2.xy = 55, 10
+            p2.wh = (6, 8)
+            objects[50] = p2
+
+            objects[49] = NoObject(); objects[48] = NoObject()
+        elif ram_state[72] == 0 and ram_state[73] != 0:
+            p1 = objects[51]
+            if type(p1) != PlayerScore:
+                p1 = PlayerScore()
+            
+            p2 = objects[50]
+            if type(p2) != PlayerScore:
+                p2 = PlayerScore()
+            
+            p3 = objects[49]
+            if type(p3) != PlayerScore:
+                p3 = PlayerScore()
+
+            p1.xy = 63, 10
+            p1.wh = (6, 8)
+            objects[51] = p1
+            
+            p2.xy = 55, 10
+            p2.wh = (6, 8)
+            objects[50] = p2
+            
+            p3.xy = 48, 10
+            p3.wh = (6, 8)
+            objects[49] = p3
+
+            objects[48] = NoObject()
 
 
 def whichPlate(pos):
     # Make decision whether to return Whiteplate or BluepLate
-    if pos==12:
-        return WhitePlate()
+    if pos == 12:
+        return WhitePlate
     else:
-        return BluePlate()
+        return BluePlate
 
 def correction(pos):
     return pos%160
 
 def WhatObject(pos):
     if pos==143:
-        return Bird()
+        return Bird
     elif pos==56:
-        return Crab()
+        return Crab
     elif pos==202:
-        return GreenFish()
+        return GreenFish
     elif pos==26:
-        return Clam()
+        return Clam
 
 def _detect_objects_frostbite_raw(info, ram_state):
     """
