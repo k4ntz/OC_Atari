@@ -179,7 +179,9 @@ class OCAtari:
 
         self._state_buffer = deque([], maxlen=self.buffer_window_size)
         self.action_space = self._env.action_space
+        self._force_fire = self._env.unwrapped.get_action_meanings()[1] == "FIRE"
         self._ale = self._env.unwrapped.ale
+
         # inhererit every attribute and method of env
         for meth in dir(self._env):
             if meth not in dir(self):
@@ -209,6 +211,12 @@ class OCAtari:
         return obs
 
     def _step_impl(self, *args, **kwargs):
+        if self._force_fire:
+            print("Forcing fire action")
+            # force a fire action to start the game
+            self._env.env.step(1)
+            self._force_fire = False
+
         obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
         self.detect_objects()
         obs = self._post_step(obs)
@@ -243,6 +251,7 @@ class OCAtari:
         See `env.reset() <https://gymnasium.farama.org/api/env/#gymnasium.Env.reset>`_ for gymnasium details.
         """
         obs, info = self._env.reset(*args, **kwargs)
+        self._force_fire = self._env.unwrapped.get_action_meanings()[1] == "FIRE"
         self._objects = init_objects(self.game_name, self.hud)
         self.detect_objects()
         self._reset_buffer()
