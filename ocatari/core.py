@@ -110,6 +110,9 @@ class OCAtari:
             self._covered_game = False
         else:
             self._covered_game = True
+
+        if kwargs.get("force_fire", True):
+            self.allow_force_fire = True
         
         gym_render_mode = "rgb_array" if render_oc_overlay else render_mode
         self._env = gym.make(env_name, render_mode=gym_render_mode, *args, **kwargs)
@@ -179,7 +182,9 @@ class OCAtari:
 
         self._state_buffer = deque([], maxlen=self.buffer_window_size)
         self.action_space = self._env.action_space
-        self._force_fire = self._env.unwrapped.get_action_meanings()[1] == "FIRE"
+        self._force_fire = self.allow_force_fire and self._env.unwrapped.get_action_meanings()[1] == "FIRE"
+        if self._force_fire:
+            print(colored("FIRE action detected. Will be forced at step 1 for stable training. Turn off by passing force_fire=False.", "yellow"))
         self._ale = self._env.unwrapped.ale
 
         # inhererit every attribute and method of env
@@ -212,7 +217,6 @@ class OCAtari:
 
     def _step_impl(self, *args, **kwargs):
         if self._force_fire:
-            print("Forcing fire action")
             # force a fire action to start the game
             self._env.env.step(1)
             self._force_fire = False
@@ -251,7 +255,7 @@ class OCAtari:
         See `env.reset() <https://gymnasium.farama.org/api/env/#gymnasium.Env.reset>`_ for gymnasium details.
         """
         obs, info = self._env.reset(*args, **kwargs)
-        self._force_fire = self._env.unwrapped.get_action_meanings()[1] == "FIRE"
+        self._force_fire = self.allow_force_fire and self._env.unwrapped.get_action_meanings()[1] == "FIRE"
         self._objects = init_objects(self.game_name, self.hud)
         self.detect_objects()
         self._reset_buffer()
