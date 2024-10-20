@@ -39,6 +39,8 @@ def assert_in(observed, expected, tol):
     :return: True if points within the tolerance
     :rtype: bool
     """
+    if type(expected) is int:
+        expected = (expected, expected)
     if type(tol) is int:
         tol = (tol, tol)
     return np.all([expected[i] + tol[i] >= observed[i] >= expected[i] - tol[i] for i in range(2)])

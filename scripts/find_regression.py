@@ -3,8 +3,9 @@ Script to automatically perform a symbolic regression of object's positions from
 Uses the vision detection of objects for the regression, performed with PySR.
 """
 
-import random
 import numpy as np
+import pandas as pd
+from os import makedirs
 from copy import deepcopy
 from pysr import PySRRegressor
 from ocatari.core import OCAtari
@@ -20,39 +21,46 @@ env = OCAtari(game, mode=MODE, render_mode=RENDER_MODE)
 # env = OCAtari(game, mode=MODE, render_mode=RENDER_MODE, frameskip=1)
 observation, info = env.reset()
 
-path = f"models/{game}/c51.gz" # game will be cleaned by load_agent
+agent = 'c51'
+path = f"models/{game}/{agent}.gz" # game will be cleaned by load_agent
 dqn_agent = load_agent(path, env.action_space.n)
 
-# env.step(2)
 make_deterministic(0, env)
 
 # skip first frames
-for _ in range(60):
-    # _, _, _, _, _ = env.step(random.randint(0, env.nb_actions-1))
+for _ in range(50):
     action = dqn_agent.draw_action(env.dqn_obs)
     _, _, _, _, _ = env.step(action)
 
-N_FRAMES = 5000
-ram_states = np.empty((N_FRAMES, 128))
-colors = [[213, 130, 74], [92, 186, 92], [236, 236, 236]] # enemy, player, ball
-objects = np.empty((N_FRAMES, 4 * len(colors))) # record x and y positions + width and height
-
+N_FRAMES = 3000
+ram_states = []
+slots = {'enemy': [213, 130, 74], 'player': [92, 186, 92], 'ball': [236, 236, 236]} # objects to track and their color
+properties = []
+for object in slots.keys():
+    properties.extend([object + '_x', object + '_y', object + '_w', object + '_h'])
+data = pd.DataFrame(columns=properties)
+                                
 for i in range(N_FRAMES):
-    # action = random.randint(0, env.nb_actions-1)
-    # obs, _, _, _, _ = env.step(action) # random action
     action = dqn_agent.draw_action(env.dqn_obs)
-    obs, _, _, _, _ = env.step(action)
+    obs, _, terminated, truncated, _ = env.step(action)
 
-    for c, color in enumerate(colors):
-        obj = find_objects(obs, color, miny=34, maxy=194)
-        # import ipdb; ipdb.set_trace()
-        if obj:
-            objects[i, 4*c] = obj[0][0] # x position
-            objects[i, 4*c + 1] = obj[0][1] # y position
-            objects[i, 4*c + 2] = obj[0][2] # width
-            objects[i, 4*c + 3] = obj[0][3] # height
-    test = env.get_ram()
-    ram_states[i,:] = deepcopy(test)
+    row = []
+    for color in slots.values():
+        obj = find_objects(obs, color, size=15, tol_s=15) # TODO: add a maxsize
+        if obj == []:
+            row.extend([None] * 4)
+        else:
+            row.extend(list(obj[0]))
+    data.loc[i] = row
+    ram_states.append(deepcopy(env.get_ram()))
+    if terminated or truncated:
+        break
+
+data.insert(0, 'ram_states', ram_states)
+
+makedirs("data/datasets/", exist_ok=True)
+filename = f"data/datasets/{game}_{agent}_ram_and_objects_{N_FRAMES}_frames.csv"
+data.to_csv(filename)
 
 # enemy_y = objects[:,1]
 # enemy_h = objects[:,3]
@@ -65,12 +73,12 @@ for i in range(N_FRAMES):
 # ball_y = objects[:,9]
 # print(ball_x, ball_y)
 
-model = PySRRegressor(
-    niterations = 50,  # < Increase me for better results
-    binary_operators = ["+", "-", "max", "min", "mod", "cond", "greater"],
-    elementwise_loss = "loss(prediction, target) = (prediction - target)^2",
-    # ^ Custom loss function (julia syntax)
-)
+# model = PySRRegressor(
+#     niterations = 50,  # < Increase me for better results
+#     binary_operators = ["+", "-", "max", "min", "mod", "cond", "greater"],
+#     elementwise_loss = "loss(prediction, target) = (prediction - target)^2",
+#     # ^ Custom loss function (julia syntax)
+# )
 
 # model.fit(ram_states, enemy_y)
 
