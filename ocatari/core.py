@@ -71,7 +71,7 @@ AVAILABLE_GAMES = ["Adventure", "AirRaid", "Alien", "Amidar", "Assault", "Asteri
                    "CrazyClimber", "DemonAttack", "DonkeyKong",
                    "DoubleDunk", "Enduro", "FishingDerby", "Freeway", "Frogger",                 
                    "Frostbite", "Galaxian", "Gopher", "Hero", "IceHockey", 
-                   "Jamesbond", "Kangaroo", "Krull", "KungFuMaster", "MontezumaRevenge", 
+                   "Jamesbond", "Kangaroo","KeystoneKapers", "Krull", "KungFuMaster", "MontezumaRevenge", 
                    "MsPacman", "NameThisGame","Pacman", "Phoenix","Pitfall", "Pong", "Pooyan", "PrivateEye",
                    "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", 
                    "SpaceInvaders", "Tennis", "TimePilot", "UpNDown", "Venture", 
