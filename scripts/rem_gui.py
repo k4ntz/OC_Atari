@@ -4,6 +4,7 @@ from ocatari.core import OCAtari, UPSCALE_FACTOR
 from tqdm import tqdm
 from collections import deque
 from copy import deepcopy
+import pickle as pkl
 
 
 import atexit
@@ -148,6 +149,13 @@ class Renderer:
 
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
+
+                if event.key == pygame.K_c:  # 'C': clone
+                    if self.paused:
+                        statepkl = self.env._ale.cloneState()
+                        with open(f"state_{self.env.game_name}.pkl", "wb") as f:
+                            pkl.dump((statepkl, self.env._objects), f)
+                            print(f"State cloned in state_{self.env.game_name}.pkl.")
 
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
                     self._unselect_active_cell()
@@ -358,6 +366,8 @@ if __name__ == "__main__":
                         help='Not rendering any cell.')
     parser.add_argument('-m', '--mode', type=str, default='ram', choices=['ram', 'vision'],
                         help='Extraction mode.')
+    parser.add_argument('-ls', '--load_state', type=str, default=None,
+                        help='Path to the state to be loaded.')
 
     args = parser.parse_args()
 
@@ -366,6 +376,16 @@ if __name__ == "__main__":
         args.no_render = list(range(128))
 
     renderer = Renderer(args.game, args.mode, args.no_render)
+
+
+    if args.load_state:
+        with open(args.load_state, "rb") as f:
+            state, objects = pkl.load(f)
+            renderer.env._ale.restoreState(state)
+            renderer.env._objects = objects
+            print(f"State loaded from {args.load_state}")
+    
+
     def exit_handler():
         if renderer.no_render:
             print("\nno_render list: ")
