@@ -33,6 +33,10 @@ class GameObject:
         """
         return self._xy[0]
 
+    @x.setter
+    def x(self, value):
+        self._xy = (value, self._xy[1])
+    
     @property
     def y(self):
         """
@@ -41,6 +45,11 @@ class GameObject:
         :type: int
         """
         return self._xy[1]
+    
+    @y.setter
+    def y(self, value):
+        self._xy = (self._xy[0], value)
+
 
     @property
     def w(self):
@@ -51,6 +60,10 @@ class GameObject:
         """
         return self.wh[0]
 
+    @w.setter
+    def w(self, value):
+        self.wh = (value, self.wh[1])
+
     @property
     def h(self):
         """
@@ -59,6 +72,10 @@ class GameObject:
         :type: int
         """
         return self.wh[1]
+    
+    @h.setter
+    def h(self, value):
+        self.wh = (self.wh[0], value)
 
 
     @property
