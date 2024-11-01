@@ -15,10 +15,10 @@ influence the color of a specific pixel. This can be used to
 identify the values that belong to a GameObject.
 """
 
-RAM_RENDER_WIDTH = 1000
+RAM_RENDER_WIDTH = round(1000 * (UPSCALE_FACTOR / 4))
 RAM_N_COLS = 8
-RAM_CELL_WIDTH = 115
-RAM_CELL_HEIGHT = 45
+RAM_CELL_WIDTH = round(115 * (UPSCALE_FACTOR / 4))
+RAM_CELL_HEIGHT = round(45 * (UPSCALE_FACTOR / 4))
 
 
 class Renderer:
@@ -39,8 +39,8 @@ class Renderer:
         self.current_mouse_pos = None
         self.keys2actions = self.env.unwrapped.get_keys_to_action()
 
-        self.ram_grid_anchor_left = self.env_render_shape[0] + 28
-        self.ram_grid_anchor_top = 28
+        self.ram_grid_anchor_left = self.env_render_shape[0] + round(28 * (UPSCALE_FACTOR / 4))
+        self.ram_grid_anchor_top = round(28 * (UPSCALE_FACTOR / 4))
 
         self.active_cell_idx = None
         self.candidate_cell_ids = []
@@ -58,8 +58,8 @@ class Renderer:
         window_size = (self.env_render_shape[0] + RAM_RENDER_WIDTH, self.env_render_shape[1])
         self.window = pygame.display.set_mode(window_size)
         self.clock = pygame.time.Clock()
-        self.ram_cell_id_font = pygame.font.SysFont('Pixel12x10', 25)
-        self.ram_cell_value_font = pygame.font.SysFont('Pixel12x10', 30)
+        self.ram_cell_id_font = pygame.font.SysFont('Pixel12x10', round(25 * (UPSCALE_FACTOR / 4)))
+        self.ram_cell_value_font = pygame.font.SysFont('Pixel12x10', round(30 * (UPSCALE_FACTOR / 4)))
 
     def run(self):
         self.running = True
@@ -281,8 +281,8 @@ class Renderer:
     def _get_ram_cell_rect(self, idx: int):
         row = idx // RAM_N_COLS
         col = idx % RAM_N_COLS
-        x = self.ram_grid_anchor_left + col * 120
-        y = self.ram_grid_anchor_top + row * 50
+        x = round(self.ram_grid_anchor_left + col * 120 * (UPSCALE_FACTOR / 4))
+        y = round(self.ram_grid_anchor_top + row * 50 * (UPSCALE_FACTOR / 4))
         w = RAM_CELL_WIDTH
         h = RAM_CELL_HEIGHT
         return x, y, w, h
@@ -300,8 +300,8 @@ class Renderer:
     def _get_cell_under_mouse(self):
         x, y = self.current_mouse_pos   
         if x > self.ram_grid_anchor_left and y > self.ram_grid_anchor_top:
-            col = (x - self.ram_grid_anchor_left) // 120
-            row = (y - self.ram_grid_anchor_top) // 50
+            col = int((x - self.ram_grid_anchor_left) // (120 * (UPSCALE_FACTOR / 4)))
+            row = int((y - self.ram_grid_anchor_top) // (50 * (UPSCALE_FACTOR / 4)))
             if col < RAM_N_COLS and row < 16:
                 return row * RAM_N_COLS + col
         return None
