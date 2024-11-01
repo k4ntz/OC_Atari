@@ -3,8 +3,8 @@ from ._helper_methods import number_to_bitfield
 from .utils import match_objects
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1, "Monster_green": 6, "Monster_red": 6}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Monster_green": 6, "Monster_red": 6, "Score": 1, "Life": 3}
+MAX_NB_OBJECTS = {"Player": 1, "Enemy": 6, "Chicken": 6}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Enemy": 6, "Chicken": 6, "Score": 1, "Life": 3}
 
 class Player(GameObject):
     def __init__(self):
@@ -14,22 +14,35 @@ class Player(GameObject):
         self.rgb = 252, 252, 84
         self.hud = False
 
+class Enemy(GameObject):
+    def __init__(self):
+        super(Enemy, self).__init__()
 
-class Monster_green(GameObject):
+
+class Warrior(Enemy):
     def __init__(self, x=0, y=160, w=7, h=7):
-        super(Monster_green, self).__init__()
+        super(Warrior, self).__init__()
         self._xy = x, y
         self.wh = (w, h)
         self.rgb = 135, 183, 84
         self.hud = False
 
 
-class Monster_red(GameObject):
+class Pig(Enemy):
     def __init__(self, x=0, y=160, w=7, h=7):
-        super(Monster_red, self).__init__()
+        super(Pig, self).__init__()
         self._xy = x, y
         self.wh = (w, h)
         self.rgb = 214, 92, 92
+        self.hud = False
+
+
+class Chicken(GameObject):
+    def __init__(self, x=0, y=160, w=7, h=7):
+        super(Chicken, self).__init__()
+        self._xy = x, y
+        self.wh = (w, h)
+        self.rgb = 252, 252, 84
         self.hud = False
 
 
@@ -71,8 +84,8 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Monster_green(), Monster_green(), Monster_green(), Monster_green(), Monster_green(), Monster_green()]
-    objects.extend([NoObject()] * 6) # for the red monsters
+    objects = [Player(), Warrior(), Warrior(), Warrior(), Warrior(), Warrior(), Warrior()]
+    objects.extend([NoObject()] * 6) # for the chickens
 
     if hud:
         objects.extend([NoObject()] * 4)
@@ -88,25 +101,46 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # x == 66-72; y == 59-65; type 73-79
     k = 0
-    monster_red_bb = []
-    monster_green_bb = []
+    enemy_bb = []
+    enemy_type = 0
+    chicken_bb = []
+    bitmap_warrior = 0b00100000 
+    bitmap_pig = 0b00110000 
+    bitmap_chicken = 0b01110000 
     for i in range(7):
-        if ram_state[73+i]&16 and ram_state[73+i]&32: #if the 4th and 5th bit is set, the monser is red
-            fig = Monster_red()
+        if ram_state[73+i] & bitmap_chicken == bitmap_chicken:
+            fig = Chicken()
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
-            monster_red_bb.append(fig.xywh)
-        elif ram_state[73+i]&32: #if the 5th bit is set (but not the 4th), the monser is green
-            fig = Monster_green()
+            chicken_bb.append(fig.xywh)
+        elif ram_state[73+i] & bitmap_pig == bitmap_pig:
+            fig = Pig()
+            enemy_type = 1
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
-            monster_green_bb.append(fig.xywh)
+            enemy_bb.append(fig.xywh)
+        elif ram_state[73+i] & bitmap_warrior == bitmap_warrior:
+            fig = Warrior()
+            enemy_type = 0
+            fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
+            enemy_bb.append(fig.xywh)
         else: #the object is the player
             fig = objects[0]
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
 
-    match_objects(objects, monster_green_bb, 1, 6, Monster_green)
-    match_objects(objects, monster_red_bb, 7, 6, Monster_red)
+    enemy_type = Pig if enemy_type == 1 else Warrior
 
-    #TODO Implement monsters not visible during jumping
+    if enemy_type != type(objects[1]): #Deletes the previous enemys if the type of enemies has changed
+        objects[1:7] = [NoObject()] * 6
+
+    match_objects(objects, enemy_bb, 1, 6, enemy_type)
+
+    match_objects(objects, chicken_bb, 7, 6, Chicken)
+
+    
+    if len(chicken_bb) > 0 or (ram_state[51] == 103):
+        #ram_state[51] == 103 if the enemys are turned into shadows (read only)
+        # if chickens are caught the ram treats them as an invisibe enemy again
+        for enemy in objects[1:7]:
+            enemy.visible = False
 
     # 6-49 purple lines; first 4 ==> lines, remaining ==> pillars
     # even numbers are inverted
