@@ -211,7 +211,7 @@ def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2,
     # for contour in contours:
     #     cv2.drawContours(image, contour, -1, (0, 255, 0), 3)
     for cnt in contours:
-        x, y, w, h = cv2.boundingRect(cnt)
+        x, y, w, h = cnt # cv2.boundingRect(cnt)
         x, y = x + minx, y + miny  # compensing cuttoff
         if size:
             if not assert_in((w, h), size, tol_s):
