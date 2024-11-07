@@ -3,7 +3,7 @@ from collections import deque
 import gymnasium as gym
 from termcolor import colored
 import numpy as np
-from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects, get_object_state, get_object_state_size
+from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects, get_object_state, get_object_state_size, get_masked_dqn_state
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
 from ocatari.ram.game_objects import GameObject, ValueObject
@@ -119,6 +119,12 @@ class OCAtari:
         self.game_name = game_name
         self.mode = mode
         self.obs_mode = obs_mode
+        self.obs_representation = ""
+
+        if obs_mode == "masked_dqn":
+            self.obs_mode = "dqn"
+            self.obj_representation = "masked_dqn"
+        
         self.hud = hud
         self.max_objects = []
         self.buffer_window_size = 4
@@ -149,7 +155,7 @@ class OCAtari:
             if torch_imported:
                 self._fill_buffer = self._fill_buffer_dqn
                 self._reset_buffer = self._reset_buffer_dqn
-                self._env.observation_space = gym.spaces.Box(0,255.0,(4,84,84))
+                self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size,84,84))
             else:
                 print("To use the buffer of OCAtari, you need to install torch.")
         elif obs_mode == "ori":
@@ -263,9 +269,12 @@ class OCAtari:
         return obs, info
 
     def _fill_buffer_dqn(self):
-        state = cv2.resize(
-            self._ale.getScreenGrayscale(), (84, 84), interpolation=cv2.INTER_AREA,
-        )
+        if self.obj_representation == "masked_dqn":
+            state = get_masked_dqn_state(self._objects) 
+        else:   
+            state = cv2.resize(
+                self._ale.getScreenGrayscale(), (84, 84), interpolation=cv2.INTER_AREA,
+            )
         self._state_buffer.append(_tensor(state, dtype=_uint8
                                           , **_tensor_kwargs))
 
