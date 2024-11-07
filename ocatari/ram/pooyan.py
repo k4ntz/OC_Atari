@@ -163,14 +163,11 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [] #Player(), Arrow(), Bait(), Balloon(), Enemy(), Stone(), Rock()
     
     objects = [Player()] + [Arrow()] + [Bait()] + [Balloon()] * 6 + [Enemy()] * 7 + \
         [Stone()] + [Rock()]
     if hud:
         objects += [PlayerScore()] + [Lives()]
-    #     objects.extend([PlayerScore()])
-    # print("???????????????????", objects)
     return objects
 
 
