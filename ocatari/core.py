@@ -113,6 +113,11 @@ class OCAtari:
 
         if kwargs.get("force_fire", True):
             self.allow_force_fire = True
+
+        if obs_mode == "masked_dqn":
+            print("masked1")
+            obs_mode = "dqn"
+            self.obj_representation = "masked_dqn"
         
         gym_render_mode = "rgb_array" if render_oc_overlay else render_mode
         self._env = gym.make(env_name, render_mode=gym_render_mode, *args, **kwargs)
@@ -121,10 +126,7 @@ class OCAtari:
         self.obs_mode = obs_mode
         self.obs_representation = ""
 
-        if obs_mode == "masked_dqn":
-            self.obs_mode = "dqn"
-            self.obj_representation = "masked_dqn"
-        
+       
         self.hud = hud
         self.max_objects = []
         self.buffer_window_size = 4
@@ -270,6 +272,7 @@ class OCAtari:
 
     def _fill_buffer_dqn(self):
         if self.obj_representation == "masked_dqn":
+            print("Masked")
             state = get_masked_dqn_state(self._objects) 
         else:   
             state = cv2.resize(
