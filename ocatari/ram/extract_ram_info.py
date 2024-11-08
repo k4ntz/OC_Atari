@@ -76,11 +76,8 @@ def get_object_state_size(game_name, hud):
             raise err
     
 
-def get_object_state(reference_list, objects, game_name, obj_representation):
-    
-    if obj_representation == "masked_dqn":
-        return get_masked_dqn_state
-    
+def get_object_state(reference_list, objects, game_name):
+       
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
 
@@ -134,6 +131,5 @@ def get_masked_dqn_state(objects):
                 state[i][j] = 255
     
     state = cv2.resize(state, (84, 84), interpolation=cv2.INTER_AREA)
-
     return state
 
