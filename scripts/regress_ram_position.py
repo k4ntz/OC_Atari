@@ -25,14 +25,6 @@ def get_states_actions(buffer):
         #     action_poses.remove(i)
     return states, next_states, state_poses, actions
 
-def unsigned_to_signed(value, bits=8):
-    max_signed = (1 << (bits - 1)) - 1
-    if value <= max_signed:
-        return value
-    else:
-        return value - (1 << bits)
-
-
 def add_signed_states(states, state_poses):
     nstates, ncells = states.shape
     extended_states = np.zeros((nstates, 2 * ncells), dtype=int)
@@ -58,11 +50,20 @@ def index(l, to_find):
             return i
     return None
 
-def regress_ram_position(buffer, ram_pos):
+def regress_ram_position(buffer, ram_pos, regressors):
     states, next_states, state_poses, _ = get_states_actions(buffer)
-    vnames = [f"x{i}" for i  in state_poses] + [f"x{i}_s" for i  in state_poses] 
-    states, state_poses = add_signed_states(states, state_poses)
     # print("Non constant ram indexes: ", state_poses)
+
+    if regressors:
+        vnames = [f"x{i}" for i in regressors] + [f"x{i}_s" for i in regressors]
+        reg_poses = [index(state_poses, r) for r in regressors]
+        data = [states[:, r] for r in reg_poses]
+        data.extend([states[:, r].astype(np.int8) for r in reg_poses])
+        states = np.column_stack(data)
+    else:
+        vnames = [f"x{i}" for i in state_poses] + [f"x{i}_s" for i in state_poses] 
+        states, state_poses = add_signed_states(states, state_poses)
+    
     pos = index(state_poses, ram_pos)
     y =  next_states[:, pos]
     model = get_model()
@@ -74,6 +75,8 @@ def main():
                         help="dataset on which to perform the regression")
     parser.add_argument("-t", "--track", type=int, required=True,
                         help="ram position to regress")
+    parser.add_argument("-fr", "--force-regressors", type=int, required=False, nargs="+",
+                        help="ram positions to use as regressors")
     opts = parser.parse_args()
 
     # loading dataset
@@ -81,7 +84,7 @@ def main():
     # ram position to track
     to_track = opts.track
     # performing regression
-    regress_ram_position(buffer, to_track)
+    regress_ram_position(buffer, to_track, opts.force_regressors)
 
 if __name__ == "__main__":
     main()
