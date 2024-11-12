@@ -1,4 +1,4 @@
-from .utils import find_objects, find_mc_objects
+from .utils import find_objects, find_mc_objects, match_objects
 from .game_objects import GameObject
 
 objects_colors = {'player': [187, 187, 53],
@@ -133,97 +133,79 @@ class Reward500(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 163, 57, 21
 
+# MAX_NB_OBJECTS_HUD = {"Player" :  1, "Enemy": 8, "Reward" : 8, "Consumable" : 8, "Score" : 1, "Lives": 1}
 
 def _detect_objects(objects, obs, hud=False):
-    objects.clear()
-
-    player = find_objects(obs, objects_colors["player"], maxy=160, tol_p=20, tol_s=(9, 1), size=(8, 11))
-    for instance in player:  # parameters work for all 3 possible symbols ((wide) asterix and oblix (advanced))
-        objects.append(Player(*instance))
-
-    enemy = find_mc_objects(obs, objects_colors["enemy"], closing_dist=2, miny=24, maxy=151, size=(7, 11), tol_s=1)
-    for instance in enemy:
-        objects.append(Enemy(*instance))
-
-    cauldron = find_mc_objects(obs, objects_colors["cauldron"], closing_dist=2, size=(7, 10), tol_s=2)
-    for instance in cauldron:
-        objects.append(Cauldron(*instance))
-
-    helmet = find_mc_objects(obs, objects_colors["helmet"], closing_dist=1, min_distance=1, size=(7, 11),
-                             tol_s=2, miny=24, maxy=151, )
-    for instance in helmet:
-        objects.append(Helmet(*instance))
-
-    no_shield = True
-    shield = find_objects(obs, objects_colors["shield"], closing_dist=1, size=(5, 11), tol_s=1, min_distance=2,
-                          miny=24, maxy=151, )
-    for instance in shield:
-        objects.append(Shield(*instance))
-        no_shield = False
-
-    lamp = find_mc_objects(obs, objects_colors["lamp"], closing_dist=4, size=(8, 11), tol_s=1, miny=24, maxy=151, )
-    for instance in lamp:
-        objects.append(Lamp(*instance))
-
-    apple = find_mc_objects(obs, objects_colors["apple"], closing_dist=2, min_distance=2, size=(8, 11),
-                            tol_s=1, miny=24, maxy=151, )
-    for instance in apple:
-        objects.append(Apple(*instance))
-
-    fish = find_objects(obs, objects_colors["fish"], closing_dist=1, min_distance=1,
-                        size=(8, 5), tol_s=2, miny=24, maxy=151, )
-    for instance in fish:
-        objects.append(Fish(*instance))
-
-    meat = find_mc_objects(obs, objects_colors["meat"], closing_dist=1, min_distance=1, size=(5, 11),
-                           tol_s=2, miny=24, maxy=151, )
-    for instance in meat:
-        if no_shield:
-            objects.append(Meat(*instance))
-
-    mug = find_mc_objects(obs, objects_colors["mug"], closing_dist=2, min_distance=2, size=(7, 11),
-                          tol_s=1, miny=24, maxy=151, )
-    for instance in mug:
-        objects.append(Mug(*instance))
+    player = objects[0]
+    player_bb = find_objects(obs, objects_colors["player"], maxy=160, tol_p=20, tol_s=(9, 1), size=(8, 11))
+    if player_bb:
+        player.xywh = player_bb[0]
+    # for instance in player:  # parameters work for all 3 possible symbols ((wide) asterix and oblix (advanced))
+    #     objects.append(Player(*instance))
+    enemies_bb = find_mc_objects(obs, objects_colors["enemy"], closing_dist=2, miny=24, maxy=151, size=(7, 11), tol_s=1)
+    match_objects(objects, enemies_bb, 1, 8, Enemy)
 
     reward50 = find_mc_objects(obs, objects_colors["reward_50"], min_distance=3, closing_dist=4, miny=24, maxy=151,
                                tol_s=3, size=(6, 11))
-    for instance in reward50:
-        objects.append(Reward50(*instance))
+    match_objects(objects, reward50, 9, 8, Reward50)
 
     reward100 = find_mc_objects(obs, objects_colors["reward_100"], min_distance=3, closing_dist=3, miny=24, maxy=151,
                                 size=(8, 11), tol_s=2)
-    for instance in reward100:
-        objects.append(Reward100(*instance))
-
+    match_objects(objects, reward100, 9, 8, Reward100)
     reward200 = find_mc_objects(obs, objects_colors["reward_200"], min_distance=3, closing_dist=3, miny=24, maxy=151,
                                 size=(8, 11), tol_s=3)
-    for instance in reward200:
-        objects.append(Reward200(*instance))
-
+    match_objects(objects, reward200, 9, 8, Reward200)
     reward300 = find_mc_objects(obs, objects_colors["reward_300"], min_distance=3, closing_dist=3, miny=24, maxy=151,
                                 size=(8, 11), tol_s=3)
-    for instance in reward300:
-        objects.append(Reward300(*instance))
-
+    match_objects(objects, reward300, 9, 8, Reward300)
     reward400 = find_mc_objects(obs, objects_colors["reward_400"], min_distance=3, closing_dist=3, miny=24, maxy=151,
                                 size=(8, 11), tol_s=3)
-    for instance in reward400:
-        objects.append(Reward400(*instance))
-
+    match_objects(objects, reward400, 9, 8, Reward400)
     reward500 = find_mc_objects(obs, objects_colors["reward_500"], min_distance=3, closing_dist=3, miny=24, maxy=151,
                                 size=(8, 11), tol_s=3)
-    for instance in reward500:
-        objects.append(Reward500(*instance))
+    match_objects(objects, reward500, 9, 8, Reward500)
 
-    if hud:
-        lives = find_objects(obs, objects_colors["lives"], min_distance=1, miny=160, maxy=181)
-        for instance in lives:
-            objects.append(Lives(*instance))
+    cauldron = find_mc_objects(obs, objects_colors["cauldron"], closing_dist=2, size=(7, 10), tol_s=2)
+    match_objects(objects, cauldron, 17, 8, Cauldron)
+    helmet = find_mc_objects(obs, objects_colors["helmet"], closing_dist=1, min_distance=1, size=(7, 11),
+                             tol_s=2, miny=24, maxy=151)
+    import ipdb; ipdb.set_trace()
+    match_objects(objects, helmet, 17, 8, Helmet)
 
-        score = find_objects(obs, objects_colors["score"], closing_dist=4, miny=181)  # don't change closing_dist=4
-        for instance in score:
-            objects.append(Score(*instance))
+    shield = find_objects(obs, objects_colors["shield"], closing_dist=1, size=(5, 11), tol_s=1, min_distance=2,
+                          miny=24, maxy=151)
+    match_objects(objects, shield, 17, 8, Shield)
+    no_shield = len(shield) == 0
+    
+    lamp = find_mc_objects(obs, objects_colors["lamp"], closing_dist=4, size=(8, 11), tol_s=1, miny=24, maxy=151)
+    match_objects(objects, lamp, 17, 8, Lamp)
+
+    apple = find_mc_objects(obs, objects_colors["apple"], closing_dist=2, min_distance=2, size=(8, 11),
+                            tol_s=1, miny=24, maxy=151, )
+    match_objects(objects, apple, 17, 8, Apple)
+
+    fish = find_objects(obs, objects_colors["fish"], closing_dist=1, min_distance=1,
+                        size=(8, 5), tol_s=2, miny=24, maxy=151)
+    match_objects(objects, fish, 17, 8, Fish)
+
+    meat = find_mc_objects(obs, objects_colors["meat"], closing_dist=1, min_distance=1, size=(5, 11),
+                           tol_s=2, miny=24, maxy=151)
+    if no_shield:
+        match_objects(objects, meat, 17, 8, Meat)
+
+    mug = find_mc_objects(obs, objects_colors["mug"], closing_dist=2, min_distance=2, size=(7, 11),
+                          tol_s=1, miny=24, maxy=151)
+    match_objects(objects, mug, 17, 8, Mug)
+
+
+    # if hud:
+    #     lives = find_objects(obs, objects_colors["lives"], min_distance=1, miny=160, maxy=181)
+    #     for instance in lives:
+    #         objects.append(Lives(*instance))
+
+    #     score = find_objects(obs, objects_colors["score"], closing_dist=4, miny=181)  # don't change closing_dist=4
+    #     for instance in score:
+    #         objects.append(Score(*instance))
 
     # print(*objects, sep="\n")
     # print("\n")

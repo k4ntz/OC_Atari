@@ -147,114 +147,6 @@ def showim(image):
     plt.show()
 
 
-def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2, 
-                    min_distance=10, closing_active=True, closing_dist=3,
-                    minx=0, miny=0, maxx=160, maxy=210, all_colors=True):
-    """
-    Finds the multicolors objects in the image. 
-        
-    This functions is used to detect object in e.g. Atlantis (depicted bellow). 
-    
-    |atlantis_image|
-
-    :param image: The image to mark the point on
-    :type image: np.array
-    :param colors: The colors of the object
-    :type colors: list of (int, int, int)
-    :param size: presupposed size of the targeted object (to detect)
-    :type size: int or (int, int)
-    :param tol_s: tolerance on the presupposed size of the targeted object
-    :type tol_s: int or (int, int)
-    :param size: presupposed size of the targeted object (to detect)
-    :type size: int or (int, int)
-    :param tol_s: tolerance on the presupposed size of the targeted object
-    :type tol_s: int or (int, int)
-    :param position: presupposed position of the targeted object (to detect)
-    :type position: int or (int, int)
-    :param tol_p: tolerance on the presupposed position of the targeted object
-    :type tol_p: int or (int, int)
-    :param min_distance: tolerance on the presupposed position of the targeted object
-    :type min_distance: int
-    :param closing_active: If true, gathers in one bounding box the instances that are less than \
-    `closing_dist` 
-    :type closing_active: bool
-    :param closing_dist: The closing distance, for the under which two (or more) instances are merged \
-    into one bounding box.
-    :type closing_dist: int
-    :param minx: minimum x position where the object can be located
-    :type minx: int
-    :param miny: minimum y position where the object can be located
-    :type miny: int
-    :param maxx: maximum x position where the object can be located
-    :type maxx: int
-    :param maxy: maximum y position where the object can be located
-    :type maxy: int
-    :param all_colors: If ``True``, only return the object if every given color in `colors` is present in the image
-    :type all_colors: bool
-
-
-    :return: a list of tuple boxing boxes
-    :rtype: list of (int, int, int, int)
-    """
-    masks = [cv2.inRange(image[miny:maxy, minx:maxx, :],
-                         np.array(color), np.array(color)) for color in colors]
-    if all_colors:
-        for mask in masks:
-            if mask.max() == 0:
-                return []
-    mask = sum(masks)
-    contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, 1)
-    contours = [cv2.boundingRect(cnt) for cnt in contours]
-    if closing_active and len(contours) > 1:
-        contours = merge_close_contours(contours, closing_dist)
-    detected = []
-    # for contour in contours:
-    #     cv2.drawContours(image, contour, -1, (0, 255, 0), 3)
-    for cnt in contours:
-        x, y, w, h = cv2.boundingRect(cnt)
-        x, y = x + minx, y + miny  # compensing cuttoff
-        if size:
-            if not assert_in((w, h), size, tol_s):
-                continue
-        if position:
-            if not assert_in((x, y), position, tol_p):
-                continue
-        if min_distance:
-            too_close = False
-            for det in detected:
-                if iou(det, (x, y, w, h)) > 0.05:
-                    too_close = True
-                    break
-            if too_close:
-                continue
-        # if x < minx or x+w > maxx or y < miny or y+h > maxy:
-        #     continue
-        # detected.append((y, x, h, w))
-        if all_colors:
-            all_contained = True
-            for k in range(len(masks)):
-                contained = False
-                for i in range(w):
-                    for j in range(h):
-                        try:
-                            if masks[k][y+j-miny][x+i-minx]:
-                                contained = True
-                                break
-                        except:
-                            continue
-
-                    if contained:
-                        break
-                if not contained:
-                    all_contained = False
-                    break
-            if all_contained:
-                detected.append((x, y, w, h))
-        else:
-            detected.append((x, y, w, h))
-    return detected
-
-
 def color_analysis(image, bbox, exclude=[]):
     """
     Returns a Counter of all the detected colors in the bounding box
@@ -387,6 +279,109 @@ def find_objects(image, color, size=None, tol_s=10,
             if too_close:
                 continue
         detected.append((x, y, w, h))
+    return detected
+
+
+def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2, 
+                    min_distance=10, closing_active=True, closing_dist=3,
+                    minx=0, miny=0, maxx=160, maxy=210, all_colors=True):
+    """
+    Finds the multicolors objects in the image. 
+        
+    This functions is used to detect object in e.g. Atlantis (depicted bellow). 
+    
+    |atlantis_image|
+
+    :param image: The image to mark the point on
+    :type image: np.array
+    :param colors: The colors of the object
+    :type colors: list of (int, int, int)
+    :param size: presupposed size of the targeted object (to detect)
+    :type size: int or (int, int)
+    :param tol_s: tolerance on the presupposed size of the targeted object
+    :type tol_s: int or (int, int)
+    :param size: presupposed size of the targeted object (to detect)
+    :type size: int or (int, int)
+    :param tol_s: tolerance on the presupposed size of the targeted object
+    :type tol_s: int or (int, int)
+    :param position: presupposed position of the targeted object (to detect)
+    :type position: int or (int, int)
+    :param tol_p: tolerance on the presupposed position of the targeted object
+    :type tol_p: int or (int, int)
+    :param min_distance: tolerance on the presupposed position of the targeted object
+    :type min_distance: int
+    :param closing_active: If true, gathers in one bounding box the instances that are less than \
+    `closing_dist` 
+    :type closing_active: bool
+    :param closing_dist: The closing distance, for the under which two (or more) instances are merged \
+    into one bounding box.
+    :type closing_dist: int
+    :param minx: minimum x position where the object can be located
+    :type minx: int
+    :param miny: minimum y position where the object can be located
+    :type miny: int
+    :param maxx: maximum x position where the object can be located
+    :type maxx: int
+    :param maxy: maximum y position where the object can be located
+    :type maxy: int
+    :param all_colors: If ``True``, only return the object if every given color in `colors` is present in the image
+    :type all_colors: bool
+
+
+    :return: a list of tuple boxing boxes
+    :rtype: list of (int, int, int, int)
+    """
+    masks = [cv2.inRange(image[miny:maxy, minx:maxx, :],
+                         np.array(color), np.array(color)) for color in colors]
+    if all_colors: 
+        for mask in masks:
+            if mask.max() == 0: # if any color is missing from the whole image
+                return []
+    mask = sum(masks)
+    contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, 1)
+    contours = [cv2.boundingRect(cnt) for cnt in contours]
+    if closing_active and len(contours) > 1:
+        contours = merge_close_contours(contours, closing_dist)
+    detected = []
+    for cnt in contours:
+        x, y, w, h = cnt
+        x, y = x + minx, y + miny  # compensing cuttoff
+        if size:
+            if not assert_in((w, h), size, tol_s):
+                continue
+        if position:
+            if not assert_in((x, y), position, tol_p):
+                continue
+        if min_distance:
+            too_close = False
+            for det in detected:
+                if iou(det, (x, y, w, h)) > 0.05:
+                    too_close = True
+                    break
+            if too_close:
+                continue
+        if all_colors: # all colors are present in this specific object
+            all_contained = True
+            for k in range(len(masks)):
+                contained = False
+                for i in range(w):
+                    for j in range(h):
+                        try:
+                            if masks[k][y+j-miny][x+i-minx]:
+                                contained = True
+                                break
+                        except:
+                            continue
+
+                    if contained:
+                        break
+                if not contained:
+                    all_contained = False
+                    break
+            if all_contained:
+                detected.append((x, y, w, h))
+        else:
+            detected.append((x, y, w, h))
     return detected
 
 
