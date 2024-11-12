@@ -82,10 +82,9 @@ def _detect_objects(objects, obs, hud=False):
 
         
 
-    # if hud:
-    #     score = find_objects(obs, object_colors['score'], closing_dist=5, maxx=80)
-    #     for bb in score:
-    #         objects.append(Score(*bb))
-    #     bonus_points = find_objects(obs, object_colors['bonus_points'], closing_dist=5, minx=81)
-    #     for bb in bonus_points:
-    #         objects.append(BonusPoints(*bb))
+    if hud:
+        score_bb = find_objects(obs, object_colors['score'], closing_dist=5, maxx=80)
+        match_objects(objects, score_bb, len(objects)-2, 1, Score)
+        
+        bonus_points_bb = find_objects(obs, object_colors['bonus_points'], closing_dist=5, minx=81)
+        match_objects(objects, bonus_points_bb, len(objects)-1, 1, BonusPoints)

@@ -79,6 +79,9 @@ def _init_objects_ram(hud=False):
     ladder_positions = [(140,207), (12, 207), (76,183), (140, 159), (12, 159),(76,135),
                         (140,111), (12, 111), (76, 87), (132,63), (20, 63), (76,43)]
     objects = [Player(), Enemy(), Girlfriend()] + [NoObject()] * 8 + [Ladder(x=pos[0], y=pos[1]) for pos in ladder_positions]
+
+    if hud:
+        objects.extend([Score(), BonusPoints()])
     return objects
 
 
