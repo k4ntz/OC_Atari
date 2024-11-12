@@ -1,7 +1,6 @@
 from .utils  import find_mc_objects, find_objects, match_objects
 from .game_objects import GameObject
 
-print("KingKong")
 
 object_colors = {
     'player': [[207, 175, 92], [201, 154, 92], [92,197,135], [50,50,176], [151,151,151]],
