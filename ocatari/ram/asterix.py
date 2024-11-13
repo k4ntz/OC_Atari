@@ -66,7 +66,7 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player()]
-    objects.extend([NoObject()]*24)
+    objects.extend([NoObject() for _ in range(24)])
     if hud:
         objects.extend([Score(), Lives()])
 
