@@ -99,7 +99,7 @@ class OCAtari:
     the remaining \*args and \**kwargs will be passed to the \
         `gymnasium.make <https://gymnasium.farama.org/api/registry/#gymnasium.make>`_ function.
     """
-    def __init__(self, env_name, mode="ram", hud=False, obs_mode="ori",
+    def __init__(self, env_name, mode="ram", hud=False, obs_mode="obj",
                  render_mode=None, render_oc_overlay=False, *args, **kwargs):
         if "ALE/" in env_name: #case if v5 specified
             to_check = env_name[4:8]
@@ -204,12 +204,18 @@ class OCAtari:
         :param action: The action to perform at this step.
         :type action: int
         """
+
+        if self.obs_mode == "obj":
+            return self._step_impl(*args, **kwargs)
+        
         raise NotImplementedError()
 
     def _step_impl(self, *args, **kwargs):
         obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
         self.detect_objects()
         self._fill_buffer()
+        if self.obs_mode == "obj":
+            obs = self.ns_state
         return obs, reward, truncated, terminated, info
     
     def _detect_objects_ram(self):
