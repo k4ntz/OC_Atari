@@ -142,7 +142,7 @@ def _init_objects_ram(hud=True):
     (Re)Initialize the objects
     """
 
-    objects = [Player(), PowBlock(), Fireball()] + [NoObject()] * 4 + [BonusBlock()] + [NoObject()] * 8 + \
+    objects = [Player(), PowBlock(), Fireball()] + [NoObject()] * 4 + [NoObject()] + [NoObject()] * 8 + \
         [Platform(x=0, y=57, w=64),Platform(x=96, y=57, w=68),
          Platform(x=31, y=95, w=97),Platform(x=0, y=95, w=16),Platform(x=144, y=95, w=18),
          Platform(x=0, y=135, w=48),Platform(x=112, y=135, w=48)]
