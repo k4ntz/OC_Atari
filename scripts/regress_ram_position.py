@@ -50,24 +50,50 @@ def index(l, to_find):
             return i
     return None
 
-def regress_ram_position(buffer, ram_pos, regressors):
-    states, next_states, state_poses, _ = get_states_actions(buffer)
-    # print("Non constant ram indexes: ", state_poses)
+def perform_regression(x, y, vnames):
+    model = get_model()
+    model.fit(x, y, variable_names=vnames)
 
+def get_regression_variables(states, next_states, state_poses, ram_pos, regressors):
     if regressors:
         vnames = [f"x{i}" for i in regressors] + [f"x{i}_s" for i in regressors]
         reg_poses = [index(state_poses, r) for r in regressors]
         data = [states[:, r] for r in reg_poses]
+        # extend data with the signed values of ram
         data.extend([states[:, r].astype(np.int8) for r in reg_poses])
-        states = np.column_stack(data)
+        dataset = np.column_stack(data)
     else:
-        vnames = [f"x{i}" for i in state_poses] + [f"x{i}_s" for i in state_poses] 
-        states, state_poses = add_signed_states(states, state_poses)
-    
+        vnames = [f"x{i}" for i in state_poses] + [f"x{i}_s" for i in state_poses]
+        # extend data with the signed values of ram
+        dataset, state_poses = add_signed_states(states, state_poses)
+
     pos = index(state_poses, ram_pos)
-    y =  next_states[:, pos]
-    model = get_model()
-    model.fit(states, y, variable_names=vnames)
+    objective =  next_states[:, pos]
+
+    return dataset, objective, vnames
+
+def compute_accuracy(wp, state_poses, states, next_states, ram_pos):
+    weights, positions = [], []
+    shift = len(state_poses) // 2
+    for i, el in enumerate(wp):
+        if i%2 == 0:
+            weights.append(int(el))
+        else:
+            if el[-1] == 's':
+                pos = int(el[:-1])
+                pos = index(state_poses, pos)
+                positions.append(shift + pos)
+            else:
+                pos = int(el)
+                pos = index(state_poses, pos)
+                positions.append(pos)
+
+    nstates, _ = states.shape
+    computed_states = np.zeros(nstates)
+    for pos, w in zip(positions, weights):
+        computed_states += w * states[:, pos]
+    count_matches = np.sum(computed_states == next_states[:, ram_pos])
+    print(f"Accuracy of regression: {count_matches / nstates * 100}%")
 
 def main():
     # args parsing
@@ -77,14 +103,23 @@ def main():
                         help="ram position to regress")
     parser.add_argument("-fr", "--force-regressors", type=int, required=False, nargs="+",
                         help="ram positions to use as regressors")
+    parser.add_argument("-ca", "--compute-accuracy", type=str, required=False, nargs="+",
+                        help="weights and positions to linearly combine to compute the ram position. Enter a sequence of weight and position")
     opts = parser.parse_args()
 
     # loading dataset
     buffer = pickle.load(open(opts.dataset, "rb"))
+    states, next_states, state_poses, _ = get_states_actions(buffer)
+    # print("Non constant ram indexes: ", state_poses)
     # ram position to track
     to_track = opts.track
-    # performing regression
-    regress_ram_position(buffer, to_track, opts.force_regressors)
+    dataset, objective, vnames = get_regression_variables(states, next_states, state_poses, to_track, opts.force_regressors)
+
+    if opts.compute_accuracy:
+        compute_accuracy(opts.compute_accuracy, state_poses, dataset, next_states, index(state_poses, to_track))
+    else:
+        # performing regression
+        perform_regression(dataset, objective, vnames)
 
 if __name__ == "__main__":
     main()
