@@ -129,7 +129,6 @@ class OCAtari:
             self.env_name = cenv_name
         self.max_objects_per_cat = get_max_objects(self.game_name, self.hud)
         self.buffer_window_size = 4
-        self.step = self._step_impl
         if not self._covered_game:
             print(colored("\n\n\tUncovered game !!!!!\n\n", "red"))
             global init_objects
@@ -205,18 +204,13 @@ class OCAtari:
         :type action: int
         """
 
-        if self.obs_mode == "obj":
-            return self._step_impl(*args, **kwargs)
-        
-        raise NotImplementedError()
-
-    def _step_impl(self, *args, **kwargs):
         obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
         self.detect_objects()
         self._fill_buffer()
         if self.obs_mode == "obj":
-            obs = self.ns_state
+            obs = np.array(self._state_buffer)
         return obs, reward, truncated, terminated, info
+     
     
     def _detect_objects_ram(self):
         detect_objects_ram(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
