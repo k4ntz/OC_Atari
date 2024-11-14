@@ -122,7 +122,6 @@ class OCAtari:
         self.hud = hud
         self.max_objects = []
         self.buffer_window_size = 4
-        self.step = self._step_impl
         if not self._covered_game:
             print(colored("\n\n\tUncovered game !!!!!\n\n", "red"))
             global init_objects
@@ -205,17 +204,6 @@ class OCAtari:
         :param action: The action to perform at this step.
         :type action: int
         """
-        raise NotImplementedError()
-    
-    def _post_step(self, obs):
-        self._fill_buffer()
-        if self.obs_mode == "dqn":
-            obs = self.dqn_obs[0]
-        elif self.obs_mode == "obj":
-            obs = np.array(self._state_buffer)
-        return obs
-
-    def _step_impl(self, *args, **kwargs):
         if self._force_fire:
             # force a fire action to start the game
             self._env.env.step(1)
@@ -225,6 +213,16 @@ class OCAtari:
         self.detect_objects()
         obs = self._post_step(obs)
         return obs, reward, truncated, terminated, info
+        
+    
+    def _post_step(self, obs):
+        self._fill_buffer()
+        if self.obs_mode == "dqn":
+            obs = self.dqn_obs[0]
+        elif self.obs_mode == "obj":
+            obs = np.array(self._state_buffer)
+        return obs
+
     
     def _detect_objects_ram(self):
         detect_objects_ram(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
