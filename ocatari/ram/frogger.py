@@ -5,8 +5,8 @@ RAM extraction for the game Frogger.
 
 """
 
-MAX_NB_OBJECTS = {'Frog': 1, 'Car': 12, 'Log': 8, 'Alligator': 2, 'Turtle': 10}
-MAX_NB_OBJECTS_HUD = {'Frog': 1, 'Car': 12, 'Log': 8, 'Alligator': 2, 'Turtle': 10}
+MAX_NB_OBJECTS = {'Frog': 1, 'Car': 26, 'Log': 8, 'Alligator': 2, 'Turtle': 10, 'LadyFrog':1, 'Fly':1, 'AlligatorHead':1, 'HappyFrog': 5, 'Snake':2}
+MAX_NB_OBJECTS_HUD = {'Frog': 1, 'Car': 26, 'Log': 8, 'Alligator': 2, 'Turtle': 10, 'LadyFrog':1, 'Fly':1, 'AlligatorHead':1, 'HappyFrog':5, 'Snake':2, 'Score':1, 'Time': 1, 'Lives':1}
 
 class Frog(GameObject):
     """
@@ -15,8 +15,8 @@ class Frog(GameObject):
     
     def __init__(self):
         super(Frog, self).__init__()
-        self._xy = 0, 0
-        self.wh = 7, 7
+        #self._xy = 0, 0
+        #self.wh = 7, 7
         self.rgb = 110, 156, 66
         self.hud = False
 
@@ -26,8 +26,8 @@ class Car(GameObject):
     """
     def __init__(self):
         super(Car, self).__init__()
-        self._xy = 0, 0
-        self.wh = 14, 7
+        #self._xy = 0, 0
+        #self.wh = 14, 7
         self.rgb = 195, 144, 61
         self.hud = False
 
@@ -49,71 +49,75 @@ class Alligator(GameObject):
         super().__init__()
         self.rgb = 105, 105, 15
 
-# class DivingTurtle(GameObject):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.rgb = 66,114,194
 
-# class LadyFrog(GameObject):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.rgb = 236,236,236
+class LadyFrog(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 236,236,236
 
 
+class HappyFrog(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        #self._xy = 0, 0
+        #self.wh = 8, 10
+        self.rgb = 82,126,45
 
-# class Snake(GameObject):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.rgb = 82,126,45   
+class AlligatorHead(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 110,156,66
+        #self.wh = 8, 10
         
-# class HappyFrog(GameObject):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.rgb = 82,126,45
+class Fly(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 110,156,66
 
-# class AlligatorHead(GameObject):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.rgb = 110,156,66
+class Snake(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 82,126,45   
+        
+class Score(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 195,144,61
+        self.hud = True
 
-# class Fly(GameObject):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.rgb = 110,156,66
-
-# class Car(GameObject):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.rgb = 195, 144, 61
-
-# class Score(GameObject):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.rgb = 195,144,61
-#         self.hud = True
-
-# class Lives(GameObject):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.rgb = 236,236,236
-#         self.hud = True
+class Lives(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 236,236,236
+        self.hud = True
                 
-# class Time(GameObject):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.rgb = 0,0,0
-#         self.hud = True
+class Time(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 0,0,0
+        self.hud = True
 
 def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    cars = [NoObject()] * 12
+    cars = [NoObject()] * 26
     logs = [NoObject()] * 8
     aligators = [NoObject()] * 2
     turtles = [NoObject()] * 10
-    return [Frog()] + cars + logs + aligators + turtles
-
+    ladyfrogs = [NoObject()]
+    happyfrogs = [NoObject()]*5
+    flys = [NoObject()]
+    heads = [NoObject()]
+    snakes = [NoObject()]*2
+    score = [NoObject()]
+    time = [NoObject()]
+    lives = [NoObject()]
+    
+    
+    
+    
+    return [Frog()] + cars+ logs + aligators + turtles + ladyfrogs + heads + flys + happyfrogs +snakes + score + time +lives
 def _detect_objects_ram(objects, ram_state, hud=False):
     """
     For all objects:
