@@ -211,18 +211,15 @@ class OCAtari:
 
         obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
         self.detect_objects()
-        obs = self._post_step(obs)
-        return obs, reward, truncated, terminated, info
         
-    
-    def _post_step(self, obs):
         self._fill_buffer()
         if self.obs_mode == "dqn":
             obs = self.dqn_obs[0]
         elif self.obs_mode == "obj":
             obs = np.array(self._state_buffer)
-        return obs
 
+        return obs, reward, truncated, terminated, info
+        
     
     def _detect_objects_ram(self):
         detect_objects_ram(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
@@ -257,7 +254,6 @@ class OCAtari:
         self._objects = init_objects(self.game_name, self.hud)
         self.detect_objects()
         self._reset_buffer()
-        obs = self._post_step(obs)
         return obs, info
 
     def _fill_buffer_dqn(self):
