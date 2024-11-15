@@ -396,7 +396,10 @@ class OCAtari:
         dqn_obs = [_tensor(cv2.resize(cv2.cvtColor(rgbs, cv2.COLOR_RGB2GRAY), 
                                       (84, 84), interpolation=cv2.INTER_AREA), 
                            dtype=_uint8, **_tensor_kwargs) for rgbs in self._state_buffer_rgb]
-        return _stack(list(dqn_obs), 0).unsqueeze(0).byte()
+        if torch_imported:
+            return _stack(dqn_obs, 0).unsqueeze(0).byte()
+        else:
+            return _stack(list(dqn_obs), 0)
 
     
     @property
