@@ -56,6 +56,7 @@ class Renderer:
 
     def run(self):
         self.running = True
+        i = 0
         while self.running:
             self._handle_user_input()
             if not self.paused:
@@ -66,6 +67,9 @@ class Renderer:
                     pass
                 self.current_frame = self.env.render().copy()
             self._render()
+            # if i % 300 == 0:
+            #     import ipdb; ipdb.set_trace()
+            i += 1
         pygame.quit()
 
     def _get_action(self):
