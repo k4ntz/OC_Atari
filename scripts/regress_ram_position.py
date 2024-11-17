@@ -3,12 +3,13 @@ import numpy as np
 from pysr import PySRRegressor
 from ocatari.utils import parser
 
-def get_states_actions(buffer):
+def get_states_actions(buffer, simplify=True):
     all_states = np.array([st[0] for st in buffer] + [st[2] for st in buffer])
     to_remove = []
-    for i in range(128):
-        if np.all(all_states[:, i] == all_states[0, i]):
-            to_remove.append(i)
+    if simplify:
+        for i in range(128):
+            if np.all(all_states[:, i] == all_states[0, i]):
+                to_remove.append(i)
 
     state_poses = list(range(128))
     # action_poses = list(range(3))
@@ -19,10 +20,6 @@ def get_states_actions(buffer):
         state_poses.remove(i)
         states = np.delete(states, i, axis=1)
         next_states = np.delete(next_states, i, axis=1)
-        # print("deleted state", i)
-        # if np.all(actions[:, i] == actions[0, i]):
-        #     actions = np.delete(actions, i, axis=1)
-        #     action_poses.remove(i)
     return states, next_states, state_poses, actions
 
 def add_signed_states(states, state_poses):
@@ -41,6 +38,7 @@ def get_model():
         maxsize = 10,
         binary_operators = ["+", "-"],
         elementwise_loss = "loss(prediction, target) = (prediction - target)^2",
+        # verbosity=0
     )
     return model
 
@@ -50,20 +48,23 @@ def index(l, to_find):
             return i
     return None
 
-def perform_regression(x, y, vnames):
+def perform_regression(x, y, vnames, tracked_ram):
     model = get_model()
     model.fit(x, y, variable_names=vnames)
+    print("=== FINAL EQUATIONS ===")
+    for eq in model.equations_["equation"]:
+        print(f"ns[{tracked_ram}] = {eq}")
 
 def get_regression_variables(states, next_states, state_poses, ram_pos, regressors):
     if regressors:
-        vnames = [f"x{i}" for i in regressors] + [f"x{i}_s" for i in regressors]
+        vnames = [f"s{i}" for i in regressors] + [f"ss{i}" for i in regressors]
         reg_poses = [index(state_poses, r) for r in regressors]
         data = [states[:, r] for r in reg_poses]
         # extend data with the signed values of ram
         data.extend([states[:, r].astype(np.int8) for r in reg_poses])
         dataset = np.column_stack(data)
     else:
-        vnames = [f"x{i}" for i in state_poses] + [f"x{i}_s" for i in state_poses]
+        vnames = [f"s{i}" for i in state_poses] + [f"ss{i}" for i in state_poses]
         # extend data with the signed values of ram
         dataset, state_poses = add_signed_states(states, state_poses)
 
@@ -72,54 +73,36 @@ def get_regression_variables(states, next_states, state_poses, ram_pos, regresso
 
     return dataset, objective, vnames
 
-def compute_accuracy(wp, state_poses, states, next_states, ram_pos):
-    weights, positions = [], []
-    shift = len(state_poses) // 2
-    for i, el in enumerate(wp):
-        if i%2 == 0:
-            weights.append(int(el))
-        else:
-            if el[-1] == 's':
-                pos = int(el[:-1])
-                pos = index(state_poses, pos)
-                positions.append(shift + pos)
-            else:
-                pos = int(el)
-                pos = index(state_poses, pos)
-                positions.append(pos)
-
-    nstates, _ = states.shape
-    computed_states = np.zeros(nstates)
-    for pos, w in zip(positions, weights):
-        computed_states += w * states[:, pos]
-    count_matches = np.sum(computed_states == next_states[:, ram_pos])
-    print(f"Accuracy of regression: {count_matches / nstates * 100}%")
+def compute_accuracy(formulae, states, next_states):
+    formulae = formulae.replace("=", "==") # replace assignment with comparison
+    sns, ns = next_states.astype(np.int8).T, next_states.T
+    ss, s  = states.astype(np.int8).T, states.T
+    count_matches = np.sum(eval(formulae))
+    print(f"Accuracy of regression: {count_matches / len(states) * 100}%")
 
 def main():
     # args parsing
     parser.add_argument("-d", "--dataset", type=str, required=True,
                         help="dataset on which to perform the regression")
-    parser.add_argument("-t", "--track", type=int, required=True,
-                        help="ram position to regress")
-    parser.add_argument("-fr", "--force-regressors", type=int, required=False, nargs="+",
-                        help="ram positions to use as regressors")
-    parser.add_argument("-ca", "--compute-accuracy", type=str, required=False, nargs="+",
-                        help="weights and positions to linearly combine to compute the ram position. Enter a sequence of weight and position")
+    parser.add_argument("-t", "--track", type=int, required=False,
+                        help="ram position at state t+1 to predict from state t")
+    parser.add_argument("-rr", "--reduce-ram", type=int, required=False, nargs="+",
+                        help="the subset ram positions to use within regressors")
+    parser.add_argument("-f", "--formulae", type=str, required=False, 
+                        help="the formulae to test on the states (s), next_states (ns), or signed states (ss), and next signed states (nss)")
     opts = parser.parse_args()
 
     # loading dataset
     buffer = pickle.load(open(opts.dataset, "rb"))
-    states, next_states, state_poses, _ = get_states_actions(buffer)
-    # print("Non constant ram indexes: ", state_poses)
-    # ram position to track
-    to_track = opts.track
-    dataset, objective, vnames = get_regression_variables(states, next_states, state_poses, to_track, opts.force_regressors)
+    if opts.formulae:
+        states, next_states, state_poses, _ = get_states_actions(buffer, simplify=False)
+        compute_accuracy(opts.formulae, states, next_states)
 
-    if opts.compute_accuracy:
-        compute_accuracy(opts.compute_accuracy, state_poses, dataset, next_states, index(state_poses, to_track))
     else:
         # performing regression
-        perform_regression(dataset, objective, vnames)
+        states, next_states, state_poses, _ = get_states_actions(buffer, simplify=True)
+        dataset, objective, vnames = get_regression_variables(states, next_states, state_poses, opts.track, opts.reduce_ram)
+        perform_regression(dataset, objective, vnames, opts.track)
 
 if __name__ == "__main__":
     main()
