@@ -23,9 +23,9 @@ You should obtain the following output:
 
 ```bash
 === FINAL EQUATIONS ===-------
-ns[54] = s54
-ns[54] = s54 + ss56
-ns[54] = (ss56 + s54) + 0.2913
+ns[54] = s[54]
+ns[54] = s[54] + ss[56]
+ns[54] = (ss[56] + s[54]) + 0.2913
 ------------------------------
 ```
 These correspond to the different levels of complexity allowed in the regression.
@@ -44,8 +44,8 @@ You could obtain the following output:
 ```bash
 ...
 === FINAL EQUATIONS ===---------------------------
-ns[49] = s49
-ns[49] = s49 - ss58
+ns[49] == s[49]
+ns[49] == s[49] - ss[58]
 ...
 -------------------------------------------------
 ```
@@ -53,7 +53,7 @@ To check the accuracy of the following esuation:
 `x49[t+1] = x49[t] - x58[t] (signed)`
 use the formulae flag:
 ```bash
-python3 scripts/regress_ram_position.py -d transitions/Pong_data.pkl -f "ns[49] = s[49] - ss[58]"
+python3 scripts/regress_ram_position.py -d transitions/Pong_data.pkl -f "ns[49] == s[49] - ss[58]"
 ```
 You should obtain the following output:
 ```bash
