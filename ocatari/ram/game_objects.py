@@ -186,10 +186,6 @@ class GameObject:
         if not self._visible:
             return [0, 0]
         return [self.x, self.y]
-    
-    # @property
-    # def _ns_meaning(self):
-    #     return "x, y"
 
     @property
     def _ns_meaning(self):
@@ -282,8 +278,7 @@ class NoObject(GameObject):
     """
     This class represents a non-existent object. It is used to fill in the gaps when no object is detected.
     """
-    # def __init__(self, nslen=2):
-    def __init__(self, nslen=10):
+    def __init__(self, nslen=2):
         super().__init__()
         self.nslen = nslen
         self.rgb = (0, 0, 0)
@@ -311,6 +306,10 @@ class NoObject(GameObject):
     @property
     def _ns_types(self):
         return [Tuple[int, int]]
+
+    @property
+    def _nslen(self):
+        return self.nslen 
 
     
     def __repr__(self):
