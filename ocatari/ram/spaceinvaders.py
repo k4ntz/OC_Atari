@@ -8,7 +8,7 @@ RAM extraction for the game Space Invaders.
 """
 
 MAX_NB_OBJECTS = {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Satellite': 1, 'Alien': 36}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Satellite': 1, 'Alien': 36, 'Score': 2, 'Lives': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Satellite': 1, 'Alien': 36, 'P1Score': 1, 'P2Score': 1, 'Lives': 1}
 
 
 def make_bitmap(alien_states):
@@ -88,17 +88,27 @@ class Bullet(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class P1Score(GameObject):
     """
     The player's score display (HUD).
     """
     
-    def __init__(self, num=0, x=0):  # , num,
+    def __init__(self, x=0):  # , num,
         super().__init__()
-        if num == 1:
-            self.rgb = 92, 186, 92
-        else:
-            self.rgb = 162, 134, 56
+        self.rgb = 92, 186, 92
+        self._xy = x, 10
+        self.wh = 60, 10
+        self.hud = True
+
+
+class P2Score(GameObject):
+    """
+    The 2nd player's score display (HUD).
+    """
+    
+    def __init__(self, x=0):  # , num,
+        super().__init__()
+        self.rgb = 162, 134, 56
         self._xy = x, 10
         self.wh = 60, 10
         self.hud = True
@@ -192,7 +202,7 @@ def _init_objects_ram(hud=False):
         [sat] + [Alien() for _ in range(36)]
 
     if hud:
-        objects.extend([Score(1, 4), Score(2, 84), Lives()])
+        objects.extend([P1Score(4), P2Score(84), Lives()])
 
     for i, shield in enumerate(objects[1:4]):
         shield.xy = 42 + i * 32, 157

@@ -1,11 +1,11 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 from ._helper_methods import _convert_number
 import math
 import sys
 
 
 MAX_NB_OBJECTS = {"Player" :  1, "Enemy": 8, "Reward" : 8, "Consumable" : 8}
-MAX_NB_OBJECTS_HUD = {"Player" :  1, "Enemy": 8, "Reward" : 8, "Consumable" : 8, "Score" : 1}
+MAX_NB_OBJECTS_HUD = {"Player" :  1, "Enemy": 8, "Reward" : 8, "Consumable" : 8, "Score" : 1, "Lives": 1}
 
 
 class Player(GameObject):
@@ -66,10 +66,10 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player()]
+    objects.extend([NoObject() for _ in range(24)])
     if hud:
-        objects.extend([Score(), Lives(), Lives()])
+        objects.extend([Score(), Lives()])
 
-    objects += [None for i in range(8)]
     return objects
 
 
@@ -103,41 +103,43 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     #reward_class = (Reward50, Reward100, Reward200, Reward300, Reward400, Reward500)  # , Reward500, Reward500)
     #eatable_class = (Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat, Mug)
     # get lanes
-    if hud:
-        offset = 1 + lives_nr
-    else:
-        offset = 1
-    lanes = objects[offset:]
+    lanes = objects[1:]
     #const = ram_state[54] % 8
     reward_lanes = []
     for i in range(8):
         if ram_state[18-i] == 11:
-            objects[offset + i] = None
+            objects[1 + i] = NoObject()
         elif ram_state[73 + i]:  # set to lane number if there is reward in that lane
             reward_lanes.append(i)  # 0-7 instead actual 1-8
             if type(lanes[i]) is not Reward:
                 rew = Reward()
-                objects[offset + i] = rew
+                objects[1 + i] = rew
+                objects[9 + i] = NoObject()
+                objects[17 + i] = NoObject()
             else:
                 rew = lanes[i]
             rew.xy = ram_state[42 + i], 26 + i * 16
         elif ram_state[29 + i] % 2 == 1:
             if not isinstance(lanes[i], Enemy):
                 en = Enemy()
-                objects[offset + i] = en
+                objects[1 + i] = NoObject()
+                objects[9 + i] = en
+                objects[17 + i] = NoObject()
             else:
                 en = lanes[i]
             en.xy = ram_state[42 + i], 26 + i * 16
         else:
             if type(lanes[i]) is not Consumable:
                 instance = Consumable()
-                objects[offset + i] = instance
+                objects[1 + i] = NoObject()
+                objects[9 + i] = NoObject()
+                objects[17 + i] = instance
             else:
                 instance = lanes[i]
             instance.xy = ram_state[42 + i] + 1, 26 + i * 16 + 1
     
     if hud:
-        score = objects[1]
+        score = objects[-2]
         dec_value = _convert_number(ram_state[94]) * 10000 + _convert_number(ram_state[95]) * 100 + _convert_number(
             ram_state[96])
         score.value = dec_value
@@ -149,20 +151,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             score.xy = 96 - digits * 8, 184
             score.wh = 6 + digits * 8, 7
         if lives_nr >= 2:
-            lives = objects[2]
+            lives = objects[-1]
             if lives is None:
                 lives = Lives()
-                objects[2] = lives
+                objects[-1] = lives
             lives.xy = 60, 169
-            lives.wh = 8, 11
-        elif isinstance(objects[2], Lives):
-            del objects[2]
-        if lives_nr >= 3:
-            lives = objects[3]
-            if lives is None:
-                lives = Lives()
-                objects[3] = lives
-            lives.xy = 60 + 16, 169
-            lives.wh = 8, 11
-        elif isinstance(objects[3], Lives):
-            del objects[3]
+            lives.wh = 8 + 16*(lives_nr-2), 11
+        elif isinstance(objects[-1], Lives):
+            objects[-1] = NoObject()

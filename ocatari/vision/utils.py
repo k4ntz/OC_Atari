@@ -8,10 +8,6 @@ from collections import Counter
 from scipy.optimize import linear_sum_assignment
 from .game_objects import NoObject
 
-# to be removed
-def bbs_extend(labels, key: str, stationary=False):
-    labels['bbs'].extend([(*bb, "S" if stationary else "M", key) for bb in labels[key]])
-
 
 def most_common_color(image, exclude_black=True):
     """
@@ -26,13 +22,6 @@ def most_common_color(image, exclude_black=True):
     if exclude_black:
         return np.unravel_index(np.bincount(a1D)[1:].argmax()+1, col_range) # removing first el
     return np.unravel_index(np.bincount(a1D).argmax(), col_range)
-
-
-# to be removed
-def bb_by_color(labels, obs, color, key, closing_active=True):
-    print(colored("\n\n\n PLEASE DON'T USE, USE 'find_objects' instead\n\n\n", "red"))
-    labels[key] = find_objects(obs, color, closing_active)
-    bbs_extend(labels, key)
 
 
 def assert_in(observed, expected, tol):
@@ -158,6 +147,141 @@ def showim(image):
     plt.show()
 
 
+def color_analysis(image, bbox, exclude=[]):
+    """
+    Returns a Counter of all the detected colors in the bounding box
+
+    :param image: The image to mark the point on
+    :type image: np.array
+    :param bb: The bouding box where to perform the color analysis
+    :type bb: (int, int, int, int)
+    :param exclude: A list of color to exclude
+    :type exclude: list of (int, int, int)
+
+    :return: A `collections.Counter <https://docs.python.org/3/library/collections.html#collections.Counter>`_ \
+        of the detected colors
+    :rtype: list of (int, int, int)
+    """
+    x, y, w, h = bbox
+    subpart = image[y:y+h, x:x+w, :]
+    w,h,c = subpart.shape
+    subpart = list(map(tuple, subpart.reshape(w*h, c)))
+    for excolor in exclude:
+        subpart = [el for el in subpart if el != tuple(excolor)]
+    return Counter(subpart)
+
+
+def _merge_close_contours_iter(contours, closing_dist):
+    merged_contours = []
+    one_merge = False   # at least one merge during last iteration
+    while contours:
+        x, y, w, h = contours.pop(0)
+        merged = False
+        for i, (mx, my, mw, mh) in enumerate(merged_contours):
+            # Calculate distance between bounding boxes
+            c1x, c1y = x + w / 2, y + h / 2
+            c2x, c2y = mx + mw / 2, my + mh / 2
+            dx, dy = abs(c1x - c2x), abs(c1y - c2y)
+            dx, dy = max(0, dx - (w+mw)/2), max(0, dy - (h+mh)/2)
+            distance = dx + dy # Manhattan distance
+
+            if distance < closing_dist:
+                # Merge the boxes
+                new_x = min(x, mx)
+                new_y = min(y, my)
+                new_w = max(x + w, mx + mw) - new_x
+                new_h = max(y + h, my + mh) - new_y
+                merged_contours[i] = (new_x, new_y, new_w, new_h)
+                merged = True
+                one_merge = True
+                break
+        if not merged:
+            merged_contours.append((x, y, w, h))
+    return merged_contours, one_merge
+
+
+def merge_close_contours(contours, closing_dist):
+    """
+    Merges the close contours into one bounding box.
+
+    :param contours: The list of bounding boxes to merge
+    :type contours: list of (int, int, int, int)
+    :param closing_dist: The closing distance, for the under which two (or more) instances are merged \
+    into one bounding box.
+    :type closing_dist: int
+
+    :return: a list of tuple boxing boxes
+    :rtype: list of (int, int, int)
+    """
+    merged_contours, one_merge = _merge_close_contours_iter(contours, closing_dist)
+    while one_merge:
+        merged_contours, one_merge = _merge_close_contours_iter(merged_contours, closing_dist)
+    return merged_contours
+
+def find_objects(image, color, size=None, tol_s=10,
+                 position=None, tol_p=2, min_distance=10,
+                 closing_active=True, closing_dist=3,
+                 minx=0, miny=0, maxx=160, maxy=210):
+    """
+    Finds the single colored objects in the image.
+
+    :param image: The image to mark the point on
+    :type image: np.array
+    :param color: The color of the object
+    :type color: list of (int, int, int)
+    :param size: presupposed size of the targeted object (to detect)
+    :type size: int or (int, int)
+    :param tol_s: tolerance on the presupposed size of the targeted object
+    :type tol_s: int or (int, int)
+    :param position: presupposed position of the targeted object (to detect)
+    :type position: int or (int, int)
+    :param tol_p: tolerance on the presupposed position of the targeted object
+    :type tol_p: int or (int, int)
+    :param closing_active: If true, gathers in one bounding box the instances that are less than \
+    `closing_dist` away.
+    :type closing_active: bool
+    :param closing_dist: The closing distance, for the under which two (or more) instances are merged \
+    into one bounding box.
+    :type closing_dist: int
+    :param minx: minimum x position where the object can be located
+    :type minx: int
+    :param miny: minimum y position where the object can be located
+    :type miny: int
+    :param maxx: maximum x position where the object can be located
+    :type maxx: int
+    :param maxy: maximum y position where the object can be located
+    :type maxy: int
+
+    :return: a list of tuple boxing boxes
+    :rtype: list of (int, int, int)
+    """
+    mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color), np.array(color))
+    contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, 1)
+    contours = [cv2.boundingRect(cnt) for cnt in contours]
+    if closing_active and len(contours) > 1:
+        contours = merge_close_contours(contours, closing_dist)
+    detected = []
+    for cnt in contours:
+        x, y, w, h = cnt
+        x, y = x + minx, y + miny  # compensing cuttoff
+        if size:
+            if not assert_in((w, h), size, tol_s):
+                continue
+        if position:
+            if not assert_in((x, y), position, tol_p):
+                continue
+        if min_distance:
+            too_close = False
+            for det in detected:
+                if iou(det, (x, y, w, h)) > 0.05:
+                    too_close = True
+                    break
+            if too_close:
+                continue
+        detected.append((x, y, w, h))
+    return detected
+
+
 def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2, 
                     min_distance=10, closing_active=True, closing_dist=3,
                     minx=0, miny=0, maxx=160, maxy=210, all_colors=True):
@@ -209,27 +333,18 @@ def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2,
     """
     masks = [cv2.inRange(image[miny:maxy, minx:maxx, :],
                          np.array(color), np.array(color)) for color in colors]
-    if all_colors:
+    if all_colors: 
         for mask in masks:
-            if mask.max() == 0:
+            if mask.max() == 0: # if any color is missing from the whole image
                 return []
     mask = sum(masks)
-    # if mask.max() > 0:
-        # showim(mask)
-        # import ipdb; ipdb.set_trace()
-    # if not all_colors and mask.max():
-    #     import ipdb;ipdb.set_trace()
-    if closing_active:
-        closed = closing(mask, square(closing_dist))
-        # closed = closing(closed, square(closing_dist))
-    else:
-        closed = mask
-    contours, _ = cv2.findContours(closed.copy(), cv2.RETR_EXTERNAL, 1)
+    contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, 1)
+    contours = [cv2.boundingRect(cnt) for cnt in contours]
+    if closing_active and len(contours) > 1:
+        contours = merge_close_contours(contours, closing_dist)
     detected = []
-    # for contour in contours:
-    #     cv2.drawContours(image, contour, -1, (0, 255, 0), 3)
     for cnt in contours:
-        x, y, w, h = cv2.boundingRect(cnt)
+        x, y, w, h = cnt
         x, y = x + minx, y + miny  # compensing cuttoff
         if size:
             if not assert_in((w, h), size, tol_s):
@@ -245,10 +360,7 @@ def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2,
                     break
             if too_close:
                 continue
-        # if x < minx or x+w > maxx or y < miny or y+h > maxy:
-        #     continue
-        # detected.append((y, x, h, w))
-        if all_colors:
+        if all_colors: # all colors are present in this specific object
             all_contained = True
             for k in range(len(masks)):
                 contained = False
@@ -270,95 +382,6 @@ def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2,
                 detected.append((x, y, w, h))
         else:
             detected.append((x, y, w, h))
-    return detected
-
-
-def color_analysis(image, bbox, exclude=[]):
-    """
-    Returns a Counter of all the detected colors in the bounding box
-
-    :param image: The image to mark the point on
-    :type image: np.array
-    :param bb: The bouding box where to perform the color analysis
-    :type bb: (int, int, int, int)
-    :param exclude: A list of color to exclude
-    :type exclude: list of (int, int, int)
-
-    :return: A `collections.Counter <https://docs.python.org/3/library/collections.html#collections.Counter>`_ \
-        of the detected colors
-    :rtype: list of (int, int, int)
-    """
-    x, y, w, h = bbox
-    subpart = image[y:y+h, x:x+w, :]
-    w,h,c = subpart.shape
-    subpart = list(map(tuple, subpart.reshape(w*h, c)))
-    for excolor in exclude:
-        subpart = [el for el in subpart if el != tuple(excolor)]
-    return Counter(subpart)
-
-
-def find_objects(image, color, size=None, tol_s=10,
-                 position=None, tol_p=2, min_distance=10,
-                 closing_active=True, closing_dist=3,
-                 minx=0, miny=0, maxx=160, maxy=210):
-    """
-    Finds the single colored objects in the image.
-
-    :param image: The image to mark the point on
-    :type image: np.array
-    :param color: The color of the object
-    :type color: list of (int, int, int)
-    :param size: presupposed size of the targeted object (to detect)
-    :type size: int or (int, int)
-    :param tol_s: tolerance on the presupposed size of the targeted object
-    :type tol_s: int or (int, int)
-    :param position: presupposed position of the targeted object (to detect)
-    :type position: int or (int, int)
-    :param tol_p: tolerance on the presupposed position of the targeted object
-    :type tol_p: int or (int, int)
-    :param closing_active: If true, gathers in one bounding box the instances that are less than \
-    `closing_dist` away.
-    :type closing_active: bool
-    :param closing_dist: The closing distance, for the under which two (or more) instances are merged \
-    into one bounding box.
-    :type closing_dist: int
-    :param minx: minimum x position where the object can be located
-    :type minx: int
-    :param miny: minimum y position where the object can be located
-    :type miny: int
-    :param maxx: maximum x position where the object can be located
-    :type maxx: int
-    :param maxy: maximum y position where the object can be located
-    :type maxy: int
-
-    :return: a list of tuple boxing boxes
-    :rtype: list of (int, int, int)
-    """
-    mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color), np.array(color))
-    if closing_active:
-        closed = closing(mask, square(closing_dist))
-    else:
-        closed = mask
-    contours, _ = cv2.findContours(closed.copy(), cv2.RETR_EXTERNAL, 1)
-    detected = []
-    for cnt in contours:
-        x, y, w, h = cv2.boundingRect(cnt)
-        x, y = x + minx, y + miny  # compensing cuttoff
-        if size:
-            if not assert_in((w, h), size, tol_s):
-                continue
-        if position:
-            if not assert_in((x, y), position, tol_p):
-                continue
-        if min_distance:
-            too_close = False
-            for det in detected:
-                if iou(det, (x, y, w, h)) > 0.05:
-                    too_close = True
-                    break
-            if too_close:
-                continue
-        detected.append((x, y, w, h))
     return detected
 
 
@@ -603,15 +626,14 @@ def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
     # for obj_type_str, max_obj in max_objects.items():
     #     class_hug_match(prev_objects[start_idx: max_obj], objects[start_idx: max_obj])
     #     start_idx += max_obj
-    assert len(objects_bb) <= max_obj, "Number of objects detected exceeds the maximum number of objects allowed"
+    if len(objects_bb) > max_obj:
+        print(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
     if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
          for i, obj_bb in enumerate(objects_bb):
             prev_objects[start_idx+i] = ObjClass(*obj_bb)
     else:
         try:
             cost_matrix = compute_cm(prev_objects[start_idx: start_idx+max_obj], objects_bb)
-            # if len(objects_bb) < sum([bool(o) for o in prev_objects[start_idx: start_idx+max_obj]]):
-            #     import ipdb; ipdb.set_trace()
             obj_idx, bbs_idx = linear_sum_assignment(cost_matrix)
             for i in range(max_obj):
                 if i not in obj_idx and prev_objects[start_idx+i]:
@@ -619,6 +641,8 @@ def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
             for i, j in zip(obj_idx, bbs_idx):
                 if prev_objects[start_idx+i]:   
                     prev_objects[start_idx+i].xywh = objects_bb[j][:4]
+                    if len(objects_bb[j]) > 4:
+                        prev_objects[start_idx+i].rgb = objects_bb[j][4]
                 else:
                     prev_objects[start_idx+i] = ObjClass(*objects_bb[j])
         except Exception as e:

@@ -11,7 +11,7 @@ RAM extraction for the game BREAKOUT. Supported modes: ram
 # blockrow could go very very high with a performing agent
 
 MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Block': 240}    # Block could go very very high with a performing agent
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerScore': 3, 'Live': 1, 'PlayerNumber': 1, 'Block': 240, 'Ball': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Block': 240, 'Ball': 1, 'PlayerScore': 1, 'Live': 1, 'PlayerNumber': 1}
 
 
 class Player(GameObject):
@@ -129,32 +129,32 @@ def _init_objects_ram(hud=False):
     return objects
 
 
-# def _make_block_bitmap(ram_state):
-#     """
-#     Create an ordered block bitmap of the game BREAKOUT from the ram state.
+def _make_block_bitmap(ram_state):
+    """
+    Create an ordered block bitmap of the game BREAKOUT from the ram state.
 
-#     input ram
-#     output ordered block bitmap
-#     """
-#     array = ram_state[:36].reshape(-1, 6)
-#     blocks_str = ""
-#     for row in np.array(array).T:
-#         row_str = ""
-#         for j, bitnumber in enumerate(row):
-#             if j == 0:
-#                 row_str = '{0:06b}'.format(bitnumber)[::-2] + row_str
-#             elif j == 5:
-#                 row_str = '{0:08b}'.format(bitnumber)[1::-2] + row_str
-#             else:
-#                 row_str = '{0:08b}'.format(bitnumber)[::-2] + row_str
-#         blocks_str = row_str + "\n" + blocks_str
-#     # convert str to binary array
-#     blocks_int = np.array([list(el) for el in blocks_str.split("\n") if el], dtype=int)
-#     correct_order = [0, 4, 3, 2, 1, 5, 6, 7, 8, 11, 12, 16, 15, 14, 13, 17, 18, 19]
-#     blocks_int = blocks_int.T[correct_order].T
-#     # diff(previous_array_str, str(blocks_int))
-#     # previous_array_str = str(blocks_int)
-#     return blocks_int
+    input ram
+    output ordered block bitmap
+    """
+    array = ram_state[:36].reshape(-1, 6)
+    blocks_str = ""
+    for row in np.array(array).T:
+        row_str = ""
+        for j, bitnumber in enumerate(row):
+            if j == 0:
+                row_str = '{0:06b}'.format(bitnumber)[::-2] + row_str
+            elif j == 5:
+                row_str = '{0:08b}'.format(bitnumber)[1::-2] + row_str
+            else:
+                row_str = '{0:08b}'.format(bitnumber)[::-2] + row_str
+        blocks_str = row_str + "\n" + blocks_str
+    # convert str to binary array
+    blocks_int = np.array([list(el) for el in blocks_str.split("\n") if el], dtype=int)
+    correct_order = [0, 4, 3, 2, 1, 5, 6, 7, 8, 11, 12, 16, 15, 14, 13, 17, 18, 19]
+    blocks_int = blocks_int.T[correct_order].T
+    # diff(previous_array_str, str(blocks_int))
+    # previous_array_str = str(blocks_int)
+    return blocks_int
 
 
 def _detect_objects_ram(objects, ram_state, hud=False):

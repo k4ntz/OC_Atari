@@ -39,7 +39,7 @@ def _get_sides(obj):
         else: 
             yside, upscale = 50, 2
         xside = obj.w + 2
-    return xside, yside, upscale
+    return xside, yside, upscale * (UPSCALE_FACTOR / 4)
 
 
 class Renderer:
@@ -62,8 +62,8 @@ class Renderer:
         self.current_mouse_pos = None
         self.keys2actions = self.env.unwrapped.get_keys_to_action()
 
-        self.obj_grid_anchor_left = self.env_render_shape[0] + 28
-        self.obj_grid_anchor_top = 60
+        self.obj_grid_anchor_left = self.env_render_shape[0] + round(28 * (UPSCALE_FACTOR / 4))
+        self.obj_grid_anchor_top = round(60 * (UPSCALE_FACTOR / 4))
 
         self.saved_frames = deque(maxlen=20) # tuples of ram, state, image
         self.frame_by_frame = False
@@ -82,7 +82,8 @@ class Renderer:
         pygame.init()
         pygame.display.set_caption("OCAtari Environment")
         self.env_render_shape = sample_image.shape[:2]
-        window_size = (self.env_render_shape[0] + self.obj_n_cols * 105 + 50, self.env_render_shape[1])
+        object_render_width = round((self.obj_n_cols * 105 + 50) * (UPSCALE_FACTOR / 4))
+        window_size = (self.env_render_shape[0] + object_render_width, self.env_render_shape[1])
         self.window = pygame.display.set_mode(window_size)
         self.clock = pygame.time.Clock()
         self.obj_font = pygame.font.SysFont('Pixel12x10', 25)
@@ -95,7 +96,7 @@ class Renderer:
                 self.saved_frames.append((deepcopy(self.slots_imgs), self.env._ale.cloneState(), self.current_frame)) # ram, state, image (rgb)
                 action = self._get_action()
                 reward = self.env.step(action)[1]
-                print(self.env._objects)
+                # print(self.env._objects)
                 # if reward != 0:
                 #     print(reward)
                 #     pass
@@ -219,7 +220,9 @@ class Renderer:
 
     def _get_obj_sprite(self, obj):
         if not obj:
-            return np.ones((100, 100, 3), dtype=np.uint8) * 20
+            return np.ones((round(OBJ_CELL_WIDTH * (UPSCALE_FACTOR / 4)),
+                                 round(OBJ_CELL_HEIGHT * (UPSCALE_FACTOR / 4)), 3),
+                                 dtype=np.uint8) * 20
         xside, yside, upscale = _get_sides(obj)
         cx, cy = obj.center
         x = max(0, int(cx - xside / 2))
@@ -228,15 +231,17 @@ class Renderer:
         sprite = screen[y:y+yside, x:x+xside,:].swapaxes(0,1).repeat(upscale, axis=0).repeat(upscale, axis=1)
         
         h, w, _ = sprite.shape
-    
-        # Create a new black (100x100) image (filled with zeros)
-        padded_image = np.zeros((100, 100, 3), dtype=np.uint8)
+
+        # Create a new black image (filled with zeros)
+        padded_image = np.zeros((round(OBJ_CELL_WIDTH * (UPSCALE_FACTOR / 4)),
+                                 round(OBJ_CELL_HEIGHT * (UPSCALE_FACTOR / 4)), 3),
+                                 dtype=np.uint8)
         
-        # Calculate the position to center the original image on the 100x100 canvas
-        top_left_y = (100 - h) // 2
-        top_left_x = (100 - w) // 2
+        # Calculate the position to center the original image on the canvas
+        top_left_y = (round(OBJ_CELL_HEIGHT * (UPSCALE_FACTOR / 4)) - h) // 2
+        top_left_x = (round(OBJ_CELL_WIDTH * (UPSCALE_FACTOR / 4)) - w) // 2
         
-        # Place the smaller image in the center of the 100x100 black canvas
+        # Place the smaller image in the center of the black canvas
         padded_image[top_left_y:top_left_y + h, top_left_x:top_left_x + w, :] = sprite
         
         return padded_image
@@ -244,12 +249,10 @@ class Renderer:
     def _get_obj_cell_rect(self, idx: int):
         row = idx // self.obj_n_cols
         col = idx % self.obj_n_cols
-        x = self.obj_grid_anchor_left + col * (OBJ_CELL_WIDTH + 5)
-        x = self.obj_grid_anchor_left + col * (OBJ_CELL_WIDTH + 5)
-        y = self.obj_grid_anchor_top + row * (OBJ_CELL_HEIGHT + 5)
-        y = self.obj_grid_anchor_top + row * (OBJ_CELL_HEIGHT + 5)
-        w = OBJ_CELL_WIDTH
-        h = OBJ_CELL_HEIGHT
+        x = self.obj_grid_anchor_left + round(col * (OBJ_CELL_WIDTH + 5) * (UPSCALE_FACTOR / 4))
+        y = self.obj_grid_anchor_top + round(row * (OBJ_CELL_HEIGHT + 5) * (UPSCALE_FACTOR / 4))
+        w = round(OBJ_CELL_WIDTH * (UPSCALE_FACTOR / 4))
+        h = round(OBJ_CELL_HEIGHT * (UPSCALE_FACTOR / 4))
         return x, y, w, h
 
 

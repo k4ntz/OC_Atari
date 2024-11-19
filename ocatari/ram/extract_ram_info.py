@@ -1,6 +1,7 @@
 import sys
 from termcolor import colored
 import numpy as np
+from ocatari.vision.game_objects import NoObject
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -61,6 +62,8 @@ def use_vision_objects(objects, game_module):
     for i, obj in enumerate(objects):
         if obj: # skip None objects
             objects[i] = getattr(mod, objects[i].category)(*obj.xywh)
+        else:
+            objects[i] = NoObject()
     return objects
 
 
@@ -98,7 +101,7 @@ def detect_objects_raw(info, ram_state, game_name):
 def detect_objects_ram(objects, ram_state, game_name, hud):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
-    for obj in objects:  # saving the previsous positions
+    for obj in objects:  # saving the previous positions
         if obj:
             obj._save_prev()
     try:

@@ -68,14 +68,14 @@ if torch_imported:
 else:
     DEVICE = "cpu" 
     
-AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix", 
+AVAILABLE_GAMES = ["Adventure", "AirRaid", "Alien", "Amidar", "Assault", "Asterix", 
                    "Asteroids", "Atlantis", "BankHeist", "BattleZone",
                    "BeamRider", "Berzerk", "Bowling", "Boxing",
                    "Breakout", "Carnival", "Centipede", "ChopperCommand", 
                    "CrazyClimber", "DemonAttack", "DonkeyKong",
-                   "DoubleDunk", "Enduro", "FishingDerby", "Freeway",                   
+                   "DoubleDunk", "Enduro", "FishingDerby", "Freeway", "Frogger",
                    "Frostbite", "Galaxian", "Gopher", "Hero", "IceHockey", 
-                   "Jamesbond", "Kangaroo", "Krull", "KungFuMaster", "MontezumaRevenge", 
+                   "Jamesbond", "Kangaroo", "KingKong", "Krull", "KungFuMaster", "MarioBros", "MontezumaRevenge", 
                    "MsPacman", "NameThisGame","Pacman", "Phoenix","Pitfall", "Pong", "Pooyan", "PrivateEye",
                    "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", 
                    "SpaceInvaders", "Tennis", "TimePilot", "UpNDown", "Venture", 
@@ -100,7 +100,7 @@ class OCAtari:
     the remaining \*args and \**kwargs will be passed to the \
         `gymnasium.make <https://gymnasium.farama.org/api/registry/#gymnasium.make>`_ function.
     """
-    def __init__(self, env_name, mode="ram", hud=False, obs_mode="ori",
+    def __init__(self, env_name, mode="ram", hud=False, obs_mode="obj",
                  render_mode=None, render_oc_overlay=False, *args, **kwargs):
         if "ALE/" in env_name: #case if v5 specified
             to_check = env_name[4:8]
@@ -115,15 +115,21 @@ class OCAtari:
         else:
             self._covered_game = True
         
-        gym_render_mode = "rgb_array" if render_oc_overlay else render_mode
-        self._env = gym.make(env_name, render_mode=gym_render_mode, *args, **kwargs)
+        self.env_name = env_name
         self.game_name = game_name
         self.mode = mode
         self.obs_mode = obs_mode
         self.hud = hud
+        gym_render_mode = "rgb_array" if render_oc_overlay else render_mode
+        try:
+            self._env = gym.make(env_name, render_mode=gym_render_mode, *args, **kwargs)
+        except NameNotFound:
+            cenv_name = f"ALE/{env_name}-v5"
+            self._env = gym.make(cenv_name, render_mode=gym_render_mode, *args, **kwargs)
+            warnings.warn(colored(f'Game "{env_name}" not found in gymnasium, automatically using "{cenv_name}" instead', "red"))
+            self.env_name = cenv_name
         self.max_objects_per_cat = get_max_objects(self.game_name, self.hud)
         self.buffer_window_size = 4
-        self.step = self._step_impl
         if not self._covered_game:
             print(colored("\n\n\tUncovered game !!!!!\n\n", "red"))
             global init_objects
@@ -198,13 +204,16 @@ class OCAtari:
         :param action: The action to perform at this step.
         :type action: int
         """
-        raise NotImplementedError()
 
-    def _step_impl(self, *args, **kwargs):
         obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
         self.detect_objects()
         self._fill_buffer()
+        if self.obs_mode == "dqn":
+            obs = np.array(self.dqn_obs[0])
+        elif self.obs_mode == "obj":
+            obs = np.array(self._state_buffer_ns)
         return obs, reward, truncated, terminated, info
+     
     
     def _detect_objects_ram(self):
         detect_objects_ram(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
@@ -388,7 +397,10 @@ class OCAtari:
         dqn_obs = [_tensor(cv2.resize(cv2.cvtColor(rgbs, cv2.COLOR_RGB2GRAY), 
                                       (84, 84), interpolation=cv2.INTER_AREA), 
                            dtype=_uint8, **_tensor_kwargs) for rgbs in self._state_buffer_rgb]
-        return _stack(list(dqn_obs), 0).unsqueeze(0).byte()
+        if torch_imported:
+            return _stack(dqn_obs, 0).unsqueeze(0).byte()
+        else:
+            return _stack(list(dqn_obs), 0)
 
     
     @property

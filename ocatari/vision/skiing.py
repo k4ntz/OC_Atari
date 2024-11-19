@@ -60,19 +60,17 @@ def _detect_objects(objects, obs, hud=False):
     player = objects[0]
     player_bb = find_objects(obs, player_c)[0]
     player.xywh = player_bb
-    # for el in player:
-    #     objects.append(Player(*el))
     trees_bb = []
     for col in trees_c:
-        trees_bb.extend([list(bb) + [col] for bb in find_objects(obs, col, closing_active=False, closing_dist=12)])
+        trees_bb.extend([list(bb) + [col] for bb in find_objects(obs, col, closing_active=True, closing_dist=12)])
     match_objects(objects, trees_bb, 1, 4, Tree)
     moguls_bb = []
     for col in moguls_c:
-        moguls_bb.extend([list(bb) + [col] for bb in find_objects(obs, col, closing_active=False, closing_dist=12)])
+        moguls_bb.extend([list(bb) + [col] for bb in find_objects(obs, col, closing_active=True, closing_dist=12)])
     match_objects(objects, moguls_bb, 5, 3, Mogul)
     flags_bb = []
     for col in flag_c:
-        flags_bb.extend([list(bb) + [col] for bb in find_objects(obs, col, closing_active=False, closing_dist=12)])
+        flags_bb.extend([list(bb) + [col] for bb in find_objects(obs, col, closing_active=True, closing_dist=12)])
     match_objects(objects, flags_bb, 8, 4, Flag)
     if hud:
         score, clock = objects[-2:]
