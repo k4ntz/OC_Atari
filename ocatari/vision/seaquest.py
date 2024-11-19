@@ -84,7 +84,6 @@ class EnemyMissile(GameObject):
 
 
 def _detect_objects(objects, obs, hud=False):
-
     player = []
     for color in objects_colors["player"]:
         player.extend(find_objects(obs, color, closing_dist=8))
