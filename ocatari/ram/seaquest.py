@@ -264,7 +264,6 @@ def _init_objects_ram(hud=False):
 
 
 def _detect_objects_ram(objects, ram_state, hud=False):
-    
     player = objects[0]
     player.xy = ram_state[70], ram_state[97] + 32
     player.orientation = Orientation.E if ram_state[86] == 0 else Orientation.W
