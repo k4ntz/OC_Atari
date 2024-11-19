@@ -297,9 +297,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                         y += ram_state[93] - 4
                         enemy.xy = x, y
                         objects[idx] = enemy
-                    elif type(enemy) is not Submarine:
+                    else:
                         enemy = objects[idx+12]
-                        enemy = Submarine()
+                        if type(enemy) is not Submarine:
+                            enemy = Submarine()
                         enemy.xy = x, y
                         objects[idx+12] = enemy
                 else:
