@@ -2,6 +2,8 @@ import pickle
 import numpy as np
 from pysr import PySRRegressor
 from ocatari.utils import parser
+import re
+
 
 def get_states_actions(buffer, simplify=True):
     all_states = np.array([st[0] for st in buffer] + [st[2] for st in buffer])
@@ -51,9 +53,10 @@ def index(l, to_find):
 def perform_regression(x, y, vnames, tracked_ram):
     model = get_model()
     model.fit(x, y, variable_names=vnames)
-    print("=== FINAL EQUATIONS ===")
+    print("\n=== FINAL EQUATIONS ===")
     for eq in model.equations_["equation"]:
-        print(f"ns[{tracked_ram}] = {eq}")
+        formated_eq = re.sub(r's(\d+)', r's[\1]', eq)
+        print(f"ns[{tracked_ram}] == {formated_eq}")
 
 def get_regression_variables(states, next_states, state_poses, ram_pos, regressors):
     if regressors:
@@ -74,7 +77,7 @@ def get_regression_variables(states, next_states, state_poses, ram_pos, regresso
     return dataset, objective, vnames
 
 def compute_accuracy(formulae, states, next_states):
-    formulae = formulae.replace("=", "==") # replace assignment with comparison
+    # formulae = formulae.replace("=", "==") # replace assignment with comparison
     sns, ns = next_states.astype(np.int8).T, next_states.T
     ss, s  = states.astype(np.int8).T, states.T
     count_matches = np.sum(eval(formulae))
