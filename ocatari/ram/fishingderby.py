@@ -4,9 +4,9 @@ from .game_objects import GameObject
 RAM extraction for the game Fishing Derby.
 """
 
-MAX_NB_OBJECTS = {"Player1FishingString": 1, "Player2FishingString": 1, "Fish": 6, "Shark": 1}
-MAX_NB_OBJECTS_HUD = {"Player1FishingString": 1, "Player2FishingString": 1, "Fish": 6, "Shark": 1, "ScoreP1": 1,
-                      "ScoreP2": 1}
+MAX_NB_OBJECTS = {"PlayerOneHook": 1, "PlayerTwoHook": 1, "Fish": 6, "Shark": 1}
+MAX_NB_OBJECTS_HUD = {"PlayerOneHook": 1, "PlayerTwoHook": 1, "Fish": 6, "Shark": 1, "ScorePlayerOne": 1,
+                      "ScorePlayerTwo": 1}
 
 
 class Fish(GameObject):
@@ -100,13 +100,10 @@ def _get_max_objects(hud=False):
 
 
 def _init_objects_ram(hud=False):
+    objects = [PlayerOneHook(), PlayerTwoHook(), Fish(), Fish(), Fish(), 
+               Fish(), Fish(), Fish(), Shark()] 
     if hud:
-        objects = [PlayerOneHook(), PlayerTwoHook(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
-                   Shark(),
-                   ScorePlayerOne(), ScorePlayerTwo()]
-    else:
-        objects = [PlayerOneHook(), PlayerTwoHook(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
-                   Shark()]
+        objects += [ScorePlayerOne(), ScorePlayerTwo()]
     return objects
 
 

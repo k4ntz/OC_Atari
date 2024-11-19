@@ -210,7 +210,10 @@ class OCAtari:
         if self.obs_mode == "dqn":
             obs = np.array(self.dqn_obs[0])
         elif self.obs_mode == "obj":
-            obs = np.array(self._state_buffer_ns)
+            try:
+                obs = np.array(self._state_buffer_ns)
+            except:
+                import ipdb;ipdb.set_trace()
         return obs, reward, truncated, terminated, info
      
     
