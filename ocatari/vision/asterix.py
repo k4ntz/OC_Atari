@@ -171,7 +171,6 @@ def _detect_objects(objects, obs, hud=False):
                              tol_s=2, miny=24, maxy=151)
     import ipdb; ipdb.set_trace()
     match_objects(objects, helmet, 17, 8, Helmet)
-
     shield = find_objects(obs, objects_colors["shield"], closing_dist=1, size=(5, 11), tol_s=1, min_distance=2,
                           miny=24, maxy=151)
     match_objects(objects, shield, 17, 8, Shield)
