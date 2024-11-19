@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 
 """
 RAM extraction for the game Fishing Derby.
@@ -151,9 +151,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # shark
     if ram_state[103] == 80:
-        objects[8] = None
+        objects[8] = NoObject()
     else:
-        if objects[8] is None:
+        if type(objects[8]) is NoObject:
             objects[8] = Shark()
         objects[8].previous_pos = objects[8].xy[0]
         objects[8].xy = ram_state[75], 80
