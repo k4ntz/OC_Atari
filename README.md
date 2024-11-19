@@ -63,10 +63,10 @@ year={2023}
 | Regular       | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | NeuroSymbolic | 🐛 |🐏|  | 🐏 | |  |  |  |  |  |  | ✓ | 🐛 |  |  |  |  |  |  |  | ✓ | ✓ | ✓ | ✓ |  |  |  |  | ✓ |  |  | ✓ |  |  |  |  |  |  | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |  |  |
 
-✓: completed
-🐛: bug 
-👁️: only vision
-🐏: only RAM
+* ✓: completed
+* 🐛: bug 
+* 👁️: only vision
+* 🐏: only RAM
 
 A list of all gymnasium games can be found in the [Gymnasium Documentation](https://gymnasium.farama.org/environments/atari/)
 
