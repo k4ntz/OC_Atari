@@ -1,3 +1,6 @@
+from typing import Tuple
+
+
 class GameObject:
     """
     The Parent Class of every detected object in the Atari games (Vision Processing mode)
@@ -25,7 +28,13 @@ class GameObject:
     @property
     def _ns_meaning(self):
         """NeuroSymbolic Meaning"""
-        return "x, y"
+        return [
+            'POSITION',
+        ]
+
+    @property
+    def _ns_types(self):
+        return [Tuple[int, int]] 
 
     @property
     def _nslen(self):

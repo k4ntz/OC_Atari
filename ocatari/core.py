@@ -470,7 +470,6 @@ class OCAtari:
         :return: State snapshot
         :rtype: env_snapshot
         """
-
         return list(chain.from_iterable([o._nsrepr for o in self._objects]))
         
     @property

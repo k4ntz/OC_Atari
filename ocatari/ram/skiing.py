@@ -80,24 +80,6 @@ class Flag(GameObject):
     def xy(self):
         return self._xy
 
-    @property
-    def _nsrepr(self):
-        h_coords = [c for coord in self.h_coords for c in coord]
-        return [self.x, self.y, *h_coords, self.orientation, *self.rgb]
-    
-    @property
-    def _ns_meaning(self):
-        return [
-            'POSITION',
-            'POSITION_HISTORY',
-            'ORIENTATION', 
-            'RGB', 
-        ]
-
-    @property
-    def _ns_types(self):
-        return [Tuple[int, int], Tuple[int, int, int, int], Tuple[int], Tuple[int, int, int]] 
-
     @xy.setter
     def xy(self, xy):
         x, y = xy
@@ -107,7 +89,6 @@ class Flag(GameObject):
 
     def __eq__(self, o):
         return isinstance(o, Flag) and abs(self._xy[1] - o._xy[1]) < 5
-
 
 class Mogul(GameObject):
     """
@@ -130,24 +111,6 @@ class Mogul(GameObject):
     def xy(self):
         return self._xy
 
-    @property
-    def _nsrepr(self):
-        h_coords = [c for coord in self.h_coords for c in coord]
-        return [self.x, self.y, *h_coords, self.orientation, *self.rgb]
-
-    @property
-    def _ns_meaning(self):
-        return [
-            'POSITION',
-            'POSITION_HISTORY',
-            'ORIENTATION', 
-            'RGB', 
-        ]
-
-    @property
-    def _ns_types(self):
-        return [Tuple[int, int], Tuple[int, int, int, int], Tuple[int], Tuple[int, int, int]] 
-
     @xy.setter
     def xy(self, xy):
         x, y = xy
@@ -157,7 +120,6 @@ class Mogul(GameObject):
 
     def __eq__(self, o):
         return isinstance(o, Mogul) and abs(self._xy[1] - o._xy[1]) < 5
-
 
 class Tree(GameObject):
     """
@@ -189,24 +151,6 @@ class Tree(GameObject):
     def xy(self):
         return self._xy
 
-    @property
-    def _nsrepr(self):
-        h_coords = [c for coord in self.h_coords for c in coord]
-        return [self.x, self.y, *h_coords, self.orientation, *self.rgb]
-
-    @property
-    def _ns_meaning(self):
-        return [
-            'POSITION',
-            'POSITION_HISTORY',
-            'ORIENTATION', 
-            'RGB', 
-        ]
-
-    @property
-    def _ns_types(self):
-        return [Tuple[int, int], Tuple[int, int, int, int], Tuple[int], Tuple[int, int, int]] 
-
     @xy.setter
     def xy(self, xy):
         x, y = xy
@@ -219,7 +163,6 @@ class Tree(GameObject):
         else:
             self._xy = x-3, y+4
             self.wh = self.wh[0], min(175-y, 30)
-
 
 class Clock(ValueObject):
     """
@@ -299,7 +242,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if type == 85: # Tree
             if y < 27: # tree disappeared
                 if objects[1+tree_n] == Tree(x, y, subtype):
-                    objects[1+tree_n] = NoObject()
+                    objects[1+tree_n] = NoObject(objects[1+tree_n]._nslen)
                     next_tree = tree_slots[(tree_n+1) % 4]
                     if next_tree:
                         next_tree._highest = True 
@@ -318,7 +261,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     if y <= 29:
                         tree.wh = tree.wh[0], height+2
                         if height+2 < 0:
-                            objects[1+tree_n] = NoObject() # tree disappeared
+                            objects[1+tree_n] = NoObject(objects[1+tree_n]._nslen) # tree disappeared
                             next_tree = tree_slots[(tree_n+1) % 4]
                             if next_tree:
                                 next_tree._highest = True 
@@ -326,7 +269,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         elif type == 5: # Mogul
             if y < 27: # mogul disappeared
                 if objects[5+mogul_n] == Mogul(x, y, subtype):
-                    objects[5+mogul_n] = NoObject()
+                    objects[5+mogul_n] = NoObject(objects[5+mogul_n]._nslen)
                     next_mogul = mogul_slots[(mogul_n+1) % 3]
                     if next_mogul:
                         next_mogul._highest = True 
@@ -348,8 +291,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         elif type == 2: # Flag
             if y < 27: # flag disappeared
                 if objects[8+flag_n] == Flag(x, y):
-                    objects[8+flag_n] = NoObject()
-                    objects[9+flag_n] = NoObject()
+                    objects[8+flag_n] = NoObject(objects[8+flag_n]._nslen)
+                    objects[9+flag_n] = NoObject(objects[9+flag_n]._nslen)
                     next_flag = flag_slots[(flag_n+2) % 4]
                     if next_flag:
                         next_flag._highest = True
