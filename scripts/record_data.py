@@ -1,6 +1,7 @@
 """
 This script is used to simply play the Atari games manually.
 """
+from ale_py import Action
 import gymnasium as gym
 import numpy as np
 from matplotlib import pyplot as plt
@@ -66,6 +67,7 @@ class Renderer:
             self._handle_user_input()
             if not self.paused:
                 action = self._get_action()
+                action = self.env.get_action_meanings().index(action.name)
                 obs, reward, term, trunc, info = self.env.step(action)
                 current_ram = self.env.unwrapped.ale.getRAM()
                 self.env.render()
@@ -79,14 +81,14 @@ class Renderer:
                 self.running = False
         pygame.quit()
 
-    def _get_action(self):
+    def _get_action(self) -> Action:
         pressed_keys = list(self.current_keys_down)
         pressed_keys.sort()
         pressed_keys = tuple(pressed_keys)
         if pressed_keys in self.keys2actions.keys():
             return self.keys2actions[pressed_keys]
         else:
-            return 0  # NOOP
+            return Action.NOOP 
 
     def _handle_user_input(self):
         self.current_mouse_pos = np.asarray(pygame.mouse.get_pos())
