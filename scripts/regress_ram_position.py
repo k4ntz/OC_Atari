@@ -36,9 +36,10 @@ def add_signed_states(states, state_poses):
 
 def get_model():
     model = PySRRegressor(
-        niterations = 50,  # < Increase me for better results
+        niterations = 100,  # < Increase me for better results
         maxsize = 10,
-        binary_operators = ["+", "-"],
+        binary_operators = ["+", "-", "*", "/", "max", "min", "mod", "cond", "greater", "logical_or", "logical_and"],
+        unary_operators=["neg", "square", "exp", "log", "abs", "sqrt"],
         elementwise_loss = "loss(prediction, target) = (prediction - target)^2",
         # verbosity=0
     )
@@ -78,6 +79,8 @@ def get_regression_variables(states, next_states, state_poses, ram_pos, regresso
 
 def compute_accuracy(formulae, states, next_states):
     # formulae = formulae.replace("=", "==") # replace assignment with comparison
+    # replace mod with np.mod
+    formulae = formulae.replace("mod", "np.mod")
     sns, ns = next_states.astype(np.int8).T, next_states.T
     ss, s  = states.astype(np.int8).T, states.T
     count_matches = np.sum(eval(formulae))
