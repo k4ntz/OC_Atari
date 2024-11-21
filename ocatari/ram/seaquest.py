@@ -266,7 +266,7 @@ def _init_objects_ram(hud=False):
 def _detect_objects_ram(objects, ram_state, hud=False):
     
     player = objects[0]
-    player.xy = ram_state[70], ram_state[97] + 32
+    player.xy = ram_state[70], ram_state[97] + 33
     player.orientation = Orientation.E if ram_state[86] == 0 else Orientation.W
     player.crashed = ram_state[105] > 0
 
@@ -314,20 +314,20 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # divers and enemy_missiles share a ram position
     for i in range(4):
         if _is_submarine(i, ram_state):  # then, it's an enemy missile
-            if 0 < ram_state[71 + i] < 160:
+            if 0 < ram_state[74 - i] < 160:
                 missile = objects[29+i]
                 if type(missile) != EnemyMissile:
                     missile = EnemyMissile()
-                missile.xy = ram_state[71 + i] + 3, 145 - i * 24
+                missile.xy = ram_state[74 - i] + 3, 145 - (3-i) * 24
                 objects[29+i] = missile
             else:
                 objects[29+i] = NoObject()
         else:
-            if 0 < ram_state[71 + i] < 160:
+            if 0 < ram_state[74 - i] < 160:
                 diver = objects[25+i]
                 if type(diver) != Diver:
                     diver = Diver()
-                diver.xy = ram_state[71 + i], 141 - i * 24
+                diver.xy = ram_state[74 - i], 141 - (3-i) * 24
                 objects[25+i] = diver
             else:
                 objects[25+i] = NoObject()
@@ -352,8 +352,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     
     if ram_state[102] != 0:
-        if type(objects[19]) != OxygenBar:
-            objects[19] = OxygenBar()
+        if type(objects[35]) != OxygenBar:
+            objects[35] = OxygenBar()
         if ram_state[102] == 64:
             new_wh = 63, 5
         else:
