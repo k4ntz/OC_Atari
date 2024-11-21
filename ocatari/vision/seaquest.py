@@ -105,11 +105,11 @@ def _detect_objects(objects, obs, hud=False):
         objects[34] = NoObject()
             
 
-    divers_and_missiles = find_objects(obs, objects_colors["diver"], closing_dist=4)
+    divers_and_missiles = find_objects(obs, objects_colors["diver"], closing_dist=1)
     divers = []
     missiles = []
     for dm in divers_and_missiles:
-        if dm[1] < 190 and dm[2] > 2 and dm[3] < 5:
+        if dm[1] < 190 and dm[2] > 2 and dm[3] > 5:
             divers.append(dm)
         elif dm[1] < 190 and dm[2] > 2:
             missiles.append(dm)
