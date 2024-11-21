@@ -1,6 +1,7 @@
 import sys
 from termcolor import colored
 import numpy as np
+from ocatari.vision.game_objects import NoObject
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -61,6 +62,8 @@ def use_vision_objects(objects, game_module):
     for i, obj in enumerate(objects):
         if obj: # skip None objects
             objects[i] = getattr(mod, objects[i].category)(*obj.xywh)
+        else:
+            objects[i] = NoObject()
     return objects
 
 
