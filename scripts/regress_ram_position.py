@@ -57,6 +57,7 @@ def perform_regression(x, y, vnames, tracked_ram):
     print("\n=== FINAL EQUATIONS ===")
     for eq in model.equations_["equation"]:
         formated_eq = re.sub(r's(\d+)', r's[\1]', eq)
+        formated_eq = re.sub(r'a(\d+)', r'a[\1]', formated_eq)
         print(f"ns[{tracked_ram}] == {formated_eq}")
 
 def get_regression_variables(states, next_states, state_poses, ram_pos, regressors):
@@ -83,6 +84,8 @@ def compute_accuracy(formulae, states, next_states, actions):
     formulae = formulae.replace("greater", "np.greater")
     formulae = formulae.replace("equal", "np.equal")
     formulae = formulae.replace("square", "np.square")
+    formulae = formulae.replace("neg", "np.negative")
+    formulae = formulae.replace("max", "np.maximum")
     sns, ns = next_states.astype(np.int8).T, next_states.T
     ss, s  = states.astype(np.int8).T, states.T
     a = actions.T
@@ -97,7 +100,7 @@ def add_actions(dataset, actions, vnames):
     n_samples, n_features = dataset.shape
     n_actions = actions.shape[1]
     dataset = np.column_stack((dataset, actions))
-    vnames.extend([f"a[{i}]" for i in range(n_actions)])
+    vnames.extend([f"a{i}" for i in range(n_actions)])
     return dataset, vnames
 
 
