@@ -77,14 +77,29 @@ def get_regression_variables(states, next_states, state_poses, ram_pos, regresso
 
     return dataset, objective, vnames
 
-def compute_accuracy(formulae, states, next_states):
+def compute_accuracy(formulae, states, next_states, actions):
     # formulae = formulae.replace("=", "==") # replace assignment with comparison
-    # replace mod with np.mod
     formulae = formulae.replace("mod", "np.mod")
+    formulae = formulae.replace("greater", "np.greater")
+    formulae = formulae.replace("equal", "np.equal")
+    formulae = formulae.replace("square", "np.square")
     sns, ns = next_states.astype(np.int8).T, next_states.T
     ss, s  = states.astype(np.int8).T, states.T
+    a = actions.T
     count_matches = np.sum(eval(formulae))
     print(f"Accuracy of regression: {count_matches / len(states) * 100}%")
+
+
+def add_actions(dataset, actions, vnames):
+    #dataset shape: (n_samples, n_features)
+    # actions shape: (n_samples, n_actions)
+    # final shape: (n_samples, n_features + n_actions)
+    n_samples, n_features = dataset.shape
+    n_actions = actions.shape[1]
+    dataset = np.column_stack((dataset, actions))
+    vnames.extend([f"a[{i}]" for i in range(n_actions)])
+    return dataset, vnames
+
 
 def main():
     # args parsing
@@ -96,18 +111,23 @@ def main():
                         help="the subset ram positions to use within regressors")
     parser.add_argument("-f", "--formulae", type=str, required=False, 
                         help="the formulae to test on the states (s), next_states (ns), or signed states (ss), and next signed states (nss)")
+    parser.add_argument("-ua", "--use-actions", action="store_true",
+                        help="whether to use actions in the regression")
     opts = parser.parse_args()
 
     # loading dataset
     buffer = pickle.load(open(opts.dataset, "rb"))
     if opts.formulae:
-        states, next_states, state_poses, _ = get_states_actions(buffer, simplify=False)
-        compute_accuracy(opts.formulae, states, next_states)
+        states, next_states, state_poses, actions = get_states_actions(buffer, simplify=False)
+        compute_accuracy(opts.formulae, states, next_states, actions)
 
     else:
         # performing regression
-        states, next_states, state_poses, _ = get_states_actions(buffer, simplify=True)
+        # states, next_states, state_poses, _ = get_states_actions(buffer, simplify=True)
+        states, next_states, state_poses, actions = get_states_actions(buffer, simplify=True)
         dataset, objective, vnames = get_regression_variables(states, next_states, state_poses, opts.track, opts.reduce_ram)
+        if opts.use_actions:
+            dataset, vnames = add_actions(dataset, actions, vnames)
         perform_regression(dataset, objective, vnames, opts.track)
 
 if __name__ == "__main__":
