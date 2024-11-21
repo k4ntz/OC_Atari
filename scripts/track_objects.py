@@ -83,8 +83,8 @@ class Renderer:
         pygame.display.set_caption("OCAtari Environment")
         self.env_render_shape = sample_image.shape[:2]
         object_render_width = round((self.obj_n_cols * 105 + 50) * (UPSCALE_FACTOR / 4))
-        window_size = (self.env_render_shape[0] + object_render_width, self.env_render_shape[1])
-        self.window = pygame.display.set_mode(window_size)
+        self.window_size = (self.env_render_shape[0] + object_render_width, self.env_render_shape[1])
+        self.window = pygame.display.set_mode(self.window_size)
         self.clock = pygame.time.Clock()
         self.obj_font = pygame.font.SysFont('Pixel12x10', 25)
 

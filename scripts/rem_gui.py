@@ -46,6 +46,7 @@ class Renderer:
         self.candidate_cell_ids = []
         self.current_active_cell_input : str = ""
         self.no_render = no_render
+        self.red_render = []
 
         self.saved_frames = deque(maxlen=20) # tuples of ram, state, image
         self.frame_by_frame = False
@@ -72,6 +73,10 @@ class Renderer:
                 # if reward != 0:
                 #     print(reward)
                 #     pass
+                # self.env.set_ram(59, 105)
+                # js = [2, 6, 12, 36, 66, 128, 172]
+                # for i, j in zip(range(28, 34), js):
+                #     self.env.set_ram(i, 1+j)
                 self.current_frame = self.env.render().copy()
                 self._render()
                 self.next_frame = False
@@ -110,6 +115,12 @@ class Renderer:
                         self.no_render.remove(to_hide)
                     else:
                         self.no_render.append(to_hide)
+                elif event.button == 2:  # middle mouse button pressed
+                    toggle = self._get_cell_under_mouse()
+                    if toggle in self.red_render:
+                        self.red_render.remove(toggle)
+                    else:
+                        self.red_render.append(toggle)
                 elif event.button == 4:  # mousewheel up
                     cell_idx = self._get_cell_under_mouse()
                     if cell_idx is not None:
@@ -239,12 +250,15 @@ class Renderer:
     def _render_ram_cell(self, cell_idx, value):
         is_active = cell_idx == self.active_cell_idx
         is_candidate = cell_idx in self.candidate_cell_ids
+        is_red = cell_idx in self.red_render
 
         x, y, w, h = self._get_ram_cell_rect(cell_idx)
 
         # Render cell background
         if is_active:
             color = (70, 70, 30)
+        elif is_red:
+            color = (150, 20, 20)
         elif is_candidate:
             color = (15, 45, 100)
         else:

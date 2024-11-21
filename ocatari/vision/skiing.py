@@ -56,12 +56,9 @@ class Score(GameObject):
     
 
 def _detect_objects(objects, obs, hud=False):
-    # objects.clear()
     player = objects[0]
     player_bb = find_objects(obs, player_c)[0]
     player.xywh = player_bb
-    # for el in player:
-    #     objects.append(Player(*el))
     trees_bb = []
     for col in trees_c:
         trees_bb.extend([list(bb) + [col] for bb in find_objects(obs, col, closing_active=True, closing_dist=12)])
