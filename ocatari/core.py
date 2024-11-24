@@ -23,7 +23,7 @@ except ModuleNotFoundError:
 
 import warnings
 
-UPSCALE_FACTOR = 4
+UPSCALE_FACTOR = 3
 
 
 try:
