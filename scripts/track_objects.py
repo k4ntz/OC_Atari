@@ -6,6 +6,7 @@ import pickle as pkl
 from collections import deque
 from copy import deepcopy 
 from ocatari.core import OCAtari
+from ocatari.utils import make_deterministic
 import atexit
 
 """
@@ -52,8 +53,14 @@ class Renderer:
                              render_oc_overlay=True, frameskip=1, obs_mode="obj")
 
         self.env.reset(seed=42)
+        self.both = mode=="both"
+        if self.both:
+            make_deterministic(0, self.env)
+            self.misaligned = []
+            self.max_objects = len(self.env._slots)*2
+        else:
+            self.max_objects = len(self.env._slots) # maximum number of objects to display
         self.current_frame = self.env.render()
-        self.max_objects = len(self.env._slots) # maximum number of objects to display
         self.obj_n_cols = self.max_objects // 7 + 1
         self._init_pygame(self.current_frame)
         self.paused = False
@@ -193,12 +200,52 @@ class Renderer:
         self.clock.tick(60)
 
     def _render_objects(self):
-        objects = self.env._objects
-        num_objects = min(len(objects), self.max_objects)
-        # if len(objects) > self.max_objects:
-            # print(f"Warning: Too many objects detected ({len(objects)}). Displaying only the first {self.max_objects}.")
-        for i in range(num_objects):
-            self._render_object_cell(i, objects[i])
+        if not self.both:
+            objects = self.env._objects
+            num_objects = min(len(objects), self.max_objects)
+            # if len(objects) > self.max_objects:
+                # print(f"Warning: Too many objects detected ({len(objects)}). Displaying only the first {self.max_objects}.")
+            for i in range(num_objects):
+                self._render_object_cell(i, objects[i])
+        else:
+            objects = [item for pair in zip(self.env._objects, self.env.objects_v) for item in pair]
+            num_objects = min(len(objects), self.max_objects)
+            # if len(objects) > self.max_objects:
+                # print(f"Warning: Too many objects detected ({len(objects)}). Displaying only the first {self.max_objects}.")
+            for i in range(num_objects//2):
+                obj_r = objects[i*2]
+                obj_v = objects[i*2+1]
+                if not obj_r._is_equivalent(obj_v):
+                    iou = obj_r.iou(obj_v)
+                    if iou < 0.1:
+                        in_list = False
+                        for j in range(num_objects//2):
+                            if obj_r._is_equivalent(self.env.objects_v[j]):
+                                in_list = True
+                        if not in_list:
+                            obj_r.rgb = (200, 25, 25)
+                            obj_v.rgb = (200, 25, 25)
+                            if i*2 not in self.misaligned:
+                                print(obj_r, obj_v, iou)
+                                self.paused = True
+                                self.misaligned.append(i*2)
+                        else:
+                            obj_r.rgb = (25, 200, 25)
+                            obj_v.rgb = (25, 200, 25)
+
+                    elif iou > 0.5:
+                        obj_r.rgb = (200, 200, 10)
+                        obj_v.rgb = (200, 200, 10)
+                    else:
+                        obj_r.rgb = (200, 130, 70)
+                        obj_v.rgb = (200, 130, 70)
+                else:
+                    # print(obj_r)
+                    obj_r.rgb = (25, 200, 25)
+                    obj_v.rgb = (25, 200, 25)
+
+                self._render_object_cell(i*2, objects[i*2])
+                self._render_object_cell(i*2+1, objects[i*2+1])
 
     def _render_object_cell(self, cell_idx, obj):
         x, y, w, h = self._get_obj_cell_rect(cell_idx)
