@@ -39,7 +39,7 @@ if opts.path:
 
 
 env.step(2)
-make_deterministic(0, env)
+# make_deterministic(0, env)
 ax = plt.gca()
 bally = []
 enemyy = []

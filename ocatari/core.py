@@ -23,7 +23,7 @@ except ModuleNotFoundError:
 
 import warnings
 
-UPSCALE_FACTOR = 4
+UPSCALE_FACTOR = 3
 
 
 try:
@@ -74,7 +74,7 @@ AVAILABLE_GAMES = ["Adventure", "AirRaid", "Alien", "Amidar", "Assault", "Asteri
                    "CrazyClimber", "DemonAttack", "DonkeyKong",
                    "DoubleDunk", "Enduro", "FishingDerby", "Freeway", "Frogger",
                    "Frostbite", "Galaxian", "Gopher", "Hero", "IceHockey", 
-                   "Jamesbond", "Kangaroo", "KingKong", "Krull", "KungFuMaster", "MarioBros", "MontezumaRevenge", 
+                   "Jamesbond", "Kangaroo","KeystoneKapers", "KingKong", "Krull", "KungFuMaster", "MarioBros", "MontezumaRevenge", 
                    "MsPacman", "NameThisGame","Pacman", "Phoenix","Pitfall", "Pong", "Pooyan", "PrivateEye",
                    "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", 
                    "SpaceInvaders", "Tennis", "TimePilot", "UpNDown", "Venture", 
@@ -210,7 +210,10 @@ class OCAtari:
         if self.obs_mode == "dqn":
             obs = np.array(self.dqn_obs[0])
         elif self.obs_mode == "obj":
-            obs = np.array(self._state_buffer_ns)
+            try:
+                obs = np.array(self._state_buffer_ns)
+            except:
+                import ipdb;ipdb.set_trace()
         return obs, reward, truncated, terminated, info
      
     
