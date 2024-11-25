@@ -5,21 +5,17 @@ RAM extraction for the game Keystone Kapers.
 
 """
 
-MAX_NB_OBJECTS = {'Kop': 1, 'Krook': 1, 'Ball': 1, 'Moneybag': 2, 'Suitcase':2, 'Elevator':3, 'Escalator':2, 'SecuritySystem':1,'Radio': 4, 'Cart': 3, 'Biplane': 2}
-MAX_NB_OBJECTS_HUD = {'Kop': 1, 'Krook': 1, 'Ball':1, 'Moneybag': 2, 'Suitcase':2,'Elevator':3, 'Escalator':2, 'SecuritySystem':1 ,'Radio':4, 'Cart': 3, 'Biplane': 2}
+MAX_NB_OBJECTS = {'Kop': 1, 'Krook': 1, 'Ball': 1, 'Moneybag': 2, 'Suitcase':2, 'Elevator':3, 'Escalator':2, 'SecuritySystem':1,'Radio': 4, 'Cart': 4, 'Biplane': 2}
+MAX_NB_OBJECTS_HUD = {'Kop': 1, 'Krook': 1, 'Ball':1, 'Moneybag': 2, 'Suitcase':2,'Elevator':3, 'Escalator':2, 'SecuritySystem':1 ,'Radio':4, 'Cart': 4, 'Biplane': 2, 'BonusKops': 1, 'Score':1, 'Timer':1 }
 
 class Kop(GameObject):
     """
     The player figure i.e., the Kop. 
-    """
-    
+    """  
     def __init__(self):
         super().__init__()
         self.rgb = 220,175,111
         self.hud = False
-        # self.wh = 6,20
-        # self.y-=5
-        # self.h+=5
 
 class Krook(GameObject):
     """
@@ -29,10 +25,6 @@ class Krook(GameObject):
         super().__init__()
         self.rgb = 220,175,11
         self.hud = False
-        # self._xy = 0, 0
-        # self.wh = 7,20
-        # self.y-=1
-        # self.h+=1
 
 
 class Ball(GameObject):
@@ -83,8 +75,26 @@ class Biplane(GameObject):
      def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 238,209,128
-        self.h+=4
-        self.y-=1
+        
+#HUD:
+class BonusKops(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 0, 0, 0
+        self.hud = True
+        
+class Score(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 236,236,236
+        self.hud = True
+
+class Timer(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 0, 0, 0
+        #self.xywh = (55, 43, 14, 7)
+        self.hud = True
         
 def _init_objects_ram(hud=False):
     """
@@ -95,9 +105,9 @@ def _init_objects_ram(hud=False):
     elevators = [NoObject()]*3
     escalators = [NoObject()]*2
     radios = [NoObject()]*4
-    carts = [NoObject()]*3
+    carts = [NoObject()]*4
     biplanes = [NoObject()]*2
-    return [Kop()]+ [Krook()]+ [Ball()] + bags + suitcases + elevators + escalators + [SecuritySystem()]+ radios + carts + biplanes
+    return [Kop()]+ [Krook()]+ [Ball()] + bags + suitcases + elevators + escalators + [SecuritySystem()]+ radios + carts + biplanes+ [BonusKops()] +[Score()] + [Timer()] 
 
 def _detect_objects_ram(objects, ram_state, hud=False):
     pass
