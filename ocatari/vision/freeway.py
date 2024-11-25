@@ -1,4 +1,4 @@
-from .utils import find_objects
+from .utils import find_objects, match_objects
 from .game_objects import GameObject
 
 objects_colors = {"score": [228, 111, 111], "logo": [228, 111, 111], "chicken": [252, 252, 84]}
@@ -25,23 +25,22 @@ class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 228, 111, 111
+        super().hud = True
 
 
 def _detect_objects(objects, obs, hud=False):
-    objects.clear()
-
     chickens = find_objects(obs, objects_colors["chicken"], size=(7, 8), tol_s=3)
+    i = 0
     for chicken in chickens:
-        objects.append(Chicken(*chicken))
+        objects[i] = (Chicken(*chicken))
+        i+=1
 
+
+    cars_bb = []
     for carcolor in car_colors.values():
-        car = find_objects(obs, carcolor, min_distance=1, miny=20, maxy=184)
-        if len(car) >= 1:
-            x, y, w, h = car[0]
-            car_inst = Car(x, y-1, w, h+2)
-            car_inst.rgb = carcolor
-            objects.append(car_inst)
-
+        cars_bb.extend([list(bb) + [carcolor] for bb in find_objects(obs, carcolor, min_distance=1, miny=20, maxy=184)])
+    match_objects(objects, cars_bb, 2, 10, Car)
+    
     if hud:
         scores = find_objects(obs, objects_colors["score"], min_distance=1, maxy=14)
         for score in scores:
