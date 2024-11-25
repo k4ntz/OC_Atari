@@ -1,12 +1,12 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 
 """
 RAM extraction for the game Fishing Derby.
 """
 
-MAX_NB_OBJECTS = {"Player1FishingString": 1, "Player2FishingString": 1, "Fish": 6, "Shark": 1}
-MAX_NB_OBJECTS_HUD = {"Player1FishingString": 1, "Player2FishingString": 1, "Fish": 6, "Shark": 1, "ScoreP1": 1,
-                      "ScoreP2": 1}
+MAX_NB_OBJECTS = {"PlayerOneHook": 1, "PlayerTwoHook": 1, "Fish": 6, "Shark": 1}
+MAX_NB_OBJECTS_HUD = {"PlayerOneHook": 1, "PlayerTwoHook": 1, "Fish": 6, "Shark": 1, "ScorePlayerOne": 1,
+                      "ScorePlayerTwo": 1}
 
 
 class Fish(GameObject):
@@ -100,13 +100,10 @@ def _get_max_objects(hud=False):
 
 
 def _init_objects_ram(hud=False):
+    objects = [PlayerOneHook(), PlayerTwoHook(), Fish(), Fish(), Fish(), 
+               Fish(), Fish(), Fish(), Shark()] 
     if hud:
-        objects = [PlayerOneHook(), PlayerTwoHook(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
-                   Shark(),
-                   ScorePlayerOne(), ScorePlayerTwo()]
-    else:
-        objects = [PlayerOneHook(), PlayerTwoHook(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
-                   Shark()]
+        objects += [ScorePlayerOne(), ScorePlayerTwo()]
     return objects
 
 
@@ -154,9 +151,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # shark
     if ram_state[103] == 80:
-        objects[8] = None
+        objects[8] = NoObject()
     else:
-        if objects[8] is None:
+        if type(objects[8]) is NoObject:
             objects[8] = Shark()
         objects[8].previous_pos = objects[8].xy[0]
         objects[8].xy = ram_state[75], 80

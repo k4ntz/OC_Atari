@@ -11,29 +11,28 @@ RAM extraction for the game SEAQUEST. Supported modes: ram.
 
 MAX_NB_OBJECTS = {
     'Player': 1,
-    'Diver': 4,
     'Shark': 12,
     'Submarine': 12,
+    'Diver': 4,
+    'EnemyMissile': 4,
     'SurfaceSubmarine': 1,
     'PlayerMissile': 1,
-    'EnemyMissile': 4,
-    'Lives': 1,
     'OxygenBar': 1,
     'CollectedDiver': 6,
 }
 
 MAX_NB_OBJECTS_HUD = {
     'Player': 1,
-    'Diver': 4,
     'Shark': 12,
     'Submarine': 12,
+    'Diver': 4,
+    'EnemyMissile': 4,
     'SurfaceSubmarine': 1,
     'PlayerMissile': 1,
-    'EnemyMissile': 4,
-    'Lives': 1,
     'OxygenBar': 1,
     'CollectedDiver': 6,
     'PlayerScore': 1,
+    'Lives': 1,
     'OxygenBarDepleted': 1,
 }
 
@@ -223,8 +222,8 @@ def _get_max_objects(hud=False):
         return objects
 
     if hud:
-        return fromdict(MAX_ALL_OBJECTS)
-    return fromdict(MAX_ESSENTIAL_OBJECTS)
+        return fromdict(MAX_NB_OBJECTS)
+    return fromdict(MAX_NB_OBJECTS_HUD)
 
 
 # def _init_all_objects() -> Dict[Type[GameObject], Sequence[GameObject]]:
@@ -254,7 +253,7 @@ def _init_objects_ram(hud=False):
     """(Re)Initialize the objects."""
     objects = [Player()]
 
-    objects.extend([NoObject()]*18)
+    objects.extend([NoObject()]*34)
     objects.extend([OxygenBar()])
     objects.extend([CollectedDiver()]*6)
 
@@ -265,9 +264,8 @@ def _init_objects_ram(hud=False):
 
 
 def _detect_objects_ram(objects, ram_state, hud=False):
-    
     player = objects[0]
-    player.xy = ram_state[70], ram_state[97] + 32
+    player.xy = ram_state[70], ram_state[97] + 33
     player.orientation = Orientation.E if ram_state[86] == 0 else Orientation.W
     player.crashed = ram_state[105] > 0
 
@@ -289,80 +287,90 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if enemy_in_slot:
                 x = (ram_state[30 + i] + 16 * j) % 256
                 y = 141 - i * 24
-                enemy = objects[idx]
                 if -5 <= x <= 165:  # Only track objects that are on the screen
                     # Sharks float up and down, determined by an offset
                     if present_enemy_type == Shark:
+                        enemy = objects[idx]
                         if type(enemy) is not Shark:
                             enemy = Shark()
                         y += ram_state[93] - 4
-                    elif type(enemy) is not Submarine:
-                        enemy = Submarine()
-                    enemy.xy = x, y
-                    objects[idx] = enemy
+                        enemy.xy = x, y
+                        objects[idx] = enemy
+                    else:
+                        enemy = objects[idx+12]
+                        if type(enemy) is not Submarine:
+                            enemy = Submarine()
+                        enemy.xy = x, y
+                        objects[idx+12] = enemy
                 else:
                     objects[idx] = NoObject()
+                    objects[idx+12] = NoObject()
             else:
                 objects[idx] = NoObject()
+                objects[idx+12] = NoObject()
             # _remove_object(hidden_enemy_type, idx)  # always remove the invisible enemy
 
     # divers and enemy_missiles share a ram position
     for i in range(4):
-        if 0 < ram_state[71 + i] < 160:
-            if _is_submarine(i, ram_state):  # then, it's an enemy missile
-                missile = objects[13+i]
+        if _is_submarine(i, ram_state):  # then, it's an enemy missile
+            if 0 < ram_state[74 - i] < 160:
+                missile = objects[29+i]
                 if type(missile) != EnemyMissile:
                     missile = EnemyMissile()
-                missile.xy = ram_state[71 + i] + 3, 145 - i * 24
-                objects[13+i] = missile
+                missile.xy = ram_state[74 - i] + 3, 145 - (3-i) * 24
+                objects[29+i] = missile
             else:
-                diver = objects[13+i]
+                objects[29+i] = NoObject()
+        else:
+            if 0 < ram_state[74 - i] < 160:
+                diver = objects[25+i]
                 if type(diver) != Diver:
                     diver = Diver()
-                diver.xy = ram_state[71 + i], 141 - i * 24
-                objects[13+i] = diver
-        else:
-            objects[13+i] = NoObject()
+                diver.xy = ram_state[74 - i], 141 - (3-i) * 24
+                objects[25+i] = diver
+            else:
+                objects[25+i] = NoObject()
+
 
 
     # only spawns in late game
     if ram_state[60] >= 2 and ram_state[118] < 160:
-        if not objects[17]:
-            objects[17] = SurfaceSubmarine()
-        objects[17].xy =  ram_state[118], 45
+        if type(objects[33]) is NoObject:
+            objects[33] = SurfaceSubmarine()
+        objects[33].xy =  ram_state[118], 45
     else:
-        objects[17] = NoObject()
+        objects[33] = NoObject()
 
 
     if 0 < ram_state[103] < 160:
-        if not objects[18]:
-            objects[18] = PlayerMissile()
-        objects[18].xy = ram_state[103], ram_state[97] + 40
+        if type(objects[34]) is NoObject:
+            objects[34] = PlayerMissile()
+        objects[34].xy = ram_state[103], ram_state[97] + 40
     else:
-        objects[18] = NoObject()
+        objects[34] = NoObject()
 
     
     if ram_state[102] != 0:
-        if type(objects[19]) != OxygenBar:
-            objects[19] = OxygenBar()
+        if type(objects[35]) != OxygenBar:
+            objects[35] = OxygenBar()
         if ram_state[102] == 64:
             new_wh = 63, 5
         else:
             new_wh = ram_state[102], 5
-        objects[19].wh = new_wh
-        objects[19].value = new_wh[0]
+        objects[35].wh = new_wh
+        objects[35].value = new_wh[0]
     else:
-        objects[19] = NoObject()
+        objects[35] = NoObject()
 
 
     # If you have six collected divers they blink. Blinking is ignored here
     for i in range(6):
         if i < ram_state[62]:
-            if type(objects[20+i]) != CollectedDiver:
-                objects[20+i] = CollectedDiver()
-                objects[20+i].xy = 58 + i * 8, 178
+            if type(objects[36+i]) != CollectedDiver:
+                objects[36+i] = CollectedDiver()
+                objects[36+i].xy = 58 + i * 8, 178
         else:
-            objects[20+i] = NoObject()
+            objects[36+i] = NoObject()
 
     if hud:
         score_value = _convert_number(ram_state[56]) * 10000 + \
@@ -393,7 +401,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             x = 59
             w = 46
 
-        score = objects[26]
+        score = objects[-4]
         score.value = score_value
         score.xy = x, 9
         score.wh = w, 8
@@ -402,21 +410,21 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         num_lives = ram_state[59]
         if num_lives > 0:  # Up to 6 lives possible
             new_wh = 7 + 8 * (num_lives - 1), 8
-            if type(objects[27]) != Lives:
-                objects[27] = Lives() 
-            objects[27].wh = new_wh
-            objects[27].value = num_lives
+            if type(objects[-2]) != Lives:
+                objects[-3] = Lives() 
+            objects[-3].wh = new_wh
+            objects[-3].value = num_lives
         else:
-            objects[27] = NoObject()
+            objects[-3] = NoObject()
 
         if ram_state[102] != 64:
-            if type(objects[28]) != OxygenBarDepleted:
-                objects[28] = OxygenBarDepleted()
-            objects[28].xy = 49 + ram_state[102], 170
-            objects[28].wh = 63 - ram_state[102], 5
-            objects[28].value = 63 - ram_state[102]
+            if type(objects[-2]) != OxygenBarDepleted:
+                objects[-2] = OxygenBarDepleted()
+            objects[-2].xy = 49 + ram_state[102], 170
+            objects[-2].wh = 63 - ram_state[102], 5
+            objects[-2].value = 63 - ram_state[102]
         else:
-            objects[28] = NoObject()
+            objects[-2] = NoObject()
 
 
 def _is_submarine(i: int, ram_state) -> bool:

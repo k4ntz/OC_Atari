@@ -29,19 +29,24 @@ class Score(GameObject):
 
 
 def _detect_objects(objects, obs, hud=False):
-    chickens = find_objects(obs, objects_colors["chicken"], size=(7, 8), tol_s=3)
-    i = 0
-    for chicken in chickens:
-        objects[i] = (Chicken(*chicken))
-        i+=1
+    chicken1, chicken2 = objects[:2]
+    chicken1_bb = find_objects(obs, objects_colors["chicken"], size=(7, 8), tol_s=3, maxx=80)
+    chicken2_bb = find_objects(obs, objects_colors["chicken"], size=(7, 8), tol_s=3, minx=80)
+    if chicken1_bb:
+        chicken1.xywh = chicken1_bb[0]
+    if chicken2_bb:
+        chicken2.xywh = chicken2_bb[0] 
 
-
-    cars_bb = []
+    cars_bb = []    
     for carcolor in car_colors.values():
         cars_bb.extend([list(bb) + [carcolor] for bb in find_objects(obs, carcolor, min_distance=1, miny=20, maxy=184)])
     match_objects(objects, cars_bb, 2, 10, Car)
     
     if hud:
-        scores = find_objects(obs, objects_colors["score"], min_distance=1, maxy=14)
-        for score in scores:
-            objects.append(Score(*score))
+        pscore, escore = objects[-2:]
+        pscore_bb = find_objects(obs, objects_colors["score"], min_distance=1, maxy=14, maxx=80)
+        if pscore_bb:
+            pscore.xywh = pscore_bb[0]
+        escore_bb = find_objects(obs, objects_colors["score"], min_distance=1, maxy=14, minx=80)
+        if escore_bb:
+            escore.xywh = escore_bb[0]
