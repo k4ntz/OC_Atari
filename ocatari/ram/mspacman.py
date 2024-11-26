@@ -74,7 +74,7 @@ class Pill(GameObject):
         self.wh = 4, 2
         self.rgb = 228, 111, 111
         self.hud = False
-        self.grid_ij = 0, 0
+        self.grid_ij = i, j
 
 
 class Score(ValueObject):

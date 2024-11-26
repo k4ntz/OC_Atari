@@ -64,6 +64,7 @@ class Renderer:
 
     def run(self):
         self.running = True
+        i = 0
         while self.running:
             self._handle_user_input()
             if not (self.frame_by_frame and not(self.next_frame)) and not self.paused:
@@ -81,6 +82,9 @@ class Renderer:
                 self._render()
                 self.next_frame = False
             self._render()
+            # if i % 300 == 0:
+            #     import ipdb; ipdb.set_trace()
+            i += 1
         pygame.quit()
 
     def _get_action(self):
