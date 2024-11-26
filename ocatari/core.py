@@ -125,6 +125,7 @@ class OCAtari:
         elif obs_mode == "dqn":
             # Set stack for DQN mode (grayscale, 84x84)
             create_buffer_stacks.append("dqn")
+            self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size,84,84))
         elif obs_mode == "obj":
             # Set up object tracking and observation properties
             # Get the maximum number of objects per category for the game
@@ -139,6 +140,7 @@ class OCAtari:
             self.ns_meaning = [f"{o.category} ({o._ns_meaning})" for o in self._slots]
             # Create a stack of ns_states (objects, buffer_size x ocss)
             create_buffer_stacks.append("obj")
+            self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size, get_object_state_size(self.game_name,self.hud)))
         else:
             raise AttributeError("No valid obs_mode was selected")
 
@@ -149,7 +151,7 @@ class OCAtari:
         
         # Buffers to store RGB, DQN, and neurosymbolic states
         # Store whether to create specific stacks
-        self.create_rgb_stack = "rgb" in create_buffer_stacks
+        self.create_rgb_stack = "ori" in create_buffer_stacks
         self.create_dqn_stack = "dqn" in create_buffer_stacks
         self.create_ns_stack = "obj" in create_buffer_stacks
         self._state_buffer_rgb = deque([], maxlen=self.buffer_window_size) if self.create_rgb_stack else None
