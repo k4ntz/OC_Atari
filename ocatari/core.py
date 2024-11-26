@@ -91,7 +91,7 @@ class OCAtari:
 
     The remaining \*args and \**kwargs will be passed to the `gymnasium.make` function.
     """
-    def __init__(self, env_name, mode="ram", hud=False, obs_mode="obj", render_mode=None, render_oc_overlay=False, buffer_window_size=4, create_rgb_stack=False, create_dqn_stack=False, create_ns_stack=False, *args, **kwargs):
+    def __init__(self, env_name, mode="ram", hud=False, obs_mode="obj", render_mode=None, render_oc_overlay=False, buffer_window_size=4, create_buffer_stacks = ["ori"], *args, **kwargs):
         # Determine the game name and check if it's supported
         # Extract the game name and ensure it's within the supported games
         game_name = env_name.split("/")[1].split("-")[0].split("No")[0].split("Deterministic")[0] if "ALE/" in env_name else env_name.split("-")[0].split("No")[0].split("Deterministic")[0]
@@ -131,11 +131,10 @@ class OCAtari:
 
         # Define observation space based on the observation mode
         if obs_mode == "ori":
-            # Set stack for DQN mode (RGB, 210x160x3)
-            create_rgb_stack = True
+            pass
         elif obs_mode == "dqn":
             # Set stack for DQN mode (grayscale, 84x84)
-            create_dqn_stack = True
+            create_buffer_stacks.append("dqn")
         elif obs_mode == "obj":
             # Set up object tracking and observation properties
             # Get the maximum number of objects per category for the game
@@ -149,7 +148,7 @@ class OCAtari:
             # Store the meaning of each neurosymbolic state representation
             self.ns_meaning = [f"{o.category} ({o._ns_meaning})" for o in self._slots]
             # Create a stack of ns_states (objects, buffer_size x ocss)
-            create_ns_stack = True
+            create_buffer_stacks.append("obj")
         else:
             raise AttributeError("No valid obs_mode was selected")
 
@@ -157,10 +156,12 @@ class OCAtari:
         self.render_mode = render_mode
         self.render_oc_overlay = render_oc_overlay
         self.rendering_initialized = False
+        
         # Buffers to store RGB, DQN, and neurosymbolic states
-        self.create_rgb_stack = create_rgb_stack
-        self.create_dqn_stack = create_dqn_stack
-        self.create_ns_stack = create_ns_stack
+        # Store whether to create specific stacks
+        self.create_rgb_stack = "rgb" in create_buffer_stacks
+        self.create_dqn_stack = "dqn" in create_buffer_stacks
+        self.create_ns_stack = "ns" in create_buffer_stacks
         self._state_buffer_rgb = deque([], maxlen=self.buffer_window_size) if self.create_rgb_stack else None
         self._state_buffer_ns = deque([], maxlen=self.buffer_window_size) if self.create_ns_stack else None
         self._state_buffer_dqn = deque([], maxlen=self.buffer_window_size) if self.create_dqn_stack else None
