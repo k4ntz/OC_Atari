@@ -62,22 +62,10 @@ AVAILABLE_GAMES = [
 # Constant to control the upscaling factor for rendering
 UPSCALE_FACTOR = 3
 
+
+# The OCAtari environment provides an interface to interact with Atari 2600 games through Gymnasium, enabling object tracking and analysis. This environment extends the functionality of traditional Atari environments by incorporating different object detection modes (RAM, vision, or both) and supports enhanced observation spaces for advanced tasks like reinforcement learning.  
 class OCAtari:
     """
-    The OCAtari environment provides an interface to interact with Atari 2600 games through Gymnasium, enabling object tracking and analysis. This environment extends the functionality of traditional Atari environments by incorporating different object detection modes (RAM, vision, or both) and supports enhanced observation spaces for advanced tasks like reinforcement learning.
-
-    Main Features:
-    - Supports multiple object detection modes (`raw`, `ram`, `vision`, or `both`) to provide detailed insights into game states.
-    - Offers flexible observation modes (`dqn`, `ori`, `obj`) that can be tailored to different use cases, including RL agent training.
-    - Ability to render game states with an overlay of object information (position, velocity, labels, etc.), providing better visual understanding of the game's internal dynamics.
-    - Supports interaction with various Atari games, with HUD elements optionally included.
-    - Provides neurosymbolic state representation for each game, useful for symbolic AI and hierarchical learning approaches.
-
-    Usage Scenarios:
-    - Reinforcement Learning: Train agents with access to game objects rather than just raw pixels, facilitating more efficient learning.
-    - Research: Analyze the behavior of Atari games in more detail by tracking in-game objects using either RAM or vision-based methods.
-    - Visualization and Debugging: Render environments with overlays to better understand agent-environment interactions.
-
     :param env_name: The name of the Atari gymnasium environment e.g. "Pong" or "PongNoFrameskip-v5"
     :type env_name: str
     :param mode: The detection method type: one of `raw`, `ram`, `vision`, or `both` (i.e. `ram` + `vision`)
@@ -88,6 +76,8 @@ class OCAtari:
     :type obs_mode: str
     :param buffer_window_size: The size of the buffer window for observation stacks.
     :type buffer_window_size: int
+    :param create_buffer_stacks: Decide what stacks you want to create. The obs_mode automatically add the fitting stack itself. Add "dqn" or "obj" if you want additional stacks. 
+    :type create_buffer_stacks: list
 
     The remaining \*args and \**kwargs will be passed to the `gymnasium.make` function.
     """
