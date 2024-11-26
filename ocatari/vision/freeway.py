@@ -38,8 +38,10 @@ def _detect_objects(objects, obs, hud=False):
         chicken2.xywh = chicken2_bb[0] 
 
     cars_bb = []    
+    i = 0
     for carcolor in car_colors.values():
-        cars_bb.extend([list(bb) + [carcolor] for bb in find_objects(obs, carcolor, min_distance=1, miny=20, maxy=184)])
+        cars_bb.extend([list(bb) + [carcolor] for bb in find_objects(obs, carcolor, min_distance=1, miny=22+16*i, maxy=22+16*(i+1))])
+        i+=1
     match_objects(objects, cars_bb, 2, 10, Car)
     
     if hud:
