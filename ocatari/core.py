@@ -161,7 +161,7 @@ class OCAtari:
         # Store whether to create specific stacks
         self.create_rgb_stack = "rgb" in create_buffer_stacks
         self.create_dqn_stack = "dqn" in create_buffer_stacks
-        self.create_ns_stack = "ns" in create_buffer_stacks
+        self.create_ns_stack = "obj" in create_buffer_stacks
         self._state_buffer_rgb = deque([], maxlen=self.buffer_window_size) if self.create_rgb_stack else None
         self._state_buffer_ns = deque([], maxlen=self.buffer_window_size) if self.create_ns_stack else None
         self._state_buffer_dqn = deque([], maxlen=self.buffer_window_size) if self.create_dqn_stack else None
