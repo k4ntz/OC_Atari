@@ -91,7 +91,7 @@ class OCAtari:
 
     The remaining \*args and \**kwargs will be passed to the `gymnasium.make` function.
     """
-    def __init__(self, env_name, mode="ram", hud=False, obs_mode="obj", render_mode=None, render_oc_overlay=False, buffer_window_size=4, *args, **kwargs):
+    def __init__(self, env_name, mode="ram", hud=False, obs_mode="obj", render_mode=None, render_oc_overlay=False, buffer_window_size=4, create_rgb_stack=False, create_dqn_stack=False, create_ns_stack=False, *args, **kwargs):
         # Determine the game name and check if it's supported
         # Extract the game name and ensure it's within the supported games
         game_name = env_name.split("/")[1].split("-")[0].split("No")[0].split("Deterministic")[0] if "ALE/" in env_name else env_name.split("-")[0].split("No")[0].split("Deterministic")[0]
@@ -130,12 +130,12 @@ class OCAtari:
 
 
         # Define observation space based on the observation mode
-        if obs_mode == "dqn":
-            # Set observation space for DQN mode (grayscale, 84x84)
-            if torch_imported:
-                self._env.observation_space = gym.spaces.Box(0, 255, (4, 84, 84), dtype=np.uint8)
-            else:
-                print("To use the buffer DQN of OCAtari, you need to install torch.")
+        if obs_mode == "ori":
+            # Set stack for DQN mode (RGB, 210x160x3)
+            create_rgb_stack = True
+        elif obs_mode == "dqn":
+            # Set stack for DQN mode (grayscale, 84x84)
+            create_dqn_stack = True
         elif obs_mode == "obj":
             # Set up object tracking and observation properties
             # Get the maximum number of objects per category for the game
@@ -148,18 +148,22 @@ class OCAtari:
             self._ns_state = np.zeros(sum([len(o._nsrepr) for o in self._slots]))
             # Store the meaning of each neurosymbolic state representation
             self.ns_meaning = [f"{o.category} ({o._ns_meaning})" for o in self._slots]
-            # Set observation space for object representation mode
-            ocss = get_object_state_size(self.game_name, self.hud)
-            self._env.observation_space = gym.spaces.Box(0, 255, (self.buffer_window_size, ocss), dtype=np.uint8)
-            
+            # Create a stack of ns_states (objects, buffer_size x ocss)
+            create_ns_stack = True
+        else:
+            raise AttributeError("No valid obs_mode was selected")
 
         # Set rendering and buffer attributes
         self.render_mode = render_mode
         self.render_oc_overlay = render_oc_overlay
         self.rendering_initialized = False
-        # Buffers to store RGB and neurosymbolic states
-        self._state_buffer_rgb = deque([], maxlen=self.buffer_window_size)
-        self._state_buffer_ns = deque([], maxlen=self.buffer_window_size)
+        # Buffers to store RGB, DQN, and neurosymbolic states
+        self.create_rgb_stack = create_rgb_stack
+        self.create_dqn_stack = create_dqn_stack
+        self.create_ns_stack = create_ns_stack
+        self._state_buffer_rgb = deque([], maxlen=self.buffer_window_size) if self.create_rgb_stack else None
+        self._state_buffer_ns = deque([], maxlen=self.buffer_window_size) if self.create_ns_stack else None
+        self._state_buffer_dqn = deque([], maxlen=self.buffer_window_size) if self.create_dqn_stack else None
         # Set action space based on the environment's action space
         self.action_space = self._env.action_space
         # Store the ALE interface of the environment
@@ -220,7 +224,7 @@ class OCAtari:
         self._fill_buffer()
         # Set the observation based on the selected observation mode
         if self.obs_mode == "dqn":
-            obs = np.array(self.dqn_obs[0])
+            obs = np.array(self._state_buffer_dqn)
         elif self.obs_mode == "obj":
             obs = np.array(self._state_buffer_ns)
         return obs, reward, truncated, terminated, info
@@ -273,9 +277,14 @@ class OCAtari:
         return obs, info
 
     def _fill_buffer(self):
-        # Fill the buffer with the current RGB and neurosymbolic states
-        self._state_buffer_rgb.append(self._ale.getScreenRGB())
-        self._state_buffer_ns.append(self.ns_state)
+        # Fill the RGB, DQN, and neurosymbolic state buffers with the current states
+        if self.create_dqn_stack:
+            dqn_obs = cv2.resize(cv2.cvtColor(self.getScreenRGB(), cv2.COLOR_RGB2GRAY), (84, 84), interpolation=cv2.INTER_AREA)
+            self._state_buffer_dqn.append(_tensor(dqn_obs, dtype=_uint8, **_tensor_kwargs) if torch_imported else dqn_obs)
+        if self.create_rgb_stack:
+            self._state_buffer_rgb.append(self.getScreenRGB())
+        if self.create_ns_stack:
+            self._state_buffer_ns.append(self.ns_state)
 
     window: pygame.Surface = None
     clock: pygame.time.Clock = None
@@ -367,21 +376,21 @@ class OCAtari:
         # Set the random seed for reproducibility
         self._env.seed(seed, *args, **kwargs)
 
+    def getScreenRGB(self):
+        """
+        Returns the current RGB screen state of the environment.
+
+        :return: A NumPy array representing the RGB screen state.
+        :rtype: np.array
+        """
+        return self._ale.getScreenRGB()
+    
     @property
     def nb_actions(self):
         """
         The number of actions available in this environment.
         """
         return self.action_space.n
-
-    @property
-    def dqn_obs(self):
-        """
-        The 4 (grey+down)scaled last frames (84x84) of the environment, used notably by DQN agents as states.
-        """
-        # Process and stack the last 4 frames for DQN observation
-        dqn_obs = [_tensor(cv2.resize(cv2.cvtColor(rgbs, cv2.COLOR_RGB2GRAY), (84, 84), interpolation=cv2.INTER_AREA), dtype=_uint8, **_tensor_kwargs) for rgbs in self._state_buffer_rgb]
-        return _stack(dqn_obs, 0).unsqueeze(0).byte() if torch_imported else _stack(list(dqn_obs), 0)
 
     @property
     def get_rgb_state(self):
@@ -440,16 +449,6 @@ class OCAtari:
         A list of the objects present in the environment.
         """
         return [obj for obj in self._objects if obj]
-
-    def getScreenRGB(self):
-        """
-        Returns the current RGB screen state of the environment.
-        
-        :return: A NumPy array representing the RGB screen state.
-        :rtype: np.array
-        """
-        return self._ale.getScreenRGB()
-
 
     def render_explanations(self):
         # Render explanations by highlighting the objects with bounding boxes
