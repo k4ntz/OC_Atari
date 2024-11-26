@@ -113,6 +113,9 @@ class OCAtari:
             self._covered_game = False
         else:
             self._covered_game = True
+
+        if kwargs.get("force_fire", True):
+            self.allow_force_fire = True
         
         self.env_name = env_name
         self.game_name = game_name
@@ -184,7 +187,11 @@ class OCAtari:
         self._state_buffer_rgb = deque([], maxlen=self.buffer_window_size)
         self._state_buffer_ns = deque([], maxlen=self.buffer_window_size)
         self.action_space = self._env.action_space
+        self._force_fire = self.allow_force_fire and self._env.unwrapped.get_action_meanings()[1] == "FIRE"
+        if self._force_fire:
+            print(colored("FIRE action detected. Will be forced at step 1 for stable training. Turn off by passing force_fire=False.", "yellow"))
         self._ale = self._env.unwrapped.ale
+
         # inhererit every attribute and method of env
         for meth in dir(self._env):
             if meth not in dir(self):
