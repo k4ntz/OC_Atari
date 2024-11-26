@@ -37,13 +37,14 @@ def _detect_objects(objects, obs, hud=False):
     if chicken2_bb:
         chicken2.xywh = chicken2_bb[0] 
 
-    cars_bb = []    
-    i = 0
-    for carcolor in car_colors.values():
-        cars_bb.extend([list(bb) + [carcolor] for bb in find_objects(obs, carcolor, min_distance=1, miny=22+16*i, maxy=22+16*(i+1))])
-        i+=1
-    match_objects(objects, cars_bb, 2, 10, Car)
-    
+    cars = objects[2:]
+    for i in range(10):
+        car_bb = find_objects(obs, car_colors[f"car{i+1}"], min_distance=1, miny=22 + 16 * i, maxy=22 + 16 * (i + 1))
+        if car_bb:
+            cars[i].xywh = car_bb[0]
+            cars[i].rgb = car_colors[f"car{i+1}"]
+
+
     if hud:
         pscore, escore = objects[-2:]
         pscore_bb = find_objects(obs, objects_colors["score"], min_distance=1, maxy=14, maxx=80)
