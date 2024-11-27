@@ -30,5 +30,47 @@ jobs:
           pip install pytest
           pip install "gymnasium[atari, accept-rom-license]"
 
-      - name: Run tests
-        run: pytest tests/*
+      - name: Download Pickle Files
+        run: |
+          run: |
+            mkdir -p pickle_files
+            pip install gdown
+            gdown --folder https://drive.google.com/drive/u/0/folders/18391ILruGPBjsdUb2cHRIUEpOPmt6WPq -O pickle_files
+
+
+      - name: Run general tests for all changes
+        if: always()  # Run general tests regardless of specific files changing
+        run: pytest tests/0_general/*
+
+      - name: Determine Changed Files
+        id: changes
+        run: |
+          git fetch origin ${{ github.event.before }} --depth=1
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} > changed_files.txt
+          cat changed_files.txt
+
+      - name: Set Games to Test
+        id: set_games
+        run: |
+          # Initialize an empty list for games
+          GAMES=""
+          
+          # Loop through changed files and set appropriate games
+          while IFS= read -r file; do
+            if [[ "$file" == *"/ram/"*".py" || "$file" == *"/vision/"*".py" ]]; then
+              GAME_NAME=$(basename "$file" .py)
+              GAMES+="${GAME_NAME}"
+            fi
+          done < changed_files.txt
+
+          # Remove trailing space and export GAMES
+          GAMES=$(echo $GAMES | xargs)
+          echo "GAMES=$GAMES" >> $GITHUB_ENV
+
+      - name: Run relevant tests
+        if: env.GAMES != ''
+        run: |
+          echo "Running tests with GAMES=$GAMES"
+          pytest tests/1_games/test_defaults.py
+          pytest tests/1_games/test_obj.py
+
