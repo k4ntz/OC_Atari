@@ -42,7 +42,7 @@ class EnemyScore(GameObject):
 
 def _detect_objects(objects, obs, hud=False):
     # detection and filtering
-    player, enemy, ball = objects[:3]
+    player, ball, enemy = objects[:3]
     enemy_bb = find_objects(obs, objects_colors["enemy"], min_distance=1, miny=30)
     if enemy_bb:
         enemy.xywh = enemy_bb[0]
