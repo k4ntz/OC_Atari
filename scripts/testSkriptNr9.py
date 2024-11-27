@@ -58,8 +58,6 @@ for _ in range(100):
     action = env.action_space.sample()  # pick random action
     obs, reward, truncated, terminated, info = env.step(action)
 
-
-
 obs2 = obs
 
 if obs_mode == "dqn":
