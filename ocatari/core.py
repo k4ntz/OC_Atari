@@ -12,15 +12,18 @@ from ocatari.vision.game_objects import GameObject as GameObjectVision
 from ocatari.utils import draw_label, draw_arrow
 from gymnasium.error import NameNotFound
 
+
 try:
     import ale_py  # ALE (Arcade Learning Environment) is required for running Atari environments.
 except ModuleNotFoundError:
     print('\nALE is required when using the ALE env wrapper. Try `pip install "gymnasium[atari, accept-rom-license]"`.\n')
 
+
 try:
     import cv2  # OpenCV is used for processing frames for observation (e.g., resizing, grayscaling)
 except ModuleNotFoundError:
     print('\nOpenCV is required when using the ALE env wrapper. Try `pip install opencv-python`.')
+
 
 try:
     import torch  # PyTorch is used for efficient tensor operations if available
@@ -181,11 +184,11 @@ class OCAtari:
         elif mode == "vision":
             # Set object detection to use vision-based extraction
             self.detect_objects = self._detect_objects_vision
-            self._objects = init_objects(self.game_name, self.hud, vision=True)
+            self.objects = init_objects(self.game_name, self.hud, vision=True)
         elif mode in ["ram"]:
             # Set object detection to use RAM-based extraction
             self.detect_objects = self._detect_objects_ram
-            self._objects = init_objects(self.game_name, self.hud)
+            self.objects = init_objects(self.game_name, self.hud)
         elif mode == "both":
             # Set object detection to use both RAM and vision-based extraction
             self.detect_objects = self._detect_objects_both
@@ -224,7 +227,7 @@ class OCAtari:
 
     def _detect_objects_ram(self):
         # Detect objects using RAM-based extraction
-        detect_objects_ram(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
+        detect_objects_ram(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
 
     def _detect_objects_vision(self):
         """
@@ -235,12 +238,12 @@ class OCAtari:
         Vision-based detection allows for tracking in-game elements through computer vision techniques, providing an alternative to RAM-based methods, which rely on specific memory addresses.
         """
         # Detect objects using vision-based extraction
-        detect_objects_vision(self._objects, self._env.env.unwrapped.ale.getScreenRGB(), self.game_name, self.hud)
+        detect_objects_vision(self.objects, self._env.env.unwrapped.ale.getScreenRGB(), self.game_name, self.hud)
 
     def _detect_objects_both(self):
         # Use both RAM and vision-based extraction methods to detect objects
-        self._detect_objects_ram()
-        self._detect_objects_vision()
+        detect_objects_ram(self.objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
+        detect_objects_vision(self.objects_v, self._env.env.unwrapped.ale.getScreenRGB(), self.game_name, self.hud)
 
     def _reset_buffer(self):
         # Reset the buffer by filling it with the initial states
@@ -263,7 +266,7 @@ class OCAtari:
         """
         # Reset the environment and detect objects from the initial state
         obs, info = self._env.reset(*args, **kwargs)
-        self._objects = init_objects(self.game_name, self.hud, vision=self.mode == "vision")
+        self.objects = init_objects(self.game_name, self.hud, vision=self.mode == "vision")
         self.detect_objects()
         # Reset the buffer after environment reset
         self._reset_buffer()
@@ -434,14 +437,7 @@ class OCAtari:
         """
         Returns the current neurosymbolic state of the environment.
         """
-        return list(chain.from_iterable([o._nsrepr for o in self._objects]))
-
-    @property
-    def objects(self):
-        """
-        A list of the objects present in the environment.
-        """
-        return [obj for obj in self._objects if obj]
+        return list(chain.from_iterable([o._nsrepr for o in self.objects]))
 
     def render_explanations(self):
         # Render explanations by highlighting the objects with bounding boxes
