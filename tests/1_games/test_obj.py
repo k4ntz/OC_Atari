@@ -12,9 +12,9 @@ else:
     GAMES = [f"ALE/{g}-v5" for g in OBJv2_SUPPORTED]
 
 MODES = ["ram", "vision"]
-OBS_MODES = ["ori", "dqn"]
+OBS_MODES = ["obj"]
 FRAMESKIPS = [1, 4]
-STATE_NUMS = ["state_1", "state_2", "state_3"]
+STATE_NUMS = [""]
 
 PICKLE_PATH = "pickle_files"
 
@@ -23,6 +23,8 @@ def load_pickle_state(env, game_name, state_nr):
     """
     Load the state from the pickle file for the given game.
     """
+    if state_nr == "":
+        return
     pickle_file_path = os.path.join(PICKLE_PATH, game_name, f"{state_nr}.pkl")
     if os.path.exists(pickle_file_path):
         with open(pickle_file_path, "rb") as f:
