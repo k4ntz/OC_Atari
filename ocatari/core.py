@@ -59,6 +59,10 @@ AVAILABLE_GAMES = [
     "UpNDown", "Venture", "VideoPinball", "YarsRevenge", "Zaxxon"
 ]
 
+OBJv2_SUPPORTED = [
+    "Amidar", "Asteroids", "Breakout", "Freeway", "Frostbite", "Kangaroo", "KeystoneKappers", "MsPacman", "Pooyan", "Pong", "Skiing", "SpaceInvaders"
+]
+
 # Constant to control the upscaling factor for rendering
 UPSCALE_FACTOR = 3
 
