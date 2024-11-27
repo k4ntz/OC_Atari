@@ -30,14 +30,6 @@ jobs:
           pip install pytest
           pip install "gymnasium[atari, accept-rom-license]"
 
-      - name: Download Pickle Files
-        run: |
-          run: |
-            mkdir -p pickle_files
-            pip install gdown
-            gdown --folder https://drive.google.com/drive/u/0/folders/18391ILruGPBjsdUb2cHRIUEpOPmt6WPq -O pickle_files
-
-
       - name: Run general tests for all changes
         if: always()  # Run general tests regardless of specific files changing
         run: pytest tests/0_general/*
@@ -66,6 +58,14 @@ jobs:
           # Remove trailing space and export GAMES
           GAMES=$(echo $GAMES | xargs)
           echo "GAMES=$GAMES" >> $GITHUB_ENV
+
+      - name: Download Pickle Files
+        if: env.GAMES != ''
+        run: |
+          run: |
+            mkdir -p pickle_files
+            pip install gdown
+            gdown --folder https://drive.google.com/drive/u/0/folders/18391ILruGPBjsdUb2cHRIUEpOPmt6WPq -O pickle_files
 
       - name: Run relevant tests
         if: env.GAMES != ''
