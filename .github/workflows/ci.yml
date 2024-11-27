@@ -49,8 +49,10 @@ jobs:
           
           # Loop through changed files and set appropriate games
           while IFS= read -r file; do
+            GAME_NAME=$(basename "$file" .py)
             if [[ "$file" == *"/ram/"*".py" || "$file" == *"/vision/"*".py" ]]; then
-              GAME_NAME=$(basename "$file" .py)
+              # Capitalize the first letter of GAME_NAME
+              GAME_NAME="$(tr '[:lower:]' '[:upper:]' <<< ${GAME_NAME:0:1})${GAME_NAME:1}"
               GAMES+="${GAME_NAME}"
             fi
           done < changed_files.txt
