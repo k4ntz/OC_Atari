@@ -67,7 +67,7 @@ OBJv2_SUPPORTED = [
 ]
 
 # Constant to control the upscaling factor for rendering
-UPSCALE_FACTOR = 3
+UPSCALE_FACTOR = 5
 
 
 # The OCAtari environment provides an interface to interact with Atari 2600 games through Gymnasium, enabling object tracking and analysis. This environment extends the functionality of traditional Atari environments by incorporating different object detection modes (RAM, vision, or both) and supports enhanced observation spaces for advanced tasks like reinforcement learning.  
