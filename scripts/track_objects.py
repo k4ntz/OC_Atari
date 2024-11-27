@@ -103,7 +103,7 @@ class Renderer:
                 self.saved_frames.append((deepcopy(self.slots_imgs), self.env._ale.cloneState(), self.current_frame)) # ram, state, image (rgb)
                 action = self._get_action()
                 reward = self.env.step(action)[1]
-                # print(self.env._objects)
+                # print(self.env.objects)
                 # if reward != 0:
                 #     print(reward)
                 #     pass
@@ -135,7 +135,7 @@ class Renderer:
                 
                 elif event.key == pygame.K_s:  # 'S': save
                     if self.paused:
-                        statepkl = self.env._ale.cloneState(), self.env._objects
+                        statepkl = self.env._ale.cloneState(), self.env.objects
                         with open(f"state_{self.env.game_name}.pkl", "wb") as f:
                             pkl.dump(statepkl, f)
                             print(f"State saved in state_{self.env.game_name}.pkl.")
@@ -201,14 +201,14 @@ class Renderer:
 
     def _render_objects(self):
         if not self.both:
-            objects = self.env._objects
+            objects = self.env.objects
             num_objects = min(len(objects), self.max_objects)
             # if len(objects) > self.max_objects:
                 # print(f"Warning: Too many objects detected ({len(objects)}). Displaying only the first {self.max_objects}.")
             for i in range(num_objects):
                 self._render_object_cell(i, objects[i])
         else:
-            objects = [item for pair in zip(self.env._objects, self.env.objects_v) for item in pair]
+            objects = [item for pair in zip(self.env.objects, self.env.objects_v) for item in pair]
             num_objects = min(len(objects), self.max_objects)
             # if len(objects) > self.max_objects:
                 # print(f"Warning: Too many objects detected ({len(objects)}). Displaying only the first {self.max_objects}.")
@@ -324,7 +324,7 @@ if __name__ == "__main__":
         with open(args.load_state, "rb") as f:
             state, objects = pkl.load(f)
             renderer.env._ale.restoreState(state)
-            renderer.env._objects = objects
+            renderer.env.objects = objects
             print(f"State loaded from {args.load_state}")
     
     renderer.run()
