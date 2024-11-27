@@ -16,4 +16,3 @@ The easiest way is to load an agent based on its path, see example below. After 
     action = dqn_agent.draw_action(env.dqn_obs)
     obs, reward, terminated, truncated, info = env.step(action)
 ```
-

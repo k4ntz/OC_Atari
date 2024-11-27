@@ -252,7 +252,7 @@ class GameObject:
         if self.category != other.category:
             return False
         iou_value = self.iou(other)
-        return iou_value > 0.9
+        return iou_value > 0.8
     
     def iou(self, other):
         # Calculate the (x, y) coordinates of the intersection rectangle
