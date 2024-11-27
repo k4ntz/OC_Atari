@@ -35,8 +35,8 @@ def load_pickle_state(env, game_name, state_nr):
         raise FileNotFoundError(f"Pickle file {pickle_file_path} not found.")
 
 
-@pytest.mark.parametrize("env_name, mode, obs_mode, state_nr", [(game, mode, obs_mode, state_nr) for game in GAMES for mode in MODES for obs_mode in OBS_MODES for state_nr in STATE_NUMS])
-def test_environment_initialization(env_name, mode, obs_mode, state_nr):
+@pytest.mark.parametrize("env_name, mode, obs_mode", [(game, mode, obs_mode) for game in GAMES for mode in MODES for obs_mode in OBS_MODES])
+def test_environment_initialization(env_name, mode, obs_mode):
     """
     Test the OCAtari environment initialization with different modes.
     """
