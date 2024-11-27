@@ -32,9 +32,11 @@ jobs:
 
       - name: Download Pickle Files
         run: |
-          mkdir -p pickle_files
-            wget -O pickle_files/ https://drive.google.com/drive/u/0/folders/18391ILruGPBjsdUb2cHRIUEpOPmt6WPq
-          done
+          run: |
+            mkdir -p pickle_files
+            pip install gdown
+            gdown --folder https://drive.google.com/drive/u/0/folders/18391ILruGPBjsdUb2cHRIUEpOPmt6WPq -O pickle_files
+
 
       - name: Run general tests for all changes
         if: always()  # Run general tests regardless of specific files changing
