@@ -44,7 +44,6 @@ def _detect_objects(objects, obs, hud=False):
             cars[i].xywh = car_bb[0]
             cars[i].rgb = car_colors[f"car{i+1}"]
 
-
     if hud:
         pscore, escore = objects[-2:]
         pscore_bb = find_objects(obs, objects_colors["score"], min_distance=1, maxy=14, maxx=80)
