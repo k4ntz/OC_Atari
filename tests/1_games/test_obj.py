@@ -10,22 +10,25 @@ if os.getenv("GAMES") != None:
     GAMES = [f"ALE/{g}-v5" for g in os.getenv("GAMES").split() if g in OBJv2_SUPPORTED]
 else:
     GAMES = [f"ALE/{g}-v5" for g in OBJv2_SUPPORTED]
-    GAMES = ["ALE/Pong-v5"]
+    GAMES = ["ALE/Breakout-v5"]
 
 MODES = ["ram", "vision"]
 OBS_MODES = ["obj"]
 FRAMESKIPS = [1, 4]
-STATE_NUMS = ["state_1", "state_2", "state_3"]
 
 PICKLE_PATH = "pickle_files"
 
-
+def get_states(game_name):
+    path = f"{PICKLE_PATH}/{game_name}"
+    if os.path.exists(path):
+        return [f for f in os.listdir(path) if f.startswith("state_") and f.endswith(".pkl")]
+    else:
+        return [""]
+    
 def load_pickle_state(env, game_name, state_nr):
     """
     Load the state from the pickle file for the given game.
-    """
-    if state_nr == "":
-        return
+    """    
     pickle_file_path = os.path.join(PICKLE_PATH, game_name, f"{state_nr}.pkl")
     if os.path.exists(pickle_file_path):
         with open(pickle_file_path, "rb") as f:
@@ -34,10 +37,11 @@ def load_pickle_state(env, game_name, state_nr):
             env._objects = objects
             print(f"State loaded from {pickle_file_path}")
     else:
+        return
         raise FileNotFoundError(f"Pickle file {pickle_file_path} not found.")
 
 
-@pytest.mark.parametrize("env_name, mode, obs_mode, state_nr", [(game, mode, obs_mode, state_nr) for game in GAMES for mode in MODES for obs_mode in OBS_MODES for state_nr in STATE_NUMS])
+@pytest.mark.parametrize("env_name, mode, obs_mode, state_nr", [(game, mode, obs_mode, state_nr) for game in GAMES for mode in MODES for obs_mode in OBS_MODES for state_nr in get_states(game.split("/")[1].split("-")[0])])
 def test_environment_initialization(env_name, mode, obs_mode, state_nr):
     """
     Test the OCAtari environment initialization with different modes.
@@ -50,7 +54,7 @@ def test_environment_initialization(env_name, mode, obs_mode, state_nr):
     env.close()
 
 
-@pytest.mark.parametrize("env_name, mode, obs_mode, state_nr", [(game, mode, obs_mode, state_nr) for game in GAMES for mode in MODES for obs_mode in OBS_MODES for state_nr in STATE_NUMS])
+@pytest.mark.parametrize("env_name, mode, obs_mode, state_nr", [(game, mode, obs_mode, state_nr) for game in GAMES for mode in MODES for obs_mode in OBS_MODES for state_nr in get_states(game.split("/")[1].split("-")[0])])
 def test_environment_reset(env_name, mode, obs_mode, state_nr):
     """
     Test resetting the OCAtari environment.
@@ -63,7 +67,7 @@ def test_environment_reset(env_name, mode, obs_mode, state_nr):
     env.close()
 
 
-@pytest.mark.parametrize("env_name, mode, obs_mode, frameskip, state_nr", [(game, mode, obs_mode, frameskip, state_nr) for game in GAMES for mode in MODES for obs_mode in OBS_MODES for frameskip in FRAMESKIPS for state_nr in STATE_NUMS])
+@pytest.mark.parametrize("env_name, mode, obs_mode, frameskip, state_nr", [(game, mode, obs_mode, frameskip, state_nr) for game in GAMES for mode in MODES for obs_mode in OBS_MODES for frameskip in FRAMESKIPS for state_nr in get_states(game.split("/")[1].split("-")[0])])
 def test_environment_step(env_name, mode, obs_mode, frameskip, state_nr):
     """
     Test stepping through the environment.
@@ -80,7 +84,7 @@ def test_environment_step(env_name, mode, obs_mode, frameskip, state_nr):
     env.close()
 
 
-@pytest.mark.parametrize("env_name, mode, obs_mode, frameskip, state_nr", [(game, mode, obs_mode, frameskip, state_nr) for game in GAMES for mode in MODES for obs_mode in OBS_MODES for frameskip in FRAMESKIPS for state_nr in STATE_NUMS])
+@pytest.mark.parametrize("env_name, mode, obs_mode, frameskip, state_nr", [(game, mode, obs_mode, frameskip, state_nr) for game in GAMES for mode in MODES for obs_mode in OBS_MODES for frameskip in FRAMESKIPS for state_nr in get_states(game.split("/")[1].split("-")[0])])
 def test_seeding(env_name, mode, obs_mode, frameskip, state_nr):
     env = OCAtari(env_name, hud=False, mode=mode, render_mode="rgb_array", render_oc_overlay=False, obs_mode=obs_mode, frameskip=frameskip)
     load_pickle_state(env, env.game_name, state_nr)
@@ -117,7 +121,7 @@ def test_seeding(env_name, mode, obs_mode, frameskip, state_nr):
     env.close()
 
 
-@pytest.mark.parametrize("env_name, obs_mode, frameskip, state_nr", [(game, obs_mode, frameskip, state_nr) for game in GAMES for obs_mode in OBS_MODES for frameskip in FRAMESKIPS for state_nr in STATE_NUMS])
+@pytest.mark.parametrize("env_name, obs_mode, frameskip, state_nr", [(game, obs_mode, frameskip, state_nr) for game in GAMES for obs_mode in OBS_MODES for frameskip in FRAMESKIPS for state_nr in get_states(game.split("/")[1].split("-")[0])])
 def test_outputsimilarity_between_modes(env_name, obs_mode, frameskip, state_nr):
     env = OCAtari(env_name, hud=False, mode="ram", render_mode="rgb_array", render_oc_overlay=False, obs_mode=obs_mode, frameskip=frameskip)
     load_pickle_state(env, env.game_name, state_nr)
