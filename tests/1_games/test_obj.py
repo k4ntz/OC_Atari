@@ -9,12 +9,13 @@ import warnings
 if os.getenv("GAMES") != None:
     GAMES = [f"ALE/{g}-v5" for g in os.getenv("GAMES").split() if g in OBJv2_SUPPORTED]
 else:
-    GAMES = [f"ALE/{g}-v5" for g in OBJv2_SUPPORTED]
+    # GAMES = [f"ALE/{g}-v5" for g in OBJv2_SUPPORTED]
+    GAMES = ["ALE/Pong-v5"]
 
 MODES = ["ram", "vision"]
 OBS_MODES = ["obj"]
 FRAMESKIPS = [1, 4]
-STATE_NUMS = [""]
+STATE_NUMS = ["state_1", "state_2", "state_3"]
 
 PICKLE_PATH = "pickle_files"
 
