@@ -312,13 +312,14 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # divers and enemy_missiles share a ram position
     for i in range(4):
-        if _is_submarine(i, ram_state):  # then, it's an enemy missile
+        if _is_submarine(3-i, ram_state):  # then, it's an enemy missile
             if 0 < ram_state[74 - i] < 160:
                 missile = objects[29+i]
                 if type(missile) != EnemyMissile:
                     missile = EnemyMissile()
                 missile.xy = ram_state[74 - i] + 3, 145 - (3-i) * 24
                 objects[29+i] = missile
+                objects[25+i] = NoObject()
             else:
                 objects[29+i] = NoObject()
         else:
@@ -328,6 +329,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     diver = Diver()
                 diver.xy = ram_state[74 - i], 141 - (3-i) * 24
                 objects[25+i] = diver
+                objects[29+i] = NoObject()
             else:
                 objects[25+i] = NoObject()
 
