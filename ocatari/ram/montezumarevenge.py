@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 from ._helper_methods import _convert_number, get_iou
 import sys
 
@@ -353,9 +353,9 @@ def _init_objects_ram(hud=True):
 
     objects = [Player()]
 
-    objects.extend([None] * 37)
+    objects.extend([NoObject()] * 37)
     if hud:
-        objects.extend([None] * 19)
+        objects.extend([NoObject()] * 19)
     return objects
 
 
@@ -381,11 +381,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     player.xy = ram_state[42] - 1, 255 - ram_state[43] + 53
 
     for i in range(37):
-        objects[i+1] = None
+        objects[i+1] = NoObject()
 
     # ram[49] == object typ and ram[50] == object color
     if 0 < ram_state[49] < 5 or ram_state[49] == 6:
-        objects[5], objects[6] = None, None
+        objects[5], objects[6] = NoObject(), NoObject()
         x = ram_state[44] - 1
         if room == 0:
             y = 55 + (255 - ram_state[45])
@@ -400,7 +400,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             y+=4
 
         if ram_state[49] == 1:
-            objects[1] = None
+            objects[1] = NoObject()
             objects[2] = Ruby()
             objects[2].xy = x, y
             if ram_state[84]&1:
@@ -413,7 +413,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                 objects[3] = Ruby()
                 objects[3].xy = x+64, y
         else:
-            objects[2], objects[3], objects[4] = None, None, None
+            objects[2], objects[3], objects[4] = NoObject(), NoObject(), NoObject()
             if ram_state[49] == 2:
                 item = Sword()
             elif ram_state[49] == 3:
@@ -425,7 +425,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             objects[1] = item
             item.xy = x, y
     elif 4 < ram_state[49] < 11:
-        objects[1], objects[2], objects[3], objects[4] = None, None, None, None
+        objects[1], objects[2], objects[3], objects[4] = NoObject(), NoObject(), NoObject(), NoObject()
         x = ram_state[44] - 1
         if room == 0:
             y = 55 + (255 - ram_state[45])
@@ -462,13 +462,13 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                 objects[6] = enemy2()
                 objects[6].xy = x+64, y
         else:
-            objects[6] = None
+            objects[6] = NoObject()
 
         objects[5] = enemy
         enemy.xy = x, y
     else:
         for i in range(1,7):
-            objects[i] = None
+            objects[i] = NoObject()
         
         
     if room == 0:
@@ -492,7 +492,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             objects[14] = beam5
         else:
             for i in range(5):
-                objects[8+i] = None
+                objects[8+i] = NoObject()
         
         objects[18] = Platform(x=4, y=94, w=154, h=1)
         objects[19] = Ladder(x=72, y=94, w=16, h=102)
@@ -506,14 +506,14 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             enemy.xy = ram_state[47] + 32, 406 - ram_state[46]# ram_state[46] - 74 # 240 -> 166
             objects[5] = enemy
         else:
-            objects[5] = None
+            objects[5] = NoObject()
 
         # barrier
         if ram_state[26] != 117:
             barrier = Barrier()
             objects[7] = barrier
         else:
-            objects[7] = None
+            objects[7] = NoObject()
         
         if ram_state[28] != 117:
             barrier2 = Barrier()
@@ -521,7 +521,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             barrier2.xy = 136, y
             objects[8] = barrier2
         else:
-            objects[8] = None
+            objects[8] = NoObject()
         
         rope = Rope()
         objects[17] = rope
@@ -566,7 +566,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             enemy.xy = ram_state[47] + 33, 103 + (255 - ram_state[46]) 
             objects[5] = enemy
         else:
-            objects[5] = None
+            objects[5] = NoObject()
         
         # barrier
         if ram_state[26] != 117:
@@ -575,7 +575,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             barrier.rgb = 66, 158, 130
             objects[6] = barrier
         else:
-            objects[6] = None
+            objects[6] = NoObject()
         
         if ram_state[28] != 117:
             barrier2 = Barrier()
@@ -583,7 +583,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             barrier2.rgb = 66, 158, 130
             objects[7] = barrier2
         else:
-            objects[7] = None
+            objects[7] = NoObject()
 
         #rope
         rope = Rope()
@@ -632,7 +632,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             objects[14] = beam5
         else:
             for i in range(5):
-                objects[8+i] = None
+                objects[8+i] = NoObject()
 
         objects[18] = Platform(x=4, y=94, w=154, h=1)
         objects[19] = Ladder(x=72, y=94, w=16, h=102)
@@ -720,7 +720,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             objects[16] = beam7
         else:
             for i in range(8):
-                objects[8+i] = None
+                objects[8+i] = NoObject()
         objects[18] = Platform(x=0, y=94, w=160, h=1)
 
     elif room == 13:
@@ -756,7 +756,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             barrier = Barrier()
             objects[6] = barrier
         else:
-            objects[6] = None
+            objects[6] = NoObject()
         
         if ram_state[28] != 117:
             barrier2 = Barrier()
@@ -764,7 +764,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             barrier2.xy = 136, y
             objects[7] = barrier2
         else:
-            objects[7] = None
+            objects[7] = NoObject()
 
         objects[18] = Platform(x=0, y=94, w=160, h=1)
     
@@ -775,7 +775,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             enemy.xy = ram_state[47] - 1, ram_state[46] - 147
             objects[5] = enemy
         else:
-            objects[5] = None
+            objects[5] = NoObject()
 
         objects[18] = Platform(x=0, y=94, w=36, h=1)
         if ram_state[34] != 232:
@@ -811,7 +811,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
     if hud:
         for i in range(19):
-            objects[i+38] = None
+            objects[i+38] = NoObject()
 
         x = 56
         y = 28
