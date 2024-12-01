@@ -185,19 +185,6 @@ class OxygenBarDepleted(ValueObject):
         self.value = 64
 
 
-class OxygenBarLogo(GameObject):
-    """
-    The 'OXYGEN' lettering next to the oxygen gauge (HUD).
-    """
-
-    def __init__(self):
-        super().__init__()
-        self._xy = 15, 170
-        self.rgb = 0, 0, 0
-        self.wh = 23, 5
-        self.hud = True
-
-
 class CollectedDiver(GameObject):
     """
     The indicator for collected divers (HUD).
@@ -258,7 +245,7 @@ def _init_objects_ram(hud=False):
     objects.extend([CollectedDiver()]*6)
 
     if hud:
-        objects.extend([PlayerScore(), Lives(), OxygenBarDepleted(), OxygenBarLogo()])
+        objects.extend([PlayerScore(), Lives(), OxygenBarDepleted()])
 
     return objects
 
@@ -401,7 +388,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             x = 59
             w = 46
 
-        score = objects[-4]
+        score = objects[-3]
         score.value = score_value
         score.xy = x, 9
         score.wh = w, 8
@@ -410,21 +397,21 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         num_lives = ram_state[59]
         if num_lives > 0:  # Up to 6 lives possible
             new_wh = 7 + 8 * (num_lives - 1), 8
-            if type(objects[-2]) != Lives:
-                objects[-3] = Lives() 
-            objects[-3].wh = new_wh
-            objects[-3].value = num_lives
-        else:
-            objects[-3] = NoObject()
-
-        if ram_state[102] != 64:
-            if type(objects[-2]) != OxygenBarDepleted:
-                objects[-2] = OxygenBarDepleted()
-            objects[-2].xy = 49 + ram_state[102], 170
-            objects[-2].wh = 63 - ram_state[102], 5
-            objects[-2].value = 63 - ram_state[102]
+            if type(objects[-1]) != Lives:
+                objects[-2] = Lives() 
+            objects[-2].wh = new_wh
+            objects[-2].value = num_lives
         else:
             objects[-2] = NoObject()
+
+        if ram_state[102] != 64:
+            if type(objects[-1]) != OxygenBarDepleted:
+                objects[-1] = OxygenBarDepleted()
+            objects[-1].xy = 49 + ram_state[102], 170
+            objects[-1].wh = 63 - ram_state[102], 5
+            objects[-1].value = 63 - ram_state[102]
+        else:
+            objects[-1] = NoObject()
 
 
 def _is_submarine(i: int, ram_state) -> bool:

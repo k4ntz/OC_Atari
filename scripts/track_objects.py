@@ -255,6 +255,11 @@ class Renderer:
         self.slots_imgs[cell_idx] = img
         pygame.surfarray.blit_array(image_surface, img)
         self.window.blit(image_surface, (x, y))
+
+        # Add cell number in the top left corner
+        font = pygame.font.Font(None, 24)  # Set the font and size
+        cell_number_surface = font.render(str(cell_idx), True, (255, 255, 255))  # White text
+        self.window.blit(cell_number_surface, (x + 5, y + 5))  # Offset slightly from the top left
         if obj:
             obj_init_color = self.window.get_at((x - 2, y - 2))
             border_color = obj.rgb
@@ -264,6 +269,7 @@ class Renderer:
                 print(f"Object color changed for {obj}! Pausing the game. {obj_init_color} -> {border_color}")
             else:
                 pygame.draw.rect(self.window, border_color, [x, y, w, h], 3)
+        
 
     def _get_obj_sprite(self, obj):
         if not obj:

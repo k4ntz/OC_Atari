@@ -48,7 +48,7 @@ class Renderer:
         self.no_render = no_render
         self.red_render = []
 
-        self.saved_frames = deque(maxlen=20) # tuples of ram, state, image
+        self.saved_frames = deque(maxlen=200) # tuples of ram, state, image
         self.frame_by_frame = False
         self.next_frame = False
 
