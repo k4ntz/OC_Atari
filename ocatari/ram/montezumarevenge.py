@@ -171,11 +171,11 @@ class Rope(GameObject):
     The climbing-ropes.
     """
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
         super(Rope, self).__init__()
         super().__init__(*args, **kwargs)
-        self._xy = 112, 96
-        self.wh = 1, 39
+        self._xy = x, y
+        self.wh = w, h
         self.rgb = 232, 204, 99
         self.hud = False
 
@@ -597,7 +597,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             objects[19] = Platform(x=112, y=93, w=48, h=2)
             objects[20] = Wall(x=32, y=53, w=4, h=40)
             objects[21] = Wall(x=124, y=53, w=4, h=40)
-            objects[22] = Rope(x=125, y=95, w=2, h=51)
+            objects[22] = Rope(x=125, y=95, w=2, h=52)
             objects[23] = Platform(x=48, y=130, w=64, h=3)
             objects[24] = Platform(x=4, y=171, w=154, h=1)
             objects[25] = Ladder(x=72, y=171, w=16, h=26)
@@ -743,6 +743,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             objects[22] = Ladder(72, 169, 16, 25)
             objects[23] = Wall(x=0, y=97, w=16, h=73)
             objects[24] = Wall(x=144, y=97, w=16, h=73)
+            objects[25] = Rope(x=87, y=97, w=2, h=33)
         
         elif room == 15:
             objects[18] = Platform(x=0, y=94, w=160, h=1)
