@@ -1,4 +1,4 @@
-from .utils import find_objects, match_objects
+from .utils import find_objects, match_objects, match_blinking_objects
 from .game_objects import GameObject, NoObject
 
 objects_colors = {"kangaroo": [223, 183, 85], "bell": [210, 164, 74],
@@ -24,13 +24,16 @@ class Enemy(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 227, 151, 89
+        self.num_frames_invisible = -1
+        self.max_frames_invisible = 4
 
 
 class Fruit(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 214, 92, 92
-
+        self.num_frames_invisible = -1
+        self.max_frames_invisible = 4
 
 class Ladder(GameObject):
     def __init__(self, x=0, y=0, w=8, h=35, *args, **kwargs):
@@ -93,6 +96,7 @@ def _detect_objects(objects, obs, hud=False):
     player = find_objects(obs, objects_colors["kangaroo"], min_distance=1, miny=28)
     if player:
         objects[0].xywh = player[0]
+        # match_blinking_objects(objects, player, 10, 3, Player)
 
     child = find_objects(obs, objects_colors["kangaroo"], min_distance=1, maxy=27)
     if child:
@@ -101,7 +105,7 @@ def _detect_objects(objects, obs, hud=False):
     fruit = []
     for i in objects_colors["fruit"]:
         fruit.extend(find_objects(obs, objects_colors["fruit"][i], min_distance=1))
-    match_objects(objects, fruit, 10, 3, Fruit)
+    match_blinking_objects(objects, fruit, 10, 3, Fruit)
 
     bell = find_objects(obs, objects_colors["bell"], min_distance=1)
     if bell:
@@ -115,7 +119,7 @@ def _detect_objects(objects, obs, hud=False):
     for bb in enemy:
         if bb[2] <= 5:
             enemy.remove(bb)
-    match_objects(objects, enemy, 2, 4, Enemy)
+    match_blinking_objects(objects, enemy, 2, 4, Enemy)
 
     p_enemy = find_objects(obs, objects_colors["projectile_enemy"], min_distance=1, size=(2, 3), tol_s=2)
 
