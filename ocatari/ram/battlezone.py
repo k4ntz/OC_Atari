@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject
+from .game_objects import GameObject, ValueObject, NoObject
 from ._helper_methods import number_to_bitfield
 import sys 
 
@@ -124,9 +124,9 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player(), Crosshair(), Radar()]
 
-    objects.extend([None] * 150)
+    objects.extend([NoObject()] * 13)
     if hud:
-        objects.extend([None] * 7)
+        objects.extend([NoObject()] * 6)
     return objects
 
 
@@ -141,7 +141,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # 73, 81 == type; 1 == blue tank; 2 == other tank; 3 == destroyed; 4 == red thing; 5 == yellow boss
 
     if ram_state[73] and ram_state[48] and ram_state[46]:
-        enemy = None
+        enemy = NoObject()
         x, y = ram_state[48]+1, 97-ram_state[47]
         w, h = 16, 10
         if ram_state[46]:
@@ -263,7 +263,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     w+=12
                     h+=6
             elif ram_state[73] == 3:
-                enemy = None
+                enemy = NoObject()
             elif ram_state[81] == 1 and ram_state[73] == 4:
                 enemy = Red_Thing()
                 if ram_state[47] == 0:
@@ -363,15 +363,14 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 elif ram_state[47] == 9:
                     w+=16
                     h+=3
-        objects[3] = enemy
         if enemy is not None:
             enemy.xy = x, y
             enemy.wh = w, h
-    else:
-        objects[3] = None
+    
+        objects[1] = enemy
 
     if ram_state[81] and ram_state[54]:
-        enemy = None
+        enemy = NoObject()
         x, y = ram_state[54]+1, 97-ram_state[53]
         w, h= 16, 10
         if ram_state [52]:
@@ -579,7 +578,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     w+=4
                     h+=7
             elif ram_state[81] == 3:
-                enemy = None
+                enemy = NoObject()
             elif ram_state[81] == 4:
                 enemy = Red_Thing()
                 if ram_state[53] == 0:
@@ -641,8 +640,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if enemy is not None:
             enemy.xy = x, y
             enemy.wh = w, h
-    else:
-        objects[4] = None
+    
+        objects[2] = enemy
 
     # r82, r83 = y coordinates
     # no clue about x
