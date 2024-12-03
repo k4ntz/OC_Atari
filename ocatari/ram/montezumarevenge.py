@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 from ._helper_methods import _convert_number, get_iou
 import sys
 
@@ -7,9 +7,9 @@ RAM extraction for the game Montezuma's Revenge.
 """
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Skull': 1, 'Spider': 1, 'Snake': 2, 'Key': 1, 'Amulet': 1, 'Torch': 1, 'Sword': 1,
-                      'Barrier': 2, 'Beam': 8, 'Rope': 1, 'Ruby': 3}
+                      'Barrier': 2, 'Beam': 8, 'Rope': 2, 'Ruby': 3, 'Wall': 4, 'Ladder': 2, 'Platform': 7, 'Disappearing_Platform': 12, 'Conveyer_Belt': 2, 'Key_HUD': 4, 'Amulet_HUD': 1, 'Torch_HUD': 1, 'Sword_HUD': 2}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Skull': 2, 'Spider': 1, 'Snake': 2, 'Key': 1, 'Amulet': 1, 'Torch': 1, 'Sword': 1,
-                      'Barrier': 2, 'Beam': 8, 'Rope': 1, 'Ruby': 3, 'Key_HUD': 4, 'Amulet_HUD': 1, 'Torch_HUD': 1, 'Sword_HUD': 2,
+                      'Barrier': 2, 'Beam': 8, 'Rope': 2, 'Ruby': 3, 'Wall': 4, 'Ladder': 2, 'Platform': 7, 'Disappearing_Platform': 12, 'Conveyer_Belt': 2, 'Key_HUD': 4, 'Amulet_HUD': 1, 'Torch_HUD': 1, 'Sword_HUD': 2,
                       'Score': 6, 'Life': 5}
 obj_tracker = {}
 
@@ -171,11 +171,11 @@ class Rope(GameObject):
     The climbing-ropes.
     """
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, x=112, y=96, w=1, h=39, *args, **kwargs):
         super(Rope, self).__init__()
         super().__init__(*args, **kwargs)
-        self._xy = 112, 96
-        self.wh = 1, 39
+        self._xy = x, y
+        self.wh = w, h
         self.rgb = 232, 204, 99
         self.hud = False
 
@@ -217,7 +217,7 @@ class Key_HUD(GameObject):
         self._xy = 56, 28
         self.wh = 7, 15
         self.rgb = 232, 204, 99
-        self.hud = True
+        self.hud = False
         
 class Amulet_HUD(GameObject):
     """
@@ -230,7 +230,7 @@ class Amulet_HUD(GameObject):
         self._xy = 56, 28
         self.wh = 6, 15
         self.rgb = 232, 204, 99
-        self.hud = True
+        self.hud = False
 
 
 class Torch_HUD(GameObject):
@@ -244,7 +244,7 @@ class Torch_HUD(GameObject):
         self._xy = 56, 28
         self.wh = 6, 13
         self.rgb = 232, 204, 99
-        self.hud = True
+        self.hud = False
 
 
 class Sword_HUD(GameObject):
@@ -258,7 +258,7 @@ class Sword_HUD(GameObject):
         self._xy = 56, 28
         self.wh = 6, 15
         self.rgb = 232, 204, 99
-        self.hud = True
+        self.hud = False
 
 
 class Platform(GameObject):
@@ -353,9 +353,9 @@ def _init_objects_ram(hud=True):
 
     objects = [Player()]
 
-    objects.extend([None] * 37)
+    objects.extend([NoObject()] * 59)
     if hud:
-        objects.extend([None] * 19)
+        objects.extend([NoObject()] * 11)
     return objects
 
 
@@ -380,495 +380,520 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     player = objects[0]
     player.xy = ram_state[42] - 1, 255 - ram_state[43] + 53
 
-    for i in range(37):
-        objects[i+1] = None
+    for i in range(45):
+        objects[i+1] = NoObject()
 
-    # ram[49] == object typ and ram[50] == object color
-    if 0 < ram_state[49] < 5 or ram_state[49] == 6:
-        objects[5], objects[6] = None, None
-        x = ram_state[44] - 1
+    if room < 16 or ram_state[65] & 128 or ram_state[49] == 5 or 8 < ram_state[49] < 11:
+        # ram[49] == object typ and ram[50] == object color
+        if 0 < ram_state[49] < 5 or ram_state[49] == 6:
+            objects[5], objects[6] = NoObject(), NoObject()
+            x = ram_state[44] - 1
+            if room == 0:
+                y = 55 + (255 - ram_state[45])
+            elif room == 1:
+                y = 98 + (255 - ram_state[45])
+            elif room == 7:
+                y = 54 + (255 - ram_state[45])
+            else:
+                y = 53 + (255 - ram_state[45])
+
+            if ram_state[45] < 216:
+                y+=4
+
+            if ram_state[49] == 1:
+                objects[1] = NoObject()
+                objects[2] = Ruby()
+                objects[2].xy = x, y
+                if ram_state[84]&1:
+                    objects[3] = Ruby()
+                    objects[3].xy = x+16, y
+                if ram_state[84]&2:
+                    objects[4] = Ruby()
+                    objects[4].xy = x+32, y
+                if ram_state[84]&4:
+                    objects[3] = Ruby()
+                    objects[3].xy = x+64, y
+            else:
+                objects[2], objects[3], objects[4] = NoObject(), NoObject(), NoObject()
+                if ram_state[49] == 2:
+                    item = Sword()
+                elif ram_state[49] == 3:
+                    item = Amulet()
+                elif ram_state[49] == 4:
+                    item = Key()
+                elif ram_state[49] == 6:
+                    item = Torch()
+                objects[1] = item
+                item.xy = x, y
+        elif 4 < ram_state[49] < 11:
+            objects[1], objects[2], objects[3], objects[4] = NoObject(), NoObject(), NoObject(), NoObject()
+            x = ram_state[44] - 1
+            if room == 0:
+                y = 55 + (255 - ram_state[45])
+            elif room == 1:
+                y = 98 + (255 - ram_state[45])
+            elif room == 7:
+                y = 54 + (255 - ram_state[45])
+            else:
+                y = 53 + (255 - ram_state[45])
+            
+            if ram_state[45] < 216:
+                y+=4
+
+            if ram_state[45] < 216:
+                y+=4
+
+            if ram_state[49] == 5:
+                enemy = Skull()
+            elif ram_state[49] < 9:
+                enemy = Snake()
+                x+=1
+            elif ram_state[49] < 11:
+                enemy = Spider()
+
+            if ram_state[84]:
+                enemy2 = type(enemy)
+                if ram_state[84]&1:
+                    objects[6] = enemy2()
+                    objects[6].xy = x+16, y
+                if ram_state[84]&2:
+                    objects[6] = enemy2()
+                    objects[6].xy = x+32, y
+                if ram_state[84]&4:
+                    objects[6] = enemy2()
+                    objects[6].xy = x+64, y
+            else:
+                objects[6] = NoObject()
+
+            objects[5] = enemy
+            enemy.xy = x, y
+        else:
+            for i in range(1,7):
+                objects[i] = NoObject()
+            
+    if room < 16 or ram_state[65] & 128:        
         if room == 0:
-            y = 55 + (255 - ram_state[45])
-        elif room == 1:
-            y = 98 + (255 - ram_state[45])
-        elif room == 7:
-            y = 54 + (255 - ram_state[45])
-        else:
-            y = 53 + (255 - ram_state[45])
+            if ram_state[26] != 117:
+                beam0 = Beam()
+                objects[9] = beam0
+                beam1 = Beam()
+                beam1.xy = 120, 53
+                objects[10] = beam1
+                beam2 = Beam()
+                beam2.xy = 112, 53
+                objects[11] = beam2
+                beam3 = Beam()
+                beam3.xy = 44, 53
+                objects[12] = beam3
+                beam4 = Beam()
+                beam4.xy = 36, 53
+                objects[13] = beam4
+                beam5 = Beam()
+                beam5.xy = 16, 53
+                objects[14] = beam5
+            else:
+                for i in range(5):
+                    objects[8+i] = NoObject()
+            
+            objects[18] = Platform(x=4, y=94, w=154, h=1)
+            objects[19] = Ladder(x=72, y=94, w=16, h=102)
+            objects[20] = Wall(x=0, y=53, w=4, h=42, rgb=(101, 111, 228))
 
-        if ram_state[45] < 216:
-            y+=4
 
-        if ram_state[49] == 1:
-            objects[1] = None
-            objects[2] = Ruby()
-            objects[2].xy = x, y
-            if ram_state[84]&1:
-                objects[3] = Ruby()
-                objects[3].xy = x+16, y
-            if ram_state[84]&2:
-                objects[4] = Ruby()
-                objects[4].xy = x+32, y
-            if ram_state[84]&4:
-                objects[3] = Ruby()
-                objects[3].xy = x+64, y
-        else:
-            objects[2], objects[3], objects[4] = None, None, None
-            if ram_state[49] == 2:
-                item = Sword()
-            elif ram_state[49] == 3:
-                item = Amulet()
-            elif ram_state[49] == 4:
-                item = Key()
-            elif ram_state[49] == 6:
-                item = Torch()
-            objects[1] = item
-            item.xy = x, y
-    elif 4 < ram_state[49] < 11:
-        objects[1], objects[2], objects[3], objects[4] = None, None, None, None
-        x = ram_state[44] - 1
-        if room == 0:
-            y = 55 + (255 - ram_state[45])
         elif room == 1:
-            y = 98 + (255 - ram_state[45])
+            # skull
+            if ram_state[67]&2:
+                enemy = Skull()
+                enemy.xy = ram_state[47] + 32, 406 - ram_state[46]# ram_state[46] - 74 # 240 -> 166
+                objects[5] = enemy
+            else:
+                objects[5] = NoObject()
+
+            # barrier
+            if ram_state[26] != 117:
+                barrier = Barrier()
+                objects[7] = barrier
+            else:
+                objects[7] = NoObject()
+            
+            if ram_state[28] != 117:
+                barrier2 = Barrier()
+                _, y = barrier2.xy
+                barrier2.xy = 136, y
+                objects[8] = barrier2
+            else:
+                objects[8] = NoObject()
+            
+            rope = Rope()
+            objects[17] = rope
+
+            objects[18] = Platform(x=0, y=93, w=56, h=2)
+            objects[19] = Platform(x=104, y=93, w=56, h=2)
+            objects[20] = Platform(x=68, y=93, w=23, h=2)
+            objects[21] = Ladder(x=72, y=93, w=16, h=42)
+            objects[22] = Platform(x=76, y=136, w=8, h=5)
+            objects[23] = Conveyer_Belt(x=60, y=136, w=15, h=5)
+            objects[24] = Conveyer_Belt(x=85, y=136, w=15, h=5)
+            objects[25] = Ladder(x=16, y=136, w=16, h=45)
+            objects[26] = Ladder(x=128, y=136, w=16, h=45)
+            objects[27] = Platform(x=8, y=136, w=28, h=2)
+            objects[28] = Platform(x=124, y=136, w=28, h=2)
+            objects[29] = Platform(x=16, y=180, w=128, h=1)
+            objects[30] = Wall(x=0, y=96, w=8, h=40)
+            objects[31] = Wall(x=0, y=136, w=16, h=45)
+            objects[32] = Wall(x=152, y=96, w=8, h=40)
+            objects[33] = Wall(x=144, y=136, w=16, h=45)
+
+        elif room == 2:
+            objects[18] = Platform(x=4, y=93, w=154, h=1)
+            objects[19] = Ladder(x=72, y=93, w=16, h=102)
+            objects[20] = Wall(x=156, y=52, w=4, h=42)
+
+        elif room == 3:
+            objects[18] = Platform(x=4, y=93, w=154, h=1)
+            objects[19] = Ladder(x=72, y=93, w=16, h=102)
+            objects[20] = Wall(x=0, y=53, w=4, h=41)
+                
+        elif room == 4:
+            objects[18] = Platform(x=4, y=93, w=154, h=1)
+            objects[19] = Ladder(x=72, y=52, w=16, h=39)
+            objects[20] = Ladder(x=72, y=93, w=16, h=102)
+
+        elif room == 5:
+
+            # skull
+            if ram_state[69]&2:
+                enemy = Skull()
+                enemy.xy = ram_state[47] + 33, 103 + (255 - ram_state[46]) 
+                objects[5] = enemy
+            else:
+                objects[5] = NoObject()
+            
+            # barrier
+            if ram_state[26] != 117:
+                barrier = Barrier()
+                barrier.xy = 56, 135
+                barrier.rgb = 66, 158, 130
+                objects[6] = barrier
+            else:
+                objects[6] = NoObject()
+            
+            if ram_state[28] != 117:
+                barrier2 = Barrier()
+                barrier2.xy = 100, 135
+                barrier2.rgb = 66, 158, 130
+                objects[7] = barrier2
+            else:
+                objects[7] = NoObject()
+
+            #rope
+            rope = Rope()
+            rope.rgb = 236, 236, 236
+            rope.xy = 41, 97
+            rope.wh = 1, 24
+            objects[17] = rope
+            
+            objects[18] = Platform(x=0, y=93, w=48, h=2)
+            objects[19] = Platform(x=112, y=93, w=48, h=2)
+            objects[20] = Wall(x=32, y=53, w=4, h=40)
+            objects[21] = Wall(x=124, y=53, w=4, h=40)
+            objects[22] = Rope(x=125, y=95, w=2, h=52)
+            objects[23] = Platform(x=48, y=130, w=64, h=3)
+            objects[24] = Platform(x=4, y=171, w=154, h=1)
+            objects[25] = Ladder(x=72, y=171, w=16, h=26)
+            objects[26] = Platform(x=76, y=93, w=8, h=5)
+            objects[27] = Conveyer_Belt(x=60, y=93, w=15, h=5)
+            objects[28] = Conveyer_Belt(x=85, y=93, w=15, h=5)
+            objects[29] = Wall(x=0, y=96, w=4, h=77)
+            objects[30] = Wall(x=156, y=96, w=4, h=77)
+
+        elif room == 6:
+            objects[18] = Platform(x=0, y=93, w=160, h=1)
+            objects[19] = Ladder(x=72, y=53, w=16, h=38)
+
         elif room == 7:
-            y = 54 + (255 - ram_state[45])
-        else:
-            y = 53 + (255 - ram_state[45])
+            #beam
+            if ram_state[26] != 117:
+                beam0 = Beam()
+                objects[9] = beam0
+                beam1 = Beam()
+                beam1.xy = 120, 53
+                objects[10] = beam1
+                beam2 = Beam()
+                beam2.xy = 112, 53
+                objects[11] = beam2
+                beam3 = Beam()
+                beam3.xy = 44, 53
+                objects[12] = beam3
+                beam4 = Beam()
+                beam4.xy = 36, 53
+                objects[13] = beam4
+                beam5 = Beam()
+                beam5.xy = 16, 53
+                objects[14] = beam5
+            else:
+                for i in range(5):
+                    objects[8+i] = NoObject()
+
+            objects[18] = Platform(x=4, y=94, w=154, h=1)
+            objects[19] = Ladder(x=72, y=94, w=16, h=102)
+            objects[20] = Wall(x=156, y=53, w=4, h=42, rgb=(101, 111, 228))
         
-        if ram_state[45] < 216:
-            y+=4
+        elif room == 8:
+            #rope
+            rope = Rope()
+            rope.xy = 80, 96
+            rope.wh = 1, 51
+            objects[17] = rope
 
-        if ram_state[45] < 216:
-            y+=4
+            if ram_state[34] != 144:
+                objects[18] = Disappearing_Platform(4, 103, 12, 4)
+                objects[19] = Disappearing_Platform(4, 113, 12, 4)
+                objects[20] = Disappearing_Platform(4, 123, 12, 4)
+                objects[21] = Disappearing_Platform(4, 133, 12, 4)
 
-        if ram_state[49] == 5:
-            enemy = Skull()
-        elif ram_state[49] < 9:
-            enemy = Snake()
-            x+=1
-        elif ram_state[49] < 11:
-            enemy = Spider()
+                objects[23] = Disappearing_Platform(4, 153, 12, 4)
+                objects[24] = Disappearing_Platform(4, 163, 12, 4)
+                
+                objects[25] = Disappearing_Platform(144, 103, 12, 4)
+                objects[26] = Disappearing_Platform(144, 113, 12, 4)
+                objects[27] = Disappearing_Platform(144, 123, 12, 4)
+                objects[28] = Disappearing_Platform(144, 133, 12, 4)
 
-        if ram_state[84]:
-            enemy2 = type(enemy)
-            if ram_state[84]&1:
-                objects[6] = enemy2()
-                objects[6].xy = x+16, y
-            if ram_state[84]&2:
-                objects[6] = enemy2()
-                objects[6].xy = x+32, y
-            if ram_state[84]&4:
-                objects[6] = enemy2()
-                objects[6].xy = x+64, y
-        else:
-            objects[6] = None
+                objects[30] = Disappearing_Platform(144, 153, 12, 4)
+                objects[31] = Disappearing_Platform(144, 163, 12, 4)
 
-        objects[5] = enemy
-        enemy.xy = x, y
+            objects[22] = Platform(4, 143, 12, 4)
+            objects[29] = Platform(144, 143, 12, 4)
+
+            objects[32] = Platform(4, 93, 43, 3)
+            objects[33] = Platform(76, 93, 8, 3)
+            objects[34] = Platform(112, 93, 48, 3)
+            objects[35] = Platform(4, 173, 152, 1)
+            objects[36] = Wall(x=0, y=53, w=4, h=121)
+            objects[37] = Wall(x=156, y=97, w=4, h=77)
+
+        elif room == 9:
+            objects[18] = Platform(x=0, y=93, w=158, h=1)
+            objects[19] = Ladder(x=72, y=53, w=16, h=38)
+            objects[20] = Wall(x=156, y=52, w=3, h=41)
+
+        elif room == 10:
+            objects[18] = Wall(x=0, y=53, w=3, h=40)
+            objects[19] = Ladder(x=72, y=53, w=16, h=38)
+            objects[20] = Platform(x=0, y=93, w=36, h=1)
+            if ram_state[34] != 232:
+                objects[21] = Disappearing_Platform(x=36, y=93, w=88, h=7)
+            objects[22] = Platform(x=124, y=93, w=36, h=1)
+
+        elif room == 11:
+            objects[18] = Platform(x=0, y=93, w=160, h=1)
+            objects[19] = Ladder(x=72, y=52, w=16, h=39)
+            objects[20] = Ladder(x=72, y=93, w=16, h=102)
+
+        
+        elif room == 12:
+            #beam
+            if ram_state[26] != 117:
+                beam0 = Beam()
+                beam0.xy = 120, 53
+                objects[9] = beam0
+                beam1 = Beam()
+                beam1.xy = 112, 53
+                objects[10] = beam1
+                beam2 = Beam()
+                beam2.xy = 96, 53
+                objects[11] = beam2
+                beam3 = Beam()
+                beam3.xy = 88, 53
+                objects[12] = beam3
+                beam4 = Beam()
+                beam4.xy = 68, 53
+                objects[13] = beam4
+                beam5 = Beam()
+                beam5.xy = 60, 53
+                objects[14] = beam5
+                beam6 = Beam()
+                beam6.xy = 44, 53
+                objects[15] = beam6
+                beam7 = Beam()
+                beam7.xy = 36, 53
+                objects[16] = beam7
+            else:
+                for i in range(8):
+                    objects[8+i] = NoObject()
+            objects[18] = Platform(x=0, y=94, w=160, h=1)
+
+        elif room == 13:
+            objects[18] = Platform(x=0, y=93, w=160, h=1)
+            objects[19] = Ladder(x=72, y=52, w=16, h=39)
+            objects[20] = Ladder(x=72, y=93, w=16, h=102)
+        
+        elif room == 14:
+            # rope
+            rope = Rope()
+            rope.xy = 71, 96
+            rope.wh = 1, 48
+            objects[17] = rope
+
+            objects[18] = Platform(0, 93, 40, 3)
+            objects[19] = Platform(68, 93, 24, 3)
+            objects[20] = Platform(120, 93, 40, 3)
+            objects[21] = Platform(16, 168, 128, 1)
+            objects[22] = Ladder(72, 169, 16, 25)
+            objects[23] = Wall(x=0, y=97, w=16, h=73)
+            objects[24] = Wall(x=144, y=97, w=16, h=73)
+            objects[25] = Rope(x=87, y=97, w=2, h=33)
+        
+        elif room == 15:
+            objects[18] = Platform(x=0, y=94, w=160, h=1)
+        
+        elif room == 16:
+            objects[18] = Platform(x=0, y=93, w=160, h=1)
+            
+        
+        elif room == 17:
+            # barrier
+            if ram_state[26] != 117:
+                barrier = Barrier()
+                objects[6] = barrier
+            else:
+                objects[6] = NoObject()
+            
+            if ram_state[28] != 117:
+                barrier2 = Barrier()
+                _, y = barrier2.xy
+                barrier2.xy = 136, y
+                objects[7] = barrier2
+            else:
+                objects[7] = NoObject()
+
+            objects[18] = Platform(x=0, y=94, w=160, h=1)
+        
+        elif room ==  18:
+            # skull
+            if ram_state[76]&32:
+                enemy = Skull()
+                enemy.xy = ram_state[47] - 1, ram_state[46] - 147
+                objects[5] = enemy
+            else:
+                objects[5] = NoObject()
+
+            objects[18] = Platform(x=0, y=94, w=36, h=1)
+            if ram_state[34] != 232:
+                objects[19] = Disappearing_Platform(x=36, y=94, w=88, h=7)
+            objects[20] = Platform(x=124, y=94, w=36, h=1)
+        
+        elif room == 19:
+            objects[18] = Platform(x=0, y=93, w=160, h=1)
+            objects[19] = Ladder(x=72, y=53, w=16, h=38)
+        
+        elif room == 20:
+            objects[18] = Platform(x=0, y=94, w=36, h=1)
+            if ram_state[34] != 232:
+                objects[19] = Disappearing_Platform(x=36, y=94, w=88, h=7)
+            objects[20] = Platform(x=124, y=94, w=32, h=1)
+            objects[21] = Wall(x=156, y=52, w=3, h=42)
+
+        elif room == 21:
+            objects[18] = Platform(x=0, y=93, w=158, h=1)
+            objects[19] = Ladder(x=72, y=53, w=16, h=38)
+            objects[20] = Wall(x=0, y=53, w=3, h=40)
+        
+        elif room == 22:
+            objects[18] = Ladder(x=72, y=53, w=16, h=38)
+            objects[19] = Platform(x=0, y=93, w=36, h=1)
+            if ram_state[34] != 232:
+                objects[20] = Disappearing_Platform(x=36, y=93, w=88, h=7)
+            objects[21] = Platform(x=124, y=93, w=36, h=1)
+
+        elif room == 23:
+            objects[18] = Wall(x=156, y=53, w=3, h=40)
+            objects[19] = Platform(x=0, y=93, w=158, h=1)
+    
     else:
-        for i in range(1,7):
-            objects[i] = None
+        if room ==  18:
+            # skull
+            if ram_state[76]&32:
+                enemy = Skull()
+                enemy.xy = ram_state[47] - 1, ram_state[46] - 147
+                objects[5] = enemy
+            else:
+                objects[5] = NoObject()
+
+            if ram_state[34] != 214:
+                objects[19] = Disappearing_Platform(x=36, y=94, w=88, h=7)
+
+        elif room == 20:
+            if ram_state[34] != 214:
+                objects[19] = Disappearing_Platform(x=36, y=94, w=88, h=7)
         
-        
-    if room == 0:
-        if ram_state[26] != 117:
-            beam0 = Beam()
-            objects[9] = beam0
-            beam1 = Beam()
-            beam1.xy = 120, 53
-            objects[10] = beam1
-            beam2 = Beam()
-            beam2.xy = 112, 53
-            objects[11] = beam2
-            beam3 = Beam()
-            beam3.xy = 44, 53
-            objects[12] = beam3
-            beam4 = Beam()
-            beam4.xy = 36, 53
-            objects[13] = beam4
-            beam5 = Beam()
-            beam5.xy = 16, 53
-            objects[14] = beam5
-        else:
-            for i in range(5):
-                objects[8+i] = None
-        
-        objects[18] = Platform(x=4, y=94, w=154, h=1)
-        objects[19] = Ladder(x=72, y=94, w=16, h=102)
-        objects[20] = Wall(x=0, y=53, w=4, h=42, rgb=(101, 111, 228))
+        elif room == 22:
+            if ram_state[34] != 214:
+                objects[20] = Disappearing_Platform(x=36, y=93, w=88, h=7)
 
+    x = 56
+    y = 28
 
-    elif room == 1:
-        # skull
-        if ram_state[67]&2:
-            enemy = Skull()
-            enemy.xy = ram_state[47] + 32, 406 - ram_state[46]# ram_state[46] - 74 # 240 -> 166
-            objects[5] = enemy
-        else:
-            objects[5] = None
+    torch_h = objects[38]
 
-        # barrier
-        if ram_state[26] != 117:
-            barrier = Barrier()
-            objects[7] = barrier
-        else:
-            objects[7] = None
-        
-        if ram_state[28] != 117:
-            barrier2 = Barrier()
-            _, y = barrier2.xy
-            barrier2.xy = 136, y
-            objects[8] = barrier2
-        else:
-            objects[8] = None
-        
-        rope = Rope()
-        objects[17] = rope
+    sword1_h, sword2_h = objects[39], objects[40]
 
-        objects[18] = Platform(x=0, y=93, w=56, h=2)
-        objects[19] = Platform(x=104, y=93, w=56, h=2)
-        objects[20] = Platform(x=68, y=93, w=23, h=2)
-        objects[21] = Ladder(x=72, y=93, w=16, h=42)
-        objects[22] = Platform(x=76, y=136, w=8, h=5)
-        objects[23] = Conveyer_Belt(x=60, y=136, w=15, h=5)
-        objects[24] = Conveyer_Belt(x=85, y=136, w=15, h=5)
-        objects[25] = Ladder(x=16, y=136, w=16, h=45)
-        objects[26] = Ladder(x=128, y=136, w=16, h=45)
-        objects[27] = Platform(x=8, y=136, w=28, h=2)
-        objects[28] = Platform(x=124, y=136, w=28, h=2)
-        objects[29] = Platform(x=16, y=180, w=128, h=1)
-        objects[30] = Wall(x=0, y=96, w=8, h=40)
-        objects[31] = Wall(x=0, y=136, w=16, h=45)
-        objects[32] = Wall(x=152, y=96, w=8, h=40)
-        objects[33] = Wall(x=144, y=136, w=16, h=45)
-
-    elif room == 2:
-        objects[18] = Platform(x=4, y=93, w=154, h=1)
-        objects[19] = Ladder(x=72, y=93, w=16, h=102)
-        objects[20] = Wall(x=156, y=52, w=4, h=42)
-
-    elif room == 3:
-        objects[18] = Platform(x=4, y=93, w=154, h=1)
-        objects[19] = Ladder(x=72, y=93, w=16, h=102)
-        objects[20] = Wall(x=0, y=53, w=4, h=41)
-            
-    elif room == 4:
-        objects[18] = Platform(x=4, y=93, w=154, h=1)
-        objects[19] = Ladder(x=72, y=52, w=16, h=39)
-        objects[20] = Ladder(x=72, y=93, w=16, h=102)
-
-    elif room == 5:
-
-        # skull
-        if ram_state[69]&2:
-            enemy = Skull()
-            enemy.xy = ram_state[47] + 33, 103 + (255 - ram_state[46]) 
-            objects[5] = enemy
-        else:
-            objects[5] = None
-        
-        # barrier
-        if ram_state[26] != 117:
-            barrier = Barrier()
-            barrier.xy = 56, 135
-            barrier.rgb = 66, 158, 130
-            objects[6] = barrier
-        else:
-            objects[6] = None
-        
-        if ram_state[28] != 117:
-            barrier2 = Barrier()
-            barrier2.xy = 100, 135
-            barrier2.rgb = 66, 158, 130
-            objects[7] = barrier2
-        else:
-            objects[7] = None
-
-        #rope
-        rope = Rope()
-        rope.rgb = 236, 236, 236
-        rope.xy = 41, 97
-        rope.wh = 1, 24
-        objects[17] = rope
-        
-        objects[18] = Platform(x=0, y=93, w=48, h=2)
-        objects[19] = Platform(x=112, y=93, w=48, h=2)
-        objects[20] = Wall(x=32, y=53, w=4, h=40)
-        objects[21] = Wall(x=124, y=53, w=4, h=40)
-        objects[22] = Wall(x=125, y=95, w=2, h=51)
-        objects[23] = Platform(x=48, y=130, w=64, h=3)
-        objects[24] = Platform(x=4, y=171, w=154, h=1)
-        objects[25] = Ladder(x=72, y=171, w=16, h=26)
-        objects[26] = Platform(x=76, y=93, w=8, h=5)
-        objects[27] = Conveyer_Belt(x=60, y=93, w=15, h=5)
-        objects[28] = Conveyer_Belt(x=85, y=93, w=15, h=5)
-        objects[29] = Wall(x=0, y=96, w=4, h=77)
-        objects[30] = Wall(x=156, y=96, w=4, h=77)
-
-    elif room == 6:
-        objects[18] = Platform(x=0, y=93, w=160, h=1)
-        objects[19] = Ladder(x=72, y=53, w=16, h=38)
-
-    elif room == 7:
-        #beam
-        if ram_state[26] != 117:
-            beam0 = Beam()
-            objects[9] = beam0
-            beam1 = Beam()
-            beam1.xy = 120, 53
-            objects[10] = beam1
-            beam2 = Beam()
-            beam2.xy = 112, 53
-            objects[11] = beam2
-            beam3 = Beam()
-            beam3.xy = 44, 53
-            objects[12] = beam3
-            beam4 = Beam()
-            beam4.xy = 36, 53
-            objects[13] = beam4
-            beam5 = Beam()
-            beam5.xy = 16, 53
-            objects[14] = beam5
-        else:
-            for i in range(5):
-                objects[8+i] = None
-
-        objects[18] = Platform(x=4, y=94, w=154, h=1)
-        objects[19] = Ladder(x=72, y=94, w=16, h=102)
-        objects[20] = Wall(x=156, y=53, w=4, h=42, rgb=(101, 111, 228))
+    key1_h, key2_h, key3_h, key4_h = objects[41], objects[42], objects[43], objects[44]
     
-    elif room == 8:
-        #rope
-        rope = Rope()
-        rope.xy = 80, 96
-        rope.wh = 1, 51
-        objects[17] = rope
+    amulet_h = objects[45]
 
-        if ram_state[34] != 144:
-            objects[18] = Disappearing_Platform(4, 103, 12, 4)
-            objects[19] = Disappearing_Platform(4, 113, 12, 4)
-            objects[20] = Disappearing_Platform(4, 123, 12, 4)
-            objects[21] = Disappearing_Platform(4, 133, 12, 4)
+    if ram_state[65] & 128:
+        torch_h = Torch_HUD()
+        objects[38] = torch_h
+        x = x + 8
 
-            objects[23] = Disappearing_Platform(4, 153, 12, 4)
-            objects[24] = Disappearing_Platform(4, 163, 12, 4)
-            
-            objects[25] = Disappearing_Platform(144, 103, 12, 4)
-            objects[26] = Disappearing_Platform(144, 113, 12, 4)
-            objects[27] = Disappearing_Platform(144, 123, 12, 4)
-            objects[28] = Disappearing_Platform(144, 133, 12, 4)
+    if ram_state[65] & 64:
+        sword1_h = Sword_HUD()
+        sword1_h.xy = x, y
+        objects[39] = sword1_h
+        x = x + 8
 
-            objects[30] = Disappearing_Platform(144, 153, 12, 4)
-            objects[31] = Disappearing_Platform(144, 163, 12, 4)
+    if ram_state[65] & 32:
+        sword2_h = Sword_HUD()
+        sword2_h.xy = x, y
+        objects[40] = sword2_h
+        x = x + 8
 
-        objects[22] = Platform(4, 143, 12, 4)
-        objects[29] = Platform(144, 143, 12, 4)
+    if ram_state[65] & 16:
+        key1_h = Key_HUD()
+        key1_h.xy = x, y
+        objects[41] = key1_h
+        x = x + 8
 
-        objects[32] = Platform(4, 93, 43, 3)
-        objects[33] = Platform(76, 93, 8, 3)
-        objects[34] = Platform(112, 93, 48, 3)
-        objects[35] = Platform(4, 173, 152, 1)
-        objects[36] = Wall(x=0, y=53, w=4, h=121)
-        objects[37] = Wall(x=156, y=97, w=4, h=77)
+    if ram_state[65] & 8:
+        key2_h = Key_HUD()
+        key2_h.xy = x, y
+        objects[42] = key2_h
+        x = x + 8
 
-    elif room == 9:
-        objects[18] = Platform(x=0, y=93, w=158, h=1)
-        objects[19] = Ladder(x=72, y=53, w=16, h=38)
-        objects[20] = Wall(x=156, y=52, w=3, h=41)
+    if ram_state[65] & 4:
+        key3_h = Key_HUD()
+        key3_h.xy = x, y
+        objects[43] = key3_h
+        x = x + 8
 
-    elif room == 10:
-        objects[18] = Wall(x=0, y=53, w=3, h=40)
-        objects[19] = Ladder(x=72, y=53, w=16, h=38)
-        objects[20] = Platform(x=0, y=93, w=36, h=1)
-        if ram_state[34] != 232:
-            objects[21] = Disappearing_Platform(x=36, y=93, w=88, h=7)
-        objects[22] = Platform(x=124, y=93, w=36, h=1)
+    if ram_state[65] & 2 and x < 104:
+        key4_h = Key_HUD()
+        key4_h.xy = x, y
+        objects[44] = key4_h
+        x = x + 8
 
-    elif room == 11:
-        objects[18] = Platform(x=0, y=93, w=160, h=1)
-        objects[19] = Ladder(x=72, y=52, w=16, h=39)
-        objects[20] = Ladder(x=72, y=93, w=16, h=102)
-
+    if ram_state[65] & 1 and x < 104:
+        amulet_h = Amulet_HUD()
+        amulet_h.xy = x, y
+        objects[45] = amulet_h
     
-    elif room == 12:
-        #beam
-        if ram_state[26] != 117:
-            beam0 = Beam()
-            beam0.xy = 120, 53
-            objects[9] = beam0
-            beam1 = Beam()
-            beam1.xy = 112, 53
-            objects[10] = beam1
-            beam2 = Beam()
-            beam2.xy = 96, 53
-            objects[11] = beam2
-            beam3 = Beam()
-            beam3.xy = 88, 53
-            objects[12] = beam3
-            beam4 = Beam()
-            beam4.xy = 68, 53
-            objects[13] = beam4
-            beam5 = Beam()
-            beam5.xy = 60, 53
-            objects[14] = beam5
-            beam6 = Beam()
-            beam6.xy = 44, 53
-            objects[15] = beam6
-            beam7 = Beam()
-            beam7.xy = 36, 53
-            objects[16] = beam7
-        else:
-            for i in range(8):
-                objects[8+i] = None
-        objects[18] = Platform(x=0, y=94, w=160, h=1)
-
-    elif room == 13:
-        objects[18] = Platform(x=0, y=93, w=160, h=1)
-        objects[19] = Ladder(x=72, y=52, w=16, h=39)
-        objects[20] = Ladder(x=72, y=93, w=16, h=102)
-    
-    elif room == 14:
-        # rope
-        rope = Rope()
-        rope.xy = 71, 96
-        rope.wh = 1, 48
-        objects[17] = rope
-
-        objects[18] = Platform(0, 93, 40, 3)
-        objects[19] = Platform(68, 93, 24, 3)
-        objects[20] = Platform(120, 93, 40, 3)
-        objects[21] = Platform(16, 168, 128, 1)
-        objects[22] = Ladder(72, 169, 16, 25)
-        objects[23] = Wall(x=0, y=97, w=16, h=73)
-        objects[24] = Wall(x=144, y=97, w=16, h=73)
-    
-    elif room == 15:
-        objects[18] = Platform(x=0, y=94, w=160, h=1)
-    
-    elif room == 16:
-        objects[18] = Platform(x=0, y=93, w=160, h=1)
-        
-    
-    elif room == 17:
-        # barrier
-        if ram_state[26] != 117:
-            barrier = Barrier()
-            objects[6] = barrier
-        else:
-            objects[6] = None
-        
-        if ram_state[28] != 117:
-            barrier2 = Barrier()
-            _, y = barrier2.xy
-            barrier2.xy = 136, y
-            objects[7] = barrier2
-        else:
-            objects[7] = None
-
-        objects[18] = Platform(x=0, y=94, w=160, h=1)
-    
-    elif room ==  18:
-        # skull
-        if ram_state[76]&32:
-            enemy = Skull()
-            enemy.xy = ram_state[47] - 1, ram_state[46] - 147
-            objects[5] = enemy
-        else:
-            objects[5] = None
-
-        objects[18] = Platform(x=0, y=94, w=36, h=1)
-        if ram_state[34] != 232:
-            objects[19] = Disappearing_Platform(x=36, y=94, w=88, h=7)
-        objects[20] = Platform(x=124, y=94, w=36, h=1)
-    
-    elif room == 19:
-        objects[18] = Platform(x=0, y=93, w=160, h=1)
-        objects[19] = Ladder(x=72, y=53, w=16, h=38)
-    
-    elif room == 20:
-        objects[18] = Platform(x=0, y=94, w=36, h=1)
-        if ram_state[34] != 232:
-            objects[19] = Disappearing_Platform(x=36, y=94, w=88, h=7)
-        objects[20] = Platform(x=124, y=94, w=32, h=1)
-        objects[21] = Wall(x=156, y=52, w=3, h=42)
-
-    elif room == 21:
-        objects[18] = Platform(x=0, y=93, w=158, h=1)
-        objects[19] = Ladder(x=72, y=53, w=16, h=38)
-        objects[20] = Wall(x=0, y=53, w=3, h=40)
-    
-    elif room == 22:
-        objects[18] = Ladder(x=72, y=53, w=16, h=38)
-        objects[19] = Platform(x=0, y=93, w=36, h=1)
-        if ram_state[34] != 232:
-            objects[20] = Disappearing_Platform(x=36, y=93, w=88, h=7)
-        objects[21] = Platform(x=124, y=93, w=36, h=1)
-
-    elif room == 23:
-        objects[18] = Wall(x=156, y=53, w=3, h=40)
-        objects[19] = Platform(x=0, y=93, w=158, h=1)
+    print(objects)
 
     if hud:
-        for i in range(19):
-            objects[i+38] = None
-
-        x = 56
-        y = 28
-
-        torch_h = objects[38]
-
-        sword1_h, sword2_h = objects[39], objects[40]
-
-        key1_h, key2_h, key3_h, key4_h = objects[41], objects[42], objects[43], objects[44]
-        
-        amulet_h = objects[45]
-
-        if ram_state[65] & 128:
-            torch_h = Torch_HUD()
-            objects[38] = torch_h
-            x = x + 8
-
-        if ram_state[65] & 64:
-            sword1_h = Sword_HUD()
-            sword1_h.xy = x, y
-            objects[39] = sword1_h
-            x = x + 8
-
-        if ram_state[65] & 32:
-            sword2_h = Sword_HUD()
-            sword2_h.xy = x, y
-            objects[40] = sword2_h
-            x = x + 8
-
-        if ram_state[65] & 16:
-            key1_h = Key_HUD()
-            key1_h.xy = x, y
-            objects[41] = key1_h
-            x = x + 8
-
-        if ram_state[65] & 8:
-            key2_h = Key_HUD()
-            key2_h.xy = x, y
-            objects[42] = key2_h
-            x = x + 8
-
-        if ram_state[65] & 4:
-            key3_h = Key_HUD()
-            key3_h.xy = x, y
-            objects[43] = key3_h
-            x = x + 8
-
-        if ram_state[65] & 2 and x < 104:
-            key4_h = Key_HUD()
-            key4_h.xy = x, y
-            objects[44] = key4_h
-            x = x + 8
-
-        if ram_state[65] & 1 and x < 104:
-            amulet_h = Amulet_HUD()
-            amulet_h.xy = x, y
-            objects[45] = amulet_h
+        for i in range(11):
+            objects[i+46] = NoObject()
 
         # life
         for i in range(ram_state[58]):
