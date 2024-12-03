@@ -127,11 +127,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player, ball, enemy = objects[:3]
 
     # ball
-    if ram_state[54] != 0:  # otherwise no ball
+    if ram_state[54] != 0 and ram_state[49]> 49:  # otherwise no ball
         ball.xy = ram_state[49]-49, ram_state[54]-14
 
     # enemy
-    if ram_state[50] > 18:  # otherwise no enemy # could be ram pos 21 as well
+    if ram_state[50] > 18 and ram_state[50] > 33:  # otherwise no enemy # could be ram pos 21 as well
         if ram_state[50] - 15 < 34:
             enemy.xy = 16, 34
             enemy.wh = 4, ram_state[50]-33
@@ -143,15 +143,16 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             enemy.wh = 4, 15
 
     # player
-    if ram_state[51] < 47:
-        player.xy = 140, 34
-        player.wh = 4, ram_state[51]-33
-    elif ram_state[51] > 192:
-        player.xy = 140, ram_state[51]-13
-        player.wh = 4, 207 - ram_state[51]
-    else:
-        player.xy = 140, ram_state[51]-13
-        player.wh = 4, 15
+    if ram_state[51] > 13:  # otherwise no player
+        if ram_state[51] < 47:
+            player.xy = 140, 34
+            player.wh = 4, ram_state[51]-33
+        elif ram_state[51] > 192:
+            player.xy = 140, ram_state[51]-13
+            player.wh = 4, 207 - ram_state[51]
+        else:
+            player.xy = 140, ram_state[51]-13
+            player.wh = 4, 15
 
     if hud:
         # player score

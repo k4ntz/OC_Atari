@@ -5,9 +5,9 @@ from tqdm import tqdm
 from collections import deque
 from copy import deepcopy
 import pickle as pkl
-
-
+import os
 import atexit
+
 
 """
 This script can be used to identify any RAM positions that
@@ -48,7 +48,7 @@ class Renderer:
         self.no_render = no_render
         self.red_render = []
 
-        self.saved_frames = deque(maxlen=20) # tuples of ram, state, image
+        self.saved_frames = deque(maxlen=200) # tuples of ram, state, image
         self.frame_by_frame = False
         self.next_frame = False
 
@@ -64,6 +64,7 @@ class Renderer:
 
     def run(self):
         self.running = True
+        i = 0
         while self.running:
             self._handle_user_input()
             if not (self.frame_by_frame and not(self.next_frame)) and not self.paused:
@@ -81,6 +82,9 @@ class Renderer:
                 self._render()
                 self.next_frame = False
             self._render()
+            # if i % 300 == 0:
+            #     import ipdb; ipdb.set_trace()
+            i += 1
         pygame.quit()
 
     def _get_action(self):
@@ -164,9 +168,14 @@ class Renderer:
                 if event.key == pygame.K_c:  # 'C': clone
                     if self.paused:
                         statepkl = self.env._ale.cloneState()
-                        with open(f"state_{self.env.game_name}.pkl", "wb") as f:
-                            pkl.dump((statepkl, self.env._objects), f)
-                            print(f"State cloned in state_{self.env.game_name}.pkl.")
+                        filename = f"state_{self.env.game_name}.pkl"
+                        i = 1
+                        while os.path.exists(filename):
+                            filename = f"state_{self.env.game_name}_{i}.pkl"
+                            i += 1
+                        with open(filename, "wb") as f:
+                            pkl.dump((statepkl, self.env.objects), f)
+                            print(f"State cloned in {filename}")
 
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
                     self._unselect_active_cell()
@@ -396,7 +405,7 @@ if __name__ == "__main__":
         with open(args.load_state, "rb") as f:
             state, objects = pkl.load(f)
             renderer.env._ale.restoreState(state)
-            renderer.env._objects = objects
+            renderer.env.objects = objects
             print(f"State loaded from {args.load_state}")
     
 

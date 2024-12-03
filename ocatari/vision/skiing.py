@@ -56,7 +56,6 @@ class Score(GameObject):
     
 
 def _detect_objects(objects, obs, hud=False):
-    # objects.clear()
     player = objects[0]
     player_bb = find_objects(obs, player_c)[0]
     player.xywh = player_bb
