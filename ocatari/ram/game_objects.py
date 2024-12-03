@@ -183,20 +183,28 @@ class GameObject:
 
     @property
     def _nsrepr(self):
+        # if not self._visible:
+        #     return [0, 0]
+        # return [self.x, self.y]
         if not self._visible:
-            return [0, 0]
-        return [self.x, self.y]
+            return [0, 0, 0, 0, 0, 0]
+
+        return [self.x, self.y, *self.h_coords[0], *self.h_coords[1]]
 
     @property
     def _ns_meaning(self):
         """NeuroSymbolic Meaning"""
+        # return [
+        #     'POSITION'
+        # ]
         return [
-            'POSITION',
+            'POSITION', 'POSITION_HISTORY'
         ]
 
     @property
     def _ns_types(self):
-        return [Tuple[int, int]] 
+        # return [Tuple[int, int]] 
+        return [Tuple[int, int], Tuple[int, int, int, int]] 
 
     @property
     def _nslen(self):
@@ -310,7 +318,8 @@ class NoObject(GameObject):
     """
     This class represents a non-existent object. It is used to fill in the gaps when no object is detected.
     """
-    def __init__(self, nslen=2):
+    # def __init__(self, nslen=2):
+    def __init__(self, nslen=6):
         super().__init__()
         self.nslen = nslen
         self.rgb = (0, 0, 0)
@@ -331,17 +340,22 @@ class NoObject(GameObject):
     
     @property
     def _ns_meaning(self):
+        # return [
+        #     'POSITION',
+        # ]
         return [
-            'POSITION',
+            'POSITION', 'POSITION_HISTORY'
         ]
 
     @property
     def _ns_types(self):
-        return [Tuple[int, int]]
+        # return [Tuple[int, int]]
+        return [Tuple[int, int], Tuple[int, int, int, int]]
 
     @property
     def _nslen(self):
-        return self.nslen 
+        # return self.nslen 
+        return len(self._nsrepr)
 
     
     def __repr__(self):
