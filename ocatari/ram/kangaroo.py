@@ -19,12 +19,12 @@ MAX_ESSENTIAL_OBJECTS = {
     'Monkey': 4,
     'FallingCoconut': 1,
     'ThrownCoconut': 3,
-    'Lives': 1,
-    'Time': 1,
 }
 
 MAX_OPTIONAL_OBJECTS = {
-    'Score': 1
+    'Score': 1,
+    'Lives': 1,
+    'Time': 1,
 }
 
 MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
@@ -229,8 +229,15 @@ def _init_objects_ram(hud=True):
     # objects = [Player(), Child(), Monkey(), Monkey(), Monkey(), Monkey(),
     #            FallingCoconut(), ThrownCoconut(), ThrownCoconut(), ThrownCoconut(), Fruit(), Fruit(), Fruit(), Bell(),
     #            Platform(16, 172, w=128), Platform(16, 28, w=128)]
-    objects = [Player(), Child()] + [NoObject()] * 11 + [Bell(), Platform(16, 172, w=128), Platform(16, 28, w=128)]
-    objects.extend([NoObject()]* 26)
+
+    # objects = [Player(), Child()] + [NoObject()] * 11 + [Bell(), Platform(16, 172, w=128), Platform(16, 28, w=128)]
+    objects = [Player(), Child()]
+    objects += [NoObject(Monkey())] * 4
+    objects += [NoObject(FallingCoconut())]
+    objects += [NoObject(ThrownCoconut())] * 3
+    objects += [NoObject(Fruit())] * 3
+    objects += [Bell(), Platform(16, 172, w=128), Platform(16, 28, w=128)]
+    objects.extend([NoObject(Platform())]* 26)
     if hud: 
         objects.extend([Score(), Time(), Lives()])
     return objects
@@ -285,7 +292,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                 objects[2+i] = Monkey()
             objects[2+i].xy = x, y
         else:
-            objects[2+i] = NoObject()
+            objects[2+i] = NoObject(Monkey())
 
     # Fallling coconut
     if ram_state[33] != 255:
@@ -295,7 +302,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             objects[6] = FallingCoconut()
         objects[6].xy = x, y
     else:
-        objects[6] = NoObject()
+        objects[6] = NoObject(FallingCoconut())
 
     # Thrown coconuts
     # This projectiles visual representation seems to differ from its RAM x position,
@@ -308,7 +315,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                 objects[7+i] = ThrownCoconut()
             objects[7+i].xy = x, y
         else:
-            objects[7+i] = NoObject()
+            objects[7+i] = NoObject(ThrownCoconut())
 
 
     for i in range(MAX_ESSENTIAL_OBJECTS["Fruit"]):
@@ -331,13 +338,13 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             fruit.rgb = rgb
             objects[10+i] = fruit
         else:
-            objects[10+i] = NoObject()
+            objects[10+i] = NoObject(Fruit())
 
 
     # bell
     lvl = ram_state[36]
     if ram_state[41] == 128:
-        objects[13] = NoObject()
+        objects[13] = NoObject(Bell())
     elif lvl < 3:
         x = [93, 31, 130][lvl]
         y = 36
@@ -356,7 +363,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             if platform[i]:
                 objects[14+i] = platform[i]
             else:
-                objects[14+i] = NoObject()
+                objects[14+i] = NoObject(Platform())
 
 
     if hud:
@@ -402,7 +409,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             objects[-1].wh = w, 7
             objects[-1].value = n_lives
         else:
-            objects[-1] = NoObject()
+            objects[-1] = NoObject(Lives())
 
 
 
@@ -438,22 +445,22 @@ def manage_platforms(current_lvl_val, _):
             Ladder(132, 132),
             Ladder(20, 85),
             Ladder(132, 37),
-            NoObject(),
-            NoObject(),
-            NoObject(),
+            NoObject(Ladder()),
+            NoObject(Ladder()),
+            NoObject(Ladder()),
             Platform(16, 76, w=128),
             Platform(16, 124, w=128),
         ])
-        platforms.extend([NoObject()]*16)
+        platforms.extend([NoObject(Platform())]*16)
 
     elif current_lvl_val == 1:
         platforms.extend([
             Ladder(120, 132, h=4),
             Ladder(24, 116, h=4),
             Ladder(128, 36, h=4),
-            NoObject(),
-            NoObject(),
-            NoObject(),
+            NoObject(Ladder()),
+            NoObject(Ladder()),
+            NoObject(Ladder()),
             Platform(16, 124, w=28), Platform(52, 124, w=92),
             Platform(16, 76, w=60), Platform(84, 76, w=60),
             Platform(28, 164, w=24), Platform(112, 84, w=24),
@@ -463,7 +470,7 @@ def manage_platforms(current_lvl_val, _):
             Platform(84, 92, w=20), Platform(64, 60, w=20),
             Platform(92, 52, w=20), Platform(28, 68, w=28)
         ])
-        platforms.extend([NoObject()]*10)
+        platforms.extend([NoObject(Platform())]*10)
 
     else:  # current_lvl_val == 2
         platforms.extend([

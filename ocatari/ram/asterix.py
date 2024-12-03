@@ -66,7 +66,10 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player()]
-    objects.extend([NoObject() for _ in range(24)])
+    # objects.extend([NoObject() for _ in range(24)])
+    objects.extend([NoObject(Enemy()) for _ in range(8)])
+    objects.extend([NoObject(Reward()) for _ in range(8)])
+    objects.extend([NoObject(Consumable()) for _ in range(8)])
     if hud:
         objects.extend([Score(), Lives()])
 
@@ -108,31 +111,31 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     reward_lanes = []
     for i in range(8):
         if ram_state[18-i] == 11:
-            objects[1 + i] = NoObject()
+            objects[1 + i] = NoObject(Reward())
         elif ram_state[73 + i]:  # set to lane number if there is reward in that lane
             reward_lanes.append(i)  # 0-7 instead actual 1-8
             if type(lanes[i]) is not Reward:
                 rew = Reward()
                 objects[1 + i] = rew
-                objects[9 + i] = NoObject()
-                objects[17 + i] = NoObject()
+                objects[9 + i] = NoObject(Enemy())
+                objects[17 + i] = NoObject(Consumable())
             else:
                 rew = lanes[i]
             rew.xy = ram_state[42 + i], 26 + i * 16
         elif ram_state[29 + i] % 2 == 1:
             if not isinstance(lanes[i], Enemy):
                 en = Enemy()
-                objects[1 + i] = NoObject()
+                objects[1 + i] = NoObject(Reward())
                 objects[9 + i] = en
-                objects[17 + i] = NoObject()
+                objects[17 + i] = NoObject(Consumable())
             else:
                 en = lanes[i]
             en.xy = ram_state[42 + i], 26 + i * 16
         else:
             if type(lanes[i]) is not Consumable:
                 instance = Consumable()
-                objects[1 + i] = NoObject()
-                objects[9 + i] = NoObject()
+                objects[1 + i] = NoObject(Reward())
+                objects[9 + i] = NoObject(Enemy())
                 objects[17 + i] = instance
             else:
                 instance = lanes[i]
