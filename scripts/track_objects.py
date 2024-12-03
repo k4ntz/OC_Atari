@@ -295,7 +295,10 @@ class Renderer:
         top_left_x = (round(OBJ_CELL_WIDTH * (UPSCALE_FACTOR / 4)) - w) // 2
         
         # Place the smaller image in the center of the black canvas
-        padded_image[top_left_y:top_left_y + h, top_left_x:top_left_x + w, :] = sprite
+        try:
+            padded_image[top_left_y:top_left_y + h, top_left_x:top_left_x + w, :] = sprite
+        except ValueError:
+            import ipdb; ipdb.set_trace()
         
         return padded_image
 
