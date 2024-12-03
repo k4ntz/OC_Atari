@@ -172,7 +172,6 @@ def _init_objects_ram(hud=False):
     return objects
 
 
-
 def _detect_objects_ram(objects, ram_state, hud=False):
     """
        For all objects:
@@ -206,98 +205,154 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     objects[0] = player
 
-    ast_slots = objects[1:31]
     ast_list = [3,4,5,6,7,8,9,12,13,14,15,16,17,18,19]
     for i in range(len(ast_list)):
         if ram_state[ast_list[i]+18] and not ram_state[ast_list[i]]&128:
-            if isinstance(ast_slots[i], NoObject):
-                ast_slots[i] = Asteroid()
-            ast = ast_slots[i]
+            ast2 = None
+            ast = Asteroid()
+            objects[1+i] = ast
             x = int(_x_position(ram_state[ast_list[i]+18]))
             y = 184 - 2 * (80 - ram_state[ast_list[i]])
             ast.xy = (x, y)
             if ram_state[ast_list[i]+36]&127 < 32:
+                split = False
                 w, h = 16, 28
                 if x >= 160-16:
                     w -= (x+16)-160
+                    split = True
                 if y >= 194-28:
                     h -= (y+28)-194
-                if w < -200 or h < -200:
-                    ast_slots[i] = NoObject()
+                    split = True
+                if w < 0 or h < 0:
+                    ast = NoObject()
                 else:
                     ast.wh = w, h
+                if split and 16-w > 0 and 28-h > 0:
+                    ast2 = Asteroid()
+                    objects[16+i] = ast2
+                    if w == 16:
+                        ast2.xy = (x, 18)
+                        ast2.wh = 16, 28-h
+                    elif h == 28:
+                        ast2.xy = (0, y)
+                        ast2.wh = 16-w, 28
+                    else:
+                        ast2.xy = (0, 18)
+                        ast2.wh = 16-w, 28-h
+                else:
+                    objects[16+i] = NoObject()
+
             elif ram_state[ast_list[i]+36]&127 < 48:
+                split = False
                 ast.xy = (x-1, y-2)
                 w, h = 8, 15
                 if x >= 160-8:
                     w -= (x+7)-160
+                    split = True
                 if y >= 194-15:
                     h -= (y+13)-194
-                if w < -200 or h < -200:
-                    ast_slots[i] = NoObject()
+                    split = True
+                if w < 0 or h < 0:
+                    ast = NoObject()
                 else:
                     ast.wh = w, h
+                if split and 8-w > 0 and 15-h > 0:
+                    ast2 = Asteroid()
+                    objects[16+i] = ast2
+                    if w == 8:
+                        ast2.xy = (x-1, 18)
+                        ast2.wh = 8, 15-h
+                    elif h == 15:
+                        ast2.xy = (0, y-2)
+                        ast2.wh = 8-w, 15
+                    else:
+                        ast2.xy = (0, 18)
+                        ast2.wh = 8-w, 15-h
+                else:
+                    objects[16+i] = NoObject()
             else:
+                split = False
                 ast.xy = (x-1, y-1)
                 w, h = 4, 8
                 if x >= 160-4:
                     w -= (x+3)-160
+                    split = True
                 if y >= 194-8:
                     h -= (y+7)-194
-                if w < -200 or h < -200:
-                    ast_slots[i] = NoObject()
+                    split = True
+                if w < 0 or h < 0:
+                    ast = NoObject()
                 else:
                     ast.wh = w, h
+                if split and 4-w > 0 and 8-h > 0:
+                    ast2 = Asteroid()
+                    objects[16+i] = ast2
+                    if w == 4:
+                        ast2.xy = (x-1, 18)
+                        ast2.wh = 4, 15-h
+                    elif h == 8:
+                        ast2.xy = (0, y-1)
+                        ast2.wh = 8-w, 8
+                    else:
+                        ast2.xy = (0, 18)
+                        ast2.wh = 4-w, 8-h
+                else:
+                    objects[16+i] = NoObject()
+            if ast is not None:
+                w1, h1 = ast.wh
+                if w1 < 0:
+                    print(w1, "wtf w1?")
+                if h1 < 0:
+                    print(h1, "wtf h1?")
+            if ast2 is not None:
+                w2, h2 = ast2.wh
+                if w2 < 0:
+                    print(w2, "wtf w2?")
+                if h2 < 0:
+                    print(h2, "wtf h2?")
         else:
-            ast_slots[i] = NoObject()
-    objects[1:31] = ast_slots
+            objects[1+i] = NoObject()
+            objects[16+i] = NoObject()
     
     if ram_state[83] and not ram_state[86]&128:
-        if isinstance(objects[31], NoObject):
-            objects[31] = PlayerMissile()
-        miss = objects[31]
+        miss = PlayerMissile()
+        objects[16] = miss
         miss.xy = (_x_position(ram_state[83]) + 1, 175 - 2 * (80 - ram_state[86]) + 2)
     else:
-        objects[31] = NoObject()
+        objects[16] = NoObject()
 
 
     if ram_state[84] and not ram_state[87]&128:
-        if isinstance(objects[32], NoObject):
-            objects[32] = PlayerMissile()
-        miss = objects[32]
+        miss = PlayerMissile()
+        objects[17] = miss
         miss.xy = (_x_position(ram_state[84]) + 1, 175 - 2 * (80 - ram_state[87]) + 2)
     else:
-        objects[32] = NoObject()
+        objects[17] = NoObject()
 
     if hud:
         if ram_state[61] >= 16:
-            if isinstance(objects[33], NoObject):
-                objects[33] = PlayerScore()
-            score = objects[33]
+            score = PlayerScore()
+            objects[-1] = score
             score.xy = (4, 5)
             score.wh = 76, 10
         elif ram_state[61]:
-            if isinstance(objects[33], NoObject):
-                objects[33] = PlayerScore()
-            score = objects[33]
+            score = PlayerScore()
+            objects[-1] = score
             score.xy = (20, 5)
             score.wh = 60, 10
         elif ram_state[62] >= 16:
-            if isinstance(objects[33], NoObject):
-                objects[33] = PlayerScore()
-            score = objects[33]
+            score = PlayerScore()
+            objects[-1] = score
             score.xy = (36, 5)
             score.wh = 44, 10
         elif ram_state[62]:
-            if isinstance(objects[33], NoObject):
-                objects[33] = PlayerScore()
-            score = objects[33]
+            score = PlayerScore()
+            objects[-1] = score
             score.xy = (52, 5)
             score.wh = 28, 10
         else:
-            if isinstance(objects[33], NoObject):
-                objects[33] = PlayerScore()
-            score = objects[33]
+            score = PlayerScore()
+            objects[-1] = score
             score.xy = (68, 5)
             score.wh = 12, 10
 
@@ -323,3 +378,64 @@ def _augment_info_asteroids_ram(info, ram_state):
     (x, y, w, h, r, g, b)
     """
     objects = {}
+    if ram_state[74] <= 80:
+        objects["player"] = 81 - (2 * (ram_state[77])), 100 + (2 * (ram_state[74] - 41)), 10, 10, 240, 128, 128
+        print("Player Pos: " + str(81 - round(1.5 * ram_state[77])) + " " + str(100))
+
+    for i in range(16):
+        if ram_state[3 + i] != 0 and ram_state[21 + 1] != 0:
+            if ram_state[21 + i] <= 160:
+                prev_y = ram_state[3 + i] % 80
+                x, y = ram_state[21 + i], 210 - round(prev_y * 2.5)
+                # print("x: " + str(x) + " y: " + str(y) + " i: " + str(i))
+                objects[f"asteroi_{i}"] = x, y, 16, 28, 255
+    # objects["asteroid"] = 0, round(ram_state[3] * 2.625), 16, 28, 0, 0, 0
+    info["score"] = _convert_number(ram_state[61]) * 1000 + _convert_number(ram_state[62]) * 10
+    info["objects"] = objects
+
+
+
+def _detect_objects_asteroids_raw(info, ram_state):
+    """
+    Actions:
+    0: NOP
+    1: shoot
+    2: move  forward
+    3: rotate right
+    4: rotate left
+    5: random teleport
+    y = 0 top
+    y = 85 bottom
+    """
+    info["player_x"] = ram_state[73]    # starts at x = 29
+    info["player_y"] = ram_state[74]    # starts at y = 41
+    info["diff_to_start_x"] = ram_state[77]     # starts at 255, goes down if go to right and up to the left
+    info["player_direction"] = ram_state[60]    # 64: looking up, 78: up and right, 76: to the right, 74: down and right
+    # 72: down, 70: down and left, 68: left, 66: up and left
+    info["score_high"] = _convert_number(ram_state[61])
+    info["score_low"] = _convert_number(ram_state[62])  # 153 = 990 at 160 again 0
+    info["score"] = _convert_number(ram_state[61]) * 1000 + _convert_number(ram_state[62]) * 10
+    info["player_missile_1_x"] = ram_state[83]  # beginning x = 253, y = 224
+    info["player_missile_2_x"] = ram_state[84]  # blue one
+    info["player_missile_1_y"] = ram_state[86]
+    info["player_missile_2_y"] = ram_state[87]
+    info["player_missile_1_dir"] = ram_state[89]    # 0 if not flying
+    info["player_missile_2_dir"] = ram_state[90]
+    info["asteroid_1"] = {ram_state[21]: ram_state[3]}
+    info["asteroid_2"] = {ram_state[22]: ram_state[4]}
+    info["asteroid_3"] = {ram_state[23]: ram_state[5]}
+    info["asteroid_4"] = {ram_state[24]: ram_state[6]}
+    info["asteroid_5"] = {ram_state[25]: ram_state[7]}
+    info["asteroid_6"] = {ram_state[26]: ram_state[8]}
+    info["asteroid_7"] = {ram_state[27]: ram_state[9]}
+    info["asteroid_8"] = {ram_state[28]: ram_state[10]}
+    info["asteroid_9"] = {ram_state[29]: ram_state[11]}
+    info["asteroid_10"] = {ram_state[30]: ram_state[12]}
+    info["asteroid_11"] = {ram_state[31]: ram_state[13]}
+    info["asteroid_12"] = {ram_state[32]: ram_state[14]}
+    info["asteroid_13"] = {ram_state[33]: ram_state[15]}
+    info["asteroid_14"] = {ram_state[34]: ram_state[16]}
+    info["asteroid_15"] = {ram_state[35]: ram_state[17]}
+    info["asteroid_16"] = {ram_state[36]: ram_state[18]}
+    info["asteroid_17"] = {ram_state[37]: ram_state[19]}
+    info["asteroid_variation"] = ram_state[39:57]
