@@ -319,9 +319,10 @@ class NoObject(GameObject):
     This class represents a non-existent object. It is used to fill in the gaps when no object is detected.
     """
     # def __init__(self, nslen=2):
-    def __init__(self, nslen=6):
+    # def __init__(self, nslen=6):
+    def __init__(self, future_game_obj: GameObject):
         super().__init__()
-        self.nslen = nslen
+        self.future_game_obj = future_game_obj
         self.rgb = (0, 0, 0)
     
     def _save_prev(self):
@@ -332,30 +333,30 @@ class NoObject(GameObject):
     
     def __eq__(self, other):
         return isinstance(other, NoObject)
+
+    @property
+    def category(self):
+        return self.future_game_obj.category
     
-    #TODO: Figure out how to get the following three for NoObj from original
     @property
     def _nsrepr(self):
-        return [0 for i in range(self.nslen)] 
+        # simply return 0 for all the values
+        if type(self.future_game_obj._nslen) == property: 
+            import ipdb; ipdb.set_trace()
+        return [0 for i in range(self.future_game_obj._nslen)] 
     
     @property
     def _ns_meaning(self):
-        # return [
-        #     'POSITION',
-        # ]
-        return [
-            'POSITION', 'POSITION_HISTORY'
-        ]
+        return self.future_game_obj._ns_meaning 
+        
 
     @property
     def _ns_types(self):
-        # return [Tuple[int, int]]
-        return [Tuple[int, int], Tuple[int, int, int, int]]
+        return self.future_game_obj._ns_types
 
     @property
     def _nslen(self):
-        # return self.nslen 
-        return len(self._nsrepr)
+        return self.future_game_obj._nslen 
 
     
     def __repr__(self):

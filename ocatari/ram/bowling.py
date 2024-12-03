@@ -143,7 +143,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             pin.xy = pin_location(ram_state[57 + i]) + 9, 169 - 2 * (ram_state[47 + i])
         else:
             if pin:
-                objects[2 + i] = NoObject()
+                objects[2 + i] = NoObject(Pin())
         
     if hud:
         p1s, p1r, p2r = objects[12:]

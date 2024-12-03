@@ -199,7 +199,7 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player()] + [NoObject()] * 11
+    objects = [Player()] + [NoObject(Tree())] * 4 + [NoObject(Mogul())] * 3 + [NoObject(Flag())] * 4
     if hud:
         objects.extend([Score(ten=True),
                         Clock(59, 16, 38, 7)])
@@ -242,7 +242,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if type == 85: # Tree
             if y < 27: # tree disappeared
                 if objects[1+tree_n] == Tree(x, y, subtype):
-                    objects[1+tree_n] = NoObject(objects[1+tree_n]._nslen)
+                    objects[1+tree_n] = NoObject(objects[1+tree_n])
                     next_tree = tree_slots[(tree_n+1) % 4]
                     if next_tree:
                         next_tree._highest = True 
@@ -261,7 +261,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     if y <= 29:
                         tree.wh = tree.wh[0], height+2
                         if height+2 < 0:
-                            objects[1+tree_n] = NoObject(objects[1+tree_n]._nslen) # tree disappeared
+                            objects[1+tree_n] = NoObject(objects[1+tree_n])
                             next_tree = tree_slots[(tree_n+1) % 4]
                             if next_tree:
                                 next_tree._highest = True 
@@ -269,7 +269,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         elif type == 5: # Mogul
             if y < 27: # mogul disappeared
                 if objects[5+mogul_n] == Mogul(x, y, subtype):
-                    objects[5+mogul_n] = NoObject(objects[5+mogul_n]._nslen)
+                    objects[5+mogul_n] = NoObject(objects[5+mogul_n])
                     next_mogul = mogul_slots[(mogul_n+1) % 3]
                     if next_mogul:
                         next_mogul._highest = True 
@@ -291,8 +291,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         elif type == 2: # Flag
             if y < 27: # flag disappeared
                 if objects[8+flag_n] == Flag(x, y):
-                    objects[8+flag_n] = NoObject(objects[8+flag_n]._nslen)
-                    objects[9+flag_n] = NoObject(objects[9+flag_n]._nslen)
+                    objects[8+flag_n] = NoObject(objects[8+flag_n])
+                    objects[9+flag_n] = NoObject(objects[9+flag_n])
                     next_flag = flag_slots[(flag_n+2) % 4]
                     if next_flag:
                         next_flag._highest = True

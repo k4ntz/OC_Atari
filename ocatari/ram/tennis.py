@@ -130,22 +130,22 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         ballx, ball_y = ram_state[16] - 2, 189 - ram_state[54]
         shadowx, shadowy = ram_state[16] - 2, 189 - ram_state[55]
         if 98 < ball_y < 113:   # behind the net
-            objects[2] = NoObject()
+            objects[2] = NoObject(Ball())
         else:
             if not ball:
                 ball = Ball()
                 objects[2] = ball
             ball.xy = ballx, ball_y
         if 100 < shadowy < 113 or shadowy == ball_y or shadowy == 0:
-            objects[3] = NoObject()
+            objects[3] = NoObject(BallShadow())
         else:
             if not shadow:
                 shadow = BallShadow()
                 objects[3] = shadow
             shadow.xy = shadowx, shadowy
     else:
-        objects[2] = NoObject()
-        objects[3] = NoObject()
+        objects[2] = NoObject(Ball())
+        objects[3] = NoObject(BallShadow())
 
     if hud:
         player_score,  enemy_score = objects[4:6]
