@@ -1,9 +1,9 @@
-from .game_objects import GameObject, ValueObject
 from ._helper_methods import number_to_bitfield
+from .game_objects import GameObject, ValueObject, NoObject
 import sys 
 
 MAX_NB_OBJECTS = {"Player": 1, "Bank": 3, "Police": 3}
-MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Bank": 3, "Police": 3, "Score":1, "Life":6, "Gas_Tank": 1}
 
 class Player(GameObject):
     def __init__(self):
@@ -38,7 +38,8 @@ class Score(ValueObject):
         self._xy = 98, 179
         self.wh = (7, 7)
         self.rgb = 252, 252, 84
-        self.hud = False
+        self.hud = True
+        self.value = 0
 
 
 class Life(GameObject):
@@ -47,7 +48,7 @@ class Life(GameObject):
         self._xy = 0, 0
         self.wh = (8, 7)
         self.rgb = 162, 98, 33
-        self.hud = False
+        self.hud = True
 
 
 class Gas_Tank(GameObject):
@@ -56,7 +57,7 @@ class Gas_Tank(GameObject):
         self._xy = 42, 12
         self.wh = (12, 25)
         self.rgb = 167, 26, 26
-        self.hud = False
+        self.hud = True
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -81,9 +82,9 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()]
 
-    objects.extend([None] * 3)
+    objects.extend([NoObject()] * 6)
     if hud:
-        objects.extend([None] * 8)
+        objects.extend([NoObject()]*8)
     return objects
 
 
@@ -107,30 +108,38 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 else:
                     obj = Bank()
                     objects[1+i] = obj
-            elif ram_state[24+i] == 254:
-                if type(objects[1+i]) == Police:
-                    obj = objects[1+i]
-                else:
-                    obj = Police()
-                    objects[1+i] = obj
             else:
-                obj = None
-                objects[1+i] = None
-            if obj is not None:
+                obj = NoObject()
+                objects[1+i] = NoObject()
+            if not isinstance(obj, NoObject):
                 obj.xy = ram_state[29+i], ram_state[9+i]+37
         else:
-            objects[1+i] = None
+            objects[1+i] = NoObject()
+    
+    for i in range(3):
+        if ram_state[9+i]:
+            if ram_state[24+i] == 254:
+                if type(objects[4+i]) == Police:
+                    obj = objects[4+i]
+                else:
+                    obj = Police()
+                    objects[4+i] = obj
+            else:
+                obj = NoObject()
+                objects[4+i] = NoObject()
+            if not isinstance(obj, NoObject):
+                obj.xy = ram_state[29+i], ram_state[9+i]+37
+        else:
+            objects[4+i] = NoObject()
   
     if hud:
-        
         # 88-90 == score 
-
         # Score
-        if type(objects[4]) == Score:
-            score = objects[4]
+        if type(objects[7]) == Score:
+            score = objects[7]
         else:
             score = Score()
-            objects[4] = score
+            objects[7] = score
         if ram_state[88] > 15:
             score.xy = 58, 179
             score.wh = 46, 7
@@ -153,27 +162,23 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         # Lives 
         for i in range(6):
             if i < ram_state[85]:
-                if type(objects[5+i]) == Life:
-                    life = objects[5+i]
+                if type(objects[8+i]) == Life:
+                    life = objects[8+i]
                 else:
                     life = Life()
-                    objects[5+i] = life
+                    objects[8+i] = life
                 if i < 3:
                     life.xy = 90+(i*16), 27
                 else:
                     life.xy = 90+((i-3)*16), 15
             else:
-                objects[5+i] = None
+                objects[8+i] = NoObject()
         
-        # gas tank
-        if ram_state[86] < 25:
-            if type(objects[11]) == Gas_Tank:
-                tank = objects[11]
-            else:
-                tank = Gas_Tank()
-                objects[11] = tank
-            tank.xy = 42, 12 + ram_state[86]
-            tank.wh = 8, 25 - ram_state[86]
-        else:
-            objects[11] = None
-
+        # gas tank    
+        if type(objects[14]) != Gas_Tank:
+            tank = Gas_Tank()
+            objects[14] = tank
+        
+        objects[14].xy = 42, 12 + ram_state[86]
+        objects[14].wh = 8, 25 - ram_state[86]
+    
