@@ -1,4 +1,4 @@
-from .utils import find_objects, match_objects
+from .utils import find_objects, match_objects, match_blinking_objects
 from .game_objects import GameObject, NoObject
 
 objects_colors = {"player": [50, 132, 50], "score": [50, 132, 50],
@@ -41,6 +41,8 @@ class Bullet(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
+        self.num_frames_invisible = -1
+        self.max_frames_invisible = 4
 
 
 class P1Score(GameObject):
@@ -81,7 +83,7 @@ def _detect_objects(objects, obs, hud):
     match_objects(objects, shields_bb, 1, 3, Shield)
 
     bullets_bb = find_objects(obs, objects_colors["bullet"])
-    match_objects(objects, bullets_bb, 4, 3, Bullet)
+    match_blinking_objects(objects, bullets_bb, 4, 3, Bullet)
     
     satellites_bb = find_objects(obs, objects_colors["satellite"])
     match_objects(objects, satellites_bb, 7, 1, Satellite)

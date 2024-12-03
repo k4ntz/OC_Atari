@@ -1,4 +1,4 @@
-from .game_objects import GameObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject
 from ._helper_methods import _convert_number
 import math
 import sys
@@ -74,10 +74,10 @@ class Pill(GameObject):
         self.wh = 4, 2
         self.rgb = 228, 111, 111
         self.hud = False
-        self.grid_ij = 0, 0
+        self.grid_ij = i, j
 
 
-class Score(GameObject):
+class Score(ValueObject):
     """
     The player's score display (HUD).
     """
@@ -88,19 +88,21 @@ class Score(GameObject):
         self.wh = 7, 7
         self.rgb = 195, 144, 61
         self.hud = True
+        self.value = 0
 
 
-class Life(GameObject):
+class Life(ValueObject):
     """
     The indicator for remaining lives (HUD).
     """
     
     def __init__(self):
         super(Life, self).__init__()
-        self._xy = 12, 171
+        self._xy = 12, 173
         self.wh = 7, 10
         self.rgb = 187, 187, 53
         self.hud = True
+        self.value = 0
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
@@ -164,7 +166,7 @@ def _init_objects_ram(hud=False):
     ]
 
     if hud:
-        objects.extend([NoObject()]*5)
+        objects.extend([Fruit(), Score(), NoObject()])
     return objects
 
 
@@ -291,13 +293,12 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
 
     if hud:
-        fruit_hud = Fruit()
-        objects[-5] = fruit_hud
-        fruit_hud.rgb = get_fruit_rgb(ram_state[123])
+        
+        objects[-3].rgb = get_fruit_rgb(ram_state[123])
 
         score = _convert_number(ram_state[122]) * 10000 + _convert_number(ram_state[121]) * 100 +\
                 _convert_number(ram_state[120])
-        sc = Score()
+        sc = objects[-2]
         if ram_state[122] > 15:
             sc.xy =  55, 187
             sc.wh = 47, 7
@@ -316,16 +317,19 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         elif ram_state[120]:
             sc.xy =  95, 187
             sc.wh = 7, 7
-        objects[-4] = sc
+        sc.value = score
+        objects[-2] = sc
 
-        for i in range(3):
-            if (ram_state[123]%4) > i:
-                life = Life()
-                objects[-3+i] = life
-                life.xy = 12 + (i*16), 173
-            else:
-               objects[-3+i] = NoObject() 
-
+        # lives
+        n_lives = ram_state[123]%4
+        if n_lives > 0:
+            if type(objects[-1]) is NoObject:
+                objects[-1] = Life()
+            w = 7 + (n_lives-1)*16
+            objects[-1].wh = w, 10
+            objects[-1].value = n_lives
+        else:
+            objects[-1] = NoObject()
 
 def _detect_objects_mspacman_raw(info, ram_state):
     """

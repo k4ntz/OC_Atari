@@ -26,9 +26,9 @@ class Renderer:
     clock: pygame.time.Clock
     env: OCAtari
 
-    def __init__(self, env_name: str, mode:str = "ram", bits:bool = False, no_render: list = [], hud=False):
+    def __init__(self, env_name: str, mode:str = "ram", bits:bool = False, obs_mode="obj", no_render: list = [], hud=True):
         self.env = OCAtari(env_name, mode=mode, hud=hud, render_mode="rgb_array",
-                             render_oc_overlay=True, frameskip=1, obs_mode="obj")
+                             render_oc_overlay=True, frameskip=1, obs_mode=obs_mode)
 
         self.bits = bits
         self.env_name = env_name
@@ -155,6 +155,7 @@ class Renderer:
                 
                 elif event.key == pygame.K_g:
                     print(self.env.objects)
+                    print(len(self.env.objects))
                     for obj in self.env.objects:
                         x, y = obj.xy
                         if x < 160 and y < 210:
@@ -165,6 +166,10 @@ class Renderer:
                     _, ax = plt.subplots(1, 1, figsize=(6, 8))
                     ax.imshow(self.obs)
                     plt.show()
+                elif event.key == pygame.K_k:
+                    _, ax = plt.subplots(1, 1, figsize=(6, 8))
+                    ax.imshow(self.obs)
+                    plt.savefig('MsPacman.png', dpi=500)
                 elif event.key == pygame.K_h:
                     with open(self.env_name + '_save_state1.pickle', 'wb') as handle:
                         pickle.dump(self.env._env.env.env.ale.cloneState(), handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -349,7 +354,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer(env_name="Pitfall", mode="ram", bits=False)
+    renderer = Renderer(env_name="MsPacman", mode="ram", bits=False, obs_mode="ori", hud=True)
     def exit_handler():
         if renderer.no_render:
             print("\nno_render list: ")

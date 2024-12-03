@@ -1,3 +1,4 @@
+
 from .utils import find_objects, match_objects
 from .game_objects import GameObject
 
@@ -70,12 +71,10 @@ class HappyFrog(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 82,126,45
 
-
 class AlligatorHead(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 110,156,66
-
 
 class Fly(GameObject):
     def __init__(self, *args, **kwargs):
@@ -94,7 +93,6 @@ class Score(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 195,144,61
         self.hud = True
-
 
 class Lives(GameObject):
     def __init__(self, *args, **kwargs):

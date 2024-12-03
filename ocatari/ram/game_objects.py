@@ -254,6 +254,38 @@ class GameObject:
         if len(others) == 0:
             return None
         return min(enumerate(others), key=lambda item: self.manathan_distance(item[1]))
+
+    def _is_equivalent(self, other):
+        if self.category != other.category:
+            return False
+        iou_value = self.iou(other)
+        return iou_value > 0.8
+    
+    def iou(self, other):
+        # Calculate the (x, y) coordinates of the intersection rectangle
+        if self.category == "NoObject" and other.category == "NoObject":
+            return 1
+        x1 = max(self.x, other.x)
+        y1 = max(self.y, other.y)
+        x2 = min(self.x + self.w, other.x + other.w)
+        y2 = min(self.y + self.h, other.y + other.h)
+        
+        # Calculate the area of intersection rectangle
+        inter_width = max(0, x2 - x1)
+        inter_height = max(0, y2 - y1)
+        inter_area = inter_width * inter_height
+        
+        # Calculate the area of both bounding boxes
+        area_self = self.w * self.h
+        area_other = other.w * other.h
+        
+        # Calculate the union area
+        union_area = area_self + area_other - inter_area
+        
+        # Calculate IoU
+        if union_area == 0:
+            return 0  # Prevent division by zero
+        return inter_area / union_area
     
     @property
     def properties(self):

@@ -228,7 +228,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     objects[2] = b2
     objects[3] = hb
     
-    # enemies
+    # Enemy
     enemy_offsets = {25:[2, 0, 0],
                      50:[0, -1, 0],
                      75:[2, 1, 2],

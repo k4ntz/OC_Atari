@@ -7,8 +7,8 @@ RAM extraction for the game Q*BERT. Supported modes: ram.
 
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Cube': 21, 'Disk':2, 'PurpleBall': 1, 'RedBall': 1, 'GreenBall': 1, 'Coily': 1, 'Sam': 1, 'FlyingDiscs': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Cube': 21, 'Disk':2, 'PurpleBall': 1, 'RedBall': 1, 'GreenBall': 1, 'Coily': 1, 'Sam': 1, 'FlyingDiscs': 1, 'Score': 1, 'Lives': 1}
+MAX_NB_OBJECTS =  {'Player': 1, 'Cube': 21, 'Disk':2, 'PurpleBall': 1, 'RedBall': 1, 'GreenBall': 1, 'Coily': 1, 'Sam': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Cube': 21, 'Disk':2, 'PurpleBall': 1, 'RedBall': 1, 'GreenBall': 1, 'Coily': 1, 'Sam': 1, 'Score': 1, 'Lives': 1}
 
 
 _cubes_cinfo=[        21,               # row of 1
@@ -215,7 +215,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     cubes = objects[1:22]
     for cube, ccinf in zip(cubes, _cubes_cinfo):
         cube.rgb = _color_conversion[ram_state[ccinf]//2]
-    if ram_state[43] and ram_state[67] and ram_state[115] and 20 < ram_state[67] < 159:
+    if 16 < ram_state[67] < 210:
         if player is None:
             player = Player()
             objects[0] = player

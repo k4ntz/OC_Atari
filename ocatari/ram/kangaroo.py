@@ -341,6 +341,8 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     elif lvl < 3:
         x = [93, 31, 130][lvl]
         y = 36
+        if objects[13] is None:
+            objects[13] = Bell()
         objects[13].xy = x, y
 
     # Only on level change
