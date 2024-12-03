@@ -7,9 +7,9 @@ RAM extraction for the game Montezuma's Revenge.
 """
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Skull': 1, 'Spider': 1, 'Snake': 2, 'Key': 1, 'Amulet': 1, 'Torch': 1, 'Sword': 1,
-                      'Barrier': 2, 'Beam': 8, 'Rope': 1, 'Ruby': 3}
+                      'Barrier': 2, 'Beam': 8, 'Rope': 2, 'Ruby': 3, 'Wall': 4, 'Ladder': 2, 'Platform': 7, 'Disappearing_Platform': 12, 'Conveyer_Belt': 2, 'Key_HUD': 4, 'Amulet_HUD': 1, 'Torch_HUD': 1, 'Sword_HUD': 2}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Skull': 2, 'Spider': 1, 'Snake': 2, 'Key': 1, 'Amulet': 1, 'Torch': 1, 'Sword': 1,
-                      'Barrier': 2, 'Beam': 8, 'Rope': 1, 'Ruby': 3, 'Key_HUD': 4, 'Amulet_HUD': 1, 'Torch_HUD': 1, 'Sword_HUD': 2,
+                      'Barrier': 2, 'Beam': 8, 'Rope': 2, 'Ruby': 3, 'Wall': 4, 'Ladder': 2, 'Platform': 7, 'Disappearing_Platform': 12, 'Conveyer_Belt': 2, 'Key_HUD': 4, 'Amulet_HUD': 1, 'Torch_HUD': 1, 'Sword_HUD': 2,
                       'Score': 6, 'Life': 5}
 obj_tracker = {}
 
@@ -171,7 +171,7 @@ class Rope(GameObject):
     The climbing-ropes.
     """
     
-    def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
+    def __init__(self, x=112, y=96, w=1, h=39, *args, **kwargs):
         super(Rope, self).__init__()
         super().__init__(*args, **kwargs)
         self._xy = x, y
@@ -217,7 +217,7 @@ class Key_HUD(GameObject):
         self._xy = 56, 28
         self.wh = 7, 15
         self.rgb = 232, 204, 99
-        self.hud = True
+        self.hud = False
         
 class Amulet_HUD(GameObject):
     """
@@ -230,7 +230,7 @@ class Amulet_HUD(GameObject):
         self._xy = 56, 28
         self.wh = 6, 15
         self.rgb = 232, 204, 99
-        self.hud = True
+        self.hud = False
 
 
 class Torch_HUD(GameObject):
@@ -244,7 +244,7 @@ class Torch_HUD(GameObject):
         self._xy = 56, 28
         self.wh = 6, 13
         self.rgb = 232, 204, 99
-        self.hud = True
+        self.hud = False
 
 
 class Sword_HUD(GameObject):
@@ -258,7 +258,7 @@ class Sword_HUD(GameObject):
         self._xy = 56, 28
         self.wh = 6, 15
         self.rgb = 232, 204, 99
-        self.hud = True
+        self.hud = False
 
 
 class Platform(GameObject):
@@ -353,7 +353,7 @@ def _init_objects_ram(hud=True):
 
     objects = [Player()]
 
-    objects.extend([NoObject()] * 45)
+    objects.extend([NoObject()] * 59)
     if hud:
         objects.extend([NoObject()] * 11)
     return objects
@@ -888,6 +888,8 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         amulet_h = Amulet_HUD()
         amulet_h.xy = x, y
         objects[45] = amulet_h
+    
+    print(objects)
 
     if hud:
         for i in range(11):
