@@ -2,8 +2,8 @@ from ._helper_methods import number_to_bitfield
 from .game_objects import GameObject, ValueObject, NoObject
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1, "Bank": 3, "Police": 3}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Bank": 3, "Police": 3, "Score":1, "Life":6, "Gas_Tank": 1}
+MAX_NB_OBJECTS = {"Player": 1, "Bank": 3, "Police": 3, "Dynamite": 1}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Bank": 3, "Police": 3, "Dynamite": 1, "Score":1, "Life":6, "Gas_Tank": 1}
 
 class Player(GameObject):
     def __init__(self):
@@ -29,6 +29,15 @@ class Police(GameObject):
         self._xy = 0, 160
         self.wh = (8, 7)
         self.rgb = 24, 26, 167
+        self.hud = False
+
+
+class Dynamite(GameObject):
+    def __init__(self):
+        super(Dynamite, self).__init__()
+        self._xy = 0, 160
+        self.wh = 8, 2
+        self.rgb = 255, 255, 255
         self.hud = False
 
 
@@ -62,7 +71,6 @@ class Gas_Tank(GameObject):
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
-
     def fromdict(max_obj_dict):
         objects = []
         mod = sys.modules[__name__]
@@ -82,7 +90,7 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()]
 
-    objects.extend([NoObject()] * 6)
+    objects.extend([NoObject()] * 8)
     if hud:
         objects.extend([NoObject()]*8)
     return objects
@@ -131,15 +139,26 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 obj.xy = ram_state[29+i], ram_state[9+i]+37
         else:
             objects[4+i] = NoObject()
-  
+    
+    if ram_state[12]:
+        if type(objects[7]) == Dynamite:
+            obj = objects[7]
+        else:
+            obj = Dynamite()
+            objects[7] = obj
+        obj.xy = ram_state[32]-1, ram_state[12]+37
+    else:
+        if objects[7]:
+            objects[7] = NoObject()
+
     if hud:
         # 88-90 == score 
         # Score
-        if type(objects[7]) == Score:
-            score = objects[7]
+        if type(objects[8]) == Score:
+            score = objects[8]
         else:
             score = Score()
-            objects[7] = score
+            objects[8] = score
         if ram_state[88] > 15:
             score.xy = 58, 179
             score.wh = 46, 7
@@ -162,23 +181,23 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         # Lives 
         for i in range(6):
             if i < ram_state[85]:
-                if type(objects[8+i]) == Life:
-                    life = objects[8+i]
+                if type(objects[9+i]) == Life:
+                    life = objects[9+i]
                 else:
                     life = Life()
-                    objects[8+i] = life
+                    objects[9+i] = life
                 if i < 3:
                     life.xy = 90+(i*16), 27
                 else:
                     life.xy = 90+((i-3)*16), 15
             else:
-                objects[8+i] = NoObject()
+                objects[9+i] = NoObject()
         
         # gas tank    
-        if type(objects[14]) != Gas_Tank:
+        if type(objects[15]) != Gas_Tank:
             tank = Gas_Tank()
-            objects[14] = tank
+            objects[15] = tank
         
-        objects[14].xy = 42, 12 + ram_state[86]
-        objects[14].wh = 8, 25 - ram_state[86]
+        objects[15].xy = 42, 12 + ram_state[86]
+        objects[15].wh = 8, 25 - ram_state[86]
     
