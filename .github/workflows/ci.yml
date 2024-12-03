@@ -44,7 +44,7 @@ jobs:
           CHANGED_PYFILES=$(git diff --name-only --diff-filter=ACMRT HEAD | grep '\.py$')
 
       - name: Test for Debugging Strings
-        run: pytest tests/test_no_debugging.py
+        run: tests/test_no_debugging_statements.py --file_path="$CHANGED_FILES"
 
       - name: Set Games to Test
         id: set_games
