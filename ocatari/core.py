@@ -67,7 +67,7 @@ OBJv2_SUPPORTED = [
 ]
 
 # Constant to control the upscaling factor for rendering
-UPSCALE_FACTOR = 3
+UPSCALE_FACTOR = 5
 
 
 # The OCAtari environment provides an interface to interact with Atari 2600 games through Gymnasium, enabling object tracking and analysis. This environment extends the functionality of traditional Atari environments by incorporating different object detection modes (RAM, vision, or both) and supports enhanced observation spaces for advanced tasks like reinforcement learning.  
@@ -224,7 +224,7 @@ class OCAtari:
         self._fill_buffer()
         # Set the observation based on the selected observation mode
         if self.obs_mode == "dqn":
-            obs = np.array(self._state_buffer_dqn)
+            obs = _stack(list(self._state_buffer_dqn)).cpu().numpy() if torch_imported else np.array(self._state_buffer_dqn)
         elif self.obs_mode == "obj":
             obs = np.array(self._state_buffer_ns)
         return obs, reward, truncated, terminated, info
@@ -280,7 +280,10 @@ class OCAtari:
         # Fill the RGB, DQN, and neurosymbolic state buffers with the current states
         if self.create_dqn_stack:
             dqn_obs = cv2.resize(cv2.cvtColor(self.getScreenRGB(), cv2.COLOR_RGB2GRAY), (84, 84), interpolation=cv2.INTER_AREA)
-            self._state_buffer_dqn.append(_tensor(dqn_obs, dtype=_uint8, **_tensor_kwargs) if torch_imported else dqn_obs)
+            if torch_imported:
+                self._state_buffer_dqn.append(_tensor(dqn_obs, dtype=_uint8, **_tensor_kwargs).cpu())  # Move tensor to CPU if necessary
+            else:
+                self._state_buffer_dqn.append(dqn_obs)
         if self.create_rgb_stack:
             self._state_buffer_rgb.append(self.getScreenRGB())
         if self.create_ns_stack:

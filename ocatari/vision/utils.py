@@ -629,8 +629,9 @@ def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
     if len(objects_bb) > max_obj:
         print(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
     if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
-         for i, obj_bb in enumerate(objects_bb):
-            prev_objects[start_idx+i] = ObjClass(*obj_bb)
+        # for i, obj_bb in enumerate(objects_bb):
+        for i in range(min(max_obj, len(objects_bb))):
+            prev_objects[start_idx+i] = ObjClass(*objects_bb[i])
     else:
         try:
             cost_matrix = compute_cm(prev_objects[start_idx: start_idx+max_obj], objects_bb)
@@ -645,6 +646,52 @@ def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
                         prev_objects[start_idx+i].rgb = objects_bb[j][4]
                 else:
                     prev_objects[start_idx+i] = ObjClass(*objects_bb[j])
+        except Exception as e:
+            print(e)
+            import ipdb; ipdb.set_trace()
+
+def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
+    """
+    Acts like match_objects, but keeps tracking objects when dissapear for a couple of frames.
+    """
+
+    if len(objects_bb) > max_obj:
+        print(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
+    if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
+         for i in range(min(max_obj, len(objects_bb))):
+            prev_objects[start_idx+i] = ObjClass(*objects_bb[i])
+            prev_objects[start_idx+i].num_frames_invisible += 1
+    else:
+        try:
+            visible_objects = [o for o in objects_bb]
+            for o in prev_objects[start_idx: start_idx+max_obj]:
+                if o == NoObject():
+                    continue
+                if o.num_frames_invisible in range(o.max_frames_invisible):
+                    X = compute_cm([o], objects_bb)
+                    flag = False
+                    if np.shape(X) == (1, 0):
+                        flag = True
+                    else:
+                        flag = min(X[0] > o.max_frames_invisible)
+                    if flag:
+                        objects_bb += [o.xywh]
+                    o.num_frames_invisible += 1
+            cost_matrix = compute_cm(prev_objects[start_idx: start_idx+max_obj], objects_bb)
+            obj_idx, bbs_idx = linear_sum_assignment(cost_matrix)
+            for i in range(max_obj):
+                if i not in obj_idx and prev_objects[start_idx+i]:
+                    prev_objects[start_idx+i] = NoObject()
+            for i, j in zip(obj_idx, bbs_idx):
+                if prev_objects[start_idx+i]:   
+                    prev_objects[start_idx+i].xywh = objects_bb[j][:4]
+                    if objects_bb[j] in visible_objects:
+                        prev_objects[start_idx+i].num_frames_invisible = 0
+                    if len(objects_bb[j]) > 4:
+                        prev_objects[start_idx+i].rgb = objects_bb[j][4]
+                else:
+                    prev_objects[start_idx+i] = ObjClass(*objects_bb[j])
+                    prev_objects[start_idx+i].num_frames_invisible += 1
         except Exception as e:
             print(e)
             import ipdb; ipdb.set_trace()
