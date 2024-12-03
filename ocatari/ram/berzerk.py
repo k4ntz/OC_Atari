@@ -1,6 +1,7 @@
 from ._helper_methods import _convert_number
 from .game_objects import GameObject, NoObject
 import numpy as np
+from .utils import match_objects
 import sys
 
 """
@@ -41,11 +42,10 @@ class Enemy(GameObject):
     """
     The enemy Automazeons stalking the player. 
     """
-    
-    def __init__(self):
-        super().__init__()
-        self._xy = 0, 0
-        self.wh = 8, 16
+    def __init__(self, x=0, y=0, w=8, h=16):
+        super(Enemy, self).__init__()
+        self._xy = x, y
+        self.wh = w, h
         self.rgb = 210, 210, 64
         self.hud = False
 
@@ -206,14 +206,16 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[9] = NoObject() 
 
     # enemies
+    enemy_bbs = []
     if np.count_nonzero(ram_state[65:74]) != 0:
         for i in range(8):
-            enemy = NoObject()
             if ram_state[65 + i] != 0 and ram_state[56 + i] != 127:
                 enemy = Enemy()
                 enemy.xy = ram_state[65 + i] + 6, (ram_state[56 + i] * 2) + 4
                 enemy.rgb = enemy_colors.get(ram_state[92] % 16)
-            objects[1+i] = enemy
+                enemy_bbs.append(enemy.xywh)
+        
+    match_objects(objects, enemy_bbs, 1, 8, Enemy)
         
 
     # enemy missile
