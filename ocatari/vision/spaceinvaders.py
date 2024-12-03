@@ -42,7 +42,7 @@ class Bullet(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
         self.num_frames_invisible = -1
-        self.max_frames_invisible = 2
+        self.max_frames_invisible = 4
 
 
 class P1Score(GameObject):
