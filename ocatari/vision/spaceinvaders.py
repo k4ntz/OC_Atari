@@ -1,4 +1,4 @@
-from .utils import find_objects, match_objects
+from .utils import find_objects, match_objects, match_blinking_objects
 from .game_objects import GameObject, NoObject
 
 objects_colors = {"player": [50, 132, 50], "score": [50, 132, 50],
