@@ -38,8 +38,9 @@ class Player(GameObject):
 
     @property
     def _nsrepr(self):
-        h_coords = [c for coord in self.h_coords for c in coord]
-        return [self.x, self.y, *h_coords, self.orientation, *self.rgb]
+        # h_coords = [c for coord in self.h_coords for c in coord]
+        return [self.x, self.y, *self.h_coords[0], *self.h_coords[1], self.orientation]
+        # return [self.x, self.y, self.orientation]
     
     @property
     def _ns_meaning(self):
@@ -47,12 +48,11 @@ class Player(GameObject):
             'POSITION',
             'POSITION_HISTORY',
             'ORIENTATION', 
-            'RGB', 
         ]
 
     @property
     def _ns_types(self):
-        return [Tuple[int, int], Tuple[int, int, int, int], Tuple[int], Tuple[int, int, int]] 
+        return [Tuple[int, int], Tuple[int, int, int, int], Tuple[int]] 
 
 
 class Flag(GameObject):

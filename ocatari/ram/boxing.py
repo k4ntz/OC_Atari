@@ -25,26 +25,6 @@ class Player(GameObject):
         self.right_arm_length = 0
         self.left_arm_length = 0
 
-    @property
-    def _nsrepr(self):
-        h_coords = [c for coord in self.h_coords for c in coord]
-        return [self.x, self.y, *h_coords, *self.rgb]
-    
-    @property
-    def _ns_meaning(self):
-        return [
-            'POSITION',
-            'POSITION_HISTORY',
-            'RGB', 
-        ]
-
-    @property
-    def _ns_types(self):
-        return [Tuple[int, int], Tuple[int, int, int, int], Tuple[int, int, int]] 
-
-    
-    
-
 
 class Enemy(GameObject):
     """    
@@ -62,23 +42,6 @@ class Enemy(GameObject):
         self._above_10 = False
         self.right_arm_length = 0
         self.left_arm_length = 0
-
-    @property
-    def _nsrepr(self):
-        h_coords = [c for coord in self.h_coords for c in coord]
-        return [self.x, self.y, *h_coords, *self.rgb]
-    
-    @property
-    def _ns_meaning(self):
-        return [
-            'POSITION',
-            'POSITION_HISTORY',
-            'RGB', 
-        ]
-
-    @property
-    def _ns_types(self):
-        return [Tuple[int, int], Tuple[int, int, int, int], Tuple[int, int, int]] 
 
 
 class Clock(GameObject):
