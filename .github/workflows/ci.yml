@@ -34,12 +34,17 @@ jobs:
         if: always()  # Run general tests regardless of specific files changing
         run: pytest tests/0_general/*
 
+
       - name: Determine Changed Files
         id: changes
         run: |
           git fetch origin ${{ github.event.before }} --depth=1
           git diff --name-only ${{ github.event.before }} ${{ github.sha }} > changed_files.txt
           cat changed_files.txt
+          CHANGED_PYFILES=$(git diff --name-only --diff-filter=ACMRT HEAD | grep '\.py$')
+
+      - name: Test for Debugging Strings
+        run: pytest tests/test_no_debugging.py
 
       - name: Set Games to Test
         id: set_games
