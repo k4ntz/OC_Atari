@@ -30,13 +30,6 @@ jobs:
           pip install pytest
           pip install "gymnasium[atari, accept-rom-license]"
 
-      - name: Run general tests for all changes
-        continue-on-error: true
-        id: general_tests
-        if: always()  # Run general tests regardless of specific files changing
-        run: pytest tests/0_general/*
-
-
       - name: Determine Changed Files
         id: changes
         run: |
@@ -57,10 +50,13 @@ jobs:
             echo "No Python files changed. Skipping tests."
           fi
 
+      - name: Run general tests for all changes
+        id: general_tests
+        run: pytest tests/0_general/*
+
       - name: Set Games to Test
         id: set_games
         run: |
-          # Initialize an empty list for games
           GAMES=""
           
           # Loop through changed files and set appropriate games
