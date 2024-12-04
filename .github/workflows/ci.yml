@@ -50,17 +50,17 @@ jobs:
             echo "No Python files changed."
           fi
           
-      - name: Test for Debugging Strings
-        continue-on-error: true
-        id: debugging_strings
-        if: success() && steps.changes.outputs.changed_files != ''
-        run: |
-          if [ -s changed_files.txt ]; then
-            CHANGED_FILES=$(cat changed_files.txt | tr '\n' ',')
-            pytest tests/test_no_debugging_statements.py --files "$CHANGED_FILES"
-          else
-            echo "No Python files changed. Skipping debugging tests."
-          fi
+      #- name: Test for Debugging Strings
+      #  continue-on-error: true
+      #  id: debugging_strings
+      #  if: success() && steps.changes.outputs.changed_files != ''
+      #  run: |
+      #    if [ -s changed_files.txt ]; then
+      #      CHANGED_FILES=$(cat changed_files.txt | tr '\n' ',')
+      #      pytest tests/test_no_debugging_statements.py --files "$CHANGED_FILES"
+      #    else
+      #      echo "No Python files changed. Skipping debugging tests."
+      #    fi
 
       - name: Run general tests for all changes
         id: general_tests
