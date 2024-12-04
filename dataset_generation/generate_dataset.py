@@ -32,12 +32,12 @@ parser.add_argument("-dqn", "--dqn", action="store_true", default=True, help="Us
 opts = parser.parse_args()
 
 # Init the environment
-env = OCAtari(opts.game, mode="both", render_mode='rgb_array', hud=True)
+env = OCAtari(opts.game, mode="both", render_mode='human', hud=True)
 observation, info = env.reset()
 
 # Set up an agent
 if opts.dqn:
-    opts.path = f"../models/{opts.game}/dqn.gz"
+    opts.path = f"models/{opts.game}/dqn.gz"
     dqn_agent = load_agent(opts, env.action_space.n)
 
 # make environment deterministic
@@ -68,8 +68,8 @@ for i in tqdm(range(10000)):
     r_objs.append(deepcopy(env.objects))
     v_objs.append(deepcopy(env.objects_v))
     # dataset["OBS"].append(obs.flatten().tolist())
-    dataset["RAM"].append([x for x in sorted(env.objects, key=lambda o: str(o)) if x.hud == False])
     dataset["VIS"].append([x for x in sorted(env.objects_v, key=lambda o: str(o))])
+    dataset["RAM"].append([x for x in sorted(env.objects, key=lambda o: str(o)) if x.hud == False])
     dataset["HUD"].append([x for x in sorted(env.objects, key=lambda o: str(o)) if x.hud == True])
     turn_nr = turn_nr + 1
 

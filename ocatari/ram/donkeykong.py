@@ -9,16 +9,15 @@ RAM extraction for the game DONKEYKONG. Supported modes: ram.
 
 """
 
-MAX_ESSENTIAL_OBJECTS = {
+MAX_NB_OBJECTS = {
     'Player': 1, 'Girlfriend': 1, 'Ladder': 10, 'Hammer': 1, 'Barrel' : 10, 'DonkeyKong': 1,
 }
 
-MAX_OPTIONAL_OBJECTS = {
-    'Score': 1,
-    'Life':1, 
+MAX_NB_OBJECTS_HUD = {
+    'Player': 1, 'Girlfriend': 1, 'Ladder': 10, 'Hammer': 1, 'Barrel' : 10, 'DonkeyKong': 1,
+    'Score': 1, 'Life':1, 
 }
 
-MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
 
 obj_tracker = {}
 
@@ -172,8 +171,8 @@ def _get_max_objects(hud=False):
         return objects
 
     if hud:
-        return fromdict(MAX_ALL_OBJECTS)
-    return fromdict(MAX_ESSENTIAL_OBJECTS)
+        return fromdict(MAX_NB_OBJECTS_HUD)
+    return fromdict(MAX_NB_OBJECTS)
 
 
 # def _init_all_objects(hud=False):
@@ -192,8 +191,7 @@ def _init_objects_ram(hud=True):
     (Re)Initialize the objects
     """
     # objects[Time][0] = Time()
-    objects = [Player(), DonkeyKong(), Girlfriend(), Hammer()] + [None] * 4 + \
-        [Ladder(*xy) for xy in ladders]
+    objects = [Player(), DonkeyKong(), Girlfriend(), Hammer()] + [None] * 4 + [Ladder(*xy) for xy in ladders]
     if hud:
         objects.extend([Life(), Score()])
     return objects

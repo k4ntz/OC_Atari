@@ -8,7 +8,7 @@ RAM extraction for the game Pong.
 """
 
 MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Enemy': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Enemy': 1, 'PlayerScore': 2, 'EnemyScore': 2}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Enemy': 1, 'PlayerScore': 1, 'EnemyScore': 1}
 
 
 class Player(GameObject):
@@ -61,7 +61,7 @@ class PlayerScore(GameObject):
         super().__init__()
         if ten:
             self._xy = 104, 1
-            self.wh = 4, 20
+            self.wh = 24, 20
         else:
             self._xy = 116, 1
             self.wh = 12, 20
@@ -82,7 +82,7 @@ class EnemyScore(GameObject):
         super().__init__()
         if ten:
             self._xy = 24, 1
-            self.wh = 4, 20
+            self.wh = 24, 20
         else:
             self._xy = 36, 1
             self.wh = 12, 20
@@ -127,11 +127,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player, ball, enemy = objects[:3]
 
     # ball
-    if ram_state[54] != 0:  # otherwise no ball
+    if ram_state[54] != 0 and ram_state[49]> 49:  # otherwise no ball
         ball.xy = ram_state[49]-49, ram_state[54]-14
 
     # enemy
-    if ram_state[50] > 18:  # otherwise no enemy # could be ram pos 21 as well
+    if ram_state[50] > 18 and ram_state[50] > 33:  # otherwise no enemy # could be ram pos 21 as well
         if ram_state[50] - 15 < 34:
             enemy.xy = 16, 34
             enemy.wh = 4, ram_state[50]-33
@@ -143,37 +143,45 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             enemy.wh = 4, 15
 
     # player
-    if ram_state[51] - 13 < 34:
-        player.xy = 140, 34
-        player.wh = 4, ram_state[51]-33
-    elif ram_state[51] + 2 > 194:
-        player.xy = 140, ram_state[51]-13
-        player.wh = 4, 207 - ram_state[51]
-    else:
-        player.xy = 140, ram_state[51]-13
-        player.wh = 4, 15
+    if ram_state[51] > 13:  # otherwise no player
+        if ram_state[51] < 47:
+            player.xy = 140, 34
+            player.wh = 4, ram_state[51]-33
+        elif ram_state[51] > 192:
+            player.xy = 140, ram_state[51]-13
+            player.wh = 4, 207 - ram_state[51]
+        else:
+            player.xy = 140, ram_state[51]-13
+            player.wh = 4, 15
 
     if hud:
-        # enemy score
-        if ram_state[13] >= 10:  # enemy score
-            if not enemy._above_10:
-                objects.append(EnemyScore(ten=True))
-                enemy._above_10 = True
-        else:
-            if enemy._above_10:
-                objects.remove(EnemyScore(ten=True))
-                enemy._above_10 = False
-
         # player score
+        player_score, enemy_score = objects[3:]
         if ram_state[14] >= 10:  # player score
             if not player._above_10:
-                objects.append(PlayerScore(ten=True))
+                # objects.append(PlayerScore(ten=True))
+                player_score.xy = 104, 1
+                player_score.wh = 24, 20
                 player._above_10 = True
         else:
             if player._above_10:
-                objects.remove(PlayerScore(ten=True))
+                # objects.remove(PlayerScore(ten=True))
+                player_score.xy = 116, 1
+                player_score.wh = 4, 20
                 player._above_10 = False
-
+        # enemy score
+        if ram_state[13] >= 10:  # enemy score
+            if not enemy._above_10:
+                # objects.append(EnemyScore(ten=True))
+                enemy_score.xy = 24, 1
+                enemy_score.wh = 24, 20
+                enemy._above_10 = True
+        else:
+            if enemy._above_10:
+                # objects.remove(EnemyScore(ten=True))
+                enemy_score.xy = 36, 1
+                enemy_score.wh = 12, 20
+                enemy._above_10 = False
 
 def _detect_objects_pong_raw(info, ram_state):
     """

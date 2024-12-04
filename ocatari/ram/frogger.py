@@ -1,175 +1,133 @@
-import sys
-from .game_objects import GameObject
-import numpy as np
+from .game_objects import GameObject, NoObject
 
 """
-RAM extraction for the game Frogger Template.
+RAM extraction for the game Frogger.
 
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Enemy': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Enemy': 1, 'PlayerScore': 2, 'EnemyScore': 2}
+MAX_NB_OBJECTS = {'Frog': 1, 'Car': 26, 'Log': 8, 'Alligator': 2, 'Turtle': 10, 'LadyFrog':1, 'Fly':1, 'AlligatorHead':1, 'HappyFrog': 5, 'Snake':2}
+MAX_NB_OBJECTS_HUD = {'Frog': 1, 'Car': 26, 'Log': 8, 'Alligator': 2, 'Turtle': 10, 'LadyFrog':1, 'Fly':1, 'AlligatorHead':1, 'HappyFrog':5, 'Snake':2, 'Score':1, 'Time': 1, 'Lives':1}
 
-
-class Player(GameObject):
+class Frog(GameObject):
     """
-    The player figure i.e., the movable bar at the side.
-    """
-    
-    def __init__(self):
-        super().__init__()
-        self._xy = 0, 0
-        self.wh = 4, 15
-        self.rgb = 92, 186, 92
-        self.hud = False
-        self._above_10 = False
-
-
-class Enemy(GameObject):
-    """
-    The enemy bar on the opposite side.
+    The player figure i.e., the frog. 
     """
     
     def __init__(self):
-        super().__init__()
-        self._xy = 0, 0
-        self.wh = 4, 15
-        self.rgb = 213, 130, 74
+        super(Frog, self).__init__()
+        #self._xy = 0, 0
+        #self.wh = 7, 7
+        self.rgb = 110, 156, 66
         self.hud = False
-        self._above_10 = False
+
+class Car(GameObject):
+    """
+    A car.
+    """
+    def __init__(self):
+        super(Car, self).__init__()
+        #self._xy = 0, 0
+        #self.wh = 14, 7
+        self.rgb = 195, 144, 61
+        self.hud = False
 
 
-class Ball(GameObject):
-    """
-    The game ball.
-    """
-    
+class Log(GameObject):
     def __init__(self):
         super().__init__()
-        self._xy = 0, 0
-        self.wh = 2, 4
-        self.rgb = 236, 236, 236
-        self.hud = False
+        self.rgb = 105, 105, 15        
 
 
-class PlayerScore(GameObject):
-    """
-    The player's score display (HUD).
-    """
-    
-    def __init__(self, ten=False):
+class Turtle(GameObject):
+    def __init__(self):
         super().__init__()
-        if ten:
-            self._xy = 104, 1
-            self.wh = 4, 20
-        else:
-            self._xy = 116, 1
-            self.wh = 12, 20
-        self.ten = ten
-        self.rgb = 92, 186, 92
+        self.rgb = 144, 72, 17
+
+
+class Alligator(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 105, 105, 15
+
+
+class LadyFrog(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 236,236,236
+
+
+class HappyFrog(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        #self._xy = 0, 0
+        #self.wh = 8, 10
+        self.rgb = 82,126,45
+
+class AlligatorHead(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 110,156,66
+        #self.wh = 8, 10
+        
+class Fly(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 110,156,66
+
+class Snake(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 82,126,45   
+        
+class Score(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 195,144,61
         self.hud = True
 
-    def __eq__(self, o):
-        return isinstance(o, PlayerScore) and self.xy == o.xy
-
-
-class EnemyScore(GameObject):
-    """
-    The enemy's score display (HUD).
-    """
-    
-    def __init__(self, ten=False):
-        super().__init__()
-        if ten:
-            self._xy = 24, 1
-            self.wh = 4, 20
-        else:
-            self._xy = 36, 1
-            self.wh = 12, 20
-        self.ten = ten
-        self.rgb = 213, 130, 74
+class Lives(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 236,236,236
         self.hud = True
-
-    def __eq__(self, o):
-        return isinstance(o, EnemyScore) and self.xy == o.xy
-
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
+                
+class Time(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 0,0,0
+        self.hud = True
 
 def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Ball(), Enemy()]
-    if hud:
-        objects.extend([PlayerScore(), EnemyScore()])
-    return objects
-
-
+    cars = [NoObject()] * 26
+    logs = [NoObject()] * 8
+    aligators = [NoObject()] * 2
+    turtles = [NoObject()] * 10
+    ladyfrogs = [NoObject()]
+    happyfrogs = [NoObject()]*5
+    flys = [NoObject()]
+    heads = [NoObject()]
+    snakes = [NoObject()]*2
+    score = [NoObject()]
+    time = [NoObject()]
+    lives = [NoObject()]
+    
+    
+    
+    
+    return [Frog()] + cars+ logs + aligators + turtles + ladyfrogs + heads + flys + happyfrogs +snakes + score + time +lives
 def _detect_objects_ram(objects, ram_state, hud=False):
     """
-    For all 3 objects:
+    For all objects:
     (x, y, w, h, r, g, b)
     """
-    # set default coord if object does not exist
-    player, ball, enemy = objects[:3]
-
-    # ball
-    if ram_state[54] != 0:  # otherwise no ball
-        ball.xy = ram_state[49]-49, ram_state[54]-14
-
-    # enemy
-    if ram_state[50] > 18:  # otherwise no enemy # could be ram pos 21 as well
-        if ram_state[50] - 15 < 34:
-            enemy.xy = 16, 34
-            enemy.wh = 4, ram_state[50]-33
-        elif ram_state[50] > 194:
-            enemy.xy = 16, ram_state[50]-15
-            enemy.wh = 4, 209 - ram_state[50]
-        else:
-            enemy.xy = 16, ram_state[50]-15
-            enemy.wh = 4, 15
-
-    # player
-    if ram_state[51] - 13 < 34:
-        player.xy = 140, 34
-        player.wh = 4, ram_state[51]-33
-    elif ram_state[51] + 2 > 194:
-        player.xy = 140, ram_state[51]-13
-        player.wh = 4, 207 - ram_state[51]
+    frog = objects[0]
+    frog.x = ram_state[48] - 1
+    if ram_state[44] == 255:
+        frog.y = 171
+    elif ram_state[44] == 5:
+        frog.y = 95
     else:
-        player.xy = 140, ram_state[51]-13
-        player.wh = 4, 15
-
-    if hud:
-        # enemy score
-        if ram_state[13] >= 10:  # enemy score
-            if not enemy._above_10:
-                objects.append(EnemyScore(ten=True))
-                enemy._above_10 = True
-        else:
-            if enemy._above_10:
-                objects.remove(EnemyScore(ten=True))
-                enemy._above_10 = False
-
-        # player score
-        if ram_state[14] >= 10:  # player score
-            if not player._above_10:
-                objects.append(PlayerScore(ten=True))
-                player._above_10 = True
-        else:
-            if player._above_10:
-                objects.remove(PlayerScore(ten=True))
-                player._above_10 = False
+        frog.y = - 13 * ram_state[44] + 161

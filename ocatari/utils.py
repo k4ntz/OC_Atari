@@ -223,7 +223,11 @@ def load_agent(opt, nb_actions=None):
     pth = opt if isinstance(opt, str) else opt.path
     if "dqn" in pth or "c51" in pth:
         pth = pth.replace("ALE/", "")
+        pth = pth.replace("Deterministic", "").replace("NoFrameskip", "")
+        pth = pth.replace("-v0", "").replace("-v4", "")
         agent = AtariNet(nb_actions, distributional="c51" in pth)
+        ckpt = _load_checkpoint(pth)
+        agent.load_state_dict(ckpt['estimator_state'])
     elif "cleanrl" in pth:
         ckpt = torch.load(pth, map_location=torch.device('cpu'))
         if "c51" in pth:

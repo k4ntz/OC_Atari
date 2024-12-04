@@ -2,7 +2,7 @@ from .game_objects import GameObject, ValueObject
 import sys 
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 1}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'PlayerScore': 1, 'EnemyScore': 1, 'Clock': 4}
+MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'PlayerScore': 1, 'EnemyScore': 1, 'Clock': 1}
 
 
 class Player(GameObject):
@@ -140,8 +140,7 @@ def _init_objects_ram(hud=False):
         global enscore
         enscore = EnemyScore()
         objects.extend([plscore, enscore,
-                        Clock(63, 17, 6, 7), Clock(73, 18, 2, 2), Clock(73, 21, 2, 2),
-                        Clock(79, 17, 6, 7), Clock(87, 17, 6, 7)])
+                        Clock(63, 17, 30, 7)])
     return objects
 
 
