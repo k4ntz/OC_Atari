@@ -29,7 +29,7 @@ def _convert_number(number):
     try:
         number = int(number_str)
     except ValueError as e:
-        number = None
+        number = 0
     return number
 
 

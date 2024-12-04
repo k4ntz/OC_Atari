@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 import numpy as np
 from termcolor import colored
 import sys
@@ -7,8 +7,8 @@ import sys
 RAM extraction for the game Space Invaders.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Shield': 3, 'Alien': 36, 'Bullet': 3, 'Satellite': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Alien': 36, 'Bullet': 3, 'Satellite': 1, 'Score': 4, 'Lives': 2}
+MAX_NB_OBJECTS = {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Satellite': 1, 'Alien': 36}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Satellite': 1, 'Alien': 36, 'P1Score': 1, 'P2Score': 1, 'Lives': 1}
 
 
 def make_bitmap(alien_states):
@@ -88,17 +88,27 @@ class Bullet(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class P1Score(GameObject):
     """
     The player's score display (HUD).
     """
     
-    def __init__(self, num=0, x=0):  # , num,
+    def __init__(self, x=0):  # , num,
         super().__init__()
-        if num == 1:
-            self.rgb = 92, 186, 92
-        else:
-            self.rgb = 162, 134, 56
+        self.rgb = 92, 186, 92
+        self._xy = x, 10
+        self.wh = 60, 10
+        self.hud = True
+
+
+class P2Score(GameObject):
+    """
+    The 2nd player's score display (HUD).
+    """
+    
+    def __init__(self, x=0):  # , num,
+        super().__init__()
+        self.rgb = 162, 134, 56
         self._xy = x, 10
         self.wh = 60, 10
         self.hud = True
@@ -116,20 +126,6 @@ class Lives(GameObject):
         self.wh = 12, 10
         self.hud = True
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 def _detect_objects_spaceinvaders_raw(info, ram_state):
     info["aliens"] = ram_state[16:24]
@@ -201,140 +197,51 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(1)]
+    sat = NoObject()
+    objects = [Player(1)] + [Shield() for _ in range(3)] + [Bullet() for _ in range(3)] + \
+        [sat] + [Alien() for _ in range(36)]
 
     if hud:
-        objects.extend([Score(1, 4), Score(2, 84), Lives()])
+        objects.extend([P1Score(4), P2Score(84), Lives()])
 
-    for i in range(3):
-        shield = Shield()
+    for i, shield in enumerate(objects[1:4]):
         shield.xy = 42 + i * 32, 157
-        objects.append(shield)
     return objects
 
 
-global aliens
-lives_ctr = 41
-firstCall = True
-global scores
-global prevRam
-prevRam = [i for i in range(256)]
-# global bullets
-global satellite
-satellite = Satellite()
-global score_ctr
-score_ctr = 1
-global bullets
-global sat_ctr
-sat_ctr = 1
-global shields
-
 
 def _detect_objects_ram(objects, ram_state, hud=False):
-    global firstCall
-    global aliens
-    global prevRam
-    global lives_ctr
-    global scores
-    global bullets
-    global satellite
-    global score_ctr
-    global sat_ctr
-    global shields
     player = objects[0]
-
-    if lives_ctr:
-        lives_ctr -= 1
-    else:
-        for i, obj in enumerate(objects):
-            if isinstance(obj, Lives):
-                objects.pop(i)
-    if not firstCall and hud:
-        if ram_state[73] != prevRam[73]:
-            lives_ctr = 22  # handle real visibility instead!
-            objects.append(Lives())
-    if firstCall:  # works correctly
-        player = objects[0]
-        aliens = [Alien() for _ in range(36)]  # ~ 1-dim
-        lives_ctr = 41
-        bullets = [Bullet() for _ in range(3)]
-        shields = [obj for obj in objects if isinstance(obj, Shield)]
-        if not hud and isinstance(objects[1], Score):
-            del objects[1:4]
-        else:
-            scores = objects[1:3]
-
-    # PLAYER
-    # updating player position
+    shields = objects[1:4]
+    bullets = objects[4:7]
+    satellite = objects[7]
+    aliens = objects[8:44]
+    
     player.xy = ram_state[28] - 1, 185
-
-    # ALIENS
-    # aliens deletion from objects:
-    alien_poss = np.where([isinstance(a, Alien) for a in objects])[0]
-    if len(alien_poss) > 0:
-        del objects[alien_poss[0]:alien_poss[-1] + 1]  # faster
-
     # updating positions of aliens
     x, y = ram_state[26], ram_state[16]
 
     bitmap, emptc = make_bitmap(ram_state[18:24])
 
+    if sum(ram_state[18:24]) == 378:
+        for s in shields:
+            s.visible = True
     # aliens (permanent) deletion from array aliens:
     for i in range(6):
         for j in range(6):
             if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):  # enemies alive are saved in ram_state[18:24]
-                aliens[35 - (i * 6 + j)] = None  # 5 = max(range(6)) so we are counting lines in the other way around
+                objects[43 - (i * 6 + j)] = NoObject()
             elif not aliens[35 - (i * 6 + j)] and int(bitmap[i][j]):
-                aliens[35 - (i * 6 + j)] = Alien() # 5 = max(range(6)) so we are counting lines in the other way around
-
+                objects[43 - (i * 6 + j)] = Alien()  # 5 = max(range(6)) so we are counting lines in the other way around
     for i in range(6):
         for j in range(6):
-            if aliens[i * 6 + j]:
+            alien = aliens[i * 6 + j]
+            if alien:
                 aliens[i * 6 + j].xy = x - 1 + (j - emptc) * 16, 31 + y * 2 + i * 18
-
-    # adding aliens to array objects:
-    objects.extend([x for x in aliens if x])
-
-    # SCORE
-    if not firstCall:
-        if hud:
-            if ram_state[30] != prevRam[30]:
-                score_ctr = 3
-                satellite.xy = ram_state[30] - 1, 12
-                if satellite not in objects:
-                    objects.append(satellite)
-                for i in range(2):
-                    if scores[i] in objects:
-                        objects.remove(scores[i])
-            else:
-                score_ctr -= 1
-                if score_ctr == 0:
-                    score_ctr = 1
-                    if satellite in objects:
-                        objects.remove(satellite)
-                        objects.insert(1, scores[0])
-                        objects.insert(2, scores[1])
-        else:
-            if ram_state[30] != prevRam[30]:
-                satellite.xy = ram_state[30] - 1, 12
-                sat_ctr = 3
-                if satellite not in objects:
-                    objects.append(satellite)
-            else:
-                sat_ctr -= 1
-                if sat_ctr == 0:
-                    sat_ctr = 1
-                    if satellite in objects:
-                        objects.remove(satellite)
-    # SHIELDS
-    # visibility of shields
-    for alien in aliens:
-        if alien and alien.xy[1] + alien.wh[1] >= 157:
-            for obj in objects:
-                if isinstance(obj, Shield):
-                    objects.remove(obj)
-            break
-    # fitting height of shields
+                if alien and alien.xy[1] + alien.wh[1] >= 157:
+                    for s in range(3):
+                        if shields[s]:
+                            shields[s].visible = False
     upper_y = 0
     lower_y = 16
     for i in range(3):
@@ -346,34 +253,48 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if ram_state[43 + (i + 1) * 9 - (j + 1)] != 0:
                 lower_y = j * 2
                 break
-        shields[i].xy = 42 + i * 32, 157 + upper_y
-        shields[i].wh = 8, 18 - upper_y - lower_y
-    # BULLETS
-    # updating bullets poses
-    bullets[2].xy = ram_state[87] - 2, 2 * ram_state[85] + 3  # for player
-    for i in range(2):
-        bullets[i].xy = ram_state[83 + i] - 2, 2 * ram_state[81 + i] + 3
-        if bullets[i].xy[1] < 194:
-            if bullets[i].xy[1] + bullets[i].wh[1] > 195:
-                bullets[i].wh = bullets[i].wh[0], 195 - bullets[i].xy[1] - 1
-            else:
-                bullets[i].wh = 1, 10
+        objects[1+i].xy = 42 + i * 32, 157 + upper_y
+        objects[1+i].wh = 8, 18 - upper_y - lower_y
     # determining if bullets are visible
     bullets_visible = [False, False, False]
-    if not firstCall:
-        for i in range(2):
-            bullets_visible[i] = True if ram_state[81 + i] != prevRam[81 + i] \
-                                         and 20 < bullets[i].xy[1] < 195 else False
-        bullets_visible[2] = True if ram_state[85] != prevRam[85] and 20 < bullets[2].xy[1] < 195 else False
+    for i in range(2):
+        bullets_visible[i] = 20 < bullets[i].xy[1] < 195 and not(ram_state[74] % 2)
+    bullets_visible[2] = 20 < bullets[2].xy[1] < 195 and ram_state[74] % 2
     # appending bullets to objects
     for i in range(3):
         if bullets_visible[i]:
-            if not bullets[i] in objects:
-                objects.append(bullets[i])
+            if not bullets[i]:
+                bullet = Bullet()
+                objects[4+i] = bullet
+                bullets[i] = bullet
         else:
-            if bullets[i] in objects:
-                objects.remove(bullets[i])
-    prevRam = ram_state
-    if firstCall:
-        firstCall = False
+            if bullets[i]:
+                objects[4+i] = NoObject()
+        if i < 2:
+            bullets[i].xy = ram_state[83 + i] - 2, 2 * ram_state[81 + i] + 3
+            if bullets[i].xy[1] < 194:
+                if bullets[i].xy[1] + bullets[i].wh[1] > 195:
+                    bullets[i].wh = bullets[i].wh[0], 195 - bullets[i].xy[1] - 1
+                else:
+                    bullets[i].wh = 1, 10
+        else:
+            bullets[2].xy = ram_state[87] - 2, 2 * ram_state[85] + 3  # for player        
+    if ram_state[30] and ram_state[30] != 180:
+        if not satellite:
+            satellite = Satellite()
+            objects[7] = satellite
+        satellite.xy = ram_state[30] - 1, 12
+        if hud:
+            for s in range(2):
+                objects[44+s].visible = False
+    else:
+        if satellite in objects:
+            objects[7] = NoObject()
+        if hud:
+            for s in range(2):
+                objects[44+s].visible = True
+    if hud:
+        objects[46].visible = bool(ram_state[120]) # lives appear  
+        objects[46].value = ram_state[73]  # nb lives
     return objects
+    

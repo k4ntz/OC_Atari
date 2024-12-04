@@ -14,6 +14,7 @@ import time
 import numpy as np
 from tqdm import tqdm
 
+
 parser.add_argument("-g", "--game", type=str, required=True,
                     help="game to evaluate (e.g. 'Pong')")
 parser.add_argument("-i", "--interval", type=int, default=10,
@@ -38,7 +39,7 @@ if opts.path:
 
 
 env.step(2)
-make_deterministic(0, env)
+# make_deterministic(0, env)
 ax = plt.gca()
 bally = []
 enemyy = []

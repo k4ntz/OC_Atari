@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 import sys
 
 """
@@ -163,9 +163,9 @@ def _init_objects_ram(hud=True):
     objects = [Sentry(), Sentry()]
     objects[1].xy = 152, 112
 
-    objects.extend([None] * 14)
+    objects.extend([NoObject()] * 14)
     if hud:
-        objects.extend([None] * 1)
+        objects.extend([NoObject()] * 1)
 
     global ray_available
     ray_available = True
@@ -178,7 +178,7 @@ def _init_objects_ram(hud=True):
     prev_x_p1 = 0
     prev_x_p2 = 0
     global vert_proj
-    vert_proj = None
+    vert_proj = NoObject()
 
     return objects
 
@@ -229,7 +229,7 @@ def missile_pos(rs):
 
 def _detect_objects_ram(objects, ram_state, hud=True):
     for i in range(13):
-        objects[2+i] = None
+        objects[2+i] = NoObject()
 
     buildings_count = 0
 
@@ -281,8 +281,8 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     for i in range(4):
         if ram_state[36+i]:
             ship = _get_ship_type(ram_state, 0+i, 128+i)
-            g_s = None
-            if ship is None:
+            g_s = NoObject()
+            if not ship:
                 continue
 
             # calc speed and orientation offset
