@@ -102,7 +102,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # x == 66-72; y == 59-65; type 73-79
     k = 0
     enemy_bb = []
-    enemy_type = 0
+    enemy_type = Warrior
     chicken_bb = []
     bitmap_warrior = 0b00100000 
     bitmap_pig = 0b00110000 
@@ -114,19 +114,17 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             chicken_bb.append(fig.xywh)
         elif ram_state[73+i] & bitmap_pig == bitmap_pig:
             fig = Pig()
-            enemy_type = 1
+            enemy_type = Pig
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
             enemy_bb.append(fig.xywh)
         elif ram_state[73+i] & bitmap_warrior == bitmap_warrior:
             fig = Warrior()
-            enemy_type = 0
+            enemy_type = Warrior
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
             enemy_bb.append(fig.xywh)
         else: #the object is the player
             fig = objects[0]
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
-
-    enemy_type = Pig if enemy_type == 1 else Warrior
 
     if enemy_type != type(objects[1]): #Deletes the previous enemys if the type of enemies has changed
         objects[1:7] = [NoObject()] * 6
