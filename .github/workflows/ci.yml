@@ -61,7 +61,7 @@ jobs:
           GAMES=""
           
           # Loop through changed files and set appropriate games
-          ++while IFS= read -r file; do
+          while IFS= read -r file; do
             GAME_NAME=$(basename "$file" .py)
             if [[ "$file" == *"/ram/"*".py" || "$file" == *"/vision/"*".py" ]]; then
               # Capitalize the first letter of GAME_NAME
