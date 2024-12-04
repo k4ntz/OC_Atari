@@ -42,12 +42,13 @@ jobs:
       - name: Test for Debugging Strings
         continue-on-error: true
         id: debugging_strings
+        if: success() && steps.changes.outputs.changed_files != ''
         run: |
           if [ -s changed_files.txt ]; then
-            CHANGED_FILES=$(cat changed_files.txt)
-            pytest tests/test_no_debugging_statements.py --file_path="$CHANGED_FILES"
+            CHANGED_FILES=$(cat changed_files.txt | tr '\n' ',')
+            pytest tests/test_no_debugging_statements.py --files "$CHANGED_FILES"
           else
-            echo "No Python files changed. Skipping tests."
+            echo "No Python files changed. Skipping debugging tests."
           fi
 
       - name: Run general tests for all changes
@@ -60,7 +61,7 @@ jobs:
           GAMES=""
           
           # Loop through changed files and set appropriate games
-          while IFS= read -r file; do
+          ++while IFS= read -r file; do
             GAME_NAME=$(basename "$file" .py)
             if [[ "$file" == *"/ram/"*".py" || "$file" == *"/vision/"*".py" ]]; then
               # Capitalize the first letter of GAME_NAME
@@ -87,8 +88,7 @@ jobs:
         if: env.GAMES != ''
         run: |
           echo "Running tests with GAMES=$GAMES"
-          pytest tests/1_games/test_defaults.py
-          pytest tests/1_games/test_obj.py
+          pytest tests/1_games/*
 
       # Fail Workflow if Any Critical Test Failed
       - name: Fail Workflow if Any Critical Test Failed
