@@ -1,13 +1,15 @@
 from .game_objects import GameObject, NoObject
+from .utils import match_objects
 import sys
 import math
+
 
 """
 RAM extraction for the game Enduro.
 """
 
-MAX_NB_OBJECTS = {"Player": 1, "Car": 24}
-MAX_NB_OBJECTS_HUD = {"NumberOfCars":4, "PlayerScore":6, "Level":1}# 'Score': 1}
+MAX_NB_OBJECTS = {"Player": 1, "Car": 27}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Car": 27, "NumberOfCars":4, "PlayerScore":6, "Level":1}
 
 class Player(GameObject):
     
@@ -19,10 +21,10 @@ class Player(GameObject):
         self.hud = False
 
 class Car(GameObject):
-    def __init__(self):
+    def __init__(self, x=0, y=0, w=16, h=10):
         super().__init__()
-        self._xy = 0, 0
-        self.wh = (16,10)
+        self._xy = x, y
+        self.wh = w, h
         self.rgb = 192,192,192
         self.hud = False
 
@@ -73,7 +75,7 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()] + [NoObject()]*7
     if hud:
-        objects.extend([])
+        objects.extend([NoObject]*12)
     return objects
 
 def _detect_objects_ram(objects, ram_state, hud=False):
@@ -92,10 +94,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
 
     # ram 34 changes depending on turn, I guess it is a singed byte value
+    car_bb = []
     for i in range(7):
         if ram_state[27+i]:
-            if type(objects[1+i]) is NoObject:
-                objects[1+i] = Car()
+            car = Car()
             # x = 0
 
             # # x: 103, 103, 104, 104, 104, 105, 105, 106, 107, 107, 108, 108, 108, 108
@@ -107,7 +109,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             #     x = x + ram_state[46]
             
             y = 150 - int(1.2*((18-i)*i) + ((ram_state[59]>>3)*(0.9**i)))
-
             x = 0
 
             x_drift = ram_state[46]
@@ -122,9 +123,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 x = int(((6498 - (23*y))/60) + x_drift) #50  + int(((5*(0.95**i))*i) + ((ram_state[59]>>4)&7)*(0.9**i))
                 print(int(((6498 - (23*y))/60) - x_drift), -(~(ram_state[46])), x_drift)
 
-            objects[1+i].xy = x, y
-        else:
-            objects[1+i] = NoObject()
+            car.xy = x, y
+            car_bb.append(car.xywh)
+        
+    match_objects(objects, car_bb, 1,7, Car)
 
     if hud:
         # ram_state[45] indicates the level 
