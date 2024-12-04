@@ -41,8 +41,10 @@ jobs:
         id: changes
         run: |
           git fetch origin ${{ github.event.before }} --depth=1
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' > changed_files.txt
-          cat changed_files.txt || echo "No Python files changed."
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' > changed_files.txt || true
+          if [ ! -s changed_files.txt ]; then
+            echo "No Python files changed."
+          fi
           
       - name: Test for Debugging Strings
         continue-on-error: true
