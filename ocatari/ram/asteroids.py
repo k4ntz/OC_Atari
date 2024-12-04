@@ -229,9 +229,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if ram_state[offset] and not ram_state[offset + 3] & 128:
                 miss = PlayerMissile()
                 miss.xy = (_x_position(ram_state[offset]) + 1, 175 - 2 * (80 - ram_state[offset + 3]) + 2)
-                objects[16 + i] = miss
+                objects[31 + i] = miss
             else:
-                objects[16 + i] = NoObject()
+                objects[31 + i] = NoObject()
 
     def update_hud():
         if hud:
@@ -276,14 +276,12 @@ def _augment_info_asteroids_ram(info, ram_state):
     objects = {}
     if ram_state[74] <= 80:
         objects["player"] = 81 - (2 * (ram_state[77])), 100 + (2 * (ram_state[74] - 41)), 10, 10, 240, 128, 128
-        print("Player Pos: " + str(81 - round(1.5 * ram_state[77])) + " " + str(100))
-
+        
     for i in range(16):
         if ram_state[3 + i] != 0 and ram_state[21 + 1] != 0:
             if ram_state[21 + i] <= 160:
                 prev_y = ram_state[3 + i] % 80
                 x, y = ram_state[21 + i], 210 - round(prev_y * 2.5)
-                # print("x: " + str(x) + " y: " + str(y) + " i: " + str(i))
                 objects[f"asteroi_{i}"] = x, y, 16, 28, 255
     # objects["asteroid"] = 0, round(ram_state[3] * 2.625), 16, 28, 0, 0, 0
     info["score"] = _convert_number(ram_state[61]) * 1000 + _convert_number(ram_state[62]) * 10
