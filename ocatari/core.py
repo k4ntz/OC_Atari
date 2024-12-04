@@ -1,7 +1,7 @@
 from collections import deque
 import warnings
 import numpy as np
-from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects, get_object_state, get_object_state_size, get_masked_dqn_state
+from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects, get_object_state, get_object_state_size, get_masked_dqn_state, get_class_dict
 import gymnasium as gym
 from itertools import chain
 from termcolor import colored
@@ -113,7 +113,7 @@ class OCAtari:
         # Define observation space based on the observation mode
         if obs_mode == "ori":
             pass
-        elif obs_mode == "dqn":
+        elif obs_mode == "dqn" or obs_mode == "masked_dqn":
             # Set stack for DQN mode (grayscale, 84x84)
             create_buffer_stacks.append("dqn")
             self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size,84,84))
