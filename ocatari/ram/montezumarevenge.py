@@ -889,8 +889,6 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         amulet_h.xy = x, y
         objects[45] = amulet_h
     
-    print(objects)
-
     if hud:
         for i in range(11):
             objects[i+46] = NoObject()

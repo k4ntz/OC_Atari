@@ -56,9 +56,6 @@ def _detect_objects(objects, obs, hud=True):
         else:
             objects[1+i] = NoObject()
         i+=1
-        
-        
-    
 
     if hud:
         fruit = []

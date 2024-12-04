@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 import sys 
 
 """
@@ -6,7 +6,7 @@ RAM extraction for the game Ice Hockey.
 """
 
 MAX_NB_OBJECTS = {"Player": 2, "Enemy":2, "Ball":1}
-MAX_NB_OBJECTS_HUD = {'PlayerScore':2, 'EnemyScore':2, 'Timer':3}# 'Score': 1}
+MAX_NB_OBJECTS_HUD = {"Player": 2, "Enemy":2, "Ball":1, 'PlayerScore':2, 'EnemyScore':2, 'Timer':3}# 'Score': 1}
 
 class Player(GameObject):
     """
@@ -102,9 +102,9 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(),Player(),Enemy(),Enemy(),Ball()]
+    objects = [Player()]+[Player()] + [Enemy()]+[Enemy()] + [Ball()]
     if hud:
-        objects.extend([PlayerScore(),PlayerScore(),EnemyScore(),EnemyScore(),Timer(),Timer(),Timer()])
+        objects.extend([NoObject()]*7)
     return objects
 
 
@@ -136,7 +136,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             es1=EnemyScore()
             es1.xy=110,14
             objects[7]=es1
-            objects[8]=None
+            objects[8]=NoObject()
         else:
             es1=EnemyScore()
             es2=EnemyScore()
@@ -149,7 +149,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             es1=PlayerScore()
             es1.xy=46,14
             objects[5]=es1
-            objects[6]=None
+            objects[6]=NoObject()
         else:
             es1=PlayerScore()
             es2=PlayerScore()

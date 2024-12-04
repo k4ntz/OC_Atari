@@ -1,6 +1,7 @@
 from ._helper_methods import _convert_number
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 import numpy as np
+from .utils import match_objects
 import sys
 
 """
@@ -9,7 +10,7 @@ Attention: EvilOtto enemy not implemented due to not getting it spawned during d
 """
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile': 1, 'PlayerScore': 1, 'Logo': 2, 'RoomCleared': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile': 1, 'Logo': 2, 'RoomCleared': 1, 'PlayerScore': 1,}
 
 class Player(GameObject):
     """
@@ -41,11 +42,10 @@ class Enemy(GameObject):
     """
     The enemy Automazeons stalking the player. 
     """
-    
-    def __init__(self):
-        super().__init__()
-        self._xy = 0, 0
-        self.wh = 8, 16
+    def __init__(self, x=0, y=0, w=8, h=16):
+        super(Enemy, self).__init__()
+        self._xy = x, y
+        self.wh = w, h
         self.rgb = 210, 210, 64
         self.hud = False
 
@@ -123,9 +123,10 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), PlayerMissile(), Enemy(), EnemyMissile()]
+    objects = [Player()]
+    objects.extend([NoObject()]*10)
     if hud:
-        objects.extend([PlayerScore(), RoomCleared(), Logo()])
+        objects.extend([NoObject()]*4)
     return objects
 
 
@@ -145,13 +146,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     For all objects:
     (x, y, w, h, r, g, b)
     """
-    del objects[0:]
+    
+    player = objects[0]
 
     # player
     if ram_state[19] != 0:
-        player = Player()
         player.xy = ram_state[19] + 4, ram_state[11] + 5
-        objects.append(player)
 
     # player missile
     if ram_state[22] != 0 and ram_state[23] != 0:
@@ -201,16 +201,22 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             missile.wh = 4, 2
 
         if add_missile:
-            objects.append(missile)
+            objects[9] = missile
+        else:
+            objects[9] = NoObject() 
 
     # enemies
-    if ram_state[56] != 127 and ram_state[1] != 255:
+    enemy_bbs = []
+    if np.count_nonzero(ram_state[65:74]) != 0:
         for i in range(8):
             if ram_state[65 + i] != 0 and ram_state[56 + i] != 127:
                 enemy = Enemy()
                 enemy.xy = ram_state[65 + i] + 6, (ram_state[56 + i] * 2) + 4
                 enemy.rgb = enemy_colors.get(ram_state[92] % 16)
-                objects.append(enemy)
+                enemy_bbs.append(enemy.xywh)
+        
+    match_objects(objects, enemy_bbs, 1, 8, Enemy)
+        
 
     # enemy missile
     if ram_state[29] != 0 and ram_state[30] != 0:
@@ -236,8 +242,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         prev_enemy_missile[1] = y
         missile.rgb = enemy_colors.get(ram_state[92] % 16)
         if add_en_missile:
-            objects.append(missile)
-
+            objects[10] = missile
+        else:
+            objects[10] = NoObject()
+    
     if hud:
         score_value = _convert_number(ram_state[93]) * 10000 + _convert_number(ram_state[94]) * 100 + \
                       _convert_number(ram_state[95])
@@ -247,35 +255,41 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             logo.xy = 86, 183
             logo.wh = 17, 7
             logo2 = Logo()
-            objects.append(logo)
-            objects.append(logo2)
+            objects[11] = logo
+            objects[12] = logo2
+        else:
+            objects[11] = NoObject()
+            objects[12] = NoObject()
         # or if the room is cleared another value than the score is shown
-        elif np.count_nonzero(ram_state[65:74]) == 0:
+        if np.count_nonzero(ram_state[65:74]) == 0:
             room_cleared = RoomCleared()
-            objects.append(room_cleared)
-        elif score_value < 100:
+            objects[13] = room_cleared
+        else:
+            objects[13] = NoObject()
+        
+        if score_value < 100:
             score = PlayerScore()
-            objects.append(score)
+            objects[14] = score
         elif 1000 > score_value >= 100:
             score = PlayerScore()
             score.xy = 80, 183
             score.wh = 22, 7
-            objects.append(score)
+            objects[14] = score
         elif 10000 > score_value >= 1000:
             score = PlayerScore()
             score.xy = 72, 183
             score.wh = 30, 7
-            objects.append(score)
+            objects[14] = score
         elif 100000 > score_value >= 10000:
             score = PlayerScore()
             score.xy = 64, 183
             score.wh = 38, 7
-            objects.append(score)
+            objects[14] = score
         else:
             score = PlayerScore()
             score.xy = 56, 183
             score.wh = 46, 7
-            objects.append(score)
+            objects[14] = score
 
 
 def _detect_objects_berzerk_raw(info, ram_state):
