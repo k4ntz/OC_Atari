@@ -1,14 +1,17 @@
 import pytest
+import os
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--files", action="store", default="", help="Comma-separated list of files to check"
+    )
 
 @pytest.fixture
 def source_files(request):
-    files = request.config.getoption("--file_path")
-    return files.split()
+    files = request.config.getoption("--files")
+    return files.split(",") if files else []
 
-def pytest_addoption(parser):
-    parser.addoption("--file_path", action="store", default="")
-
-@pytest.mark.parametrize("file_path", source_files())
+@pytest.mark.parametrize("file_path", source_files)
 def test_no_debugging_statements(file_path):
     with open(file_path, "r") as f:
         lines = f.readlines()

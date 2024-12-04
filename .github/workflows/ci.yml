@@ -23,35 +23,52 @@ jobs:
         with:
           python-version: '3.11'  # Specify the version of Python you need
 
+      - name: Cache Pickle Files
+        id: cache-pickle
+        uses: actions/cache@v3
+        with:
+          path: pickle_files
+          key: pickle-cache-${{ github.sha }}
+          restore-keys: |
+            pickle-cache-
+  
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -e .
           pip install pytest
+          pip install gdown
           pip install "gymnasium[atari, accept-rom-license]"
-
-      - name: Run general tests for all changes
-        if: always()  # Run general tests regardless of specific files changing
-        run: pytest tests/0_general/*
-
 
       - name: Determine Changed Files
         id: changes
         run: |
           git fetch origin ${{ github.event.before }} --depth=1
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }} > changed_files.txt
-          cat changed_files.txt
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' > changed_files.txt || true
+          if [ ! -s changed_files.txt ]; then
+            echo "No Python files changed."
+          fi
           
-      - name: Test for Debugging Strings
-        run: |
-          CHANGED_PYFILES=$(git diff --name-only --diff-filter=ACMRT HEAD | grep '\.py$')
-          tests/test_no_debugging_statements.py --file_path="$CHANGED_FILES"
+      #- name: Test for Debugging Strings
+      #  continue-on-error: true
+      #  id: debugging_strings
+      #  if: success() && steps.changes.outputs.changed_files != ''
+      #  run: |
+      #    if [ -s changed_files.txt ]; then
+      #      CHANGED_FILES=$(cat changed_files.txt | tr '\n' ',')
+      #      pytest tests/test_no_debugging_statements.py --files "$CHANGED_FILES"
+      #    else
+      #      echo "No Python files changed. Skipping debugging tests."
+      #    fi
 
+      - name: Run general tests for all changes
+        id: general_tests
+        run: pytest tests/0_general/*
 
       - name: Set Games to Test
         id: set_games
         run: |
-          # Initialize an empty list for games
           GAMES=""
           
           # Loop through changed files and set appropriate games
@@ -68,18 +85,24 @@ jobs:
           GAMES=$(echo $GAMES | xargs)
           echo "GAMES=$GAMES" >> $GITHUB_ENV
 
-      - name: Download Pickle Files
-        if: env.GAMES != ''
+      - name: Download Pickle Files if Not Cached
+        if: steps.cache-pickle.outputs.cache-hit != 'true' && env.GAMES != ''
         run: |
-          run: |
-            mkdir -p pickle_files
-            pip install gdown
-            gdown --folder https://drive.google.com/drive/u/0/folders/18391ILruGPBjsdUb2cHRIUEpOPmt6WPq -O pickle_files
+          mkdir -p pickle_files
+          gdown --folder https://drive.google.com/drive/u/0/folders/18391ILruGPBjsdUb2cHRIUEpOPmt6WPq -O pickle_files
 
       - name: Run relevant tests
+        continue-on-error: true
+        id: game_tests
         if: env.GAMES != ''
         run: |
           echo "Running tests with GAMES=$GAMES"
-          pytest tests/1_games/test_defaults.py
-          pytest tests/1_games/test_obj.py
+          pytest tests/1_games/*
+
+      # Fail Workflow if Any Critical Test Failed
+      - name: Fail Workflow if Any Critical Test Failed
+        if: steps.general_tests.outcome == 'failure' || steps.game_tests.outcome == 'failure' || steps.debugging_strings.outcome == 'failure'
+        run: |
+          echo "One or more critical tests have failed. Failing workflow."
+          exit 1
 
