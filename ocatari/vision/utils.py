@@ -701,7 +701,6 @@ def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClas
     """
     Acts like match_objects, but keeps tracking objects when dissapear for a couple of frames.
     """
-
     if len(objects_bb) > max_obj:
         print(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
         # img2 = img.copy()
@@ -712,17 +711,25 @@ def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClas
         # plt.show()
         # plt.imshow(img2)
         # plt.show()
+    if not objects_bb:
+        for i in range(max_obj):
+            curr_obj = prev_objects[start_idx+i]
+            if curr_obj:
+                curr_obj.num_frames_invisible += 1
+                if curr_obj.num_frames_invisible > curr_obj.max_frames_invisible:
+                    prev_objects[start_idx+i] = NoObject()
+        return
     if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
-         for i in range(min(max_obj, len(objects_bb))):
+        for i in range(min(max_obj, len(objects_bb))):
             prev_objects[start_idx+i] = ObjClass(*objects_bb[i])
             prev_objects[start_idx+i].num_frames_invisible += 1
     else:
-        try:
+        # try:
             visible_objects = [o for o in objects_bb]
             for o in prev_objects[start_idx: start_idx+max_obj]:
-                if o == NoObject():
+                if isinstance(o, NoObject):
                     continue
-                if o.num_frames_invisible in range(o.max_frames_invisible):
+                if o.num_frames_invisible < o.max_frames_invisible:
                     X = compute_cm([o], objects_bb)
                     flag = False
                     if np.shape(X) == (1, 0):
@@ -735,7 +742,8 @@ def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClas
             cost_matrix = compute_cm(prev_objects[start_idx: start_idx+max_obj], objects_bb)
             obj_idx, bbs_idx = linear_sum_assignment(cost_matrix)
             for i in range(max_obj):
-                if i not in obj_idx and prev_objects[start_idx+i]:
+                o = prev_objects[start_idx+i]
+                if i not in obj_idx and o and o.max_frames_invisible <= o.num_frames_invisible:
                     prev_objects[start_idx+i] = NoObject()
             for i, j in zip(obj_idx, bbs_idx):
                 if prev_objects[start_idx+i]:   
@@ -747,6 +755,6 @@ def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClas
                 else:
                     prev_objects[start_idx+i] = ObjClass(*objects_bb[j])
                     prev_objects[start_idx+i].num_frames_invisible += 1
-        except Exception as e:
-            print(e)
-            import ipdb; ipdb.set_trace()
+        # except Exception as e:
+        #     print(e)
+        #     import ipdb; ipdb.set_trace()
