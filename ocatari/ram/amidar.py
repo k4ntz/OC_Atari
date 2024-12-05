@@ -3,8 +3,8 @@ from ._helper_methods import number_to_bitfield
 from .utils import match_objects
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1, "Enemy": 6, "Chicken": 6}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Enemy": 6, "Chicken": 6, "Score": 1, "Life": 3}
+MAX_NB_OBJECTS = {"Player": 1, "GameObject": 6, "Chicken": 6}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "GameObject": 6, "Chicken": 6, "Score": 1, "Life": 3}
 
 class Player(GameObject):
     def __init__(self):
@@ -14,12 +14,12 @@ class Player(GameObject):
         self.rgb = 252, 252, 84
         self.hud = False
 
-class Enemy(GameObject):
-    def __init__(self):
-        super(Enemy, self).__init__()
+# class GameObject(GameObject):
+#     def __init__(self):
+#         super(GameObject, self).__init__()
 
 
-class Warrior(Enemy):
+class Warrior(GameObject):
     def __init__(self, x=0, y=160, w=7, h=7):
         super(Warrior, self).__init__()
         self._xy = x, y
@@ -28,7 +28,7 @@ class Warrior(Enemy):
         self.hud = False
 
 
-class Pig(Enemy):
+class Pig(GameObject):
     def __init__(self, x=0, y=160, w=7, h=7):
         super(Pig, self).__init__()
         self._xy = x, y
@@ -66,7 +66,6 @@ class Life(GameObject):
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
-
     def fromdict(max_obj_dict):
         objects = []
         mod = sys.modules[__name__]
@@ -84,12 +83,11 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Warrior(), Warrior(), Warrior(), Warrior(), Warrior(), Warrior()]
-    objects.extend([NoObject()] * 6) # for the chickens
-
+    objects = [Player()] + [Warrior() for _ in range(6)]
+    objects.extend([NoObject() for _ in range(6)]) # for the chickens
     if hud:
-        objects.extend([NoObject()] * 4)
-        # objects.extend([Score(), Life(), Life(), Life()])
+        # objects.extend([NoObject()] * 4)
+        objects.extend([Score(), Life(), Life(), Life()])
     return objects
 
 
@@ -98,7 +96,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
-
     # x == 66-72; y == 59-65; type 73-79
     k = 0
     enemy_bb = []
@@ -152,10 +149,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
 
     if hud:
-
-        # Score
-        score = Score()
-        objects[13] = score
+        score = objects[13]
         if ram_state[91] > 15:
             score.xy = 57, 176
             score.wh = 46, 7
@@ -177,9 +171,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         
         # Lives 86
         for i in range(3):
+            life = objects[14+i]
             if i < ram_state[86]&3:
-                life = Life()
-                objects[14+i] = life
-                life.xy = 148-(i*16), 175
+                if not life:
+                    life = Life()
+                    objects[14+i] = life
+                    life.xy = 148-(i*16), 175
             else:
                 objects[14+i] = NoObject()

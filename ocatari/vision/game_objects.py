@@ -14,7 +14,7 @@ class GameObject:
         self._visible = True
 
     def __repr__(self):
-        return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}"
+        return f"{self.__class__.__name__} at ({self.x}, {self.y}), {self.wh}"
     
     @property
     def _nsrepr(self):
@@ -48,9 +48,10 @@ class GameObject:
         :type: int
         """
         return self._xy[0]
+
     @x.setter
     def x(self, value):
-        self._xy = (value, self._xy[1])
+        self._xy = (value, self.y)
 
     @property
     def y(self):
@@ -63,7 +64,7 @@ class GameObject:
     
     @y.setter
     def y(self, value):
-        self._xy = (self._xy[0], value)
+        self._xy = (self.x, value)
 
     @property
     def w(self):
@@ -76,7 +77,7 @@ class GameObject:
     
     @w.setter
     def w(self, value):
-        self.wh = (value, self.wh[1])
+        self.wh = (value, self.h)
 
     @property
     def h(self):
@@ -89,7 +90,7 @@ class GameObject:
     
     @h.setter
     def h(self, value):
-        self.wh = (self.wh[0], value)
+        self.wh = (self.w, value)
 
     @property
     def xy(self):
