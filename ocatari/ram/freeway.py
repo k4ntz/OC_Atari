@@ -33,6 +33,15 @@ class Car(GameObject):
         self.wh = 8, 10
         self.rgb = 167, 26, 26
         self.hud = False
+        self.ram_color = 0
+    
+    @property
+    def _nsrepr(self):
+        return self.x, self.y, self.ram_color
+    
+    @property
+    def _ns_meaning(self):
+        return "x, y, c"
 
 
 class Score(ValueObject):
@@ -109,6 +118,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     for i, car in enumerate(cars):
         x = ram_state[117 - i] - 3
         car.x = x
+        car.ram_color = ram_state[77+i]
 
     if hud:
         for i, score in enumerate(scores):
