@@ -6,7 +6,7 @@ RAM extraction for the game Frostbite.
 """
 
 MAX_NB_OBJECTS = {"Player": 1, "Bird": 8, "Crab": 8, "Clam": 8, "GreenFish": 8, "WhitePlate": 24, "BluePlate": 24, "Bear": 1, "House": 1, "CompletedHouse": 1, "FrostBite": 1}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Bird": 8, "Crab": 8, "Clam": 8, "GreenFish": 8, "WhitePlate": 24, "BluePlate": 24, "Bear": 1, "House": 1, "CompletedHouse": 1, "FrostBite": 1, "LifeCount": 1, "Degree": 2, "PlayerScore": 4}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Bird": 8, "Crab": 8, "Clam": 8, "GreenFish": 8, "WhitePlate": 24, "BluePlate": 24, "Bear": 1, "House": 1, "CompletedHouse": 1, "FrostBite": 1, "LifeCount": 1, "Degree": 1, "PlayerScore": 1}
 
 class Player(GameObject):
     """
@@ -198,13 +198,14 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player()]
-    objects.extend([Bird()]*4)
+    objects.extend([NoObject()]*8)
     objects.extend([Bear()])
     objects.extend([NoObject()]*24) #for the plates
-    objects.extend([NoObject()]*12) #for bird clams and crabs
-    objects.extend([House(), CompletedHouse(), NoObject()]) # None was frostbite before
+    objects.extend([NoObject()]*16) #for bird clams and crabs
+    objects.extend([NoObject()]*8) #for green fish
+    objects.extend([NoObject(), NoObject()]) #House/Completed House # None was frostbite before
     if hud:
-        objects.extend([LifeCount(), Degree(), Degree(), PlayerScore(), PlayerScore(), PlayerScore(), PlayerScore()])
+        objects.extend([LifeCount(), Degree(), PlayerScore()])
     return objects
 
 def _detect_objects_ram(objects, ram_state, hud=False):
