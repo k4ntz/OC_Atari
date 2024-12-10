@@ -333,6 +333,7 @@ class Renderer:
         state = self.env._env.env.env.ale.cloneState()
         ram = ale.getRAM().copy()
         self.env.step(0)
+        x, y = int(x), int(y)
         original_pixel = ale.getScreenRGB()[y, x]
         # self.env._env.env.env.ale.restoreState(state)
         # self._set_ram(ram)  # restore original RAM
@@ -359,7 +360,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer(env_name="Breakout", mode="ram", bits=False, obs_mode="obj", hud=False)
+    renderer = Renderer(env_name="Alien", mode="ram", bits=False, obs_mode="obj", hud=False)
     def exit_handler():
         if renderer.no_render:
             print("\nno_render list: ")
