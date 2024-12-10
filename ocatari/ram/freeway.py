@@ -33,15 +33,15 @@ class Car(GameObject):
         self.wh = 8, 10
         self.rgb = 167, 26, 26
         self.hud = False
-        self.ram_color = 0
+        #self.ram_color = 0
     
-    @property
-    def _nsrepr(self):
-        return self.x, self.y, self.ram_color
+    #@property
+    #def _nsrepr(self):
+    #    return self.x, self.y, self.ram_color
     
-    @property
-    def _ns_meaning(self):
-        return "x, y, c"
+    #@property
+    #def _ns_meaning(self):
+    #    return "x, y, c"
 
 
 class Score(ValueObject):
@@ -118,8 +118,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     for i, car in enumerate(cars):
         x = ram_state[117 - i] - 3
         car.x = x
-        car.ram_color = ram_state[77+i]
-
+        #car.ram_color = ram_state[77+i] addind color by using the value in the ram does not work with vision and as such should be replaced by rgb or grayscale value between 0-255. 
+ 
     if hud:
         for i, score in enumerate(scores):
             score_value = _convert_number(ram_state[103 + i])
