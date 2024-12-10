@@ -128,10 +128,14 @@ class Renderer:
         for event in events:
             if event.type == pygame.QUIT:  # window close button clicked
                 self.running = False
+            
 
             elif event.type == pygame.KEYDOWN:  # keyboard key pressed
                 if event.key == pygame.K_p:  # 'P': pause/resume
                     self.paused = not self.paused
+                
+                elif event.key == pygame.K_m:  # 'M': track color change
+                    self.env.set_ram(44, 10)
                 
                 elif event.key == pygame.K_s:  # 'S': save
                     if self.paused:
