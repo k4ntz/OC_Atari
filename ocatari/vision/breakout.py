@@ -4,11 +4,8 @@ from .game_objects import GameObject, NoObject
 objects_colors = {"background": [0, 0, 0], "player": [200, 72, 72], "ball": [200, 72, 72], "lives": [142, 142, 142],
                   "score": [142, 142, 142], "player_num": [142, 142, 142], "background_2": [142, 142, 142]}
 
-blockRow_colors = {"block_row_first": [66, 72, 200],
-                   "block_row_second": [72, 160, 72], "block_row_third": [162, 162, 42],
-                   "block_row_fourth": [180, 122, 48],
-                   "block_row_fifth": [198, 108, 58], "block_row_sixth": [200, 72, 72]}
-
+block_colors = list(reversed([[66, 72, 200], [72, 160, 72], [162, 162, 42], 
+                              [180, 122, 48], [198, 108, 58], [200, 72, 72]]))
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
@@ -53,7 +50,6 @@ class PlayerNumber(GameObject):
 
 
 def _detect_objects(objects, obs, hud=False):
-
     player_bb = find_objects(obs, objects_colors["player"], min_distance=1, maxx=151)
     player = objects[0]
     for p in player_bb:
@@ -73,21 +69,38 @@ def _detect_objects(objects, obs, hud=False):
         objects[1] = ball
     else:
         objects[1] = NoObject()
+    for i, blockRowColor in enumerate(block_colors):
+        block_row = find_objects(obs, blockRowColor, min_distance=1, miny=57+6*i, maxy=63+6*i)
+        for bb in block_row:
+            if bb[2] == 2 and bb[3] == 4:
+                block_row.remove(bb)
+        block_row = sorted(block_row, key=lambda x: x[0])
+        next_bb = block_row.pop(0) if block_row else None
+        for j in range(18):
+            if next_bb and next_bb[0] == 8 * (j + 1):
+                if not objects[2 + i * 18 + j]:
+                    objects[2 + i * 18 + j] = Block(*next_bb)
+                else:
+                    objects[2 + i * 18 + j].xywh = next_bb
+                    objects[2 + i * 18 + j].rgb = blockRowColor
+                next_bb = block_row.pop(0) if block_row else None
+            else:
+                if objects[2 + i * 18 + j]:
+                    objects[2 + i * 18 + j] = NoObject()
 
-    base_list = 2
-    for blockRowColor in blockRow_colors.values():
-        block_row = find_objects(obs, blockRowColor, min_distance=1, maxy=100)
-        for br in block_row:
-            print(br)
-            if br[3] == 6:
-                base_list = int(2 + (br[0]-8)/4 + 6*(87-br[1]))
-                x, y = br[0], br[1]
-                for i in range(int(br[2]/4)):
-                    # print(i+base_list)
-                    if type(objects[i+base_list]) is NoObject:
-                        objects[i+base_list] = Block(x, y, 4, 6)
-                        objects[i+base_list].rgb = blockRowColor
-                    x+=4
+    # old representation
+    # for blockRowColor in block_colors.values():
+    #     block_row = find_objects(obs, blockRowColor, min_distance=1, maxy=100)
+    #     for br in block_row:
+    #         if br[3] == 6:
+    #             base_list = int(2 + (br[0]-8)/4 + 6*(87-br[1]))
+    #             x, y = br[0], br[1]
+    #             for i in range(int(br[2]/4)):
+    #                 # print(i+base_list)
+    #                 if type(objects[i+base_list]) is NoObject:
+    #                     objects[i+base_list] = Block(x, y, 4, 6)
+    #                     objects[i+base_list].rgb = blockRowColor
+    #                 x+=4
 
 
     # HUD section removed, due to being static

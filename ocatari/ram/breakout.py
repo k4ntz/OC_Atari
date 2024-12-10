@@ -10,8 +10,8 @@ RAM extraction for the game BREAKOUT. Supported modes: ram
 # might be wrong
 # blockrow could go very very high with a performing agent
 
-MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Block': 240}    # Block could go very very high with a performing agent
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Block': 240, 'Ball': 1, 'PlayerScore': 1, 'Live': 1, 'PlayerNumber': 1}
+MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Block': 108}    # Block could go very very high with a performing agent
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Block': 108, 'PlayerScore': 1, 'Live': 1, 'PlayerNumber': 1}
 
 
 class Player(GameObject):
@@ -77,7 +77,7 @@ class Block(GameObject):
     def __init__(self, x=0, y=0, rgb=(66, 72, 200)):
         super().__init__()
         self.xy = x, y
-        self.wh = 4, 6
+        self.wh = 8, 6
         self.rgb = rgb
         self.hud = False
 
@@ -100,11 +100,11 @@ blockRow_colors = {"5": [66, 72, 200], "4": [72, 160, 72],
                    "3": [162, 162, 42], "2": [180, 122, 48],
                    "1": [198, 108, 58], "0": [200, 72, 72]}
 
-block_colors = [[66, 72, 200], [72, 160, 72], [162, 162, 42], [180, 122, 48], [198, 108, 58], [200, 72, 72]]
+block_colors = list(reversed([[66, 72, 200], [72, 160, 72], [162, 162, 42], 
+                              [180, 122, 48], [198, 108, 58], [200, 72, 72]]))
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
-
     def fromdict(max_obj_dict):
         objects = []
         mod = sys.modules[__name__]
@@ -121,8 +121,12 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player()] + [NoObject()] * 241
-
+    objects = [Player(), Ball()]
+    for i in range(6):
+        block = Block()
+        block.rgb = block_colors[i]
+        objects.append(block)
+        objects.extend([NoObject() for _ in range(17)])
     if hud:
         objects.extend([PlayerScore(), Live(), PlayerNumber()])
 
@@ -177,63 +181,81 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     else:
         objects[1] = NoObject()
 
-    # blocks = _calculate_blocks(ram_state)
-    # objects.extend(blocks)
-
-    # ram[30] == lowest row left side always -6 in ram for next row
-    base_list = 2
-    msb = False
+    blocks_per_row = _calculate_blocks(ram_state)
     for i in range(6):
-        for j in range(6):
-            y = 87-i*6
-            if j == 0:
-                for b in range(6):
-                    if (2**b)&ram_state[i+j*6]:
-                        if type(objects[base_list]) is NoObject:
-                            objects[base_list] = Block(x=128+b*4, y=y, rgb=block_colors[i])
-                    else:
-                        objects[base_list] = NoObject()
-                    base_list+=1
-                    msb = True
-            elif j == 2:
-                for b in range(4):
-                    if (2**(4+b))&ram_state[i+j*6]:
-                        if type(objects[base_list+(j-1)*8+b]) is NoObject:
-                            objects[base_list] = Block(x=80+b*4, y=y, rgb=block_colors[i])
-                    else:
-                        objects[base_list] = NoObject()
-                    base_list+=1
-                    msb = False
-            elif j == 5:
-                for b in range(2):
-                    if (2**(6+b))&ram_state[i+j*6]:
-                        if type(objects[base_list]) is NoObject:
-                            objects[base_list] = Block(x=8+4*b, y=y, rgb=block_colors[i])
-                    else:
-                        objects[base_list] = NoObject()
-                    base_list+=1
-            else:
-                if msb:
-                    for b in range(8):
-                        if (2**(7-b))&ram_state[i+j*6]:
-                            if type(objects[base_list]) is NoObject:
-                                if j == 1:
-                                    objects[base_list] = Block(x=96+4*b, y=y, rgb=block_colors[i])
-                                else:
-                                    objects[base_list] = Block(x=16+4*b, y=y, rgb=block_colors[i])
-                        else:
-                            objects[base_list] = NoObject()
-                        base_list+=1
-                    msb = False
+        block_color = block_colors[i]
+        blocks = blocks_per_row[i]
+        if blocks:
+            block = blocks.pop(0)
+        else:
+            block = NoObject()
+        for j in range(18):
+            if block and block.x == 8 * (j + 1):
+                if not objects[2 + i * 18 + j]:
+                    objects[2 + i * 18 + j] = block
                 else:
-                    for b in range(8):
-                        if (2**b)&ram_state[i+j*6]:
-                            if type(objects[base_list]) is NoObject:
-                                objects[base_list] = Block(x=48+b*4, y=y, rgb=block_colors[i])
-                        else:
-                            objects[base_list] = NoObject()
-                        base_list+=1
-                    msb = True
+                    objects[2 + i * 18 + j].xywh = block.xywh
+                    objects[2 + i * 18 + j].rgb = block_color
+                block = blocks.pop(0) if blocks else NoObject()
+            else:
+                if objects[2 + i * 18 + j]:
+                    objects[2 + i * 18 + j] = NoObject()
+
+    # separated block parsing
+    # ram[30] == lowest row left side always -6 in ram for next row
+    # base_list = 2
+    # msb = False
+    # for i in range(6):
+    #     for j in range(6):
+    #         y = 87-i*6
+    #         if j == 0:
+    #             for b in range(6):
+    #                 if (2**b)&ram_state[i+j*6]:
+    #                     if type(objects[base_list]) is NoObject:
+    #                         objects[base_list] = Block(x=128+b*4, y=y, rgb=block_colors[i])
+    #                 else:
+    #                     objects[base_list] = NoObject()
+    #                 base_list+=1
+    #                 msb = True
+    #         elif j == 2:
+    #             for b in range(4):
+    #                 if (2**(4+b))&ram_state[i+j*6]:
+    #                     if type(objects[base_list+(j-1)*8+b]) is NoObject:
+    #                         objects[base_list] = Block(x=80+b*4, y=y, rgb=block_colors[i])
+    #                 else:
+    #                     objects[base_list] = NoObject()
+    #                 base_list+=1
+    #                 msb = False
+    #         elif j == 5:
+    #             for b in range(2):
+    #                 if (2**(6+b))&ram_state[i+j*6]:
+    #                     if type(objects[base_list]) is NoObject:
+    #                         objects[base_list] = Block(x=8+4*b, y=y, rgb=block_colors[i])
+    #                 else:
+    #                     objects[base_list] = NoObject()
+    #                 base_list+=1
+    #         else:
+    #             if msb:
+    #                 for b in range(8):
+    #                     if (2**(7-b))&ram_state[i+j*6]:
+    #                         if type(objects[base_list]) is NoObject:
+    #                             if j == 1:
+    #                                 objects[base_list] = Block(x=96+4*b, y=y, rgb=block_colors[i])
+    #                             else:
+    #                                 objects[base_list] = Block(x=16+4*b, y=y, rgb=block_colors[i])
+    #                     else:
+    #                         objects[base_list] = NoObject()
+    #                     base_list+=1
+    #                 msb = False
+    #             else:
+    #                 for b in range(8):
+    #                     if (2**b)&ram_state[i+j*6]:
+    #                         if type(objects[base_list]) is NoObject:
+    #                             objects[base_list] = Block(x=48+b*4, y=y, rgb=block_colors[i])
+    #                     else:
+    #                         objects[base_list] = NoObject()
+    #                     base_list+=1
+    #                 msb = True
 
     if hud:
 
@@ -253,36 +275,38 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[-2].wh = 12, 10
 
 
-# def _calculate_blocks(ram_state):
-#     """
-#     Calculate the block lengths for all rows.
-#     """
-#     bitmap = _make_block_bitmap(ram_state)
-#     blocks = []
+def _calculate_blocks(ram_state):
+    """
+    Calculate the block lengths for all rows.
+    """
+    bitmap = _make_block_bitmap(ram_state)
+    blocks = []
 
-#     for row in range(6):
-#         start_of_new_block = True
-#         row_empty = True
-#         x = 0
-#         width = 0
-#         for column in range(18):
-#             if bitmap[row, column] == 1 and start_of_new_block:
-#                 x = 8 + column * 8
-#                 start_of_new_block = False
-#                 row_empty = False
-#                 width = 0
+    for row in range(6):
+        blockrow = []
+        start_of_new_block = True
+        row_empty = True
+        x = 0
+        width = 0
+        for column in range(18):
+            if bitmap[row, column] == 1 and start_of_new_block:
+                x = 8 + column * 8
+                start_of_new_block = False
+                row_empty = False
+                width = 0
 
-#             if bitmap[row, column] == 1:
-#                 width += 8
+            if bitmap[row, column] == 1:
+                width += 8
 
-#             if (bitmap[row, column] == 0 or column == 17) and row_empty is False and start_of_new_block is False:
-#                 block = Block()
-#                 block.rgb = blockRow_colors.get(str(row))  # uses the blockRow color dictionary
-#                 block.xy = x, 57 + 6 * row
-#                 block.wh = width, 6
-#                 blocks.append(block)
-#                 start_of_new_block = True
-#     return blocks
+            if (bitmap[row, column] == 0 or column == 17) and row_empty is False and start_of_new_block is False:
+                block = Block()
+                block.rgb = blockRow_colors.get(str(row))  # uses the blockRow color dictionary
+                block.xy = x, 57 + 6 * row
+                block.wh = width, 6
+                blockrow.append(block)
+                start_of_new_block = True
+        blocks.append(blockrow)
+    return blocks
 
 
 def _detect_objects_breakout_raw(info, ram_state):
