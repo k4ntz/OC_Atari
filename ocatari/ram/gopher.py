@@ -1,28 +1,8 @@
-from .game_objects import GameObject, NoObject
+from .game_objects import GameObject, NoObject, ValueObject
 import sys
 
-MAX_NB_OBJECTS = {"Player": 1, "Gopher": 1, "Carrot": 3, "Empty_block": 38}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Gopher": 1, "Carrot": 3, "Empty_block": 38, "Bird": 1, "Score": 4}
-
-full_list = [(140, 175), (12, 175), (27, 175), (45, 175), (108, 175), (124, 175),
-             (140, 168), (12, 168), (27, 168), (45, 168), (108, 168), (124, 168),
-             (140, 161), (12, 161), (27, 161), (45, 161), (108, 161), (124, 161)]
-
-for i in [2, 140, 36, 12, 27, 45, 108, 124, 150]:
-    full_list.append((i, 183))
-for i in [22, 117, 134]:  # narrower blocks
-    full_list.append((i, 183))
-for i in range(55, 108, 9):
-    full_list.append((i, 183))
-
-# (150, 192), (140, 192), (27, 183)
-# (12, 167), (12, 173), (28, 161)
-global block_list
-block_list = []
-global ram_70
-ram_70 = 0
-global life
-life = 3
+MAX_NB_OBJECTS = {"Player": 1, "Gopher": 1, "Carrot": 3, "Hole": 6, 'Floor':1, 'Bird': 1}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Gopher": 1, "Carrot": 3, "Hole": 6, 'Floor':1, "Bird": 1, "Score": 1}
 
 
 class Player(GameObject):
@@ -61,19 +41,27 @@ class Bird(GameObject):
         self.hud = False
 
 
-class Empty_block(GameObject):
+class Hole(GameObject):
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
-        self.wh = (8, 12)
+        self.wh = (8, 7)
+        self.rgb = 223, 183, 85
+        self.hud = False
+
+class Floor(GameObject):
+    def __init__(self):
+        super().__init__()
+        self._xy = 0, 183
+        self.wh = (150, 12)
         self.rgb = 223, 183, 85
         self.hud = False
 
 
-class Score(GameObject):
+class Score(ValueObject):
     def __init__(self):
         super().__init__()
-        self._xy = 0, 0
+        self._xy = 98, 10
         self.wh = (5, 9)
         self.rgb = 195, 144, 65
         self.hud = True
@@ -100,9 +88,10 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()] + [Gopher()]
     objects.extend([NoObject()]*3)
-    objects.extend([NoObject()]*38)  # Maximum number of expected blocks
+    objects.extend([NoObject()]*6)  # Maximum number of expected blocks
+    objects.extend([Floor()]*1+[NoObject()])  # Maximum number of expected blocks
     if hud:
-        objects.extend([Bird(), Score(), Score(), Score(), Score()])
+        objects.extend([Score()])
     return objects
 
 
@@ -128,124 +117,96 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         gopher.wh = (7, 23)
 
     # Detecting carrots
-    carrot1, carrot2, carrot3 = Carrot(), Carrot(), Carrot()
-    carrot1.xy = 92, 151
-    carrot2.xy = 76, 151
-    carrot3.xy = 60, 151
-    if ram_state[36] == 0 and ram_state[37] == 0 and ram_state[38] == 3:
-        objects[2:5] = carrot1, carrot2, carrot3
-    elif ram_state[36] == 0 and ram_state[37] == 0 and ram_state[38] == 1:
-        objects[2:5] = carrot2, carrot3, NoObject()
-    elif ram_state[36] == 0 and ram_state[37] == 0 and ram_state[38] == 0:
-        objects[2:5] = carrot3, NoObject(), NoObject()
-    elif ram_state[36] == 128 and ram_state[37] == 32 and ram_state[38] == 1:
-        objects[2:5] = carrot2, carrot1, NoObject()
-    elif ram_state[36] == 127 and ram_state[37] == 16 and ram_state[38] == 0:
-        objects[2:5] = carrot1, NoObject(), NoObject()
-    elif ram_state[36] == 128 and ram_state[37] == 32 and ram_state[38] == 0:
-        objects[2:5] = carrot2, NoObject(), NoObject()
-
-    
-    # adding top row 
-    # A dictionary with ram state and corresponding box coordinates (Multiple possible as well) [ram_state[0,1,2]:[box coordinates]]
-    dict_top_left_row={(128,128,0):[(12,161)],(0,24,0):[(27,161)],(0,1,1):[(45,161)],
-                  (128,152,0):[(12,161),(27,161)],(0,25,1):[(27,161),(45,161)],(128,129,1):[(12,161),(45,161)],
-                  (128,153,1):[(12,161),(27,161),(45,161)],(0,0,0):[]
-                  }
-    
-    dict_top_right_row={(0,24):[(140,161)],(1,1):[(124,161)],(24,0):[(108,161)],
-                        (1,25):[(124,161),(140,161)],(24,24):[(108,161),(140,161)],(25,1):[(108,161),(124,161)],
-                        (25,25):[(108,161),(124,161),(140,161)],(0,0):[]
-                        }
-    dict_mid_left_row={(128,128,0):[(12,168)],(0,24,0):[(27,168)],(0,1,1):[(45,168)],
-                  (128,152,0):[(12,168),(27,168)],(0,25,1):[(27,168),(45,168)],(128,129,1):[(12,168),(45,168)],
-                  (128,153,1):[(12,168),(27,168),(45,168)],(0,0,0):[]
-                  }
-    dict_mid_right_row={(0,24):[(140,168)],(1,1):[(124,168)],(24,0):[(108,168)],
-                        (1,25):[(124,168),(140,168)],(24,24):[(108,168),(140,168)],(25,1):[(108,168),(124,168)],
-                        (25,25):[(108,168),(124,168),(140,168)],(0,0):[]
-                        }
-    dict_bot_left_row={(128,128,0):[(12,175)],(0,24,0):[(27,175)],(0,1,1):[(45,175)],
-                  (128,152,0):[(12,175),(27,175)],(0,25,1):[(27,175),(45,175)],(128,129,1):[(12,175),(45,175)],
-                  (128,153,1):[(12,175),(27,175),(45,175)],(0,0,0):[]
-                  }
-    dict_bot_right_row={(0,24):[(140,175)],(1,1):[(124,175)],(24,0):[(108,175)],
-                        (1,25):[(124,175),(140,175)],(24,24):[(108,175),(140,175)],(25,1):[(108,175),(124,175)],
-                        (25,25):[(108,175),(124,175),(140,175)],(0,0):[]
-                        }
-    
-    # Adding blocks using ram indices
-    count = 0  # variable to keep track of number of blocks being pushed
-    for item in dict_top_left_row[(ram_state[0], ram_state[1], ram_state[2])]:
-        b = Empty_block()
-        b.xy = item
-        b.wh = (8, 6)
-        objects[5 + count] = b
-        count += 1
-
-    for item in dict_top_right_row[(ram_state[4], ram_state[5])]:
-        b = Empty_block()
-        b.xy = item
-        b.wh = (8, 6)
-        objects[5 + count] = b
-        count += 1
-
-    # Adding middle row
-    for item in dict_mid_left_row[(ram_state[6], ram_state[7], ram_state[8])]:
-        b = Empty_block()
-        b.xy = item
-        b.wh = (8, 6)
-        objects[5 + count] = b
-        count += 1
-
-    for item in dict_mid_right_row[(ram_state[10], ram_state[11])]:
-        b = Empty_block()
-        b.xy = item
-        b.wh = (8, 6)
-        objects[5 + count] = b
-        count += 1
-
-    # Adding bottom row
-    for item in dict_bot_left_row[(ram_state[12], ram_state[13], ram_state[14])]:
-        b = Empty_block()
-        b.xy = item
-        b.wh = (8, 6)
-        objects[5 + count] = b
-        count += 1
-
-    for item in dict_bot_right_row[(ram_state[16], ram_state[17])]:
-        b = Empty_block()
-        b.xy = item
-        b.wh = (8, 6)
-        objects[5 + count] = b
-        count += 1
-
-    if hud:
-        # Score hundreds and thousands depend on ram_state[49] and score ones and tens depend on ram_state[50]
-        bound1, bound2, bound3, bound4 = Score(), Score(), Score(), Score()
-        bound1.xy = 75, 10
-        bound2.xy = 82, 10
-        bound3.xy = 90, 10
-        bound4.xy = 98, 10
-        if ram_state[49] == 0 and ram_state[50] <= 9:
-            # Right most bounding box only
-            objects[44] = bound4
-            objects[45:48] = [NoObject()] * 3
-        elif ram_state[49] == 0 and ram_state[50] > 9:
-            # Two bounding boxes
-            objects[44:46] = bound4, bound3
-            objects[46:48] = [NoObject()] * 2
-        elif ram_state[49] <= 9:
-            # Three bounding boxes
-            objects[44:47] = bound4, bound3, bound2
-            objects[47] = NoObject()
-        elif ram_state[49] > 9:
-            # Four bounding boxes
-            objects[44:48] = bound4, bound3, bound2, bound1
-
-        if ram_state[28] < 147:
-            bird = Bird()
-            bird.xy = ram_state[28] - 12, 30
-            objects[43] = bird
+    for i in range(0,3):
+        ram_value = pow(2,i)
+        carrot = objects[2+i]
+        if ram_state[52]&ram_value == ram_value:
+            if carrot:
+                objects[2+i] = carrot
+            else:
+                objects[2+i] = Carrot()
+                objects[2+i].xy = (92-16*i, 151) 
         else:
-            objects[43] = NoObject()
+            if carrot:
+                objects[2+i] = NoObject()
+    
+
+    def update_hole(ram_cond, obj_index, xy, wh=(8, 14), wh_alt=(8, 7), delobj = False):
+        index = obj_index
+        if ram_cond:
+            if objects[index]:
+                objects[index].xy = xy
+                objects[index].wh = wh
+            else:
+                hole = Hole()
+                objects[index] = hole
+                hole.xy = xy
+                hole.wh = wh_alt
+        elif delobj:
+            if objects[index]:
+                objects[index] = NoObject()
+
+    # Define the conditions and corresponding attributes for each object
+    ram_conditions = [
+        (ram_state[17] & 24 == 24, 10, (140, 176), (8,7), (8,7), True),
+        (ram_state[16] % 2 == 1 and ram_state[17] % 2 == 1, 9, (124, 176), (8,7), (8,7),  True),
+        (ram_state[16] & 24 == 24, 8, (108, 176), (8,7),(8,7), True),
+        (ram_state[11] & 24 == 24, 10, (140, 169), (8, 14), (8, 7)),
+        (ram_state[10] % 2 == 1 and ram_state[11] % 2 == 1, 9, (124, 169), (8, 14), (8, 7)),
+        (ram_state[10] & 24 == 24, 8, (108, 169), (8, 14), (8, 7)),
+        #
+        ((ram_state[13]%128) % 2 == 1 and (ram_state[14]) % 2 == 1, 7, (44, 176), (8,7), (8,7), True),
+        ((ram_state[13]%127) & 24 == 24, 6, (28, 176), (8,7), (8,7),  True),
+        ((ram_state[12]%127) % 2 == 1 and (ram_state[13]&128) == 128, 5, (12, 176), (8,7),(8,7), True),
+        ((ram_state[7]%128) % 2 == 1 and (ram_state[8]) % 2 == 1, 7, (44, 169), (8, 14), (8, 7)),
+        ((ram_state[7]%127) & 24 == 24, 6, (28, 169), (8, 14), (8, 7)),
+        ((ram_state[6]%127) % 2 == 1 and (ram_state[7]&128) == 128, 5, (12, 169), (8, 14), (8, 7)),
+
+    ]
+
+    for cond in ram_conditions:
+        update_hole(*cond)  
+    
+    ram_conditions_2 = [
+        (ram_state[5] & 24 == 24, 10, (140, 161), (8, 22) if objects[10] and objects[10].wh[1] > 13 else (8, 15), (8, 8)),
+        (ram_state[4] % 2 == 1 and ram_state[5] % 2 == 1, 9, (124, 161), (8, 22) if objects[9] and objects[9].wh[1] > 13 else (8, 15), (8, 8)),
+        (ram_state[4] & 24 == 24, 8, (108, 161), (8, 22) if objects[8] and objects[8].wh[1] > 13 else (8, 15), (8, 8)),
+        ((ram_state[1]%128) % 2 == 1 and (ram_state[2]) % 2 == 1, 7, (44, 161), (8, 22) if objects[7] and objects[7].wh[1]> 13 else (8, 15), (8, 8)),
+        ((ram_state[1]%127) & 24 == 24, 6, (28, 161), (8, 22) if objects[6] and objects[6].wh[1] > 13 else (8, 15), (8, 8)),
+        ((ram_state[0]%127) % 2 == 1 and (ram_state[1]&128) == 128, 5, (12, 161), (8, 22) if objects[5] and objects[5].wh[1]> 13 else (8, 15), (8, 8))
+    ]
+    
+    for cond in ram_conditions_2:
+        update_hole(*cond)     
+
+    if ram_state[28] < 147:
+        if objects[12]:
+            bird = objects[43]
+        else:
+            bird = Bird()
+        bird.xy = ram_state[28] - 12, 30
+    else:
+        if objects[12]:
+            objects[12] = NoObject()
+        
+    if hud:
+            if ram_state[49] == 0 and ram_state[50] <= 9:
+                # Right most bounding box only
+                objects[13].value = ram_state[50]
+            elif ram_state[49] == 0 and ram_state[50] > 9:
+                # Two bounding boxes
+                objects[13].xy = 90,10
+                objects[13].wh = 14,9
+                objects[13].value = ram_state[50]
+            elif ram_state[49] <= 9:
+                # Three bounding boxes
+                objects[13].xy = 82,10
+                objects[13].wh = 22,9
+                objects[13].value = ram_state[50]+ ram_state[49]*100
+            elif ram_state[49] > 9:
+                # Four bounding boxes
+                objects[13].xy = 74,10
+                objects[13].wh = 30,9
+                objects[13].value = ram_state[50]+ ram_state[49]*100
+
+   
