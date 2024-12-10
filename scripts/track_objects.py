@@ -50,7 +50,7 @@ class Renderer:
 
     def __init__(self, env_name: str, mode: str, hud: bool):
         self.env = OCAtari(env_name, mode=mode, hud=hud, render_mode="rgb_array",
-                             render_oc_overlay=True, frameskip=1, obs_mode="obj")
+                             render_oc_overlay=True, frameskip=1, obs_mode="obj", full_action_space=True)
 
         self.env.reset(seed=42)
         self.both = mode=="both"
