@@ -161,7 +161,8 @@ class Renderer:
                         else: 
                             print("There are no prior frames saved to go back to. Save more using the flag --previous_frames")
 
-
+                elif event.key == pygame.K_o:  # 'O': Objects
+                    print(self.env.objects)
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
 

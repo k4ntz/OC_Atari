@@ -1,4 +1,5 @@
 from .game_objects import GameObject, NoObject
+from .utils import match_objects
 import sys 
 
 """
@@ -262,93 +263,37 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # # Birds
     # bird1, bird2, bird3, bird4 = objects[4:8]
-    # for i in range(8):
-        # if ram_state[84+i] > 0:
-        #     type = 
-        #     t = WhatObject(ram_state[39+i])
-        #     if t != type(bird1):
-        #         bird1 = t()
-        #     bird1.xy = ram_state[84+i], 160-26*i
-        #     bird1.wh = (8, 7) if ram_state[35+i] != 26 else (7, 6)
-        #     objects[4+i] = bird1
-        # else:
-        #     objects[4+i] = NoObject()
-    # if ram_state[35] < 30 and ram_state[36] < 30 and ram_state[37] < 30 and ram_state[38] < 30:
-    #     if ram_state[84] > 7 and ram_state[84] < 155:
-    #         t = WhatObject(ram_state[39])
-    #         if t != type(bird1):
-    #             bird1 = t()
-    #         bird1.xy = ram_state[84], 160
-    #         bird1.wh = (8, 7) if ram_state[35] != 26 else (7, 6)
-    #         objects[4] = bird1
-    #     else:
-    #         objects[4] = NoObject()
-
-    #     if ram_state[85]>7 and ram_state[85] < 155:
-    #         t = WhatObject(ram_state[40])
-    #         if t != type(bird2):
-    #             bird2 = t()
-    #         bird2.xy = ram_state[85], 134
-    #         bird2.wh = (8, 7) if ram_state[36] != 26 else (7, 6)
-    #         objects[5] = bird2
-    #     else:
-    #         objects[5] = NoObject()
-
-    #     if ram_state[86] > 7 and ram_state[86] < 155:
-    #         t = WhatObject(ram_state[41])
-    #         if t != type(bird3):
-    #             bird3 = t()
-    #         bird3.xy = ram_state[86], 108
-    #         bird3.wh = (8, 7) if ram_state[37] != 26 else (7, 6)
-    #         objects[6] = bird3
-    #     else:
-    #         objects[6] = NoObject()
-        
-    #     if ram_state[87] > 7 and ram_state[86] < 155:
-    #         t = WhatObject(ram_state[42])
-    #         if t != type(bird4):
-    #             bird4 = t()
-    #         bird4.xy = ram_state[87], 82
-    #         bird4.wh = (8, 7) if ram_state[38] != 26 else (7, 6)
-    #         objects[7] = bird4
-    #     else:
-    #         objects[7] = NoObject()
-    # else:
-    #     objects[4], objects[5], objects[6], objects[7] = NoObject(), NoObject(), NoObject(), NoObject()
-
-    #     ram_state_list = [84, 85, 86, 87]
-    #     object_list= [39, 40, 41, 42]
-    #     wh_list= [35, 36, 37, 38]
-    #     y_list= [160, 134, 108, 82]
-    #     for i in range(4):
-    #         if ram_state[ram_state_list[i]] > 7 and ram_state[ram_state_list[i]] < 155:
-    #             if ram_state[ram_state_list[i]] < 35 or ram_state[ram_state_list[i]] > 120:
-    #                 t = WhatObject(ram_state[object_list[i]])
-    #                 bird1 = objects[30+2*i]
-    #                 if t != type(bird1):
-    #                     bird1 = t()
-    #                 bird1.xy = ram_state[ram_state_list[i]], y_list[i]
-    #                 bird1.wh = (8, 7) if ram_state[wh_list[i]] != 26 else (7, 6)
-    #                 objects[30+2*i] = bird1
-    #                 objects[31+2*i] = NoObject()
-    #             else:
-    #                 t = WhatObject(ram_state[object_list[i]])
-    #                 bird1 = objects[30+2*i]
-    #                 bird2 = objects[31+2*i]
-    #                 if t != type(bird1):
-    #                     bird1 = t()
-    #                 if t != type(bird2):
-    #                     bird2 = t()
-    #                 bird1.xy = ram_state[ram_state_list[i]], y_list[i]
-    #                 bird1.wh = (8, 7) if ram_state[wh_list[i]] != 26 else (7, 6)
-    #                 bird2.xy = ram_state[ram_state_list[i]]+33, y_list[i]
-    #                 bird2.wh = (8, 7) if ram_state[wh_list[i]] != 26 else (7, 6)
-    #                 objects[30+2*i] = bird1
-    #                 objects[31+2*i] = bird2
-    #         else:
-    #             objects[30+2*i] = NoObject()
-    #             objects[31+2*i] = NoObject() 
-
+    for i in range(4):
+        if 0 < ram_state[84+i] < 160 or ram_state[88+i]:
+            type = ram_state[35+i]
+            if type in [18, 26]:
+                Otype = Bird
+            elif 33 < type < 39 or 49 < type < 55:
+                Otype = Crab
+            elif 65 < type < 71 or 93 < type < 99:
+                Otype = Clam
+            elif 108 < type < 114 or 123 < type < 129:
+                Otype = GreenFish
+            else:
+                print(type)
+                import ipdb; ipdb.set_trace()
+            if isinstance(objects[4+i], Otype):
+                obj = objects[4+i]
+            else:
+                obj = Otype()
+                objects[4+i] = obj
+            obj.xy = ram_state[84+i], 160 - 26 * i
+            if ram_state[88+i]: # 2 objects
+                if isinstance(objects[8+i], Otype):
+                    obj2 = objects[8+i]
+                else:
+                    obj2 = Otype()
+                    objects[8+i] = obj2
+                obj2.xy = ram_state[84+i] + 32, 160 - 26 * i
+            else:
+                objects[8+i] = NoObject()
+        else:
+            objects[4+i] = NoObject()
     
     # # Adding the Plates
     # for i in range(4):
