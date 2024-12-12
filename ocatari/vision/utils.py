@@ -727,9 +727,9 @@ def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClas
         # try:
             visible_objects = [o for o in objects_bb]
             for o in prev_objects[start_idx: start_idx+max_obj]:
-                if isinstance(o, NoObject):
+                if not o:
                     continue
-                if o.num_frames_invisible < o.max_frames_invisible:
+                elif o.num_frames_invisible < o.max_frames_invisible:
                     X = compute_cm([o], objects_bb)
                     flag = False
                     if np.shape(X) == (1, 0):
