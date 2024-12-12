@@ -142,6 +142,9 @@ class Renderer:
                     self.frame_by_frame = not(self.frame_by_frame)
                     self.next_frame = False
                 
+                elif event.key == pygame.K_o:  # 'O': Objects
+                    print(self.env.objects)        
+                
                 elif event.key == pygame.K_n: # next
                     print("next")
                     self.next_frame = True

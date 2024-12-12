@@ -14,10 +14,6 @@ class Player(GameObject):
         self.rgb = 252, 252, 84
         self.hud = False
 
-# class GameObject(GameObject):
-#     def __init__(self):
-#         super(GameObject, self).__init__()
-
 
 class Warrior(GameObject):
     def __init__(self, x=0, y=160, w=7, h=7):
@@ -34,6 +30,15 @@ class Pig(GameObject):
         self._xy = x, y
         self.wh = (w, h)
         self.rgb = 214, 92, 92
+        self.hud = False
+
+
+class Shadow(GameObject):
+    def __init__(self, x=0, y=160, w=7, h=7):
+        super(Shadow, self).__init__()
+        self._xy = x, y
+        self.wh = (w, h)
+        self.rgb = 1, 1, 1
         self.hud = False
 
 
@@ -134,8 +139,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if len(chicken_bb) > 0 or (ram_state[51] == 103):
         #ram_state[51] == 103 if the enemys are turned into shadows (read only)
         # if chickens are caught the ram treats them as an invisibe enemy again
-        for enemy in objects[1:7]:
-            enemy.visible = False
+        for i, enemy in enumerate(objects[1:7]):
+            if enemy is not (NoObject) :
+                objects[i+1] = Shadow(enemy.xy[0], enemy.xy[1], enemy.wh[0], enemy.wh[1])
 
     # 6-49 purple lines; first 4 ==> lines, remaining ==> pillars
     # even numbers are inverted

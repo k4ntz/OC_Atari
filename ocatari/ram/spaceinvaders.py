@@ -258,8 +258,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # determining if bullets are visible
     bullets_visible = [False, False, False]
     for i in range(2):
-        bullets_visible[i] = 20 < bullets[i].xy[1] < 195 and not(ram_state[74] % 2)
-    bullets_visible[2] = 20 < bullets[2].xy[1] < 195 and ram_state[74] % 2
+        bullets_visible[i] = 20 < bullets[i].xy[1] < 195 #and not(ram_state[74] % 2)
+    bullets_visible[2] = 20 < bullets[2].xy[1] < 195 #and ram_state[74] % 2
     # appending bullets to objects
     for i in range(3):
         if bullets_visible[i]:
