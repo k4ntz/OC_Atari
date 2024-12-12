@@ -12,7 +12,6 @@ import time
 import atexit
 import pygame
 
-
 try:
     import torch
     from torch import nn
@@ -20,10 +19,6 @@ try:
     torch_imported = True
 except ModuleNotFoundError:
     torch_imported = False
-
-
-parser = ArgumentParser()
-parser.add_argument("-p", "--path", type=str, help="path to the model", default=None)
 
 
 test_parser = ArgumentParser()
@@ -52,7 +47,11 @@ def make_deterministic(seed, mdp, states_dict=None):
 
 
 if torch_imported:
-    
+    def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
+        torch.nn.init.orthogonal_(layer.weight, std)
+        torch.nn.init.constant_(layer.bias, bias_const)
+        return layer
+
     class QNetwork(nn.Module):
         def __init__(self, nb_actions, n_atoms=51, v_min=-10, v_max=10):
             super().__init__()
@@ -85,13 +84,8 @@ if torch_imported:
         def draw_action(self, state):
             return self.get_action(state)[0]
     
-    def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
-        torch.nn.init.orthogonal_(layer.weight, std)
-        torch.nn.init.constant_(layer.bias, bias_const)
-        return layer
-
     class PPOAgent(nn.Module):
-        def __init__(self, nb_actions):
+        def __init__(self, env):
             super().__init__()
             self.network = nn.Sequential(
                 layer_init(nn.Conv2d(4, 32, 8, stride=4)),
@@ -104,7 +98,7 @@ if torch_imported:
                 layer_init(nn.Linear(64 * 7 * 7, 512)),
                 nn.ReLU(),
             )
-            self.actor = layer_init(nn.Linear(512, nb_actions), std=0.01)
+            self.actor = layer_init(nn.Linear(512, env.action_space.n), std=0.01)
             self.critic = layer_init(nn.Linear(512, 1), std=1)
 
         def get_value(self, x):
@@ -150,8 +144,9 @@ if torch_imported:
                 action = probs.sample()
             return action, probs.log_prob(action), probs.entropy(), self.critic(hidden)
 
-        def predict(self, x, states=None, **_):
+        def draw_action(self, x, states=None, **_):
             return self.get_action_and_value(x)[0]
+    
     class AtariNet(nn.Module):
         """ Estimator used by DQN-style algorithms for ATARI games.
             Works with DQN, M-DQN and C51.
@@ -198,6 +193,17 @@ if torch_imported:
             probs = self.forward(state)
             return probs.argmax()
 
+    class RandomAgent():
+        """
+        A agent acting randomly (following a uniform distribution).
+
+        :param nb_actions
+        """
+        def __init__(self, nb_actions) -> None:
+            self.nb_actions = nb_actions
+
+        def draw_action(self, *args, **kwargs) -> int:
+            return random.randint(0, self.nb_actions-1)
 
 def _load_checkpoint(fpath, device="cpu"):
     fpath = Path(fpath)
@@ -205,52 +211,7 @@ def _load_checkpoint(fpath, device="cpu"):
         with GzipFile(fileobj=file) as inflated:
             return torch.load(inflated, map_location=device)
 
-
-def _epsilon_greedy(obs, model, eps=0.001):
-    if torch.rand((1,)).item() < eps:
-        return torch.randint(model.action_no, (1,)).item(), None
-    q_val, argmax_a = model(obs).max(1)
-    return argmax_a.item(), q_val
-
-
-# old_settings = termios.tcgetattr(sys.stdin)
-
-
-# def restore_old_settings():
-#     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
-
-
-# atexit.register(restore_old_settings)
-
-
-def isData():
-    return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
-
-
-class HumanAgent():
-    def __init__(self):
-        x = 0   # noqa
-        # tty.setcbreak(sys.stdin.fileno())
-
-    def draw_action(self, state):
-        if isData():
-            c = sys.stdin.read(1)
-            if c == '\x1b':         # x1b is ESC
-                exit(0)
-            elif c == "a":
-                return 2
-            elif c == "e":
-                return 1
-        return 0
-
-
-# def load_agent(opt, nb_actions=None):
-#     if opt.path == "h":
-#         return HumanAgent()
-#     ckpt_path = Path(opt.path)
-
-
-def load_agent(opt, nb_actions=None, env=None):
+def load_agent(opt, nb_actions=None, env=None, device="cpu"):
     pth = opt if isinstance(opt, str) else opt.path
     if "dqn" in pth or "c51" in pth:
         pth = pth.replace("ALE/", "")
@@ -264,26 +225,16 @@ def load_agent(opt, nb_actions=None, env=None):
         if "c51" in pth:
             agent = QNetwork(nb_actions)
             agent.load_state_dict(ckpt["model_weights"])   
-        elif "ppo" in pth:
-            agent = PPO_Obj_small(env, len(env.ns_state), env.buffer_window_size, device="cpu")
+        elif "ppo" in pth and env.obs_mode == "dqn":
+            agent = PPOAgent(env)
+            agent.load_state_dict(ckpt["model_weights"])
+        elif "ppo" in pth and env.obs_mode == "obj":
+            agent = PPO_Obj_small(env, len(env.ns_state), env.buffer_window_size, device)
             agent.load_state_dict(ckpt["model_weights"])
         else:
             return None
     
     return agent
-
-
-class RandomAgent():
-    """
-    A agent acting randomly (following a uniform distribution).
-
-    :param nb_actions
-    """
-    def __init__(self, nb_actions) -> None:
-        self.nb_actions = nb_actions
-
-    def draw_action(self, *args, **kwargs) -> int:
-        return random.randint(0, self.nb_actions-1)
 
 
 def draw_arrow(surface: pygame.Surface, start_pos: (float, float), end_pos: (float, float),

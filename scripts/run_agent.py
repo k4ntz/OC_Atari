@@ -31,17 +31,16 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-if args.backend == "OCAtari":
-    env = OCAtari(
-        args.game,
-        render_mode="rgb_array" if args.movie else "human",
-        obs_mode="obj",
-        mode="ram",
-        hud=False,
-        render_oc_overlay=True,
-        buffer_window_size = 2,
-        frameskip=4,
-    )
+env = OCAtari(
+    args.game,
+    render_mode="rgb_array" if args.movie else "human",
+    obs_mode="obj",
+    mode="ram",
+    hud=False,
+    render_oc_overlay=True,
+    buffer_window_size = 2,
+    frameskip=4,
+)
 
 if args.movie:
     env = gym.wrappers.RecordVideo(env, f"media/videos")
@@ -49,7 +48,7 @@ if args.movie:
 pygame.init()
 if args.agent:
     #agent = load_agent("../OC_Atari/models/Skiing/obj_based_ppo.cleanrl_model", env.action_space.n, env)
-    agent = load_agent(args.agent, env.action_space.n, env)
+    agent = load_agent(args.agent, env.action_space.n, env, "cpu")
     print(f"Loaded agents from {args.agent}")
 
 obs, _ = env.reset()
