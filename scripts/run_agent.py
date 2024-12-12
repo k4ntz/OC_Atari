@@ -21,15 +21,6 @@ parser.add_argument(
     help="Path to the cleanrl trained agent to be loaded.",
 )
 
-
-parser.add_argument(
-    "-b",
-    "--backend",
-    type=str,
-    default="OCAtari",
-    help="OCAtari or Gym.",
-)
-
 parser.add_argument(
     "-m",
     "--movie",
@@ -51,11 +42,6 @@ if args.backend == "OCAtari":
         buffer_window_size = 2,
         frameskip=4,
     )
-elif args.backend == "Gym":
-    env = gym.make(args.game, render_mode="rgb_array",frameskip=4)
-    env = gym.wrappers.ResizeObservation(env, (84, 84))
-    env = gym.wrappers.GrayscaleObservation(env)
-    env = gym.wrappers.FrameStackObservation(env, 4)
 
 if args.movie:
     env = gym.wrappers.RecordVideo(env, f"media/videos")
