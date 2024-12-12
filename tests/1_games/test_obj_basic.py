@@ -2,15 +2,14 @@ import pytest
 import numpy as np
 import os
 import pickle as pkl
-from ocatari.core import OCAtari, OBJv2_SUPPORTED
+from ocatari.core import OCAtari
 import warnings
 
 # Get GAMES from the environment variable or use default if not set
 if os.getenv("GAMES") != None:
-    GAMES = [f"ALE/{g}-v5" for g in os.getenv("GAMES").split() if g in OBJv2_SUPPORTED]
+    GAMES = [f"ALE/{g}-v5" for g in os.getenv("GAMES").split()]
 else:
-    GAMES = [f"ALE/{g}-v5" for g in OBJv2_SUPPORTED]
-    #GAMES = ["ALE/Breakout-v5"]
+    GAMES = ["ALE/Breakout-v5"]
 
 MODES = ["ram", "vision"]
 OBS_MODES = ["obj"]
