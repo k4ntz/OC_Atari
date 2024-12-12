@@ -84,5 +84,19 @@ def test_environment_step(env_name, mode, obs_mode, frameskip, state_nr):
     assert isinstance(info, dict), "Info should be a dictionary."
     env.close()
 
-
+@pytest.mark.parametrize("env_name, mode, obs_mode, frameskip, state_nr", [(game, mode, obs_mode, frameskip, state_nr) for game in GAMES for mode in MODES for obs_mode in OBS_MODES for frameskip in FRAMESKIPS for state_nr in get_states(game.split("/")[1].split("-")[0])])
+def test_environment_step(env_name, mode, obs_mode, frameskip, state_nr):
+    """
+    Test if objects are in correct slots
+    """
+    env = OCAtari(env_name=env_name, mode=mode, obs_mode=obs_mode, frameskip=frameskip)
+    load_pickle_state(env, env.game_name, state_nr)
+    env.reset()
+    obs, reward, truncated, terminated, info = env.step(0)  # Execute a random action (e.g., action 0)
+    assert obs is not None, "Observation should not be None after taking a step."
+    assert isinstance(reward, (int, float)), "Reward should be a number."
+    assert isinstance(truncated, bool), "Truncated should be a boolean value."
+    assert isinstance(terminated, bool), "Terminated should be a boolean value."
+    assert isinstance(info, dict), "Info should be a dictionary."
+    env.close()
 

@@ -2,15 +2,14 @@ import pytest
 import numpy as np
 import os
 import pickle as pkl
-from ocatari.core import OCAtari, OBJv2_SUPPORTED
+from ocatari.core import OCAtari
 import warnings
 
 # Get GAMES from the environment variable or use default if not set
 if os.getenv("GAMES") != None:
-    GAMES = [f"ALE/{g}-v5" for g in os.getenv("GAMES").split() if g in OBJv2_SUPPORTED]
+    GAMES = [f"ALE/{g}-v5" for g in os.getenv("GAMES").split()]
 else:
-    GAMES = [f"ALE/{g}-v5" for g in OBJv2_SUPPORTED]
-    #GAMES = ["ALE/Breakout-v5"]
+    GAMES = ["ALE/Freeway-v5"]
 
 MODES = ["ram", "vision"]
 OBS_MODES = ["obj"]
@@ -112,4 +111,24 @@ def test_outputsimilarity_between_modes(env_name, obs_mode, frameskip, state_nr)
 
     # Compute the difference
     assert np.allclose(obs1, obs2, rtol=2)
+    env.close()
+
+@pytest.mark.parametrize("env_name, obs_mode, frameskip, state_nr", [(game, obs_mode, frameskip, state_nr) for game in GAMES for obs_mode in OBS_MODES for frameskip in FRAMESKIPS for state_nr in get_states(game.split("/")[1].split("-")[0])])
+def test_objects_slots(env_name, obs_mode, frameskip, state_nr):
+    env = OCAtari(env_name, hud=False, mode="ram", render_mode="rgb_array", render_oc_overlay=False, obs_mode=obs_mode, frameskip=frameskip)
+    load_pickle_state(env, env.game_name, state_nr)
+    env.reset()
+    object_dict = env.max_objects_per_cat
+    object_list = [key for key, count in object_dict.items() for _ in range(count)]
+
+    for _ in range(100):
+        action = env.action_space.sample()  # pick random action
+        obs, reward, truncated, terminated, info = env.step(action)
+        current_objects = env.objects
+
+        print(object_list)
+        print(current_objects)
+        for type, object in zip(object_list, current_objects):
+            assert not object or object.category == type
+
     env.close()
