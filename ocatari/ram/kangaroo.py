@@ -17,8 +17,8 @@ MAX_ESSENTIAL_OBJECTS = {
     'ThrownCoconut': 3,
     'Fruit': 3,
     'Bell': 1,
-    'Platform': 20,
     'Ladder': 6,
+    'Platform': 20,
 }
 
 MAX_OPTIONAL_OBJECTS = {
@@ -29,8 +29,8 @@ MAX_OPTIONAL_OBJECTS = {
     'ThrownCoconut': 3,
     'Fruit': 3,
     'Bell': 1,
-    'Platform': 20,
     'Ladder': 6,
+    'Platform': 20,
     'Lives': 1,
     'Time': 1,
     'Score': 1
