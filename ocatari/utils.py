@@ -121,6 +121,37 @@ if torch_imported:
         def draw_action(self, state):
             return self.get_action_and_value(state)[0]
 
+    class PPO_Obj_small(nn.Module):
+        def __init__(self, envs, input_size, window_size, device):
+            super().__init__()
+            self.device = device
+
+            self.network = nn.Sequential(
+                layer_init(nn.Linear(input_size,128)),
+                nn.ReLU(),
+                layer_init(nn.Linear(128,64)),
+                nn.ReLU(),
+                nn.Flatten(),
+                layer_init(nn.Linear(64*window_size, 32)),
+                nn.ReLU(),
+                
+            )
+            self.actor = layer_init(nn.Linear(32, envs.action_space.n), std=0.01)
+            self.critic = layer_init(nn.Linear(32, 1), std=1)
+
+        def get_value(self, x):
+            return self.critic(self.network(x / 255.0))
+
+        def get_action_and_value(self, x, action=None):
+            hidden = self.network(x / 255.0)
+            logits = self.actor(hidden)
+            probs = Categorical(logits=logits)
+            if action is None:
+                action = probs.sample()
+            return action, probs.log_prob(action), probs.entropy(), self.critic(hidden)
+
+        def predict(self, x, states=None, **_):
+            return self.get_action_and_value(x)[0]
     class AtariNet(nn.Module):
         """ Estimator used by DQN-style algorithms for ATARI games.
             Works with DQN, M-DQN and C51.
@@ -219,7 +250,7 @@ class HumanAgent():
 #     ckpt_path = Path(opt.path)
 
 
-def load_agent(opt, nb_actions=None):
+def load_agent(opt, nb_actions=None, env=None):
     pth = opt if isinstance(opt, str) else opt.path
     if "dqn" in pth or "c51" in pth:
         pth = pth.replace("ALE/", "")
@@ -229,13 +260,13 @@ def load_agent(opt, nb_actions=None):
         ckpt = _load_checkpoint(pth)
         agent.load_state_dict(ckpt['estimator_state'])
     elif "cleanrl" in pth:
-        ckpt = torch.load(pth, map_location=torch.device('cpu'))
+        ckpt = torch.load(pth)
         if "c51" in pth:
             agent = QNetwork(nb_actions)
             agent.load_state_dict(ckpt["model_weights"])   
         elif "ppo" in pth:
-            agent = PPOAgent(nb_actions)
-            agent.load_state_dict(ckpt["model_weights"]) 
+            agent = PPO_Obj_small(env, len(env.ns_state), env.buffer_window_size, device="cpu")
+            agent.load_state_dict(ckpt["model_weights"])
         else:
             return None
     
