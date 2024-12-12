@@ -9,11 +9,11 @@ RAM extraction for the game DONKEYKONG. Supported modes: ram.
 """
 
 MAX_NB_OBJECTS = {
-    'Player': 1, 'Girlfriend': 1, 'Ladder': 10, 'Hammer': 1, 'Barrel' : 4, 'DonkeyKong': 1,
+    'Player': 1, 'DonkeyKong': 1, 'Girlfriend': 1, 'Hammer': 1, 'Barrel' : 4, 'Ladder': 10
 }
 
 MAX_NB_OBJECTS_HUD = {
-    'Player': 1, 'Girlfriend': 1, 'Ladder': 10, 'Hammer': 1, 'Barrel' : 10, 'DonkeyKong': 1,
+    'Player': 1, 'DonkeyKong': 1, 'Girlfriend': 1, 'Hammer': 1, 'Barrel' : 4, 'Ladder': 10,
     'Score': 1, 'Life':1, 
 }
 
