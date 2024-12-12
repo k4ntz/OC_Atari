@@ -36,12 +36,8 @@ AVAILABLE_GAMES = [
     "DemonAttack", "DonkeyKong", "DoubleDunk", "Enduro", "FishingDerby", "Freeway", "Frogger", "Frostbite", "Galaxian",
     "Gopher", "Hero", "IceHockey", "Jamesbond", "Kangaroo", "KeystoneKapers", "KingKong", "Krull", "KungFuMaster",
     "MarioBros", "MontezumaRevenge", "MsPacman", "NameThisGame", "Pacman", "Phoenix", "Pitfall", "Pong", "Pooyan",
-    "PrivateEye", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "TimePilot",
-    "UpNDown", "Venture", "VideoPinball", "YarsRevenge", "Zaxxon"
-]
-
-OBJv2_SUPPORTED = [
-    "Amidar", "Asteroids", "Breakout", "Freeway", "Frostbite", "Kangaroo", "KeystoneKappers", "MsPacman", "Pooyan", "Pong", "Skiing", "SpaceInvaders"
+    "PrivateEye", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "StarGunner", 
+    "Tennis", "TimePilot", "UpNDown", "Venture", "VideoPinball", "YarsRevenge", "Zaxxon"
 ]
 
 # Constant to control the upscaling factor for rendering
@@ -125,6 +121,8 @@ class OCAtari:
             # Create a stack of ns_states (objects, buffer_size x ocss)
             create_buffer_stacks.append("obj")
             self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size, get_object_state_size(self.game_name,self.hud)))
+            import warnings
+            #warnings.warn("With Release 2.0 we switched to our new object-centric representation, see", DeprecationWarning)
         else:
             raise AttributeError("No valid obs_mode was selected")
 

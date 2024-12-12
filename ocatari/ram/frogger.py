@@ -17,8 +17,8 @@ class Frog(GameObject):
     
     def __init__(self):
         super(Frog, self).__init__()
-        #self._xy = 0, 0
-        #self.wh = 7, 7
+        self._xy = 0, 0
+        self.wh = 7, 7
         self.rgb = 110, 156, 66
         self.hud = False
 
@@ -28,8 +28,8 @@ class Car(GameObject):
     """
     def __init__(self):
         super(Car, self).__init__()
-        #self._xy = 0, 0
-        #self.wh = 14, 7
+        self._xy = 0, 0
+        self.wh = 14, 7
         self.rgb = 195, 144, 61
         self.hud = False
 
