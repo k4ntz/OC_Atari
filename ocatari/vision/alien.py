@@ -1,4 +1,4 @@
-from .utils import find_objects
+from .utils import find_objects, match_blinking_objects
 from .game_objects import GameObject
 
 

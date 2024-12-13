@@ -50,7 +50,7 @@ class Renderer:
 
     def __init__(self, env_name: str, mode: str, hud: bool):
         self.env = OCAtari(env_name, mode=mode, hud=hud, render_mode="rgb_array",
-                             render_oc_overlay=True, frameskip=1, obs_mode="obj")
+                             render_oc_overlay=True, frameskip=1, obs_mode="obj", full_action_space=True)
 
         self.env.reset(seed=42)
         self.both = mode=="both"
@@ -103,10 +103,6 @@ class Renderer:
                 self.saved_frames.append((deepcopy(self.slots_imgs), self.env._ale.cloneState(), self.current_frame)) # ram, state, image (rgb)
                 action = self._get_action()
                 reward = self.env.step(action)[1]
-                # print(self.env.objects)
-                # if reward != 0:
-                #     print(reward)
-                #     pass
                 self.current_frame = self.env.render().copy()
                 self._render()
                 self.next_frame = False
@@ -128,10 +124,14 @@ class Renderer:
         for event in events:
             if event.type == pygame.QUIT:  # window close button clicked
                 self.running = False
+            
 
             elif event.type == pygame.KEYDOWN:  # keyboard key pressed
                 if event.key == pygame.K_p:  # 'P': pause/resume
                     self.paused = not self.paused
+                
+                elif event.key == pygame.K_m:  # 'M': track color change
+                    self.env.set_ram(44, 10)
                 
                 elif event.key == pygame.K_s:  # 'S': save
                     if self.paused:
@@ -161,7 +161,8 @@ class Renderer:
                         else: 
                             print("There are no prior frames saved to go back to. Save more using the flag --previous_frames")
 
-
+                elif event.key == pygame.K_o:  # 'O': Objects
+                    print(self.env.objects)
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
 
@@ -295,7 +296,10 @@ class Renderer:
         top_left_x = (round(OBJ_CELL_WIDTH * (UPSCALE_FACTOR / 4)) - w) // 2
         
         # Place the smaller image in the center of the black canvas
-        padded_image[top_left_y:top_left_y + h, top_left_x:top_left_x + w, :] = sprite
+        try:
+            padded_image[top_left_y:top_left_y + h, top_left_x:top_left_x + w, :] = sprite
+        except ValueError:
+            import ipdb; ipdb.set_trace()
         
         return padded_image
 

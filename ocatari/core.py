@@ -16,35 +16,13 @@ from gymnasium.error import NameNotFound
 try:
     import ale_py  # ALE (Arcade Learning Environment) is required for running Atari environments.
 except ModuleNotFoundError:
-    print('\nALE is required when using the ALE env wrapper. Try `pip install "gymnasium[atari, accept-rom-license]"`.\n')
+    print('\nALE is required when using the ALE env wrapper. Try `pip install "gymnasium[atari, accept-rom-license]"`\n')
 
 
 try:
     import cv2  # OpenCV is used for processing frames for observation (e.g., resizing, grayscaling)
 except ModuleNotFoundError:
     print('\nOpenCV is required when using the ALE env wrapper. Try `pip install opencv-python`.')
-
-
-try:
-    import torch  # PyTorch is used for efficient tensor operations if available
-    torch_imported = True
-    _tensor = torch.tensor
-    _uint8 = torch.uint8
-    _zeros = torch.zeros
-    _zeros_like = torch.zeros_like
-    _stack = torch.stack
-    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-    _tensor_kwargs = {"device": DEVICE}
-except ModuleNotFoundError:
-    torch_imported = False
-    _tensor = np.array
-    _uint8 = np.uint8
-    _zeros = np.zeros
-    _zeros_like = np.zeros_like
-    _stack = np.stack
-    DEVICE = "cpu"
-    _tensor_kwargs = {}
-    warnings.warn("pytorch installation not found, using numpy instead of torch")
 
 try:
     import pygame  # Pygame is required for rendering the environment for human visualization
@@ -58,12 +36,8 @@ AVAILABLE_GAMES = [
     "DemonAttack", "DonkeyKong", "DoubleDunk", "Enduro", "FishingDerby", "Freeway", "Frogger", "Frostbite", "Galaxian",
     "Gopher", "Hero", "IceHockey", "Jamesbond", "Kangaroo", "KeystoneKapers", "KingKong", "Krull", "KungFuMaster",
     "MarioBros", "MontezumaRevenge", "MsPacman", "NameThisGame", "Pacman", "Phoenix", "Pitfall", "Pong", "Pooyan",
-    "PrivateEye", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "Tennis", "TimePilot",
-    "UpNDown", "Venture", "VideoPinball", "YarsRevenge", "Zaxxon"
-]
-
-OBJv2_SUPPORTED = [
-    "Amidar", "Asteroids", "Breakout", "Freeway", "Frostbite", "Kangaroo", "KeystoneKappers", "MsPacman", "Pooyan", "Pong", "Skiing", "SpaceInvaders"
+    "PrivateEye", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "StarGunner", 
+    "Tennis", "TimePilot", "UpNDown", "Venture", "VideoPinball", "YarsRevenge", "Zaxxon"
 ]
 
 # Constant to control the upscaling factor for rendering
@@ -125,7 +99,6 @@ class OCAtari:
             warnings.warn(colored(f'Game "{env_name}" not found in gymnasium, automatically using "{cenv_name}" instead', "red"))
             self.env_name = cenv_name
 
-
         # Define observation space based on the observation mode
         if obs_mode == "ori":
             pass
@@ -148,6 +121,8 @@ class OCAtari:
             # Create a stack of ns_states (objects, buffer_size x ocss)
             create_buffer_stacks.append("obj")
             self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size, get_object_state_size(self.game_name,self.hud)))
+            import warnings
+            #warnings.warn("With Release 2.0 we switched to our new object-centric representation, see", DeprecationWarning)
         else:
             raise AttributeError("No valid obs_mode was selected")
 
@@ -224,7 +199,7 @@ class OCAtari:
         self._fill_buffer()
         # Set the observation based on the selected observation mode
         if self.obs_mode == "dqn":
-            obs = _stack(list(self._state_buffer_dqn)).cpu().numpy() if torch_imported else np.array(self._state_buffer_dqn)
+            obs = np.array(self._state_buffer_dqn)
         elif self.obs_mode == "obj":
             obs = np.array(self._state_buffer_ns)
         return obs, reward, truncated, terminated, info
@@ -280,10 +255,7 @@ class OCAtari:
         # Fill the RGB, DQN, and neurosymbolic state buffers with the current states
         if self.create_dqn_stack:
             dqn_obs = cv2.resize(cv2.cvtColor(self.getScreenRGB(), cv2.COLOR_RGB2GRAY), (84, 84), interpolation=cv2.INTER_AREA)
-            if torch_imported:
-                self._state_buffer_dqn.append(_tensor(dqn_obs, dtype=_uint8, **_tensor_kwargs).cpu())  # Move tensor to CPU if necessary
-            else:
-                self._state_buffer_dqn.append(dqn_obs)
+            self._state_buffer_dqn.append(dqn_obs)
         if self.create_rgb_stack:
             self._state_buffer_rgb.append(self.getScreenRGB())
         if self.create_ns_stack:
@@ -448,11 +420,11 @@ class OCAtari:
 
     def render_explanations(self):
         # Render explanations by highlighting the objects with bounding boxes
+        rendered = np.zeros_like(self._state_buffer_rgb[0]).astype(float)
         coefs = [0.05, 0.1, 0.25, 0.6]
-        rendered = _zeros_like(self._state_buffer_rgb[0]).float()
         for coef, state_i in zip(coefs, self._state_buffer_rgb):
             rendered += coef * state_i
-        rendered = rendered.cpu().detach().to(int).numpy()
+        rendered = rendered.astype(int)
         for obj in self.objects:
             mark_bb(rendered, obj.xywh, color=obj.rgb)
         import matplotlib.pyplot as plt
@@ -471,8 +443,8 @@ class OCAtari:
 
     def aggregated_render(self, coefs=[0.05, 0.1, 0.25, 0.6]):
         # Generate a weighted sum of frames for a more informative representation
-        rendered = _zeros_like(self._state_buffer_rgb[0]).float()
+        rendered = np.zeros_like(self._state_buffer_rgb[0]).astype(float)
         for coef, state_i in zip(coefs, self._state_buffer_rgb):
             rendered += coef * state_i
-        rendered = rendered.cpu().detach().to(int).numpy()
+        rendered = rendered.astype(int)
         return rendered

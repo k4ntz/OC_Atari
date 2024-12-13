@@ -14,7 +14,7 @@ from ocatari.core import OCAtari
 set the ram and see whats changed
 """
 
-env_id = "Pong"
+env_id = "Breakout"
 obs_mode = "obj"
 seed = 42
 frameskip = 1

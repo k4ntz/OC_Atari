@@ -156,35 +156,37 @@ class Renderer:
                 elif event.key == pygame.K_g:
                     print(self.env.objects)
                     print(len(self.env.objects))
+                    # self.current_frame = self.env.render().copy()
+                    obs = self.env._env.render()
                     for obj in self.env.objects:
                         x, y = obj.xy
                         if x < 160 and y < 210:
                             opos = obj.xywh
                             ocol = obj.rgb
                             sur_col = make_darker(ocol)
-                            mark_bb(self.obs, opos, color=sur_col)
+                            mark_bb(obs, opos, color=sur_col)
                     _, ax = plt.subplots(1, 1, figsize=(6, 8))
-                    ax.imshow(self.obs)
+                    ax.imshow(obs)
                     plt.show()
                 elif event.key == pygame.K_k:
                     _, ax = plt.subplots(1, 1, figsize=(6, 8))
                     ax.imshow(self.obs)
                     plt.savefig('MsPacman.png', dpi=500)
                 elif event.key == pygame.K_h:
-                    with open(self.env_name + '_save_state1.pickle', 'wb') as handle:
+                    with open("save_states/" + self.env.game_name + '_save_state1.pickle', 'wb') as handle:
                         pickle.dump(self.env._env.env.env.ale.cloneState(), handle, protocol=pickle.HIGHEST_PROTOCOL)
                 elif event.key == pygame.K_j:
-                    with open(self.env_name + '_save_state2.pickle', 'wb') as handle:
+                    with open("save_states/" + self.env.game_name + '_save_state2.pickle', 'wb') as handle:
                         pickle.dump(self.env._env.env.env.ale.cloneState(), handle, protocol=pickle.HIGHEST_PROTOCOL)
                 elif event.key == pygame.K_n:
                     try:
-                        snapshot = pickle.load(open(self.env_name + "_save_state1.pickle", "rb"))
+                        snapshot = pickle.load(open("save_states/" + self.env_name + "_save_state1.pickle", "rb"))
                         self.env._env.env.env.ale.restoreState(snapshot)
                     except:
                         print("No Save_State set")
                 elif event.key == pygame.K_m:
                     try:
-                        snapshot = pickle.load(open(self.env_name + "_save_state2.pickle", "rb"))
+                        snapshot = pickle.load(open("save_states/" + self.env_name + "_save_state2.pickle", "rb"))
                         self.env._env.env.env.ale.restoreState(snapshot)
                     except:
                         print("No Save_State set")
@@ -278,7 +280,10 @@ class Renderer:
             else:
                 color = (200, 200, 200)
             if self.bits:
-                text = self.ram_cell_value_font.render(str(format(value, '#010b'))[2:], True, color, None)
+                try:
+                    text = self.ram_cell_value_font.render(str(format(value, '08b')), True, color, None)
+                except:
+                    pass
             else:
                 text = self.ram_cell_value_font.render(str(value), True, color, None)
             text_rect = text.get_rect()
@@ -328,6 +333,7 @@ class Renderer:
         state = self.env._env.env.env.ale.cloneState()
         ram = ale.getRAM().copy()
         self.env.step(0)
+        x, y = int(x), int(y)
         original_pixel = ale.getScreenRGB()[y, x]
         # self.env._env.env.env.ale.restoreState(state)
         # self._set_ram(ram)  # restore original RAM
@@ -354,7 +360,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer(env_name="MsPacman", mode="ram", bits=False, obs_mode="ori", hud=True)
+    renderer = Renderer(env_name="Alien", mode="ram", bits=False, obs_mode="obj", hud=False)
     def exit_handler():
         if renderer.no_render:
             print("\nno_render list: ")
