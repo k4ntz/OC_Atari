@@ -229,6 +229,3 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             life = Life()
             objects[1] = life
             life.xy = 95, 74
-        
-    # import ipdb; ipdb.set_trace()
-

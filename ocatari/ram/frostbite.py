@@ -283,8 +283,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 Otype = GreenFish
                 offset = 3
             else:
-                print(type)
-                import ipdb; ipdb.set_trace()
+                raise AttributeError(f"THe type at position {35+i} is {type} and unknown")
             idx = 4 + offset*8 + i
             if isinstance(objects[idx], Otype):
                 obj = objects[idx]
