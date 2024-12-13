@@ -681,7 +681,7 @@ def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
             try:
                 prev_objects[start_idx+i] = ObjClass(*objects_bb[i])
             except IndexError:
-                import ipdb; ipdb.set_trace()
+                raise IndexError
     else:
         try:
             cost_matrix = compute_cm(prev_objects[start_idx: start_idx+max_obj], objects_bb)
