@@ -126,6 +126,8 @@ class Renderer:
                         with open(f"state_{self.env.game_name}.pkl", "wb") as f:
                             pkl.dump((statepkl, self.env._objects), f)
                             print(f"State cloned in state_{self.env.game_name}.pkl.")
+                if event.key == pygame.K_o:
+                    print(self.env.objects)
 
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
                     self._unselect_active_cell()
@@ -154,6 +156,8 @@ class Renderer:
                             if new_cell_value < 256:
                                 self._set_ram_value_at(self.active_cell_idx, new_cell_value)
                         self._unselect_active_cell()
+                
+                
 
             elif event.type == pygame.KEYUP:  # keyboard key released
                 if [x for x in self.keys2actions.keys() if event.key in x]: #(event.key,) in self.keys2actions.keys():
