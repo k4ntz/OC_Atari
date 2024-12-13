@@ -62,7 +62,6 @@ def _detect_objects(objects, obs, hud=False):
     bomb_thrower_bb = find_objects_in_color_range(obs, [10, 10, 10], [250, 250, 250],
                                                   miny=35, maxy=50)
     match_objects(objects, bomb_thrower_bb, 2, 1, BombThrower)
-    # print(bomb_thrower_bb)
 
     # Bomb
     # Starting Menu!!

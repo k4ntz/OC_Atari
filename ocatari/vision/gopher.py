@@ -84,8 +84,3 @@ def _detect_objects(objects, obs, hud=False):
         for s in score:
             objects.append(Score(*s))
         
-        
-
-
-        # import ipdb; ipdb.set_trace()
-        

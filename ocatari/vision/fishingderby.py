@@ -127,4 +127,3 @@ def _detect_objects(objects, obs, hud=True):
                     objects.append(ScorePlayerOne(*score))
                 else:
                     objects.append(ScorePlayerTwo(*score))
-    print(objects)

@@ -77,19 +77,21 @@ class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 160, 171, 79
+        self.hud = True
 
 
 class Lives(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 160, 171, 79
+        self.hud = True
 
 
 class Time(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 160, 171, 79
-
+        self.hud = True
 
 def _detect_objects(objects, obs, hud=False):
 
