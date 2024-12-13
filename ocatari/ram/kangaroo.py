@@ -363,25 +363,12 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
     # Only on level change
     current_level = ram_state[36]
-<<<<<<< HEAD
-    if type(objects[17]) is NoObject \
-        or (current_level == 0 and objects[17].xy[1] != 76) \
-        or (current_level == 1 and objects[17].xy[1] != 124) \
-        or (current_level == 2 and objects[17].xy[1] != 140):
-        platform = manage_platforms(current_level, objects)
-        for i in range(26):
-            if platform[i]:
-                objects[14+i] = platform[i]
-            else:
-                objects[14+i] = NoObject(Platform())
-=======
     platform = manage_platforms(current_level, objects)
     for i in range(26):
         if platform[i]:
             objects[14+i] = platform[i]
         else:
             objects[14+i] = NoObject()
->>>>>>> ns_impl
 
 
     if hud:
@@ -463,40 +450,24 @@ def manage_platforms(current_lvl_val, _):
             Ladder(132, 132),
             Ladder(20, 85),
             Ladder(132, 37),
-<<<<<<< HEAD
             NoObject(Ladder()),
             NoObject(Ladder()),
             NoObject(Ladder()),
-            Platform(16, 76, w=128),
-            Platform(16, 124, w=128),
-        ])
-        platforms.extend([NoObject(Platform())]*16)
-=======
-            NoObject(),
-            NoObject(),
-            NoObject(),
             Platform(16, 172, w=128), Platform(16, 28, w=128),
             Platform(16, 76, w=128),
             Platform(16, 124, w=128),
         ]
         platforms.extend([NoObject()]*16)
->>>>>>> ns_impl
 
     elif current_lvl_val == 1:
         platforms  = [
             Ladder(120, 132, h=4),
             Ladder(24, 116, h=4),
             Ladder(128, 36, h=4),
-<<<<<<< HEAD
             NoObject(Ladder()),
             NoObject(Ladder()),
             NoObject(Ladder()),
-=======
-            NoObject(),
-            NoObject(),
-            NoObject(),
             Platform(16, 172, w=128), Platform(16, 28, w=128),
->>>>>>> ns_impl
             Platform(16, 124, w=28), Platform(52, 124, w=92),
             Platform(16, 76, w=60), Platform(84, 76, w=60),
             Platform(28, 164, w=24), Platform(112, 84, w=24),
@@ -505,13 +476,8 @@ def manage_platforms(current_lvl_val, _):
             Platform(16, 108, w=32), Platform(56, 100, w=20),
             Platform(84, 92, w=20), Platform(64, 60, w=20),
             Platform(92, 52, w=20), Platform(28, 68, w=28)
-<<<<<<< HEAD
-        ])
-        platforms.extend([NoObject(Platform())]*10)
-=======
         ]
-        platforms.extend([NoObject()]*2)
->>>>>>> ns_impl
+        platforms.extend([NoObject(Platform())]*2)
 
     else:  # current_lvl_val == 2
         platforms = [
