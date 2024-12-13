@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Tuple
 
 
 class Orientation(Enum):  # 16-wind compass directions
@@ -189,11 +190,15 @@ class GameObject:
     @property
     def _ns_meaning(self):
         """NeuroSymbolic Meaning"""
-        return "x, y"
+        return ["POSITION"]
 
     @property
     def _nslen(self):
         return len(self._nsrepr)
+    
+    @property
+    def _ns_types(self):
+        return [Tuple[int, int]]
 
     @property
     def rgb(self):
@@ -320,6 +325,14 @@ class NoObject(GameObject):
     @property
     def _nsrepr(self):
         return [0 for _ in range(self.nslen)]
+    
+    @property
+    def _ns_meaning(self):
+        return ["POSITION"]
+    
+    @property
+    def _ns_types(self):
+        return [Tuple[int, int]]
     
     def __repr__(self):
         # return "NaO"

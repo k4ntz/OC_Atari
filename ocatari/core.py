@@ -240,6 +240,11 @@ class OCAtari:
         self.detect_objects()
         # Reset the buffer after environment reset
         self._reset_buffer()
+        # Set the observation based on the selected observation mode
+        if self.obs_mode == "dqn":
+            obs = np.array(self._state_buffer_dqn)
+        elif self.obs_mode == "obj":
+            obs = np.array(self._state_buffer_ns)
         return obs, info
 
     def _fill_buffer(self):
