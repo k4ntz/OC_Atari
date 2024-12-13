@@ -204,7 +204,6 @@ def _get_highest_idx(slot_list):
     for i, obj in enumerate(slot_list):
         if obj and obj._highest:
             return i
-    import ipdb; ipdb.set_trace()
     raise ValueError("No highest object in slot")
 
 MINIMAL_HEIGHT = {

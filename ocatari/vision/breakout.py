@@ -96,7 +96,6 @@ def _detect_objects(objects, obs, hud=False):
     #             base_list = int(2 + (br[0]-8)/4 + 6*(87-br[1]))
     #             x, y = br[0], br[1]
     #             for i in range(int(br[2]/4)):
-    #                 # print(i+base_list)
     #                 if type(objects[i+base_list]) is NoObject:
     #                     objects[i+base_list] = Block(x, y, 4, 6)
     #                     objects[i+base_list].rgb = blockRowColor

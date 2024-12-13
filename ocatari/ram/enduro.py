@@ -104,7 +104,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
             # if ram_state[46]&128:
             #     x = x - (~ram_state[46])
-            #     print(x, ~ram_state[46])
             # else:
             #     x = x + ram_state[46]
             
@@ -121,7 +120,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 x = int((2192 + (7*y))/30) + x_drift
             else:
                 x = int(((6498 - (23*y))/60) + x_drift) #50  + int(((5*(0.95**i))*i) + ((ram_state[59]>>4)&7)*(0.9**i))
-                print(int(((6498 - (23*y))/60) - x_drift), -(~(ram_state[46])), x_drift)
 
             car.xy = x, y
             car_bb.append(car.xywh)
