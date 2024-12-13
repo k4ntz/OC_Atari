@@ -368,7 +368,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         if platform[i]:
             objects[14+i] = platform[i]
         else:
-            objects[14+i] = NoObject()
+            objects[14+i] = NoObject(Platform())
 
 
     if hud:
@@ -457,7 +457,7 @@ def manage_platforms(current_lvl_val, _):
             Platform(16, 76, w=128),
             Platform(16, 124, w=128),
         ]
-        platforms.extend([NoObject()]*16)
+        platforms.extend([NoObject(Platform())]*16)
 
     elif current_lvl_val == 1:
         platforms  = [
