@@ -1,4 +1,5 @@
 import sys
+from typing import Tuple
 from ._helper_methods import _convert_number
 from .game_objects import GameObject, ValueObject, NoObject
 import numpy as np
@@ -37,11 +38,15 @@ class Player(GameObject):
 
     @property
     def _nsrepr(self):
-        return self.x, self.y, self.orientation
+        return [self.x, self.y, self.orientation]
     
     @property
     def _ns_meaning(self):
-        return "x, y, o"
+        return ["POSITION", "ORIENTATION"]
+    
+    @property
+    def _ns_types(self):
+        return [Tuple[int, int], Tuple[int]]
 
 
 class Flag(GameObject):
