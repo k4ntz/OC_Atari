@@ -64,19 +64,18 @@ jobs:
         id: set_games
         run: |
           GAMES=""
-          
           # Loop through changed files and set appropriate games
           while IFS= read -r file; do
-            GAME_NAME=$(basename "$file" .py)
-            if [[ "$file" == *"/ram/"*".py" || "$file" == *"/vision/"*".py" ]]; then
-              # Capitalize the first letter of GAME_NAME
-              GAME_NAME="$(tr '[:lower:]' '[:upper:]' <<< ${GAME_NAME:0:1})${GAME_NAME:1},"
-              GAMES+="${GAME_NAME}"
-            fi
+          GAME_NAME=$(basename "$file" .py)
+          if [[ "$file" == *"/ram/"*".py" || "$file" == *"/vision/"*".py" ]]; then
+            # Capitalize the first letter of GAME_NAME
+            GAME_NAME="$(tr '[:lower:]' '[:upper:]' <<< ${GAME_NAME:0:1})${GAME_NAME:1}"
+            GAMES+="${GAME_NAME},"
+          fi
           done < changed_files.txt
 
-          # Remove trailing space and export GAMES
-          GAMES=$(echo $GAMES | xargs)
+          # Remove the trailing comma
+          GAMES=${GAMES%,} 
           echo "GAMES=$GAMES" >> $GITHUB_ENV
 
       - name: Download Pickle Files if Not Cached
