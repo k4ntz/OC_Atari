@@ -239,11 +239,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[-1].xy = object2_pos
         objects[-1].wh = objects[-1].w, object2_height
 
-    #objects[2].xy = object2_pos
-    # print(f"height object 1 : {ram_state[16]}, height object 2 : {ram_state[17]} ")
-    # print(objects)
-    # print(f"type object 1 : {ram_state[21]}, type object 2 : {ram_state[22]} ")
-    # print(f"level number : {ram_state[93]}, room number: {ram_state[10]}")
     if hud:
         return
 

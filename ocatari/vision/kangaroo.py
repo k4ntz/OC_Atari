@@ -77,19 +77,21 @@ class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 160, 171, 79
+        self.hud = True
 
 
 class Lives(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 160, 171, 79
+        self.hud = True
 
 
 class Time(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 160, 171, 79
-
+        self.hud = True
 
 def _detect_objects(objects, obs, hud=False):
 
@@ -146,6 +148,24 @@ def _detect_objects(objects, obs, hud=False):
     else:
         objects[6] = NoObject()
 
+    platform = None
+    if obs[124][45][0] == 162:
+        if type(objects[14]) is not Ladder() or objects[14].xy != (132, 132):
+            platform = manage_platforms(0, objects)
+    elif obs[142][44][0] == 162:
+        if type(objects[14]) is not Ladder() or objects[14].xy != (120, 132):
+            platform = manage_platforms(2, objects)
+    elif obs[148][76][0] == 162:
+        if type(objects[14]) is not Ladder() or objects[14].xy != (20, 36):
+            platform = manage_platforms(1, objects)
+    
+    if platform is not None:
+        for i in range(26):
+            if platform[i]:
+                objects[14+i] = platform[i]
+            else:
+                objects[14+i] = NoObject()
+
     if hud:
         life = find_objects(obs, objects_colors["hud"], closing_dist=8, minx=10, maxx=40)
         objects[-1].xywh = life[0]
@@ -155,3 +175,61 @@ def _detect_objects(objects, obs, hud=False):
 
         score = find_objects(obs, objects_colors["hud"], closing_dist=6, minx=100, maxx=150)
         objects[-3].xywh = score[0]
+
+
+def manage_platforms(current_lvl_val, _):
+    platforms = []
+
+    # There is a total of 3 levels
+    if current_lvl_val == 0:
+        platforms = [
+            Ladder(132, 132),
+            Ladder(20, 85),
+            Ladder(132, 37),
+            NoObject(),
+            NoObject(),
+            NoObject(),
+            Platform(16, 172, w=128), Platform(16, 28, w=128),
+            Platform(16, 76, w=128),
+            Platform(16, 124, w=128),
+        ]
+        platforms.extend([NoObject()]*16)
+
+    elif current_lvl_val == 1:
+        platforms  = [
+            Ladder(120, 132, h=4),
+            Ladder(24, 116, h=4),
+            Ladder(128, 36, h=4),
+            NoObject(),
+            NoObject(),
+            NoObject(),
+            Platform(16, 172, w=128), Platform(16, 28, w=128),
+            Platform(16, 124, w=28), Platform(52, 124, w=92),
+            Platform(16, 76, w=60), Platform(84, 76, w=60),
+            Platform(28, 164, w=24), Platform(112, 84, w=24),
+            Platform(120, 44, w=24), Platform(48, 156, w=32),
+            Platform(76, 148, w=32), Platform(104, 140, w=32),
+            Platform(16, 108, w=32), Platform(56, 100, w=20),
+            Platform(84, 92, w=20), Platform(64, 60, w=20),
+            Platform(92, 52, w=20), Platform(28, 68, w=28)
+        ]
+        platforms.extend([NoObject()]*2)
+
+    else:  # current_lvl_val == 2
+        platforms = [
+            Ladder(20, 36, h=28),
+            Ladder(20, 148, h=4),
+            Ladder(36, 116, h=20),
+            Ladder(104, 36, h=20),
+            Ladder(120, 68, h=4),
+            Ladder(132, 84, h=4), Platform(16, 172, w=128), Platform(16, 28, w=128),
+            Platform(88, 140, w=16), Platform(64, 148, w=16), Platform(100, 116, w=16),
+            Platform(48, 100, w=16), Platform(76, 52, w=16), Platform(80, 36, w=16),
+            Platform(104, 132, w=20), Platform(84, 156, w=20), Platform(124, 124, w=20),
+            Platform(52, 84, w=20), Platform(108, 164, w=36), Platform(16, 108, w=80),
+            Platform(16, 92, w=28), Platform(76, 92, w=68), Platform(16, 140, w=32),
+            Platform(96, 60, w=36), Platform(100, 76, w=44), Platform(60, 44, w=12)
+        ]
+
+
+    return platforms

@@ -7,6 +7,7 @@ from termcolor import colored
 from collections import Counter
 from scipy.optimize import linear_sum_assignment
 from .game_objects import NoObject
+import warnings
 
 
 def most_common_color(image, exclude_black=True):
@@ -124,7 +125,6 @@ def mark_bb(image_array, bb, color=(255, 0, 0), surround=True):
         image_array[bottom, x:right + 1] = color
     except IndexError:
         pass
-        # import ipdb; ipdb.set_trace()
 
 
 def plot_bounding_boxes(obs, bbs, objects_colors):
@@ -132,7 +132,7 @@ def plot_bounding_boxes(obs, bbs, objects_colors):
         try:
             mark_bb(obs, bb, objects_colors)
         except KeyError as err:
-            print(err)
+            raise(err)
             mark_bb(obs, bb, np.array([255, 255, 255]))
 
 
@@ -538,7 +538,7 @@ def _find_rectangles_in_bb(mask, bb, size, minx, miny):
                                 rect = False
                                 break
                         except IndexError:
-                            import ipdb; ipdb.set_trace()
+                            raise IndexError
                     if not rect:
                         break
 
@@ -643,7 +643,7 @@ def make_darker(color, col_precent=0.8):
     :rtype: (int, int, int)
     """
     if not color:
-        print("No color passed, using default black")
+        warnings.warn("No color passed, using default black")
         return [0, 0, 0]
     return [int(col * col_precent) for col in color]
 
@@ -674,11 +674,14 @@ def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
     #     class_hug_match(prev_objects[start_idx: max_obj], objects[start_idx: max_obj])
     #     start_idx += max_obj
     if len(objects_bb) > max_obj:
-        print(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
+        raise ValueError(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
     if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
         # for i, obj_bb in enumerate(objects_bb):
         for i in range(min(max_obj, len(objects_bb))):
-            prev_objects[start_idx+i] = ObjClass(*objects_bb[i])
+            try:
+                prev_objects[start_idx+i] = ObjClass(*objects_bb[i])
+            except IndexError:
+                raise IndexError
     else:
         try:
             cost_matrix = compute_cm(prev_objects[start_idx: start_idx+max_obj], objects_bb)
@@ -694,15 +697,14 @@ def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
                 else:
                     prev_objects[start_idx+i] = ObjClass(*objects_bb[j])
         except Exception as e:
-            print(e)
-            import ipdb; ipdb.set_trace()
+            raise(e)
 
 def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass, img=None):
     """
     Acts like match_objects, but keeps tracking objects when dissapear for a couple of frames.
     """
     if len(objects_bb) > max_obj:
-        print(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
+        raise ValueError(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
         # img2 = img.copy()
         # for (x, y, w, h) in objects_bb:
         #     img[y:y+h, x:x+w] = 255, 255, 255
@@ -755,6 +757,3 @@ def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClas
                 else:
                     prev_objects[start_idx+i] = ObjClass(*objects_bb[j])
                     prev_objects[start_idx+i].num_frames_invisible += 1
-        # except Exception as e:
-        #     print(e)
-        #     import ipdb; ipdb.set_trace()

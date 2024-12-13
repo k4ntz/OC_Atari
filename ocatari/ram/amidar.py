@@ -3,8 +3,8 @@ from ._helper_methods import number_to_bitfield
 from .utils import match_objects
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1, "GameObject": 6, "Chicken": 6}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "GameObject": 6, "Chicken": 6, "Score": 1, "Life": 3}
+MAX_NB_OBJECTS = {"Player": 1, "Warrior": 6, "Pig": 6, "Chicken": 6}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Warrior": 6, "Pig": 6, "Chicken": 6, "Score": 1, "Life": 3}
 
 class Player(GameObject):
     def __init__(self):
@@ -89,7 +89,7 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player()] + [Warrior() for _ in range(6)]
-    objects.extend([NoObject() for _ in range(6)]) # for the chickens
+    objects.extend([NoObject() for _ in range(12)]) # for the pigs and chickens
     if hud:
         # objects.extend([NoObject()] * 4)
         objects.extend([Score(), Life(), Life(), Life()])
@@ -103,7 +103,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     """
     # x == 66-72; y == 59-65; type 73-79
     k = 0
-    enemy_bb = []
+    warrior_bb, pig_bb = [], []
     enemy_type = Warrior
     chicken_bb = []
     bitmap_warrior = 0b00100000 
@@ -118,12 +118,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             fig = Pig()
             enemy_type = Pig
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
-            enemy_bb.append(fig.xywh)
+            pig_bb.append(fig.xywh)
         elif ram_state[73+i] & bitmap_warrior == bitmap_warrior:
             fig = Warrior()
             enemy_type = Warrior
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
-            enemy_bb.append(fig.xywh)
+            warrior_bb.append(fig.xywh)
         else: #the object is the player
             fig = objects[0]
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
@@ -131,28 +131,17 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if enemy_type != type(objects[1]): #Deletes the previous enemys if the type of enemies has changed
         objects[1:7] = [NoObject()] * 6
 
-    match_objects(objects, enemy_bb, 1, 6, enemy_type)
+    match_objects(objects, warrior_bb, 1, 6, Warrior)
 
-    match_objects(objects, chicken_bb, 7, 6, Chicken)
+    match_objects(objects, pig_bb, 7, 6, Pig)
+
+    match_objects(objects, chicken_bb, 13, 6, Chicken)
 
     
     if len(chicken_bb) > 0 or (ram_state[51] == 103):
-        #ram_state[51] == 103 if the enemys are turned into shadows (read only)
-        # if chickens are caught the ram treats them as an invisibe enemy again
         for i, enemy in enumerate(objects[1:7]):
             if enemy is not (NoObject) :
                 objects[i+1] = Shadow(enemy.xy[0], enemy.xy[1], enemy.wh[0], enemy.wh[1])
-
-    # 6-49 purple lines; first 4 ==> lines, remaining ==> pillars
-    # even numbers are inverted
-
-    # for i in range(6):
-    #     for j in range(4):
-    #         line = number_to_bitfield(ram_state[6+(i*8)+j])
-    #         if not i%2:
-    #             line.reverse()
-            
-
 
     if hud:
         score = objects[13]
