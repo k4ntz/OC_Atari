@@ -1,3 +1,4 @@
+import pdb
 from .game_objects import GameObject, ValueObject, NoObject
 from ._helper_methods import number_to_bitfield
 from .utils import match_objects
@@ -139,16 +140,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # the shadows are inserted at the position of the enemy they replace, ond then the enemy (which is detected again each frame) is removed
     if len(chicken_bb) > 0 or (ram_state[51] == 103): 
         for i, enemy in enumerate(objects[1:13]):
-            if enemy is not (NoObject) :
+            if not isinstance(enemy, NoObject) :
                 coresponding_shadow_index = 13+((i-1)%6)
                 if isinstance(objects[coresponding_shadow_index], Shadow):
-                    # import pdb; pdb.set_trace()
                     objects[coresponding_shadow_index].xywh = (enemy.xy[0], enemy.xy[1], enemy.wh[0], enemy.wh[1])
-                    # import pdb; pdb.set_trace()
                 else:
                     objects[coresponding_shadow_index] = Shadow(enemy.xy[0], enemy.xy[1], enemy.wh[0], enemy.wh[1])
                 objects[1+i] = NoObject()
-        # import pdb; pdb.set_trace()
     else: 
         for i in range(6):
             if objects[13+i] is not NoObject: 
