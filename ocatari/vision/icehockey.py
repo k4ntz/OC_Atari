@@ -47,17 +47,14 @@ def _detect_objects(objects, obs, hud=False):
     # detection and filtering
     objects.clear()
     player = find_mc_objects(obs, player_colors, size=(16, 20), tol_s=10, closing_dist=3)
-    # import ipdb; ipdb.set_trace()
     for p in player:
         objects.append(Player(*p))
     
     enemy = find_mc_objects(obs, enemy_colors, size=(16, 20), tol_s=10, closing_dist=3)
-    # import ipdb; ipdb.set_trace()
     for e in enemy:
         objects.append(Enemy(*e))
     
     ball=find_objects(obs,objects_colors["ball"],size=(2,2),minx=32,maxx=127,miny=46,maxy=182,tol_s=1,min_distance=1)
-    # import ipdb; ipdb.set_trace()
     for b in ball:
         objects.append(Ball(*b))
     
@@ -74,8 +71,4 @@ def _detect_objects(objects, obs, hud=False):
         timer=find_objects(obs,objects_colors["timer"],size=(8,7),maxy=12,tol_s=4,closing_dist=1)
         for t in timer:
             objects.append(Timer(*t))
-        
-
-
-        # import ipdb; ipdb.set_trace()
         

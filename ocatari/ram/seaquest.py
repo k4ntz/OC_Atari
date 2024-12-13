@@ -52,7 +52,7 @@ class Player(GameObject):
         self.rgb = 187, 187, 53
         self.hud = False
         self.orientation = Orientation.E  # E is right, W is left
-        self.crashed = False
+        # self.crashed = False
 
 
 class Diver(GameObject):
@@ -254,7 +254,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = ram_state[70], ram_state[97] + 33
     player.orientation = Orientation.E if ram_state[86] == 0 else Orientation.W
-    player.crashed = ram_state[105] > 0
+    if 0 < ram_state[105] < 15:
+        if player:
+            objects[0] = NoObject()
+    else:
+        if not player:
+            objects[0] = Player()
+    # player.crashed = ram_state[105] > 0
 
     # """The diving area is divided into 4 lanes (plus the surface lane).
     # Enemies come in batches. Each batch has three slots that can be
