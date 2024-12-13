@@ -678,7 +678,10 @@ def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
     if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
         # for i, obj_bb in enumerate(objects_bb):
         for i in range(min(max_obj, len(objects_bb))):
-            prev_objects[start_idx+i] = ObjClass(*objects_bb[i])
+            try:
+                prev_objects[start_idx+i] = ObjClass(*objects_bb[i])
+            except IndexError:
+                import ipdb; ipdb.set_trace()
     else:
         try:
             cost_matrix = compute_cm(prev_objects[start_idx: start_idx+max_obj], objects_bb)
