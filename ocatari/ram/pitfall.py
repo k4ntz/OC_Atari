@@ -588,7 +588,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         pass
     if ram_state[19] in [2,3] and ram_state[20] == 4:
         rope_visible = True
-    # import ipdb ipdb.set_trace()
     if rope_visible:
         r = Rope()
         r.xy = get_pos_rope(ram_state)
@@ -635,7 +634,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             t1.wh = 32, t1.h
             t1.xy = 37, t1.y
         objects[27] = t1
-        # import ipdb ipdb.set_trace()
 
 
 def _detect_objects_pitfall_raw(info, ram_state):

@@ -15,10 +15,6 @@ def make_bitmap(alien_states):
     emptc = 6 - int(max(alien_states)).bit_length()  # nb empty columns
     return [(format(el, '06b')[emptc:] + "0" * emptc) for el in alien_states], emptc
 
-# def print_bmp(bmp):
-#     print(colored("\n".join(bmp)[::-1], "green"))
-
-
 class Player(GameObject):
     """
     The player figure i.e., the laser cannon.

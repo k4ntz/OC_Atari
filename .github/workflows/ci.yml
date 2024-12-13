@@ -50,21 +50,15 @@ jobs:
             echo "No Python files changed."
           fi
           
-      #- name: Test for Debugging Strings
-      #  continue-on-error: true
-      #  id: debugging_strings
-      #  if: success() && steps.changes.outputs.changed_files != ''
-      #  run: |
-      #    if [ -s changed_files.txt ]; then
-      #      CHANGED_FILES=$(cat changed_files.txt | tr '\n' ',')
-      #      pytest tests/test_no_debugging_statements.py --files "$CHANGED_FILES"
-      #    else
-      #      echo "No Python files changed. Skipping debugging tests."
-      #    fi
-
       - name: Run general tests for all changes
         id: general_tests
+        continue-on-error: true
         run: pytest tests/0_general/*
+
+      - name: Test for debugging strings in ocatari/*
+        id: debugging_string_test
+        continue-on-error: true
+        run: pytest tests/test_no_debugging_statements.py
 
       - name: Set Games to Test
         id: set_games
@@ -76,7 +70,7 @@ jobs:
             GAME_NAME=$(basename "$file" .py)
             if [[ "$file" == *"/ram/"*".py" || "$file" == *"/vision/"*".py" ]]; then
               # Capitalize the first letter of GAME_NAME
-              GAME_NAME="$(tr '[:lower:]' '[:upper:]' <<< ${GAME_NAME:0:1})${GAME_NAME:1}"
+              GAME_NAME="$(tr '[:lower:]' '[:upper:]' <<< ${GAME_NAME:0:1})${GAME_NAME:1},"
               GAMES+="${GAME_NAME}"
             fi
           done < changed_files.txt
@@ -101,7 +95,7 @@ jobs:
 
       # Fail Workflow if Any Critical Test Failed
       - name: Fail Workflow if Any Critical Test Failed
-        if: steps.general_tests.outcome == 'failure' || steps.game_tests.outcome == 'failure' || steps.debugging_strings.outcome == 'failure'
+        if: steps.general_tests.outcome == 'failure' || steps.game_tests.outcome == 'failure' || steps.debugging_string_test.outcome == 'failure'
         run: |
           echo "One or more critical tests have failed. Failing workflow."
           exit 1

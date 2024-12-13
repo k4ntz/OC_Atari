@@ -169,7 +169,6 @@ def _detect_objects(objects, obs, hud=False):
     match_objects(objects, cauldron, 17, 8, Cauldron)
     helmet = find_mc_objects(obs, objects_colors["helmet"], closing_dist=1, min_distance=1, size=(7, 11),
                              tol_s=2, miny=24, maxy=151)
-    import ipdb; ipdb.set_trace()
     match_objects(objects, helmet, 17, 8, Helmet)
     shield = find_objects(obs, objects_colors["shield"], closing_dist=1, size=(5, 11), tol_s=1, min_distance=2,
                           miny=24, maxy=151)
@@ -206,8 +205,6 @@ def _detect_objects(objects, obs, hud=False):
     #     for instance in score:
     #         objects.append(Score(*instance))
 
-    # print(*objects, sep="\n")
-    # print("\n")
-
+  
     # remaining problems:
     # lamp and reward_300 are not being detected at all (try with masks?)

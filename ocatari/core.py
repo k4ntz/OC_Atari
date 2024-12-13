@@ -16,18 +16,18 @@ from gymnasium.error import NameNotFound
 try:
     import ale_py  # ALE (Arcade Learning Environment) is required for running Atari environments.
 except ModuleNotFoundError:
-    print('\nALE is required when using the ALE env wrapper. Try `pip install "gymnasium[atari, accept-rom-license]"`\n')
+    raise ModuleNotFoundError('\nALE is required when using the ALE env wrapper. Try `pip install "gymnasium[atari, accept-rom-license]"`\n')
 
 
 try:
     import cv2  # OpenCV is used for processing frames for observation (e.g., resizing, grayscaling)
 except ModuleNotFoundError:
-    print('\nOpenCV is required when using the ALE env wrapper. Try `pip install opencv-python`.')
+    raise ModuleNotFoundError('\nOpenCV is required when using the ALE env wrapper. Try `pip install opencv-python`.')
 
 try:
     import pygame  # Pygame is required for rendering the environment for human visualization
 except ModuleNotFoundError:
-    print('\npygame is required for human rendering. Try `pip install pygame`.')
+    raise ModuleNotFoundError('\npygame is required for human rendering. Try `pip install pygame`.')
 
 # List of available games for the OCAtari environment
 AVAILABLE_GAMES = [
@@ -67,12 +67,8 @@ class OCAtari:
         # Extract the game name and ensure it's within the supported games
         game_name = env_name.split("/")[1].split("-")[0].split("No")[0].split("Deterministic")[0] if "ALE/" in env_name else env_name.split("-")[0].split("No")[0].split("Deterministic")[0]
         if game_name[:4] not in [gn[:4] for gn in AVAILABLE_GAMES]:
-            print(colored(f"Game '{env_name}' not covered yet by OCAtari", "red"))
-            print("Available games: ", AVAILABLE_GAMES)
-            self._covered_game = False
-        else:
-            self._covered_game = True
-
+            raise ValueError(f"Game '{env_name}' not covered yet by OCAtari")
+        
         # Initialization of environment attributes
         # Store the name of the environment and game
         self.env_name = env_name
@@ -155,12 +151,7 @@ class OCAtari:
 
         # Set up object detection methods based on mode
         global init_objects
-        if not self._covered_game:
-            # If the game is not covered, initialize detection to return empty
-            init_objects = lambda *args, **kwargs: []
-            self.detect_objects = lambda *args, **kwargs: None
-            self.objects_v = []
-        elif mode == "vision":
+        if mode == "vision":
             # Set object detection to use vision-based extraction
             self.detect_objects = self._detect_objects_vision
             self.objects = init_objects(self.game_name, self.hud, vision=True)
