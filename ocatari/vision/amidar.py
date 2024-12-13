@@ -46,17 +46,23 @@ class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = [252, 252, 84]
+        self.num_frames_invisible = -1
+        self.max_frames_invisible = 4
 
 
 class Life(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = [252, 252, 84]
+        self.num_frames_invisible = -1
+        self.max_frames_invisible = 4
 
 
 def _detect_objects(objects, obs, hud=False):
     global path_pixels
-    enemy_bb = []
+    warrior_bb = []
+    pig_bb = []
+    shadow_bb = []
     chicken_bb = []
     enemy_type = Warrior
     player = objects[0]
@@ -70,18 +76,15 @@ def _detect_objects(objects, obs, hud=False):
 
     green = find_objects(obs, objects_colors["green"])
     for bb in green:
-        enemy_bb.append(bb)
-        enemy_type = Warrior
+        warrior_bb.append(bb)
 
     red = find_objects(obs, objects_colors["red"])
     for bb in red:
-        enemy_bb.append(bb)
-        enemy_type = Pig
+        pig_bb.append(bb)
 
     shadows = find_shadows(obs, objects_colors["black"], closing_dist=3)
     for bb in shadows:
-        enemy_bb.append(bb)
-        enemy_type = Shadow
+        shadow_bb.append(bb)
 
     # Used to get the list of path pixels -- not relevant anymore unless something is broken
     # path_pixels = accumulate_path_pixels(obs, path_pixels=path_pixels)
@@ -91,22 +94,23 @@ def _detect_objects(objects, obs, hud=False):
     #         if (i%30==0):
     #             file.write(f"\n")
 
-    if all([enemy_type != type(objects[1+i]) for i in range(6)]): #Deletes the previous enemys if the type of enemies has changed
-        objects[1:7] = [NoObject()] * 6
+    match_blinking_objects(objects, warrior_bb, 1, 6, Warrior)
+    
+    match_blinking_objects(objects, pig_bb, 7, 6, Pig)
+    
+    match_blinking_objects(objects, shadow_bb, 13, 6, Shadow)
 
-    match_blinking_objects(objects, enemy_bb, 1, 6, enemy_type)
-
-    match_blinking_objects(objects, chicken_bb, 7, 6, Chicken)
+    match_blinking_objects(objects, chicken_bb, 19, 6, Chicken)
 
     if hud:
-        score = objects[13]
+        score = objects[-4]
         lives_bbs = find_objects(obs, objects_colors["yellow"], miny=175, closing_dist=4, min_distance=1)
         for bb in lives_bbs:
             if bb[2] > 4:
                 score.xywh = bb
                 lives_bbs.remove(bb)
                 break
-        match_objects(objects, lives_bbs, 14, 3, Life)
+        match_objects(objects, lives_bbs, -3, 3, Life)
 
 def find_shadows(current_frame, shadow_color, closing_dist=1):
     """
