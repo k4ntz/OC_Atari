@@ -7,6 +7,7 @@ from copy import deepcopy
 import pickle as pkl
 import os
 import atexit
+from ale_py import Action
 
 
 """
@@ -75,6 +76,7 @@ class Renderer:
                 self.saved_frames.append((deepcopy(self.env.get_ram()), self.env._ale.cloneState(
                 ), self.current_frame))  # ram, state, image (rgb)
                 action = self._get_action()
+                action = self.env.get_action_meanings().index(action.name)
                 reward = self.env.step(action)[1]
                 # if reward != 0:
                 #     print(reward)
@@ -92,14 +94,14 @@ class Renderer:
             i += 1
         pygame.quit()
 
-    def _get_action(self):
+    def _get_action(self) -> Action:
         pressed_keys = list(self.current_keys_down)
         pressed_keys.sort()
         pressed_keys = tuple(pressed_keys)
         if pressed_keys in self.keys2actions.keys():
             return self.keys2actions[pressed_keys]
         else:
-            return 0  # NOOP
+            return Action.NOOP
 
     def _handle_user_input(self):
         self.current_mouse_pos = np.asarray(pygame.mouse.get_pos())

@@ -8,7 +8,7 @@ import pygame
 import argparse
 
 parser = argparse.ArgumentParser(
-    description="HackAtari run.py Argument Setter")
+    description="OCAtari run.py Argument Setter")
 
 parser.add_argument(
     "-g", "--game", type=str, default="Seaquest", help="Game to be run"
