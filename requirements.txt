@@ -1,7 +1,7 @@
-ale_py==0.8.1
+ale_py
 # alive_progress==3.1.5
 beautifulsoup4==4.12.3
-gymnasium==0.29.1
+gymnasium
 ipdb==0.13.13
 keyboard==0.13.5
 matplotlib==3.8.0
