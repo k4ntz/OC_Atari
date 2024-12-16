@@ -9,7 +9,8 @@ import warnings
 if os.getenv("GAMES") != None:
     GAMES = [f"ALE/{g}-v5" for g in os.getenv("GAMES").split()]
 else:
-    GAMES = ["ALE/Breakout-v5"]
+    GAMES = ["ALE/Amidar-v5", "ALE/Asterix-v5", "ALE/Asteroids-v5", "ALE/BankHeist-v5", "ALE/Berzerk-v5", "ALE/Bowling-v5", "ALE/Breakout-v5", "ALE/DonkeyKong-v5", "ALE/FishingDerby-v5", "ALE/Freeway-v5", "ALE/Frogger-v5",
+             "ALE/Frostbite-v5", "ALE/Gopher-v5", "ALE/IceHockey-v5", "ALE/Kangaroo-v5", "ALE/MontezumaRevenge-v5", "ALE/MsPacman-v5", "ALE/Pong-v5", "ALE/Seaquest-v5", "ALE/Skiing-v5", "ALE/SpaceInvaders-v5", "ALE/Tennis-v5"]
 
 MODES = ["ram", "vision"]
 OBS_MODES = ["obj"]
@@ -17,17 +18,19 @@ FRAMESKIPS = [1, 4]
 
 PICKLE_PATH = "pickle_files"
 
+
 def get_states(game_name):
     path = f"{PICKLE_PATH}/{game_name}"
     if os.path.exists(path):
         return [f for f in os.listdir(path) if f.startswith("state_") and f.endswith(".pkl")]
     else:
         return [""]
-    
+
+
 def load_pickle_state(env, game_name, state_nr):
     """
     Load the state from the pickle file for the given game.
-    """    
+    """
     pickle_file_path = os.path.join(PICKLE_PATH, game_name, f"{state_nr}.pkl")
     if os.path.exists(pickle_file_path):
         with open(pickle_file_path, "rb") as f:
@@ -71,16 +74,16 @@ def test_environment_step(env_name, mode, obs_mode, frameskip, state_nr):
     """
     Test stepping through the environment.
     """
-    env = OCAtari(env_name=env_name, mode=mode, obs_mode=obs_mode, frameskip=frameskip)
+    env = OCAtari(env_name=env_name, mode=mode,
+                  obs_mode=obs_mode, frameskip=frameskip)
     load_pickle_state(env, env.game_name, state_nr)
     env.reset()
-    obs, reward, truncated, terminated, info = env.step(0)  # Execute a random action (e.g., action 0)
+    obs, reward, truncated, terminated, info = env.step(
+        0)  # Execute a random action (e.g., action 0)
     assert obs is not None, "Observation should not be None after taking a step."
     assert isinstance(reward, (int, float)), "Reward should be a number."
     assert isinstance(truncated, bool), "Truncated should be a boolean value."
-    assert isinstance(terminated, bool), "Terminated should be a boolean value."
+    assert isinstance(
+        terminated, bool), "Terminated should be a boolean value."
     assert isinstance(info, dict), "Info should be a dictionary."
     env.close()
-
-
-

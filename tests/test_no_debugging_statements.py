@@ -10,6 +10,7 @@ PYTHON_FILES = [file for file in PROJECT_PATH.rglob("*.py")]
 # Generate test IDs using the file names
 TEST_IDS = [f"{file.parent}/{file.name}" for file in PYTHON_FILES]
 
+
 @pytest.mark.parametrize("file_path", PYTHON_FILES, ids=TEST_IDS)
 def test_no_ipdb_or_print(file_path):
     # Read the content of the file
