@@ -7,15 +7,16 @@ RAM extraction for the game PrivateEye. Supported modes: ram.
 
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Car': 1}
+MAX_NB_OBJECTS = {'Player': 1, 'Car': 1}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Car': 1, 'Score': 1, 'Clock': 1}
 obj_tracker = {}
+
 
 class Player(GameObject):
     """
     The player figure: Pierre Touche.
     """
-    
+
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 0, 0
@@ -29,7 +30,7 @@ class Car(GameObject):
     """
     The Touche's 1935 Model A with jumping capabilities.
     """
-    
+
     def __init__(self):
         super(Car, self).__init__()
         self._xy = 0, 0
@@ -52,7 +53,7 @@ class Clue(GameObject):
     """
     The questionable characters lurking from the windows.
     """
-    
+
     def __init__(self):
         super(Clue, self).__init__()
         self._xy = 0, 0
@@ -65,7 +66,7 @@ class Mud(GameObject):
     """
     The pot holes.
     """
-    
+
     def __init__(self):
         super(Mud, self).__init__()
         self._xy = 0, 0
@@ -78,7 +79,7 @@ class Shatterd_Object(GameObject):
     """
     The animation for broken bricks or flowerpots once they've hit the ground.
     """
-    
+
     def __init__(self):
         super(Shatterd_Object, self).__init__()
         self._xy = 0, 0
@@ -91,7 +92,7 @@ class Knife(GameObject):
     """
     The daggers thrown at the player, once the first item is collected.
     """
-    
+
     def __init__(self):
         super(Knife, self).__init__()
         self._xy = 0, 0
@@ -99,11 +100,12 @@ class Knife(GameObject):
         self.rgb = 0, 0, 0
         self.hud = False
 
+
 class Dove(GameObject):
     """
     The birds.
     """
-    
+
     def __init__(self):
         super(Dove, self).__init__()
         self._xy = 0, 0
@@ -116,7 +118,7 @@ class Lizard(GameObject):
     """
     The crawling rats.
     """
-    
+
     def __init__(self):
         super(Lizard, self).__init__()
         self._xy = 0, 0
@@ -129,7 +131,7 @@ class Pottet_Plant(GameObject):
     """
     The flowerpots thrown from windows.
     """
-    
+
     def __init__(self):
         super(Pottet_Plant, self).__init__()
         self._xy = 0, 0
@@ -142,7 +144,7 @@ class Brick(GameObject):
     """
     The bricks, occasionally dropping from the building facades.
     """
-    
+
     def __init__(self):
         super(Brick, self).__init__()
         self._xy = 0, 0
@@ -155,7 +157,7 @@ class Barrier(GameObject):
     """
     The roadblocks.
     """
-    
+
     def __init__(self):
         super(Barrier, self).__init__()
         self._xy = 0, 0
@@ -168,7 +170,7 @@ class Passge(GameObject):
     """
     The passages into alleys or park lanes.
     """
-    
+
     def __init__(self):
         super(Passge, self).__init__()
         self._xy = 0, 0
@@ -182,7 +184,7 @@ class Gun_Sign(GameObject):
     """
     The header of the gunstore.
     """
-    
+
     def __init__(self):
         super(Gun_Sign, self).__init__()
         self._xy = 0, 0
@@ -195,7 +197,7 @@ class Police_Sign(GameObject):
     """
     The header of the police headquaters.
     """
-    
+
     def __init__(self):
         super(Police_Sign, self).__init__()
         self._xy = 0, 0
@@ -208,7 +210,7 @@ class Bank_Sign(GameObject):
     """
     The header of the bank building.
     """
-    
+
     def __init__(self):
         super(Police_Sign, self).__init__()
         self._xy = 0, 0
@@ -221,7 +223,7 @@ class Money_Bag(GameObject):
     """
     The inventory display for the bag of stolen money (case 1).
     """
-    
+
     def __init__(self):
         super(Money_Bag, self).__init__()
         self._xy = 0, 0
@@ -234,7 +236,7 @@ class Gun(GameObject):
     """
     The inventory display for the gun (case 1).
     """
-    
+
     def __init__(self):
         super(Gun, self).__init__()
         self._xy = 0, 0
@@ -247,7 +249,7 @@ class Button(GameObject):
     """
     The inventory display for the lost button (case 2).
     """
-    
+
     def __init__(self):
         super(Button, self).__init__()
         self._xy = 0, 0
@@ -260,7 +262,7 @@ class Comb(GameObject):
     """
     The inventory display for the comb (case 3).
     """
-    
+
     def __init__(self):
         super(Comb, self).__init__()
         self._xy = 0, 0
@@ -273,7 +275,7 @@ class Shoe_Sole(GameObject):
     """
     The inventory display for the shoe sole (case 4).
     """
-    
+
     def __init__(self):
         super(Shoe_Sole, self).__init__()
         self._xy = 0, 0
@@ -286,7 +288,7 @@ class Vase(GameObject):
     """
     The inventory display for the ming vase (case 2).
     """
-    
+
     def __init__(self):
         super(Vase, self).__init__()
         self._xy = 0, 0
@@ -299,7 +301,7 @@ class Necklace(GameObject):
     """
     The inventory display for the diamond necklace (case 3).
     """
-    
+
     def __init__(self):
         super(Necklace, self).__init__()
         self._xy = 0, 0
@@ -312,7 +314,7 @@ class Stamp(GameObject):
     """
     The inventory display for the stamp (case 4).
     """
-    
+
     def __init__(self):
         super(Stamp, self).__init__()
         self._xy = 0, 0
@@ -325,7 +327,7 @@ class Badguy_Head(GameObject):
     """
     The thugs lurching out to attack the player.
     """
-    
+
     def __init__(self):
         super(Badguy_Head, self).__init__()
         self._xy = 0, 0
@@ -338,7 +340,7 @@ class Score(ValueObject):
     """
     The player's merit score display.
     """
-    
+
     def __init__(self, *args, **kwargs):
         super(Score, self).__init__()
         self._xy = 97, 6
@@ -351,7 +353,7 @@ class Clock(ValueObject):
     """
     The statue of limitation (game clock display) for the current case.
     """
-    
+
     def __init__(self, *args, **kwargs):
         super(Clock, self).__init__()
         self._xy = 88, 15
@@ -368,12 +370,13 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
+
 
 def _init_objects_ram(hud=True):
     """
@@ -398,7 +401,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         player.wh = 8, 25
     player._xy = ram_state[63], 150 - ram_state[97]
     player._xy = ram_state[63], 150 - ram_state[97]
-    
+
     car = objects[1]
     if ram_state[58] == 1 or ram_state[58] == 5:
         car_x = ram_state[63]
@@ -408,7 +411,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         if not ram_state[88] & 128:
             if ram_state[58] == 1:
                 car.xy = car_x, 150 - (int(ram_state[88]/4)) + 13
-                player.xy = car_x, 150 - (int(ram_state[88]/4)) -1
+                player.xy = car_x, 150 - (int(ram_state[88]/4)) - 1
             else:
                 car.xy = car_x, 150 + (int(ram_state[88]/8)) - 14
                 player.xy = car_x, 150 + (int(ram_state[88]/8)) - 28
@@ -432,11 +435,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             car.xy = car_x, 150 - (int(ram_state[84]/4)) + 13
         else:
             car.xy = car_x, 156 + (int((ram_state[84] - 128)/4)) - 24
-    
+
 
 # 2 branch, 4 brick, 7 bricks, 8 curtain, 9 hydrant, 20 gun, 21 button, 22 comb, 23 shoe sole,24 money, 25 vase, 26 necklace, 27 stamp, 28 badguy body, 29,30 badguy head, 31 Questionmark, 32 knife
 
-    #interactable Objects1
+    # interactable Objects1
     if ram_state[41] != 0:
         objects[4] = None
         if ram_state[41] == 1:
@@ -497,7 +500,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         objects[2] = None
         objects[4] = None
 
-    # Interactable Objects2 
+    # Interactable Objects2
     if ram_state[42] != 0:
         objects[5] = None
         if ram_state[42] == 1:
@@ -613,13 +616,15 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         else:
             score.xy = 99, 8
             score.wh = 6, 8
-        score.value = _convert_number(ram_state[72])*10000 + _convert_number(ram_state[73])*100 + _convert_number(ram_state[74])
-        
+        score.value = _convert_number(
+            ram_state[72])*10000 + _convert_number(ram_state[73])*100 + _convert_number(ram_state[74])
+
         clock = Clock()
         objects[9] = clock
         clock.xy = 67, 19
         clock.wh = 30, 8
-        clock.value = _convert_number(ram_state[67])*60 + _convert_number(ram_state[69])
+        clock.value = _convert_number(
+            ram_state[67])*60 + _convert_number(ram_state[69])
 
     return objects
 

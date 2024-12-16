@@ -1,7 +1,7 @@
 # ODA: An object-centric dataset for Atari
 
 ## Using generate_dataset.py
-`generate_dataset.py`is the main script for generating object-centric datasets for Atari games. The list of supported games can be found in the OCAtari ReadMe. Games which only supports vision mode should use the `generate_dataset_vision.py`script instead. All parameters and settings are identical and can be used with both scripts. 
+`generate_dataset.py`is the main script for generating object-centric datasets for Atari games. The list of supported games can be found in the OCAtari ReadMe. Games which only supports vision mode should use the `generate_dataset_vision.py`script instead. All parameters and settings are identical and can be used with both scripts.
 
 
 ### Requirements

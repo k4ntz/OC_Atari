@@ -15,7 +15,8 @@ max = 2
 candidates = []
 counterMax = 100
 counter = 0
-already_figured_out = [70, 97, 102, 30, 31, 32, 33, 62, 59, 57, 58, 103, 102] + list(range(71, 75))
+already_figured_out = [70, 97, 102, 30, 31, 32, 33,
+                       62, 59, 57, 58, 103, 102] + list(range(71, 75))
 for _ in range(1000):
     ipdb.set_trace()
     # action = policy(observation)  # User-defined policy function

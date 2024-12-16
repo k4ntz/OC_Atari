@@ -4,21 +4,25 @@ from .game_objects import GameObject
 RAM extraction for the game Fishing Derby.
 """
 
-MAX_NB_OBJECTS = {"Player1FishingString": 1, "Player2FishingString": 1, "Fish": 6, "Shark": 1}
+MAX_NB_OBJECTS = {"Player1FishingString": 1,
+                  "Player2FishingString": 1, "Fish": 6, "Shark": 1}
 MAX_NB_OBJECTS_HUD = {"Player1FishingString": 1, "Player2FishingString": 1, "Fish": 6, "Shark": 1, "ScoreP1": 1,
                       "ScoreP2": 1}
 
-bumpers = (((104, 112), (16, 32)), ((104, 48), (4, 32)), ((116, 48), (4, 32)), ((40, 112), (16, 32)), ((40, 48), (4, 32)), ((52, 48), (4, 32)), ((72, 104), (16, 8)), ((72, 48), (16, 32)))
-droptgts = (((60, 24), (7, 14)), ((76, 24), (7, 14)), ((92, 24), (7, 14)), 
-            ((47, 58), (3, 12)), ((79, 58), (3, 12)), ((109, 58), (7, 12)), 
-            ((47, 122), (3, 12)), ((77, 122), (7, 12)), ((111, 122), (3, 12)), 
+bumpers = (((104, 112), (16, 32)), ((104, 48), (4, 32)), ((116, 48), (4, 32)), ((40, 112), (16, 32)),
+           ((40, 48), (4, 32)), ((52, 48), (4, 32)), ((72, 104), (16, 8)), ((72, 48), (16, 32)))
+droptgts = (((60, 24), (7, 14)), ((76, 24), (7, 14)), ((92, 24), (7, 14)),
+            ((47, 58), (3, 12)), ((79, 58), (3, 12)), ((109, 58), (7, 12)),
+            ((47, 122), (3, 12)), ((77, 122), (7, 12)), ((111, 122), (3, 12)),
             ((60, 154), (7, 12)), ((76, 154), (7, 12)), ((92, 154), (7, 12)))
 dp_follow_list = [72, 73, 74,
                   75, 76, 77,
                   81, 82, 83,
                   84, 85, 86]
-left_flip_map = {0: (64, 184, 13, 6), 16: (64, 181, 13, 9), 32: (64, 181, 13, 9), 48: (64, 181, 13, 9)}
-right_flip_map = {128: (83, 184, 13, 6), 144: (83, 181, 13, 9), 160: (83, 181, 13, 9), 176: (83, 181, 13, 9)}
+left_flip_map = {0: (64, 184, 13, 6), 16: (64, 181, 13, 9),
+                 32: (64, 181, 13, 9), 48: (64, 181, 13, 9)}
+right_flip_map = {128: (83, 184, 13, 6), 144: (
+    83, 181, 13, 9), 160: (83, 181, 13, 9), 176: (83, 181, 13, 9)}
 
 
 def compute_score(ram):
@@ -29,8 +33,9 @@ def compute_score(ram):
         score += sc * 100**i
     return score
 
+
 def manage_dptgts(dptgts, ram):
-    for i, (tg, pos )in enumerate(zip(dptgts, dp_follow_list)):
+    for i, (tg, pos) in enumerate(zip(dptgts, dp_follow_list)):
         st = ram[pos]
         if st == 0:
             if tg is not None:
@@ -39,9 +44,9 @@ def manage_dptgts(dptgts, ram):
             if tg is None:
                 tg = DropTarget(*droptgts[i])
                 dptgts[i] = tg
-            if st == 80: # diamond
+            if st == 80:  # diamond
                 tg.value = 20
-            elif st == 115: # Atari
+            elif st == 115:  # Atari
                 tg.value = 40
             else:
                 tg.value = st // 8
@@ -130,12 +135,14 @@ class DifficultyLevel(GameObject):
         self.rgb = 187, 159, 71
         self.hud = True
 
+
 def _get_max_objects(hud=False):
     return
 
 
 def _init_objects_ram(hud=False):
-    objects = [Flipper(True), Flipper(False), Ball(), Spinner(True), Spinner(False)]
+    objects = [Flipper(True), Flipper(False), Ball(),
+               Spinner(True), Spinner(False)]
     objects.extend([None for _ in dp_follow_list])
     for b_xy, b_wh in bumpers:
         objects.append(Bumper(b_xy, b_wh))

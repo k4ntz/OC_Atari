@@ -14,8 +14,10 @@ from ocatari.vision.utils import make_darker, mark_bb
 
 
 # running this file will start the game in multiple different ways given by the following variables:
-useOCAtari = True                # if True, running this file will execute the OCAtari code
-printEnvInfo = False             # if True, the extracted objects or the environment info will be printed
+# if True, running this file will execute the OCAtari code
+useOCAtari = True
+# if True, the extracted objects or the environment info will be printed
+printEnvInfo = False
 
 # OCAtari modes
 mode = "vision"                    # ram, vision, test
@@ -23,8 +25,10 @@ mode = "ram"                    # ram, vision, test
 HUD = True                      # if True, the returned objects are only the necessary ones
 
 # gym[atari]/gymnasium
-game_name = "ChopperCommand-v4"            # game name, e.g.: ChopperCommand-v4, Pong, Boxing or ...
-render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
+# game name, e.g.: ChopperCommand-v4, Pong, Boxing or ...
+game_name = "ChopperCommand-v4"
+# render_mode => "rgb_array" is advised, when playing
+render_mode = "rgb_array"
 # => "human" to also get the normal representation to compare between object extraction and default
 seed = 42                       # resetting environment seed
 fps = 30                        # render fps
@@ -32,24 +36,28 @@ fps = 30                        # render fps
 
 # actions
 # possible action inputs given by a run with showInputs = True
-performActions = 30000         # number of actions that will be performed until the environment shuts down automatically
+# number of actions that will be performed until the environment shuts down automatically
+performActions = 30000
 INPUTS = ['NOOP', 'FIRE', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'UPRIGHT', 'UPLEFT', 'DOWNRIGHT', 'DOWNLEFT', 'UPFIRE',
           'RIGHTFIRE', 'LEFTFIRE', 'DOWNFIRE', 'UPRIGHTFIRE', 'UPLEFTFIRE', 'DOWNRIGHTFIRE', 'DOWNLEFTFIRE']
 playGame = True                # if True, enables inputs if you want to play
 key_map = {                     # the inputs mapped to the possible basic actions
-'f': 'FIRE',                    # -> every other action should be a combination of them
-'up': 'UP',
-'right': 'RIGHT',
-'left': 'LEFT',
-'down': 'DOWN'}
-isActive = set()                # the set of active basic actions (related to the currently pressed keys)
-default_action = 'NOOP'         # the default action if nothing is pressed or a false combination is pressed
+    'f': 'FIRE',                    # -> every other action should be a combination of them
+    'up': 'UP',
+    'right': 'RIGHT',
+    'left': 'LEFT',
+    'down': 'DOWN'}
+# the set of active basic actions (related to the currently pressed keys)
+isActive = set()
+# the default action if nothing is pressed or a false combination is pressed
+default_action = 'NOOP'
 actionSequence = []             # only used if playGame is False
 # -> repeats the action sequence until the number of actions reaches performActions
 # -> if no sequence is defined, it repeats random actions instead
 
 # get valuable information for reversed engineering purposes and others
-showInputs = True              # if True, prints the number and the description of the possible inputs (actions)
+# if True, prints the number and the description of the possible inputs (actions)
+showInputs = True
 showActions = False             # if True, prints the action that will be done
 showRAM = False                 # if True, prints the RAM to the console
 showImage = True                # if True, plots the image
@@ -58,8 +66,10 @@ slowDownPlot = 0.001            # pause per iteration
 # RAM manipulation
 manipulateRAM = False           # if True, you can set the RAM by an index
 setRAMIndex = 72                # the index of the ram that will be set
-setRAMValue = 10                # the value of the ram that will be set (if negative, then it counts up)
-showDelta = False               # shows any other changes that occurred by changing the ram (dependent on env.step)
+# the value of the ram that will be set (if negative, then it counts up)
+setRAMValue = 10
+# shows any other changes that occurred by changing the ram (dependent on env.step)
+showDelta = False
 lastRAM = np.zeros(128)
 ipdb_delay = 0                  # delay of ipdb interrupt and chance to use the plot
 
@@ -87,7 +97,8 @@ def with_ocatari():
     Sets up the gym environment wrapped into the OCAtari2.0 and runs the game
     """
     # set up environment
-    oc = OCAtari(env_name=game_name, mode=mode, hud=HUD, render_mode=render_mode)
+    oc = OCAtari(env_name=game_name, mode=mode,
+                 hud=HUD, render_mode=render_mode)
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
 
@@ -214,7 +225,8 @@ def run(env):
             if manager is not None:
                 manager.remove()  # remove the last plot to avoid stacking plots
             manager = plt.imshow(image)  # wrap the array as an image
-            plt.pause(0.001)  # pause the interaction for a bit, so that the plot is drawn
+            # pause the interaction for a bit, so that the plot is drawn
+            plt.pause(0.001)
             plt.pause(slowDownPlot)
 
         # test usage of ipdb

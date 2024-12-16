@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 import sys
 
 """
@@ -6,16 +6,17 @@ RAM extraction for the game Atlantis. Supported modes: ram.
 
 """
 
-MAX_NB_OBJECTS =  {'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'DomedPalace': 1, 
-                   'BridgedBazaar': 1, 'AquaPlane': 1, 'Projectile': 2, 'GorgonShip': 4, 'Deathray': 1, 'BanditBomber': 2}
-MAX_NB_OBJECTS_HUD = {'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'DomedPalace': 1, 
+MAX_NB_OBJECTS = {'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'DomedPalace': 1,
+                  'BridgedBazaar': 1, 'AquaPlane': 1, 'Projectile': 2, 'GorgonShip': 4, 'Deathray': 1, 'BanditBomber': 2}
+MAX_NB_OBJECTS_HUD = {'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'DomedPalace': 1,
                       'BridgedBazaar': 1, 'AquaPlane': 1, 'Projectile': 2, 'GorgonShip': 4, 'Deathray': 1, 'Score': 1, 'BanditBomber': 3}
+
 
 class Sentry(GameObject):
     """
-    The left and right sentry posts. 
+    The left and right sentry posts.
     """
-    
+
     def __init__(self):
         super(Sentry, self).__init__()
         self._xy = 0, 124
@@ -27,9 +28,9 @@ class Sentry(GameObject):
 # No clue how the projectiles work
 class Projectile(GameObject):
     """
-    The projectiles shot from the sentry posts or the Acropolis Command Post. 
+    The projectiles shot from the sentry posts or the Acropolis Command Post.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -40,7 +41,7 @@ class Projectile(GameObject):
 
 class AquaPlane(GameObject):
     """
-    The Aqua Plain district of the city. 
+    The Aqua Plain district of the city.
     """
 
     def __init__(self):
@@ -53,9 +54,9 @@ class AquaPlane(GameObject):
 
 class DomedPalace(GameObject):
     """
-    The Doomed Palace district of the city. 
+    The Doomed Palace district of the city.
     """
-    
+
     def __init__(self):
         super(DomedPalace, self).__init__()
         self._xy = 38, 148
@@ -66,9 +67,9 @@ class DomedPalace(GameObject):
 
 class Generator(GameObject):
     """
-    The three Generator Stations. 
+    The three Generator Stations.
     """
-    
+
     def __init__(self):
         super(Generator, self).__init__()
         self._xy = 62, 137
@@ -79,9 +80,9 @@ class Generator(GameObject):
 
 class BridgedBazaar(GameObject):
     """
-    The Bridged Bazaar district of the city. 
+    The Bridged Bazaar district of the city.
     """
-    
+
     def __init__(self):
         super(BridgedBazaar, self).__init__()
         self._xy = 96, 159
@@ -92,9 +93,9 @@ class BridgedBazaar(GameObject):
 
 class AcropolisCommandPost(GameObject):
     """
-    The Acropolis Command Post that defends the centre of Atlantis. 
+    The Acropolis Command Post that defends the centre of Atlantis.
     """
-    
+
     def __init__(self):
         super(AcropolisCommandPost, self).__init__()
         self._xy = 72, 112
@@ -105,9 +106,9 @@ class AcropolisCommandPost(GameObject):
 
 class BanditBomber(GameObject):
     """
-    The fast Gorgon Bandit Bombers. 
+    The fast Gorgon Bandit Bombers.
     """
-    
+
     def __init__(self):
         super(BanditBomber, self).__init__()
         self._xy = 0, 0
@@ -118,9 +119,9 @@ class BanditBomber(GameObject):
 
 class GorgonShip(GameObject):
     """
-    The Large Gorgon Vessels. 
+    The Large Gorgon Vessels.
     """
-    
+
     def __init__(self):
         super(GorgonShip, self).__init__()
         self._xy = 0, 0
@@ -131,9 +132,9 @@ class GorgonShip(GameObject):
 
 class Deathray(GameObject):
     """
-    The deathray fired by close Gorgon units. 
+    The deathray fired by close Gorgon units.
     """
-    
+
     def __init__(self):
         super(Deathray, self).__init__()
         self._xy = 0, 92
@@ -146,7 +147,7 @@ class Score(GameObject):
     """
     The player's score display.
     """
-    
+
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 96, 188
@@ -163,9 +164,9 @@ def _init_objects_ram(hud=True):
     objects = [Sentry(), Sentry()]
     objects[1].xy = 152, 112
 
-    objects.extend([None] * 14)
+    objects.extend([NoObject()] * 14)
     if hud:
-        objects.extend([None] * 1)
+        objects.extend([NoObject()] * 1)
 
     global ray_available
     ray_available = True
@@ -178,7 +179,7 @@ def _init_objects_ram(hud=True):
     prev_x_p1 = 0
     prev_x_p2 = 0
     global vert_proj
-    vert_proj = None
+    vert_proj = NoObject()
 
     return objects
 
@@ -229,7 +230,7 @@ def missile_pos(rs):
 
 def _detect_objects_ram(objects, ram_state, hud=True):
     for i in range(13):
-        objects[2+i] = None
+        objects[2+i] = NoObject()
 
     buildings_count = 0
 
@@ -277,16 +278,15 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     global ray_available
     global buildings_amount
 
-
     for i in range(4):
         if ram_state[36+i]:
             ship = _get_ship_type(ram_state, 0+i, 128+i)
-            g_s = None
-            if ship is None:
+            g_s = NoObject()
+            if not ship:
                 continue
 
             # calc speed and orientation offset
-            if not ram_state[75+ship]&128:
+            if not ram_state[75+ship] & 128:
                 offset = ram_state[75+ship]
                 if ram_state[79+ship] == 64:
                     g_s = GorgonShip()
@@ -312,16 +312,15 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                     g_s.xy = ram_state[36+i] - 3 + offset, 83 - 21*i
             if g_s:
                 objects[2+i] = g_s
-            
+
             # Deathray can only be shot by ships on lane 4
             if not i and ram_state[30] < 152 and ray_available:
                 ray = Deathray()
-                if not ram_state[75+ship]&128:
+                if not ram_state[75+ship] & 128:
                     ray.xy = ram_state[36] - 1, 92
                 else:
                     ray.xy = ram_state[36] + 1, 92
                 objects[13] = ray
-
 
     # Command-Post center building with gun
     if ram_state[84] == 0:

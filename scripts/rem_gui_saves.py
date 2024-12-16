@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 from tqdm import tqdm
 import pygame
 import sys
-sys.path.insert(0, '../') # noqa
+sys.path.insert(0, '../')  # noqa
 from ocatari.core import OCAtari, UPSCALE_FACTOR
 import atexit
 import pickle
@@ -26,9 +26,9 @@ class Renderer:
     clock: pygame.time.Clock
     env: OCAtari
 
-    def __init__(self, env_name: str, mode:str = "ram", bits:bool = False, no_render: list = [], hud=False):
+    def __init__(self, env_name: str, mode: str = "ram", bits: bool = False, obs_mode="obj", no_render: list = [], hud=True):
         self.env = OCAtari(env_name, mode=mode, hud=hud, render_mode="rgb_array",
-                             render_oc_overlay=True, frameskip=1, obs_mode="obj")
+                           render_oc_overlay=True, frameskip=1, obs_mode=obs_mode)
 
         self.bits = bits
         self.env_name = env_name
@@ -46,14 +46,15 @@ class Renderer:
 
         self.active_cell_idx = None
         self.candidate_cell_ids = []
-        self.current_active_cell_input : str = ""
+        self.current_active_cell_input: str = ""
         self.no_render = no_render
 
     def _init_pygame(self, sample_image):
         pygame.init()
         pygame.display.set_caption("OCAtari Environment")
         self.env_render_shape = sample_image.shape[:2]
-        window_size = (self.env_render_shape[0] + RAM_RENDER_WIDTH, self.env_render_shape[1])
+        window_size = (
+            self.env_render_shape[0] + RAM_RENDER_WIDTH, self.env_render_shape[1])
         self.window = pygame.display.set_mode(window_size)
         self.clock = pygame.time.Clock()
         self.ram_cell_id_font = pygame.font.SysFont('Pixel12x10', 25)
@@ -68,7 +69,8 @@ class Renderer:
             self._handle_user_input()
             if not self.paused:
                 action = self._get_action()
-                obs, reward, terminated, truncated, info = self.env.step(action)
+                obs, reward, terminated, truncated, info = self.env.step(
+                    action)
                 self.obs = obs
                 # if reward != 0:
                 #     print(reward)
@@ -128,7 +130,8 @@ class Renderer:
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
                     self._unselect_active_cell()
 
-                elif [x for x in self.keys2actions.keys() if event.key in x]: #(event.key,) in self.keys2actions.keys():
+                # (event.key,) in self.keys2actions.keys():
+                elif [x for x in self.keys2actions.keys() if event.key in x]:
                     self.current_keys_down.add(event.key)
 
                 elif pygame.K_0 <= event.key <= pygame.K_9:  # enter digit
@@ -148,44 +151,58 @@ class Renderer:
                 elif event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
                     if self.active_cell_idx is not None:
                         if len(self.current_active_cell_input) > 0:
-                            new_cell_value = int(self.current_active_cell_input)
+                            new_cell_value = int(
+                                self.current_active_cell_input)
                             if new_cell_value < 256:
-                                self._set_ram_value_at(self.active_cell_idx, new_cell_value)
+                                self._set_ram_value_at(
+                                    self.active_cell_idx, new_cell_value)
                         self._unselect_active_cell()
-                
+
                 elif event.key == pygame.K_g:
                     print(self.env.objects)
+                    print(len(self.env.objects))
+                    # self.current_frame = self.env.render().copy()
+                    obs = self.env._env.render()
                     for obj in self.env.objects:
                         x, y = obj.xy
                         if x < 160 and y < 210:
                             opos = obj.xywh
                             ocol = obj.rgb
                             sur_col = make_darker(ocol)
-                            mark_bb(self.obs, opos, color=sur_col)
+                            mark_bb(obs, opos, color=sur_col)
+                    _, ax = plt.subplots(1, 1, figsize=(6, 8))
+                    ax.imshow(obs)
+                    plt.show()
+                elif event.key == pygame.K_k:
                     _, ax = plt.subplots(1, 1, figsize=(6, 8))
                     ax.imshow(self.obs)
-                    plt.show()
+                    plt.savefig('MsPacman.png', dpi=500)
                 elif event.key == pygame.K_h:
-                    with open(self.env_name + '_save_state1.pickle', 'wb') as handle:
-                        pickle.dump(self.env._env.env.env.ale.cloneState(), handle, protocol=pickle.HIGHEST_PROTOCOL)
+                    with open("save_states/" + self.env.game_name + '_save_state1.pickle', 'wb') as handle:
+                        pickle.dump(self.env._env.env.env.ale.cloneState(
+                        ), handle, protocol=pickle.HIGHEST_PROTOCOL)
                 elif event.key == pygame.K_j:
-                    with open(self.env_name + '_save_state2.pickle', 'wb') as handle:
-                        pickle.dump(self.env._env.env.env.ale.cloneState(), handle, protocol=pickle.HIGHEST_PROTOCOL)
+                    with open("save_states/" + self.env.game_name + '_save_state2.pickle', 'wb') as handle:
+                        pickle.dump(self.env._env.env.env.ale.cloneState(
+                        ), handle, protocol=pickle.HIGHEST_PROTOCOL)
                 elif event.key == pygame.K_n:
                     try:
-                        snapshot = pickle.load(open(self.env_name + "_save_state1.pickle", "rb"))
+                        snapshot = pickle.load(
+                            open("save_states/" + self.env_name + "_save_state1.pickle", "rb"))
                         self.env._env.env.env.ale.restoreState(snapshot)
                     except:
                         print("No Save_State set")
                 elif event.key == pygame.K_m:
                     try:
-                        snapshot = pickle.load(open(self.env_name + "_save_state2.pickle", "rb"))
+                        snapshot = pickle.load(
+                            open("save_states/" + self.env_name + "_save_state2.pickle", "rb"))
                         self.env._env.env.env.ale.restoreState(snapshot)
                     except:
                         print("No Save_State set")
 
             elif event.type == pygame.KEYUP:  # keyboard key released
-                if [x for x in self.keys2actions.keys() if event.key in x]: #(event.key,) in self.keys2actions.keys():
+                # (event.key,) in self.keys2actions.keys():
+                if [x for x in self.keys2actions.keys() if event.key in x]:
                     self.current_keys_down.remove(event.key)
 
     def _render(self, frame=None):
@@ -273,9 +290,14 @@ class Renderer:
             else:
                 color = (200, 200, 200)
             if self.bits:
-                text = self.ram_cell_value_font.render(str(format(value, '#010b'))[2:], True, color, None)
+                try:
+                    text = self.ram_cell_value_font.render(
+                        str(format(value, '08b')), True, color, None)
+                except:
+                    pass
             else:
-                text = self.ram_cell_value_font.render(str(value), True, color, None)
+                text = self.ram_cell_value_font.render(
+                    str(value), True, color, None)
             text_rect = text.get_rect()
             text_rect.bottomright = (x + w - 2, y + h - 2)
             self.window.blit(text, text_rect)
@@ -323,6 +345,7 @@ class Renderer:
         state = self.env._env.env.env.ale.cloneState()
         ram = ale.getRAM().copy()
         self.env.step(0)
+        x, y = int(x), int(y)
         original_pixel = ale.getScreenRGB()[y, x]
         # self.env._env.env.env.ale.restoreState(state)
         # self._set_ram(ram)  # restore original RAM
@@ -343,13 +366,15 @@ class Renderer:
                     self.candidate_cell_ids.append(i)
                     break
         self.env._env.env.env.ale.restoreState(state)
-        
+
         self._unselect_active_cell()
         self._render()
 
 
 if __name__ == "__main__":
-    renderer = Renderer(env_name="Pitfall", mode="ram", bits=False)
+    renderer = Renderer(env_name="Alien", mode="ram",
+                        bits=False, obs_mode="obj", hud=False)
+
     def exit_handler():
         if renderer.no_render:
             print("\nno_render list: ")

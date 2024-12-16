@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - ns_impl
+  pull_request:
+    branches:
+      - ns_impl
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ns_impl  # Explicitly checking out the 'ns_impl' branch
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'  # Specify the version of Python you need
+
+      - name: Cache Pickle Files
+        id: cache-pickle
+        uses: actions/cache@v3
+        with:
+          path: pickle_files
+          key: pickle-cache-${{ github.sha }}
+          restore-keys: |
+            pickle-cache-
+
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest
+          pip install gdown
+          pip install "gymnasium[atari, accept-rom-license]"
+
+      - name: Determine Changed Files
+        id: changes
+        run: |
+          git fetch origin ${{ github.event.before }} --depth=1
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' > changed_files.txt || true
+          if [ ! -s changed_files.txt ]; then
+            echo "No Python files changed."
+          fi
+
+      - name: Run general tests for all changes
+        id: general_tests
+        continue-on-error: true
+        run: pytest tests/0_general/*
+
+      - name: Test for debugging strings in ocatari/*
+        id: debugging_string_test
+        continue-on-error: true
+        run: pytest tests/test_no_debugging_statements.py
+
+      - name: Set Games to Test
+        id: set_games
+        run: |
+          GAMES=""
+          # Loop through changed files and set appropriate games
+          while IFS= read -r file; do
+          GAME_NAME=$(basename "$file" .py)
+          if [[ "$file" == *"/ram/"*".py" || "$file" == *"/vision/"*".py" ]]; then
+            # Capitalize the first letter of GAME_NAME
+            GAME_NAME="$(tr '[:lower:]' '[:upper:]' <<< ${GAME_NAME:0:1})${GAME_NAME:1}"
+            GAMES+="${GAME_NAME},"
+          fi
+          done < changed_files.txt
+
+          # Remove the trailing comma
+          GAMES=${GAMES%,}
+          echo "GAMES=$GAMES" >> $GITHUB_ENV
+
+      - name: Download Pickle Files if Not Cached
+        if: steps.cache-pickle.outputs.cache-hit != 'true' && env.GAMES != ''
+        run: |
+          mkdir -p pickle_files
+          gdown --folder https://drive.google.com/drive/u/0/folders/18391ILruGPBjsdUb2cHRIUEpOPmt6WPq -O pickle_files
+
+      - name: Run relevant tests
+        continue-on-error: true
+        id: game_tests
+        if: env.GAMES != ''
+        run: |
+          echo "Running tests with GAMES=$GAMES"
+          pytest tests/1_games/*
+
+      # Fail Workflow if Any Critical Test Failed
+      - name: Fail Workflow if Any Critical Test Failed
+        if: steps.general_tests.outcome == 'failure' || steps.game_tests.outcome == 'failure' || steps.debugging_string_test.outcome == 'failure'
+        run: |
+          echo "One or more critical tests have failed. Failing workflow."
+          exit 1
+
+

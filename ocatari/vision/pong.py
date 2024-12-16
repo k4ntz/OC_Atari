@@ -5,8 +5,7 @@ from .game_objects import GameObject
 objects_colors = {
     "enemy": [213, 130, 74], "player": [92, 186, 92], "ball": [236, 236, 236],
     "background": [144, 72, 17], "player_score": [92, 186, 92],
-    "enemy_score": [213, 130, 74], "player_score_2": [92, 186, 92],
-    "enemy_score_2": [213, 130, 74]}
+    "enemy_score": [213, 130, 74]}
 
 
 class Player(GameObject):
@@ -43,23 +42,26 @@ class EnemyScore(GameObject):
 
 def _detect_objects(objects, obs, hud=False):
     # detection and filtering
-    objects.clear()
-    enemy = find_objects(obs, objects_colors["enemy"], min_distance=1, miny=30)
-    for el in enemy:
-        if el[1] > 30:
-            objects.append(Enemy(*el))
+    player, ball, enemy = objects[:3]
+    enemy_bb = find_objects(
+        obs, objects_colors["enemy"], min_distance=1, miny=30)
+    if enemy_bb:
+        enemy.xywh = enemy_bb[0]
+    player_bb = find_objects(
+        obs, objects_colors["player"], min_distance=1, miny=30)
+    if player_bb:
+        player.xywh = player_bb[0]
+    ball_bb = find_objects(
+        obs, objects_colors["ball"], min_distance=None, miny=34, maxy=194)
+    if ball_bb:
+        ball.xywh = ball_bb[0]
     if hud:
-        enemy_score = find_objects(obs, objects_colors["enemy"], min_distance=1, closing_active=False, maxy=30)
-        for el in enemy_score:
-            objects.append(EnemyScore(*el))
-    player = find_objects(obs, objects_colors["player"], min_distance=1, miny=30)
-    for el in player:
-        objects.append(Player(*el))
-    if hud:
-        playerscore = find_objects(obs, objects_colors["player"], min_distance=1, closing_active=False, maxy=30)
-        for el in playerscore:
-            objects.append(PlayerScore(*el))
-    ball = find_objects(obs, objects_colors["ball"], min_distance=None)
-    for el in ball:
-        if el[2] < 20:
-            objects.append(Ball(*el))
+        player_score, enemy_score = objects[3:5]
+        player_score_bb = find_objects(
+            obs, objects_colors["player"], closing_dist=16, closing_active=True, maxy=30)
+        if player_score_bb:
+            player_score.xywh = player_score_bb[0]
+        enemy_score_bb = find_objects(
+            obs, objects_colors["enemy"], closing_dist=10, closing_active=True, maxy=30)
+        if enemy_score_bb:
+            enemy_score.xywh = enemy_score_bb[0]

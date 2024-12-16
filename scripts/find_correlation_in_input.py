@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
-sys.path.insert(0, '../ocatari') # noqa
+sys.path.insert(0, '../ocatari')  # noqa
 from ocatari.core import OCAtari
 import pickle
 
@@ -27,10 +27,11 @@ def ransac_regression(x, y):
 print(f"Loading from {sys.argv[1]}")
 ram_saves, target_values = pickle.load(open(sys.argv[1], 'rb'))
 
-objects_infos = {"target": target_values} 
+objects_infos = {"target": target_values}
 
 ram_saves = np.array(ram_saves).T
-from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
+from_rams = {str(i): ram_saves[i] for i in range(
+    128) if not np.all(ram_saves[i] == ram_saves[i][0])}
 objects_infos.update(from_rams)
 df = pd.DataFrame(objects_infos)
 
@@ -50,7 +51,6 @@ subset = ["target"]
 # [f"{obj}_x" for obj in object_list] + [f"{obj}_y" for obj in object_list]
 
 
-
 # Use submatrice
 corr = corr[subset].T
 corr.drop(subset, axis=1, inplace=True)
@@ -60,7 +60,8 @@ if DROP_LOW:
     corr = corr.loc[:, (corr.abs() > MIN_CORRELATION).any()]
 
 # if METHOD == "pearson":
-ax = sns.heatmap(corr, vmin=-1, vmax=1, annot=True, cmap=sns.diverging_palette(20, 220, n=200))
+ax = sns.heatmap(corr, vmin=-1, vmax=1, annot=True,
+                 cmap=sns.diverging_palette(20, 220, n=200))
 # else:
 #     ax = sns.heatmap(corr, vmin=0, vmax=1, annot=True, cmap=sns.diverging_palette(20, 220, n=200))
 # ax.set_yticklabels(ax.get_yticklabels(), rotation=90, horizontalalignment='right')
@@ -92,4 +93,3 @@ for el in corrT:
             plt.xlabel(idx)
             plt.ylabel(el)
             plt.show()
-

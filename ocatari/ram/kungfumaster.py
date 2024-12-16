@@ -1,14 +1,18 @@
 from .game_objects import GameObject, ValueObject
 from ._helper_methods import _convert_number
-import sys 
+import sys
 
-MAX_NB_OBJECTS = {"Player": 1, "Knife_Throwers": 1, "Henchmen": 3, "Snake": 1, "Dragon": 1, "Dragon_Smoke": 1, "Dragon_Balls": 1, "Red_Ball": 1, "Airball": 1, "Small_Enemy": 1, "Enemy_Final_Fighter": 1, "Projectile": 1, "Dragon_Fire": 1}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Knife_Throwers": 1, "Henchmen": 3, "Snake": 1, "Dragon": 1, "Dragon_Smoke": 1, "Dragon_Balls": 1, "Red_Ball": 1, "Airball": 1, "Small_Enemy": 1, "Enemy_Final_Fighter": 1, "Projectile": 1, "Dragon_Fire": 1, "Score": 1, "Time": 1, "Lives": 1, "Player_Health_Bar": 1, "Enemy_Health_Bar": 1}
+MAX_NB_OBJECTS = {"Player": 1, "Knife_Throwers": 1, "Henchmen": 3, "Snake": 1, "Dragon": 1, "Dragon_Smoke": 1,
+                  "Dragon_Balls": 1, "Red_Ball": 1, "Airball": 1, "Small_Enemy": 1, "Enemy_Final_Fighter": 1, "Projectile": 1, "Dragon_Fire": 1}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Knife_Throwers": 1, "Henchmen": 3, "Snake": 1, "Dragon": 1, "Dragon_Smoke": 1, "Dragon_Balls": 1, "Red_Ball": 1, "Airball": 1,
+                      "Small_Enemy": 1, "Enemy_Final_Fighter": 1, "Projectile": 1, "Dragon_Fire": 1, "Score": 1, "Time": 1, "Lives": 1, "Player_Health_Bar": 1, "Enemy_Health_Bar": 1}
+
 
 class Player(GameObject):
     """
     Fighter fighting through the level
     """
+
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 76, 100
@@ -16,10 +20,12 @@ class Player(GameObject):
         self.rgb = 214, 214, 214
         self.hud = False
 
+
 class Knife_Throwers(GameObject):
     """
     Enemy throwing knifes. Can throw low and on head hight
     """
+
     def __init__(self):
         super(Knife_Throwers, self).__init__()
         self._xy = 76, 100
@@ -27,10 +33,12 @@ class Knife_Throwers(GameObject):
         self.rgb = 192, 192, 192
         self.hud = False
 
+
 class Henchmen(GameObject):
     """
     Basic enemy dealing damage when in contact with the player
     """
+
     def __init__(self):
         super(Henchmen, self).__init__()
         self._xy = 76, 100
@@ -38,10 +46,12 @@ class Henchmen(GameObject):
         self.rgb = 104, 25, 154
         self.hud = False
 
+
 class Snake(GameObject):
     """
     Drops from the top and then crawls on the ground
     """
+
     def __init__(self):
         super(Snake, self).__init__()
         self._xy = 76, 100
@@ -49,10 +59,12 @@ class Snake(GameObject):
         self.rgb = 0, 68, 0
         self.hud = False
 
+
 class Dragon(GameObject):
     """
     Appears out of smoke and shoots fire
     """
+
     def __init__(self):
         super(Dragon, self).__init__()
         self._xy = 76, 100
@@ -60,10 +72,12 @@ class Dragon(GameObject):
         self.rgb = 0, 68, 0
         self.hud = False
 
+
 class Dragon_Smoke(GameObject):
     """
     Rises out of the dragon ball
     """
+
     def __init__(self):
         super(Dragon_Smoke, self).__init__()
         self._xy = 76, 100
@@ -71,10 +85,12 @@ class Dragon_Smoke(GameObject):
         self.rgb = 214, 214, 214
         self.hud = False
 
+
 class Dragon_Balls(GameObject):
     """
     Drops from the ceiling to release the dragon
     """
+
     def __init__(self):
         super(Dragon_Balls, self).__init__()
         self._xy = 76, 100
@@ -82,10 +98,12 @@ class Dragon_Balls(GameObject):
         self.rgb = 227, 151, 89
         self.hud = False
 
+
 class Red_Ball(GameObject):
     """
     Drops from the ceiling to hit the player
     """
+
     def __init__(self):
         super(Red_Ball, self).__init__()
         self._xy = 76, 100
@@ -93,10 +111,12 @@ class Red_Ball(GameObject):
         self.rgb = 148, 0, 0
         self.hud = False
 
+
 class Airball(GameObject):
     """
     Flyies through the air to hit the player
     """
+
     def __init__(self):
         super(Airball, self).__init__()
         self._xy = 76, 100
@@ -104,10 +124,12 @@ class Airball(GameObject):
         self.rgb = 214, 214, 214
         self.hud = False
 
+
 class Small_Enemy(GameObject):
     """
     Runs at player or jumps over them
     """
+
     def __init__(self):
         super(Small_Enemy, self).__init__()
         self._xy = 76, 100
@@ -115,10 +137,12 @@ class Small_Enemy(GameObject):
         self.rgb = 163, 57, 21
         self.hud = False
 
+
 class Killer_Moth(GameObject):
     """
     Flies through the air to hit player
     """
+
     def __init__(self):
         super(Killer_Moth, self).__init__()
         self._xy = 76, 100
@@ -126,10 +150,12 @@ class Killer_Moth(GameObject):
         self.rgb = 148, 0, 0
         self.hud = False
 
+
 class Enemy_Final_Fighter(GameObject):
     """
     Final fighter at the end of the level. Second final fighter throws boomerangs
     """
+
     def __init__(self):
         super(Enemy_Final_Fighter, self).__init__()
         self._xy = 76, 100
@@ -137,10 +163,12 @@ class Enemy_Final_Fighter(GameObject):
         self.rgb = 74, 74, 74
         self.hud = False
 
+
 class Knifes(GameObject):
     """
     Knifes throw by Knife_Throwers or Final_Fighters
     """
+
     def __init__(self):
         super(Knifes, self).__init__()
         self._xy = 76, 100
@@ -148,10 +176,12 @@ class Knifes(GameObject):
         self.rgb = 74, 74, 74
         self.hud = False
 
+
 class Dragon_Fire(GameObject):
     """
     Fire spit by the dragon
     """
+
     def __init__(self):
         super(Dragon_Fire, self).__init__()
         self._xy = 76, 100
@@ -164,6 +194,7 @@ class Score(ValueObject):
     """
     Score of the game
     """
+
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 63, 20
@@ -172,10 +203,12 @@ class Score(ValueObject):
         self.hud = True
         self.value = 0
 
+
 class Time(ValueObject):
     """
     Time left to beat the level
     """
+
     def __init__(self):
         super(Time, self).__init__()
         self._xy = 63, 20
@@ -184,10 +217,12 @@ class Time(ValueObject):
         self.hud = True
         self.value = 0
 
+
 class Lives(GameObject):
     """
     Life value. Counts how many restarts are left before the game resets
     """
+
     def __init__(self):
         super(Lives, self).__init__()
         self._xy = 99, 31
@@ -196,10 +231,12 @@ class Lives(GameObject):
         self.hud = True
         self.value
 
+
 class Player_Health_Bar(GameObject):
     """
     Indicates how many hits the player can still take.
     """
+
     def __init__(self):
         super(Player_Health_Bar, self).__init__()
         self._xy = 49, 41
@@ -207,10 +244,12 @@ class Player_Health_Bar(GameObject):
         self.rgb = 232, 232, 74
         self.hud = True
 
+
 class Enemy_Health_Bar(GameObject):
     """
     Indicates how many hits the enemy can still take.
     """
+
     def __init__(self):
         super(Enemy_Health_Bar, self).__init__()
         self._xy = 49, 49
@@ -227,7 +266,7 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
@@ -245,7 +284,8 @@ def _init_objects_ram(hud=False):
     # objects.extend()
     if hud:
         # objects.extend()
-        objects.extend([Score(), Time(), Lives(), Player_Health_Bar(), Enemy_Health_Bar()])
+        objects.extend([Score(), Time(), Lives(),
+                       Player_Health_Bar(), Enemy_Health_Bar()])
     return objects
 
 
@@ -262,32 +302,32 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     w, h = 8, 34
 
     if ram_state[93] == 0:
-        if not ram_state[90]&8:
-            x-=7
+        if not ram_state[90] & 8:
+            x -= 7
         w, h = 15, 29
     elif ram_state[93] == 1:
-        if ram_state[90]&8:
-            x-=3
+        if ram_state[90] & 8:
+            x -= 3
         w, h = 11, 29
     elif ram_state[93] == 2:
-        if ram_state[90]&8:
-            x-=2
+        if ram_state[90] & 8:
+            x -= 2
         else:
-            x-=6
+            x -= 6
         w, h = 16, 34
     elif ram_state[93] == 3:
-        if ram_state[90]&8:
-            x-=1
+        if ram_state[90] & 8:
+            x -= 1
         else:
-            x-=5
+            x -= 5
         w, h = 14, 34
     elif ram_state[93] == 4:
-        if ram_state[90]&8:
-            x-=3
+        if ram_state[90] & 8:
+            x -= 3
         else:
-            x-=5
+            x -= 5
         w, h = 16, 29
-    
+
     objects[0].xy = x, y
     objects[0].wh = w, h
     # ram[72] == enemy x
@@ -300,7 +340,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[1] = Knife_Throwers()
         elif ram_state[50] == 97:
             objects[1] = Airball()
-            x+=2
+            x += 2
             y = 169 - ram_state[35]
         elif ram_state[50] == 134:
             objects[1] = Snake()
@@ -309,19 +349,19 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[1] = Small_Enemy()
             y = 155 - ram_state[35]
             if 70 <= ram_state[50] <= 83:
-                x+=1
-                y+=6
+                x += 1
+                y += 6
                 objects[1].wh = 4, 14
-            if ram_state[92]&8:
-                x+= 1
+            if ram_state[92] & 8:
+                x += 1
         elif ram_state[50] == 177:
             objects[1] = Henchmen()
         elif ram_state[50] == 154:
             objects[1] = Dragon()
-            y+=1
+            y += 1
         elif ram_state[50] == 188:
             objects[1] = Dragon_Smoke()
-            y-=1
+            y -= 1
         elif ram_state[50] == 204:
             objects[1] = Enemy_Final_Fighter()
         elif ram_state[50] == 227:
@@ -335,12 +375,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[1].xy = x, y
 
         # ram [63] if > 1 enemy bit representation of appendix, 16 pixels apart per enemy
-        if ram_state[63]&1 and ram_state[72]-49 > 0:
+        if ram_state[63] & 1 and ram_state[72]-49 > 0:
             objects[2] = Henchmen()
             objects[2].xy = ram_state[72]-33, 126
         else:
             objects[2] = None
-        if ram_state[63]&2 and ram_state[72]-49 > 0:
+        if ram_state[63] & 2 and ram_state[72]-49 > 0:
             objects[3] = Henchmen()
             objects[3].xy = ram_state[72]-17, 126
         else:
@@ -354,7 +394,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if ram_state[96] != 188:
         if ram_state[50] == 154:
             objects[4] = Dragon_Fire()
-            if ram_state[92]&8:
+            if ram_state[92] & 8:
                 objects[4].xy = ram_state[73]-52, 121+ram_state[96]
             else:
                 objects[4].xy = ram_state[73]-60, 121+ram_state[96]
@@ -370,7 +410,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     if hud:
         # ram[29] lives, ram[24-26] score
-        x, w= 63, 6
+        x, w = 63, 6
         if ram_state[24] > 16:
             x, w = 23, 46
         elif ram_state[24]:
@@ -385,7 +425,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[6].xy = x, 20
         objects[6].wh = w, 7
 
-        x2, w2= 55, 6
+        x2, w2 = 55, 6
         if ram_state[27] > 16:
             x2, w2 = 31, 30
         elif ram_state[27]:

@@ -6,14 +6,15 @@ import sys
 RAM extraction for the game Freeway.
 """
 
-MAX_NB_OBJECTS =  {'Chicken': 2, 'Car': 10}
-MAX_NB_OBJECTS_HUD =  {'Chicken': 2, 'Car': 10, 'Score' : 2}
+MAX_NB_OBJECTS = {'Chicken': 2, 'Car': 10}
+MAX_NB_OBJECTS_HUD = {'Chicken': 2, 'Car': 10, 'Score': 2}
+
 
 class Chicken(GameObject):
     """
-    The player figure i.e., the chicken. 
+    The player figure i.e., the chicken.
     """
-    
+
     def __init__(self):
         super(Chicken, self).__init__()
         self._xy = 0, 0
@@ -24,22 +25,31 @@ class Chicken(GameObject):
 
 class Car(GameObject):
     """
-    The vehicles on the freeway. 
+    The vehicles on the freeway.
     """
-    
+
     def __init__(self):
         super(Car, self).__init__()
         self._xy = 0, 0
         self.wh = 8, 10
         self.rgb = 167, 26, 26
         self.hud = False
+        # self.ram_color = 0
+
+    # @property
+    # def _nsrepr(self):
+    #    return self.x, self.y, self.ram_color
+
+    # @property
+    # def _ns_meaning(self):
+    #    return "x, y, c"
 
 
 class Score(ValueObject):
     """
     The player's score display (HUD).
     """
-    
+
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 49, 5
@@ -64,7 +74,7 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
@@ -109,6 +119,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     for i, car in enumerate(cars):
         x = ram_state[117 - i] - 3
         car.x = x
+        # car.ram_color = ram_state[77+i] addind color by using the value in the ram does not work with vision and as such should be replaced by rgb or grayscale value between 0-255.
 
     if hud:
         for i, score in enumerate(scores):

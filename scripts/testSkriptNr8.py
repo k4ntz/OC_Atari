@@ -4,7 +4,7 @@ import ipdb
 from matplotlib import pyplot as plt
 import sys
 # import pathlib
-sys.path.insert(0, '../../') # noqa
+sys.path.insert(0, '../../')  # noqa
 
 from ocatari.core import OCAtari
 
@@ -22,7 +22,7 @@ target_ram_position = -1
 print("Round: ", target_ram_position)
 
 for _ in range(100000):
-    
+
     if _ % 100 == 0:
         target_ram_position += 1
         print("Round: ", target_ram_position)

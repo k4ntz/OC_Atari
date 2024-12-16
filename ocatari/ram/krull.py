@@ -1,9 +1,12 @@
 from .game_objects import GameObject, ValueObject
 from ._helper_methods import number_to_bitfield
-import sys 
+import sys
 
-MAX_NB_OBJECTS = {"Player": 1, 'Lyssa': 1, 'Slayers': 20, 'Slayer_Shot': 1, 'Weapon': 1, 'Beast': 1, 'Enemy_Weapon': 1, 'Wall': 64, 'Star': 1, 'Spider': 1, 'Window': 1, 'Line': 462, 'Fire_Mare': 1, 'Weapon': 1, 'Life': 1, 'Castle': 1}
-MAX_NB_OBJECTS_HUD = {"Player": 1, 'Lyssa': 1, 'Slayers': 20, 'Slayer_Shot': 1, 'Weapon': 1, 'Beast': 1, 'Enemy_Weapon': 1, 'Wall': 64, 'Star': 1, 'Spider': 1, 'Window': 1, 'Line': 462, 'Fire_Mare': 1, 'Weapon': 1, 'Life': 1, 'Castle': 1, 'Sun': 1, 'Hour_Glass': 1, 'Score': 1, 'Life_HUD': 3, 'Weapon_HUD': 3}# 'Score': 1}
+MAX_NB_OBJECTS = {"Player": 1, 'Lyssa': 1, 'Slayers': 20, 'Slayer_Shot': 1, 'Weapon': 1, 'Beast': 1, 'Enemy_Weapon': 1,
+                  'Wall': 64, 'Star': 1, 'Spider': 1, 'Window': 1, 'Line': 462, 'Fire_Mare': 1, 'Weapon': 1, 'Life': 1, 'Castle': 1}
+MAX_NB_OBJECTS_HUD = {"Player": 1, 'Lyssa': 1, 'Slayers': 20, 'Slayer_Shot': 1, 'Weapon': 1, 'Beast': 1, 'Enemy_Weapon': 1, 'Wall': 64, 'Star': 1, 'Spider': 1,
+                      'Window': 1, 'Line': 462, 'Fire_Mare': 1, 'Weapon': 1, 'Life': 1, 'Castle': 1, 'Sun': 1, 'Hour_Glass': 1, 'Score': 1, 'Life_HUD': 3, 'Weapon_HUD': 3}  # 'Score': 1}
+
 
 class Player(GameObject):
     def __init__(self):
@@ -13,6 +16,7 @@ class Player(GameObject):
         self.rgb = 227, 151, 89
         self.hud = False
 
+
 class Lyssa(GameObject):
     def __init__(self):
         super(Lyssa, self).__init__()
@@ -20,6 +24,7 @@ class Lyssa(GameObject):
         self.wh = (7, 16)
         self.rgb = 198, 89, 179
         self.hud = False
+
 
 class Slayers(GameObject):
     def __init__(self):
@@ -29,6 +34,7 @@ class Slayers(GameObject):
         self.rgb = 45, 109, 152
         self.hud = False
 
+
 class Slayer_Shot(GameObject):
     def __init__(self):
         super(Slayer_Shot, self).__init__()
@@ -36,6 +42,7 @@ class Slayer_Shot(GameObject):
         self.wh = (1, 6)
         self.rgb = 45, 109, 152
         self.hud = False
+
 
 class Fire_Mare(GameObject):
     def __init__(self):
@@ -45,6 +52,7 @@ class Fire_Mare(GameObject):
         self.rgb = 213, 130, 74
         self.hud = False
 
+
 class Spider(GameObject):
     def __init__(self):
         super(Spider, self).__init__()
@@ -52,6 +60,7 @@ class Spider(GameObject):
         self.wh = (8, 12)
         self.rgb = 236, 236, 236
         self.hud = False
+
 
 class Weapon(GameObject):
     def __init__(self):
@@ -111,7 +120,7 @@ class Star(GameObject):
     def __init__(self):
         super(Star, self).__init__()
         self._xy = 0, 0
-        self.wh = (3,4)
+        self.wh = (3, 4)
         self.rgb = 236, 236, 236
         self.hud = False
 
@@ -187,7 +196,7 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
@@ -239,10 +248,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     slayer.xy = ram_state[83+i] + 9, (ram_state[91+i]*2) + 15
                 for j in range(3):
                     objects[7+i+j*5] = None
-                    if ram_state[99+i]&2**j and objects[2+i] is not None:
+                    if ram_state[99+i] & 2**j and objects[2+i] is not None:
                         slayer2 = Slayers()
                         objects[7+i+j*5] = slayer2
-                        slayer2.xy = ram_state[83+i] + 9 + (16 * (ram_state[99+i]&2**j)), (ram_state[91+i]*2) + 15
+                        slayer2.xy = ram_state[83+i] + 9 + (
+                            16 * (ram_state[99+i] & 2**j)), (ram_state[91+i]*2) + 15
         else:
             player.xy = ram_state[89] + 9, (ram_state[97]*2) + 16
             lyssa = Lyssa()
@@ -256,23 +266,26 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     slayer.xy = ram_state[84+i] + 9, (ram_state[92+i]*2) + 15
                     for j in range(3):
                         objects[7+i+j*5] = None
-                        if ram_state[100+i]&2**j:
+                        if ram_state[100+i] & 2**j:
                             slayer2 = Slayers()
                             objects[7+i+j*5] = slayer2
-                            slayer2.xy = ram_state[84+i] + 9 + (16 * (ram_state[100+i]&2**j)), (ram_state[92+i]*2) + 15
+                            slayer2.xy = ram_state[84+i] + 9 + (
+                                16 * (ram_state[100+i] & 2**j)), (ram_state[92+i]*2) + 15
         if ram_state[77]:
             shot = Slayer_Shot()
             objects[22] = shot
-            if ram_state[79]&16:
+            if ram_state[79] & 16:
                 shot.wh = 7, 7
-                if ram_state[79]&128:
-                    shot.xy = (ram_state[78] + 7 + ram_state[76]*2) - 32, ram_state[77]*2 + 6
+                if ram_state[79] & 128:
+                    shot.xy = (ram_state[78] + 7 + ram_state[76]
+                               * 2) - 32, ram_state[77]*2 + 6
                 else:
-                    shot.xy = (ram_state[78] + 7 - ram_state[76]*2) + 25, ram_state[77]*2 + 6
+                    shot.xy = (ram_state[78] + 7 - ram_state[76]
+                               * 2) + 25, ram_state[77]*2 + 6
             else:
                 shot.wh = 1, 7
                 shot.xy = ram_state[78] + 7, ram_state[77]*2 + 6
-    
+
     elif room == 1:
         for i in range(len(objects)-1):
             objects[i+1] = None
@@ -285,13 +298,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[1] = weapon
             weapon.rgb = 224, 236, 124
             if ram_state[47] == 24:
-                weapon.xy =  ram_state[89] + 11, (ram_state[97]*2) + 16
+                weapon.xy = ram_state[89] + 11, (ram_state[97]*2) + 16
                 weapon.wh = 2, 2
             elif ram_state[47] == 36:
-                weapon.xy =  ram_state[89] + 9, (ram_state[97]*2) + 16
+                weapon.xy = ram_state[89] + 9, (ram_state[97]*2) + 16
                 weapon.wh = 6, 6
             else:
-                weapon.xy =  ram_state[89] + 8, (ram_state[97]*2) + 16
+                weapon.xy = ram_state[89] + 8, (ram_state[97]*2) + 16
                 weapon.wh = 8, 8
         else:
             objects[1] = None
@@ -309,7 +322,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             boss.xy = ram_state[84] + 13, (ram_state[92]*2) + 15
         else:
             boss.xy = ram_state[84] + 9, (ram_state[92]*2) + 15
-        
+
         if ram_state[77] < 83:
             bossw = Enemy_Weapon()
             objects[4] = bossw
@@ -319,13 +332,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
         for j in range(4):
             for i in range(8):
-                if ram_state[115+j*2]&2**i:
+                if ram_state[115+j*2] & 2**i:
                     wall = Wall()
                     objects[5+16*j+i] = wall
                     wall.xy = 48 + 4*i, 39 + 4*j
                 else:
                     objects[5+16*j+i] = None
-                if ram_state[116+j*2]&2**i:
+                if ram_state[116+j*2] & 2**i:
                     wall = Wall()
                     objects[13+16*j+i] = wall
                     wall.xy = 108 - 4*i, 39 + 4*j
@@ -335,7 +348,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     elif room == 2:
         for i in range(len(objects)-1):
             objects[i+1] = None
-        
+
         player.xy = ram_state[83] + 8, (ram_state[91]*2) + 20
         player.wh = 6, 16
         if ram_state[68] == 41:
@@ -353,43 +366,49 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         # r115 == lines right; 44 == 75-115, 63 == 118-158
         # 24 pixels between lines
         for i in range(40):
-            line1, line2, line3, line4, line5, line6 = Line(), Line(), Line(), Line(), Line(), Line()
-            objects[3+(i*3)], objects[4+(i*3)], objects[5+(i*3)] = line1, line2, line3
-            objects[234+(i*3)], objects[235+(i*3)], objects[236+(i*3)] = line4, line5, line6
-            line1.xy =  7 + i + ram_state[115], 17 + i*2
-            line2.xy =  31 + i + ram_state[115], 17 + i*2
-            line3.xy =  55 + i + ram_state[115], 17 + i*2
-            line4.xy =  6 - i + ram_state[116], 19 + i*2
-            line5.xy =  30 - i + ram_state[116], 19 + i*2
-            line6.xy =  54 - i + ram_state[116], 19 + i*2
+            line1, line2, line3, line4, line5, line6 = Line(
+            ), Line(), Line(), Line(), Line(), Line()
+            objects[3+(i*3)], objects[4+(i*3)], objects[5 +
+                                                        (i*3)] = line1, line2, line3
+            objects[234+(i*3)], objects[235+(i*3)], objects[236 +
+                                                            (i*3)] = line4, line5, line6
+            line1.xy = 7 + i + ram_state[115], 17 + i*2
+            line2.xy = 31 + i + ram_state[115], 17 + i*2
+            line3.xy = 55 + i + ram_state[115], 17 + i*2
+            line4.xy = 6 - i + ram_state[116], 19 + i*2
+            line5.xy = 30 - i + ram_state[116], 19 + i*2
+            line6.xy = 54 - i + ram_state[116], 19 + i*2
         for i in range(37):
-            line1, line2, line3, line4, line5, line6 = Line(), Line(), Line(), Line(), Line(), Line()
-            objects[123+(i*3)], objects[124+(i*3)], objects[125+(i*3)] = line1, line2, line3
-            objects[354+(i*3)], objects[355+(i*3)], objects[356+(i*3)] = line4, line5, line6
-            line1.xy =  47 - i + ram_state[115], 97 + i*2
-            line2.xy =  71 - i + ram_state[115], 97 + i*2
-            line3.xy =  95 - i + ram_state[115], 97 + i*2
-            line4.xy =  i + ram_state[116] - 33, 97 + i*2
-            line5.xy =  i + ram_state[116] - 9, 97 + i*2
-            line6.xy =  i + ram_state[116] + 15, 97 + i*2
+            line1, line2, line3, line4, line5, line6 = Line(
+            ), Line(), Line(), Line(), Line(), Line()
+            objects[123+(i*3)], objects[124+(i*3)], objects[125 +
+                                                            (i*3)] = line1, line2, line3
+            objects[354+(i*3)], objects[355+(i*3)], objects[356 +
+                                                            (i*3)] = line4, line5, line6
+            line1.xy = 47 - i + ram_state[115], 97 + i*2
+            line2.xy = 71 - i + ram_state[115], 97 + i*2
+            line3.xy = 95 - i + ram_state[115], 97 + i*2
+            line4.xy = i + ram_state[116] - 33, 97 + i*2
+            line5.xy = i + ram_state[116] - 9, 97 + i*2
+            line6.xy = i + ram_state[116] + 15, 97 + i*2
 
     elif room == 3:
         for i in range(len(objects)-1):
             objects[i+1] = None
-        
+
         player.xy = ram_state[90] + 8, 145
         player.wh = 8, 9
         mare = Fire_Mare()
         objects[1] = mare
         mare.xy = ram_state[89] + 8, 145
         offset = 8
-        if ram_state[76]&128:
+        if ram_state[76] & 128:
             for i in range(4):
-                if not ram_state[76]&2**(i+3):
+                if not ram_state[76] & 2**(i+3):
                     offset += 1
         else:
             for i in range(4):
-                if ram_state[76]&2**(i+3):
+                if ram_state[76] & 2**(i+3):
                     offset -= 1
         if ram_state[70] == 226:
             weapon = Weapon()
@@ -411,8 +430,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # r82 enemypos?
     # r100 enemy formation?
     # r113 sword?
-
-    
 
     if hud:
         # sun xy == r23, r24,
@@ -439,19 +456,19 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     xoff = 1
                 elif bottom == 6:
                     xoff = 2
-            sun.xy =  ram_state[24] + 9 + xoff, ram_state[23] - 30 + top
+            sun.xy = ram_state[24] + 9 + xoff, ram_state[23] - 30 + top
             sun.wh = 7 - (xoff*2), 7 - top - bottom
         else:
             objects[-9] = None
 
         # Hour Glass
         if ram_state[26]:
-            time =  Hour_Glass()
+            time = Hour_Glass()
             objects[-8] = time
             yoff = 0
             h = 0
             for i in range(8):
-                if ram_state[26]&2**i:
+                if ram_state[26] & 2**i:
                     if yoff:
                         h += i - yoff + 1
                     else:
@@ -462,7 +479,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             time.wh = 5, h
         else:
             objects[-8] = None
-            
+
         # Score
         score = Score()
         objects[-7] = score
@@ -484,7 +501,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         else:
             score.xy = 82, 176
             score.wh = 4, 7
-        
+
         # Lives
         for i in range(3):
             if i < ram_state[31]:
@@ -493,7 +510,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 life.xy = 56+(i*8), 188
             else:
                 objects[-6+i] = None
-        
+
         # Weapons
         for i in range(3):
             if i < ram_state[32]:

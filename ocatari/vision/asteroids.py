@@ -1,7 +1,8 @@
 from .utils import find_objects
 from .game_objects import GameObject
 
-objects_colors = {"player": [240, 128, 128], "background": [0, 0, 0], "score": [184, 50, 50], "lives": [184, 50, 50]}
+objects_colors = {"player": [240, 128, 128], "background": [
+    0, 0, 0], "score": [184, 50, 50], "lives": [184, 50, 50]}
 
 asteroids_colors = {"brown": [180, 122, 48], "purple": [104, 72, 198], "yellow": [136, 146, 62],
                     "lightyellow": [187, 187, 53], "grey": [214, 214, 214], "lightblue": [117, 181, 239],

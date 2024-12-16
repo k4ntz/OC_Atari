@@ -63,5 +63,6 @@ if __name__ == "__main__":
     WIDTH = 110
     HEIGHT = 13
 
-    candidates = find_causative_ram("Assault", X, Y, WIDTH, HEIGHT, show_plot=False)
+    candidates = find_causative_ram(
+        "Assault", X, Y, WIDTH, HEIGHT, show_plot=False)
     print(candidates)

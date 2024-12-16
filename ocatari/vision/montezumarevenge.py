@@ -3,7 +3,7 @@ from .utils import find_objects, find_mc_objects
 
 
 objects_colors = {'white': [236, 236, 236], 'yellow': [232, 204, 99], 'orange': [213, 130, 74],
-                  'blue': [101, 111, 228], 'green': [92, 186, 92], 'yellow_2':[204, 216, 110],
+                  'blue': [101, 111, 228], 'green': [92, 186, 92], 'yellow_2': [204, 216, 110],
                   'white_2': [214, 214, 214], 'white_3': [192, 192, 192],
                   'playercolors': [[228, 111, 111], [200, 72, 72], [210, 182, 86]],
                   'playercolors2': [[240, 128, 128], [200, 72, 72], [210, 182, 86]],
@@ -40,6 +40,7 @@ class Key(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = [232, 204, 99]
+
 
 class Amulet(GameObject):
     def __init__(self, *args, **kwargs):
@@ -132,7 +133,7 @@ def _detect_objects(objects, obs, hud=False):
     for bb in players2:
         objects.append(Player(*bb))
 
-    skull = find_objects(obs, objects_colors['white'], miny=25, size=(13,7))
+    skull = find_objects(obs, objects_colors['white'], miny=25, size=(13, 7))
     for bb in skull:
         objects.append(Skull(*bb))
 
@@ -140,23 +141,24 @@ def _detect_objects(objects, obs, hud=False):
     for bb in spider:
         objects.append(Spider(*bb))
 
-    snek = find_objects(obs, objects_colors['white_3'], miny=25, size=(13,7))
+    snek = find_objects(obs, objects_colors['white_3'], miny=25, size=(13, 7))
     for bb in snek:
         objects.append(Snake(*bb))
 
-    torch = find_objects(obs, objects_colors['yellow_2'], size=(6,13), miny=48)
+    torch = find_objects(
+        obs, objects_colors['yellow_2'], size=(6, 13), miny=48)
     for bb in torch:
         objects.append(Torch(*bb))
 
-    sword = find_objects(obs, objects_colors['white_2'], size=(7,15), miny=48)
+    sword = find_objects(obs, objects_colors['white_2'], size=(7, 15), miny=48)
     for bb in sword:
         objects.append(Sword(*bb))
 
-    rope = find_objects(obs, objects_colors['yellow'], size=(1,39), tol_s=2)
+    rope = find_objects(obs, objects_colors['yellow'], size=(1, 39), tol_s=2)
     for bb in rope:
         objects.append(Rope(*bb))
 
-    rope2 = find_objects(obs, objects_colors['yellow'], size=(1,51), tol_s=4)
+    rope2 = find_objects(obs, objects_colors['yellow'], size=(1, 51), tol_s=4)
     for bb in rope2:
         objects.append(Rope(*bb))
 
@@ -166,48 +168,57 @@ def _detect_objects(objects, obs, hud=False):
         r.rgb = objects_colors['white']
         objects.append(r)
 
-    key = find_objects(obs, objects_colors['yellow'], size=(7,15), miny=48)
+    key = find_objects(obs, objects_colors['yellow'], size=(7, 15), miny=48)
     for bb in key:
         objects.append(Key(*bb))
 
-    amulet = find_mc_objects(obs, objects_colors['playercolors'], miny=25, size=(6,15), tol_s=2)
+    amulet = find_mc_objects(
+        obs, objects_colors['playercolors'], miny=25, size=(6, 15), tol_s=2)
     for bb in amulet:
         objects.append(Amulet(*bb))
 
-    barrier = find_objects(obs, objects_colors['yellow'], size=(4,37), tol_s=2)
+    barrier = find_objects(
+        obs, objects_colors['yellow'], size=(4, 37), tol_s=2)
     for bb in barrier:
         objects.append(Barrier(*bb))
 
-    beam = find_objects(obs, objects_colors['blue'], minx=10, maxx=150, closing_dist=4)
+    beam = find_objects(
+        obs, objects_colors['blue'], minx=10, maxx=150, closing_dist=4)
     for bb in beam:
         objects.append(Beam(*bb))
 
-    ruby = find_objects(obs, objects_colors['orange'], size=(7,12), tol_s=2)
+    ruby = find_objects(obs, objects_colors['orange'], size=(7, 12), tol_s=2)
     for bb in ruby:
-            objects.append(Ruby(*bb))
+        objects.append(Ruby(*bb))
 
     if hud:
 
-        torch_h = find_objects(obs, objects_colors['yellow'], size=(6,13), tol_s=0, maxy=48, closing_dist=1)
+        torch_h = find_objects(obs, objects_colors['yellow'], size=(
+            6, 13), tol_s=0, maxy=48, closing_dist=1)
         for bb in torch_h:
             objects.append(Torch_HUD(*bb))
 
-        sword_h = find_objects(obs, objects_colors['yellow'], size=(6,15), tol_s=0, maxy=48, closing_dist=1,)
+        sword_h = find_objects(obs, objects_colors['yellow'], size=(
+            6, 15), tol_s=0, maxy=48, closing_dist=1,)
         for bb in sword_h:
             objects.append(Sword_HUD(*bb))
 
-        key_h = find_objects(obs, objects_colors['yellow'], size=(7,15), tol_s=0, maxy=48, closing_dist=1)
+        key_h = find_objects(obs, objects_colors['yellow'], size=(
+            7, 15), tol_s=0, maxy=48, closing_dist=1)
         for bb in key_h:
             objects.append(Key_HUD(*bb))
 
-        amulet_h = find_objects(obs, objects_colors['yellow'], size=(5,15), tol_s=0, maxy=48, closing_dist=1)
+        amulet_h = find_objects(obs, objects_colors['yellow'], size=(
+            5, 15), tol_s=0, maxy=48, closing_dist=1)
         for bb in amulet_h:
             objects.append(Amulet_HUD(*bb))
-        
-        lifes = find_mc_objects(obs, objects_colors['lifecolors'], maxy=25, closing_dist=1)
+
+        lifes = find_mc_objects(
+            obs, objects_colors['lifecolors'], maxy=25, closing_dist=1)
         for bb in lifes:
             objects.append(Life(*bb))
 
-        scores = find_objects(obs, objects_colors['white'], maxy=25, closing_dist=1)
+        scores = find_objects(
+            obs, objects_colors['white'], maxy=25, closing_dist=1)
         for bb in scores:
             objects.append(Score(*bb))

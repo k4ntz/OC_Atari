@@ -29,7 +29,7 @@ def _convert_number(number):
     try:
         number = int(number_str)
     except ValueError as e:
-        number = None
+        number = 0
     return number
 
 
@@ -60,7 +60,7 @@ def bitfield_to_number(b, flip=False):
     :type b: uint8
     :param flip: Weter to flip the array or not.
     :type flip: bool
-    
+
     :return: The bit list corresponding to this number.
     :rtype: list of int
     """
@@ -79,9 +79,10 @@ def bitfield_to_number(b, flip=False):
 
     return res
 
+
 def get_iou(obj1, obj2):
     """
-    Computes the intersection over union between two GameObjects. 
+    Computes the intersection over union between two GameObjects.
     |iou_image|
 
     :param obj1: The bouding box of the detected object in (x, y, w, h) format

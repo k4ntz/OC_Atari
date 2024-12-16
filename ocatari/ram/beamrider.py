@@ -1,4 +1,4 @@
-from .game_objects import GameObject#, NoObject
+from .game_objects import GameObject, NoObject
 from ._helper_methods import _convert_number
 import sys
 
@@ -7,14 +7,16 @@ RAM extraction for the game KANGUROO. Supported modes: ram.
 
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Player_Projectile':1, 'Torpedos': 1}  # Asteroid count can get really high
+MAX_NB_OBJECTS = {'Player': 1, 'Player_Projectile': 1,
+                  'Torpedos': 1}  # Asteroid count can get really high
 MAX_NB_OBJECTS_HUD = {'Life': 1, 'HUD': 1}
+
 
 class Player(GameObject):
     """
-    The player figure i.e., the space ship. 
+    The player figure i.e., the space ship.
     """
-    
+
     def __init__(self):
         super(Player, self).__init__()
         self.visible = True
@@ -26,9 +28,9 @@ class Player(GameObject):
 
 class Player_Projectile(GameObject):
     """
-    The laser lariats that can be fired from the space ship. 
+    The laser lariats that can be fired from the space ship.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 198, 108, 58
@@ -36,9 +38,9 @@ class Player_Projectile(GameObject):
 
 class Torpedos(GameObject):
     """
-    The limited torpedoes that can be fired from the space ship. 
+    The limited torpedoes that can be fired from the space ship.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 164, 89, 208
@@ -46,9 +48,9 @@ class Torpedos(GameObject):
 
 class Saucer(GameObject):
     """
-    The White Enemy Saucers. 
+    The White Enemy Saucers.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.visible = True
@@ -60,9 +62,9 @@ class Saucer(GameObject):
 
 class Rejuvenator(GameObject):
     """
-    The Yellow Rejuvinators occasionally floating through the beam matrix. 
+    The Yellow Rejuvinators occasionally floating through the beam matrix.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 187, 187, 53
@@ -70,9 +72,9 @@ class Rejuvenator(GameObject):
 
 class Sentinel(GameObject):
     """
-    The Sector Sentinel Ship, which appears once a sector has been cleared. 
+    The Sector Sentinel Ship, which appears once a sector has been cleared.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 184, 50, 50
@@ -80,9 +82,9 @@ class Sentinel(GameObject):
 
 class Blocker(GameObject):
     """
-    The Green Blocker Ships (sector 6). 
+    The Green Blocker Ships (sector 6).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 135, 183, 84
@@ -96,9 +98,9 @@ class Jumper(GameObject):
 
 class Charger(GameObject):
     """
-    The Blue Chargers (sector 10). 
+    The Blue Chargers (sector 10).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = None
@@ -106,9 +108,9 @@ class Charger(GameObject):
 
 class Bouncecraft(GameObject):
     """
-    The Green Bounce Craft (sector 8). 
+    The Green Bounce Craft (sector 8).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = None
@@ -116,9 +118,9 @@ class Bouncecraft(GameObject):
 
 class Chriper(GameObject):
     """
-    The Yellow Chirper Ships (sector 4). 
+    The Yellow Chirper Ships (sector 4).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = None
@@ -126,9 +128,9 @@ class Chriper(GameObject):
 
 class Rock(GameObject):
     """
-    The Brown Space Debris (sector 2). 
+    The Brown Space Debris (sector 2).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 134, 134, 29
@@ -138,7 +140,7 @@ class Torpedos_Available(GameObject):
     """
     The torpedoe availability display.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 104, 25, 154
@@ -146,9 +148,9 @@ class Torpedos_Available(GameObject):
 
 class Enemy_Projectile(GameObject):
     """
-    Enemy projectiles. 
+    Enemy projectiles.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 164, 89, 208
@@ -162,9 +164,9 @@ class HUD(GameObject):
 
 class Enemy_Amount(GameObject):
     """
-    The count display for the remaining Enemy Saucers in the current sector. 
+    The count display for the remaining Enemy Saucers in the current sector.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 82, 126, 45
@@ -172,9 +174,9 @@ class Enemy_Amount(GameObject):
 
 class Life(GameObject):
     """
-    The lives-indicator of the player. 
+    The lives-indicator of the player.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 210, 210, 64
@@ -187,7 +189,7 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
@@ -200,11 +202,13 @@ def _init_objects_ram(hud=True):
     (Re)Initialize the objects
     """
 
-    objects = [Player()] + [None]*7
+    objects = [Player()] + [NoObject()]*7
 
     return objects
 
 # levels: ram_state[36], total of 3 levels: 0,1 and 2
+
+
 def _detect_objects_ram(objects, ram_state, hud=True):
 
     player = objects[0]
@@ -215,7 +219,6 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     y_positions = [y_pos for y_pos in y_positions if y_pos < 255]
     y_positions = list(zip(y_positions, state_positions))
     y_positions.sort(reverse=True)
-    # print(y_positions)
 
     # The x pos of the center line has the RAM value 128, that translates to 80 (gained from using the pure number value of the hex value, works like the score)
     # When enemies move forward, their position moves further outwards, while the RAM stays the same
@@ -226,18 +229,17 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
     for i in range(7):
         if ram_state[33+i] != 0:
-            # print(_convert_number(ram_state[33+i]), ram_state[33+i])
             x = ram_state[33+i]
             res_x = _convert_number(ram_state[33+i])
             if res_x is None:
                 if x < 154:
-                    new_x = (x|15) + 1
+                    new_x = (x | 15) + 1
                     res_x = _convert_number(new_x)
                 else:
-                    x+=96
+                    x += 96
                     res_x = _convert_number(x)
                     if res_x is None:
-                        new_x = (x|15) + 1
+                        new_x = (x | 15) + 1
                         res_x = _convert_number(new_x)
 
             y_pos = [x for x, y in enumerate(y_positions) if y[1] == i]
@@ -248,13 +250,12 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
             # x position has an outwards drift from 80 (center line)
             # drift is exponential, these linear ones don't work
-            #             
+            #
             # if res_x < 80:
             #     res_x = res_x+i - ((y-43)>>2)
             # else:
             #     res_x = res_x+i + ((y-43)>>2)
 
-            # print(y_pos, y_positions)
             enemy = Saucer()
             enemy.xy = res_x, y
             enemy.wh = 2, 2

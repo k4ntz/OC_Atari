@@ -7,28 +7,31 @@ RAM extraction for the game Q*BERT. Supported modes: ram.
 
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Cube': 21, 'Disk':2, 'PurpleBall': 1, 'RedBall': 1, 'GreenBall': 1, 'Coily': 1, 'Sam': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Cube': 21, 'Disk':2, 'PurpleBall': 1, 'RedBall': 1, 'GreenBall': 1, 'Coily': 1, 'Sam': 1, 'Score': 1, 'Lives': 1}
+MAX_NB_OBJECTS = {'Player': 1, 'Cube': 21, 'Disk': 2,
+                  'PurpleBall': 1, 'RedBall': 1, 'GreenBall': 1, 'Coily': 1, 'Sam': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Cube': 21, 'Disk': 2, 'PurpleBall': 1,
+                      'RedBall': 1, 'GreenBall': 1, 'Coily': 1, 'Sam': 1, 'Score': 1, 'Lives': 1}
 
 
-_cubes_cinfo=[        21,               # row of 1
-                    52,  54,            # row of 2
-                 83, 85,  87,           # row of 3
-               98, 100, 102, 104,       # row of 4
-              1,  3,   5,   7,  9,      # row of 5
-            32, 34, 36,  38,  40, 42]   # row of 6
+_cubes_cinfo = [21,               # row of 1
+                52,  54,            # row of 2
+                83, 85,  87,           # row of 3
+                98, 100, 102, 104,       # row of 4
+                1,  3,   5,   7,  9,      # row of 5
+                32, 34, 36,  38,  40, 42]   # row of 6
 
 
-_cubes_pos = [(68, 34), (56, 62), (84, 62), (44, 91), (68, 91), (96, 91), (32, 120), (56, 120), (84, 120), (108, 120), (20, 149), 
-             (44, 149), (68, 149), (96, 149), (120, 149), (8, 178), (32, 178), (56, 178), (84, 178), (108, 178), (132, 178)]
+_cubes_pos = [(68, 34), (56, 62), (84, 62), (44, 91), (68, 91), (96, 91), (32, 120), (56, 120), (84, 120), (108, 120), (20, 149),
+              (44, 149), (68, 149), (96, 149), (120, 149), (8, 178), (32, 178), (56, 178), (84, 178), (108, 178), (132, 178)]
 
 _diskposes = [(12, 138), (140, 138)]
+
 
 class Player(GameObject):
     """
     The player figure: Q*bert.
     """
-    
+
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 78, 103
@@ -41,7 +44,7 @@ class Cube(GameObject):
     """
     The cubes.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = (0, 0)
@@ -54,7 +57,7 @@ class Disk(GameObject):
     """
     The lift disks at the sides.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = (0, 0)
@@ -80,7 +83,7 @@ class RedBall(GameObject):
     """
     The red ball.
     """
-    
+
     def __init__(self):
         super(RedBall, self).__init__()
         self._xy = 78, 103
@@ -93,7 +96,7 @@ class GreenBall(GameObject):
     """
     The green ball.
     """
-    
+
     def __init__(self):
         super(GreenBall, self).__init__()
         self._xy = 78, 103
@@ -106,7 +109,7 @@ class Coily(GameObject):
     """
     A class representing Coily, one of Q*bert's enemies, who hatches from the purple ball.
     """
-    
+
     def __init__(self):
         super(Coily, self).__init__()
         self._xy = 78, 103
@@ -119,7 +122,7 @@ class Sam(GameObject):
     """
     A class representing Sam, one of Q*bert's enemies, who changes the cubes' color back to original.
     """
-    
+
     def __init__(self):
         super(Sam, self).__init__()
         self._xy = 78, 103
@@ -132,7 +135,7 @@ class Score(GameObject):
     """
     The player score display.
     """
-    
+
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 34, 6
@@ -145,7 +148,7 @@ class Lives(GameObject):
     """
     The indicator for the remaining lives.
     """
-    
+
     def __init__(self):
         super(Lives, self).__init__()
         self._xy = 33, 16
@@ -162,7 +165,7 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
@@ -204,9 +207,9 @@ def _init_objects_ram(hud=True):
     global last_103
     last_103 = 0
 
-    objects.extend([None] * 4) # Coily, pruple_ball, green_ball, sam
+    objects.extend([None] * 4)  # Coily, pruple_ball, green_ball, sam
     if hud:
-        objects.extend([None] *2)
+        objects.extend([None] * 2)
     return objects
 
 
@@ -219,7 +222,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         if player is None:
             player = Player()
             objects[0] = player
-        if ram_state[59] == 255: # falling
+        if ram_state[59] == 255:  # falling
             player.xy = player.xy[0], ram_state[33] - 52
         elif ram_state[67] < 70:
             player.xy = ram_state[43] - 3, ram_state[67] - 8
@@ -229,7 +232,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             player.xy = ram_state[43] - 3, ram_state[67] - 6
     else:
         objects[0] = None
-    for diskpos, rs, position in zip([22, 23], [112, 122], _diskposes): # disks
+    for diskpos, rs, position in zip([22, 23], [112, 122], _diskposes):  # disks
         if ram_state[rs] == 0:
             if objects[diskpos] is not None:
                 objects[diskpos] = None
@@ -250,19 +253,24 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         # y value changes as a trigger for the Position switch
         if coil_prev_y != ram_state[39]:
             if ram_state[56] > 8:
-                coily.xy = _calc_enemy_x(ram_state[71]), (ram_state[39] * 30) + 6
+                coily.xy = _calc_enemy_x(
+                    ram_state[71]), (ram_state[39] * 30) + 6
                 coily.wh = 8, 21
             elif ram_state[56] > 6:
-                coily.xy = _calc_enemy_x(ram_state[71]), (ram_state[39] * 30) + 9
+                coily.xy = _calc_enemy_x(
+                    ram_state[71]), (ram_state[39] * 30) + 9
                 coily.wh = 8, 18
             elif ram_state[56] > 3:
-                coily.xy = _calc_enemy_x(ram_state[71]), (ram_state[39] * 30) + 11
+                coily.xy = _calc_enemy_x(
+                    ram_state[71]), (ram_state[39] * 30) + 11
                 coily.wh = 8, 16
             elif ram_state[56] == 1:
-                coily.xy = _calc_enemy_x(ram_state[71]), (ram_state[39] * 30) + 6
+                coily.xy = _calc_enemy_x(
+                    ram_state[71]), (ram_state[39] * 30) + 6
                 coily.wh = 8, 21
             else:
-                coily.xy = _calc_enemy_x(ram_state[71]), (ram_state[39] * 30) + 9
+                coily.xy = _calc_enemy_x(
+                    ram_state[71]), (ram_state[39] * 30) + 9
                 coily.wh = 8, 18
         else:  # Else the position remains the same as before
             if ram_state[56] > 8:
@@ -288,7 +296,6 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         coil_prev_x = 0
         coil_prev_y = 0
 
-
     # The object y values are not part of the RAM, instead the game
     # interprets the RAM position 75 as the highest  y position an object can be at and 79 as the lowest.
     # The x value of the object are the respective RAM values at these Positions.
@@ -307,7 +314,6 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     global last_105
     global last_103
     global last_lives
-
 
     purple_ball, green_ball, sam = objects[25], objects[26], objects[27]
 
@@ -340,16 +346,19 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                 green_ball = GreenBall()
                 objects[26] = green_ball
             if player is not None:
-                b_x, b_y = _calc_enemy_x(ram_state[75 + green_i]), ((green_i + 1) * 30) + 7 - green_i
+                b_x, b_y = _calc_enemy_x(
+                    ram_state[75 + green_i]), ((green_i + 1) * 30) + 7 - green_i
                 p_x, p_y = player.xy
                 if (b_x - p_x) < 9 and (b_x - p_x) > -9 and (b_y - p_y) < 9 and (b_y - p_y) > -9:
                     objects[27] = None
                     green_i = -1
             if ram_state[56] < 7:
-                green_ball.xy = _calc_enemy_x(ram_state[75 + green_i]) + 1, ((green_i + 1) * 30) + 23 - green_i
+                green_ball.xy = _calc_enemy_x(
+                    ram_state[75 + green_i]) + 1, ((green_i + 1) * 30) + 23 - green_i
                 green_ball.wh = 7, 6
             else:
-                green_ball.xy = _calc_enemy_x(ram_state[75 + green_i]) + 1, ((green_i + 1) * 30) + 9 - green_i
+                green_ball.xy = _calc_enemy_x(
+                    ram_state[75 + green_i]) + 1, ((green_i + 1) * 30) + 9 - green_i
                 green_ball.wh = 7, 9
         else:
             objects[26] = None
@@ -367,16 +376,18 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                     purple_ball = PurpleBall()
                     objects[25] = purple_ball
                 if ram_state[56] < 7:
-                    purple_ball.xy = _calc_enemy_x(ram_state[75 + purple_i]) + 1, ((purple_i + 1) * 30) + 23 - purple_i
+                    purple_ball.xy = _calc_enemy_x(
+                        ram_state[75 + purple_i]) + 1, ((purple_i + 1) * 30) + 23 - purple_i
                     purple_ball.wh = 7, 6
                 else:
-                    purple_ball.xy = _calc_enemy_x(ram_state[75 + purple_i]) + 1, ((purple_i + 1) * 30) + 9 - purple_i
+                    purple_ball.xy = _calc_enemy_x(
+                        ram_state[75 + purple_i]) + 1, ((purple_i + 1) * 30) + 9 - purple_i
                     purple_ball.wh = 7, 9
             else:
                 purple_i = -1
         else:
             objects[25] = None
-        
+
         if last_105 != ram_state[105]:
             if ram_state[105] == 6:
                 last_i = 0
@@ -386,17 +397,19 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                 sam = Sam()
                 objects[27] = sam
             if player is not None:
-                s_x, s_y = _calc_enemy_x(ram_state[75 + last_i]), ((last_i + 1) * 30) + 12 - last_i
+                s_x, s_y = _calc_enemy_x(
+                    ram_state[75 + last_i]), ((last_i + 1) * 30) + 12 - last_i
                 p_x, p_y = player.xy
                 if (s_x - p_x) < 7 and (s_x - p_x) > -7 and (s_y - p_y) < 7 and (s_y - p_y) > -7:
                     objects[27] = None
                     last_i = -1
-            sam.xy = _calc_enemy_x(ram_state[75 + last_i]), ((last_i + 1) * 30) + 12 - last_i
+            sam.xy = _calc_enemy_x(
+                ram_state[75 + last_i]), ((last_i + 1) * 30) + 12 - last_i
         else:
             objects[27] = None
         if last_i > 4:
             last_i = -1
-        
+
     if hud:
         score, lives = objects[28], objects[29]
         score = Score()
@@ -412,8 +425,6 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         else:
             lives = None
         objects[29] = lives
-
-
 
     return objects
 

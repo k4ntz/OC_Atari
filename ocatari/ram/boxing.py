@@ -1,14 +1,15 @@
 from .game_objects import GameObject, ValueObject
-import sys 
+import sys
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 1}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'PlayerScore': 1, 'EnemyScore': 1, 'Clock': 4}
+MAX_NB_OBJECTS = {'Player': 1, 'Enemy': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 1,
+                      'PlayerScore': 1, 'EnemyScore': 1, 'Clock': 1}
 
 
 class Player(GameObject):
-    """    
-    The player figure i.e., the boxer. 
-    
+    """
+    The player figure i.e., the boxer.
+
 
     :ivar right_arm_length: initial value: 0
     :ivar left_arm_length: initial value: 0
@@ -23,17 +24,16 @@ class Player(GameObject):
         self._above_10 = False
         self.right_arm_length = 0
         self.left_arm_length = 0
-    
-    
 
 
 class Enemy(GameObject):
-    """    
+    """
     The enemy boxer.
 
     :ivar right_arm_length: initial value: 0
     :ivar left_arm_length: initial value: 0
     """
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -47,9 +47,9 @@ class Enemy(GameObject):
 
 class Clock(GameObject):
     """
-    The game clock display (HUD). 
+    The game clock display (HUD).
     """
-    
+
     def __init__(self, x=0, y=0, w=0, h=0):
         super().__init__()
         self._xy = x, y
@@ -60,9 +60,9 @@ class Clock(GameObject):
 
 class PlayerScore(ValueObject):
     """
-    The player's score display (HUD). 
+    The player's score display (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 214, 214, 214
@@ -89,9 +89,9 @@ class PlayerScore(ValueObject):
 
 class EnemyScore(ValueObject):
     """
-    The enemy's score display (HUD). 
+    The enemy's score display (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 111, 5
@@ -121,7 +121,7 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
@@ -140,8 +140,7 @@ def _init_objects_ram(hud=False):
         global enscore
         enscore = EnemyScore()
         objects.extend([plscore, enscore,
-                        Clock(63, 17, 6, 7), Clock(73, 18, 2, 2), Clock(73, 21, 2, 2),
-                        Clock(79, 17, 6, 7), Clock(87, 17, 6, 7)])
+                        Clock(63, 17, 30, 7)])
     return objects
 
 
@@ -152,10 +151,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     """
     player, enemy = objects[:2]
     player.xy = ram_state[32]+5, ram_state[34]+38
-    player.right_arm_length = ram_state[57] # from 0 to 72
-    player.left_arm_length = ram_state[55] # from 0 to 72
+    player.right_arm_length = ram_state[57]  # from 0 to 72
+    player.left_arm_length = ram_state[55]  # from 0 to 72
     enemy.xy = ram_state[33]+4, ram_state[35]+38
-    enemy.left_arm_length = ram_state[61] # from 0 to 72
+    enemy.left_arm_length = ram_state[61]  # from 0 to 72
     enemy.right_arm_length = ram_state[59]
     if hud:
         # scores

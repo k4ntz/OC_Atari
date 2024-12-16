@@ -51,12 +51,14 @@ class PlayerScore(GameObject):
 def _detect_objects(objects, obs, hud):
     objects.clear()
 
-    player = find_objects(obs, objects_colors["player"], min_distance=1, closing_dist=1)
+    player = find_objects(
+        obs, objects_colors["player"], min_distance=1, closing_dist=1)
     for p in player:
         if 5 < p[1] < 189 and p[2] > 10 and p[3] < 28:
             objects.append(Player(*p))
 
-    enemy = find_objects(obs, objects_colors["enemy"], min_distance=1, closing_dist=1)
+    enemy = find_objects(
+        obs, objects_colors["enemy"], min_distance=1, closing_dist=1)
     for en in enemy:
         if 5 < en[1] < 189 and en[2] > 10 and en[3] < 28:
             objects.append(Enemy(*en))
@@ -65,17 +67,20 @@ def _detect_objects(objects, obs, hud):
     for b in ball:
         objects.append(Ball(*b))
 
-    ball_shadow = find_objects(obs, objects_colors["ball_shadow"], min_distance=1)
+    ball_shadow = find_objects(
+        obs, objects_colors["ball_shadow"], min_distance=1)
     for b in ball_shadow:
         objects.append(BallShadow(*b))
 
     if hud:
-        enemy_score = find_objects(obs, objects_colors["enemy_score"], min_distance=1, closing_dist=5)
+        enemy_score = find_objects(
+            obs, objects_colors["enemy_score"], min_distance=1, closing_dist=5)
         for enscr in enemy_score:
             if enscr[1] < 14:
                 objects.append(EnemyScore(*enscr))
 
-        player_score = find_objects(obs, objects_colors["player_score"], min_distance=1, closing_dist=5)
+        player_score = find_objects(
+            obs, objects_colors["player_score"], min_distance=1, closing_dist=5)
         for plrscr in player_score:
             if plrscr[1] < 14:
                 objects.append(PlayerScore(*plrscr))

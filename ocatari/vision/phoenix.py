@@ -14,55 +14,66 @@ class Player(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 213, 130, 74
 
+
 class Player_Projectile(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 158, 208, 101
+
 
 class Phoenix(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 227, 151, 89
 
+
 class Enemy_Projectile(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 227, 151, 89
+
 
 class Bat(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 24, 26, 167
 
+
 class Boss(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 24, 59, 157
+
 
 class Boss_Block_Green(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 135, 183, 84
 
+
 class Boss_Block_Blue(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 45, 87, 176
+
 
 class Boss_Block_Red(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 167, 26, 26
 
+
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 180, 231, 117
 
+
 class Life(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 213, 130, 74
+
 
 def _detect_objects(objects, obs, hud=False):
     # detection and filtering
@@ -71,18 +82,20 @@ def _detect_objects(objects, obs, hud=False):
     player = find_objects(obs, objects_colors["player"], miny=100)
     for el in player:
         objects.append(Player(*el))
-    
+
     pproj = find_objects(obs, objects_colors["player_projectile"])
     for el in pproj:
         if el[2] == 1:
             objects.append(Player_Projectile(*el))
 
-    phoenix1 = find_mc_objects(obs, [objects_colors["phoenix_orange"], objects_colors["phoenix_base"]])
+    phoenix1 = find_mc_objects(
+        obs, [objects_colors["phoenix_orange"], objects_colors["phoenix_base"]])
     for el in phoenix1:
         if el[2] > 1:
             objects.append(Phoenix(*el))
 
-    phoenix2 = find_mc_objects(obs, [objects_colors["phoenix_green"], objects_colors["phoenix_base"]])
+    phoenix2 = find_mc_objects(
+        obs, [objects_colors["phoenix_green"], objects_colors["phoenix_base"]])
     for el in phoenix2:
         if el[2] > 1:
             ph = Phoenix(*el)
@@ -101,7 +114,8 @@ def _detect_objects(objects, obs, hud=False):
                 if obs[el[1]+3*y][el[0]+4*x][0] == 45:
                     objects.append(Boss_Block_Blue(el[0]+4*x, el[1]+3*y, 4, 3))
 
-    boss = find_mc_objects(obs, [objects_colors["block_red"], objects_colors["boss"]])
+    boss = find_mc_objects(
+        obs, [objects_colors["block_red"], objects_colors["boss"]])
     for el in boss:
         objects.append(Boss(*el))
 
@@ -112,9 +126,11 @@ def _detect_objects(objects, obs, hud=False):
                 for y in range(int(el[3]/3)):
                     for x in range(int(el[2]/4)):
                         if obs[el[1]+3*y][el[0]+4*x][0] == 167:
-                            objects.append(Boss_Block_Red(el[0]+4*x, el[1]+3*y, 4, 3))
+                            objects.append(Boss_Block_Red(
+                                el[0]+4*x, el[1]+3*y, 4, 3))
     else:
-        bat2 = find_mc_objects(obs, [objects_colors["bat_red1"], objects_colors["bat_red2"], objects_colors["bat_red3"], objects_colors["bat_red4"], objects_colors["bat_red5"]], all_colors=False)
+        bat2 = find_mc_objects(obs, [objects_colors["bat_red1"], objects_colors["bat_red2"],
+                               objects_colors["bat_red3"], objects_colors["bat_red4"], objects_colors["bat_red5"]], all_colors=False)
         for el in bat2:
             if el[2] > 1:
                 ph = Bat(*el)
@@ -123,24 +139,27 @@ def _detect_objects(objects, obs, hud=False):
             else:
                 objects.append(Enemy_Projectile(*el))
 
-    bat1 = find_mc_objects(obs, [objects_colors["bat_blue1"], objects_colors["bat_blue2"], objects_colors["bat_blue3"], objects_colors["bat_blue4"], objects_colors["bat_blue5"]], all_colors=False)
+    bat1 = find_mc_objects(obs, [objects_colors["bat_blue1"], objects_colors["bat_blue2"],
+                           objects_colors["bat_blue3"], objects_colors["bat_blue4"], objects_colors["bat_blue5"]], all_colors=False)
     for el in bat1:
         if el[2] > 1:
             objects.append(Bat(*el))
         else:
             objects.append(Enemy_Projectile(*el))
-    
+
     eproj = find_objects(obs, objects_colors["enemy_projectile"])
     eproj.extend(find_objects(obs, objects_colors["enemy_projectile2"]))
     for el in eproj:
         if el[2] == 1:
             objects.append(Enemy_Projectile(*el))
-    
+
     if hud:
-        score = find_objects(obs, objects_colors["score"], maxy=50, closing_dist=20)
+        score = find_objects(
+            obs, objects_colors["score"], maxy=50, closing_dist=20)
         for el in score:
             objects.append(Score(*el))
 
-        life = find_objects(obs, objects_colors["player"], maxy=50, closing_active=False)
+        life = find_objects(
+            obs, objects_colors["player"], maxy=50, closing_active=False)
         for el in life:
             objects.append(Life(*el))

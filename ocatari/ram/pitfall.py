@@ -241,7 +241,7 @@ class Platform(GameObject):
     """
     Permanent platforms.
     """
-    
+
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
         super(Platform, self).__init__(*args, **kwargs)
         self._xy = x, y
@@ -289,7 +289,7 @@ class Timer(GameObject):
         self.xy = 31, 22
         self.wh = (37, 8)
         self.rgb = 214, 214, 214
-        self.value = 0 # in seconds
+        self.value = 0  # in seconds
         self.hud = True
 
 
@@ -330,6 +330,8 @@ def get_pos_rope(ram_state):
     return int(x_fixation_rope + np.sin(theta_t) * sign * length_rope), y
 
 # parses MAX_NB* dicts, returns default init list of objects
+
+
 def _get_max_objects(hud=False):
     def fromdict(max_obj_dict):
         objects = []
@@ -352,10 +354,13 @@ def _init_objects_ram(hud=False):
     ram_18 = 10
     global prev_x
     prev_x = 78
-    objects = [Player(), Wall(), Logs(), Logs(), Logs(), StairPit(), Stair(), Pit(), Pit(), Scorpion()]  # 10
-    objects.extend([Rope(), Snake(), Tarpit(), Waterhole(), Crocodile(), Crocodile(), Crocodile()])  # 7
+    objects = [Player(), Wall(), Logs(), Logs(), Logs(), StairPit(),
+               Stair(), Pit(), Pit(), Scorpion()]  # 10
+    objects.extend([Rope(), Snake(), Tarpit(), Waterhole(),
+                   Crocodile(), Crocodile(), Crocodile()])  # 7
     objects.extend([GoldenBar()])
-    objects.extend([Platform(), Platform(), Platform(), Platform(), Platform()])
+    objects.extend(
+        [Platform(), Platform(), Platform(), Platform(), Platform()])
     if hud:
         objects.extend([LifeCount(), LifeCount(), LifeCount()])  # 3
         objects.extend([PlayerScore()])
@@ -369,9 +374,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
-    # There are 8 treasures Define all the classes and at the time of detection replace with GoldenBar index 
+    # There are 8 treasures Define all the classes and at the time of detection replace with GoldenBar index
     player, = objects[:1]
-    objects[:] = [None] * 26  # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_4.pkl", "rb"))
+    # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_4.pkl", "rb"))
+    objects[:] = [None] * 26
     # env._env.env.env.ale.restoreState(snapshot)
     player.xy = ram_state[97], ram_state[105] + 72
     objects[0] = player
@@ -414,8 +420,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[12] = t
         objects[20] = Platform(x=8, y=125, w=40, h=8)
         objects[21] = Platform(x=112, y=125, w=48, h=8)
-    
-    # Waterhole 
+
+    # Waterhole
     elif ram_state[20] == 3:
         w = Waterhole()
         w.xy = 48, 120
@@ -462,27 +468,27 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if ram_state[20] == 5:
             g = GoldenBar()
             g.xy = 124, 118
-        
+
         # Disappearig Tarpit
-        if not ram_state[32]&128:
+        if not ram_state[32] & 128:
             x, y = 76, 125
             w, h = 8, 0
             width = [12, 8, 4, 4]
 
             for i in range(4):
-                if not ram_state[33+i]&128:
-                    x-= width[i]
-                    w+= width[i]*2
+                if not ram_state[33+i] & 128:
+                    x -= width[i]
+                    w += width[i]*2
 
             for b in range(8):
-                if not 2**(8-b)&ram_state[32]:
-                    y-=0.5
-                    h+=1
+                if not 2**(8-b) & ram_state[32]:
+                    y -= 0.5
+                    h += 1
                 else:
                     break
-            if not ram_state[36]&128:
-                y-=1
-                h+=2
+            if not ram_state[36] & 128:
+                y -= 1
+                h += 2
             pit = Tarpit()
             pit.xy = x, int(y)
             pit.wh = w, int(h)
@@ -576,7 +582,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[4] = None
 
     # Adding Rope
-    # When does Rope come in? Disable for all other scenarios 
+    # When does Rope come in? Disable for all other scenarios
     rope_visible = False
     # to know if the rope is visible, the assembly code based itself on whether the value in the register X is greater
     # than the value in the ram_state[18] --> but we don't have a
@@ -586,9 +592,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         rope_visible = True
     except:
         pass
-    if ram_state[19] in [2,3] and ram_state[20] == 4:
+    if ram_state[19] in [2, 3] and ram_state[20] == 4:
         rope_visible = True
-    # import ipdb ipdb.set_trace()
     if rope_visible:
         r = Rope()
         r.xy = get_pos_rope(ram_state)
@@ -601,10 +606,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects.extend([None] * 10)
         # PlayerScores related to ram_state 86 and 87
         p1 = PlayerScore()
-        p1.value = _convert_number(ram_state[85])*1000 + _convert_number(ram_state[86]) * 100 + _convert_number(ram_state[87])
+        p1.value = _convert_number(ram_state[85])*1000 + _convert_number(
+            ram_state[86]) * 100 + _convert_number(ram_state[87])
         size = 0
         if p1.value != 0:
-            size = math.ceil(np.log10(p1.value)) * 8 - int(0.5*math.ceil(np.log10(p1.value)))
+            size = math.ceil(np.log10(p1.value)) * 8 - \
+                int(0.5*math.ceil(np.log10(p1.value)))
         else:
             size = 0
         p1.xy = 68 - size, 9
@@ -630,12 +637,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
         # Timer
         t1 = Timer()
-        t1.value = _convert_number(ram_state[88])*60+_convert_number(ram_state[89]) + ram_state[90]/60
+        t1.value = _convert_number(
+            ram_state[88])*60+_convert_number(ram_state[89]) + ram_state[90]/60
         if ram_state[88] <= 9:
             t1.wh = 32, t1.h
             t1.xy = 37, t1.y
         objects[27] = t1
-        # import ipdb ipdb.set_trace()
 
 
 def _detect_objects_pitfall_raw(info, ram_state):

@@ -45,7 +45,8 @@ class Player2Round(GameObject):
 
 def _detect_objects(objects, obs, hud=False):
     objects.clear()
-    ball = find_objects(obs, objects_colors["ball"], min_distance=0.1, closing_dist=1)
+    ball = find_objects(
+        obs, objects_colors["ball"], min_distance=0.1, closing_dist=1)
     for bb in ball:
         if bb[2] < 160 and 100 < bb[1] < 175 and 4 < bb[3] < 20:
             objects.append(Ball(*bb))
@@ -61,14 +62,16 @@ def _detect_objects(objects, obs, hud=False):
             objects.append(Player(*p))
 
     if hud:
-        round_player_1 = find_objects(obs, objects_colors["round_player_1"], min_distance=None)
+        round_player_1 = find_objects(
+            obs, objects_colors["round_player_1"], min_distance=None)
         for ro in round_player_1:
             if ro[2] < 160 and ro[1] < 100 and ro[0] < 50:
                 objects.append(PlayerRound(*ro))
             if ro[2] < 160 and ro[1] < 100 and ro[0] > 110:
                 objects.append(Player2Round(*ro))
 
-        player_score = find_objects(obs, objects_colors["player_score"], min_distance=None)
+        player_score = find_objects(
+            obs, objects_colors["player_score"], min_distance=None)
         for score in player_score:
             if score[1] < 20 and hud:
                 objects.append(PlayerScore(*score))

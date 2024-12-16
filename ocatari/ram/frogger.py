@@ -1,175 +1,373 @@
-import sys
-from .game_objects import GameObject
-import numpy as np
+from .game_objects import GameObject, NoObject
 
 """
-RAM extraction for the game Frogger Template.
+RAM extraction for the game Frogger.
 
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Enemy': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Enemy': 1, 'PlayerScore': 2, 'EnemyScore': 2}
+MAX_NB_OBJECTS = {'Frog': 1, 'Car': 26, 'Log': 8, 'Alligator': 2, 'Turtle': 10,
+                  'LadyFrog': 1, 'Fly': 1, 'AlligatorHead': 1, 'HappyFrog': 5, 'Snake': 2}
+MAX_NB_OBJECTS_HUD = {'Frog': 1, 'Car': 26, 'Log': 8, 'Alligator': 2, 'Turtle': 10, 'LadyFrog': 1,
+                      'Fly': 1, 'AlligatorHead': 1, 'HappyFrog': 5, 'Snake': 2, 'Score': 1, 'Time': 1, 'Lives': 1}
+
+car_colors = [[195, 144, 61], [164, 89, 208], [
+    82, 126, 45], [198, 89, 179], [236, 236, 236]]
 
 
-class Player(GameObject):
+class Frog(GameObject):
     """
-    The player figure i.e., the movable bar at the side.
+    The player figure i.e., the frog.
     """
-    
+
     def __init__(self):
-        super().__init__()
+        super(Frog, self).__init__()
         self._xy = 0, 0
-        self.wh = 4, 15
-        self.rgb = 92, 186, 92
+        self.wh = 7, 7
+        self.rgb = 110, 156, 66
         self.hud = False
-        self._above_10 = False
 
 
-class Enemy(GameObject):
+class Car(GameObject):
     """
-    The enemy bar on the opposite side.
+    A car.
     """
-    
+
     def __init__(self):
-        super().__init__()
+        super(Car, self).__init__()
         self._xy = 0, 0
-        self.wh = 4, 15
-        self.rgb = 213, 130, 74
+        self.wh = 14, 7
+        self.rgb = 195, 144, 61
         self.hud = False
-        self._above_10 = False
 
 
-class Ball(GameObject):
-    """
-    The game ball.
-    """
-    
+class Log(GameObject):
     def __init__(self):
         super().__init__()
-        self._xy = 0, 0
-        self.wh = 2, 4
+        self.rgb = 105, 105, 15
+
+
+class Turtle(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 144, 72, 17
+
+
+class Alligator(GameObject):
+    def __init__(self):
+        super().__init__()
+        self.rgb = 105, 105, 15
+
+
+class LadyFrog(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.rgb = 236, 236, 236
-        self.hud = False
 
 
-class PlayerScore(GameObject):
-    """
-    The player's score display (HUD).
-    """
-    
-    def __init__(self, ten=False):
-        super().__init__()
-        if ten:
-            self._xy = 104, 1
-            self.wh = 4, 20
-        else:
-            self._xy = 116, 1
-            self.wh = 12, 20
-        self.ten = ten
-        self.rgb = 92, 186, 92
+class HappyFrog(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # self._xy = 0, 0
+        # self.wh = 8, 10
+        self.rgb = 82, 126, 45
+
+
+class AlligatorHead(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 110, 156, 66
+        # self.wh = 8, 10
+
+
+class Fly(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 110, 156, 66
+
+
+class Snake(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 82, 126, 45
+
+
+class Score(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 195, 144, 61
         self.hud = True
 
-    def __eq__(self, o):
-        return isinstance(o, PlayerScore) and self.xy == o.xy
 
-
-class EnemyScore(GameObject):
-    """
-    The enemy's score display (HUD).
-    """
-    
-    def __init__(self, ten=False):
-        super().__init__()
-        if ten:
-            self._xy = 24, 1
-            self.wh = 4, 20
-        else:
-            self._xy = 36, 1
-            self.wh = 12, 20
-        self.ten = ten
-        self.rgb = 213, 130, 74
+class Lives(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 236, 236, 236
         self.hud = True
 
-    def __eq__(self, o):
-        return isinstance(o, EnemyScore) and self.xy == o.xy
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
+class Time(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 0, 0, 0
+        self.hud = True
 
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Ball(), Enemy()]
-    if hud:
-        objects.extend([PlayerScore(), EnemyScore()])
-    return objects
+    cars = [Car() for _ in range(26)]
+    logs = [NoObject()] * 8
+    aligators = [NoObject()] * 2
+    turtles = [NoObject()] * 10
+    ladyfrogs = [NoObject()]
+    happyfrogs = [NoObject()]*5
+    flys = [NoObject()]
+    heads = [NoObject()]
+    snakes = [NoObject()]*2
+    score = [NoObject()]
+    time = [NoObject()]
+    lives = [NoObject()]
+    return [Frog()] + cars + logs + aligators + turtles + ladyfrogs + heads + flys + happyfrogs + snakes + score + time + lives
 
 
 def _detect_objects_ram(objects, ram_state, hud=False):
     """
-    For all 3 objects:
+    For all objects:
     (x, y, w, h, r, g, b)
     """
-    # set default coord if object does not exist
-    player, ball, enemy = objects[:3]
-
-    # ball
-    if ram_state[54] != 0:  # otherwise no ball
-        ball.xy = ram_state[49]-49, ram_state[54]-14
-
-    # enemy
-    if ram_state[50] > 18:  # otherwise no enemy # could be ram pos 21 as well
-        if ram_state[50] - 15 < 34:
-            enemy.xy = 16, 34
-            enemy.wh = 4, ram_state[50]-33
-        elif ram_state[50] > 194:
-            enemy.xy = 16, ram_state[50]-15
-            enemy.wh = 4, 209 - ram_state[50]
-        else:
-            enemy.xy = 16, ram_state[50]-15
-            enemy.wh = 4, 15
-
-    # player
-    if ram_state[51] - 13 < 34:
-        player.xy = 140, 34
-        player.wh = 4, ram_state[51]-33
-    elif ram_state[51] + 2 > 194:
-        player.xy = 140, ram_state[51]-13
-        player.wh = 4, 207 - ram_state[51]
+    frog = objects[0]
+    frog.x = ram_state[48] - 1
+    frog.wh = 7, 7
+    if ram_state[44] == 255:
+        frog.y = 171
+    elif ram_state[44] == 5:
+        frog.y = 95
     else:
-        player.xy = 140, ram_state[51]-13
-        player.wh = 4, 15
+        frog.y = - 13 * ram_state[44] + 161
 
-    if hud:
-        # enemy score
-        if ram_state[13] >= 10:  # enemy score
-            if not enemy._above_10:
-                objects.append(EnemyScore(ten=True))
-                enemy._above_10 = True
+    # first line first car
+    car = objects[1]
+    car.rgb = car_colors[0]
+    car.y = 161
+    car.h = 7
+    if ram_state[11] < 1:
+        car = NoObject()
+    elif ram_state[11] < 8:
+        car.x = 8
+        car.w = ram_state[11] - 1
+    elif ram_state[11] > 154:
+        car = NoObject()
+    else:
+        car.x = ram_state[11] - 1
+        if ram_state[11] > 146:
+            car.w = 153 - ram_state[11]
         else:
-            if enemy._above_10:
-                objects.remove(EnemyScore(ten=True))
-                enemy._above_10 = False
+            car.w = 8
 
-        # player score
-        if ram_state[14] >= 10:  # player score
-            if not player._above_10:
-                objects.append(PlayerScore(ten=True))
-                player._above_10 = True
+    # first line second car
+    car = objects[2]
+    car.rgb = car_colors[0]
+    car.y = 161
+    car.h = 7
+    if ram_state[0] < 1:
+        car = NoObject()
+    elif ram_state[0] < 8:
+        car.x = 8
+        car.w = ram_state[0] - 1
+    elif ram_state[0] > 154:
+        car = NoObject()
+    else:
+        car.x = ram_state[0] - 1
+        if ram_state[0] > 146:
+            car.w = 153 - ram_state[0]
         else:
-            if player._above_10:
-                objects.remove(PlayerScore(ten=True))
-                player._above_10 = False
+            car.w = 8
+
+    # second line first car
+    car = objects[3]
+    car.rgb = car_colors[1]
+    car.y = 148
+    car.h = 7
+    if ram_state[12] < 1:
+        car = NoObject()
+    elif ram_state[12] < 8:
+        car.x = 8
+        car.w = ram_state[12] - 1
+    elif ram_state[12] > 154:
+        car = NoObject()
+    else:
+        car.x = ram_state[12] - 1
+        if ram_state[12] > 147:
+            car.w = 153 - ram_state[12]
+        else:
+            car.w = 7
+
+    # second line second car
+    car = objects[4]
+    car.rgb = car_colors[1]
+    car.y = 148
+    car.h = 7
+    if ram_state[1] < 1:
+        car = NoObject()
+    elif ram_state[1] < 8:
+        car.x = 8
+        car.w = ram_state[1] - 1
+    elif ram_state[1] > 154:
+        car = NoObject()
+    else:
+        car.x = ram_state[1] - 1
+        if ram_state[1] > 147:
+            car.w = 153 - ram_state[1]
+        else:
+            car.w = 7
+
+    # third line first car
+    car = objects[5]
+    car.rgb = car_colors[2]
+    car.y = 135
+    car.h = 7
+    if ram_state[13] < 1:
+        car = NoObject()
+    elif ram_state[13] < 8:
+        car.x = 8
+        car.w = ram_state[13] - 1
+    elif ram_state[13] > 154:
+        car = NoObject()
+    else:
+        car.x = ram_state[13] - 1
+        if ram_state[13] > 147:
+            car.w = 153 - ram_state[13]
+        else:
+            car.w = 8
+
+    # third line second car
+    car = objects[6]
+    car.rgb = car_colors[2]
+    car.y = 135
+    car.h = 7
+    pos = (ram_state[13] + 32) % 160
+    if pos < 1:
+        car = NoObject()
+    elif pos < 8:
+        car.x = 8
+        car.w = pos - 1
+    elif pos > 154:
+        car = NoObject()
+    else:
+        car.x = pos - 1
+        if pos > 147:
+            car.w = 153 - pos
+        else:
+            car.w = 8
+
+    # third line third car
+    car = objects[7]
+    car.rgb = car_colors[2]
+    car.y = 135
+    car.h = 7
+    if ram_state[2] < 1:
+        car = NoObject()
+    elif ram_state[2] < 8:
+        car.x = 8
+        car.w = ram_state[2] - 1
+    elif ram_state[2] > 154:
+        car = NoObject()
+    else:
+        car.x = ram_state[2] - 1
+        if ram_state[2] > 147:
+            car.w = 153 - ram_state[2]
+        else:
+            car.w = 8
+
+    # third line third car
+    car = objects[8]
+    car.rgb = car_colors[2]
+    car.y = 135
+    car.h = 7
+    pos = (ram_state[13] + 112) % 160
+    if pos < 1:
+        car = NoObject()
+    elif pos < 8:
+        car.x = 8
+        car.w = pos - 1
+    elif pos > 154:
+        car = NoObject()
+    else:
+        car.x = pos - 1
+        if pos > 147:
+            car.w = 153 - pos
+        else:
+            car.w = 8
+
+    # fourth line first car
+    car = objects[9]
+    car.rgb = car_colors[3]
+    car.y = 122
+    car.h = 7
+    if ram_state[14] < 1:
+        car = NoObject()
+    elif ram_state[14] < 8:
+        car.x = 8
+        car.w = ram_state[14] - 1
+    elif ram_state[14] > 154:
+        car = NoObject()
+    else:
+        car.x = ram_state[14] - 1
+        if ram_state[14] > 147:
+            car.w = 153 - ram_state[14]
+        else:
+            car.w = 8
+
+    # fourth line second car
+    car = objects[10]
+    car.rgb = car_colors[3]
+    car.y = 122
+    car.h = 7
+    if ram_state[3] < 1:
+        car = NoObject()
+    elif ram_state[3] < 8:
+        car.x = 8
+        car.w = ram_state[3] - 1
+    elif ram_state[3] > 154:
+        car = NoObject()
+    else:
+        car.x = ram_state[3] - 1
+        if ram_state[3] > 147:
+            car.w = 153 - ram_state[3]
+        else:
+            car.w = 8
+
+    car = objects[11]
+    car.rgb = car_colors[4]
+    car.y = 109
+    car.h = 7
+    if ram_state[15] < 8:
+        car.x = 8
+        car.w = ram_state[15] + 7
+    elif ram_state[15] > 155:
+        car.x = 8
+        car.w = ram_state[15] - 153
+    else:
+        car.x = ram_state[15]
+        if ram_state[15] > 137:
+            car.w = 152 - ram_state[15]
+        else:
+            car.w = 16
+
+    car = objects[12]
+    car.rgb = car_colors[4]
+    car.y = 109
+    car.h = 7
+    if ram_state[4] < 8:
+        car.x = 8
+        car.w = ram_state[4] + 7
+    elif ram_state[4] > 155:
+        car.x = 8
+        car.w = ram_state[4] - 153
+    else:
+        car.x = ram_state[4]
+        if ram_state[4] > 137:
+            car.w = 152 - ram_state[4]
+        else:
+            car.w = 16

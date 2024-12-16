@@ -23,7 +23,8 @@ objects_colors = {"sentry": [[252, 224, 112], [111, 210, 111], [84, 138, 210], [
                                     [227, 151, 89], [184, 70, 162], [187, 187, 53]],
                   "deathray": [[101, 209, 174], [72, 160, 72]], "score": [252, 188, 116],
                   "projectile": [[45, 109, 152], [84, 138, 210], [125, 48, 173], [127, 92, 213],
-                                 [158, 208, 101], [164, 89, 208], [184, 70, 162], [187, 187, 53],
+                                 [158, 208, 101], [164, 89, 208], [
+                                     184, 70, 162], [187, 187, 53],
                                  [227, 151, 89], [228, 11, 111], [252, 188, 116]]
                   }
 
@@ -100,39 +101,47 @@ class Score(GameObject):
 def _detect_objects(objects, obs, hud=True):
     objects.clear()
 
-    sentry = find_mc_objects(obs, objects_colors["sentry"], min_distance=1, maxx=10, miny=110)
+    sentry = find_mc_objects(
+        obs, objects_colors["sentry"], min_distance=1, maxx=10, miny=110)
     for bb in sentry:
         objects.append(Sentry(*bb))
 
-    sentry = find_mc_objects(obs, objects_colors["sentry"], min_distance=1, minx=150, miny=110)
+    sentry = find_mc_objects(
+        obs, objects_colors["sentry"], min_distance=1, minx=150, miny=110)
     for bb in sentry:
         objects.append(Sentry(*bb))
 
-    aqua_plane = find_mc_objects(obs, objects_colors["aqua_plane"], min_distance=1, minx=14, maxx=32, miny=110)
+    aqua_plane = find_mc_objects(
+        obs, objects_colors["aqua_plane"], min_distance=1, minx=14, maxx=32, miny=110)
     for bb in aqua_plane:
         objects.append(AquaPlane(*bb))
 
-    domed_palace = find_mc_objects(obs, objects_colors["domed_palace"], min_distance=1, minx=35, maxx=54, miny=110)
+    domed_palace = find_mc_objects(
+        obs, objects_colors["domed_palace"], min_distance=1, minx=35, maxx=54, miny=110)
     for bb in domed_palace:
         objects.append(DomedPalace(*bb))
 
-    generator_1 = find_objects(obs, objects_colors["generator_1"], min_distance=1, minx=59, maxx=70, miny=110)
+    generator_1 = find_objects(
+        obs, objects_colors["generator_1"], min_distance=1, minx=59, maxx=70, miny=110)
     for bb in generator_1:
         objects.append(Generator(*bb))
 
-    generator_2 = find_mc_objects(obs, objects_colors["generator_2"], min_distance=1, minx=80, maxx=90, miny=110)
+    generator_2 = find_mc_objects(
+        obs, objects_colors["generator_2"], min_distance=1, minx=80, maxx=90, miny=110)
     for bb in generator_2:
         g2 = Generator(*bb)
         g2.rgb = objects_colors["generator_2"][0]
         objects.append(g2)
 
-    generator_3 = find_objects(obs, objects_colors["generator_3"], min_distance=1, minx=140, maxx=148, miny=110)
+    generator_3 = find_objects(
+        obs, objects_colors["generator_3"], min_distance=1, minx=140, maxx=148, miny=110)
     for bb in generator_3:
         g3 = Generator(*bb)
         g3.rgb = objects_colors["generator_3"]
         objects.append(g3)
 
-    bridged_bazaar = find_mc_objects(obs, objects_colors["bridged_bazaar"], min_distance=1, minx=94, maxx=112, miny=110)
+    bridged_bazaar = find_mc_objects(
+        obs, objects_colors["bridged_bazaar"], min_distance=1, minx=94, maxx=112, miny=110)
     for bb in bridged_bazaar:
         objects.append(BridgedBazaar(*bb))
 
@@ -171,10 +180,12 @@ def _detect_objects(objects, obs, hud=True):
                        si in product(objects_colors["projectile"], sizes)], [])
 
     projobjs = [Projectile(*bb) for bb in projectiles]
-    valid_projobjs = [proj for proj in projobjs if not any([proj.is_on_top(obj) for obj in objects])]
+    valid_projobjs = [proj for proj in projobjs if not any(
+        [proj.is_on_top(obj) for obj in objects])]
     objects.extend(valid_projobjs)
 
     if hud:
-        score = find_objects(obs, objects_colors["score"], min_distance=1, miny=120, closing_dist=10)
+        score = find_objects(
+            obs, objects_colors["score"], min_distance=1, miny=120, closing_dist=10)
         for bb in score:
             objects.append(Score(*bb))

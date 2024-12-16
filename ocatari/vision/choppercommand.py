@@ -26,7 +26,7 @@ class MiniPlayer(GameObject):
 
 
 class Truck(GameObject):
-    def __init__(self,*args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 0, 0, 0
 
@@ -117,7 +117,7 @@ def _detect_objects(objects, obs, hud=False):
     player = find_objects(obs, object_colors["most"], size=(16, 9), minx=PlayArea.minx, maxx=PlayArea.maxx,
                           miny=PlayArea.miny, maxy=PlayArea.maxy)
     bomb = find_objects(obs, object_colors["most"], size=(2, 2), minx=PlayArea.minx, maxx=PlayArea.maxx,
-                          miny=PlayArea.miny, maxy=PlayArea.maxy)
+                        miny=PlayArea.miny, maxy=PlayArea.maxy)
 
     for bb in player:
         objects.append(Player(*bb))
@@ -126,12 +126,14 @@ def _detect_objects(objects, obs, hud=False):
         objects.append(Bomb(*bb))
 
     # truck
-    truck = find_objects(obs, object_colors["truck"], size=(8, 7), minx=8, miny=161, maxy=167)
+    truck = find_objects(obs, object_colors["truck"], size=(
+        8, 7), minx=8, miny=161, maxy=167)
     for bb in truck:
         objects.append(Truck(*bb))
 
     # enemy_helicopter
-    enemy_helicopter = find_objects(obs, object_colors["enemy_helicopter"], size=(8, 9))
+    enemy_helicopter = find_objects(
+        obs, object_colors["enemy_helicopter"], size=(8, 9))
     for bb in enemy_helicopter:
         objects.append(EnemyHelicopter(*bb))
 
@@ -151,17 +153,17 @@ def _detect_objects(objects, obs, hud=False):
 
     # mini_player (case object in another object)
     mini_player = find_rectangle_objects(obs, object_colors["mini_player"], max_size=(2, 2),
-                              minx=MiniPlayArea.minx, maxx=MiniPlayArea.maxx, miny=MiniPlayArea.miny, maxy=184)
+                                         minx=MiniPlayArea.minx, maxx=MiniPlayArea.maxx, miny=MiniPlayArea.miny, maxy=184)
     for bb in mini_player:
         objects.append(MiniPlayer(*bb))
 
     # mini_others = MiniEnemy, MiniTruck
     mini_enemy = find_rectangle_objects(obs, object_colors["mini_others"], max_size=(2, 2),
-                              minx=MiniPlayArea.minx, maxx=MiniPlayArea.maxx, miny=MiniPlayArea.miny, maxy=184)
+                                        minx=MiniPlayArea.minx, maxx=MiniPlayArea.maxx, miny=MiniPlayArea.miny, maxy=184)
     mini_enemy.extend(find_rectangle_objects(obs, object_colors["mini_others"], max_size=(2, 1),
-                              minx=MiniPlayArea.minx, maxx=MiniPlayArea.maxx, miny=183, maxy=184))
+                                             minx=MiniPlayArea.minx, maxx=MiniPlayArea.maxx, miny=183, maxy=184))
     mini_truck = find_rectangle_objects(obs, object_colors["mini_others"], max_size=(1, 2),
-                              minx=MiniPlayArea.minx, maxx=MiniPlayArea.maxx, miny=185, maxy=MiniPlayArea.maxy)
+                                        minx=MiniPlayArea.minx, maxx=MiniPlayArea.maxx, miny=185, maxy=MiniPlayArea.maxy)
     for bb in mini_enemy:
         objects.append(MiniEnemy(*bb))
 

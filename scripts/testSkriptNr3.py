@@ -4,7 +4,7 @@ import ipdb
 from matplotlib import pyplot as plt
 import sys
 # import pathlib
-sys.path.insert(0, '../../') # noqa
+sys.path.insert(0, '../../')  # noqa
 from ocatari.core import OCAtari
 
 """
@@ -35,7 +35,8 @@ for _ in range(1000):
                     pad = "           "
                     for u in range(4 - len(str(i))):
                         pad += " "
-                    print(str(i) + pad + "value:" + str(ram[i]) + pad + " was previously " + str(prevRam[i]))
+                    print(str(i) + pad + "value:" +
+                          str(ram[i]) + pad + " was previously " + str(prevRam[i]))
         print("------------------------------------------")
         prevRam = ram
         rgb_array = env.render()
