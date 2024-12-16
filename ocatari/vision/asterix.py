@@ -7,20 +7,28 @@ objects_colors = {'player': [187, 187, 53],
                   'lives': [187, 187, 53],
 
                   # next color is inner one
-                  'reward_50': [[198, 89, 179], [127, 92, 213], [170, 170, 170]],  # cauldron
-                  'reward_100': [[135, 183, 84], [213, 130, 74], [170, 170, 170]],  # helmet
-                  'reward_200': [[195, 144, 61], [84, 138, 210], [170, 170, 170]],  # shield
-                  'reward_300': [[213, 130, 74], [84, 92, 214], [170, 170, 170]],  # lamp
-                  'reward_400': [[135, 183, 84], [214, 92, 92], [170, 170, 170]],  # apple
-                  'reward_500': [[163, 57, 21], [164, 89, 208], [170, 170, 170]],  # fish, meat and mug then cauldron...
+                  # cauldron
+                  'reward_50': [[198, 89, 179], [127, 92, 213], [170, 170, 170]],
+                  # helmet
+                  'reward_100': [[135, 183, 84], [213, 130, 74], [170, 170, 170]],
+                  # shield
+                  'reward_200': [[195, 144, 61], [84, 138, 210], [170, 170, 170]],
+                  # lamp
+                  'reward_300': [[213, 130, 74], [84, 92, 214], [170, 170, 170]],
+                  # apple
+                  'reward_400': [[135, 183, 84], [214, 92, 92], [170, 170, 170]],
+                  # fish, meat and mug then cauldron...
+                  'reward_500': [[163, 57, 21], [164, 89, 208], [170, 170, 170]],
 
                   'cauldron': [[167, 26, 26], [184, 50, 50]],
                   'helmet': [[240, 128, 128], [236, 236, 236], [214, 214, 214], [192, 192, 192], [170, 170, 170]],
                   'shield': [214, 214, 214],
                   'lamp': [[187, 53, 53], [184, 50, 50], [214, 214, 214]],
-                  'apple': [[184, 50, 50], [110, 156, 66]],  # red and green. 110, 156, 66 is for green
+                  # red and green. 110, 156, 66 is for green
+                  'apple': [[184, 50, 50], [110, 156, 66]],
                   'fish': [198, 89, 179],
-                  'meat': [[184, 50, 50], [214, 214, 214]],  # [214, 214, 214] for small white part
+                  # [214, 214, 214] for small white part
+                  'meat': [[184, 50, 50], [214, 214, 214]],
                   'mug': [[184, 50, 50], [214, 214, 214]]
                   }
 
@@ -135,14 +143,17 @@ class Reward500(GameObject):
 
 # MAX_NB_OBJECTS_HUD = {"Player" :  1, "Enemy": 8, "Reward" : 8, "Consumable" : 8, "Score" : 1, "Lives": 1}
 
+
 def _detect_objects(objects, obs, hud=False):
     player = objects[0]
-    player_bb = find_objects(obs, objects_colors["player"], maxy=160, tol_p=20, tol_s=(9, 1), size=(8, 11))
+    player_bb = find_objects(
+        obs, objects_colors["player"], maxy=160, tol_p=20, tol_s=(9, 1), size=(8, 11))
     if player_bb:
         player.xywh = player_bb[0]
     # for instance in player:  # parameters work for all 3 possible symbols ((wide) asterix and oblix (advanced))
     #     objects.append(Player(*instance))
-    enemies_bb = find_mc_objects(obs, objects_colors["enemy"], closing_dist=2, miny=24, maxy=151, size=(7, 11), tol_s=1)
+    enemies_bb = find_mc_objects(
+        obs, objects_colors["enemy"], closing_dist=2, miny=24, maxy=151, size=(7, 11), tol_s=1)
     match_objects(objects, enemies_bb, 1, 8, Enemy)
 
     reward50 = find_mc_objects(obs, objects_colors["reward_50"], min_distance=3, closing_dist=4, miny=24, maxy=151,
@@ -165,7 +176,8 @@ def _detect_objects(objects, obs, hud=False):
                                 size=(8, 11), tol_s=3)
     match_objects(objects, reward500, 9, 8, Reward500)
 
-    cauldron = find_mc_objects(obs, objects_colors["cauldron"], closing_dist=2, size=(7, 10), tol_s=2)
+    cauldron = find_mc_objects(
+        obs, objects_colors["cauldron"], closing_dist=2, size=(7, 10), tol_s=2)
     match_objects(objects, cauldron, 17, 8, Cauldron)
     helmet = find_mc_objects(obs, objects_colors["helmet"], closing_dist=1, min_distance=1, size=(7, 11),
                              tol_s=2, miny=24, maxy=151)
@@ -174,8 +186,9 @@ def _detect_objects(objects, obs, hud=False):
                           miny=24, maxy=151)
     match_objects(objects, shield, 17, 8, Shield)
     no_shield = len(shield) == 0
-    
-    lamp = find_mc_objects(obs, objects_colors["lamp"], closing_dist=4, size=(8, 11), tol_s=1, miny=24, maxy=151)
+
+    lamp = find_mc_objects(obs, objects_colors["lamp"], closing_dist=4, size=(
+        8, 11), tol_s=1, miny=24, maxy=151)
     match_objects(objects, lamp, 17, 8, Lamp)
 
     apple = find_mc_objects(obs, objects_colors["apple"], closing_dist=2, min_distance=2, size=(8, 11),
@@ -195,7 +208,6 @@ def _detect_objects(objects, obs, hud=False):
                           tol_s=1, miny=24, maxy=151)
     match_objects(objects, mug, 17, 8, Mug)
 
-
     # if hud:
     #     lives = find_objects(obs, objects_colors["lives"], min_distance=1, miny=160, maxy=181)
     #     for instance in lives:
@@ -205,6 +217,5 @@ def _detect_objects(objects, obs, hud=False):
     #     for instance in score:
     #         objects.append(Score(*instance))
 
-  
     # remaining problems:
     # lamp and reward_300 are not being detected at all (try with masks?)

@@ -7,9 +7,9 @@ RAM extraction for the game Pong.
 
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Arrow': 1, 'Bait': 1, 'Balloon':6, 'Enemy': 7, 
+MAX_NB_OBJECTS = {'Player': 1, 'Arrow': 1, 'Bait': 1, 'Balloon': 6, 'Enemy': 7,
                   'Stone': 1, 'Rock': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Arrow': 1, 'Bait': 1, 'Balloon':6, 'Enemy': 7, 
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Arrow': 1, 'Bait': 1, 'Balloon': 6, 'Enemy': 7,
                       'Stone': 1, 'Rock': 1, 'PlayerScore': 1, 'Lives': 1}
 
 
@@ -17,7 +17,7 @@ class Player(GameObject):
     """
     The player figure i.e., the mother pig(Mama).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy = 129, 61
@@ -31,7 +31,7 @@ class Arrow(GameObject):
     """
     The arrows thrown by the mother pig.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy = 130, 68
@@ -44,7 +44,7 @@ class Bait(GameObject):
     """
     The bait thrown by the mother pig.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy = 129, 68
@@ -57,19 +57,19 @@ class Balloon(GameObject):
     """
     The flying balloons.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy = 43, 61
         self.wh = 7, 7
         self.rgb = 236, 236, 236
         self.status = 0
-            # 0: enemy without shield
-            # 1: without enemy
-            # 2: enemy with shield
-            # 3: exploding
-            # 4: exploding without enemy
-            # 5: exploded and enemy falling
+        # 0: enemy without shield
+        # 1: without enemy
+        # 2: enemy with shield
+        # 3: exploding
+        # 4: exploding without enemy
+        # 5: exploded and enemy falling
         self.hud = False
 
 
@@ -77,7 +77,7 @@ class Enemy(GameObject):
     """
     The wolves.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy = 44, 69
@@ -90,7 +90,7 @@ class Stone(GameObject):
     """
     The stones thrown by wolves.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy = 81, 63
@@ -103,7 +103,7 @@ class Rock(GameObject):
     """
     The rock thrown by wolves.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy = 55, 25
@@ -116,7 +116,7 @@ class PlayerScore(GameObject):
     """
     The player's score display (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.xy = 96, 3
@@ -131,7 +131,7 @@ class PlayerScore(GameObject):
 
 class Lives(GameObject):
     """
-    The indicator for the remaining lives of the player (HUD). 
+    The indicator for the remaining lives of the player (HUD).
     """
 
     def __init__(self):
@@ -152,18 +152,19 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
 
+
 def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    
+
     objects = [Player()] + [Arrow()] + [Bait()] + [Balloon()] * 6 + [Enemy()] * 7 + \
         [Stone()] + [Rock()]
     if hud:
@@ -190,7 +191,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # arrow and bait
     global projectile_offset
     global projectile_x0
-    
+
     projectile1 = NoObject()
     projectile2 = NoObject()
     if ram_state[40] == 0 or ram_state[40] == 81:
@@ -207,8 +208,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 projectile_x0 += 1
             else:
                 projectile_x0 -= 1
-        
-        projectile_x = (shifted_rs63 % 16) * 16 - projectile_x0 - shifted_rs63 // 16
+
+        projectile_x = (shifted_rs63 % 16) * 16 - \
+            projectile_x0 - shifted_rs63 // 16
         if ram_state[66] in [2, 4, 6]:
             projectile1 = Arrow()
             projectile1.xy = projectile_x, ram_state[40] * 21 + 47
@@ -216,7 +218,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             projectile2 = Bait()
             projectile_y = (ram_state[40] % 16) * 21 + ram_state[40] // 16 + 42
             projectile2.xy = projectile_x, projectile_y
-    
+
     if ram_state[40] == 81 and ram_state[75] == 15:
         projectile2 = Bait()
         projectile2.wh = 10, 4
@@ -235,7 +237,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if ram_state[i] != 0:
             idx = (i - 32) // 2
             balloon = Balloon()
-            balloon.xy = 43 + idx * 32, ram_state[i] * 21 + 40 + (ram_state[i] > 1) * 1
+            balloon.xy = 43 + idx * \
+                32, ram_state[i] * 21 + 40 + (ram_state[i] > 1) * 1
             balloon.rgb = balloon_color[i - 32]
             balloon.status = ram_state[i + 12]
             balloon.status = ram_state[i + 12]
@@ -253,7 +256,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     for i in range(len(balloons)):
         objects[3 + i] = balloons[i]
         objects[9 + i] = enemies[i]
-    
+
     climbing_enemy = NoObject()
     if ram_state[38] != 0:
         climbing_enemy = Enemy()
@@ -272,7 +275,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     global stone_x0
     global stone_offset
     global stone_column
-    
+
     if not (ram_state[41] in range(17, 39)):
         stone_x0 = [37, 39]
         stone_offset = 0
@@ -294,36 +297,38 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             shifted_rs64 = ram_state[64] - 128
         else:
             shifted_rs64 = 128 + ram_state[64]
-        
+
         if shifted_rs64 % 16 != stone_offset:
             stone_offset = shifted_rs64 % 16
             stone_x0[0] += 1
             stone_x0[1] += 1
-        
+
         if ram_state[65] > 5:
-            starting_x = (shifted_rs64 % 16) * 16 - stone_x0[stone_column] - shifted_rs64 // 16
+            starting_x = (shifted_rs64 % 16) * 16 - \
+                stone_x0[stone_column] - shifted_rs64 // 16
             if starting_x > 80:
                 stone_column = 1
-                
-        stone_x = (shifted_rs64 % 16) * 16 - stone_x0[stone_column] - shifted_rs64 // 16
+
+        stone_x = (shifted_rs64 % 16) * 16 - \
+            stone_x0[stone_column] - shifted_rs64 // 16
         stone_y = (ram_state[41] % 16) * 21 + ram_state[41] // 16 + 42
-                
+
         row = 0
         if ram_state[41] in range(17, 23):
             row = ram_state[41] - 16
             stone_x -= 1
         elif ram_state[41] in range(33, 39):
             row = ram_state[41] - 32
-        
+
         stone.xy = stone_x, stone_y
-        
+
         for i in range(32, 36):
             if ram_state[i] == row:
                 stone.rgb = stone_color[i - 32]
             elif ram_state[i] == row + 1:
                 stone.rgb = stone_color[i - 32]
     objects[16] = stone
-    
+
     # rock
     rock = NoObject()
     rock_x0 = [55, 63, 70, 78, 85, 93, 101]
@@ -339,7 +344,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             rock_y = ram_state[39] * 21 + 45
         rock.xy = rock_x, rock_y
     objects[17] = rock
-    
+
     # player score
     player_score = NoObject()
     if hud:

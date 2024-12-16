@@ -8,14 +8,15 @@ RAM extraction for the game Pong.
 """
 
 MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Enemy': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Enemy': 1, 'PlayerScore': 1, 'EnemyScore': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1,
+                      'Enemy': 1, 'PlayerScore': 1, 'EnemyScore': 1}
 
 
 class Player(GameObject):
     """
     The player figure i.e., the movable bar at the side.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -29,7 +30,7 @@ class Enemy(GameObject):
     """
     The enemy bar on the opposite side.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -43,7 +44,7 @@ class Ball(GameObject):
     """
     The game ball.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -56,7 +57,7 @@ class PlayerScore(GameObject):
     """
     The player's score display (HUD).
     """
-    
+
     def __init__(self, ten=False):
         super().__init__()
         if ten:
@@ -77,7 +78,7 @@ class EnemyScore(GameObject):
     """
     The enemy's score display (HUD).
     """
-    
+
     def __init__(self, ten=False):
         super().__init__()
         if ten:
@@ -94,6 +95,8 @@ class EnemyScore(GameObject):
         return isinstance(o, EnemyScore) and self.xy == o.xy
 
 # parses MAX_NB* dicts, returns default init list of objects
+
+
 def _get_max_objects(hud=False):
 
     def fromdict(max_obj_dict):
@@ -101,12 +104,13 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
+
 
 def _init_objects_ram(hud=False):
     """
@@ -127,11 +131,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player, ball, enemy = objects[:3]
 
     # ball
-    if ram_state[54] != 0 and ram_state[49]> 49:  # otherwise no ball
+    if ram_state[54] != 0 and ram_state[49] > 49:  # otherwise no ball
         ball.xy = ram_state[49]-49, ram_state[54]-14
 
     # enemy
-    if ram_state[50] > 18 and ram_state[50] > 33:  # otherwise no enemy # could be ram pos 21 as well
+    # otherwise no enemy # could be ram pos 21 as well
+    if ram_state[50] > 18 and ram_state[50] > 33:
         if ram_state[50] - 15 < 34:
             enemy.xy = 16, 34
             enemy.wh = 4, ram_state[50]-33
@@ -183,6 +188,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 enemy_score.wh = 12, 20
                 enemy._above_10 = False
 
+
 def _detect_objects_pong_raw(info, ram_state):
     """
     returns unprocessed list with
@@ -192,9 +198,6 @@ def _detect_objects_pong_raw(info, ram_state):
     info["ball_y"] = ram_state[54]
     info["enemy_y"] = ram_state[50]
     info["player_y"] = ram_state[51]
-
-
-    
 
 
 # def _detect_objects_pong_revised_old(info, ram_state, hud=False):

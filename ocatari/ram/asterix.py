@@ -4,8 +4,9 @@ import math
 import sys
 
 
-MAX_NB_OBJECTS = {"Player" :  1, "Reward" : 8, "Enemy": 8, "Consumable" : 8}
-MAX_NB_OBJECTS_HUD = {"Player" :  1, "Reward" : 8, "Enemy": 8, "Consumable" : 8, "Score" : 1, "Lives": 1}
+MAX_NB_OBJECTS = {"Player":  1, "Reward": 8, "Enemy": 8, "Consumable": 8}
+MAX_NB_OBJECTS_HUD = {"Player":  1, "Reward": 8,
+                      "Enemy": 8, "Consumable": 8, "Score": 1, "Lives": 1}
 
 
 class Player(GameObject):
@@ -13,8 +14,10 @@ class Player(GameObject):
         super().__init__()
         self.rgb = 187, 187, 53
         self._xy = 0, 0
-        self.wh = 8, 11  # at some point 16, 11. advanced other player (obelix) is (6, 11)
+        # at some point 16, 11. advanced other player (obelix) is (6, 11)
+        self.wh = 8, 11
         self.hud = False
+
 
 class Enemy(GameObject):
     def __init__(self):
@@ -43,22 +46,23 @@ class Lives(GameObject):
         self.wh = 6, 7
         self.hud = True
 
+
 class Consumable(GameObject):
     def __init__(self):
         super().__init__()
-        self.rgb = 200, 200, 200 #can have different colors
+        self.rgb = 200, 200, 200  # can have different colors
         self._xy = 0, 0
         self.wh = 7, 11
         self.hud = False
 
+
 class Reward(GameObject):
     def __init__(self):
         super().__init__()
-        self.rgb = 200, 200, 200 #can have different colors
+        self.rgb = 200, 200, 200  # can have different colors
         self._xy = 0, 0
         self.wh = 8, 11
         self.hud = False
-
 
 
 def _init_objects_ram(hud=False):
@@ -74,9 +78,11 @@ def _init_objects_ram(hud=False):
 
 
 def _detect_objects_asterix_raw(info, ram_state):
-    info["x_positions"] = ram_state[41:50]  # 41 for player, 42 for obj in upper lane...
+    # 41 for player, 42 for obj in upper lane...
+    info["x_positions"] = ram_state[41:50]
     info["y_player"] = ram_state[39]  # from 0 to 7 (8 lanes)
-    info["score"] = ram_state[94:97]  # on ram in decimal/ on screen in hex(like other 2 games)
+    # on ram in decimal/ on screen in hex(like other 2 games)
+    info["score"] = ram_state[94:97]
     info["score_dec"] = ram_state[94:97]
     info["lives"] = ram_state[83]
     info["kind_of_visible_objs"] = ram_state[54] % 8
@@ -86,6 +92,7 @@ def _detect_objects_asterix_raw(info, ram_state):
     # info["maybe_useful"] = ram_state[10:18], ram_state[40], ram_state[19:27], ram_state[29:37], ram_state[87],
     # ram_state[7]
     # not known what they are for exactly
+
 
 def _detect_objects_ram(objects, ram_state, hud=False):
     # player
@@ -100,11 +107,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         player.wh = 16, 11
 
     lives_nr = ram_state[83]
-    #reward_class = (Reward50, Reward100, Reward200, Reward300, Reward400, Reward500)  # , Reward500, Reward500)
-    #eatable_class = (Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat, Mug)
+    # reward_class = (Reward50, Reward100, Reward200, Reward300, Reward400, Reward500)  # , Reward500, Reward500)
+    # eatable_class = (Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat, Mug)
     # get lanes
     lanes = objects[1:]
-    #const = ram_state[54] % 8
+    # const = ram_state[54] % 8
     reward_lanes = []
     for i in range(8):
         if ram_state[18-i] == 11:
@@ -137,7 +144,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             else:
                 instance = lanes[i]
             instance.xy = ram_state[42 + i] + 1, 26 + i * 16 + 1
-    
+
     if hud:
         score = objects[-2]
         dec_value = _convert_number(ram_state[94]) * 10000 + _convert_number(ram_state[95]) * 100 + _convert_number(

@@ -9,12 +9,12 @@ RAM extraction for the game DONKEYKONG. Supported modes: ram.
 """
 
 MAX_NB_OBJECTS = {
-    'Player': 1, 'DonkeyKong': 1, 'Girlfriend': 1, 'Hammer': 1, 'Barrel' : 4, 'Ladder': 10
+    'Player': 1, 'DonkeyKong': 1, 'Girlfriend': 1, 'Hammer': 1, 'Barrel': 4, 'Ladder': 10
 }
 
 MAX_NB_OBJECTS_HUD = {
-    'Player': 1, 'DonkeyKong': 1, 'Girlfriend': 1, 'Hammer': 1, 'Barrel' : 4, 'Ladder': 10,
-    'Score': 1, 'Life':1, 
+    'Player': 1, 'DonkeyKong': 1, 'Girlfriend': 1, 'Hammer': 1, 'Barrel': 4, 'Ladder': 10,
+    'Score': 1, 'Life': 1,
 }
 
 obj_tracker = {}
@@ -127,6 +127,7 @@ class Score(ValueObject):
         self.hud = True
         self.value = 0
 
+
 class Life(GameObject):
     """
     The player's remaining lives (HUD).
@@ -159,11 +160,13 @@ def _get_max_objects(hud=False):
 ladders = [(108, 176), (48, 148), (80, 148), (88, 120), (108, 120),
            (48, 92), (68, 92), (108, 64), (76, 40), (32, 40)]
 
+
 def _init_objects_ram(hud=True):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), DonkeyKong(), Girlfriend(), Hammer()] + [NoObject()] * 4 + [Ladder(*xy) for xy in ladders]
+    objects = [Player(), DonkeyKong(), Girlfriend(), Hammer()] + \
+        [NoObject()] * 4 + [Ladder(*xy) for xy in ladders]
     if hud:
         objects.extend([Life(), Score()])
     return objects

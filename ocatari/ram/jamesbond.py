@@ -1,9 +1,10 @@
 from .game_objects import GameObject, ValueObject
 from ._helper_methods import number_to_bitfield
-import sys 
+import sys
 
 MAX_NB_OBJECTS = {"Player": 1}
-MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
+MAX_NB_OBJECTS_HUD = {}  # 'Score': 1}
+
 
 class Player(GameObject):
     def __init__(self):
@@ -13,6 +14,7 @@ class Player(GameObject):
         self.rgb = 227, 151, 89
         self.hud = False
 
+
 class Player_Shot(GameObject):
     def __init__(self):
         super(Player_Shot, self).__init__()
@@ -20,6 +22,7 @@ class Player_Shot(GameObject):
         self.wh = (1, 4)
         self.rgb = 227, 151, 89
         self.hud = False
+
 
 class Helicopter(GameObject):
     def __init__(self):
@@ -29,6 +32,7 @@ class Helicopter(GameObject):
         self.rgb = 167, 26, 26
         self.hud = False
 
+
 class Hornet(GameObject):
     def __init__(self):
         super(Hornet, self).__init__()
@@ -36,6 +40,7 @@ class Hornet(GameObject):
         self.wh = (8, 14)
         self.rgb = 170, 170, 170
         self.hud = False
+
 
 class Enemy_Shot(GameObject):
     def __init__(self):
@@ -45,6 +50,7 @@ class Enemy_Shot(GameObject):
         self.rgb = 252, 224, 112
         self.hud = False
 
+
 class Ice(GameObject):
     def __init__(self):
         super(Ice, self).__init__()
@@ -52,6 +58,7 @@ class Ice(GameObject):
         self.wh = (8, 12)
         self.rgb = 45, 87, 176
         self.hud = False
+
 
 class Fire_Hole(GameObject):
     def __init__(self):
@@ -61,6 +68,7 @@ class Fire_Hole(GameObject):
         self.rgb = 72, 44, 0
         self.hud = False
 
+
 class Eruption(GameObject):
     def __init__(self):
         super(Eruption, self).__init__()
@@ -68,6 +76,7 @@ class Eruption(GameObject):
         self.wh = (32, 15)
         self.rgb = 26, 102, 26
         self.hud = False
+
 
 class Diver(GameObject):
     def __init__(self):
@@ -104,7 +113,7 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
@@ -130,7 +139,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     (x, y, w, h, r, g, b)
     """
 
-    # player x,y == r27 - 1, 50 + r25 
+    # player x,y == r27 - 1, 50 + r25
     player = objects[0]
     player.xy = ram_state[27] - 1, 50 + ram_state[25]
 
@@ -201,7 +210,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     else:
         objects[5] = None
 
-
     if hud:
         # Score
         score = Score()
@@ -224,7 +232,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         else:
             score.xy = 95, 15
             score.wh = 6, 7
-        
+
         # Lives 86
         for i in range(3):
             if i < ram_state[111]:

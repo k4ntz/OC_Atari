@@ -7,9 +7,10 @@ RAM extraction for the game KANGUROO. Supported modes: ram.
 
 """
 
-MAX_NB_OBJECTS =  {'Player': 1}
+MAX_NB_OBJECTS = {'Player': 1}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Score': 1, 'Life': 1}
 obj_tracker = {}
+
 
 class Player(GameObject):
     def __init__(self):
@@ -18,6 +19,7 @@ class Player(GameObject):
         self.wh = 1, 2
         self.rgb = 168, 48, 143
         self.hud = False
+
 
 class Shot(GameObject):
     def __init__(self):
@@ -180,12 +182,13 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
+
 
 def _init_objects_ram(hud=True):
     """
@@ -213,9 +216,9 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 # ram 39 => color, 233 => type : invis 0;
 # ram 64 offset of dublicate
 
-    # sprite0   
+    # sprite0
     x0 = ram_state[79] - 1
-    y0 = (ram_state[20] * 2 + 26)%255
+    y0 = (ram_state[20] * 2 + 26) % 255
 
     if room == 8 or room == 9:
         sprite0 = Hallmonsters()
@@ -230,10 +233,9 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     if sprite0 is not None:
         sprite0.xy = x0, y0
 
-
-    # spirte1   
+    # spirte1
     x1 = ram_state[80] - 1
-    y1 = (ram_state[21] * 2 + 27)%255
+    y1 = (ram_state[21] * 2 + 27) % 255
 
     if room == 8 or room == 9:
         sprite1 = Hallmonsters()
@@ -264,10 +266,9 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     if sprite1 is not None:
         sprite1.xy = x1, y1
 
-
     # sprite2
     x2 = ram_state[81] - 7
-    y2 = (ram_state[22] * 2 + 27)%255
+    y2 = (ram_state[22] * 2 + 27) % 255
 
     if room == 8 or room == 9:
         sprite2 = Hallmonsters()
@@ -279,7 +280,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         sprite2 = Pink_Collectable()
     elif room == 3:
         sprite2 = Wall()
-        x2 +=7
+        x2 += 7
         sprite2.wh = 4, 24
     elif room == 4 and y2 == 163:
         sprite2 = Grey_Collectable()
@@ -303,10 +304,9 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     if sprite2 is not None:
         sprite2.xy = x2, y2
 
-
     # sprite3
     x3 = ram_state[82] - 1
-    y3 = (ram_state[23] * 2 + 26)%255
+    y3 = (ram_state[23] * 2 + 26) % 255
 
     if room == 8 or room == 9:
         sprite3 = Hallmonsters()
@@ -336,7 +336,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
     # sprite4
     x4 = ram_state[83] - 1
-    y4 = (ram_state[24] * 2 + 27)%255
+    y4 = (ram_state[24] * 2 + 27) % 255
 
     if room == 8 or room == 9:
         sprite4 = Hallmonsters()
@@ -364,12 +364,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
     objects[5] = sprite4
     if sprite4 is not None:
-        sprite4.xy = x4, y4  
-
+        sprite4.xy = x4, y4
 
     # sprite5
     x5 = ram_state[84] - 7
-    y5 = (ram_state[25] * 2 + 27)%255
+    y5 = (ram_state[25] * 2 + 27) % 255
 
     if room == 8 or room == 9:
         sprite5 = Hallmonsters()
@@ -383,14 +382,14 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     if sprite5 is not None:
         sprite5.xy = x5, y5
 
-
     if hud:
         score = Score()
         objects[8] = score
         score.xy = 1, 9
         score.wh = 46, 8
-        score.value = _convert_number(ram_state[71])*100 + _convert_number(ram_state[72])
-    
+        score.value = _convert_number(
+            ram_state[71])*100 + _convert_number(ram_state[72])
+
         for i in range(3):
             objects[9+i] = None
         for i in range(ram_state[70]):

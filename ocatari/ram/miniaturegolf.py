@@ -9,4 +9,3 @@ RAM extraction for the game MiniatureGolf.
 
 MAX_NB_OBJECTS = {}
 MAX_NB_OBJECTS_HUD = {}
-

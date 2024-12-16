@@ -15,15 +15,18 @@ class Player(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = [192, 192, 192]
 
+
 class Truck(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = [214, 92, 92]
 
+
 class Flag(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = [200, 72, 72]
+
 
 class Collectable(GameObject):
     def __init__(self, *args, **kwargs):
@@ -31,12 +34,12 @@ class Collectable(GameObject):
         self.rgb = [200, 72, 72]
 
 
-
 #  ---- HUD -----
 class HUD_Flag(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = [210, 164, 74]
+
 
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
@@ -53,18 +56,20 @@ class Life(GameObject):
 def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
-    player = find_mc_objects(obs, [objects_colors["player_white"], [0, 0, 0]], minx=8, miny=26, maxy=193)
+    player = find_mc_objects(obs, [objects_colors["player_white"], [
+                             0, 0, 0]], minx=8, miny=26, maxy=193)
     for bb in player:
         objects.append(Player(*bb))
-    
+
     colors = list(objects_colors.values())
     for i in range(8):
-        truck = find_mc_objects(obs, [colors[i+1], [0, 0, 0]], minx=8, miny=26, maxy=193)
+        truck = find_mc_objects(
+            obs, [colors[i+1], [0, 0, 0]], minx=8, miny=26, maxy=193)
         for bb in truck:
             t = Truck(*bb)
             t.rgb = colors[i+1]
             objects.append(t)
-    
+
     hflag = []
     for i in range(8):
         h = find_objects(obs, colors[i+17], miny=14, maxy=26)
@@ -72,9 +77,10 @@ def _detect_objects(objects, obs, hud=False):
             hflag.extend(h)
         else:
             hflag.append(None)
-    
+
     for i in range(8):
-        flag = find_mc_objects(obs, [colors[i+9], [0, 0, 0]], size=(7,16), tol_s=5, minx=8, miny=26, maxy=193)
+        flag = find_mc_objects(
+            obs, [colors[i+9], [0, 0, 0]], size=(7, 16), tol_s=5, minx=8, miny=26, maxy=193)
         for bb in flag:
             if hflag[i] is None:
                 f = Collectable(*bb)
@@ -91,10 +97,11 @@ def _detect_objects(objects, obs, hud=False):
                 hf = HUD_Flag(*hflag[i])
                 hf.rgb = colors[i+17]
                 objects.append(hf)
-        score = find_objects(obs, objects_colors["score"],maxx=85, maxy=25, closing_dist=8)
+        score = find_objects(
+            obs, objects_colors["score"], maxx=85, maxy=25, closing_dist=8)
         for bb in score:
             objects.append(Score(*bb))
-        
-        life = find_objects(obs, objects_colors["life"],maxx= 46, miny=194)
+
+        life = find_objects(obs, objects_colors["life"], maxx=46, miny=194)
         for bb in life:
             objects.append(Life(*bb))

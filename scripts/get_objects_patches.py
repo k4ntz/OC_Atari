@@ -1,6 +1,7 @@
 """
 This script is used to simply play the Atari games manually.
 """
+import imageio
 import gymnasium as gym
 import numpy as np
 from matplotlib import pyplot as plt
@@ -19,13 +20,14 @@ parser.add_argument("-pr", "--print-reward", action="store_true")
 
 args = parser.parse_args()
 
-import imageio
 
 def save_rgb_array_as_png(rgb_array, filename):
     imageio.imwrite(filename, rgb_array)
 
+
 def save_patch_as_png(patch, filename):
     (filename, patch)
+
 
 def retrieve_objects_patch(object, frame, zoom=20):
     x, y, w, h = object.xywh
@@ -48,6 +50,7 @@ def retrieve_objects_patch(object, frame, zoom=20):
                 patch_rgba[i, j][3] = 255
     return patch_rgba
 
+
 def save_objects_patches(objects, frame, game):
     for object in objects:
         patch = retrieve_objects_patch(object, frame)
@@ -58,6 +61,7 @@ def save_objects_patches(objects, frame, game):
             i += 1
         imageio.imwrite(f'patches/{game}/{object.category}_{i}.png', patch)
     print(f"Objects patches saved in patches/{game}")
+
 
 class Renderer:
     env: gym.Env
@@ -84,7 +88,8 @@ class Renderer:
                 self.env.render()
                 if args.record and self.frame % 4 == 0:
                     frame = self.env.unwrapped.ale.getScreenRGB()
-                    save_rgb_array_as_png(frame, f'frames/{args.game}_{self.frame}.png')
+                    save_rgb_array_as_png(
+                        frame, f'frames/{args.game}_{self.frame}.png')
                 if args.print_reward and reward != 0:
                     print(reward)
                 self.frame += 1
@@ -113,12 +118,14 @@ class Renderer:
 
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
-                
+
                 if event.key == pygame.K_o:  # 'O': Save objects
                     screen = self.env.unwrapped.ale.getScreenRGB()
-                    save_objects_patches(self.env.objects, screen, self.env.game_name)
+                    save_objects_patches(
+                        self.env.objects, screen, self.env.game_name)
                     screen = np.repeat(np.repeat(screen, 6, axis=0), 6, axis=1)
-                    save_rgb_array_as_png(screen, f'patches/{self.env.game_name}_{self.frame}.png')
+                    save_rgb_array_as_png(
+                        screen, f'patches/{self.env.game_name}_{self.frame}.png')
 
                 elif (event.key,) in self.keys2actions.keys():  # env action
                     self.current_keys_down.add(event.key)

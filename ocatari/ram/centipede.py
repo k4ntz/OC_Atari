@@ -7,13 +7,15 @@ import sys
 RAM extraction for the game Centipede.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9, 'Mushroom': 42, 'Spider': 1, 'Flea': 1}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9, 'Mushroom': 42, 'Score': 4, 'Life': 2, 'Spider': 1, 'Flea': 1, 'Scorpion': 1}
+MAX_NB_OBJECTS = {'Player': 1, 'Projectile': 1,
+                  'CentipedeSegment': 9, 'Mushroom': 42, 'Spider': 1, 'Flea': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9,
+                      'Mushroom': 42, 'Score': 4, 'Life': 2, 'Spider': 1, 'Flea': 1, 'Scorpion': 1}
 
-base_colors = [(181, 83, 40), (45, 50, 184), (187, 187, 53), (184, 70, 162), 
+base_colors = [(181, 83, 40), (45, 50, 184), (187, 187, 53), (184, 70, 162),
                (184, 50, 50), (146, 70, 192), (110, 156, 66), (84, 138, 210)]
 
-ground_colors = [(110, 156, 66), (66, 114, 194), (198, 108, 58), (66, 72, 200), 
+ground_colors = [(110, 156, 66), (66, 114, 194), (198, 108, 58), (66, 72, 200),
                  (162, 162, 42), (184, 70, 162), (200, 72, 72), (146, 70, 192)]
 
 
@@ -21,20 +23,19 @@ class CCGameObject(GameObject):
     """
     A parent class for objects that change color throughout the game.
     """
-    
+
     def __init__(self):
         super(CCGameObject, self).__init__()
-    
+
     def _update_color(self, lvl):
         self.rgb = base_colors[(lvl+self._offset) % 8]
-
 
 
 class CentipedeSegment(CCGameObject):
     """
     A segment of the centipede.
     """
-    
+
     def __init__(self):
         super(CentipedeSegment, self).__init__()
         self._xy = 0, 0
@@ -46,9 +47,9 @@ class CentipedeSegment(CCGameObject):
 
 class Player(CCGameObject):
     """
-    The player figure i.e., Oliver the elf. 
+    The player figure i.e., Oliver the elf.
     """
-    
+
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 0, 0
@@ -60,9 +61,9 @@ class Player(CCGameObject):
 
 class Projectile(GameObject):
     """
-    The spells casted from the magic wand. 
+    The spells casted from the magic wand.
     """
-    
+
     def __init__(self):
         super(Projectile, self).__init__()
         self._xy = 0, 0
@@ -74,9 +75,9 @@ class Projectile(GameObject):
 
 class Mushroom(CCGameObject):
     """
-    The mushrooms. 
+    The mushrooms.
     """
-    
+
     def __init__(self):
         super(Mushroom, self).__init__()
         self._xy = 0, 0
@@ -88,9 +89,9 @@ class Mushroom(CCGameObject):
 
 class Spider(CCGameObject):
     """
-    The spider that is trying to distract the player. 
+    The spider that is trying to distract the player.
     """
-    
+
     def __init__(self):
         super(Spider, self).__init__()
         self._xy = 0, 0
@@ -102,9 +103,9 @@ class Spider(CCGameObject):
 
 class Flea(CCGameObject):  # i have no clue what it is supposed to be ...
     """
-    The flea, which drops down and creates mushrooms in it's path. 
+    The flea, which drops down and creates mushrooms in it's path.
     """
-    
+
     def __init__(self):     # some ball thingy with legs
         super(Flea, self).__init__()
         self._xy = 0, 0
@@ -116,9 +117,9 @@ class Flea(CCGameObject):  # i have no clue what it is supposed to be ...
 
 class Scorpion(CCGameObject):
     """
-    The scorpion, which can run across the screen and poison mushrooms in it's path. 
+    The scorpion, which can run across the screen and poison mushrooms in it's path.
     """
-    
+
     def __init__(self):
         super(Scorpion, self).__init__()
         self._xy = 0, 0
@@ -132,7 +133,7 @@ class Score(GameObject):
     """
     The player's score display (HUD).
     """
-    
+
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 96, 7
@@ -145,23 +146,23 @@ class Ground(GameObject):
     """
     The ground line (HUD).
     """
-    
+
     def __init__(self):
         super(Ground, self).__init__()
         self._xy = 16, 183
         self.wh = 128, 2
         self.rgb = 110, 156, 66
         self.hud = True
-    
+
     def _update_color(self, lvl):
         self.rgb = ground_colors[(lvl) % 8]
 
 
 class Life(GameObject):
     """
-    The indicator for the remaining magic wands (lives) (HUD). 
+    The indicator for the remaining magic wands (lives) (HUD).
     """
-    
+
     def __init__(self):
         super(Life, self).__init__()
         self._xy = 0, 0
@@ -178,12 +179,13 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
+
 
 def _column_to_y(column):
     """
@@ -307,7 +309,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     else:
         if projectile is None:
             projectile = Projectile()
-        projectile.xy = 16 + ram_state[110], _number_lowpass(ram_state[112]) * 9 - 8
+        projectile.xy = 16 + \
+            ram_state[110], _number_lowpass(ram_state[112]) * 9 - 8
 
     objects.clear()
     objects.extend([player, projectile])
@@ -316,7 +319,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     for i in range(3):
         if ram_state[124 - 2 * i] != 255:
             b = small_bugs[i]
-            b.xy = 16 + ram_state[123 - 2 * i], _column_to_y(19 - _number_lowpass(ram_state[124 - 2 * i]))
+            b.xy = 16 + \
+                ram_state[123 - 2 *
+                          i], _column_to_y(19 - _number_lowpass(ram_state[124 - 2 * i]))
             if b.x < 160 and b.y < 210:
                 objects.append(b)
 
@@ -325,7 +330,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         dx = prev_centipede_x[i] - x
         if dx != 0:
             centipede_segment = CentipedeSegment()
-            centipede_segment.xy = x, _column_to_y(19 - _number_lowpass(ram_state[91 + i]))
+            centipede_segment.xy = x, _column_to_y(
+                19 - _number_lowpass(ram_state[91 + i]))
             prev_centipede_x[i] = centipede_segment.x
             if centipede_segment.x < 160 and centipede_segment.y < 210:
                 objects.append(centipede_segment)
@@ -376,4 +382,5 @@ def _detect_objects_centipede_raw(info, ram_state):
     # info["ghost_enabled"] = level >= 3
     # info["score"] = ram_state[118] + ram_state[117] * 100 + ram_state[116] * 10000
 
-    info["relavant_ram_info"] = ram_state[45:83] + ram_state[91:115] + ram_state[116:125]
+    info["relavant_ram_info"] = ram_state[45:83] + \
+        ram_state[91:115] + ram_state[116:125]

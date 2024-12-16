@@ -21,9 +21,10 @@ def format_values(dictionary):
 
 class DetectionScores():
     """
-    Keeps track of true positives, false positive and false negative of the detected objects. 
+    Keeps track of true positives, false positive and false negative of the detected objects.
     Allow to fast compute precision, recall, and f1 scores.
     """
+
     def __init__(self) -> None:
         self.true_pos = {}
         self.false_pos = {}
@@ -31,7 +32,7 @@ class DetectionScores():
 
     def update(self, det_dict):
         """
-        
+
         """
         for cat, (TP, FP, FN) in det_dict.items():
             if not cat in self.true_pos:
@@ -42,7 +43,7 @@ class DetectionScores():
                 self.true_pos[cat] += TP
                 self.false_pos[cat] += FP
                 self.false_neg[cat] += FN
-    
+
     @property
     def cat_precisions(self):
         """
@@ -56,7 +57,7 @@ class DetectionScores():
         The per cartegory dictionary of the recall
         """
         return {cat: self.true_pos[cat]/(self.true_pos[cat]+self.false_neg[cat]) for cat in self.true_pos if self.true_pos[cat]+self.false_neg[cat]}
-    
+
     @property
     def cat_f_scores(self):
         """
@@ -69,7 +70,8 @@ class DetectionScores():
                 if prec[cat] == 0 and rec[cat] == 0:
                     f_scores[cat] = 0
                 else:
-                    f_scores[cat] = 2 * prec[cat] * rec[cat] / (prec[cat] + rec[cat])
+                    f_scores[cat] = 2 * prec[cat] * \
+                        rec[cat] / (prec[cat] + rec[cat])
             except KeyError:
                 f_scores[cat] = 0
         return f_scores
@@ -80,14 +82,14 @@ class DetectionScores():
         The mean precision on all objects
         """
         return sum(self.true_pos.values())/(sum(self.true_pos.values()) + sum(self.false_pos.values()))
-    
+
     @property
     def mean_recall(self):
         """
         The mean recall on all objects
         """
         return sum(self.true_pos.values())/(sum(self.true_pos.values()) + sum(self.false_neg.values()))
-    
+
     @property
     def mean_f_score(self):
         """
@@ -96,10 +98,9 @@ class DetectionScores():
         prec, rec = self.mean_precision, self.mean_recall
         return 2 * prec * rec / (prec + rec)
 
-
     def __repr__(self) -> str:
         return "Detection stats with Cat. F-scores: \n" + str(self.cat_f_scores)
-    
+
     @property
     def dict_summary(self):
         """
@@ -107,7 +108,7 @@ class DetectionScores():
         """
         return {"precision": self.mean_precision, "recall": self.mean_recall, "f-score": self.mean_f_score,
                 "iou": self.iou}
-    
+
 
 def print_all_stats(all_stats):
     """
@@ -149,7 +150,7 @@ def print_all_stats(all_stats):
 
 def get_iou(obj1, obj2):
     """
-    Computes the intersection over union between two GameObjects. 
+    Computes the intersection over union between two GameObjects.
 
     :param obj1: The bouding box of the detected object in (x, y, w, h) format
     :type obj1: ocatari.ram.game_objects.GameObject or ocatari.vision.game_objects.GameObject
@@ -177,7 +178,7 @@ def get_iou(obj1, obj2):
 
 def _make_class_lists(ram_list, vision_list):
     """
-    Creates a dictionary of object category liked with both the ram objs of this 
+    Creates a dictionary of object category liked with both the ram objs of this
     category and then the vision objs of this category.
 
     :param ram_list: The list of objects detected by the RAM extraction method
@@ -192,7 +193,7 @@ def _make_class_lists(ram_list, vision_list):
     cat_lists = {}
     for cat in categories:
         cat_lists[cat] = ([obj.center for obj in ram_list if obj.category == cat],
-                             [obj.center for obj in vision_list if obj.category == cat])
+                          [obj.center for obj in vision_list if obj.category == cat])
     return cat_lists
 
 
@@ -235,15 +236,15 @@ def get_all_metrics(ram_list, vision_list):
     """
     Computes the:
 
-     * mean_iou 
+     * mean_iou
      * per_class_ious
      * only_in_ram
      * only_in_vision
      * objs_in_ram
      * objs_in_vision
      * dets ()
-     
-    two lists of GameObjects (from the RAM extraction and from the vision extraction methods). 
+
+    two lists of GameObjects (from the RAM extraction and from the vision extraction methods).
 
     :param ram_list: The list of objects detected by the RAM extraction method
     :type ram_list: list of ocatari.ram.game_objects.GameObject
@@ -259,7 +260,8 @@ def get_all_metrics(ram_list, vision_list):
     ious = []
     dets = detection_stats(ram_list, vision_list)
     if abs(len(vision_list) - len(ram_list)) > 10 and USE_IPDB:
-        import ipdb; ipdb.set_trace()
+        import ipdb
+        ipdb.set_trace()
     for vobj in vision_list:
         vobj._is_in_ram = False
     for robj in ram_list:
@@ -288,5 +290,5 @@ def get_all_metrics(ram_list, vision_list):
     return {"mean_iou": np.mean(ious), "per_class_ious": per_class_ious,
             "only_in_ram": only_in_ram, "only_in_vision": only_in_vision,
             "objs_in_ram": [str(o) for o in ram_list],
-            "objs_in_vision": [str(o) for o in vision_list], 
+            "objs_in_vision": [str(o) for o in vision_list],
             "dets": dets}

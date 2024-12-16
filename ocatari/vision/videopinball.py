@@ -72,7 +72,7 @@ class DifficultyLevel(GameObject):
         value = 1
         self.rgb = 187, 159, 71
         self.hud = True
-        
+
 
 def _detect_objects(objects, obs, hud=True):
     objects.clear()
@@ -107,9 +107,9 @@ def _detect_objects(objects, obs, hud=True):
         for score in find_objects(obs, objects_colors["hud"], minx=63, miny=0, maxy=16, closing_dist=6):
             objects.append(Score(*score))
         for life_used in find_objects(obs, objects_colors["hud"], minx=36,
-                                  maxx=60, miny=0, maxy=16):
+                                      maxx=60, miny=0, maxy=16):
             objects.append(LifeUsed(*life_used))
         for difficulty_level in find_objects(obs, objects_colors["hud"], minx=0,
-                                  maxx=35, miny=0, maxy=16):
+                                             maxx=35, miny=0, maxy=16):
             objects.append(DifficultyLevel(*difficulty_level))
     return

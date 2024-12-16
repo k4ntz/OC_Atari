@@ -5,7 +5,7 @@ import random
 import matplotlib.pyplot as plt
 from os import path
 import pathlib
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))  # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.spaceinvaders import objects_colors
@@ -13,7 +13,7 @@ from ocatari.vision.pong import objects_colors
 from ocatari.utils import load_agent, parser, make_deterministic
 from copy import deepcopy
 from PIL import Image
-import cv2 
+import cv2
 import pickle
 
 
@@ -59,7 +59,7 @@ for i in range(100000):
             action = dqn_agent.draw_action(env.dqn_obs)
         else:
             action = random.randint(0, env.nb_actions-1)
-        
+
         obs1, reward, terminated, truncated, info = env.step(action)
         obs2 = deepcopy(obs1)
         if i >= opts.start and i % opts.interval == 0:
@@ -91,27 +91,28 @@ for i in range(100000):
         if terminated or truncated:
             observation, info = env.reset()
             if opts.snapshot:
-                env._env.env.env.ale.restoreState(snapshot)   
+                env._env.env.env.ale.restoreState(snapshot)
         # modify and display render
     # except ValueError as e:
     #     print(e)
     else:
-        import ipdb; ipdb.set_trace()
+        import ipdb
+        ipdb.set_trace()
         fig, axes = plt.subplots(1, 2)
         for obs, objects_list, title, ax in zip([obs, obs2], [env.objects, env.objects_v], ["ram", "vision"], axes):
-                toprint = sorted(objects_list, key=lambda o: str(o))
-                # print([o for o in toprint if "Fuel" in str(o)])
-                print(toprint)
-                for obj in objects_list:
-                    opos = obj.xywh
-                    ocol = obj.rgb
-                    sur_col = make_darker(ocol)
-                    mark_bb(obs, opos, color=sur_col)
-                    # mark_point(obs, *opos[:2], color=(255, 255, 0))
-                ax.set_xticks([])
-                ax.set_yticks([])
-                ax.imshow(obs)
-                ax.set_title(title)
+            toprint = sorted(objects_list, key=lambda o: str(o))
+            # print([o for o in toprint if "Fuel" in str(o)])
+            print(toprint)
+            for obj in objects_list:
+                opos = obj.xywh
+                ocol = obj.rgb
+                sur_col = make_darker(ocol)
+                mark_bb(obs, opos, color=sur_col)
+                # mark_point(obs, *opos[:2], color=(255, 255, 0))
+            ax.set_xticks([])
+            ax.set_yticks([])
+            ax.imshow(obs)
+            ax.set_title(title)
         fig.suptitle(f"frame {i}", fontsize=20)
         plt.show()
 env.close()

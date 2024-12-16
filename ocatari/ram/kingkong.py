@@ -2,11 +2,11 @@ import sys
 from .game_objects import GameObject, NoObject
 
 
-MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "Girlfriend": 1, "Bomb": 8, "Ladder": 12}
+MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1,
+                  "Girlfriend": 1, "Bomb": 8, "Ladder": 12}
 
 MAX_NB_OBJECTS_HUD = {"Player": 1, "Enemy": 1, "Girlfriend": 1, "Bomb": 8, "Ladder": 12,
                       "Score": 1, "BonusPoints": 1}
-
 
 
 class Player(GameObject):
@@ -14,7 +14,7 @@ class Player(GameObject):
         super(Player, self).__init__()
         self._xy = 38, 94
         self.wh = 5, 17
-        self.rgb = 92,197,135
+        self.rgb = 92, 197, 135
         self.hud = False
 
 
@@ -23,7 +23,7 @@ class Girlfriend(GameObject):
         super(Girlfriend, self).__init__()
         self._xy = 95, 28
         self.wh = 6, 17
-        self.rgb = 50,50,176
+        self.rgb = 50, 50, 176
         self.hud = False
 
 
@@ -36,16 +36,16 @@ class Enemy(GameObject):
         self.hud = False
 
 
-
 class Bomb(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+
 class Ladder(GameObject):
     def __init__(self, x=140, y=207):
         super(Ladder, self).__init__()
-        self._xy = x,y
-        self.wh = 8,18
+        self._xy = x, y
+        self.wh = 8, 18
         self.rgb = 201, 92, 135
         self.hud = False
 
@@ -74,11 +74,11 @@ def _get_max_objects(hud=False):
     return fromdict(MAX_NB_OBJECTS)
 
 
-
 def _init_objects_ram(hud=False):
-    ladder_positions = [(140,207), (12, 207), (76,183), (140, 159), (12, 159),(76,135),
-                        (140,111), (12, 111), (76, 87), (132,63), (20, 63), (76,43)]
-    objects = [Player(), Enemy(), Girlfriend()] + [NoObject()] * 8 + [Ladder(x=pos[0], y=pos[1]) for pos in ladder_positions]
+    ladder_positions = [(140, 207), (12, 207), (76, 183), (140, 159), (12, 159), (76, 135),
+                        (140, 111), (12, 111), (76, 87), (132, 63), (20, 63), (76, 43)]
+    objects = [Player(), Enemy(), Girlfriend()] + [NoObject()] * 8 + \
+        [Ladder(x=pos[0], y=pos[1]) for pos in ladder_positions]
 
     if hud:
         objects.extend([Score(), BonusPoints()])

@@ -4,7 +4,7 @@ import sys
 import random
 import matplotlib.pyplot as plt
 from os import path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))  # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.spaceinvaders import objects_colors
 from ocatari.vision.pong import objects_colors
@@ -51,7 +51,7 @@ for i in pbar:
 
     if terminated or truncated:
         observation, info = env.reset()
-        #print("Reset")
+        # print("Reset")
     # modify and display render
 
 env.close()

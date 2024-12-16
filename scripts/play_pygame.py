@@ -21,8 +21,7 @@ import cv2
 import random
 
 
-get_bin = lambda x: format(x, 'b').zfill(8)
-
+def get_bin(x): return format(x, 'b').zfill(8)
 
 
 RAM_RENDER_WIDTH = 1000
@@ -39,7 +38,7 @@ class Renderer:
     def __init__(self, env_name: str):
         try:
             self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="rgb_array",
-                                render_oc_overlay=True, frameskip=1)
+                               render_oc_overlay=True, frameskip=1)
         except NameNotFound:
             self.env = gym.make(env_name, render_mode="rgb_array", frameskip=1)
         self.env.reset(seed=42)[0]
@@ -56,7 +55,7 @@ class Renderer:
 
         self.active_cell_idx = None
         self.candidate_cell_ids = []
-        self.current_active_cell_input : str = ""
+        self.current_active_cell_input: str = ""
 
     def _init_pygame(self, sample_image):
         pygame.init()
@@ -65,7 +64,6 @@ class Renderer:
         window_size = (self.env_render_shape[0], self.env_render_shape[1])
         self.window = pygame.display.set_mode(window_size)
         self.clock = pygame.time.Clock()
-        
 
     def run(self):
         self.running = True
@@ -105,7 +103,7 @@ class Renderer:
 
                 elif event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
-                
+
                 elif event.key == pygame.K_m:  # 'M': save snapshot
                     snapshot = self.env._ale.cloneState()
                     pickle.dump(snapshot, open("snapshot.pkl", "wb"))
@@ -129,22 +127,24 @@ class Renderer:
                 elif event.key == pygame.K_RETURN:
                     if self.active_cell_idx is not None:
                         if len(self.current_active_cell_input) > 0:
-                            new_cell_value = int(self.current_active_cell_input)
+                            new_cell_value = int(
+                                self.current_active_cell_input)
                             if new_cell_value < 256:
-                                self._set_ram_value_at(self.active_cell_idx, new_cell_value)
+                                self._set_ram_value_at(
+                                    self.active_cell_idx, new_cell_value)
                         self._unselect_active_cell()
 
             elif event.type == pygame.KEYUP:  # keyboard key released
                 if (event.key,) in self.keys2actions.keys():
                     self.current_keys_down.remove(event.key)
 
-    def _render(self, frame = None):
-        self.window.fill((0,0,0))  # clear the entire window
+    def _render(self, frame=None):
+        self.window.fill((0, 0, 0))  # clear the entire window
         self._render_atari(frame)
         pygame.display.flip()
         pygame.event.pump()
 
-    def _render_atari(self, frame = None):
+    def _render_atari(self, frame=None):
         if frame is None:
             frame = self.current_frame
         frame_surface = pygame.Surface(self.env_render_shape)

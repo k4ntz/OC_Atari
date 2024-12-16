@@ -7,15 +7,16 @@ import sys
 RAM extraction for the game Demon Attack.
 """
 
-# TODO: populate 
-MAX_NB_OBJECTS =  {"Player": 1}
+# TODO: populate
+MAX_NB_OBJECTS = {"Player": 1}
 MAX_NB_OBJECTS_HUD = {}
+
 
 class Player(GameObject):
     """
-    The player figure i.e., the laser cannon. 
+    The player figure i.e., the laser cannon.
     """
-    
+
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 0, 0
@@ -26,9 +27,9 @@ class Player(GameObject):
 
 class Enemy(GameObject):
     """
-    The enemy demons. 
+    The enemy demons.
     """
-    
+
     def __init__(self):
         super(Enemy, self).__init__()
         self._xy = 0, 0
@@ -39,9 +40,9 @@ class Enemy(GameObject):
 
 class ProjectileFriendly(GameObject):
     """
-    The projectiles shot from the player's laser cannon. 
+    The projectiles shot from the player's laser cannon.
     """
-    
+
     def __init__(self):
         super(ProjectileFriendly, self).__init__()
         self._xy = 0, 0
@@ -52,9 +53,9 @@ class ProjectileFriendly(GameObject):
 
 class ProjectileHostile(GameObject):
     """
-    Projectiles shot by the enemy demons. 
+    Projectiles shot by the enemy demons.
     """
-    
+
     def __init__(self):
         super(ProjectileHostile, self).__init__()
         self._xy = 0, 0
@@ -67,7 +68,7 @@ class Score(GameObject):
     """
     The player's score display (HUD).
     """
-    
+
     def __init__(self):  # TODO
         super(Score, self).__init__()
         self._xy = 96, 7
@@ -80,7 +81,7 @@ class Live(GameObject):
     """
     The indicator for remaining additional bunkers (lives) (HUD).
     """
-    
+
     def __init__(self):
         super(Live, self).__init__()
         self._xy = 0, 0
@@ -97,12 +98,13 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
+
 
 def calculate_small_projectiles_from_bitmap(bitmap, basex):
     result = []
@@ -116,7 +118,8 @@ def calculate_small_projectiles_from_bitmap(bitmap, basex):
         for b in bitfield:
             if b == 1:
                 proj = ProjectileHostile()
-                proj.xy = basex - 3 + index, current_y - 4 # projectiles are only one pixel wide
+                proj.xy = basex - 3 + index, current_y - \
+                    4  # projectiles are only one pixel wide
                 result.append(proj)
             index += 1
 
@@ -126,7 +129,8 @@ def calculate_small_projectiles_from_bitmap(bitmap, basex):
 
 
 def bitfield_to_number_equality(bitfield):
-    res = bitfield[0] * 7 - bitfield[1] * 6 - bitfield[2] * 3 - bitfield[3]  # not 100% exact but close
+    res = bitfield[0] * 7 - bitfield[1] * 6 - bitfield[2] * \
+        3 - bitfield[3]  # not 100% exact but close
     return res
 
 
@@ -138,12 +142,10 @@ def calc_x(number):
     anchor = number % 16
     offset = number >> 4
     if offset > 7:
-        offset = 28 - offset # 23 + 5 (5 being constant offset)
+        offset = 28 - offset  # 23 + 5 (5 being constant offset)
     else:
-        offset = 12 - offset # 7 + 5
+        offset = 12 - offset  # 7 + 5
     return anchor * 15 + offset
-
-
 
 
 def _get_score_x_and_width(score):
@@ -159,7 +161,7 @@ def _get_score_x_and_width(score):
 
 def _get_score(ram_state):
     return _convert_number(ram_state[1]) * 10000 + _convert_number(ram_state[3]) * 100 + \
-           _convert_number(ram_state[5])
+        _convert_number(ram_state[5])
 
 
 def _init_objects_ram(hud=False):
@@ -193,14 +195,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     objects.clear()  # giga ugly but i didnt find a better solution
     objects.extend([player, proj_friendly, score])
-    objects.extend(calculate_small_projectiles_from_bitmap(ram_state[37:47], 3 + calc_x(ram_state[20])))
+    objects.extend(calculate_small_projectiles_from_bitmap(
+        ram_state[37:47], 3 + calc_x(ram_state[20])))
 
     for i in range(3):
         if not ram_state[13 + i] == 0:
             enemy = Enemy()
             x_left = calc_x(ram_state[13 + i])
             x_right = calc_x(ram_state[17 + i])
-            if 5 < abs(x_left - x_right) < 9: # to wings are together
+            if 5 < abs(x_left - x_right) < 9:  # to wings are together
                 x = x_left
                 if i == 2:
                     x = x + 1

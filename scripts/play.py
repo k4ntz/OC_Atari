@@ -1,6 +1,7 @@
 """
 This script is used to simply play the Atari games manually.
 """
+import imageio
 import gymnasium as gym
 import numpy as np
 from matplotlib import pyplot as plt
@@ -17,10 +18,10 @@ parser.add_argument("-pr", "--print-reward", action="store_true")
 
 args = parser.parse_args()
 
-import imageio
 
 def save_rgb_array_as_png(rgb_array, filename):
     imageio.imwrite(filename, rgb_array)
+
 
 class Renderer:
     env: gym.Env
@@ -46,7 +47,8 @@ class Renderer:
                 self.env.render()
                 if args.record and self.frame % 4 == 0:
                     frame = self.env.unwrapped.ale.getScreenRGB()
-                    save_rgb_array_as_png(frame, f'frames/{args.game}_{self.frame}.png')
+                    save_rgb_array_as_png(
+                        frame, f'frames/{args.game}_{self.frame}.png')
                 if args.print_reward and reward != 0:
                     print(reward)
                 self.frame += 1

@@ -9,8 +9,10 @@ from math import ceil
 RAM extraction for the game Chopper Command.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'MiniPlayer': 1, 'Truck': 3, 'MiniTruck': 9, 'MiniEnemy': 12, 'Shot': 1, 'EnemyPlane': 3, 'EnemyHelicopter': 3, 'Bomb': 3}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Truck': 3, 'MiniPlayer': 1, 'MiniEnemy': 12, 'MiniTruck': 9, 'Shot': 1, 'EnemyPlane': 3, 'EnemyHelicopter': 3, 'Bomb': 3, 'Score': 4, 'Life': 2 }
+MAX_NB_OBJECTS = {'Player': 1, 'MiniPlayer': 1, 'Truck': 3, 'MiniTruck': 9,
+                  'MiniEnemy': 12, 'Shot': 1, 'EnemyPlane': 3, 'EnemyHelicopter': 3, 'Bomb': 3}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Truck': 3, 'MiniPlayer': 1, 'MiniEnemy': 12, 'MiniTruck': 9,
+                      'Shot': 1, 'EnemyPlane': 3, 'EnemyHelicopter': 3, 'Bomb': 3, 'Score': 4, 'Life': 2}
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -20,21 +22,22 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
 
+
 class Player(GameObject):
     """
-    The player figure i.e., the helicopter gunship. 
+    The player figure i.e., the helicopter gunship.
     """
-    
+
     def __init__(self):
         super(Player, self).__init__()
-        self._xy = 133, 103     #initially
+        self._xy = 133, 103  # initially
         self.wh = 16, 9
         self.orientation = 1
         self.rgb = 223, 183, 85
@@ -43,9 +46,9 @@ class Player(GameObject):
 
 class MiniPlayer(GameObject):
     """
-    The blip for the player's helicopter on the Long Range Scanner. 
+    The blip for the player's helicopter on the Long Range Scanner.
     """
-    
+
     def __init__(self):
         super(MiniPlayer, self).__init__()
         self._xy = 133, 103  # initially
@@ -56,12 +59,12 @@ class MiniPlayer(GameObject):
 
 class Truck(GameObject):
     """
-    The trucks of the convoy, which need to be protected. 
+    The trucks of the convoy, which need to be protected.
     """
-    
+
     def __init__(self):
         super(Truck, self).__init__()
-        self._xy = 0, 166      #166 immer
+        self._xy = 0, 166  # 166 immer
         self.wh = 8, 7
         self.rgb = 0, 0, 0
         self.hud = False
@@ -69,9 +72,9 @@ class Truck(GameObject):
 
 class MiniTruck(GameObject):
     """
-    The blips for the trucks on the Long Range Scanner. 
+    The blips for the trucks on the Long Range Scanner.
     """
-    
+
     def __init__(self):
         super(MiniTruck, self).__init__()
         self._xy = 133, 185  # initially
@@ -82,12 +85,12 @@ class MiniTruck(GameObject):
 
 class EnemyHelicopter(GameObject):
     """
-    The enemy helicopters. 
+    The enemy helicopters.
     """
-    
+
     def __init__(self):
         super(EnemyHelicopter, self).__init__()
-        self._xy = 0, 0         #random
+        self._xy = 0, 0  # random
         self.wh = 8, 9
         self.rgb = 236, 236, 236
         self.hud = False
@@ -95,12 +98,12 @@ class EnemyHelicopter(GameObject):
 
 class EnemyPlane(GameObject):
     """
-    The enemy planes. 
+    The enemy planes.
     """
-    
+
     def __init__(self):
         super(EnemyPlane, self).__init__()
-        self._xy = 0, 0         #random
+        self._xy = 0, 0  # random
         self.wh = 8, 6
         self.rgb = 0, 0, 148
         self.hud = False
@@ -108,9 +111,9 @@ class EnemyPlane(GameObject):
 
 class MiniEnemy(GameObject):
     """
-    The blips for the enemy aircraft on the Long Range Scanner. 
+    The blips for the enemy aircraft on the Long Range Scanner.
     """
-    
+
     def __init__(self):
         super(MiniEnemy, self).__init__()
         self._xy = 133, 103  # initially
@@ -121,12 +124,12 @@ class MiniEnemy(GameObject):
 
 class Bomb(GameObject):
     """
-    The multi-warhead missiles deployed by enemy aircraft. 
+    The multi-warhead missiles deployed by enemy aircraft.
     """
-    
+
     def __init__(self):
         super(Bomb, self).__init__()
-        self._xy = 0, 0         #random
+        self._xy = 0, 0  # random
         self.wh = 2, 2          # oder 2,1 wenn gesplittet
         self.rgb = 223, 183, 85
         self.hud = False
@@ -134,14 +137,14 @@ class Bomb(GameObject):
 
 class Shot(GameObject):
     """
-    The projectiles shot from the helicopter's laser cannon. 
+    The projectiles shot from the helicopter's laser cannon.
     """
-    
+
     def __init__(self):
         super(Shot, self).__init__()
         self._xy = 0, 0         # auf höhe des helis
         self.wh = 0, 1         # höhe = 1, breite random
-        self.rgb = 0, 0, 100      #blau ist höher, aber sonst random
+        self.rgb = 0, 0, 100  # blau ist höher, aber sonst random
         self.hud = False
 
 
@@ -149,7 +152,7 @@ class Score(ValueObject):
     """
     The player's score display (HUD).
     """
-    
+
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 75, 16
@@ -162,13 +165,14 @@ class Life(GameObject):
     """
     The indicator for helicopter rerves (lifes) (HUD).
     """
-    
+
     def __init__(self):
         super(Life, self).__init__()
         self._xy = 33, 24           # and 41, 24 and so on
         self.wh = 8, 9
         self.rgb = 223, 183, 85
         self.hud = True
+
 
 @dataclass
 class MiniPlayArea:
@@ -181,7 +185,7 @@ class PlayArea:
 
 
 def _init_objects_ram(hud):
-    #gibt Liste von GameObjects zurück
+    # gibt Liste von GameObjects zurück
     """
     (Re)Initialize the objects
     """
@@ -189,7 +193,7 @@ def _init_objects_ram(hud):
     objects.extend([None] * 34)
     if hud:
         objects.extend([None] * 12)
-    
+
     global last_30
     global last_31
     global last_32
@@ -297,27 +301,27 @@ def _detect_objects_ram(objects, ram_state, hud):
         objects[10] = bomb
         if -1 <= (ram_state[94] - ram_state[95]) <= 1:
             bomb.xy = ram_state[70] - 1, 167 - ram_state[2]
-            bomb.wh = 2,2
+            bomb.wh = 2, 2
             objects[11] = None
         elif ram_state[94] != 240 and ram_state[95] != 240:
             bomb.xy = ram_state[70] + 1, 167 - ram_state[94] + 2
             bomb2 = Bomb()
             objects[11] = bomb2
             bomb2.xy = ram_state[70] + 1, 167 - ram_state[95] - 2
-            bomb.wh = 2,1
-            bomb2.wh = 2,1
+            bomb.wh = 2, 1
+            bomb2.wh = 2, 1
         elif ram_state[94] != 240:
             bomb.xy = ram_state[70] + 1, 167 - ram_state[94] + 2
-            bomb.wh = 2,1
+            bomb.wh = 2, 1
             objects[11] = None
         elif ram_state[95] != 240:
             bomb.xy = ram_state[70] + 1, 167 - ram_state[95] - 2
-            bomb.wh = 2,1
+            bomb.wh = 2, 1
             objects[11] = None
         else:
             objects[10] = None
             objects[11] = None
-        
+
     else:
         objects[10] = None
         objects[11] = None
@@ -348,32 +352,32 @@ def _detect_objects_ram(objects, ram_state, hud):
             objects[8] = None
             objects[9] = None
             if truck_4 or ram_state[17] < 222:
-                truck.xy = (ram_state[17] + 64)%255 - 1, 160
+                truck.xy = (ram_state[17] + 64) % 255 - 1, 160
             else:
-                truck.xy = (ram_state[17] + 32)%255 - 1, 160
+                truck.xy = (ram_state[17] + 32) % 255 - 1, 160
         if ram_state[21] == 2:
             objects[9] = None
             truck_4 = 0
             truck2 = Truck()
             objects[8] = truck2
-            truck2.xy = (ram_state[17] + 32)%255, 160
+            truck2.xy = (ram_state[17] + 32) % 255, 160
             if ram_state[17] > 160:
-                truck.xy = (ram_state[17] + 32)%255 - 1, 160
-                truck2.xy = (ram_state[17] + 64)%255 - 1, 160
+                truck.xy = (ram_state[17] + 32) % 255 - 1, 160
+                truck2.xy = (ram_state[17] + 64) % 255 - 1, 160
         elif ram_state[21] == 4:
             truck_4 = 1
             truck2 = Truck()
             objects[8] = truck2
-            truck2.xy = (ram_state[17] + 64)%255, 160
+            truck2.xy = (ram_state[17] + 64) % 255, 160
             objects[9] = None
         elif ram_state[21] == 6:
             truck_4 = 0
             truck2 = Truck()
             objects[8] = truck2
-            truck2.xy = (ram_state[17] + 32)%255, 160
+            truck2.xy = (ram_state[17] + 32) % 255, 160
             truck3 = Truck()
             objects[9] = truck3
-            truck3.xy = (ram_state[17] + 64)%255, 160
+            truck3.xy = (ram_state[17] + 64) % 255, 160
 
     else:
         objects[7] = None
@@ -408,14 +412,18 @@ def _detect_objects_ram(objects, ram_state, hud):
         objects[4] = enemy
         if (int(ram_state[18]) + int(ram_state[68])) < 160:
             if ram_state[66]:
-                enemy.xy = ram_state[18] + ram_state[68], 167 - ram_state[22] - h
+                enemy.xy = ram_state[18] + \
+                    ram_state[68], 167 - ram_state[22] - h
             else:
-                enemy.xy = ram_state[18] + ram_state[68] - 2, 167 - ram_state[22] - h
+                enemy.xy = ram_state[18] + \
+                    ram_state[68] - 2, 167 - ram_state[22] - h
         else:
             if ram_state[66]:
-                enemy.xy = ram_state[18] - (160 - ram_state[68]), 167 - ram_state[22] - h
+                enemy.xy = ram_state[18] - \
+                    (160 - ram_state[68]), 167 - ram_state[22] - h
             else:
-                enemy.xy = ram_state[18] - (160 - ram_state[68]) - 2, 167 - ram_state[22] - h
+                enemy.xy = ram_state[18] - \
+                    (160 - ram_state[68]) - 2, 167 - ram_state[22] - h
     else:
         objects[4] = None
 
@@ -431,14 +439,18 @@ def _detect_objects_ram(objects, ram_state, hud):
         objects[5] = enemy
         if (int(ram_state[19]) + int(ram_state[68])) < 160:
             if ram_state[66]:
-                enemy.xy = ram_state[19] + ram_state[68], 167 - ram_state[23] - h
+                enemy.xy = ram_state[19] + \
+                    ram_state[68], 167 - ram_state[23] - h
             else:
-                enemy.xy = ram_state[19] + ram_state[68] - 2, 167 - ram_state[23] - h
+                enemy.xy = ram_state[19] + \
+                    ram_state[68] - 2, 167 - ram_state[23] - h
         else:
             if ram_state[66]:
-                enemy.xy = ram_state[19] - (160 - ram_state[68]), 167 - ram_state[23] - h
+                enemy.xy = ram_state[19] - \
+                    (160 - ram_state[68]), 167 - ram_state[23] - h
             else:
-                enemy.xy = ram_state[19] - (160 - ram_state[68]) - 2, 167 - ram_state[23] - h
+                enemy.xy = ram_state[19] - \
+                    (160 - ram_state[68]) - 2, 167 - ram_state[23] - h
     else:
         objects[5] = None
 
@@ -454,14 +466,18 @@ def _detect_objects_ram(objects, ram_state, hud):
         objects[6] = enemy
         if (int(ram_state[20]) + int(ram_state[68])) < 160:
             if ram_state[66]:
-                enemy.xy = ram_state[20] + ram_state[68], 167 - ram_state[24] - h
+                enemy.xy = ram_state[20] + \
+                    ram_state[68], 167 - ram_state[24] - h
             else:
-                enemy.xy = ram_state[20] + ram_state[68] - 2, 167 - ram_state[24] - h
+                enemy.xy = ram_state[20] + \
+                    ram_state[68] - 2, 167 - ram_state[24] - h
         else:
             if ram_state[66]:
-                enemy.xy = ram_state[20] - (160 - ram_state[68]), 167 - ram_state[24] - h
+                enemy.xy = ram_state[20] - \
+                    (160 - ram_state[68]), 167 - ram_state[24] - h
             else:
-                enemy.xy = ram_state[20] - (160 - ram_state[68]) - 2, 167 - ram_state[24] - h
+                enemy.xy = ram_state[20] - \
+                    (160 - ram_state[68]) - 2, 167 - ram_state[24] - h
     else:
         objects[6] = None
 
@@ -483,7 +499,8 @@ def _detect_objects_ram(objects, ram_state, hud):
     # in 45 might contain the color gradient
     # shot_lines = [ram_state[52], ram_state[55], ram_state[58], ram_state[61], ram_state[64]]
     # b_shot_line = number_to_bitfield(ram_state[49])
-    shot_lines = [ram_state[52], ram_state[55], ram_state[58], ram_state[61], ram_state[64]]
+    shot_lines = [ram_state[52], ram_state[55],
+                  ram_state[58], ram_state[61], ram_state[64]]
     b_shot_line = number_to_bitfield(ram_state[52])
     for i in range(6):
         del b_shot_line[2]
@@ -499,10 +516,8 @@ def _detect_objects_ram(objects, ram_state, hud):
         b_shot_line[34+i] = b_shot_line[41-i]
         b_shot_line[41-i] = tmp
 
-
     for i in range(4):
         del b_shot_line[22]
-
 
     # [0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,0]
 
@@ -521,7 +536,7 @@ def _detect_objects_ram(objects, ram_state, hud):
             w = w + 4
         elif w > 0:
             shot = Shot()
-            shot.xy = x-w, 210-ram_state[65]-43 # player.y + 5 # last_y
+            shot.xy = x-w, 210-ram_state[65]-43  # player.y + 5 # last_y
             shot.wh = w, 1
             objects[3] = shot
             w = 0
@@ -532,14 +547,14 @@ def _detect_objects_ram(objects, ram_state, hud):
 
     if ceil((ram_state[68]+1)/20) != ceil((last_68+1)/20):
         if ram_state[66]:
-            truck_x = (truck_x + 1)%15
+            truck_x = (truck_x + 1) % 15
         else:
-            truck_x = (truck_x - 1)%15
+            truck_x = (truck_x - 1) % 15
 
     # Minitrucks and mid air lane
 
     if ram_state[5]:
-        t_lane = ram_state[5]&56
+        t_lane = ram_state[5] & 56
         t_lane = t_lane >> 3
         if ram_state[66]:
             x = 115 - truck_x + 1
@@ -547,11 +562,11 @@ def _detect_objects_ram(objects, ram_state, hud):
             x = 115 - truck_x
         if ram_state[97]:
             x -= 1
-        lane_2 = ram_state[5]&7
+        lane_2 = ram_state[5] & 7
         if lane_2 and x + lane_2 - 3 <= 103:
-                m_enemy = MiniEnemy()
-                objects[23] = m_enemy
-                m_enemy.xy = x + lane_2 - 4, 181
+            m_enemy = MiniEnemy()
+            objects[23] = m_enemy
+            m_enemy.xy = x + lane_2 - 4, 181
         else:
             objects[23] = None
 
@@ -587,7 +602,7 @@ def _detect_objects_ram(objects, ram_state, hud):
             objects[23] = None
 
     if ram_state[6]:
-        t_lane = ram_state[6]&56
+        t_lane = ram_state[6] & 56
         t_lane = t_lane >> 3
         if ram_state[66]:
             x = 99 - truck_x + 1
@@ -595,7 +610,7 @@ def _detect_objects_ram(objects, ram_state, hud):
             x = 99 - truck_x
         if ram_state[97]:
             x -= 1
-        lane_2 = ram_state[6]&7
+        lane_2 = ram_state[6] & 7
         if lane_2:
             m_enemy = MiniEnemy()
             objects[21] = m_enemy
@@ -662,7 +677,7 @@ def _detect_objects_ram(objects, ram_state, hud):
         objects[21] = None
 
     if ram_state[7]:
-        t_lane = ram_state[7]&56
+        t_lane = ram_state[7] & 56
         t_lane = t_lane >> 3
         if ram_state[66]:
             x = 83 - truck_x + 1
@@ -670,7 +685,7 @@ def _detect_objects_ram(objects, ram_state, hud):
             x = 83 - truck_x
         if ram_state[97]:
             x -= 1
-        lane_2 = ram_state[7]&7
+        lane_2 = ram_state[7] & 7
         if lane_2:
             m_enemy = MiniEnemy()
             objects[22] = m_enemy
@@ -737,7 +752,7 @@ def _detect_objects_ram(objects, ram_state, hud):
         objects[22] = None
 
     if ram_state[8]:
-        t_lane = ram_state[8]&56
+        t_lane = ram_state[8] & 56
         t_lane = t_lane >> 3
         if ram_state[66]:
             x = 67 - truck_x + 1
@@ -745,7 +760,7 @@ def _detect_objects_ram(objects, ram_state, hud):
             x = 67 - truck_x
         if ram_state[97]:
             x -= 1
-        lane_2 = ram_state[8]&7
+        lane_2 = ram_state[8] & 7
         if lane_2 and x + lane_2 - 4 >= 55:
             m_enemy = MiniEnemy()
             objects[23] = m_enemy
@@ -818,25 +833,25 @@ def _detect_objects_ram(objects, ram_state, hud):
     # Enemy in the air top lane + bottom lane
 
     if ram_state[9]:
-        lane_3 = ram_state[9]&56
+        lane_3 = ram_state[9] & 56
         lane_3 = lane_3 >> 3
-        lane_1 = ram_state[9]&7
+        lane_1 = ram_state[9] & 7
         if ram_state[66]:
             x = 115 - truck_x - 3
         else:
             x = 115 - truck_x - 4
         if ram_state[97]:
             x -= 1
-        if lane_3 and x + lane_3 + 1<= 103:
-                m_enemy = MiniEnemy()
-                objects[24] = m_enemy
-                m_enemy.xy = x + lane_3, 183
+        if lane_3 and x + lane_3 + 1 <= 103:
+            m_enemy = MiniEnemy()
+            objects[24] = m_enemy
+            m_enemy.xy = x + lane_3, 183
         else:
             objects[24] = None
-        if lane_1 and x + lane_1 + 1<= 103:
-                m_enemy = MiniEnemy()
-                objects[25] = m_enemy
-                m_enemy.xy = x + lane_1, 179
+        if lane_1 and x + lane_1 + 1 <= 103:
+            m_enemy = MiniEnemy()
+            objects[25] = m_enemy
+            m_enemy.xy = x + lane_1, 179
         else:
             objects[25] = None
     else:
@@ -844,9 +859,9 @@ def _detect_objects_ram(objects, ram_state, hud):
         objects[25] = None
 
     if ram_state[10]:
-        lane_3 = ram_state[10]&56
+        lane_3 = ram_state[10] & 56
         lane_3 = lane_3 >> 3
-        lane_1 = ram_state[10]&7
+        lane_1 = ram_state[10] & 7
         if ram_state[66]:
             x = 99 - truck_x - 3
         else:
@@ -854,15 +869,15 @@ def _detect_objects_ram(objects, ram_state, hud):
         if ram_state[97]:
             x -= 1
         if lane_3:
-                m_enemy = MiniEnemy()
-                objects[26] = m_enemy
-                m_enemy.xy = x + lane_3, 183
+            m_enemy = MiniEnemy()
+            objects[26] = m_enemy
+            m_enemy.xy = x + lane_3, 183
         else:
             objects[26] = None
         if lane_1:
-                m_enemy = MiniEnemy()
-                objects[27] = m_enemy
-                m_enemy.xy = x + lane_1, 179
+            m_enemy = MiniEnemy()
+            objects[27] = m_enemy
+            m_enemy.xy = x + lane_1, 179
         else:
             objects[27] = None
     else:
@@ -870,9 +885,9 @@ def _detect_objects_ram(objects, ram_state, hud):
         objects[27] = None
 
     if ram_state[11]:
-        lane_3 = ram_state[11]&56
+        lane_3 = ram_state[11] & 56
         lane_3 = lane_3 >> 3
-        lane_1 = ram_state[11]&7
+        lane_1 = ram_state[11] & 7
         if ram_state[66]:
             x = 83 - truck_x - 3
         else:
@@ -880,15 +895,15 @@ def _detect_objects_ram(objects, ram_state, hud):
         if ram_state[97]:
             x -= 1
         if lane_3:
-                m_enemy = MiniEnemy()
-                objects[28] = m_enemy
-                m_enemy.xy = x + lane_3, 183
+            m_enemy = MiniEnemy()
+            objects[28] = m_enemy
+            m_enemy.xy = x + lane_3, 183
         else:
             objects[28] = None
         if lane_1:
-                m_enemy = MiniEnemy()
-                objects[29] = m_enemy
-                m_enemy.xy = x + lane_1, 179
+            m_enemy = MiniEnemy()
+            objects[29] = m_enemy
+            m_enemy.xy = x + lane_1, 179
         else:
             objects[29] = None
     else:
@@ -896,9 +911,9 @@ def _detect_objects_ram(objects, ram_state, hud):
         objects[29] = None
 
     if ram_state[12]:
-        lane_3 = ram_state[12]&56
+        lane_3 = ram_state[12] & 56
         lane_3 = lane_3 >> 3
-        lane_1 = ram_state[12]&7
+        lane_1 = ram_state[12] & 7
         if ram_state[66]:
             x = 67 - truck_x - 3
         else:
@@ -906,26 +921,25 @@ def _detect_objects_ram(objects, ram_state, hud):
         if ram_state[97]:
             x -= 1
         if lane_3 and x + lane_3 >= 55:
-                m_enemy = MiniEnemy()
-                objects[30] = m_enemy
-                m_enemy.xy = x + lane_3, 183
+            m_enemy = MiniEnemy()
+            objects[30] = m_enemy
+            m_enemy.xy = x + lane_3, 183
         else:
             objects[30] = None
-        if lane_1 and x + lane_1>= 55:
-                m_enemy = MiniEnemy()
-                objects[31] = m_enemy
-                m_enemy.xy = x + lane_1, 179
+        if lane_1 and x + lane_1 >= 55:
+            m_enemy = MiniEnemy()
+            objects[31] = m_enemy
+            m_enemy.xy = x + lane_1, 179
         else:
             objects[31] = None
     else:
         objects[30] = None
         objects[31] = None
-        
 
     last_68 = ram_state[68]
 
     if hud:
-        
+
         for i in range(12):
             objects[36+i] = None
 
@@ -933,7 +947,7 @@ def _detect_objects_ram(objects, ram_state, hud):
             life = Life()
             life.xy = 33 + (8 * i), 24
             objects[36+i] = life
-        
+
         # score
         if ram_state[108] > 15:
             for i in range(6):
@@ -964,7 +978,8 @@ def _detect_objects_ram(objects, ram_state, hud):
             score = Score()
             objects[42] = score
         try:
-            score.value = _convert_number(ram_state[108]) * 10000 + _convert_number(ram_state[110]) * 100 + _convert_number(ram_state[112])
+            score.value = _convert_number(ram_state[108]) * 10000 + _convert_number(
+                ram_state[110]) * 100 + _convert_number(ram_state[112])
         except:
             pass
 

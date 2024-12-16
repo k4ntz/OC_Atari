@@ -77,12 +77,14 @@ class Life(GameObject):
 def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
-    player = find_mc_objects(obs, [objects_colors["green"], objects_colors["red"]], miny=40)
+    player = find_mc_objects(
+        obs, [objects_colors["green"], objects_colors["red"]], miny=40)
     for bb in player:
-            objects.append(Player(*bb))
-    
+        objects.append(Player(*bb))
+
     # minx=40, miny=
-    window = find_objects(obs, [0, 0, 0], minx=40, miny=42, maxx=119, maxy=198, closing_dist=1)
+    window = find_objects(obs, [0, 0, 0], minx=40,
+                          miny=42, maxx=119, maxy=198, closing_dist=1)
     for bb in window:
         if bb[2] <= 8 and bb[3] <= 8:
             objects.append(Window(*bb))
@@ -102,7 +104,6 @@ def _detect_objects(objects, obs, hud=False):
         else:
             objects.append(Yellow_Ball(*bb))
 
-
     purple = find_objects(obs, objects_colors["purple"])
     for bb in purple:
         objects.append(Purple_Projectile(*bb))
@@ -115,12 +116,13 @@ def _detect_objects(objects, obs, hud=False):
     for bb in heli:
         objects.append(Helicopter(*bb))
 
-
     if hud:
-        score = find_objects(obs, objects_colors["green"], maxy=40, closing_dist=4, min_distance=1)
+        score = find_objects(
+            obs, objects_colors["green"], maxy=40, closing_dist=4, min_distance=1)
         for bb in score:
-                objects.append(Score(*bb))
-        
-        lives = find_mc_objects(obs, [objects_colors["life_green"], objects_colors["red"]], maxy=40)
+            objects.append(Score(*bb))
+
+        lives = find_mc_objects(
+            obs, [objects_colors["life_green"], objects_colors["red"]], maxy=40)
         for bb in lives:
-                objects.append(Life(*bb))
+            objects.append(Life(*bb))

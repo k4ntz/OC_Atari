@@ -13,7 +13,7 @@ from copy import deepcopy
 import gymnasium as gym
 import ipdb
 from os import path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))  # noqa
 from ocatari.utils import *
 from ocatari.core import OCAtari, EasyDonkey
 from matplotlib import pyplot as plt
@@ -26,7 +26,8 @@ import pickle
 
 
 parser = ArgumentParser()
-parser.add_argument("-g", "--game", type=str, help="The complete name of the game", required=True)
+parser.add_argument("-g", "--game", type=str,
+                    help="The complete name of the game", required=True)
 parser.add_argument("-s", "--snapshot", type=str, default=None,
                     help="Path to snapshot to start from.")
 parser.add_argument("-t", "--tracklist", type=int, default=[], nargs="+",
@@ -38,12 +39,15 @@ default_help = 'F  : FIRE\nTAB:PAUSE'
 HELP_TEXT = plt.text(0, -10.2, default_help, fontsize=20)
 
 
-useOCAtari = True                # if True, running this file will execute the OCAtari code
-printEnvInfo = False             # if True, the extracted objects or the environment info will be printed
+# if True, running this file will execute the OCAtari code
+useOCAtari = True
+# if True, the extracted objects or the environment info will be printed
+printEnvInfo = False
 
 # gym[atari]/gymnasium
 game_name = opts.game    # game name ChopperCommand-v4
-render_mode = "rgb_array"           # render_mode => "rgb_array" is advised, when playing
+# render_mode => "rgb_array" is advised, when playing
+render_mode = "rgb_array"
 # => "human" to also get the normal representation to compare between object extraction and default
 fps = 60                        # render fps
 seed = 0
@@ -52,16 +56,19 @@ seed = 0
 # possible action inputs given by a run with showInputs = True
 INPUTS = ['NOOP', 'FIRE', 'UP', 'RIGHT', 'LEFT', 'DOWN', 'UPRIGHT', 'UPLEFT', 'DOWNRIGHT', 'DOWNLEFT', 'UPFIRE',
           'RIGHTFIRE', 'LEFTFIRE', 'DOWNFIRE', 'UPRIGHTFIRE', 'UPLEFTFIRE', 'DOWNRIGHTFIRE', 'DOWNLEFTFIRE']
-performActions = 30000         # number of actions that will be performed until the environment shuts down automatically
+# number of actions that will be performed until the environment shuts down automatically
+performActions = 30000
 playGame = True                 # if True, enables inputs if you want to play
 key_map = {                     # the inputs mapped to the possible basic actions
-'f': 'FIRE',                    # -> every other action should be a combination of them
-'up': 'UP',
-'right': 'RIGHT',
-'left': 'LEFT',
-'down': 'DOWN'}
-isActive = set()                # the set of active basic actions (related to the currently pressed keys)
-default_action = 'NOOP'         # the default action if nothing is pressed or a false combination is pressed
+    'f': 'FIRE',                    # -> every other action should be a combination of them
+    'up': 'UP',
+    'right': 'RIGHT',
+    'left': 'LEFT',
+    'down': 'DOWN'}
+# the set of active basic actions (related to the currently pressed keys)
+isActive = set()
+# the default action if nothing is pressed or a false combination is pressed
+default_action = 'NOOP'
 actionSequence = ['NOOP']  # only used if playGame is False
 # -> repeats the action sequence until the number of actions reaches performActions
 # -> if no sequence is defined, it repeats random actions instead
@@ -69,10 +76,12 @@ actionSequence = ['NOOP']  # only used if playGame is False
 
 # OCAtari modes
 mode = "ram"                    # ram, vision, test
-HUD = True                      # if True, the returned objects contain only the necessary information to play the game
+# if True, the returned objects contain only the necessary information to play the game
+HUD = True
 
 # get valuable information for reversed engineering purposes
-showInputs = False              # if True, prints the number and the description of the possible inputs (actions)
+# if True, prints the number and the description of the possible inputs (actions)
+showInputs = False
 showActions = False             # if True, prints the action that will be done
 showRAM = False                 # if True, prints the RAM to the console
 # render_mode=="rgb_array" only
@@ -82,8 +91,10 @@ showImage = True                # if True, plots the rgb array
 # RAM manipulation
 manipulateRAM = False          # if True, you can set the RAM by an index
 setRAMIndex = 52                 # the index of the ram that will be set
-setRAMValue = 255                # the value of the ram that will be set (if negative, then it counts up)
-showDelta = False               # shows any other changes that occured by changing the ram (dependent on env.step)
+# the value of the ram that will be set (if negative, then it counts up)
+setRAMValue = 255
+# shows any other changes that occured by changing the ram (dependent on env.step)
+showDelta = False
 slowDownPlot = 0.0001              # pause per iteration
 lastRAM = np.zeros(128)
 
@@ -101,6 +112,7 @@ all_rams = []
 target_vals = []
 target_val = 0  # initial value
 env = None
+
 
 def withgym():
     """
@@ -124,7 +136,7 @@ def withocatari():
     # oc = OCAtari(env_name=game_name, mode=mode, hud=HUD, render_mode=render_mode,
     #              render_oc_overlay=useOCAtari)
     oc = EasyDonkey(mode=mode, hud=HUD, render_mode=render_mode,
-                 render_oc_overlay=useOCAtari)
+                    render_oc_overlay=useOCAtari)
     oc.reset(seed=seed)
     # oc.metadata['render_fps'] = fps, access to this would be nice ???
     env = oc
@@ -142,7 +154,7 @@ def distance_to_joey(player):
     elif player.y > 70:
         return 1 - (120 + player.x)/max_dist
     elif player.y > 25:
-        return 1 - (140 - player.x)/max_dist 
+        return 1 - (140 - player.x)/max_dist
     else:
         return 1
 
@@ -201,11 +213,8 @@ def run(env):
             print(f"Available actions: {actions}")
             exit(1)
 
-
         if showActions:
             print(action_name)
-        
-        
 
         # do a step with the given action
         observation, reward, terminated, truncated, info = env.step(action)
@@ -294,7 +303,8 @@ def run(env):
                 manager.remove()  # remove the last plot to avoid stacking plots
             # import ipdb; ipdb.set_trace()
             manager = plt.imshow(image)  # wrap the array as an image
-            plt.pause(0.001)  # pause the interaction for a bit, so that the plot is drawn
+            # pause the interaction for a bit, so that the plot is drawn
+            plt.pause(0.001)
             plt.pause(slowDownPlot)
 
         # test usage of ipdb
@@ -317,7 +327,7 @@ def run(env):
             plt.close('all')
             break
 
-        #if manipulateRAM:
+        # if manipulateRAM:
          #   plt.pause(1)
           #  env.set_ram(div, old_value)
 
@@ -384,7 +394,7 @@ def on_press(key):
     global pause, end, listener, HELPTEXT, target_val
 
     if not interrupted:
-        #print(key)
+        # print(key)
         # pausing based on space
         if key == keyboard.Key.tab:
             pause = not pause
@@ -392,7 +402,7 @@ def on_press(key):
         # ending program based on escape
         if key == keyboard.Key.esc:
             end = True
-        
+
         global env
         if pause and key == keyboard.Key.space:
             ram_pos = int(input('please enter ram pos'))
@@ -416,6 +426,7 @@ def on_press(key):
         # print(input_action)
         # print(pause)
 
+
 def on_release(key):
     # changing inputs
     key_name = str(key)
@@ -428,35 +439,37 @@ def on_release(key):
         isActive.remove(input_action)
 
 
-#hiermit muss man danach nur noch prüfen, mit welchem set das set der aktiven inputs übereinstimmt
+# hiermit muss man danach nur noch prüfen, mit welchem set das set der aktiven inputs übereinstimmt
 def getInput():
-    #combine inputs
+    # combine inputs
     values = key_map.values()
     mySet = set()
     dic = dict()
     for part in INPUTS:
-        #aus dem String ein Set von Strings (wie values) machen
+        # aus dem String ein Set von Strings (wie values) machen
         s = part
         for value in values:
             sArr = s.split(value)
-            if len(sArr)==1:
-                #entweder nur value drin oder value nicht drin
+            if len(sArr) == 1:
+                # entweder nur value drin oder value nicht drin
                 if sArr[0] == value:
-                    #wenn nur der value drin ist, dann hinzufügen und dic updaten
+                    # wenn nur der value drin ist, dann hinzufügen und dic updaten
                     mySet.add(value)
-                    dic.update({mySet:part})
+                    dic.update({mySet: part})
                     break
                 else:
-                    #value ist nicht drin, also weitermachen
+                    # value ist nicht drin, also weitermachen
                     continue
             else:
                 # ein Teil ist value, der andere ist ein Rest, den man noch betrachten will
-                if sArr[0]==value:
-                    s = sArr[1]               # Rest, den man noch betrachten will
+                if sArr[0] == value:
+                    # Rest, den man noch betrachten will
+                    s = sArr[1]
                 else:
                     s = sArr[0]
-                mySet.add(value)              # abgespaltener value wird hinzugefügt
-    #am ende hat man ein dictionary von Set, String
+                # abgespaltener value wird hinzugefügt
+                mySet.add(value)
+    # am ende hat man ein dictionary von Set, String
     # wobei das set kombiniert den String ergibt
     return dic
 
@@ -465,9 +478,9 @@ def get_action_name(my_set=None):
     """
     Gets the action name based on a set of combined actions
     """
-    #man könnte auch jedes mal schauen, ob jedes Element im Set ein Teil des INPUTS-Elements ist
+    # man könnte auch jedes mal schauen, ob jedes Element im Set ein Teil des INPUTS-Elements ist
     for action_name in INPUTS:
-        #muss jedes x enthalten sein
+        # muss jedes x enthalten sein
         length = 0
         number = 0
         for x in my_set:

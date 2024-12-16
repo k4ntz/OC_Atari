@@ -11,15 +11,17 @@ they were not interpretable. One x Value corresponds to multiple positions on th
 another RAM state which separates them into quadrants or the x-Axis is moving.
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Asteroid': 30,'PlayerMissile': 2}  # Asteroid count can get really high
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Asteroid': 30,'PlayerMissile': 2, 'Lives': 1, 'PlayerScore': 1}
+# Asteroid count can get really high
+MAX_NB_OBJECTS = {'Player': 1, 'Asteroid': 30, 'PlayerMissile': 2}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Asteroid': 30,
+                      'PlayerMissile': 2, 'Lives': 1, 'PlayerScore': 1}
 
 
 class Player(GameObject):
     """
-    The player figure i.e., the space ship on patrol. 
+    The player figure i.e., the space ship on patrol.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 84, 99
@@ -31,7 +33,7 @@ class Player(GameObject):
     @property
     def xy(self):
         return self._xy
-    
+
     @xy.setter
     def xy(self, value):
         self._xy = value
@@ -39,7 +41,7 @@ class Player(GameObject):
     @property
     def _nsrepr(self):
         return [self.x, self.y, self.orientation]
-    
+
     @property
     def _ns_meaning(self):
         return ["POSITION", "ORIENTATION"]
@@ -49,14 +51,12 @@ class Player(GameObject):
         return [Tuple[int, int], Tuple[int]]
 
 
-    
-
 class Asteroid(GameObject):
     """
-    The asteroid boulders. 
+    The asteroid boulders.
     """
-    
-    def __init__(self, x= 8, y= 87, w=16, h=28):
+
+    def __init__(self, x=8, y=87, w=16, h=28):
         super().__init__()
         self._xy = x, y
         self.wh = w, h
@@ -66,7 +66,7 @@ class Asteroid(GameObject):
     @property
     def xy(self):
         return self._xy
-    
+
     @xy.setter
     def xy(self, value):
         self._xy = value
@@ -74,9 +74,9 @@ class Asteroid(GameObject):
 
 class PlayerMissile(GameObject):
     """
-    The photon torpedoes that can be fired from the space ship. 
+    The photon torpedoes that can be fired from the space ship.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -87,7 +87,7 @@ class PlayerMissile(GameObject):
     @property
     def xy(self):
         return self._xy
-    
+
     @xy.setter
     def xy(self, value):
         self._xy = value
@@ -97,7 +97,7 @@ class PlayerScore(GameObject):
     """
     The player's score display (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 68, 5
@@ -108,7 +108,7 @@ class PlayerScore(GameObject):
     @property
     def xy(self):
         return self._xy
-    
+
     @xy.setter
     def xy(self, value):
         self._xy = value
@@ -119,9 +119,9 @@ class PlayerScore(GameObject):
 
 class Lives(GameObject):
     """
-    The indicator for remaining lives of the player (HUD). 
+    The indicator for remaining lives of the player (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 132, 5
@@ -132,15 +132,17 @@ class Lives(GameObject):
     @property
     def xy(self):
         return self._xy
-    
+
     @xy.setter
     def xy(self, value):
         self._xy = value
+
 
 class NoObjectPlayer(NoObject):
     """
     A placeholder class for empty slots where no game object is present.
     """
+
     def __init__(self):
         super().__init__()
         self.orientation = 0
@@ -148,7 +150,7 @@ class NoObjectPlayer(NoObject):
     @property
     def xy(self):
         return self._xy
-    
+
     @xy.setter
     def xy(self, value):
         self._xy = value
@@ -156,7 +158,7 @@ class NoObjectPlayer(NoObject):
     @property
     def _nsrepr(self):
         return [self.x, self.y, self.orientation]
-    
+
     @property
     def _ns_meaning(self):
         return ["POSITION", "ORIENTATION"]
@@ -166,12 +168,12 @@ class NoObjectPlayer(NoObject):
         return [Tuple[int, int], Tuple[int]]
 
 
-
 asteroids_colors = {"brown": [180, 122, 48], "purple": [104, 72, 198], "yellow": [136, 146, 62],
                     "lightyellow": [187, 187, 53], "grey": [214, 214, 214], "lightblue": [117, 181, 239],
                     "pink": [184, 70, 162], "red": [184, 50, 50]}
 
 player_missile_colors = {"blue": [117, 181, 239], "red": [240, 128, 128]}
+
 
 def _init_objects_ram(hud=False):
     """
@@ -182,6 +184,7 @@ def _init_objects_ram(hud=False):
     if hud:
         objects.extend([Lives(), PlayerScore()])
     return objects
+
 
 def _detect_objects_ram(objects, ram_state, hud=False):
     """
@@ -194,14 +197,16 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if ram_state[74] != 224:
             x = _x_position(ram_state[73])
             y = 100 + (2 * (ram_state[74] - 41))
-            player.xy = (x - 1, y) if ram_state[60] % 16 == 4 else (x + 1, y) if ram_state[60] % 16 == 12 else (x, y)
-            player.wh = (6, 10) if ram_state[60] % 16 in [4, 12] else (5, 10) if 2 > ram_state[60] & 8 > 6 else (6, 10)
+            player.xy = (x - 1, y) if ram_state[60] % 16 == 4 else (
+                x + 1, y) if ram_state[60] % 16 == 12 else (x, y)
+            player.wh = (6, 10) if ram_state[60] % 16 in [4, 12] else (
+                5, 10) if 2 > ram_state[60] & 8 > 6 else (6, 10)
             player.orientation = ram_state[60] % 16
             objects[0] = player
             return
         else:
             objects[0] = NoObjectPlayer()
-        
+
     def update_asteroids():
         ast_list = [3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16, 17, 18, 19]
         ast_bb = []
@@ -238,7 +243,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         for i, offset in enumerate([83, 84]):
             if ram_state[offset] and not ram_state[offset + 3] & 128:
                 miss = PlayerMissile()
-                miss.xy = (_x_position(ram_state[offset]) + 1, 175 - 2 * (80 - ram_state[offset + 3]) + 2)
+                miss.xy = (_x_position(
+                    ram_state[offset]) + 1, 175 - 2 * (80 - ram_state[offset + 3]) + 2)
                 objects[31 + i] = miss
             else:
                 objects[31 + i] = NoObject()
@@ -263,20 +269,22 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     update_missiles()
     update_hud()
 
+
 def _x_position(value):
-    ls = value&15
-    add = 8*((value>>7)&1)
-    sub = (value>>4)&7
+    ls = value & 15
+    add = 8*((value >> 7) & 1)
+    sub = (value >> 4) & 7
     if value == 0:
         return 64
     elif value == 1:
         return 4
-    elif ls%2 == 0:
+    elif ls % 2 == 0:
         mult = (ls/2)-1
         return 97 + 15 * mult + add - sub
-    elif ls%2 == 1:
+    elif ls % 2 == 1:
         mult = ((ls-1)/2)-1
         return 10 + 15 * mult + add - sub
+
 
 def _augment_info_asteroids_ram(info, ram_state):
     """
@@ -285,8 +293,9 @@ def _augment_info_asteroids_ram(info, ram_state):
     """
     objects = {}
     if ram_state[74] <= 80:
-        objects["player"] = 81 - (2 * (ram_state[77])), 100 + (2 * (ram_state[74] - 41)), 10, 10, 240, 128, 128
-        
+        objects["player"] = 81 - (2 * (ram_state[77])), 100 + \
+            (2 * (ram_state[74] - 41)), 10, 10, 240, 128, 128
+
     for i in range(16):
         if ram_state[3 + i] != 0 and ram_state[21 + 1] != 0:
             if ram_state[21 + i] <= 160:
@@ -294,9 +303,9 @@ def _augment_info_asteroids_ram(info, ram_state):
                 x, y = ram_state[21 + i], 210 - round(prev_y * 2.5)
                 objects[f"asteroi_{i}"] = x, y, 16, 28, 255
     # objects["asteroid"] = 0, round(ram_state[3] * 2.625), 16, 28, 0, 0, 0
-    info["score"] = _convert_number(ram_state[61]) * 1000 + _convert_number(ram_state[62]) * 10
+    info["score"] = _convert_number(
+        ram_state[61]) * 1000 + _convert_number(ram_state[62]) * 10
     info["objects"] = objects
-
 
 
 def _detect_objects_asteroids_raw(info, ram_state):
@@ -313,12 +322,16 @@ def _detect_objects_asteroids_raw(info, ram_state):
     """
     info["player_x"] = ram_state[73]    # starts at x = 29
     info["player_y"] = ram_state[74]    # starts at y = 41
-    info["diff_to_start_x"] = ram_state[77]     # starts at 255, goes down if go to right and up to the left
-    info["player_direction"] = ram_state[60]    # 64: looking up, 78: up and right, 76: to the right, 74: down and right
+    # starts at 255, goes down if go to right and up to the left
+    info["diff_to_start_x"] = ram_state[77]
+    # 64: looking up, 78: up and right, 76: to the right, 74: down and right
+    info["player_direction"] = ram_state[60]
     # 72: down, 70: down and left, 68: left, 66: up and left
     info["score_high"] = _convert_number(ram_state[61])
-    info["score_low"] = _convert_number(ram_state[62])  # 153 = 990 at 160 again 0
-    info["score"] = _convert_number(ram_state[61]) * 1000 + _convert_number(ram_state[62]) * 10
+    info["score_low"] = _convert_number(
+        ram_state[62])  # 153 = 990 at 160 again 0
+    info["score"] = _convert_number(
+        ram_state[61]) * 1000 + _convert_number(ram_state[62]) * 10
     info["player_missile_1_x"] = ram_state[83]  # beginning x = 253, y = 224
     info["player_missile_2_x"] = ram_state[84]  # blue one
     info["player_missile_1_y"] = ram_state[86]

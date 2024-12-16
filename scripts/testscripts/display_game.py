@@ -4,7 +4,7 @@ import sys
 import random
 import matplotlib.pyplot as plt
 from os import path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))  # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.spaceinvaders import objects_colors
@@ -18,12 +18,14 @@ parser.add_argument("-i", "--interval", type=int, default=10,
                     help="The frame interval (default 10)")
 parser.add_argument("-m", "--mode", choices=["vision", "ram"],
                     default="ram", help="The extraction mode")
-parser.add_argument("-hud", "--hud", action="store_true", help="If provided, detect objects from HUD")
+parser.add_argument("-hud", "--hud", action="store_true",
+                    help="If provided, detect objects from HUD")
 
 opts = parser.parse_args()
 
 
-env = OCAtari(opts.game+"Deterministic", mode=opts.mode, render_mode='rgb_array', hud=opts.hud, obs_mode='dqn')
+env = OCAtari(opts.game+"Deterministic", mode=opts.mode,
+              render_mode='rgb_array', hud=opts.hud, obs_mode='dqn')
 observation, info = env.reset()
 
 
@@ -45,8 +47,8 @@ for i in range(100000):
     if i % opts.interval == 0:
         print(env.objects)
         for obs, objects_list, title in zip([obs],
-                                                [env.objects],
-                                                ["ram"] if opts.mode == "ram" else ["vision"]):
+                                            [env.objects],
+                                            ["ram"] if opts.mode == "ram" else ["vision"]):
             for obj in objects_list:
                 opos = obj.xywh
                 ocol = obj.rgb
@@ -57,8 +59,8 @@ for i in range(100000):
         ax.set_yticks([])
         ax.set_title(f"{opts.mode}: {opts.mode} mode (frame {i})", fontsize=20)
         ax.imshow(obs)
-        plt.pause(0.00001)  # pause the interaction for a bit, so that the plot is drawn
-
+        # pause the interaction for a bit, so that the plot is drawn
+        plt.pause(0.00001)
 
     if terminated or truncated:
         observation, info = env.reset()

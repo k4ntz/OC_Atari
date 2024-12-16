@@ -15,13 +15,13 @@ class GameObject:
 
     def __repr__(self):
         return f"{self.__class__.__name__} at ({self.x}, {self.y}), {self.wh}"
-    
+
     @property
     def _nsrepr(self):
         if not self._visible:
             return [0, 0]
         return [self.x, self.y]
-    
+
     @property
     def _ns_meaning(self):
         """NeuroSymbolic Meaning"""
@@ -61,7 +61,7 @@ class GameObject:
         :type: int
         """
         return self._xy[1]
-    
+
     @y.setter
     def y(self, value):
         self._xy = (self.x, value)
@@ -74,7 +74,7 @@ class GameObject:
         :type: int
         """
         return self.wh[0]
-    
+
     @w.setter
     def w(self, value):
         self.wh = (value, self.h)
@@ -87,7 +87,7 @@ class GameObject:
         :type: int
         """
         return self.wh[1]
-    
+
     @h.setter
     def h(self, value):
         self.wh = (self.w, value)
@@ -95,7 +95,7 @@ class GameObject:
     @property
     def xy(self):
         """
-        Both (x, y) positional coordinates in a tuple. 
+        Both (x, y) positional coordinates in a tuple.
 
         :type: (int, int)
         """
@@ -152,7 +152,7 @@ class GameObject:
         :type: (int, int, int, int)
         """
         return self._xy[0], self._xy[1], self.wh[0], self.wh[1]
-    
+
     @xywh.setter
     def xywh(self, xywh):
         self._xy = xywh[0], xywh[1]
@@ -165,7 +165,7 @@ class GameObject:
     def center(self):
         """
         The center of the bounding box of the object.
-        
+
         :type: (int, int)
         """
         return self._xy[0] + self.wh[0]/2, self._xy[1] + self.wh[1]/2
@@ -188,8 +188,8 @@ class GameObject:
         :rtype: int
         """
         c0, c1 = self.center, other.center
-        return abs(c0[0] - c1[0]) + abs(c0[1]- c1[1]) 
-    
+        return abs(c0[0] - c1[0]) + abs(c0[1] - c1[1])
+
     def closest_object(self, others):
         """
         Returns the closest object from others, based on manathan distance between the center of both objects.
@@ -200,32 +200,32 @@ class GameObject:
         if len(others) == 0:
             return None
         return min(enumerate(others), key=lambda item: self.manathan_distance(item[1]))
-    
+
     def _is_equivalent(self, other):
         if self.category != other.category:
             return False
         iou_value = self.iou(other)
         return iou_value > 0.8
-    
+
     def iou(self, other):
         # Calculate the (x, y) coordinates of the intersection rectangle
         x1 = max(self.x, other.x)
         y1 = max(self.y, other.y)
         x2 = min(self.x + self.w, other.x + other.w)
         y2 = min(self.y + self.h, other.y + other.h)
-        
+
         # Calculate the area of intersection rectangle
         inter_width = max(0, x2 - x1)
         inter_height = max(0, y2 - y1)
         inter_area = inter_width * inter_height
-        
+
         # Calculate the area of both bounding boxes
         area_self = self.w * self.h
         area_other = other.w * other.h
-        
+
         # Calculate the union area
         union_area = area_self + area_other - inter_area
-        
+
         # Calculate IoU
         if union_area == 0:
             return 0  # Prevent division by zero
@@ -239,35 +239,38 @@ class GameObject:
         :return: The properties of the object.
         :rtype: list
         """
-        ignore = ["properties", "GET_COLOR", "GET_WH", "xy", "wh", "prev_xy", "h_coords", "xywh"]
+        ignore = ["properties", "GET_COLOR", "GET_WH",
+                  "xy", "wh", "prev_xy", "h_coords", "xywh"]
         properties = [prop for prop in self.__dir__()]
         [properties.remove(p) for p in ignore if p in properties]
         return [prop for prop in properties
-                if not prop.startswith("_") and 
+                if not prop.startswith("_") and
                 not callable(self.__getattribute__(prop))]
-    
+
+
 class NoObject(GameObject):
     """
     This class represents a non-existent object. It is used to fill in the gaps when no object is detected.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(0, 0, 0, 0)
         self.nslen = 2
-    
+
     def _save_prev(self):
         pass
 
     def __bool__(self):
         return False
-    
+
     def __eq__(self, other):
         return isinstance(other, NoObject)
-    
+
     @property
     def _nsrepr(self):
         return [0 for _ in range(self.nslen)]
-    
+
     def __repr__(self):
         # return "NaO"
         # return "\033[31m" + "NaO" + "\033[39m" # red color
-        return "\033[34m" + "NaO" + "\033[39m" # blue color
+        return "\033[34m" + "NaO" + "\033[39m"  # blue color

@@ -75,16 +75,19 @@ def _detect_objects(objects, obs, hud=False):
         if p[1] < 160 and p[2] > 2 and p[3] > 10:
             objects.append(Player(*p))
 
-    player_missile = find_objects(obs, objects_colors["player_missile"], min_distance=1)
+    player_missile = find_objects(
+        obs, objects_colors["player_missile"], min_distance=1)
     for missile in player_missile:
         if missile[2] < 2 and 1 < missile[3] < 10 and missile[1] < 160:
             objects.append(PlayerMissile(*missile))
 
-    helicopter = find_mc_objects(obs, objects_colors["helicopter"], min_distance=1)
+    helicopter = find_mc_objects(
+        obs, objects_colors["helicopter"], min_distance=1)
     for heli in helicopter:
         objects.append(Helicopter(*heli))
 
-    tanker = find_mc_objects(obs, objects_colors["tanker"], min_distance=1, minx=10, miny=3, maxy=162)
+    tanker = find_mc_objects(
+        obs, objects_colors["tanker"], min_distance=1, minx=10, miny=3, maxy=162)
     for tank in tanker:
         if tank[3] > 3:
             objects.append(Tanker(*tank))
@@ -93,7 +96,8 @@ def _detect_objects(objects, obs, hud=False):
     for j in jet:
         objects.append(Jet(*j))
 
-    fuel_depot = find_mc_objects(obs, objects_colors["fuel_depot"], min_distance=1)
+    fuel_depot = find_mc_objects(
+        obs, objects_colors["fuel_depot"], min_distance=1)
     for fuel in fuel_depot:
         # if True:
         if fuel[2] < 8:
@@ -109,7 +113,8 @@ def _detect_objects(objects, obs, hud=False):
             if liv[1] > 190 and liv[0] < 62:
                 objects.append(Lives(*liv))
 
-        score = find_objects(obs, objects_colors["score"], miny=163, maxy=175, min_distance=1, closing_dist=6)
+        score = find_objects(
+            obs, objects_colors["score"], miny=163, maxy=175, min_distance=1, closing_dist=6)
         for sc in score:
             if 160 < sc[1] < 190:
                 objects.append(PlayerScore(*sc))

@@ -5,7 +5,7 @@ import random
 import matplotlib.pyplot as plt
 from os import path
 import pathlib
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))  # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.spaceinvaders import objects_colors
@@ -13,7 +13,7 @@ from ocatari.vision.pong import objects_colors
 from ocatari.utils import load_agent, parser, make_deterministic
 from copy import deepcopy
 from PIL import Image
-import cv2 
+import cv2
 import pickle
 
 
@@ -32,7 +32,8 @@ parser.add_argument("-snap", "--snapshot", type=str, default="",
 opts = parser.parse_args()
 
 
-env = OCAtari(opts.game+"Deterministic", mode="both", render_mode='rgb_array', hud=opts.hud)
+env = OCAtari(opts.game+"Deterministic", mode="both",
+              render_mode='rgb_array', hud=opts.hud)
 
 observation, info = env.reset()
 
@@ -55,7 +56,7 @@ make_deterministic(0, env)
 
 class IndexTracker:
     def __init__(self, axes):
-        
+
         self.frame_idx = 0
         self.images = dict.fromkeys(['ram', 'vision'], None)
         self.fast_forward(opts.start)
@@ -64,7 +65,7 @@ class IndexTracker:
             self.action = dqn_agent.draw_action(env.dqn_obs)
         else:
             self.action = random.randint(0, env.nb_actions-1)
-        
+
         # self.action_func, self.gen_opts = action_generator
         # action = self.action_func(*(self.gen_opts))
         self.axes = axes
@@ -91,25 +92,25 @@ class IndexTracker:
             # cv2.imwrite(f"frames/{title}_frame_{self.frame_idx}.png", obs, [cv2.IMWRITE_PNG_COMPRESSION, 0])
             # im.save()
             self.images[title].axes.figure.canvas.draw()
-        
+
         if terminated or truncated:
-            observation, info = env.reset()    
-        
-        self.images['ram'].axes.figure.suptitle(f"frame {self.frame_idx}", fontsize=20)
-        
+            observation, info = env.reset()
+
+        self.images['ram'].axes.figure.suptitle(
+            f"frame {self.frame_idx}", fontsize=20)
 
     def fast_forward(self, target_idx):
-        while self.frame_idx < target_idx: 
+        while self.frame_idx < target_idx:
             if opts.dqn:
                 action = dqn_agent.draw_action(env.dqn_obs)
             else:
                 action = random.randint(0, env.nb_actions-1)
-            
+
             obs, reward, terminated, truncated, info = env.step(action)
             self.frame_idx += 1
 
     def skip_frames(self):
-        self.fast_forward(self.frame_idx + opts.interval - 1) 
+        self.fast_forward(self.frame_idx + opts.interval - 1)
 
     def on_press(self, event):
         if event.key == 'up':
@@ -142,12 +143,14 @@ class IndexTracker:
             # cv2.imwrite(f"frames/{title}_frame_{self.frame_idx}.png", obs, [cv2.IMWRITE_PNG_COMPRESSION, 0])
             # im.save()
             self.images[title].axes.figure.canvas.draw()
-        self.images['ram'].axes.figure.suptitle(f"frame {self.frame_idx}", fontsize=20)
+        self.images['ram'].axes.figure.suptitle(
+            f"frame {self.frame_idx}", fontsize=20)
 
 # if opts.dqn:
 #     action_generator = (dqn_agent.draw_action, tuple(env.dqn_obs))
 # else:
 #     action_generator = (random.randint, (0, env.nb_actions-1))
+
 
 fig, axes = plt.subplots(1, 2)
 tracker = IndexTracker(axes)

@@ -1,8 +1,8 @@
 from .utils import find_objects, find_mc_objects
 from .game_objects import GameObject
 
-objects_colors = {"player": [[200, 72, 72], [236, 236, 236], [66, 136, 176]], 
-                  "barrel": [236, 200, 96], 
+objects_colors = {"player": [[200, 72, 72], [236, 236, 236], [66, 136, 176]],
+                  "barrel": [236, 200, 96],
                   "score": [158, 208, 101],
                   "girlfriend": [[252, 252, 84], [84, 160, 197], [200, 72, 72]],
                   "donkeykong": [181, 83, 40],
@@ -138,19 +138,23 @@ ladders = [(108, 176), (48, 148), (80, 148), (88, 120), (108, 120),
 
 def _detect_objects(objects, obs, hud=True):
     objects.clear()
-    player = find_mc_objects(obs, objects_colors["player"], size=(8, 15), tol_s=4)
+    player = find_mc_objects(
+        obs, objects_colors["player"], size=(8, 15), tol_s=4)
     for bb in player:
         objects.append(Player(*bb))
-    girlfriend = find_mc_objects(obs, objects_colors["girlfriend"], size=(8, 16), tol_s=4)
+    girlfriend = find_mc_objects(
+        obs, objects_colors["girlfriend"], size=(8, 16), tol_s=4)
     for bb in girlfriend:
         objects.append(Girlfriend(*bb))
-    donkey = find_objects(obs, objects_colors["donkeykong"], size=(18, 21), tol_s=4)
+    donkey = find_objects(
+        obs, objects_colors["donkeykong"], size=(18, 21), tol_s=4)
     for bb in donkey:
         objects.append(DonkeyKong(*bb))
     barrels = find_objects(obs, objects_colors["barrel"], size=(8, 8), tol_s=3)
     for bb in barrels:
         objects.append(Barrel(*bb))
-    hammers = find_mc_objects(obs, objects_colors["hammer"], size=(4, 7), tol_s=3, closing_active=False)
+    hammers = find_mc_objects(obs, objects_colors["hammer"], size=(
+        4, 7), tol_s=3, closing_active=False)
     for bb in hammers:
         objects.append(Hammer(*bb))
 
@@ -160,7 +164,7 @@ def _detect_objects(objects, obs, hud=True):
         score = find_objects(obs, objects_colors["score"], maxy=25)
         for bb in score:
             objects.append(Score(*bb))
-        life = find_objects(obs, objects_colors["life"], miny=20, maxy=32, minx=90, closing_dist=5)
+        life = find_objects(
+            obs, objects_colors["life"], miny=20, maxy=32, minx=90, closing_dist=5)
         for bb in life:
             objects.append(Life(*bb))
-    

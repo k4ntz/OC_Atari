@@ -55,9 +55,10 @@ if torch_imported:
         def __init__(self, nb_actions, n_atoms=51, v_min=-10, v_max=10):
             super().__init__()
             self.n_atoms = n_atoms
-            self.register_buffer("atoms", torch.linspace(v_min, v_max, steps=n_atoms))
+            self.register_buffer("atoms", torch.linspace(
+                v_min, v_max, steps=n_atoms))
             self.n = nb_actions
-            
+
             self.__features = nn.Sequential(
                 nn.Conv2d(4, 32, kernel_size=8, stride=4),
                 nn.ReLU(inplace=True),
@@ -67,22 +68,24 @@ if torch_imported:
                 nn.ReLU(inplace=True),
             )
             self.__head = nn.Sequential(
-                nn.Linear(64 * 7 * 7, 512), nn.ReLU(inplace=True), nn.Linear(512, self.n * n_atoms),
+                nn.Linear(
+                    64 * 7 * 7, 512), nn.ReLU(inplace=True), nn.Linear(512, self.n * n_atoms),
             )
 
         def get_action(self, x, action=None):
             y = self.__features(x / 255.0)
             logits = self.__head(y.view(y.size(0), -1))
             # probability mass function for each action
-            pmfs = torch.softmax(logits.view(len(x), self.n, self.n_atoms), dim=2)
+            pmfs = torch.softmax(logits.view(
+                len(x), self.n, self.n_atoms), dim=2)
             q_values = (pmfs * self.atoms).sum(2)
             if action is None:
                 action = torch.argmax(q_values, 1)
             return action, pmfs[torch.arange(len(x)), action]
-        
+
         def draw_action(self, state):
             return self.get_action(state)[0]
-    
+
     class PPOAgent(nn.Module):
         def __init__(self, env):
             super().__init__()
@@ -97,7 +100,8 @@ if torch_imported:
                 layer_init(nn.Linear(64 * 7 * 7, 512)),
                 nn.ReLU(),
             )
-            self.actor = layer_init(nn.Linear(512, env.action_space.n), std=0.01)
+            self.actor = layer_init(
+                nn.Linear(512, env.action_space.n), std=0.01)
             self.critic = layer_init(nn.Linear(512, 1), std=1)
 
         def get_value(self, x):
@@ -120,16 +124,17 @@ if torch_imported:
             self.device = device
 
             self.network = nn.Sequential(
-                layer_init(nn.Linear(input_size,128)),
+                layer_init(nn.Linear(input_size, 128)),
                 nn.ReLU(),
-                layer_init(nn.Linear(128,64)),
+                layer_init(nn.Linear(128, 64)),
                 nn.ReLU(),
                 nn.Flatten(),
                 layer_init(nn.Linear(64*window_size, 32)),
                 nn.ReLU(),
-                
+
             )
-            self.actor = layer_init(nn.Linear(32, envs.action_space.n), std=0.01)
+            self.actor = layer_init(
+                nn.Linear(32, envs.action_space.n), std=0.01)
             self.critic = layer_init(nn.Linear(32, 1), std=1)
 
         def get_value(self, x):
@@ -145,11 +150,12 @@ if torch_imported:
 
         def draw_action(self, x, states=None, **_):
             return self.get_action_and_value(x)[0]
-    
+
     class AtariNet(nn.Module):
         """ Estimator used by DQN-style algorithms for ATARI games.
             Works with DQN, M-DQN and C51.
         """
+
         def __init__(self, action_no, distributional=False):
             super().__init__()
 
@@ -172,7 +178,8 @@ if torch_imported:
                 nn.ReLU(inplace=True),
             )
             self.__head = nn.Sequential(
-                nn.Linear(64 * 7 * 7, 512), nn.ReLU(inplace=True), nn.Linear(512, out_size),
+                nn.Linear(
+                    64 * 7 * 7, 512), nn.ReLU(inplace=True), nn.Linear(512, out_size),
             )
 
         def forward(self, x):
@@ -183,7 +190,8 @@ if torch_imported:
             qs = self.__head(x.view(x.size(0), -1))
 
             if self.distributional:
-                logits = qs.view(qs.shape[0], self.action_no, len(self.__support))
+                logits = qs.view(
+                    qs.shape[0], self.action_no, len(self.__support))
                 qs_probs = torch.softmax(logits, dim=2)
                 return torch.mul(qs_probs, self.__support.expand_as(qs_probs)).sum(2)
             return qs
@@ -198,17 +206,20 @@ if torch_imported:
 
         :param nb_actions
         """
+
         def __init__(self, nb_actions) -> None:
             self.nb_actions = nb_actions
 
         def draw_action(self, *args, **kwargs) -> int:
             return random.randint(0, self.nb_actions-1)
 
+
 def _load_checkpoint(fpath, device="cpu"):
     fpath = Path(fpath)
     with fpath.open("rb") as file:
         with GzipFile(fileobj=file) as inflated:
             return torch.load(inflated, map_location=device)
+
 
 def load_agent(opt, nb_actions=None, env=None, device="cpu"):
     pth = opt if isinstance(opt, str) else opt.path
@@ -223,16 +234,17 @@ def load_agent(opt, nb_actions=None, env=None, device="cpu"):
         ckpt = torch.load(pth)
         if "c51" in pth:
             agent = QNetwork(nb_actions)
-            agent.load_state_dict(ckpt["model_weights"])   
+            agent.load_state_dict(ckpt["model_weights"])
         elif "ppo" in pth and env.obs_mode == "dqn":
             agent = PPOAgent(env)
             agent.load_state_dict(ckpt["model_weights"])
         elif "ppo" in pth and env.obs_mode == "obj":
-            agent = PPO_Obj_small(env, len(env.ns_state), env.buffer_window_size, device)
+            agent = PPO_Obj_small(env, len(env.ns_state),
+                                  env.buffer_window_size, device)
             agent.load_state_dict(ckpt["model_weights"])
         else:
             return None
-    
+
     return agent
 
 
@@ -249,11 +261,15 @@ def draw_arrow(surface: pygame.Surface, start_pos: (float, float), end_pos: (flo
     arrow_dir_norm = arrow_dir / np.linalg.norm(arrow_dir)
     tip_anchor = end_pos - tip_length * arrow_dir_norm
 
-    left_tip_end = tip_anchor + tip_width / 2 * np.matmul(ROT_MATRIX, arrow_dir_norm)
-    right_tip_end = tip_anchor - tip_width / 2 * np.matmul(ROT_MATRIX, arrow_dir_norm)
+    left_tip_end = tip_anchor + tip_width / 2 * \
+        np.matmul(ROT_MATRIX, arrow_dir_norm)
+    right_tip_end = tip_anchor - tip_width / \
+        2 * np.matmul(ROT_MATRIX, arrow_dir_norm)
 
-    pygame.draw.line(surface, start_pos=left_tip_end, end_pos=end_pos, **kwargs)
-    pygame.draw.line(surface, start_pos=right_tip_end, end_pos=end_pos, **kwargs)
+    pygame.draw.line(surface, start_pos=left_tip_end,
+                     end_pos=end_pos, **kwargs)
+    pygame.draw.line(surface, start_pos=right_tip_end,
+                     end_pos=end_pos, **kwargs)
 
 
 def draw_label(surface: pygame.Surface, text: str, position: (int, int), font: pygame.font.SysFont):

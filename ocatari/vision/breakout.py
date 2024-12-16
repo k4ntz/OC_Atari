@@ -4,8 +4,9 @@ from .game_objects import GameObject, NoObject
 objects_colors = {"background": [0, 0, 0], "player": [200, 72, 72], "ball": [200, 72, 72], "lives": [142, 142, 142],
                   "score": [142, 142, 142], "player_num": [142, 142, 142], "background_2": [142, 142, 142]}
 
-block_colors = list(reversed([[66, 72, 200], [72, 160, 72], [162, 162, 42], 
+block_colors = list(reversed([[66, 72, 200], [72, 160, 72], [162, 162, 42],
                               [180, 122, 48], [198, 108, 58], [200, 72, 72]]))
+
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
@@ -50,7 +51,8 @@ class PlayerNumber(GameObject):
 
 
 def _detect_objects(objects, obs, hud=False):
-    player_bb = find_objects(obs, objects_colors["player"], min_distance=1, maxx=151)
+    player_bb = find_objects(
+        obs, objects_colors["player"], min_distance=1, maxx=151)
     player = objects[0]
     for p in player_bb:
         if p[3] == 4 and p[2] > 4:
@@ -58,7 +60,8 @@ def _detect_objects(objects, obs, hud=False):
                 player = Player()
             player.xywh = p
 
-    ball_bb = find_objects(obs, objects_colors["ball"], min_distance=1, size=(2, 4), tol_s=1)
+    ball_bb = find_objects(
+        obs, objects_colors["ball"], min_distance=1, size=(2, 4), tol_s=1)
     ball = objects[1]
     if len(ball_bb):
         for b in ball_bb:
@@ -70,7 +73,8 @@ def _detect_objects(objects, obs, hud=False):
     else:
         objects[1] = NoObject()
     for i, blockRowColor in enumerate(block_colors):
-        block_row = find_objects(obs, blockRowColor, min_distance=1, miny=57+6*i, maxy=63+6*i)
+        block_row = find_objects(
+            obs, blockRowColor, min_distance=1, miny=57+6*i, maxy=63+6*i)
         for bb in block_row:
             if bb[2] == 2 and bb[3] == 4:
                 block_row.remove(bb)
@@ -100,7 +104,6 @@ def _detect_objects(objects, obs, hud=False):
     #                     objects[i+base_list] = Block(x, y, 4, 6)
     #                     objects[i+base_list].rgb = blockRowColor
     #                 x+=4
-
 
     # HUD section removed, due to being static
 

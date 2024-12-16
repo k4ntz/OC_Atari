@@ -6,7 +6,7 @@ import sys
 import os
 import numpy as np
 # import pathlib
-sys.path.insert(0, '../../') # noqa
+sys.path.insert(0, '../../')  # noqa
 
 from ocatari.core import OCAtari
 
@@ -19,17 +19,17 @@ obs_mode = "obj"
 seed = 42
 frameskip = 1
 
-#Seeding
+# Seeding
 os.environ['PYTHONHASHSEED'] = str(seed)
-#torch.use_deterministic_algorithms(args.torch_deterministic)
-#torch.backends.cudnn.deterministic = args.torch_deterministic
-#torch.backends.cudnn.benchmark = False
-#torch.cuda.manual_seed_all(args.seed)
+# torch.use_deterministic_algorithms(args.torch_deterministic)
+# torch.backends.cudnn.deterministic = args.torch_deterministic
+# torch.backends.cudnn.benchmark = False
+# torch.cuda.manual_seed_all(args.seed)
 random.seed(seed)
 np.random.seed(seed)
 
 env = OCAtari(env_id, hud=False, render_mode="rgb_array", mode="ram",
-                    render_oc_overlay=False, obs_mode=obs_mode, frameskip=1)
+              render_oc_overlay=False, obs_mode=obs_mode, frameskip=1)
 
 
 env.action_space.seed(seed)
@@ -45,8 +45,8 @@ for _ in range(100):
 obs1 = obs
 print("---")
 
-env = OCAtari(env_id, hud=False, render_mode="rgb_array",mode="vision",
-                    render_oc_overlay=False, obs_mode=obs_mode, frameskip=1)
+env = OCAtari(env_id, hud=False, render_mode="rgb_array", mode="vision",
+              render_oc_overlay=False, obs_mode=obs_mode, frameskip=1)
 
 env.action_space.seed(seed)
 

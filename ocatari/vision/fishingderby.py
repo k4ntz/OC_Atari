@@ -55,14 +55,15 @@ def _detect_objects(objects, obs, hud=True):
         shark_instance = Shark(*shark)
         if shark_instance.w > 20:
             objects.append(shark_instance)
-            modified_obs[shark_instance.y: shark_instance.y - 1+ shark_instance.h + 2, shark_instance.x - 1: shark_instance.x + shark_instance.w + 2] = (24, 26, 167)
-
+            modified_obs[shark_instance.y: shark_instance.y - 1 + shark_instance.h + 2,
+                         shark_instance.x - 1: shark_instance.x + shark_instance.w + 2] = (24, 26, 167)
 
     p1_fishing_hook = find_rope_segments(obs, objects_colors["player 1 fishing string"], seg_height=(7, 150),
                                          minx=30, maxx=79, maxy=188, miny=90)
     if p1_fishing_hook:
         for pixels in p1_fishing_hook:
-            modified_obs[pixels[1] - 1:pixels[1] + pixels[3] + 1, pixels[0] - 1:pixels[0] + 1] = (24, 26, 167)
+            modified_obs[pixels[1] - 1:pixels[1] + pixels[3] +
+                         1, pixels[0] - 1:pixels[0] + 1] = (24, 26, 167)
         lowest = max(p1_fishing_hook, key=lambda x: x[1])
         if lowest[3] > 1:
             lowest[1] = lowest[1] + lowest[3] - 1
@@ -74,7 +75,8 @@ def _detect_objects(objects, obs, hud=True):
                                              minx=30, maxx=79, maxy=95)
         if p1_fishing_hook:
             for pixels in p1_fishing_hook:
-                modified_obs[pixels[1] - 1:pixels[1] + pixels[3] + 1, pixels[0] - 1:pixels[0] + 1] = (24, 26, 167)
+                modified_obs[pixels[1] - 1:pixels[1] + pixels[3] +
+                             1, pixels[0] - 1:pixels[0] + 1] = (24, 26, 167)
             lowest = max(p1_fishing_hook, key=lambda x: x[1])
             if lowest[3] > 1:
                 lowest[1] = lowest[1] + lowest[3] - 1
@@ -84,7 +86,8 @@ def _detect_objects(objects, obs, hud=True):
     p1_fishing_hook = find_rope_segments(obs, objects_colors["player 1 fishing string"], seg_height=(1, 150),
                                          minx=30, maxx=79, maxy=94)
     for pixels in p1_fishing_hook:
-        obs[pixels[1] - 1:pixels[1] + pixels[3] + 1, pixels[0] - 1:pixels[0] + 1] = (24, 26, 167)
+        obs[pixels[1] - 1:pixels[1] + pixels[3] + 1,
+            pixels[0] - 1:pixels[0] + 1] = (24, 26, 167)
 
     p2_fishing_hook = find_rope_segments(modified_obs, objects_colors["player 2 fishing string"], seg_height=(1, 150),
                                          minx=79, maxx=130, maxy=188, miny=43)
