@@ -84,7 +84,7 @@ def _check_path(game_name):
     path = path + "find_causative_ram_full/"
     if not os.path.exists(path):
         os.mkdir(path)
-    path = path + game_name +"/"
+    path = path + game_name + "/"
     if not os.path.exists(path):
         os.mkdir(path)
     return path

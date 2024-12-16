@@ -7,15 +7,16 @@ RAM extraction for the game TENNIS. Supported modes: ram.
 """
 
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 1, 'Ball': 1, 'BallShadow': 1}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Enemy': 1, 'Ball': 1, 'BallShadow': 1, 'PlayerScore': 1, 'EnemyScore': 1}
+MAX_NB_OBJECTS = {'Player': 1, 'Enemy': 1, 'Ball': 1, 'BallShadow': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 1, 'Ball': 1,
+                      'BallShadow': 1, 'PlayerScore': 1, 'EnemyScore': 1}
 
 
 class Player(GameObject):
     """
     The player figure i.e., the tennis player.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -29,7 +30,7 @@ class Enemy(GameObject):
     """
     The enemy tennis player.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -43,7 +44,7 @@ class Ball(GameObject):
     """
     The tennis ball.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -57,7 +58,7 @@ class BallShadow(GameObject):
     """
     The shadow cast by the ball onto the ground.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -88,7 +89,7 @@ class EnemyScore(GameObject):
     """
     The enemy's score display (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 113, 5
@@ -211,7 +212,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             add_plr = False
 
 
-
 def _old_detect_objects_ram(info, ram_state):
     """
     For all 3 objects:
@@ -221,11 +221,15 @@ def _old_detect_objects_ram(info, ram_state):
     objects["logo"] = 39, 193, 33, 7, 240, 128, 128
     field_orientation = ram_state[80]  # stores the orientation of the field
     if field_orientation == 0:  # player up
-        objects["enemy"] = ram_state[27]-1, 166-ram_state[25], 16, 22, 117, 128, 240  # DOWN player
-        objects["player"] = ram_state[26]-1, 166-ram_state[24], 16, 22, 240, 128, 128  # UP player
+        objects["enemy"] = ram_state[27]-1, 166 - \
+            ram_state[25], 16, 22, 117, 128, 240  # DOWN player
+        objects["player"] = ram_state[26]-1, 166 - \
+            ram_state[24], 16, 22, 240, 128, 128  # UP player
     elif field_orientation == 1:  # player down
-        objects["player"] = ram_state[27]-1, 166-ram_state[25], 16, 22, 240, 128, 128  # UP player
-        objects["enemy"] = ram_state[26]-1, 166-ram_state[24], 16, 22, 117, 128, 240  # DOWN player
+        objects["player"] = ram_state[27]-1, 166 - \
+            ram_state[25], 16, 22, 240, 128, 128  # UP player
+        objects["enemy"] = ram_state[26]-1, 166 - \
+            ram_state[24], 16, 22, 117, 128, 240  # DOWN player
     else:
         raise TypeError("Couldn't find the game field_orientation")
     enemy_score = min(15 * ram_state[70], 40)
@@ -273,8 +277,10 @@ def _detect_objects_tennis_raw(info, ram_state):
     info["relevant_objects"] = relevant_objects
 
     # additional info
-    info["field_orientation"] = ram_state[80]  # 0: player upper field, 1: player lower field
-    info["player_score"] = ram_state[7]     # points: 13 = 0; 14 = 15; 15 = 30; 16 = 40 but also shows won sets
+    # 0: player upper field, 1: player lower field
+    info["field_orientation"] = ram_state[80]
+    # points: 13 = 0; 14 = 15; 15 = 30; 16 = 40 but also shows won sets
+    info["player_score"] = ram_state[7]
     info["enemy_score"] = ram_state[6]
     info["player_points"] = ram_state[69]   # 0 = 0; 1 = 15; 2 = 30; 3 = 40
     info["enemy_points"] = ram_state[70]

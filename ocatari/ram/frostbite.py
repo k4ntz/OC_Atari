@@ -1,20 +1,22 @@
 from .game_objects import GameObject, NoObject
 from .utils import match_objects
-import sys 
+import sys
 
 """
 RAM extraction for the game Frostbite.
 """
 
-MAX_NB_OBJECTS = {"Player": 1, "Bear": 1, "House": 1, "Door": 1, "Bird": 8, "Crab": 8, "Clam": 8, "GreenFish": 8, "FloatingBlock": 24}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Bear": 1, "House": 1, "Door": 1, "Bird": 8, "Crab": 8, "Clam": 8, "GreenFish": 8, "FloatingBlock": 24, 
+MAX_NB_OBJECTS = {"Player": 1, "Bear": 1, "House": 1, "Door": 1,
+                  "Bird": 8, "Crab": 8, "Clam": 8, "GreenFish": 8, "FloatingBlock": 24}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Bear": 1, "House": 1, "Door": 1, "Bird": 8, "Crab": 8, "Clam": 8, "GreenFish": 8, "FloatingBlock": 24,
                       "Lives": 1, "Temperature": 1, "Score": 1}
+
 
 class Player(GameObject):
     """
     The player figure: Frostbite Bailey.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -27,7 +29,7 @@ class Bear(GameObject):
     """
     The dangerous grizzly polar bears on the shore (level 4).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 111, 111, 111
@@ -40,9 +42,10 @@ class House(GameObject):
     """
     The igloo Frostbite Bailey is trying to build.
     """
+
     def __init__(self):
         super().__init__()
-        self.rgb = 142,142,142
+        self.rgb = 142, 142, 142
         self.hud = False
         self.wh = (8, 18)
         self._xy = 0, 0
@@ -52,7 +55,7 @@ class Door(GameObject):
     """
     The finished igloo.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 123, 47
@@ -60,11 +63,12 @@ class Door(GameObject):
         self.hud = False
         self.wh = 8, 8
 
+
 class FloatingBlock(GameObject):
     """
     The white, untouched ice floes, turning blue once jumped over.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 214, 214, 214
@@ -76,7 +80,7 @@ class FloatingBlock(GameObject):
 #     """
 #     The ice floes that have turned blue by jumping on them.
 #     """
-    
+
 #     def __init__(self):
 #         super().__init__()
 #         self.rgb = 84, 138, 210
@@ -84,11 +88,12 @@ class FloatingBlock(GameObject):
 #         self.wh = (24, 7)
 #         self._xy = 0, 0
 
+
 class Bird(GameObject):
     """
     The wild snowgeese.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 132, 144, 252
@@ -101,10 +106,10 @@ class Crab(GameObject):
     """
     The dangerous Alaskan king crabs.
     """
-    
+
     def __init__(self):
         super().__init__()
-        self.rgb = 213,130,74
+        self.rgb = 213, 130, 74
         self.hud = False
         self.wh = (8, 7)
         self._xy = 0, 0
@@ -114,9 +119,10 @@ class GreenFish(GameObject):
     """
     The fresh fish swimming by regularly.
     """
+
     def __init__(self):
         super().__init__()
-        self.rgb = 111,210,111
+        self.rgb = 111, 210, 111
         self.wh = (8, 6)
         self.hud = False
         self._xy = 0, 0
@@ -126,20 +132,20 @@ class Clam(GameObject):
     """
     The dangerous clams.
     """
-    
+
     def __init__(self):
         super().__init__()
-        self.rgb = 210,210,64
+        self.rgb = 210, 210, 64
         self.hud = False
         self._xy = 0, 0
-        self.wh=(8, 7)
+        self.wh = (8, 7)
 
 
 class Lives(GameObject):
     """
     The indicator for the player's lives.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 63, 22
@@ -147,11 +153,12 @@ class Lives(GameObject):
         self.hud = True
         self.wh = 6, 8
 
+
 class Temperature(GameObject):
     """
     The temperature display.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 23, 22
@@ -164,7 +171,7 @@ class Score(GameObject):
     """
     The player's score display.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 63, 10
@@ -181,7 +188,7 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
@@ -195,12 +202,14 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()]
     objects.extend([NoObject()])
-    objects.extend([NoObject(), NoObject()]) #House/Door 
-    objects.extend([NoObject() for _ in range(32)]) #for bird, clams, crabs and greenfishes
-    objects.extend([NoObject() for _ in range(24)]) #for the plates
+    objects.extend([NoObject(), NoObject()])  # House/Door
+    # for bird, clams, crabs and greenfishes
+    objects.extend([NoObject() for _ in range(32)])
+    objects.extend([NoObject() for _ in range(24)])  # for the plates
     if hud:
         objects.extend([Lives(), Temperature(), Score()])
     return objects
+
 
 def _detect_objects_ram(objects, ram_state, hud=False):
     """
@@ -216,12 +225,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if not player:
             player = Player()
             objects[0] = player
-    player.xy =  ram_state[102], ram_state[100]+29
+    player.xy = ram_state[102], ram_state[100]+29
     if 0 < ram_state[107] < 18:
         sink = ram_state[107]
         player.y += sink
         player.h = 18 - sink
-    elif 18 <= ram_state[107]: # sunk
+    elif 18 <= ram_state[107]:  # sunk
         objects[0] = NoObject()
 
     # Bear
@@ -237,9 +246,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         bear.xy = ram_state[104]+3, 58
         objects[1] = bear
 
-    # House 
-    position_list = [(112, 51), (112, 51), (112, 51), (112, 51), (112, 47), (112, 47), (112, 47), (112, 47), (112, 42), (112, 42), (112, 42), (112, 42), (112, 39), (112, 39), (112, 35), (112, 35)]
-    size_list = [(8, 4), (16, 4), (24, 4), (32, 4), (32, 8), (32, 8), (32, 8), (32, 8), (32, 13), (32, 13), (32, 13), (32, 13), (32, 16), (32, 16), (32, 20), (32, 20)]
+    # House
+    position_list = [(112, 51), (112, 51), (112, 51), (112, 51), (112, 47), (112, 47), (112, 47), (
+        112, 47), (112, 42), (112, 42), (112, 42), (112, 42), (112, 39), (112, 39), (112, 35), (112, 35)]
+    size_list = [(8, 4), (16, 4), (24, 4), (32, 4), (32, 8), (32, 8), (32, 8), (32, 8),
+                 (32, 13), (32, 13), (32, 13), (32, 13), (32, 16), (32, 16), (32, 20), (32, 20)]
     if ram_state[77] == 255:
         if objects[2]:
             objects[2] = NoObject()
@@ -260,10 +271,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         else:
             door = objects[3]
     elif objects[3]:
-            objects[3] = NoObject()
+        objects[3] = NoObject()
 
     # # Birds, Crabs, Clams, GreenFish
-    if ram_state[107] == 0 and ram_state[103] == 64: # reset
+    if ram_state[107] == 0 and ram_state[103] == 64:  # reset
         for i in range(24):
             if objects[4+i]:
                 objects[4+i] = NoObject()
@@ -283,7 +294,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 Otype = GreenFish
                 offset = 3
             else:
-                raise AttributeError(f"THe type at position {35+i} is {type} and unknown")
+                raise AttributeError(
+                    f"THe type at position {35+i} is {type} and unknown")
             idx = 4 + offset*8 + i
             if isinstance(objects[idx], Otype):
                 obj = objects[idx]
@@ -292,7 +304,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 objects[idx] = obj
             obj.xy = ram_state[84+i], 160 - 26 * i
             idx2 = 8 + offset*8 + i
-            if ram_state[88+i]: # 2 objects
+            if ram_state[88+i]:  # 2 objects
                 if isinstance(objects[idx2], Otype):
                     obj2 = objects[idx2]
                 else:
@@ -306,10 +318,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             for offset in range(4):
                 if objects[4+offset*8+i]:
                     objects[4+offset*8+i] = NoObject()
-    
+
     # # Adding the Plates
     for i in range(4):
-        if ram_state[30] == 8: # single plates
+        if ram_state[30] == 8:  # single plates
             num_plates = 3
             pwidth = 24
             for j in range(12):
@@ -330,13 +342,17 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if num_plates == 3:
                 obj.xy = (ram_state[31+i] + plat*sep - 8) % 160, 174 - 26*i
             else:
-                if plat % 2==0:
+                if plat % 2 == 0:
                     xoffset = max(0, space-4)
-                    obj.xy = (ram_state[31+i] + plat*sep - 8 - xoffset) % 160, 174 - 26*i
+                    obj.xy = (ram_state[31+i] + plat*sep -
+                              8 - xoffset) % 160, 174 - 26*i
                 else:
                     xoffset = min(space, 4)
-                    obj.xy = (ram_state[31+i] + plat*sep - 16 + xoffset) % 160, 174 - 26*i
-            obj.rgb = (214, 214, 214) if ram_state[43+i] == 12 else (84, 138, 210) # white or blue plate
+                    obj.xy = (ram_state[31+i] + plat*sep -
+                              16 + xoffset) % 160, 174 - 26*i
+            # white or blue plate
+            obj.rgb = (
+                214, 214, 214) if ram_state[43+i] == 12 else (84, 138, 210)
             obj.w = pwidth
     if hud:
         # LifeCount
@@ -357,7 +373,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         else:
             temp.xy = 23, 22
             temp.wh = 18, 8
-        
+
         # Player Score
         score = objects[62]
         svalue = 0
@@ -385,8 +401,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         svalue += int(hex(ram_state[72])[2:]) * 10000
         svalue += int(hex(ram_state[73])[2:]) * 100
         svalue += int(hex(ram_state[74])[2:])
-        
-        
 
 
 def _detect_objects_frostbite_raw(info, ram_state):

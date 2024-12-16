@@ -35,6 +35,7 @@ class Fruit(GameObject):
         self.num_frames_invisible = -1
         self.max_frames_invisible = 4
 
+
 class Ladder(GameObject):
     def __init__(self, x=0, y=0, w=8, h=35, *args, **kwargs):
         super(Ladder, self).__init__(x, y, w, h, *args, **kwargs)
@@ -55,6 +56,8 @@ class Platform(GameObject):
         self.hud = False
 
 # The color of this object matches with the walls, floors and ladders, it can therefore not be detected Properly
+
+
 class FallingCoconut(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -93,20 +96,24 @@ class Time(GameObject):
         self.rgb = 160, 171, 79
         self.hud = True
 
+
 def _detect_objects(objects, obs, hud=False):
 
-    player = find_objects(obs, objects_colors["kangaroo"], min_distance=1, miny=28)
+    player = find_objects(
+        obs, objects_colors["kangaroo"], min_distance=1, miny=28)
     if player:
         objects[0].xywh = player[0]
         # match_blinking_objects(objects, player, 10, 3, Player)
 
-    child = find_objects(obs, objects_colors["kangaroo"], min_distance=1, maxy=27)
+    child = find_objects(
+        obs, objects_colors["kangaroo"], min_distance=1, maxy=27)
     if child:
         objects[1].xywh = child[0]
 
     fruit = []
     for i in objects_colors["fruit"]:
-        fruit.extend(find_objects(obs, objects_colors["fruit"][i], min_distance=1))
+        fruit.extend(find_objects(
+            obs, objects_colors["fruit"][i], min_distance=1))
     match_blinking_objects(objects, fruit, 10, 3, Fruit)
 
     bell = find_objects(obs, objects_colors["bell"], min_distance=1)
@@ -123,7 +130,8 @@ def _detect_objects(objects, obs, hud=False):
             enemy.remove(bb)
     match_blinking_objects(objects, enemy, 2, 4, Enemy)
 
-    p_enemy = find_objects(obs, objects_colors["projectile_enemy"], min_distance=1, size=(2, 3), tol_s=2)
+    p_enemy = find_objects(
+        obs, objects_colors["projectile_enemy"], min_distance=1, size=(2, 3), tol_s=2)
 
     for bb in p_enemy:
         if bb[2] >= 5:
@@ -133,12 +141,11 @@ def _detect_objects(objects, obs, hud=False):
     proj = find_objects(obs, objects_colors["projectile_top"], min_distance=1, minx=16, maxx=140, miny=3, maxy=27,
                         size=(2, 3), tol_s=2)
     proj.extend(find_objects(obs, objects_colors["projectile_top"], min_distance=1, minx=16, maxx=140, miny=35, maxy=70,
-                        size=(2, 3), tol_s=2))
+                             size=(2, 3), tol_s=2))
     proj.extend(find_objects(obs, objects_colors["projectile_top"], min_distance=1, minx=16, maxx=140, miny=80, maxy=123,
-                        size=(2, 3), tol_s=2))
+                             size=(2, 3), tol_s=2))
     proj.extend(find_objects(obs, objects_colors["projectile_top"], min_distance=1, minx=16, maxx=140, miny=128, maxy=171,
-                        size=(2, 3), tol_s=2))
-
+                             size=(2, 3), tol_s=2))
 
     if proj:
         if type(objects[6]) is NoObject:
@@ -158,7 +165,7 @@ def _detect_objects(objects, obs, hud=False):
     elif obs[148][76][0] == 162:
         if type(objects[14]) is not Ladder() or objects[14].xy != (20, 36):
             platform = manage_platforms(1, objects)
-    
+
     if platform is not None:
         for i in range(26):
             if platform[i]:
@@ -167,13 +174,16 @@ def _detect_objects(objects, obs, hud=False):
                 objects[14+i] = NoObject()
 
     if hud:
-        life = find_objects(obs, objects_colors["hud"], closing_dist=8, minx=10, maxx=40)
+        life = find_objects(
+            obs, objects_colors["hud"], closing_dist=8, minx=10, maxx=40)
         objects[-1].xywh = life[0]
 
-        time = find_objects(obs, objects_colors["hud"], min_distance=1, minx=70, maxx=100)
+        time = find_objects(
+            obs, objects_colors["hud"], min_distance=1, minx=70, maxx=100)
         objects[-2].xywh = time[0]
 
-        score = find_objects(obs, objects_colors["hud"], closing_dist=6, minx=100, maxx=150)
+        score = find_objects(
+            obs, objects_colors["hud"], closing_dist=6, minx=100, maxx=150)
         objects[-3].xywh = score[0]
 
 
@@ -196,7 +206,7 @@ def manage_platforms(current_lvl_val, _):
         platforms.extend([NoObject()]*16)
 
     elif current_lvl_val == 1:
-        platforms  = [
+        platforms = [
             Ladder(120, 132, h=4),
             Ladder(24, 116, h=4),
             Ladder(128, 36, h=4),
@@ -222,14 +232,20 @@ def manage_platforms(current_lvl_val, _):
             Ladder(36, 116, h=20),
             Ladder(104, 36, h=20),
             Ladder(120, 68, h=4),
-            Ladder(132, 84, h=4), Platform(16, 172, w=128), Platform(16, 28, w=128),
-            Platform(88, 140, w=16), Platform(64, 148, w=16), Platform(100, 116, w=16),
-            Platform(48, 100, w=16), Platform(76, 52, w=16), Platform(80, 36, w=16),
-            Platform(104, 132, w=20), Platform(84, 156, w=20), Platform(124, 124, w=20),
-            Platform(52, 84, w=20), Platform(108, 164, w=36), Platform(16, 108, w=80),
-            Platform(16, 92, w=28), Platform(76, 92, w=68), Platform(16, 140, w=32),
-            Platform(96, 60, w=36), Platform(100, 76, w=44), Platform(60, 44, w=12)
+            Ladder(132, 84, h=4), Platform(
+                16, 172, w=128), Platform(16, 28, w=128),
+            Platform(88, 140, w=16), Platform(
+                64, 148, w=16), Platform(100, 116, w=16),
+            Platform(48, 100, w=16), Platform(
+                76, 52, w=16), Platform(80, 36, w=16),
+            Platform(104, 132, w=20), Platform(
+                84, 156, w=20), Platform(124, 124, w=20),
+            Platform(52, 84, w=20), Platform(
+                108, 164, w=36), Platform(16, 108, w=80),
+            Platform(16, 92, w=28), Platform(
+                76, 92, w=68), Platform(16, 140, w=32),
+            Platform(96, 60, w=36), Platform(
+                100, 76, w=44), Platform(60, 44, w=12)
         ]
-
 
     return platforms

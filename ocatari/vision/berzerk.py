@@ -74,7 +74,8 @@ def _detect_objects(objects, obs, hud=False):
                 objects.append(missile_inst)
 
     if hud:
-        logo = find_objects(obs, objects_colors["logo"], min_distance=1, closing_dist=3)
+        logo = find_objects(
+            obs, objects_colors["logo"], min_distance=1, closing_dist=3)
         for log in logo:
             if (log[0] == 86 and log[2] == 17) or (log[0] == 63 and log[2] == 20):
                 objects.append(Logo(*log))

@@ -4,7 +4,7 @@ import numpy as np
 
 objects_colors = {'pink': [168, 48, 143], 'dark_pink': [151, 25, 122], 'grey': [170, 170, 170], 'dark_grey': [111, 111, 111],
                   'purple': [78, 50, 181], 'dark_purple': [151, 25, 122], 'yellow': [134, 134, 29], 'dark_yellow': [82, 126, 45],
-                  'green': [50, 132, 50] ,'dark_green': [82, 126, 45], 'red': [167, 26, 26], 'light_red': [184, 50, 50], 'orange': [181, 83, 40], 'blue': [45, 87, 176]}
+                  'green': [50, 132, 50], 'dark_green': [82, 126, 45], 'red': [167, 26, 26], 'light_red': [184, 50, 50], 'orange': [181, 83, 40], 'blue': [45, 87, 176]}
 
 
 class Player(GameObject):
@@ -115,14 +115,16 @@ class Life(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = [168, 48, 143]
 
+
 global static_bricks
 static_bricks = None
+
 
 def _detect_objects(objects, obs, hud=False):
     objects.clear()
 
     mcc = most_common_color(obs, True)
-    
+
     player = find_objects(obs, objects_colors['red'])
     for bb in player:
         # ply = Player(*bb)
@@ -130,9 +132,11 @@ def _detect_objects(objects, obs, hud=False):
         objects.append(Player(*bb))
 
     if mcc == (168, 48, 143):
-        player2 = find_objects(obs, objects_colors['pink'], size=(1,1), tol_s=1, closing_dist=1)
+        player2 = find_objects(obs, objects_colors['pink'], size=(
+            1, 1), tol_s=1, closing_dist=1)
     else:
-        player2 = find_objects(obs, objects_colors['blue'], size=(1,1), tol_s=1, closing_dist=1)
+        player2 = find_objects(obs, objects_colors['blue'], size=(
+            1, 1), tol_s=1, closing_dist=1)
     for bb in player2:
         if len(player) == 0:
             objects.append(Player(*bb))
@@ -145,10 +149,10 @@ def _detect_objects(objects, obs, hud=False):
             for bb in serpant:
                 objects.append(Serpant(*bb))
 
-    spider = find_objects(obs, objects_colors['orange'], size=(8,14), tol_s=1)
+    spider = find_objects(obs, objects_colors['orange'], size=(8, 14), tol_s=1)
     for bb in spider:
         objects.append(Spider(*bb))
-    
+
     wall = find_objects(obs, objects_colors['orange'])
     if len(spider) == 0:
         for bb in wall:
@@ -168,7 +172,7 @@ def _detect_objects(objects, obs, hud=False):
                     objects.append(Purple_Collectable(*bb))
             for bb in yellow:
                 objects.append(Yellow_Collectable(*bb))
-            
+
         else:
             if len(grey) != 0 and len(yellow) != 0:
                 for bb in grey:
@@ -188,7 +192,7 @@ def _detect_objects(objects, obs, hud=False):
         grey = find_objects(obs, objects_colors['dark_grey'])
         for bb in grey:
             objects.append(Grey_Collectable(*bb))
-    
+
     if skeleton is None or len(skeleton) == 0:
         goblin = find_objects(obs, objects_colors['purple'])
         for bb in goblin:
@@ -207,7 +211,8 @@ def _detect_objects(objects, obs, hud=False):
         objects.append(Green_Collectable(*bb))
 
     if hud:
-        scores = find_objects(obs, objects_colors['grey'], maxy=17, closing_dist=8)
+        scores = find_objects(
+            obs, objects_colors['grey'], maxy=17, closing_dist=8)
         for bb in scores:
             objects.append(Score(*bb))
 

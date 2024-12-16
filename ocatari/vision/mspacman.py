@@ -46,7 +46,8 @@ def _detect_objects(objects, obs, hud=True):
 
     i = 0
     for color in objects_colors["ghosts"]:
-        ghosts = find_objects(obs, objects_colors["ghosts"][color], min_distance=1)
+        ghosts = find_objects(
+            obs, objects_colors["ghosts"][color], min_distance=1)
         if ghosts:
             if type(objects[1+i]) is NoObject:
                 objects[1+i] = Ghost(*ghosts[0])
@@ -55,12 +56,13 @@ def _detect_objects(objects, obs, hud=True):
                 objects[1+i].xywh = ghosts[0]
         else:
             objects[1+i] = NoObject()
-        i+=1
+        i += 1
 
     if hud:
         fruit = []
         for i in objects_colors["fruit"]:
-            fruit.extend(find_objects(obs, objects_colors["fruit"][i], min_distance=1, miny=170))
+            fruit.extend(find_objects(
+                obs, objects_colors["fruit"][i], min_distance=1, miny=170))
 
             if fruit:
                 if type(objects[-3]) is NoObject:
@@ -70,10 +72,12 @@ def _detect_objects(objects, obs, hud=True):
         if not fruit:
             objects[-3] = NoObject()
 
-        score = find_objects(obs, objects_colors["score"], closing_dist=8, min_distance=1)
+        score = find_objects(
+            obs, objects_colors["score"], closing_dist=8, min_distance=1)
         objects[-2].xywh = score[0]
 
-        life = find_objects(obs, objects_colors["life"], min_distance=1, closing_dist=20)
+        life = find_objects(
+            obs, objects_colors["life"], min_distance=1, closing_dist=20)
         if life:
             if type(objects[-1]) is NoObject:
                 objects[-1] = Life(*life[0])

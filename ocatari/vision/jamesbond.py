@@ -43,6 +43,7 @@ class Ice(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = [84, 138, 210]
 
+
 class Fire_Hole(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -84,20 +85,24 @@ def _detect_objects(objects, obs, hud=False):
         else:
             objects.append(Player(*bb))
 
-    heli = find_mc_objects(obs, [objects_colors["red"], objects_colors["white"], objects_colors["yellow_heli"]], miny=50, maxy=125)
+    heli = find_mc_objects(obs, [objects_colors["red"], objects_colors["white"],
+                           objects_colors["yellow_heli"]], miny=50, maxy=125)
     for bb in heli:
         objects.append(Helicopter(*bb))
 
-    horn = find_mc_objects(obs, [objects_colors["grey"], objects_colors["blue"], objects_colors["orange_horn"]], miny=50, maxy=125, size=(8,14), tol_s=1)
+    horn = find_mc_objects(obs, [objects_colors["grey"], objects_colors["blue"],
+                           objects_colors["orange_horn"]], miny=50, maxy=125, size=(8, 14), tol_s=1)
     for bb in horn:
         objects.append(Hornet(*bb))
 
-    shot = find_objects(obs, objects_colors["yellow_shot"], miny=50, maxy=125, closing_dist=8)
+    shot = find_objects(
+        obs, objects_colors["yellow_shot"], miny=50, maxy=125, closing_dist=8)
     for bb in shot:
         if bb[2] == 1 and 1 < bb[3] < 5:
             objects.append(Enemy_Shot(*bb))
 
-    ice = find_mc_objects(obs, [objects_colors["grey"], objects_colors["light_blue"], objects_colors["blue"]], miny=50, maxy=125, size=(7,12), tol_s=2)
+    ice = find_mc_objects(obs, [objects_colors["grey"], objects_colors["light_blue"],
+                          objects_colors["blue"]], miny=50, maxy=125, size=(7, 12), tol_s=2)
     for bb in ice:
         objects.append(Ice(*bb))
 
@@ -105,7 +110,8 @@ def _detect_objects(objects, obs, hud=False):
     for bb in hole:
         objects.append(Fire_Hole(*bb))
 
-    erup = find_mc_objects(obs, [objects_colors["green"], objects_colors["yellow_score"]], miny=100, maxy=157, closing_dist=10, all_colors=False)
+    erup = find_mc_objects(obs, [objects_colors["green"], objects_colors["yellow_score"]],
+                           miny=100, maxy=157, closing_dist=10, all_colors=False)
     for bb in erup:
         if bb[2] > 10:
             objects.append(Eruption(*bb))
@@ -113,10 +119,12 @@ def _detect_objects(objects, obs, hud=False):
             objects.append(Diver(*bb))
 
     if hud:
-        score = find_objects(obs, objects_colors["yellow_score"], maxy=30, closing_dist=5)
+        score = find_objects(
+            obs, objects_colors["yellow_score"], maxy=30, closing_dist=5)
         for bb in score:
             objects.append(Score(*bb))
-        
-        lives = find_mc_objects(obs, [objects_colors["grey_life"], objects_colors["orange_life"], objects_colors["yellow_heli"]], miny= 180)
+
+        lives = find_mc_objects(
+            obs, [objects_colors["grey_life"], objects_colors["orange_life"], objects_colors["yellow_heli"]], miny=180)
         for bb in lives:
             objects.append(Life(*bb))

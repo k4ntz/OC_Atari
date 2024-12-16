@@ -15,7 +15,8 @@ ammo_bar_colors = {"blue": [24, 59, 157], "green": [0, 68, 0], "purple": [125, 4
                    "purple_2": [188, 144, 252], "orange_2": [198, 108, 58], "pink_2": [236, 140, 224],
                    "purple_3": [117, 128, 240], "white": [236, 236, 236], "light_blue": [132, 200, 252]}
 
-wheel_colors = {"blue": [45, 87, 176], "green": [26, 102, 26], "purple": [125, 48, 173], "orange": [162, 98, 33]}
+wheel_colors = {"blue": [45, 87, 176], "green": [
+    26, 102, 26], "purple": [125, 48, 173], "orange": [162, 98, 33]}
 
 
 class Player(GameObject):
@@ -77,6 +78,7 @@ class BonusSign(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 214, 92, 92
 
+
 class BonusValue(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -96,7 +98,8 @@ def _detect_objects(objects, obs, hud=False):
     for p in player:
         objects.append(Player(*p))
 
-    player_missile = find_objects(obs, objects_colors["player_missile"], min_distance=1)
+    player_missile = find_objects(
+        obs, objects_colors["player_missile"], min_distance=1)
     for missile in player_missile:
         if missile[2] < 10 and missile[3] < 10:
             objects.append(PlayerMissile(*missile))
@@ -140,7 +143,8 @@ def _detect_objects(objects, obs, hud=False):
                     ammo_inst.rgb = ammo_bar_color
                     objects.append(ammo_inst)
 
-        score = find_objects(obs, objects_colors["score"], min_distance=1, closing_dist=5)
+        score = find_objects(
+            obs, objects_colors["score"], min_distance=1, closing_dist=5)
         for sc in score:
             objects.append(PlayerScore(*sc))
 

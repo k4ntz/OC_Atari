@@ -5,16 +5,20 @@ RAM extraction for the game Frogger.
 
 """
 
-MAX_NB_OBJECTS = {'Frog': 1, 'Car': 26, 'Log': 8, 'Alligator': 2, 'Turtle': 10, 'LadyFrog':1, 'Fly':1, 'AlligatorHead':1, 'HappyFrog': 5, 'Snake':2}
-MAX_NB_OBJECTS_HUD = {'Frog': 1, 'Car': 26, 'Log': 8, 'Alligator': 2, 'Turtle': 10, 'LadyFrog':1, 'Fly':1, 'AlligatorHead':1, 'HappyFrog':5, 'Snake':2, 'Score':1, 'Time': 1, 'Lives':1}
+MAX_NB_OBJECTS = {'Frog': 1, 'Car': 26, 'Log': 8, 'Alligator': 2, 'Turtle': 10,
+                  'LadyFrog': 1, 'Fly': 1, 'AlligatorHead': 1, 'HappyFrog': 5, 'Snake': 2}
+MAX_NB_OBJECTS_HUD = {'Frog': 1, 'Car': 26, 'Log': 8, 'Alligator': 2, 'Turtle': 10, 'LadyFrog': 1,
+                      'Fly': 1, 'AlligatorHead': 1, 'HappyFrog': 5, 'Snake': 2, 'Score': 1, 'Time': 1, 'Lives': 1}
 
-car_colors = [[195, 144, 61], [164, 89, 208], [82, 126, 45], [198, 89, 179], [236, 236, 236]]
+car_colors = [[195, 144, 61], [164, 89, 208], [
+    82, 126, 45], [198, 89, 179], [236, 236, 236]]
+
 
 class Frog(GameObject):
     """
-    The player figure i.e., the frog. 
+    The player figure i.e., the frog.
     """
-    
+
     def __init__(self):
         super(Frog, self).__init__()
         self._xy = 0, 0
@@ -22,10 +26,12 @@ class Frog(GameObject):
         self.rgb = 110, 156, 66
         self.hud = False
 
+
 class Car(GameObject):
     """
     A car.
     """
+
     def __init__(self):
         super(Car, self).__init__()
         self._xy = 0, 0
@@ -37,7 +43,7 @@ class Car(GameObject):
 class Log(GameObject):
     def __init__(self):
         super().__init__()
-        self.rgb = 105, 105, 15        
+        self.rgb = 105, 105, 15
 
 
 class Turtle(GameObject):
@@ -55,49 +61,56 @@ class Alligator(GameObject):
 class LadyFrog(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 236,236,236
+        self.rgb = 236, 236, 236
 
 
 class HappyFrog(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        #self._xy = 0, 0
-        #self.wh = 8, 10
-        self.rgb = 82,126,45
+        # self._xy = 0, 0
+        # self.wh = 8, 10
+        self.rgb = 82, 126, 45
+
 
 class AlligatorHead(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 110,156,66
-        #self.wh = 8, 10
-        
+        self.rgb = 110, 156, 66
+        # self.wh = 8, 10
+
+
 class Fly(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 110,156,66
+        self.rgb = 110, 156, 66
+
 
 class Snake(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 82,126,45   
-        
+        self.rgb = 82, 126, 45
+
+
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 195,144,61
+        self.rgb = 195, 144, 61
         self.hud = True
+
 
 class Lives(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 236,236,236
+        self.rgb = 236, 236, 236
         self.hud = True
-                
+
+
 class Time(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 0,0,0
+        self.rgb = 0, 0, 0
         self.hud = True
+
 
 def _init_objects_ram(hud=False):
     """
@@ -115,7 +128,8 @@ def _init_objects_ram(hud=False):
     score = [NoObject()]
     time = [NoObject()]
     lives = [NoObject()]
-    return [Frog()] + cars + logs + aligators + turtles + ladyfrogs + heads + flys + happyfrogs +snakes + score + time + lives
+    return [Frog()] + cars + logs + aligators + turtles + ladyfrogs + heads + flys + happyfrogs + snakes + score + time + lives
+
 
 def _detect_objects_ram(objects, ram_state, hud=False):
     """
@@ -246,7 +260,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             car.w = 153 - pos
         else:
             car.w = 8
-    
+
     # third line third car
     car = objects[7]
     car.rgb = car_colors[2]
@@ -304,7 +318,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             car.w = 153 - ram_state[14]
         else:
             car.w = 8
-    
+
     # fourth line second car
     car = objects[10]
     car.rgb = car_colors[3]

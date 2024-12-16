@@ -4,10 +4,10 @@ import sys
 import random
 import matplotlib.pyplot as plt
 from os import path
-#sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
+# sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
-#from ocatari.vision.space_invaders import objects_colors
+# from ocatari.vision.space_invaders import objects_colors
 from ocatari.vision.pong import objects_colors
 from ocatari.utils import load_agent, parser, make_deterministic
 from copy import deepcopy
@@ -21,8 +21,10 @@ parser.add_argument("-i", "--interval", type=int, default=1000,
                     help="The frame interval (default 10)")
 # parser.add_argument("-m", "--mode", choices=["vision", "ram"],
 #                     default="ram", help="The frame interval")
-parser.add_argument("-hud", "--hud", action="store_true", default=True, help="Detect HUD")
-parser.add_argument("-dqn", "--dqn", action="store_true", default=True, help="Use DQN agent")
+parser.add_argument("-hud", "--hud", action="store_true",
+                    default=True, help="Detect HUD")
+parser.add_argument("-dqn", "--dqn", action="store_true",
+                    default=True, help="Use DQN agent")
 
 opts = parser.parse_args()
 
@@ -45,13 +47,14 @@ for i in range(10000):
 
     obs, reward, terminated, truncated, info = env.step(action)
 
-    #if i % 1000 == 0:
+    # if i % 1000 == 0:
     #    print(f"{i} done")
 
     dataset["INDEX"].append(f"{'%0.5d' %(game_nr)}_{'%0.5d' %(turn_nr)}")
     dataset["OBS"].append(obs.flatten().tolist())
     dataset["RAM"].append([])
-    dataset["VIS"].append([x for x in sorted(env.objects, key=lambda o: str(o))])
+    dataset["VIS"].append(
+        [x for x in sorted(env.objects, key=lambda o: str(o))])
     dataset["HUD"].append([])
     turn_nr = turn_nr+1
 
@@ -89,7 +92,6 @@ for i in range(10000):
         """
 env.close()
 
-df = pd.DataFrame(dataset, columns = ['INDEX', 'OBS', 'RAM', 'HUD', 'VIS'])
+df = pd.DataFrame(dataset, columns=['INDEX', 'OBS', 'RAM', 'HUD', 'VIS'])
 df.to_csv(f"/data/datasets_v/{opts.game}.csv", index=False)
 print(f"Finished {opts.game}")
-

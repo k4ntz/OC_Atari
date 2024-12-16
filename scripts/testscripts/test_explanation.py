@@ -4,7 +4,7 @@ import sys
 import random
 import matplotlib.pyplot as plt
 from os import path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))  # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.spaceinvaders import objects_colors
@@ -18,12 +18,13 @@ parser.add_argument("-i", "--interval", type=str, default=10,
 parser.add_argument("-m", "--mode", choices=["vision", "ram"],
                     default="ram", help="The frame interval")
 parser.add_argument("-hud", "--hud", action="store_true", help="Detect HUD")
-parser.add_argument("-om", "--observation_mode", default="ori", help="Observation mode")
+parser.add_argument("-om", "--observation_mode",
+                    default="ori", help="Observation mode")
 
 opts = parser.parse_args()
 
 # import ipdb; ipdb.set_trace()
-env = OCAtari(opts.game, mode=opts.mode, render_mode='rgb_array', hud=opts.hud, 
+env = OCAtari(opts.game, mode=opts.mode, render_mode='rgb_array', hud=opts.hud,
               obs_mode=opts.observation_mode)
 observation, info = env.reset()
 

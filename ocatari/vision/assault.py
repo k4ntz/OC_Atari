@@ -7,8 +7,10 @@ objects_colors = {"player": [[162, 162, 42], [214, 214, 214], [66, 72, 200]], "b
                   "mother_ship": [[180, 122, 48], [187, 187, 53], [110, 156, 66], [72, 160, 72]],
                   "score": [195, 144, 61], "lives": [170, 170, 170]}
 
-enemy_missile_colors = {"blue": [84, 138, 210], "yellow": [187, 187, 53], "green": [92, 186, 92], "red": [214, 92, 92]}
-player_missile_colors = {"horizontal": [214, 214, 214], "vertical": [236, 236, 236]}
+enemy_missile_colors = {"blue": [84, 138, 210], "yellow": [
+    187, 187, 53], "green": [92, 186, 92], "red": [214, 92, 92]}
+player_missile_colors = {"horizontal": [
+    214, 214, 214], "vertical": [236, 236, 236]}
 mother_ship_colors = {"1": [[180, 122, 48], [187, 187, 53], [110, 156, 66], [72, 160, 72]],
                       "2": [[66, 114, 194], [45, 87, 176], [24, 59, 157], [24, 59, 157], [151, 25, 122],
                             [184, 70, 162], [26, 102, 26], [50, 132, 50], [72, 160, 72]]}
@@ -83,7 +85,8 @@ def _detect_objects(objects, obs, hud=False):
             objects.append(Player(*p))
 
     for player_missile_color in player_missile_colors.values():
-        player_missile = find_objects(obs, player_missile_color, min_distance=1)
+        player_missile = find_objects(
+            obs, player_missile_color, min_distance=1)
         for mis in player_missile:
             if mis[2] < 8:
                 if [214, 214, 214] == player_missile_color:
@@ -135,7 +138,8 @@ def _detect_objects(objects, obs, hud=False):
                 objects.append(mother_ship_inst)
 
     if hud:
-        score = find_objects(obs, objects_colors["score"], min_distance=1, closing_dist=1)
+        score = find_objects(
+            obs, objects_colors["score"], min_distance=1, closing_dist=1)
         for sc in score:
             objects.append(PlayerScore(*sc))
 

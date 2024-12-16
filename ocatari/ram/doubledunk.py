@@ -1,14 +1,18 @@
 from .game_objects import GameObject, ValueObject
 from ._helper_methods import _convert_number
-import sys 
+import sys
 
-MAX_NB_OBJECTS = {"Player_Small": 1, "Player_Big": 1, "Opponent_Small": 1, "Opponent_Big": 1, "Ball": 1, "Basket": 1, "Backboard": 1}
-MAX_NB_OBJECTS_HUD = {"Player_Small": 1, "Player_Big": 1, "Opponent_Small": 1, "Opponent_Big": 1, "Ball": 1, "Basket": 1, "Backboard": 1, "Player_Score": 1, "Opponent_Score": 1}
+MAX_NB_OBJECTS = {"Player_Small": 1, "Player_Big": 1, "Opponent_Small": 1,
+                  "Opponent_Big": 1, "Ball": 1, "Basket": 1, "Backboard": 1}
+MAX_NB_OBJECTS_HUD = {"Player_Small": 1, "Player_Big": 1, "Opponent_Small": 1, "Opponent_Big": 1,
+                      "Ball": 1, "Basket": 1, "Backboard": 1, "Player_Score": 1, "Opponent_Score": 1}
+
 
 class Player_Small(GameObject):
     """
     Smaller player of the players team
     """
+
     def __init__(self):
         super(Player_Small, self).__init__()
         self._xy = 76, 100
@@ -16,10 +20,12 @@ class Player_Small(GameObject):
         self.rgb = 45, 129, 105
         self.hud = False
 
+
 class Player_Big(GameObject):
     """
     Taller player of the players team
     """
+
     def __init__(self):
         super(Player_Big, self).__init__()
         self._xy = 76, 100
@@ -27,10 +33,12 @@ class Player_Big(GameObject):
         self.rgb = 45, 129, 105
         self.hud = False
 
+
 class Opponent_Small(GameObject):
     """
     Smaller player of the enemy team
     """
+
     def __init__(self):
         super(Opponent_Small, self).__init__()
         self._xy = 76, 100
@@ -38,10 +46,12 @@ class Opponent_Small(GameObject):
         self.rgb = 236, 236, 236
         self.hud = False
 
+
 class Opponent_Big(GameObject):
     """
     Taller player of the enemy team
     """
+
     def __init__(self):
         super(Opponent_Big, self).__init__()
         self._xy = 76, 100
@@ -49,10 +59,12 @@ class Opponent_Big(GameObject):
         self.rgb = 236, 236, 236
         self.hud = False
 
+
 class Ball(GameObject):
     """
     It is a ball
     """
+
     def __init__(self):
         super(Ball, self).__init__()
         self._xy = 76, 100
@@ -60,10 +72,12 @@ class Ball(GameObject):
         self.rgb = 144, 72, 17
         self.hud = False
 
+
 class Basket(GameObject):
     """
     The basket
     """
+
     def __init__(self):
         super(Basket, self).__init__()
         self._xy = 76, 42
@@ -71,10 +85,12 @@ class Basket(GameObject):
         self.rgb = 162, 162, 42
         self.hud = False
 
+
 class Backboard(GameObject):
     """
     Backboard of the basket
     """
+
     def __init__(self):
         super(Backboard, self).__init__()
         self._xy = 68, 28
@@ -87,6 +103,7 @@ class Player_Score(ValueObject):
     """
     Players points in the game
     """
+
     def __init__(self):
         super(Player_Score, self).__init__()
         self._xy = 46, 9
@@ -95,10 +112,12 @@ class Player_Score(ValueObject):
         self.hud = True
         self.value = 0
 
+
 class Opponent_Score(GameObject):
     """
     Enemy points in the game
     """
+
     def __init__(self):
         super(Opponent_Score, self).__init__()
         self._xy = 110, 9
@@ -116,7 +135,7 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
@@ -128,7 +147,8 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player_Small(), Player_Big(), Opponent_Small(), Opponent_Big(), Ball(), Basket(), Backboard()]
+    objects = [Player_Small(), Player_Big(), Opponent_Small(),
+               Opponent_Big(), Ball(), Basket(), Backboard()]
 
     # objects.extend()
     if hud:

@@ -159,6 +159,6 @@ Which means the group corresponding to fishingPolePFValues has 4 bytes allocated
 
 We know it's a group because the ram slot number is expressed using the ram slot value of another variable in the code
 
-As such when doing the technique with inserting blank lines we can either count fishingPolePFValues as a whole group of 
+As such when doing the technique with inserting blank lines we can either count fishingPolePFValues as a whole group of
 4 bytes and delete the other lines of the group or only keeping rightFishingPolePF1Value for 1 byte, fishingPolePF2Values for 1 byte,
-leftFishingPolePF2Value for 1 byte, rightFishingPolePF2Value for 1 byte, 
+leftFishingPolePF2Value for 1 byte, rightFishingPolePF2Value for 1 byte,

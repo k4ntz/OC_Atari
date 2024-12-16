@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
-sys.path.insert(0, '../ocatari') # noqa
+sys.path.insert(0, '../ocatari')  # noqa
 from ocatari.core import OCAtari
 
 DROP_LOW = True
@@ -32,6 +32,7 @@ def extract_prop(objs):
         if "Flipper" in str(obj):
             if obj.x > 80:
                 return obj.xywh
+
 
 env.reset()
 env.step(0)

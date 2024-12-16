@@ -13,9 +13,9 @@ MAX_NB_OBJECTS_HUD = {'PlayerScore': 6, 'Lives': 3, 'Health': 1}
 
 class Player(GameObject):
     """
-    The player figure i.e., the cannon. 
+    The player figure i.e., the cannon.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.visible = True
@@ -27,9 +27,9 @@ class Player(GameObject):
 
 class PlayerMissileVertical(GameObject):
     """
-    The projectile shot in the vertical direction from the cannon. 
+    The projectile shot in the vertical direction from the cannon.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.visible = True
@@ -41,9 +41,9 @@ class PlayerMissileVertical(GameObject):
 
 class PlayerMissileHorizontal(GameObject):
     """
-    The projectiles shot in the horizontal direction from the cannon. 
+    The projectiles shot in the horizontal direction from the cannon.
     """
-     
+
     def __init__(self):
         super().__init__()
         self.visible = True
@@ -56,9 +56,9 @@ class PlayerMissileHorizontal(GameObject):
 
 class MotherShip(GameObject):
     """
-    The mother ship at the top, that continually deploys the smaller drones. 
+    The mother ship at the top, that continually deploys the smaller drones.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.visible = True
@@ -70,9 +70,9 @@ class MotherShip(GameObject):
 
 class Enemy(GameObject):
     """
-    The enemy drones deployed by the mother ship. 
+    The enemy drones deployed by the mother ship.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.visible = True
@@ -86,7 +86,7 @@ class EnemyMissile(GameObject):
     """
     The projectiles shot at the player by the enemy drones.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.visible = True
@@ -98,9 +98,9 @@ class EnemyMissile(GameObject):
 
 class PlayerScore(ValueObject):
     """
-    The player's score display (HUD). 
+    The player's score display (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.visible = True
@@ -116,7 +116,7 @@ class PlayerScore(ValueObject):
 
 class Lives(GameObject):
     """
-    The indicator for the remaining lives of the player (HUD). 
+    The indicator for the remaining lives of the player (HUD).
     """
 
     def __init__(self):
@@ -130,9 +130,9 @@ class Lives(GameObject):
 
 class Health(GameObject):
     """
-    The temperature meter of the cannon (HUD). 
+    The temperature meter of the cannon (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.visible = True
@@ -146,10 +146,10 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [] #Player(), PlayerMissileVertical(), Enemy(), EnemyMissile(), MotherShip()
+    objects = []  # Player(), PlayerMissileVertical(), Enemy(), EnemyMissile(), MotherShip()
     objects.extend([None] * 8)
     if hud:
-        objects.extend([None] * 15) #[PlayerScore(), Health(), Lives()]
+        objects.extend([None] * 15)  # [PlayerScore(), Health(), Lives()]
     return objects
 
 
@@ -171,7 +171,8 @@ def _get_max_objects(hud=False):
 
 # position of objects if value 0 to 16. 17 to 32 uses these values but -1 and so on.
 player_x_pos = [3, 3, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 3, 3, 3, 3]
-player_x_pos_128 = [11, 11, 23, 38, 53, 68, 83, 98, 113, 128, 143, 158, 11, 11, 11, 11]     # after value 128 it differs
+player_x_pos_128 = [11, 11, 23, 38, 53, 68, 83, 98, 113, 128,
+                    143, 158, 11, 11, 11, 11]     # after value 128 it differs
 horizontal_pos = 0
 enemy_missile_x = 0
 
@@ -266,26 +267,26 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if ram_state[24] == 88:
         mis = PlayerMissileHorizontal()
         mis_offset = 2
-        #if horizontal_pos == 0 or horizontal_pos > 130 or horizontal_pos < 20:
+        # if horizontal_pos == 0 or horizontal_pos > 130 or horizontal_pos < 20:
         #    horizontal_pos = player.x
         if horizontal_pos == 0:
             horizontal_pos_right = player.x + player.w + mis_offset
             horizontal_pos_left = player.x
 
         if ram_state[26] == 128:    # shot to the right
-            
-            horizontal_pos_right =  horizontal_pos_right + 8
+
+            horizontal_pos_right = horizontal_pos_right + 8
             horizontal_pos = horizontal_pos_right
-            mis.xy = horizontal_pos_right, 181   
+            mis.xy = horizontal_pos_right, 181
 
         elif ram_state[26] == 64:   # shot to the left
 
             horizontal_pos_left = horizontal_pos_left - 8
             horizontal_pos = horizontal_pos_left
             mis.xy = horizontal_pos_left, 181
-        
+
         objects[2] = mis
-        
+
     else:
         objects[2] = None
         horizontal_pos = 0
@@ -300,7 +301,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             x_val = 160 + x_val
         mother_ship.xy = x_val, 18
     else:
-        mother_ship.xy = player_x_pos_128[(ram_state[69] - 1) % 16] - x_mother_diff, 18
+        mother_ship.xy = player_x_pos_128[(
+            ram_state[69] - 1) % 16] - x_mother_diff, 18
 
     if ram_state[11] == 112:    # mother ship changes color
         mother_ship.rgb = 184, 70, 162
@@ -329,7 +331,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     enemy.xy = x_val, 93 - 25 * en
 
             else:   # take pos_128
-                x_val = player_x_pos_128[(ram_state[33 + en]) % 16] - x_enemy_diff
+                x_val = player_x_pos_128[(
+                    ram_state[33 + en]) % 16] - x_enemy_diff
                 if x_val < 0:
                     x_val = 160 + x_val
 
@@ -356,7 +359,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             x_enemy_diff2 = (x_enemy2 // 16) % 8
 
             if ram_state[36 + en] < 128:
-                x_val2 = player_x_pos[(ram_state[36 + en]) % 16] - x_enemy_diff2
+                x_val2 = player_x_pos[(ram_state[36 + en]) %
+                                      16] - x_enemy_diff2
                 if x_val2 < 0:
                     x_val2 = 160 + x_val2
 
@@ -366,7 +370,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     enemy2.xy = x_val2, 93 - 25 * en
 
             else:  # take pos_128
-                x_val2 = player_x_pos_128[(ram_state[36 + en]) % 16] - x_enemy_diff2
+                x_val2 = player_x_pos_128[(
+                    ram_state[36 + en]) % 16] - x_enemy_diff2
                 if x_val2 < 0:
                     x_val2 = 160 + x_val2
 
@@ -492,10 +497,12 @@ def _detect_objects_assault_raw(info, ram_state):
     info["player_missile_x"] = ram_state[39]    # start at x = 182
     info["player_missile_y"] = ram_state[67]
     info["vertic_missile"] = ram_state[24:27]
-    info["maybe_enemy_missile_visible"] = ram_state[75]     # enemy missile visible at 128
+    # enemy missile visible at 128
+    info["maybe_enemy_missile_visible"] = ram_state[75]
     info["enemy_x_part_1"] = ram_state[33:36]  # 33 most downwards enemy
     info["enemy_x_part_2"] = ram_state[36:39]
-    info["enemy_appearance"] = ram_state[54:57]     # 192 = normal, 224 = split in two, 160 and 96 only one smaller part
+    # 192 = normal, 224 = split in two, 160 and 96 only one smaller part
+    info["enemy_appearance"] = ram_state[54:57]
     info["enemy_type"] = ram_state[40]
     info["mother_ship_color"] = ram_state[11:13]
     info["mother_ship_x"] = ram_state[69]

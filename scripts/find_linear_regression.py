@@ -54,7 +54,8 @@ if opts.degrees is None:
     opts.degrees = [1] * len(opts.tracked_rams)
 else:
     if len(opts.tracked_rams) != len(opts.degrees):
-        raise ValueError('The degrees list must have the same length as the number of rams value to take into account')
+        raise ValueError(
+            'The degrees list must have the same length as the number of rams value to take into account')
 
 MODE = "vision"
 if opts.render:
@@ -131,7 +132,8 @@ if len(ram_saves) == 0:
     print("No data point was taken")
 
 ram_saves = np.array(ram_saves).T
-from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
+from_rams = {str(i): ram_saves[i] for i in range(
+    128) if not np.all(ram_saves[i] == ram_saves[i][0])}
 X = []
 y = tracked_property_values
 unchanged_rams = []
@@ -148,7 +150,8 @@ for j in range(len(opts.tracked_rams)):
     try:
         X.append(list(map(lambda x: pow(x, degree), from_rams[str(ram)])))
     except KeyError:
-        print(f"the ram located at the emplace number {ram} doesn't change during the duration of the acquisition.")
+        print(
+            f"the ram located at the emplace number {ram} doesn't change during the duration of the acquisition.")
         unchanged_rams.append(ram)
 
 # Fitting of the model
@@ -156,13 +159,15 @@ try:
     X = np.array(X).T
     reg = LinearRegression().fit(X, np.array(y))
 except ValueError:
-    raise ValueError("Only ram emplacements with unchanged values throughout the acquisition were given.")
+    raise ValueError(
+        "Only ram emplacements with unchanged values throughout the acquisition were given.")
 
 coeffs = reg.coef_
 coeffs[np.abs(coeffs) < SIGNIFICANCE_THRESHOLD] = 0
 coeffs = np.round(coeffs, decimals=ceil(abs(np.log10(SIGNIFICANCE_THRESHOLD))))
 approximate_reg = LinearRegression()
-approximate_reg.intercept_ = reg.intercept_ if abs(reg.intercept_) > SIGNIFICANCE_THRESHOLD else 0
+approximate_reg.intercept_ = reg.intercept_ if abs(
+    reg.intercept_) > SIGNIFICANCE_THRESHOLD else 0
 approximate_reg.coef_ = coeffs
 
 # Display the result

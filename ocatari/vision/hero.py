@@ -168,14 +168,14 @@ def _detect_objects(objects, obs, hud=True):
                               maxy=Y_MAX_GAMEZONE, minx=X_MIN_GAMEZONE):
         list_of_x = []
         list_of_y = []
-        if enemy[3]< 7:
+        if enemy[3] < 7:
             for enemy_pixel in find_objects(obs, objects_colors["enemy"][4], minx=enemy[0] - 6, maxx=enemy[0] + 6,
-                                                miny=enemy[1] - 6, maxy=enemy[1] + 6):
+                                            miny=enemy[1] - 6, maxy=enemy[1] + 6):
                 list_of_x.append(enemy_pixel[0])
                 list_of_x.append(enemy_pixel[0] + enemy_pixel[2])
                 list_of_y.append(enemy_pixel[1])
                 list_of_y.append(enemy_pixel[1] + enemy_pixel[3])
-            if len(list_of_x) !=0:
+            if len(list_of_x) != 0:
                 x, y = min(list_of_x), min(list_of_y)
                 w, h = max(list_of_x) - x, max(list_of_y) - y
                 objects.append(Enemy(x, y, w, h))
@@ -195,10 +195,12 @@ def _detect_objects(objects, obs, hud=True):
         player_instance.xy = player_instance.x, player_instance.y - 8
         objects.append(player_instance)
         for laser_beam in find_objects(obs, objects_colors["laser beam"],
-                                       miny=max(Y_MIN_GAMEZONE, player_instance.y - 10),
+                                       miny=max(Y_MIN_GAMEZONE,
+                                                player_instance.y - 10),
                                        maxy=max(Y_MIN_GAMEZONE + 1,
                                                 min(10 + player_instance.y, Y_MAX_GAMEZONE)),
-                                       minx=max(player_instance.x - 10, X_MIN_GAMEZONE),
+                                       minx=max(player_instance.x -
+                                                10, X_MIN_GAMEZONE),
                                        maxx=min(player_instance.x + 10, X_MAX_GAMEZONE)):
             if laser_beam[2] > 6:
                 objects.append(LaserBeam(*laser_beam))
@@ -208,7 +210,7 @@ def _detect_objects(objects, obs, hud=True):
             bomb_instance = Bomb(*bomb)
             bomb_instance.xy = bomb_instance.x, bomb_instance.y - 5
             bomb_instance.wh = bomb_instance.w, bomb_instance.h + 5
-            if not (player_instance.y + 2 >= bomb_instance.y >= player_instance.y - 2) :
+            if not (player_instance.y + 2 >= bomb_instance.y >= player_instance.y - 2):
 
                 objects.append(bomb_instance)
 
@@ -247,7 +249,8 @@ def _detect_objects(objects, obs, hud=True):
 
         for bomb in find_objects(obs, objects_colors["bomb"], miny=170, maxy=178, minx=X_MIN_GAMEZONE, closing_dist=7):
             bomb_instance = BombStock(*bomb)
-            bomb_instance.value = len(find_objects(obs, objects_colors["bomb"], miny=1, minx=X_MIN_GAMEZONE))
+            bomb_instance.value = len(find_objects(
+                obs, objects_colors["bomb"], miny=1, minx=X_MIN_GAMEZONE))
             bomb_instance.xy = bomb_instance.x, bomb_instance.y - 5
             bomb_instance.wh = bomb_instance.w, bomb_instance.h + 5
             objects.append(bomb_instance)

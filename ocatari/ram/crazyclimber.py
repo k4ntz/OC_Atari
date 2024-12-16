@@ -1,8 +1,10 @@
 from .game_objects import GameObject, ValueObject
-import sys 
+import sys
 
-MAX_NB_OBJECTS = {"Player": 1, "Window": 72, "Enemy_Red": 1, "Enemy_Bird": 1, "Projectile": 1, "Helicopter": 1}
-MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
+MAX_NB_OBJECTS = {"Player": 1, "Window": 72, "Enemy_Red": 1,
+                  "Enemy_Bird": 1, "Projectile": 1, "Helicopter": 1}
+MAX_NB_OBJECTS_HUD = {}  # 'Score': 1}
+
 
 class Player(GameObject):
     def __init__(self):
@@ -31,6 +33,7 @@ class Enemy_Red(GameObject):
         self.rgb = 200, 72, 72
         self.hud = False
 
+
 class Enemy_Bird(GameObject):
     def __init__(self):
         super(Enemy_Bird, self).__init__()
@@ -49,6 +52,7 @@ class Yellow_Projectile(GameObject):
         self.rgb = 210, 210, 64
         self.hud = False
 
+
 class Purple_Projectile(GameObject):
     def __init__(self):
         super(Purple_Projectile, self).__init__()
@@ -56,6 +60,7 @@ class Purple_Projectile(GameObject):
         self.wh = (4, 12)
         self.rgb = 181, 108, 224
         self.hud = False
+
 
 class Blue_Projectile(GameObject):
     def __init__(self):
@@ -89,7 +94,7 @@ class Score(ValueObject):
     def __init__(self):
         super(Score, self).__init__()
         self._xy = 49, 21
-        self.wh = (47, 17) #37,95
+        self.wh = (47, 17)  # 37,95
         self.rgb = 111, 210, 111
         self.hud = False
 
@@ -111,7 +116,7 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
@@ -157,7 +162,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 objects[1+(6*i)+j] = win
 
                 # Window closing constellation
-                if 2 <= i < 10 and ram_state[108+i-2] == 4 and j  in [1, 4]:
+                if 2 <= i < 10 and ram_state[108+i-2] == 4 and j in [1, 4]:
                     closing = ram_state[95+i-2]
                 elif 2 <= i < 10 and ram_state[108+i-2] == 6 and j not in [1, 4]:
                     closing = ram_state[95+i-2]
@@ -183,7 +188,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     closing = ram_state[95+i-2]
                 else:
                     closing = 0
-                
+
                 # Window position
                 if j < 3:
                     win.xy = 44+(12*j), 47+(13*i)+closing+ram_state[58]
@@ -201,7 +206,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     closing = ram_state[95+i-2]
                 else:
                     closing = 0
-                
+
                 # Window position
                 if j < 3:
                     win.xy = 44+(12*j), 47+(13*i)+closing+ram_state[58]
@@ -221,7 +226,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     closing = ram_state[95+i-2]
                 else:
                     closing = 0
-                
+
                 # Window position
                 if j < 3:
                     win.xy = 44+(12*j), 47+(13*i)+closing+ram_state[58]
@@ -229,10 +234,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 else:
                     win.xy = 48+(12*j), 47+(13*i)+closing+ram_state[58]
                     win.wh = 8, 8-closing
-                
+
             else:
                 objects[1+(6*i)+j] = None
-    
+
     # enemy xy == 14,15; closing/offset == 16
     # Enemy type == 84; bird == 252; red == 253
     # bird turn == 74; 1 -> right, 8 -> left
@@ -241,13 +246,19 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if ram_state[84] == 253:
             enemy = Enemy_Red()
             if ram_state[14] < 6:
-                enemy.xy = 45+(12*(ram_state[14]-3)), 81+(13*ram_state[15])-ram_state[16]+ram_state[58]
+                enemy.xy = 45 + \
+                    (12*(ram_state[14]-3)), 81 + \
+                    (13*ram_state[15])-ram_state[16]+ram_state[58]
                 enemy.wh = 8, ram_state[16]
             elif ram_state[14] == 7:
-                enemy.xy = 49+(12*(ram_state[14]-2)), 81+(13*ram_state[15])-ram_state[16]+ram_state[58]
+                enemy.xy = 49 + \
+                    (12*(ram_state[14]-2)), 81 + \
+                    (13*ram_state[15])-ram_state[16]+ram_state[58]
                 enemy.wh = 8, ram_state[16]
             else:
-                enemy.xy = 49+(12*(ram_state[14]-3)), 81+(13*ram_state[15])-ram_state[16]+ram_state[58]
+                enemy.xy = 49 + \
+                    (12*(ram_state[14]-3)), 81 + \
+                    (13*ram_state[15])-ram_state[16]+ram_state[58]
                 enemy.wh = 8, ram_state[16]
         elif ram_state[84] == 252:
             if type(objects[73]) == Enemy_Bird:
@@ -268,7 +279,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[73] = enemy
     else:
         objects[73] = None
-    
+
     # projectile xy == 14,81; closing/offset == 16
     # projectile color == 83; purple == 219; blue == 229; yellow == 239
     # yellow ball == 145;
@@ -280,25 +291,27 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             projectile = Yellow_Projectile()
         elif ram_state[83] == 229:
             projectile = Blue_Projectile()
-            x+=1
+            x += 1
         elif ram_state[83] == 219:
             projectile = Purple_Projectile()
-            x+=2
+            x += 2
         elif ram_state[83] == 145:
             projectile = Yellow_Ball()
         else:
             projectile = None
         objects[74] = projectile
         if ram_state[83] == 145:
-            projectile.xy = x, 42 + int(ram_state[81]*1.2) # (49 + int(ram_state[81]*1.1))
+            # (49 + int(ram_state[81]*1.1))
+            projectile.xy = x, 42 + int(ram_state[81]*1.2)
         elif projectile is not None:
-            projectile.xy = x, 35 + int(ram_state[81]*1.2)# int((ram_state[82] - ram_state[81])/5)
+            # int((ram_state[82] - ram_state[81])/5)
+            projectile.xy = x, 35 + int(ram_state[81]*1.2)
     else:
         objects[74] = None
 
     # heli xy == 34, 9
 
-    if ram_state[9] >  50:
+    if ram_state[9] > 50:
         if objects[75] is None:
             heli = Helicopter()
             objects[75] = heli
@@ -322,4 +335,4 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if ram_state[42] > i:
                 life = Life()
                 objects[77+i] = life
-                life.xy = 58 + (i*16), 13 #74
+                life.xy = 58 + (i*16), 13  # 74

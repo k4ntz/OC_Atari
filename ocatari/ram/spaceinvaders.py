@@ -7,19 +7,22 @@ import sys
 RAM extraction for the game Space Invaders.
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Satellite': 1, 'Alien': 36}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Bullet': 3, 'Satellite': 1, 'Alien': 36, 'P1Score': 1, 'P2Score': 1, 'Lives': 1}
+MAX_NB_OBJECTS = {'Player': 1, 'Shield': 3,
+                  'Bullet': 3, 'Satellite': 1, 'Alien': 36}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shield': 3, 'Bullet': 3,
+                      'Satellite': 1, 'Alien': 36, 'P1Score': 1, 'P2Score': 1, 'Lives': 1}
 
 
 def make_bitmap(alien_states):
     emptc = 6 - int(max(alien_states)).bit_length()  # nb empty columns
     return [(format(el, '06b')[emptc:] + "0" * emptc) for el in alien_states], emptc
 
+
 class Player(GameObject):
     """
     The player figure i.e., the laser cannon.
     """
-    
+
     def __init__(self, num=1):
         super().__init__()
         if num == 1:
@@ -36,7 +39,7 @@ class Alien(GameObject):
     """
     The Space Invaders.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 134, 134, 29
@@ -49,7 +52,7 @@ class Satellite(GameObject):
     """
     The Command Alien Ship.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 151, 25, 122
@@ -62,7 +65,7 @@ class Shield(GameObject):
     """
     The shields between the player's cannon and the Space Invaders.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 181, 83, 40
@@ -75,7 +78,7 @@ class Bullet(GameObject):
     """
     The player's laser beams and enemy laser bombs.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 142, 142, 142
@@ -88,7 +91,7 @@ class P1Score(GameObject):
     """
     The player's score display (HUD).
     """
-    
+
     def __init__(self, x=0):  # , num,
         super().__init__()
         self.rgb = 92, 186, 92
@@ -101,7 +104,7 @@ class P2Score(GameObject):
     """
     The 2nd player's score display (HUD).
     """
-    
+
     def __init__(self, x=0):  # , num,
         super().__init__()
         self.rgb = 162, 134, 56
@@ -114,7 +117,7 @@ class Lives(GameObject):
     """
     The indicator for the player's remaining lives (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self.rgb = 162, 134, 56
@@ -205,14 +208,13 @@ def _init_objects_ram(hud=False):
     return objects
 
 
-
 def _detect_objects_ram(objects, ram_state, hud=False):
     player = objects[0]
     shields = objects[1:4]
     bullets = objects[4:7]
     satellite = objects[7]
     aliens = objects[8:44]
-    
+
     player.xy = ram_state[28] - 1, 185
     # updating positions of aliens
     x, y = ram_state[26], ram_state[16]
@@ -225,15 +227,18 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # aliens (permanent) deletion from array aliens:
     for i in range(6):
         for j in range(6):
-            if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):  # enemies alive are saved in ram_state[18:24]
+            # enemies alive are saved in ram_state[18:24]
+            if aliens[35 - (i * 6 + j)] and not int(bitmap[i][j]):
                 objects[43 - (i * 6 + j)] = NoObject()
             elif not aliens[35 - (i * 6 + j)] and int(bitmap[i][j]):
-                objects[43 - (i * 6 + j)] = Alien()  # 5 = max(range(6)) so we are counting lines in the other way around
+                # 5 = max(range(6)) so we are counting lines in the other way around
+                objects[43 - (i * 6 + j)] = Alien()
     for i in range(6):
         for j in range(6):
             alien = aliens[i * 6 + j]
             if alien:
-                aliens[i * 6 + j].xy = x - 1 + (j - emptc) * 16, 31 + y * 2 + i * 18
+                aliens[i * 6 + j].xy = x - 1 + \
+                    (j - emptc) * 16, 31 + y * 2 + i * 18
                 if alien and alien.xy[1] + alien.wh[1] >= 157:
                     for s in range(3):
                         if shields[s]:
@@ -254,8 +259,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # determining if bullets are visible
     bullets_visible = [False, False, False]
     for i in range(2):
-        bullets_visible[i] = 20 < bullets[i].xy[1] < 195 #and not(ram_state[74] % 2)
-    bullets_visible[2] = 20 < bullets[2].xy[1] < 195 #and ram_state[74] % 2
+        # and not(ram_state[74] % 2)
+        bullets_visible[i] = 20 < bullets[i].xy[1] < 195
+    bullets_visible[2] = 20 < bullets[2].xy[1] < 195  # and ram_state[74] % 2
     # appending bullets to objects
     for i in range(3):
         if bullets_visible[i]:
@@ -270,11 +276,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             bullets[i].xy = ram_state[83 + i] - 2, 2 * ram_state[81 + i] + 3
             if bullets[i].xy[1] < 194:
                 if bullets[i].xy[1] + bullets[i].wh[1] > 195:
-                    bullets[i].wh = bullets[i].wh[0], 195 - bullets[i].xy[1] - 1
+                    bullets[i].wh = bullets[i].wh[0], 195 - \
+                        bullets[i].xy[1] - 1
                 else:
                     bullets[i].wh = 1, 10
         else:
-            bullets[2].xy = ram_state[87] - 2, 2 * ram_state[85] + 3  # for player        
+            bullets[2].xy = ram_state[87] - 2, 2 * \
+                ram_state[85] + 3  # for player
     if ram_state[30] and ram_state[30] != 180:
         if not satellite:
             satellite = Satellite()
@@ -290,7 +298,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             for s in range(2):
                 objects[44+s].visible = True
     if hud:
-        objects[46].visible = bool(ram_state[120]) # lives appear  
+        objects[46].visible = bool(ram_state[120])  # lives appear
         objects[46].value = ram_state[73]  # nb lives
     return objects
-    

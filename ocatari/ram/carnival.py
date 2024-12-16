@@ -6,14 +6,17 @@ import sys
 RAM extraction for the game CARNIVAL. Supported modes: ram.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'PlayerMissile': 1, 'Rabbit': 6, 'Duck': 5, 'ExtraBullets': 4, 'Owl': 3, 'Wheel': 1, 'FlyingDuck': 6}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerMissile': 1, 'Rabbit': 6, 'Duck': 5,'ExtraBullets': 4, 'Owl': 3, 'Wheel': 1, 'FlyingDuck': 6, 'AmmoBar': 1, 'BonusSign': 1, 'BonusValue': 1, 'PlayerScore': 1}
+MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissile': 1, 'Rabbit': 6,
+                  'Duck': 5, 'ExtraBullets': 4, 'Owl': 3, 'Wheel': 1, 'FlyingDuck': 6}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerMissile': 1, 'Rabbit': 6, 'Duck': 5, 'ExtraBullets': 4,
+                      'Owl': 3, 'Wheel': 1, 'FlyingDuck': 6, 'AmmoBar': 1, 'BonusSign': 1, 'BonusValue': 1, 'PlayerScore': 1}
+
 
 class Player(GameObject):
     """
     The player figure i.e, the gun.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 66, 186
@@ -26,7 +29,7 @@ class PlayerMissile(GameObject):
     """
     Projectiles fired from the player's gun.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -39,7 +42,7 @@ class Owl(GameObject):
     """
     The owl targets.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -52,7 +55,7 @@ class Duck(GameObject):
     """
     The duck targets.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -65,7 +68,7 @@ class FlyingDuck(GameObject):
     """
     The ducks that fly down the screen to eat some of the bullets.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -78,7 +81,7 @@ class Rabbit(GameObject):
     """
     The rabbit targets.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -91,7 +94,7 @@ class ExtraBullets(GameObject):
     """
     The extra-bullet boxes.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -120,7 +123,7 @@ class AmmoBar(GameObject):
     """
     The ammunition bar display (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 203
@@ -133,7 +136,7 @@ class BonusSign(GameObject):
     """
     The bonus (or penalty) points/ammunition target (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 12, 29
@@ -146,7 +149,7 @@ class BonusValue(GameObject):
     """
     The value of the bonus/penalty target.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 22, 29
@@ -159,7 +162,7 @@ class Wheel(GameObject):
     """
     The spinning pipe target.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 70, 15
@@ -177,12 +180,15 @@ ammo_bar_colors = {1: [24, 59, 157], 2: [0, 68, 0], 3: [125, 48, 173], 4: [144, 
                    20: [232, 232, 74], 21: [132, 252, 212], 22: [188, 144, 252], 23: [198, 108, 58],
                    24: [236, 140, 224], 25: [117, 128, 240], 26: [187, 187, 53], 27: [252, 224, 112],
                    28: [188, 144, 252], 29: [236, 236, 236], 30: [132, 200, 252], 31: [252, 224, 112]}
-wheel_colors = {0: [45, 87, 176], 1: [26, 102, 26], 2: [125, 48, 173], 3: [162, 98, 33]}
+wheel_colors = {0: [45, 87, 176], 1: [26, 102, 26],
+                2: [125, 48, 173], 3: [162, 98, 33]}
 Y_POS = [89, 89, 68, 68, 47, 47]
 x_missile = 0
 y_prev_missile = 0
 
 # parses MAX_NB* dicts, returns default init list of objects
+
+
 def _get_max_objects(hud=False):
 
     def fromdict(max_obj_dict):
@@ -190,12 +196,13 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
+
 
 def _init_objects_ram(hud=False):
     """
@@ -378,14 +385,17 @@ def _detect_objects_carnival_raw(info, ram_state):
     player = ram_state[2]   # player_x start at 87, right side = 150, left side = 12; player_y fix
     missile = ram_state[55]     # missile_y: 0 if not shot
     ammo_count = ram_state[3]   # max and start = 40
-    targets_x = ram_state[18:24]    # 18, 19 for first row, 20, 21 for second row and 22, 23 for third row
+    # 18, 19 for first row, 20, 21 for second row and 22, 23 for third row
+    targets_x = ram_state[18:24]
     flying_duck_x = ram_state[111]
     flying_duck_y = ram_state[1]
-    relevant_objects = player + missile + ammo_count + targets_x.tolist() + flying_duck_x + flying_duck_y
+    relevant_objects = player + missile + ammo_count + \
+        targets_x.tolist() + flying_duck_x + flying_duck_y
     info["relevant_objects"] = relevant_objects
 
     # additional info
-    info["targets_sprites_first_row"] = ram_state[24:28]    # 0 = duck, 16 = rabbit, 32 = owl, 48 = extra bullets,
+    # 0 = duck, 16 = rabbit, 32 = owl, 48 = extra bullets,
+    info["targets_sprites_first_row"] = ram_state[24:28]
     # 92 = flying duck
     info["targets_sprites_second_row"] = ram_state[28:32]
     info["targets_sprites_third_row"] = ram_state[32:36]
@@ -395,6 +405,8 @@ def _detect_objects_carnival_raw(info, ram_state):
     # info["score_thousands"] = ram_state[80]
     info["level"] = ram_state[42]   # starts at level 1
     info["bonus_sprites"] = ram_state[8:12]     # either ammo or score
-    info["score"] = _convert_number(ram_state[45]) * 1000 + _convert_number(ram_state[46]) * 10
+    info["score"] = _convert_number(
+        ram_state[45]) * 1000 + _convert_number(ram_state[46]) * 10
     info["wheel_sprites"] = ram_state[121:125]
-    info["wheel_color"] = ram_state[125]  # 0 = blue, 1 = green, 2 = purple, 3 = orange
+    # 0 = blue, 1 = green, 2 = purple, 3 = orange
+    info["wheel_color"] = ram_state[125]

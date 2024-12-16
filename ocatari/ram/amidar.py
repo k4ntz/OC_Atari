@@ -2,10 +2,13 @@ import pdb
 from .game_objects import GameObject, ValueObject, NoObject
 from ._helper_methods import number_to_bitfield
 from .utils import match_objects
-import sys 
+import sys
 
-MAX_NB_OBJECTS = {"Player": 1, "Warrior": 6, "Pig": 6, "Shadow": 6, "Chicken": 6}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Warrior": 6, "Pig": 6, "Shadow": 6, "Chicken": 6, "Score": 1, "Life": 3}
+MAX_NB_OBJECTS = {"Player": 1, "Warrior": 6,
+                  "Pig": 6, "Shadow": 6, "Chicken": 6}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Warrior": 6, "Pig": 6,
+                      "Shadow": 6, "Chicken": 6, "Score": 1, "Life": 3}
+
 
 class Player(GameObject):
     def __init__(self):
@@ -77,7 +80,7 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
@@ -90,7 +93,8 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player()] + [Warrior() for _ in range(6)]
-    objects.extend([NoObject() for _ in range(18)]) # for the pigs, shadows and chickens
+    # for the pigs, shadows and chickens
+    objects.extend([NoObject() for _ in range(18)])
     if hud:
         # objects.extend([NoObject()] * 4)
         objects.extend([Score(), Life(), Life(), Life()])
@@ -107,9 +111,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     warrior_bb, pig_bb = [], []
     enemy_type = Warrior
     chicken_bb = []
-    bitmap_warrior = 0b00100000 
-    bitmap_pig = 0b00110000 
-    bitmap_chicken = 0b01110000 
+    bitmap_warrior = 0b00100000
+    bitmap_pig = 0b00110000
+    bitmap_chicken = 0b01110000
     for i in range(7):
         if ram_state[73+i] & bitmap_chicken == bitmap_chicken:
             fig = Chicken()
@@ -125,7 +129,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             enemy_type = Warrior
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
             warrior_bb.append(fig.xywh)
-        else: #the object is the player
+        else:  # the object is the player
             fig = objects[0]
             fig.xy = ram_state[66+i]+9, ram_state[59+i]+7
 
@@ -135,21 +139,23 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     match_objects(objects, chicken_bb, 19, 6, Chicken)
 
-    #insert or remove the shadows; if (ram_state[51] == 103) all the enemies are shadows because of jumping, 
+    # insert or remove the shadows; if (ram_state[51] == 103) all the enemies are shadows because of jumping,
     # if there is at least one chicken, any enemy is a chicken which has been caught and therefore also a shadow
     # the shadows are inserted at the position of the enemy they replace, ond then the enemy (which is detected again each frame) is removed
-    if len(chicken_bb) > 0 or (ram_state[51] == 103): 
+    if len(chicken_bb) > 0 or (ram_state[51] == 103):
         for i, enemy in enumerate(objects[1:13]):
-            if not isinstance(enemy, NoObject) :
-                coresponding_shadow_index = 13+((i-1)%6)
+            if not isinstance(enemy, NoObject):
+                coresponding_shadow_index = 13+((i-1) % 6)
                 if isinstance(objects[coresponding_shadow_index], Shadow):
-                    objects[coresponding_shadow_index].xywh = (enemy.xy[0], enemy.xy[1], enemy.wh[0], enemy.wh[1])
+                    objects[coresponding_shadow_index].xywh = (
+                        enemy.xy[0], enemy.xy[1], enemy.wh[0], enemy.wh[1])
                 else:
-                    objects[coresponding_shadow_index] = Shadow(enemy.xy[0], enemy.xy[1], enemy.wh[0], enemy.wh[1])
+                    objects[coresponding_shadow_index] = Shadow(
+                        enemy.xy[0], enemy.xy[1], enemy.wh[0], enemy.wh[1])
                 objects[1+i] = NoObject()
-    else: 
+    else:
         for i in range(6):
-            if objects[13+i] is not NoObject: 
+            if objects[13+i] is not NoObject:
                 objects[13+i] = NoObject()
 
     if hud:
@@ -172,11 +178,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         else:
             score.xy = 97, 176
             score.wh = 7, 7
-        
+
         # Lives 86
         for i in range(3):
             life = objects[-1-i]
-            if i < ram_state[86]&3:
+            if i < ram_state[86] & 3:
                 if not life:
                     life = Life()
                     objects[-1-i] = life

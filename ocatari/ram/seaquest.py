@@ -270,7 +270,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # batch consists purely of sharks or of submarines, determined by another value."""
 
     for i in range(4):  # for each of the 4 lanes (from bottom to top lane)
-        present_enemy_type = Submarine if _is_submarine(i, ram_state) else Shark
+        present_enemy_type = Submarine if _is_submarine(
+            i, ram_state) else Shark
         hidden_enemy_type = Shark if _is_submarine(i, ram_state) else Submarine
         batch_formation = ram_state[36 + i]
 
@@ -326,16 +327,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             else:
                 objects[25+i] = NoObject()
 
-
-
     # only spawns in late game
     if ram_state[60] >= 2 and ram_state[118] < 160:
         if type(objects[33]) is NoObject:
             objects[33] = SurfaceSubmarine()
-        objects[33].xy =  ram_state[118], 45
+        objects[33].xy = ram_state[118], 45
     else:
         objects[33] = NoObject()
-
 
     if 0 < ram_state[103] < 160:
         if type(objects[34]) is NoObject:
@@ -344,7 +342,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     else:
         objects[34] = NoObject()
 
-    
     if ram_state[102] != 0:
         if type(objects[35]) != OxygenBar:
             objects[35] = OxygenBar()
@@ -357,7 +354,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     else:
         objects[35] = NoObject()
 
-
     # If you have six collected divers they blink. Blinking is ignored here
     for i in range(6):
         if i < ram_state[62]:
@@ -369,8 +365,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     if hud:
         score_value = _convert_number(ram_state[56]) * 10000 + \
-                    _convert_number(ram_state[57]) * 100 + \
-                    _convert_number(ram_state[58])
+            _convert_number(ram_state[57]) * 100 + \
+            _convert_number(ram_state[58])
 
         if score_value == 0:
             x = 99
@@ -401,12 +397,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         score.xy = x, 9
         score.wh = w, 8
 
-        #lives
+        # lives
         num_lives = ram_state[59]
         if num_lives > 0:  # Up to 6 lives possible
             new_wh = 7 + 8 * (num_lives - 1), 8
             if type(objects[-1]) != Lives:
-                objects[-2] = Lives() 
+                objects[-2] = Lives()
             objects[-2].wh = new_wh
             objects[-2].value = num_lives
         else:
@@ -449,18 +445,23 @@ def _detect_objects_seaquest_raw(info, ram_state):
     """
     player = [ram_state[70], ram_state[97]]
     offset = ram_state[1]
-    divers_missile_x = ram_state[71:75]  # 71 for first lane, 72 second lane, ...   divers and enemy missiles x position
+    # 71 for first lane, 72 second lane, ...   divers and enemy missiles x position
+    divers_missile_x = ram_state[71:75]
     enemy_x = ram_state[30:34]
-    enemy5_x = [ram_state[118]]  # lane 5 enemy only moves if top_enemy_enabled is 2 or higher
+    # lane 5 enemy only moves if top_enemy_enabled is 2 or higher
+    enemy5_x = [ram_state[118]]
     oxygen = [ram_state[102]]
     player_missiles_x = [ram_state[103]]
-    relevant_objects = player + divers_missile_x.tolist() + enemy_x.tolist() + enemy5_x + oxygen + player_missiles_x
+    relevant_objects = player + divers_missile_x.tolist() + enemy_x.tolist() + \
+        enemy5_x + oxygen + player_missiles_x
     info["relevant_objects"] = relevant_objects
     enemy_colors = ram_state[44:48]
     # additional info
     info["lives"] = ram_state[59]  # correct until 6 lives
-    info["level"] = ram_state[61]  # changes enemies, speed, ... the higher the value the harder the game currently is
-    info["score"] = (_convert_number(ram_state[57]) * 100) + _convert_number(ram_state[58])  # the game saves these
+    # changes enemies, speed, ... the higher the value the harder the game currently is
+    info["level"] = ram_state[61]
+    info["score"] = (_convert_number(ram_state[57]) * 100) + \
+        _convert_number(ram_state[58])  # the game saves these
     # numbers in 4 bit intervals (hexadecimal) but only displays the decimal numbers
     info["divers_collected"] = ram_state[62]
     info["lane_y_position"] = {"first lane (lowest)": 100,
@@ -470,8 +471,10 @@ def _detect_objects_seaquest_raw(info, ram_state):
                                "water surface": 13
                                }  # the lanes actual y-positions are not saved within the RAM, therefore these
     # are educated guesses
-    info["player_direction"] = ram_state[86]  # 0: player faces to the right and 8: player faces to the left
-    info["top_enemy_enabled"] = ram_state[60]  # enables the top ship if higher/equal than 2
+    # 0: player faces to the right and 8: player faces to the left
+    info["player_direction"] = ram_state[86]
+    # enables the top ship if higher/equal than 2
+    info["top_enemy_enabled"] = ram_state[60]
     info["enemy_variations"] = {"first lane (lowest)": ram_state[36] % 8,
                                 "second lane": ram_state[37] % 8,
                                 "third lane": ram_state[38] % 8,

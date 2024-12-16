@@ -1,10 +1,11 @@
 # appends parent path to syspath to make ocatari importable
 # like it would have been installed as a package
+import ipdb
 import sys
 import random
 import matplotlib.pyplot as plt
 from os import path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__)))) # noqa
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))  # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.vision.spaceinvaders import objects_colors
@@ -23,12 +24,14 @@ parser.add_argument("-s", "--start", type=int, default=0,
                     help="The frame to start from")
 parser.add_argument("-m", "--mode", choices=["vision", "ram"],
                     default="ram", help="The extraction mode")
-parser.add_argument("-hud", "--hud", action="store_true", help="If provided, detect objects from HUD")
+parser.add_argument("-hud", "--hud", action="store_true",
+                    help="If provided, detect objects from HUD")
 
 opts = parser.parse_args()
 
 
-env = OCAtari(opts.game, mode=opts.mode, render_mode='rgb_array', hud=opts.hud, obs_mode='dqn')
+env = OCAtari(opts.game, mode=opts.mode, render_mode='rgb_array',
+              hud=opts.hud, obs_mode='dqn')
 # env = OCAtari(opts.game+"Deterministic", mode=opts.mode, render_mode='rgb_array', hud=opts.hud, obs_mode='dqn')
 observation, info = env.reset()
 
@@ -65,7 +68,6 @@ for i in tqdm(range(10000)):
         plt.title(f"{opts.mode}: {opts.mode} mode (frame {i})", fontsize=20)
         plt.imshow(obs)
         plt.show()
-            
 
     if terminated or truncated:
         observation, info = env.reset()
@@ -73,4 +75,4 @@ for i in tqdm(range(10000)):
 env.close()
 
 print(np.corrcoef(enemyy, bally))
-import ipdb; ipdb.set_trace()
+ipdb.set_trace()

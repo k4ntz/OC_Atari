@@ -4,15 +4,14 @@ import math
 import sys
 
 
-MAX_NB_OBJECTS = {"Player" :  1, "Enemy": 8,
-                  "Reward50" : 8, "Reward100" : 8, "Reward200" : 8, "Reward300" : 8, "Reward400" : 8, "Reward500" : 8,
-                  "Cauldron" : 8, "Helmet" : 8, "Shield" : 8, "Lamp" : 8, "Apple" : 8, "Fish" : 8, "Meat" : 8, "Mug" : 8}
+MAX_NB_OBJECTS = {"Player":  1, "Enemy": 8,
+                  "Reward50": 8, "Reward100": 8, "Reward200": 8, "Reward300": 8, "Reward400": 8, "Reward500": 8,
+                  "Cauldron": 8, "Helmet": 8, "Shield": 8, "Lamp": 8, "Apple": 8, "Fish": 8, "Meat": 8, "Mug": 8}
 
-MAX_NB_OBJECTS_HUD = {"Player" :  1, "Enemy": 8,
-                      "Reward50" : 8, "Reward100" : 8, "Reward200" : 8, "Reward300" : 8, "Reward400" : 8, "Reward500" : 8,
-                      "Cauldron" : 8, "Helmet" : 8, "Shield" : 8, "Lamp" : 8, "Apple" : 8, "Fish" : 8, "Meat" : 8, "Mug" : 8,
-                      "Score" : 1}
-
+MAX_NB_OBJECTS_HUD = {"Player":  1, "Enemy": 8,
+                      "Reward50": 8, "Reward100": 8, "Reward200": 8, "Reward300": 8, "Reward400": 8, "Reward500": 8,
+                      "Cauldron": 8, "Helmet": 8, "Shield": 8, "Lamp": 8, "Apple": 8, "Fish": 8, "Meat": 8, "Mug": 8,
+                      "Score": 1}
 
 
 class Player(GameObject):
@@ -20,7 +19,8 @@ class Player(GameObject):
         super().__init__()
         self.rgb = 187, 187, 53
         self._xy = 0, 0
-        self.wh = 8, 11  # at some point 16, 11. advanced other player (obelix) is (6, 11)
+        # at some point 16, 11. advanced other player (obelix) is (6, 11)
+        self.wh = 8, 11
         self.hud = False
 
 
@@ -206,9 +206,11 @@ def _init_objects_asterix_ram(hud=False):
 
 
 def _detect_objects_asterix_raw(info, ram_state):
-    info["x_positions"] = ram_state[41:50]  # 41 for player, 42 for obj in upper lane...
+    # 41 for player, 42 for obj in upper lane...
+    info["x_positions"] = ram_state[41:50]
     info["y_player"] = ram_state[39]  # from 0 to 7 (8 lanes)
-    info["score"] = ram_state[94:97]  # on ram in decimal/ on screen in hex(like other 2 games)
+    # on ram in decimal/ on screen in hex(like other 2 games)
+    info["score"] = ram_state[94:97]
     info["score_dec"] = ram_state[94:97]
     info["lives"] = ram_state[83]
     info["kind_of_visible_objs"] = ram_state[54] % 8
@@ -218,6 +220,7 @@ def _detect_objects_asterix_raw(info, ram_state):
     # info["maybe_useful"] = ram_state[10:18], ram_state[40], ram_state[19:27], ram_state[29:37], ram_state[87],
     # ram_state[7]
     # not known what they are for exactly
+
 
 def _detect_objects_asterix_revised(objects, ram_state, hud=False):
     # player
@@ -232,9 +235,9 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
         player.wh = 16, 11
     player.rgb = 187, 187, 53
 
-
     lives_nr = ram_state[83]
-    reward_class = (Reward50, Reward100, Reward200, Reward300, Reward400, Reward500)  # , Reward500, Reward500)
+    reward_class = (Reward50, Reward100, Reward200, Reward300,
+                    Reward400, Reward500)  # , Reward500, Reward500)
     eatable_class = (Cauldron, Helmet, Shield, Lamp, Apple, Fish, Meat, Mug)
     # get lanes
     if hud:
@@ -295,7 +298,7 @@ def _detect_objects_asterix_revised(objects, ram_state, hud=False):
             else:
                 instance = lanes[i]
             instance.xy = ram_state[42 + i] + 1, 26 + i * 16 + 1
-    
+
     if hud:
         score = objects[1]
         dec_value = _convert_number(ram_state[94]) * 10000 + _convert_number(ram_state[95]) * 100 + _convert_number(

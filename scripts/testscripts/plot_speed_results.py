@@ -1,3 +1,4 @@
+from matplotlib.transforms import ScaledTranslation
 import json
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,7 +12,7 @@ reduction = {
     'ChopperCommand': 'ChopperC.',
     'MontezumaRevenge': 'Montezum.',
     'SpaceInvaders': 'SpaceInv.',
-    }
+}
 
 fig = plt.gcf()
 ax = plt.gca()
@@ -21,8 +22,10 @@ ax.set_axisbelow(True)
 
 games = list(speed_dict.keys())
 print(games)
-ram_perfs = [speed_dict[g]['ram'] if 'ram' in speed_dict[g] else [] for g in games]
-vision_perfs = [speed_dict[g]['vision'] if 'vision' in speed_dict[g] else [] for g in games]
+ram_perfs = [speed_dict[g]['ram'] if 'ram' in speed_dict[g] else []
+             for g in games]
+vision_perfs = [speed_dict[g]['vision']
+                if 'vision' in speed_dict[g] else [] for g in games]
 
 
 width = 0.26
@@ -41,7 +44,6 @@ for i, game in enumerate(games):
 plt.yscale('log')
 plt.xticks(xs, games, rotation=70, fontsize=14)
 ax.tick_params(axis='y', which='major', labelsize=14)
-from matplotlib.transforms import ScaledTranslation 
 dx, dy = -5, 3
 offset = ScaledTranslation(dx / fig.dpi, dy / fig.dpi, fig.dpi_scale_trans)
 for label in ax.xaxis.get_majorticklabels():

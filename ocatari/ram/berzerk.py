@@ -9,14 +9,17 @@ RAM extraction for the game BERZERK. Supported modes: ram.
 Attention: EvilOtto enemy not implemented due to not getting it spawned during development.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile': 1, 
-                      'PlayerScore': 1, 'BonusPoints':1, 'Lives': 1}
+MAX_NB_OBJECTS = {'Player': 1, 'Enemy': 8,
+                  'PlayerMissile': 1, 'EnemyMissile': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile': 1,
+                      'PlayerScore': 1, 'BonusPoints': 1, 'Lives': 1}
+
 
 class Player(GameObject):
     """
-    The player figure i.e., the earth man stuck on planet Mazeon. 
+    The player figure i.e., the earth man stuck on planet Mazeon.
     """
+
     def __init__(self):
         super().__init__()
         self._xy = 8, 79
@@ -27,8 +30,9 @@ class Player(GameObject):
 
 class PlayerMissile(GameObject):
     """
-    The projectiles shot from the player's laser gun. 
+    The projectiles shot from the player's laser gun.
     """
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -39,8 +43,9 @@ class PlayerMissile(GameObject):
 
 class Enemy(GameObject):
     """
-    The enemy Automazeons stalking the player. 
+    The enemy Automazeons stalking the player.
     """
+
     def __init__(self, x=0, y=0, w=8, h=16):
         super(Enemy, self).__init__()
         self._xy = x, y
@@ -51,9 +56,9 @@ class Enemy(GameObject):
 
 class EnemyMissile(GameObject):
     """
-    The projectiles fired at the player by the enemy Automazeons. 
+    The projectiles fired at the player by the enemy Automazeons.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -66,13 +71,14 @@ class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 88, 183
         self.rgb = 232, 232, 74
         self.wh = 14, 7
         self.hud = True
+
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
@@ -81,7 +87,7 @@ class BonusPoints(ValueObject):
     """
     The player's score display (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 56, 183
@@ -94,7 +100,7 @@ class Lives(ValueObject):
     """
     The Atari logo, which is displayed in place of the score if the score is zero (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 63, 183
@@ -110,12 +116,13 @@ def _get_max_objects(hud=False):
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
+
 
 def _init_objects_ram(hud=False):
     """
@@ -194,9 +201,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 enemy.xy = ram_state[65 + i] + 6, (ram_state[56 + i] * 2) + 4
                 enemy.rgb = enemy_colors.get(ram_state[92] % 16)
                 enemy_bbs.append(enemy.xywh)
-        
+
     match_objects(objects, enemy_bbs, 1, 8, Enemy)
-        
 
     # enemy missile
     if ram_state[24] == 0:
@@ -217,9 +223,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         # initial values for the enemy missile when screen is loading
         missile.xy = x, y
         missile.rgb = enemy_colors.get(ram_state[92] % 16)
-    
+
     if hud:
-        if ram_state[80] >= 44: # no score, nor bonus but lives
+        if ram_state[80] >= 44:  # no score, nor bonus but lives
             if objects[11]:
                 objects[11] = NoObject()
             if objects[12]:
@@ -233,7 +239,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             lives.value = nb_lives
             lives.xy = 104 - 8*nb_lives, 183
             lives.wh = 8*nb_lives-2, 7
-        elif np.count_nonzero(ram_state[65:74]) == 0: # no score, but bonus
+        elif np.count_nonzero(ram_state[65:74]) == 0:  # no score, but bonus
             if objects[11]:
                 objects[11] = NoObject()
             if objects[13]:
@@ -246,7 +252,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if objects[13]:
                 objects[13] = NoObject()
             score_value = _convert_number(ram_state[93]) * 10000 + _convert_number(ram_state[94]) * 100 + \
-                        _convert_number(ram_state[95])
+                _convert_number(ram_state[95])
             if score_value > 0:
                 if not objects[11]:
                     score = PlayerScore()
@@ -268,7 +274,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 else:
                     score.xy = 56, 183
                     score.wh = 46, 7
-                
 
 
 def _detect_objects_berzerk_raw(info, ram_state):
@@ -299,8 +304,11 @@ def _detect_objects_berzerk_raw(info, ram_state):
     info["game_level"] = ram_state[92]  # starts at 1
     info["player_score"] = _convert_number(ram_state[93]) * 10000 + _convert_number(ram_state[94]) * 100 \
                                                                   + _convert_number(ram_state[95])
-    info["player_direction"] = ram_state[14]  # 1 = up, 2 = down, 4 = left, 5 = up left, 6 = down left
+    # 1 = up, 2 = down, 4 = left, 5 = up left, 6 = down left
+    info["player_direction"] = ram_state[14]
     # 8 = right, 9 = up right, 10 = down right
-    info["player_missile_direction"] = ram_state[21]  # 1 = up, 2 = down, 8 = right
-    info["robot_missile_direction"] = ram_state[26]  # 1 = right, 2 = left, 3 = left, 4,12 = down,
+    # 1 = up, 2 = down, 8 = right
+    info["player_missile_direction"] = ram_state[21]
+    # 1 = right, 2 = left, 3 = left, 4,12 = down,
+    info["robot_missile_direction"] = ram_state[26]
     # 5,7,13 = down and right, 6 = down and left, 8 = up, 9,11 = up and right, 10 = up and left

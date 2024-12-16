@@ -30,7 +30,7 @@ ___
 This will print all values within the current RAM-state which lie in a specified range.
 `min` sets the floor of the range and `max` the ceiling. Edit the `already_figured_out` variable to include all RAM-states that should not be printed even if they lie in the specified range.
 ___
-`TestSkriptNr5` is the same as `TestSkriptNr3` but contains a `ipdb.set_trace()` statement which will trigger right after printing the changed RAM values. It also includes 2 `set_ram()` statements. 
+`TestSkriptNr5` is the same as `TestSkriptNr3` but contains a `ipdb.set_trace()` statement which will trigger right after printing the changed RAM values. It also includes 2 `set_ram()` statements.
 ___
 `TestSkriptNr6`:
 
@@ -52,7 +52,7 @@ from reading the integer numbers. other benefits would be depending on the need.
 There are much uncommented lines, which are not meant to be deleted. Because you would need to test with any of them,
 while e.g. testing specific behavior of some variable(according to your sense).
 
-So at the beginning you have the array `already_figured_out` for indices you know their functionality and don't want to 
+So at the beginning you have the array `already_figured_out` for indices you know their functionality and don't want to
 test or set them further in this tests file. this array at same time includes two other arrays to keep indices separated
 and keep clear view of them.
 Right after it come initial values for `value` and `index`. after then, you have two lines, for `i` and `index`.
@@ -102,10 +102,10 @@ value = (prevRam[i] + 85) % 256  # 85 = 01010101
 
 if ROUND % 1 == 0:  # how often we increment index
     index += 1
-    
+
 if ROUND % 1 == 0 and ROUND > 50:
     env._env.unwrapped.ale.setRAM(i, value)  # DON'T CHANGE
-``` 
+```
 
 ___
 `testSkriptNr7` can be used to identify for which attribute each RAM state stands

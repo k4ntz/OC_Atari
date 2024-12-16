@@ -103,9 +103,9 @@ def _detect_objects(objects, obs, hud=False):
                 break
     else:
         objects[34] = NoObject()
-            
 
-    divers_and_missiles = find_objects(obs, objects_colors["diver"], closing_dist=1)
+    divers_and_missiles = find_objects(
+        obs, objects_colors["diver"], closing_dist=1)
     divers = []
     missiles = []
     for dm in divers_and_missiles:
@@ -120,13 +120,14 @@ def _detect_objects(objects, obs, hud=False):
     shark = []
     for enemyColor in enemy_colors.values():
         shark.extend(find_objects(obs, enemyColor, min_distance=1))
-    
+
     match_objects(objects, shark, 1, 12, Shark)
 
     submarine = find_objects(obs, objects_colors["submarine"], min_distance=1)
     match_objects(objects, submarine, 13, 12, Submarine)
 
-    oxygen_bar = find_objects(obs, objects_colors["oxygen_bar"], min_distance=1)
+    oxygen_bar = find_objects(
+        obs, objects_colors["oxygen_bar"], min_distance=1)
     if oxygen_bar:
         if type(objects[35]) is NoObject:
             objects[35] = OxygenBar(*oxygen_bar[0])
@@ -134,9 +135,9 @@ def _detect_objects(objects, obs, hud=False):
             objects[35].xywh = oxygen_bar[0]
     else:
         objects[35] = NoObject()
-    
+
     coll_diver = find_objects(obs, objects_colors["collected_diver"])
-    
+
     if coll_diver:
         x, y, w, h = coll_diver[0]
         for i in range(6):
@@ -150,15 +151,17 @@ def _detect_objects(objects, obs, hud=False):
             if type(objects[36+i]) != NoObject:
                 objects[36+i] = NoObject()
 
-
     if hud:
-        score = find_objects(obs, objects_colors["player_score"], maxy=17, min_distance=1, closing_dist=5)
+        score = find_objects(
+            obs, objects_colors["player_score"], maxy=17, min_distance=1, closing_dist=5)
         objects[-4].xywh = score[0]
 
-        lives = find_objects(obs, objects_colors["player_score"], miny=22, maxy=30, min_distance=1, closing_dist=10)
+        lives = find_objects(
+            obs, objects_colors["player_score"], miny=22, maxy=30, min_distance=1, closing_dist=10)
         objects[-3].xywh = lives[0]
 
-        oxygen_bar_depl = find_objects(obs, objects_colors["oxygen_bar_depleted"], min_distance=1)
+        oxygen_bar_depl = find_objects(
+            obs, objects_colors["oxygen_bar_depleted"], min_distance=1)
         if oxygen_bar_depl:
             if type(objects[-2]) is NoObject:
                 objects[-2] = OxygenBarDepleted(*oxygen_bar_depl[0])

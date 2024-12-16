@@ -10,15 +10,17 @@ RAM extraction for the game BREAKOUT. Supported modes: ram
 # might be wrong
 # blockrow could go very very high with a performing agent
 
-MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Block': 108}    # Block could go very very high with a performing agent
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Block': 108, 'PlayerScore': 1, 'Live': 1, 'PlayerNumber': 1}
+# Block could go very very high with a performing agent
+MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Block': 108}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Block': 108,
+                      'PlayerScore': 1, 'Live': 1, 'PlayerNumber': 1}
 
 
 class Player(GameObject):
     """
-    The player figure i.e., the paddle. 
+    The player figure i.e., the paddle.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 99, 189
@@ -29,9 +31,9 @@ class Player(GameObject):
 
 class Ball(GameObject):
     """
-    The game ball. 
+    The game ball.
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -44,7 +46,7 @@ class PlayerScore(GameObject):
     """
     The player's score display (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 36, 5
@@ -60,7 +62,7 @@ class Live(GameObject):
     """
     The indicator for the remaining balls (lives) (HUD).
     """
-    
+
     def __init__(self):
         super().__init__()
         self._xy = 100, 5
@@ -73,7 +75,7 @@ class Block(GameObject):
     """
     The rows of the brickwall.
     """
-    
+
     def __init__(self, x=0, y=0, rgb=(66, 72, 200)):
         super().__init__()
         self.xy = x, y
@@ -87,7 +89,6 @@ class PlayerNumber(GameObject):
     The player index display (HUD).
     """
 
-
     def __init__(self):
         super().__init__()
         self.xy = 136, 5
@@ -100,22 +101,25 @@ blockRow_colors = {"5": [66, 72, 200], "4": [72, 160, 72],
                    "3": [162, 162, 42], "2": [180, 122, 48],
                    "1": [198, 108, 58], "0": [200, 72, 72]}
 
-block_colors = list(reversed([[66, 72, 200], [72, 160, 72], [162, 162, 42], 
+block_colors = list(reversed([[66, 72, 200], [72, 160, 72], [162, 162, 42],
                               [180, 122, 48], [198, 108, 58], [200, 72, 72]]))
 
 # parses MAX_NB* dicts, returns default init list of objects
+
+
 def _get_max_objects(hud=False):
     def fromdict(max_obj_dict):
         objects = []
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                objects.append(getattr(mod, k)())
         return objects
 
     if hud:
         return fromdict(MAX_NB_OBJECTS_HUD)
     return fromdict(MAX_NB_OBJECTS)
+
 
 def _init_objects_ram(hud=False):
     """
@@ -153,8 +157,10 @@ def _make_block_bitmap(ram_state):
                 row_str = '{0:08b}'.format(bitnumber)[::-2] + row_str
         blocks_str = row_str + "\n" + blocks_str
     # convert str to binary array
-    blocks_int = np.array([list(el) for el in blocks_str.split("\n") if el], dtype=int)
-    correct_order = [0, 4, 3, 2, 1, 5, 6, 7, 8, 11, 12, 16, 15, 14, 13, 17, 18, 19]
+    blocks_int = np.array([list(el)
+                          for el in blocks_str.split("\n") if el], dtype=int)
+    correct_order = [0, 4, 3, 2, 1, 5, 6, 7,
+                     8, 11, 12, 16, 15, 14, 13, 17, 18, 19]
     blocks_int = blocks_int.T[correct_order].T
     # diff(previous_array_str, str(blocks_int))
     # previous_array_str = str(blocks_int)
@@ -265,7 +271,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if _convert_number(ram_state[76] == 1):
             objects[-3].xy = 40, 5
             objects[-3].wh = 40, 10
-        
+
         # 1 is more thin than the other numbers
         if ram_state[57] == 1:
             objects[-2].xy = 104, 5
@@ -300,7 +306,8 @@ def _calculate_blocks(ram_state):
 
             if (bitmap[row, column] == 0 or column == 17) and row_empty is False and start_of_new_block is False:
                 block = Block()
-                block.rgb = blockRow_colors.get(str(row))  # uses the blockRow color dictionary
+                # uses the blockRow color dictionary
+                block.rgb = blockRow_colors.get(str(row))
                 block.xy = x, 57 + 6 * row
                 block.wh = width, 6
                 blockrow.append(block)
@@ -321,4 +328,5 @@ def _detect_objects_breakout_raw(info, ram_state):
     # additional info
     info["block_bitmap"] = _make_block_bitmap(ram_state)
     info["lives"] = ram_state[57]
-    info["score"] = _convert_number(ram_state[76]) * 100 + _convert_number(ram_state[77])
+    info["score"] = _convert_number(
+        ram_state[76]) * 100 + _convert_number(ram_state[77])

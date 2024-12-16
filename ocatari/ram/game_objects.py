@@ -36,14 +36,14 @@ class GameObject:
 
     :ivar w: The width/horizontal size of the object (in pixels).
     :vartype w: int
-    
+
     :ivar h: The height/vertical size of the object (in pixels).
     :vartype h: int
 
     :ivar prev_xy: The positional coordinates x and y of the previous time step in a tuple.
     :vartype prev_xy: (int, int)
 
-    :ivar xy: Both positional coordinates x and y in a tuple. 
+    :ivar xy: Both positional coordinates x and y in a tuple.
     :vartype: (int, int)
 
     :ivar h_coords: History of coordinates, i.e. current (x, y) and previous (x, y) position.
@@ -82,8 +82,8 @@ class GameObject:
 
     def __repr__(self):
         if self._visible:
-           return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}"
-        return "\033[34m" + "NaO" + "\033[39m" # blue color
+            return f"{self.__class__.__name__} at ({self._xy[0]}, {self._xy[1]}), {self.wh}"
+        return "\033[34m" + "NaO" + "\033[39m"  # blue color
 
     @property
     def category(self):
@@ -108,7 +108,7 @@ class GameObject:
     @property
     def h(self):
         return self.wh[1]
-    
+
     @h.setter
     def h(self, h):
         self.wh = self.w, int(h)
@@ -123,11 +123,11 @@ class GameObject:
     @prev_xy.setter
     def prev_xy(self, newval):
         self._prev_xy = newval
-    
+
     @property
     def prev_x(self):
         return self.prev_xy[0]
-    
+
     @property
     def prev_y(self):
         return self.prev_xy[1]
@@ -164,7 +164,7 @@ class GameObject:
     @property
     def xywh(self):
         return self._xy[0], self._xy[1], self.wh[0], self.wh[1]
-    
+
     @xywh.setter
     def xywh(self, xywh):
         self._xy = xywh[0], xywh[1]
@@ -186,7 +186,7 @@ class GameObject:
         if not self._visible:
             return [0, 0]
         return [self.x, self.y]
-    
+
     @property
     def _ns_meaning(self):
         """NeuroSymbolic Meaning"""
@@ -195,7 +195,7 @@ class GameObject:
     @property
     def _nslen(self):
         return len(self._nsrepr)
-    
+
     @property
     def _ns_types(self):
         return [Tuple[int, int]]
@@ -205,11 +205,11 @@ class GameObject:
         if self.visible:
             return self._rgb
         return 0, 0, 0
-    
+
     @rgb.setter
     def rgb(self, rgb):
         self._rgb = rgb
-    
+
     @property
     def orientation(self):
         return self._orientation
@@ -230,8 +230,8 @@ class GameObject:
         :rtype: bool
         """
         return (other.x <= self.x <= other.x + other.w) and \
-            (other.y <= self.y <= other.y + other.h) 
-    
+            (other.y <= self.y <= other.y + other.h)
+
     def manathan_distance(self, other):
         """
         Returns the manathan distance between the center of both objects.
@@ -240,8 +240,8 @@ class GameObject:
         :rtype: bool
         """
         c0, c1 = self.center, other.center
-        return abs(c0[0] - c1[0]) + abs(c0[1]- c1[1])
-    
+        return abs(c0[0] - c1[0]) + abs(c0[1] - c1[1])
+
     def closest_object(self, others):
         """
         Returns the closest object from others, based on manathan distance between the center of both objects.
@@ -258,7 +258,7 @@ class GameObject:
             return False
         iou_value = self.iou(other)
         return iou_value > 0.8
-    
+
     def iou(self, other):
         # Calculate the (x, y) coordinates of the intersection rectangle
         if self.category == "NoObject" and other.category == "NoObject":
@@ -267,24 +267,24 @@ class GameObject:
         y1 = max(self.y, other.y)
         x2 = min(self.x + self.w, other.x + other.w)
         y2 = min(self.y + self.h, other.y + other.h)
-        
+
         # Calculate the area of intersection rectangle
         inter_width = max(0, x2 - x1)
         inter_height = max(0, y2 - y1)
         inter_area = inter_width * inter_height
-        
+
         # Calculate the area of both bounding boxes
         area_self = self.w * self.h
         area_other = other.w * other.h
-        
+
         # Calculate the union area
         union_area = area_self + area_other - inter_area
-        
+
         # Calculate IoU
         if union_area == 0:
             return 0  # Prevent division by zero
         return inter_area / union_area
-    
+
     @property
     def properties(self):
         """
@@ -293,13 +293,14 @@ class GameObject:
         :return: The properties of the object.
         :rtype: list
         """
-        ignore = ["properties", "GET_COLOR", "GET_WH", "xy", "wh", "prev_xy", "h_coords", "xywh"]
+        ignore = ["properties", "GET_COLOR", "GET_WH",
+                  "xy", "wh", "prev_xy", "h_coords", "xywh"]
         properties = [prop for prop in self.__dir__()]
         [properties.remove(p) for p in ignore if p in properties]
         return [prop for prop in properties
-                if not prop.startswith("_") and 
+                if not prop.startswith("_") and
                 not callable(self.__getattribute__(prop))]
-    
+
     def __bool__(self):
         return self._visible
 
@@ -308,36 +309,37 @@ class NoObject(GameObject):
     """
     This class represents a non-existent object. It is used to fill in the gaps when no object is detected.
     """
+
     def __init__(self, nslen=2):
         super().__init__()
         self.nslen = nslen
         self.rgb = (0, 0, 0)
-    
+
     def _save_prev(self):
         pass
 
     def __bool__(self):
         return False
-    
+
     def __eq__(self, other):
         return isinstance(other, NoObject)
-    
+
     @property
     def _nsrepr(self):
         return [0 for _ in range(self.nslen)]
-    
+
     @property
     def _ns_meaning(self):
         return ["POSITION"]
-    
+
     @property
     def _ns_types(self):
         return [Tuple[int, int]]
-    
+
     def __repr__(self):
         # return "NaO"
         # return "\033[31m" + "NaO" + "\033[39m" # red color
-        return "\033[34m" + "NaO" + "\033[39m" # blue color
+        return "\033[34m" + "NaO" + "\033[39m"  # blue color
 
 
 class ValueObject(GameObject):

@@ -12,12 +12,12 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
-import ipdb # noqa
+import ipdb  # noqa
 import pathlib
 from termcolor import colored
 import pickle
 from ocatari.core import OCAtari
-sys.path.insert(0, '../ocatari') # noqa
+sys.path.insert(0, '../ocatari')  # noqa
 
 
 def ransac_regression(x, y):
@@ -63,7 +63,8 @@ def generate_dataset(env, drop_constants, frames=700, skip_frames=3, manipulated
             env._env.unwrapped.ale.setRAM(manipulated_ram, rand)
 
         # obs, reward, terminated, truncated, info = env.step(env._env.action_space.sample())
-        obs, reward, terminated, truncated, info = env.step(env.action_space.sample())
+        obs, reward, terminated, truncated, info = env.step(
+            env.action_space.sample())
 
         if info.get('frame_number') > 10 and i % skip_frames == 0:
 
@@ -80,7 +81,8 @@ def generate_dataset(env, drop_constants, frames=700, skip_frames=3, manipulated
                 continue
 
             for obj in env.objects:
-                append_oinfo_values(obj, object_infos, objects_correctly_detected)
+                append_oinfo_values(obj, object_infos,
+                                    objects_correctly_detected)
 
             ram = env._env.unwrapped.ale.getRAM()
             ram_saves.append(deepcopy(ram))
@@ -106,7 +108,8 @@ def generate_dataset(env, drop_constants, frames=700, skip_frames=3, manipulated
 
     ram_saves = np.array(ram_saves).T
     if drop_constants:
-        from_rams = {str(i): ram_saves[i] for i in range(128) if not np.all(ram_saves[i] == ram_saves[i][0])}
+        from_rams = {str(i): ram_saves[i] for i in range(
+            128) if not np.all(ram_saves[i] == ram_saves[i][0])}
     else:
         from_rams = {str(i): ram_saves[i] for i in range(128)}
 
@@ -136,7 +139,8 @@ def get_correlation(dataset, min_correlation, objects, method="pearson"):
 
 
 def dump_heatmap(correlation, filename, game_name):
-    ax = sns.heatmap(correlation, vmin=-1, vmax=1, annot=True, cmap=sns.diverging_palette(20, 220, n=200))
+    ax = sns.heatmap(correlation, vmin=-1, vmax=1, annot=True,
+                     cmap=sns.diverging_palette(20, 220, n=200))
 
     for tick in ax.get_yticklabels():
         tick.set_rotation(0)
@@ -175,7 +179,8 @@ def do_analysis(env, dump_path, new_dump, min_correlation, maximum_x,
     # ---------------------------test-data-dump-------------------------------
     game_name = env.game_name
     if dump_path is None:
-        dump_path = str(pathlib.Path().resolve()) + "/../dumps/automated_analysis_dump/"
+        dump_path = str(pathlib.Path().resolve()) + \
+            "/../dumps/automated_analysis_dump/"
     if not os.path.exists(dump_path):
         os.makedirs(dump_path)
     dump_path = dump_path + game_name
@@ -186,7 +191,8 @@ def do_analysis(env, dump_path, new_dump, min_correlation, maximum_x,
     constants_file = dump_path + "/constants"
     objects_file = dump_path + "/objects"
     if (not os.path.exists(oinfo_file)) or new_dump:
-        dataset, constants, objects = generate_dataset(env, drop_constants, start_frame=start_frame)
+        dataset, constants, objects = generate_dataset(
+            env, drop_constants, start_frame=start_frame)
         with open(oinfo_file, 'wb+') as f:
             pickle.dump(dataset, f)
         with open(constants_file, 'wb+') as f:
@@ -211,7 +217,8 @@ def do_analysis(env, dump_path, new_dump, min_correlation, maximum_x,
         approved_candidates = {}
         for obj_name in objects:
             print(obj_name)
-            candidates[obj_name] = {k: v for k, v in candidates[obj_name].items() if abs(v) > min_correlation}
+            candidates[obj_name] = {
+                k: v for k, v in candidates[obj_name].items() if abs(v) > min_correlation}
             print(candidates[obj_name])
             approved_candidates[obj_name] = []
             if len(candidates[obj_name]) > 1:
@@ -224,7 +231,8 @@ def do_analysis(env, dump_path, new_dump, min_correlation, maximum_x,
 
                         if len(dataset2[ram_pos]) > 0 and not (np.all(dataset2[ram_pos] == dataset2[ram_pos][0]) or
                                                                np.all(dataset2[obj_name] == dataset2[obj_name][0])):
-                            corr2 = np.corrcoef(dataset2[obj_name], dataset2[ram_pos])[1][0]
+                            corr2 = np.corrcoef(
+                                dataset2[obj_name], dataset2[ram_pos])[1][0]
                             approved_candidates[obj_name].append({"pos": int(ram_pos),
                                                                   "corr": candidates[obj_name][ram_pos],
                                                                   "manipulated_corr": corr2})
@@ -305,14 +313,16 @@ if __name__ == "__main__":
     MAXIMUM_Y = 210  # bottom of screen in rgb_array
     DUMP_PATH = None  # path to dump otherwise takes standard
     NEW_DUMP = True  # if True creates new datasets and dumps it overwriting the previous ones
-    MIN_CORRELATION = 0.8  # the minimal correlation required for a ram value to be relevant for an object
+    # the minimal correlation required for a ram value to be relevant for an object
+    MIN_CORRELATION = 0.8
     DROP_CONSTANTS = True  # if True does not consider not changing variables for objects
     START_FRAME = 100  # selects the frame at which each simulation starts
 
     env = OCAtari(GAME_NAME, mode=MODE, render_mode=RENDER_MODE)
     random.seed(0)
     observation, info = env.reset()
-    obs, reward, terminated, truncated, info = env.step(env.action_space.sample())
+    obs, reward, terminated, truncated, info = env.step(
+        env.action_space.sample())
     env.reset()
 
     do_analysis(env, drop_constants=DROP_CONSTANTS, dump_path=DUMP_PATH,

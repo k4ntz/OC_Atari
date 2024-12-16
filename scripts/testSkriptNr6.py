@@ -6,7 +6,8 @@ import random
 this test makes it easy to test several indices individually or at once and to read the BITS of changing values
 """
 
-env = OCAtari("SpaceInvaders-v4", mode="vision", render_mode='rgb_array')  # Skiing-v4, DemonAttack-v4
+env = OCAtari("SpaceInvaders-v4", mode="vision",
+              render_mode='rgb_array')  # Skiing-v4, DemonAttack-v4
 observation, info = env.reset()
 prevRam = None
 
@@ -31,7 +32,8 @@ for ROUND in range(10000000):
         # value = (prevRam[i] + 32) % 256  # 32 = 00010000
         # value = (prevRam[i] + 33) % 256  # 33 = 00010001 (in 15 rounds you changed every bit)
         # value = (prevRam[i] + 3) % 256
-        value = (prevRam[i] + 85) % 256  # 85 = 01010101 for efficient changes (= more and fast) (2 rounds)
+        # 85 = 01010101 for efficient changes (= more and fast) (2 rounds)
+        value = (prevRam[i] + 85) % 256
         # value = (prevRam[i] + 1) % 256
         # value = (prevRam[i] + 16) % 256
         # value = (prevRam[i] * 2) % 256

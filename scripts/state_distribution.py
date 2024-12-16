@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.linear_model import RANSACRegressor, LinearRegression
-sys.path.insert(0, '../ocatari') # noqa
+sys.path.insert(0, '../ocatari')  # noqa
 from ocatari.core import OCAtari
 from alive_progress import alive_bar
 from ocatari.utils import load_agent, make_deterministic, RandomAgent
@@ -23,11 +23,11 @@ from argparse import ArgumentParser
 
 parser = ArgumentParser()
 parser.add_argument("-g", "--game", type=str, required=True,
-                         help="game to evaluate (e.g. 'Pong')")
+                    help="game to evaluate (e.g. 'Pong')")
 parser.add_argument("-s", "--seed", type=int, default=0,
-                         help="If provided, set the seed")
+                    help="If provided, set the seed")
 parser.add_argument("-tt", "--to_track", type=int, required=True, nargs='+',
-                         help="A list of the ram position to track")
+                    help="A list of the ram position to track")
 opts = parser.parse_args()
 
 

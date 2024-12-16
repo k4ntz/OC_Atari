@@ -2,12 +2,13 @@ from ocatari.utils import load_agent
 from ocatari import OCAtari
 import sys
 import torch
-sys.path.insert(0, '../') # noqa
+sys.path.insert(0, '../')  # noqa
 import gymnasium as gym
 import pygame
 import argparse
 
-parser = argparse.ArgumentParser(description="HackAtari run.py Argument Setter")
+parser = argparse.ArgumentParser(
+    description="HackAtari run.py Argument Setter")
 
 parser.add_argument(
     "-g", "--game", type=str, default="Seaquest", help="Game to be run"
@@ -38,7 +39,7 @@ env = OCAtari(
     mode="ram",
     hud=False,
     render_oc_overlay=True,
-    buffer_window_size = 2,
+    buffer_window_size=2,
     frameskip=4,
 )
 
@@ -47,12 +48,12 @@ if args.movie:
 
 pygame.init()
 if args.agent:
-    #agent = load_agent("../OC_Atari/models/Skiing/obj_based_ppo.cleanrl_model", env.action_space.n, env)
+    # agent = load_agent("../OC_Atari/models/Skiing/obj_based_ppo.cleanrl_model", env.action_space.n, env)
     agent = load_agent(args.agent, env.action_space.n, env, "cpu")
     print(f"Loaded agents from {args.agent}")
 
 obs, _ = env.reset()
-obs, _ , _ , _ , _ = env.step(0)
+obs, _, _, _, _ = env.step(0)
 done = False
 
 while not done:
@@ -65,13 +66,13 @@ while not done:
             done = True
     if args.agent:
         dqn_obs = torch.Tensor(obs).unsqueeze(0)
-        action, _, _, _  = agent.get_action_and_value(dqn_obs)
+        action, _, _, _ = agent.get_action_and_value(dqn_obs)
         action = action[0]
     else:
         action = env.action_space.sample()
     # import ipdb; ipdb.set_trace()
     obs, reward, terminated, truncated, _ = env.step(action)
-    #print(reward) if reward != 0 else None
+    # print(reward) if reward != 0 else None
     # if reward and args.reward_function:
     #     print(reward)
     if terminated or truncated:
@@ -80,6 +81,6 @@ while not done:
     #     print(".", end="", flush=True)
     env.render()
 
-if args.movie:        
+if args.movie:
     env.close_video_recorder()
 env.close()

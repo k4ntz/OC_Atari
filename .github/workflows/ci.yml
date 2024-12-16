@@ -31,7 +31,7 @@ jobs:
           key: pickle-cache-${{ github.sha }}
           restore-keys: |
             pickle-cache-
-  
+
 
       - name: Install dependencies
         run: |
@@ -49,7 +49,7 @@ jobs:
           if [ ! -s changed_files.txt ]; then
             echo "No Python files changed."
           fi
-          
+
       - name: Run general tests for all changes
         id: general_tests
         continue-on-error: true
@@ -75,7 +75,7 @@ jobs:
           done < changed_files.txt
 
           # Remove the trailing comma
-          GAMES=${GAMES%,} 
+          GAMES=${GAMES%,}
           echo "GAMES=$GAMES" >> $GITHUB_ENV
 
       - name: Download Pickle Files if Not Cached
@@ -98,4 +98,5 @@ jobs:
         run: |
           echo "One or more critical tests have failed. Failing workflow."
           exit 1
+
 
