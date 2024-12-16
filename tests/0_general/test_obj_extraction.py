@@ -25,6 +25,7 @@ def test_object_state_size(env_name, mode):
     assert obs.shape == env._env.observation_space.shape
     env.close()
 
+
 def test_object_extraction_properties():
     """
     Test properties of objects extracted from RAM and Vision modes.
@@ -33,10 +34,14 @@ def test_object_extraction_properties():
     env.reset()
     env.detect_objects()  # Use both RAM and vision-based detection
     for obj in env.objects:
-        assert hasattr(obj, 'category'), "Extracted object should have a category attribute."
-        assert hasattr(obj, 'xy'), "Extracted object should have an xy attribute (position)."
-        assert hasattr(obj, 'wh'), "Extracted object should have a wh attribute (width and height)."
+        assert hasattr(
+            obj, 'category'), "Extracted object should have a category attribute."
+        assert hasattr(
+            obj, 'xy'), "Extracted object should have an xy attribute (position)."
+        assert hasattr(
+            obj, 'wh'), "Extracted object should have a wh attribute (width and height)."
     env.close()
+
 
 def test_object_extraction_count():
     """
@@ -61,8 +66,10 @@ def test_object_extraction_consistency():
     env.step(0)
     env.detect_objects()
     new_objects = env.objects.copy()
-    assert len(initial_objects) == len(new_objects), "The number of detected objects should remain consistent between steps."
+    assert len(initial_objects) == len(
+        new_objects), "The number of detected objects should remain consistent between steps."
     env.close()
+
 
 def test_object_extraction_category_types():
     """
@@ -72,6 +79,8 @@ def test_object_extraction_category_types():
     env.reset()
     env.detect_objects()
     for obj in env.objects:
-        assert isinstance(obj.category, str), "Object category should be a string."
-        assert len(obj.category) > 0, "Object category should not be an empty string."
+        assert isinstance(
+            obj.category, str), "Object category should be a string."
+        assert len(
+            obj.category) > 0, "Object category should not be an empty string."
     env.close()
