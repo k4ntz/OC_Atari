@@ -218,7 +218,7 @@ def _load_checkpoint(fpath, device="cpu"):
             return torch.load(inflated, map_location=device)
 
 
-def _epsilon_greedy(model, obs, eps=0.001):
+def _epsilon_greedy(obs, model, eps=0.001):
     if torch.rand((1,)).item() < eps:
         return torch.randint(model.action_no, (1,)).item(), None
     obs = obs.byte()
@@ -232,10 +232,13 @@ def load_agent(opt, env=None, device="cpu"):
         agent = AtariNet(env.action_space.n, distributional="c51" in pth)
         ckpt = _load_checkpoint(pth)
         agent.load_state_dict(ckpt['estimator_state'])
-        policy = partial(_epsilon_greedy, agent, eps=0.001)
+        policy = partial(_epsilon_greedy, model=agent)
         return agent, policy
     elif "cleanrl" in pth:
-        ckpt = torch.load(pth)
+        if device == "cpu":
+            ckpt = torch.load(pth, map_location=torch.device('cpu'))
+        else:
+            ckpt = torch.load(pth)
         if "c51" in pth:
             agent = QNetwork(env.action_space.n)
             agent.load_state_dict(ckpt["model_weights"])
