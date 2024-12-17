@@ -73,7 +73,7 @@ if args.movie:
 pygame.init()
 if args.agent:
     # agent = load_agent("../OC_Atari/models/Skiing/obj_based_ppo.cleanrl_model", env.action_space.n, env)
-    agent, policy = load_agent(args.agent, env.action_space.n, env, "cpu")
+    agent, policy = load_agent(args.agent, env, "cpu")
     print(f"Loaded agents from {args.agent}")
 
 obs, _ = env.reset()

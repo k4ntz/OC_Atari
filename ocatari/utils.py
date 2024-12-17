@@ -226,10 +226,10 @@ def _epsilon_greedy(model, obs, eps=0.001):
     return argmax_a.item(), q_val
 
 
-def load_agent(opt, nb_actions=None, env=None, device="cpu"):
+def load_agent(opt, env=None, device="cpu"):
     pth = opt if isinstance(opt, str) else opt.path
     if "dqn" in pth or "c51" in pth:
-        agent = AtariNet(nb_actions, distributional="c51" in pth)
+        agent = AtariNet(env.action_space.n, distributional="c51" in pth)
         ckpt = _load_checkpoint(pth)
         agent.load_state_dict(ckpt['estimator_state'])
         policy = partial(_epsilon_greedy, agent, eps=0.001)
@@ -237,7 +237,7 @@ def load_agent(opt, nb_actions=None, env=None, device="cpu"):
     elif "cleanrl" in pth:
         ckpt = torch.load(pth)
         if "c51" in pth:
-            agent = QNetwork(nb_actions)
+            agent = QNetwork(env.action_space.n)
             agent.load_state_dict(ckpt["model_weights"])
         elif "ppo" in pth and env.obs_mode == "dqn":
             agent = PPOAgent(env)
