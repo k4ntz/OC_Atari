@@ -11,6 +11,7 @@ import select
 import time
 import atexit
 import pygame
+from functools import partial
 
 try:
     import torch
@@ -196,10 +197,6 @@ if torch_imported:
                 return torch.mul(qs_probs, self.__support.expand_as(qs_probs)).sum(2)
             return qs
 
-        def draw_action(self, state):
-            probs = self.forward(state)
-            return probs.argmax()
-
     class RandomAgent():
         """
         A agent acting randomly (following a uniform distribution).
@@ -221,15 +218,22 @@ def _load_checkpoint(fpath, device="cpu"):
             return torch.load(inflated, map_location=device)
 
 
+def _epsilon_greedy(model, obs, eps=0.001):
+    if torch.rand((1,)).item() < eps:
+        return torch.randint(model.action_no, (1,)).item(), None
+    obs = obs.byte()
+    q_val, argmax_a = model(obs).max(1)
+    return argmax_a.item(), q_val
+
+
 def load_agent(opt, nb_actions=None, env=None, device="cpu"):
     pth = opt if isinstance(opt, str) else opt.path
     if "dqn" in pth or "c51" in pth:
-        pth = pth.replace("ALE/", "")
-        pth = pth.replace("Deterministic", "").replace("NoFrameskip", "")
-        pth = pth.replace("-v0", "").replace("-v4", "")
         agent = AtariNet(nb_actions, distributional="c51" in pth)
         ckpt = _load_checkpoint(pth)
         agent.load_state_dict(ckpt['estimator_state'])
+        policy = partial(_epsilon_greedy, agent, eps=0.001)
+        return agent, policy
     elif "cleanrl" in pth:
         ckpt = torch.load(pth)
         if "c51" in pth:
@@ -245,7 +249,9 @@ def load_agent(opt, nb_actions=None, env=None, device="cpu"):
         else:
             return None
 
-    return agent
+        policy = agent.draw_action
+
+    return agent, policy
 
 
 def draw_arrow(surface: pygame.Surface, start_pos: (float, float), end_pos: (float, float),
