@@ -1,7 +1,7 @@
 from .game_objects import GameObject, ValueObject, NoObject
 from ._helper_methods import _convert_number
-import math
 import sys
+from typing import Tuple
 
 """
 RAM extraction for the game Ms. Pac-Man.
@@ -25,6 +25,19 @@ class Player(GameObject):
         self.wh = 9, 10
         self.rgb = 210, 164, 74
         self.hud = False
+        self.moves = 0
+    
+    @property
+    def _nsrepr(self):
+        return [self.x, self.y, self.moves]
+
+    @property
+    def _ns_meaning(self):
+        return ["POSITION", "POSSIBLE_MOVES"]
+
+    @property
+    def _ns_types(self):
+        return [Tuple[int, int], Tuple[int]]
 
 
 class Ghost(GameObject):
@@ -253,6 +266,26 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         grid = GRID1
     else:
         grid = GRID2
+    
+    x, y = player.xy
+    i, j = 0, 0
+    if x < 80:
+        i = int((x-3)/8)
+    else:
+        x-=80
+        i = 9 + int(x/8)
+    j = int((y-2)/12)
+    
+    directions = [(0, -1), (1, 0), (-1, 0), (0, 1)]
+    k = 0
+    player.moves = 0
+    for dir in directions:
+        new_i = i + dir[0]
+        new_j = j + dir[1]
+        if 0 <= new_i < 18 and 0 <= new_j < 14:
+            player.moves+= grid[new_j][new_i]<<k
+        k+=1
+
 
     for i in range(14):
         if ram_state[state] & 16 and grid[i][17]:
