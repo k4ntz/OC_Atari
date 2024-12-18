@@ -80,7 +80,7 @@ venv.bak/
 # Exclude model files
 *.gz
 *.cleanrl_model
-models
+*.cleanrl
 
 #Plots
 scripts/Plots

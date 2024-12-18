@@ -23,6 +23,30 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    "-o",
+    "--obs_mode",
+    type=str,
+    default="obj",
+    help="The observation mode (ori, dqn, obj)",
+)
+
+parser.add_argument(
+    "-w",
+    "--window",
+    type=int,
+    default=4,
+    help="The buffer window size (default = 4)",
+)
+
+parser.add_argument(
+    "-f",
+    "--frameskip",
+    type=int,
+    default=4,
+    help="The frames skipped after each action + 1 (default = 4)",
+)
+
+parser.add_argument(
     "-m",
     "--movie",
     type=bool,
@@ -35,12 +59,12 @@ args = parser.parse_args()
 env = OCAtari(
     args.game,
     render_mode="rgb_array" if args.movie else "human",
-    obs_mode="obj",
+    obs_mode=args.obs_mode,
     mode="ram",
     hud=False,
     render_oc_overlay=True,
-    buffer_window_size=2,
-    frameskip=4,
+    buffer_window_size=args.window,
+    frameskip=args.frameskip,
 )
 
 if args.movie:
@@ -49,7 +73,7 @@ if args.movie:
 pygame.init()
 if args.agent:
     # agent = load_agent("../OC_Atari/models/Skiing/obj_based_ppo.cleanrl_model", env.action_space.n, env)
-    agent = load_agent(args.agent, env.action_space.n, env, "cpu")
+    agent, policy = load_agent(args.agent, env, "cpu")
     print(f"Loaded agents from {args.agent}")
 
 obs, _ = env.reset()
@@ -66,8 +90,7 @@ while not done:
             done = True
     if args.agent:
         dqn_obs = torch.Tensor(obs).unsqueeze(0)
-        action, _, _, _ = agent.get_action_and_value(dqn_obs)
-        action = action[0]
+        action = policy(dqn_obs)[0]
     else:
         action = env.action_space.sample()
     # import ipdb; ipdb.set_trace()
