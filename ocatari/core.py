@@ -302,13 +302,16 @@ class OCAtari:
             self.window = pygame.Surface(self.window_size)
         self.rendering_initialized = True
 
-    def render(self):
+    def render(self, image=None):
         """
         Compute the render frames (as specified by render_mode during the initialization of the environment).
         If activated, adds an overlay visualizing object properties like position, velocity vector, name, etc.
         """
         # Render the environment image
-        image = self._env.render()
+
+        if image is None:
+            image = self._env.render()
+
         if not self.render_oc_overlay:
             if self.rendering_initialized:
                 # Upscale and return the rendered image
