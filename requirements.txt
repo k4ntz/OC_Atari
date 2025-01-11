@@ -1,27 +1,27 @@
 ale_py
 # alive_progress==3.1.5
-beautifulsoup4==4.12.3
+beautifulsoup4
 gymnasium
-ipdb==0.13.13
-keyboard==0.13.5
-matplotlib==3.8.0
-numpy==1.26.4
+ipdb
+keyboard
+matplotlib
+numpy<2.0.0
 opencv_python==4.8.1.78
-pandas==2.2.0
-Pillow==10.0.1
+pandas
+Pillow
 # Pillow==10.2.0
-pyfiglet==1.0.2
-pygame==2.5.2
-pynput==1.7.6
-Requests==2.31.0
-rtpt==0.0.4
-scikit_learn==1.3.2
-scipy==1.12.0
-seaborn==0.13.2
+pyfiglet
+pygame
+pynput
+Requests
+rtpt
+scikit_learn
+scipy
+seaborn
 # setuptools==56.0.0
-scikit-image==0.22.0
-stable_baselines3==2.2.1
-termcolor==2.4.0
+scikit-image
+stable_baselines3
+termcolor
 # torch==2.1.0
-tqdm==4.66.1
+tqdm
 # gymnasium[atari, accept-rom-license]
