@@ -1,5 +1,5 @@
 import sys
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 import numpy as np
 
 """
@@ -23,7 +23,6 @@ class Player(GameObject):
         self.wh = 4, 15
         self.rgb = 92, 186, 92
         self.hud = False
-        self._above_10 = False
 
 
 class Enemy(GameObject):
@@ -37,7 +36,6 @@ class Enemy(GameObject):
         self.wh = 4, 15
         self.rgb = 213, 130, 74
         self.hud = False
-        self._above_10 = False
 
 
 class Ball(GameObject):
@@ -69,6 +67,7 @@ class PlayerScore(GameObject):
         self.ten = ten
         self.rgb = 92, 186, 92
         self.hud = True
+        self._above_10 = False
 
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
@@ -90,6 +89,7 @@ class EnemyScore(GameObject):
         self.ten = ten
         self.rgb = 213, 130, 74
         self.hud = True
+        self._above_10 = False
 
     def __eq__(self, o):
         return isinstance(o, EnemyScore) and self.xy == o.xy
@@ -132,11 +132,19 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # ball
     if ram_state[54] != 0 and ram_state[49] > 49:  # otherwise no ball
+        if not ball:
+            ball = Ball()
+            objects[1] = ball
         ball.xy = ram_state[49]-49, ram_state[54]-14
+    else:
+        objects[1] = NoObject()
 
     # enemy
     # otherwise no enemy # could be ram pos 21 as well
     if ram_state[50] > 18 and ram_state[50] > 33:
+        if not enemy:
+            enemy = Enemy()
+            objects[2] = enemy
         if ram_state[50] - 15 < 34:
             enemy.xy = 16, 34
             enemy.wh = 4, ram_state[50]-33
@@ -146,6 +154,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         else:
             enemy.xy = 16, ram_state[50]-15
             enemy.wh = 4, 15
+    else:
+        objects[2] = NoObject()
 
     # player
     if ram_state[51] > 13:  # otherwise no player
@@ -163,30 +173,30 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         # player score
         player_score, enemy_score = objects[3:]
         if ram_state[14] >= 10:  # player score
-            if not player._above_10:
+            if not player_score._above_10:
                 # objects.append(PlayerScore(ten=True))
                 player_score.xy = 104, 1
                 player_score.wh = 24, 20
-                player._above_10 = True
+                player_score._above_10 = True
         else:
-            if player._above_10:
+            if player_score._above_10:
                 # objects.remove(PlayerScore(ten=True))
                 player_score.xy = 116, 1
                 player_score.wh = 4, 20
-                player._above_10 = False
+                player_score._above_10 = False
         # enemy score
         if ram_state[13] >= 10:  # enemy score
-            if not enemy._above_10:
+            if not enemy_score._above_10:
                 # objects.append(EnemyScore(ten=True))
                 enemy_score.xy = 24, 1
                 enemy_score.wh = 24, 20
-                enemy._above_10 = True
+                enemy_score._above_10 = True
         else:
-            if enemy._above_10:
+            if enemy_score._above_10:
                 # objects.remove(EnemyScore(ten=True))
                 enemy_score.xy = 36, 1
                 enemy_score.wh = 12, 20
-                enemy._above_10 = False
+                enemy_score._above_10 = False
 
 
 def _detect_objects_pong_raw(info, ram_state):
