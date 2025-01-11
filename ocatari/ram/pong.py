@@ -1,5 +1,5 @@
 import sys
-from .game_objects import GameObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject
 import numpy as np
 
 """
@@ -51,7 +51,7 @@ class Ball(GameObject):
         self.hud = False
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
@@ -69,11 +69,8 @@ class PlayerScore(GameObject):
         self.hud = True
         self._above_10 = False
 
-    def __eq__(self, o):
-        return isinstance(o, PlayerScore) and self.xy == o.xy
 
-
-class EnemyScore(GameObject):
+class EnemyScore(ValueObject):
     """
     The enemy's score display (HUD).
     """
@@ -91,8 +88,6 @@ class EnemyScore(GameObject):
         self.hud = True
         self._above_10 = False
 
-    def __eq__(self, o):
-        return isinstance(o, EnemyScore) and self.xy == o.xy
 
 # parses MAX_NB* dicts, returns default init list of objects
 
@@ -172,7 +167,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if hud:
         # player score
         player_score, enemy_score = objects[3:]
-        if ram_state[14] >= 10:  # player score
+        player_score.value = ram_state[14]
+        if ram_state[14] == 20:  # enemy score
+            player_score.xy = 100, 1
+            player_score.wh = 28, 20
+        elif ram_state[14] >= 10:  # player score
             if not player_score._above_10:
                 # objects.append(PlayerScore(ten=True))
                 player_score.xy = 104, 1
@@ -185,7 +184,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 player_score.wh = 4, 20
                 player_score._above_10 = False
         # enemy score
-        if ram_state[13] >= 10:  # enemy score
+        enemy_score.value = ram_state[13]
+        if ram_state[13] == 20:  # enemy score
+            enemy_score.xy = 20, 1
+            enemy_score.wh = 28, 20
+        elif ram_state[13] >= 10:  # enemy score
             if not enemy_score._above_10:
                 # objects.append(EnemyScore(ten=True))
                 enemy_score.xy = 24, 1
