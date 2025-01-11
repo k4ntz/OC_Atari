@@ -29,7 +29,7 @@ class Renderer:
 
     def __init__(self, env_name, mode='ram', no_render=[]):
         self.env = OCAtari(env_name, mode=mode, hud=True, render_mode="rgb_array",
-                           render_oc_overlay=True, frameskip=1, obs_mode="obj")
+                           render_oc_overlay=True, frameskip=1, obs_mode="obj", repeat_action_probability=0)
 
         self.env.reset(seed=42)
         self.current_frame = self.env.render()
@@ -77,7 +77,7 @@ class Renderer:
                 ), self.current_frame))  # ram, state, image (rgb)
                 action = self._get_action()
                 action = self.env.get_action_meanings().index(action.name)
-                reward = self.env.step(action)[1]
+                reward = self.env.step(action)[1]    
                 # if reward != 0:
                 #     print(reward)
                 #     pass
