@@ -3,7 +3,7 @@ from .game_objects import GameObject, NoObject
 import numpy as np
 
 """
-RAM extraction for the game Pong.
+RAM extraction for the game AirRaid.
 
 """
 
@@ -301,8 +301,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # player score
     ps_color_by_mode = [[87, 139, 201], [131, 131, 131]]
-    player_score = NoObject()
     if hud:
+        player_score = NoObject()
         player_score = PlayerScore()
         a = ram_state[40] % 16 + 10 * (ram_state[40] // 16)
         b = ram_state[41] % 16 + 10 * (ram_state[41] // 16)
@@ -343,12 +343,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             else:
                 player_score.xy = 56, 11
                 player_score.wh = 46, 9
-    player_score.rgb = ps_color_by_mode[grayscaled]
-    objects[18] = player_score
+        player_score.rgb = ps_color_by_mode[grayscaled]
+        objects[18] = player_score
 
     # lives
-    lives = NoObject()
     if hud and ram_state[39] in [1, 2]:
+        lives = NoObject()
         lives = Lives()
         lives.lives = ram_state[39]
         lives.xy = 55, 220 - int(grayscaled)
@@ -357,4 +357,4 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             lives.wh = 7, 5 + int(grayscaled)
         elif lives.lives == 2:
             lives.wh = 15, 5 + int(grayscaled)
-    objects[19] = lives
+        objects[19] = lives

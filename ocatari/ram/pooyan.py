@@ -3,8 +3,7 @@ from .game_objects import GameObject, NoObject
 import numpy as np
 
 """
-RAM extraction for the game Pong.
-
+RAM extraction for the game Pooyan.
 """
 
 MAX_NB_OBJECTS = {'Player': 1, 'Arrow': 1, 'Bait': 1, 'Balloon': 6, 'Enemy': 7,
@@ -224,7 +223,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         projectile2.wh = 10, 4
     objects[1], objects[2] = projectile1, projectile2
 
-    # # ballon and enemy
+    # ballon and enemy
     balloons = [NoObject()] * 6
     balloon_color = [[236, 236, 236],
                      [127, 92, 213],
@@ -346,8 +345,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     objects[17] = rock
 
     # player score
-    player_score = NoObject()
     if hud:
+        player_score = NoObject()
         player_score = PlayerScore()
         a = ram_state[9] % 16 + 10 * (ram_state[9] // 16)
         b = ram_state[10] % 16 + 10 * (ram_state[10] // 16)
@@ -377,15 +376,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             else:
                 player_score.xy = 72, 3
                 player_score.wh = 29, 9
-    objects[18] = player_score
+        objects[18] = player_score
 
     # lives
-    lives = NoObject()
     if hud and ram_state[22] != 0:
+        lives = NoObject()
         lives = Lives()
         lives.lives = ram_state[22]
         if lives.lives == 1:
             lives.wh = 2, 6
         elif lives.lives == 2:
             lives.wh = 6, 6
-    objects[19] = lives
+        objects[19] = lives
