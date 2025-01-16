@@ -94,7 +94,7 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()]
 
-    objects.extend([NoObject()] * 173)
+    objects.extend([NoObject()] * 162)
     if hud:
         objects.extend([Score(), NoObject()])
     return objects
