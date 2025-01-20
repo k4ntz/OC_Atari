@@ -161,12 +161,11 @@ def _init_objects_ram(hud=True):
     (Re)Initialize the objects
     """
 
-    objects = [Sentry(), Sentry()]
+    objects = [Sentry(), Sentry()] + [NoObject()] * 14
     objects[1].xy = 152, 112
 
-    objects.extend([NoObject()] * 14)
     if hud:
-        objects.extend([NoObject()] * 1)
+        objects += [NoObject()]
 
     global ray_available
     ray_available = True
@@ -201,12 +200,12 @@ def _get_max_objects(hud=False):
 
 
 # Determines whether the deathray can be used by the ships or not
-global ray_available
+# global ray_available
 # Saves the previous amount of buildings that are still standing
-global buildings_amount
+# global buildings_amount
 
-global prev_x_p1
-global prev_x_p2
+# global prev_x_p1
+# global prev_x_p2
 
 
 def missile_pos(rs):
@@ -234,9 +233,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
     buildings_count = 0
 
+    # Missiles
     global prev_x_p1
     global prev_x_p2
 
+    proj = NoObject()
     if ram_state[58] != 0 and ram_state[60] != 0:
         proj = Projectile()
         if prev_x_p1 < ram_state[60]:
@@ -246,10 +247,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         else:
             proj.xy = ram_state[60]+3, missile_pos(ram_state[58])-1
         proj.rgb = (200, 200, 200)
-        objects[14] = proj
+    objects[14] = proj
 
     prev_x_p1 = ram_state[60]
 
+    proj = NoObject()
     if ram_state[59] != 0 and ram_state[61] != 0:
         proj = Projectile()
         if prev_x_p2 < ram_state[61]:
@@ -257,24 +259,13 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         elif prev_x_p2 == ram_state[61]:
             # proj.xy = ram_state[61], int(214 - 1.0775 * ram_state[59])
             proj.xy = ram_state[61], missile_pos(ram_state[59])
-            # if 204 - ram_state[59] <= 22:
-            #     proj.xy = ram_state[61], 210 - ram_state[59] - 9
-            # elif 204 - ram_state[59] <= 32:
-            #     proj.xy = ram_state[61], 210 - ram_state[59] - 8
-            # elif 204 - ram_state[59] <= 59:
-            #     proj.xy = ram_state[61], 210 - ram_state[59] - 7
-            # elif 204 - ram_state[59] <= 78:
-            #     proj.xy = ram_state[61], 204 - ram_state[59]
-            # elif 204 - ram_state[59] < 90:
-            #     proj.xy = ram_state[61], 210 - ram_state[59] - 5
-            # else:
-            #     proj.xy = ram_state[61], 210 - ram_state[59] - 4
         else:
             proj.xy = ram_state[61]+3, missile_pos(ram_state[59])-1
-        objects[15] = proj
+    objects[15] = proj
 
     prev_x_p2 = ram_state[61]
 
+    # Enemy ships and the DeathRay
     global ray_available
     global buildings_amount
 
@@ -284,7 +275,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             g_s = NoObject()
             if not ship:
                 continue
-
+    
             # calc speed and orientation offset
             if not ram_state[75+ship] & 128:
                 offset = ram_state[75+ship]
@@ -312,7 +303,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                     g_s.xy = ram_state[36+i] - 3 + offset, 83 - 21*i
             if g_s:
                 objects[2+i] = g_s
-
+    
             # Deathray can only be shot by ships on lane 4
             if not i and ram_state[30] < 152 and ray_available:
                 ray = Deathray()
@@ -370,23 +361,6 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         ray_available = False
 
     buildings_amount = buildings_count
-
-    # global vert_proj
-    # if ram_state[106]:
-    #     if not vert_proj:
-    #         vert_proj = Projectile()
-    #         vert_proj.rgb = (20, 200, 20)
-    #         objects.append(vert_proj)
-    #     vert_proj._xy = 73, 3 * ram_state[106] + 21
-    # elif vert_proj:
-    #     if vert_proj in objects:
-    #         objects.remove(vert_proj)
-    #     vert_proj = None
-
-    # for oj in objects:
-    #     if isinstance(oj, Projectile):
-    #         xy = oj.xy
-    #         oj.xy = xy[0]-4, xy[1]-8
 
     if hud:
         # Score
