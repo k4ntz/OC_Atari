@@ -8,7 +8,7 @@ import pickle as pkl
 import os
 import atexit
 from ale_py import Action
-
+from paddle_emu import Paddle
 
 """
 This script can be used to identify any RAM positions that
@@ -53,6 +53,8 @@ class Renderer:
         self.saved_frames = deque(maxlen=200)  # tuples of ram, state, image
         self.frame_by_frame = False
         self.next_frame = False
+        self.paddle = Paddle()
+
 
     def _init_pygame(self, sample_image):
         pygame.init()
@@ -70,14 +72,19 @@ class Renderer:
     def run(self):
         self.running = True
         i = 0
+        previous_x = 146
         while self.running:
             self._handle_user_input()
             if not (self.frame_by_frame and not (self.next_frame)) and not self.paused:
                 self.saved_frames.append((deepcopy(self.env.get_ram()), self.env._ale.cloneState(
                 ), self.current_frame))  # ram, state, image (rgb)
                 action = self._get_action()
+                self.paddle.step(action.name)
                 action = self.env.get_action_meanings().index(action.name)
                 reward = self.env.step(action)[1]
+                print(self.paddle.position, self.env.get_ram()[72])
+                print(self.paddle.speed, previous_x - self.env.get_ram()[72])
+                previous_x = self.env.get_ram()[72]
                 # if reward != 0:
                 #     print(reward)
                 #     pass
@@ -85,6 +92,7 @@ class Renderer:
                 # js = [2, 6, 12, 36, 66, 128, 172]
                 # for i, j in zip(range(28, 34), js):
                 #     self.env.set_ram(i, 1+j)
+                # print(self.env.get_ram()[72])
                 self.current_frame = self.env.render().copy()
                 self._render()
                 self.next_frame = False
@@ -153,7 +161,7 @@ class Renderer:
                     print(self.env.objects)
 
                 elif event.key == pygame.K_n:  # next
-                    print("next")
+                    print("next \n\n")
                     self.next_frame = True
 
                 elif event.key == pygame.K_b:  # 'B': Backwards
@@ -393,7 +401,7 @@ if __name__ == "__main__":
 
     parser = ArgumentParser(description='OCAtari remgui.py Argument Setter')
 
-    parser.add_argument('-g', '--game', type=str, default="Seaquest",
+    parser.add_argument('-g', '--game', type=str, default="Pong",
                         help='Game to be run')
     parser.add_argument('-hu', '--human', action='store_true',
                         help='Let user play the game.')

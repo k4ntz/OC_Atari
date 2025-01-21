@@ -170,6 +170,14 @@ class OxygenBar(ValueObject):
         self.hud = True
         self.value = 0
 
+    @property
+    def _ns_repr(self):
+        return [self.h]
+    
+    def _ns_len(self):
+        return 1
+    
+
 
 class OxygenBarDepleted(ValueObject):
     """
@@ -345,11 +353,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if ram_state[102] != 0:
         if type(objects[35]) != OxygenBar:
             objects[35] = OxygenBar()
-        if ram_state[102] == 64:
-            new_wh = 63, 5
-        else:
-            new_wh = ram_state[102], 5
-        objects[35].wh = new_wh
+        objects[35].wh = min(ram_state[102], 63), 5
         objects[35].value = new_wh[0]
     else:
         objects[35] = NoObject()
