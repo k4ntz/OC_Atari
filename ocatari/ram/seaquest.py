@@ -172,7 +172,7 @@ class OxygenBar(ValueObject):
 
     @property
     def _ns_repr(self):
-        return [self.h]
+        return [self.w]
     
     def _ns_len(self):
         return 1
