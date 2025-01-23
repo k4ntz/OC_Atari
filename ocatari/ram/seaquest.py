@@ -354,7 +354,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if type(objects[35]) != OxygenBar:
             objects[35] = OxygenBar()
         objects[35].wh = min(ram_state[102], 63), 5
-        objects[35].value = new_wh[0]
+        objects[35].value = ram_state[102]
     else:
         objects[35] = NoObject()
 
