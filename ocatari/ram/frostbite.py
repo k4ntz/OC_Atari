@@ -17,8 +17,8 @@ class Player(GameObject):
     The player figure: Frostbite Bailey.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._xy = 0, 0
         self.wh = (8, 18)
         self.rgb = 198, 108, 58
@@ -30,8 +30,8 @@ class Bear(GameObject):
     The dangerous grizzly polar bears on the shore (level 4).
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.rgb = 111, 111, 111
         self.hud = False
         self.wh = (14, 16)
@@ -43,8 +43,8 @@ class House(GameObject):
     The igloo Frostbite Bailey is trying to build.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.rgb = 142, 142, 142
         self.hud = False
         self.wh = (8, 18)
@@ -56,8 +56,8 @@ class Door(GameObject):
     The finished igloo.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._xy = 123, 47
         self.rgb = 0, 0, 0
         self.hud = False
@@ -69,33 +69,20 @@ class FloatingBlock(GameObject):
     The white, untouched ice floes, turning blue once jumped over.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.rgb = 214, 214, 214
         self.hud = False
         self.wh = 24, 7
         self._xy = 0, 0
-
-# class BluePlate(GameObject):
-#     """
-#     The ice floes that have turned blue by jumping on them.
-#     """
-
-#     def __init__(self):
-#         super().__init__()
-#         self.rgb = 84, 138, 210
-#         self.hud = False
-#         self.wh = (24, 7)
-#         self._xy = 0, 0
-
 
 class Bird(GameObject):
     """
     The wild snowgeese.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.rgb = 132, 144, 252
         self.hud = False
         self.wh = (8, 7)
@@ -107,8 +94,8 @@ class Crab(GameObject):
     The dangerous Alaskan king crabs.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.rgb = 213, 130, 74
         self.hud = False
         self.wh = (8, 7)
@@ -120,8 +107,8 @@ class GreenFish(GameObject):
     The fresh fish swimming by regularly.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.rgb = 111, 210, 111
         self.wh = (8, 6)
         self.hud = False
@@ -133,8 +120,8 @@ class Clam(GameObject):
     The dangerous clams.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.rgb = 210, 210, 64
         self.hud = False
         self._xy = 0, 0
@@ -146,8 +133,8 @@ class Lives(GameObject):
     The indicator for the player's lives.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._xy = 63, 22
         self.rgb = 132, 144, 252
         self.hud = True
@@ -159,8 +146,8 @@ class Temperature(GameObject):
     The temperature display.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._xy = 23, 22
         self.wh = 18, 8
         self.rgb = 132, 144, 252
@@ -172,8 +159,8 @@ class Score(GameObject):
     The player's score display.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._xy = 63, 10
         self.rgb = 132, 144, 252
         self.hud = True
