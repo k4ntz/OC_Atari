@@ -749,10 +749,6 @@ def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClas
                 else:
                     prev_objects[start_idx+i] = ObjClass(*objects_bb[j])
                     prev_objects[start_idx+i].num_frames_invisible += 1
-    for i in range(max_obj):
-        for j in range(max_obj):
-            if not i == j and prev_objects[start_idx+j]:
-                print(compute_cm([prev_objects[start_idx+i]], [prev_objects[start_idx+j].xywh]))
 
 def mbo(prev_objects, objects_bb, start_idx, max_obj, ObjClass, img=None):
     """
