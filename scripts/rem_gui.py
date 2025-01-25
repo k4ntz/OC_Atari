@@ -8,7 +8,6 @@ import pickle as pkl
 import os
 import atexit
 from ale_py import Action
-from paddle_emu import Paddle
 
 """
 This script can be used to identify any RAM positions that
@@ -53,7 +52,6 @@ class Renderer:
         self.saved_frames = deque(maxlen=200)  # tuples of ram, state, image
         self.frame_by_frame = False
         self.next_frame = False
-        self.paddle = Paddle()
 
 
     def _init_pygame(self, sample_image):
@@ -79,11 +77,11 @@ class Renderer:
                 self.saved_frames.append((deepcopy(self.env.get_ram()), self.env._ale.cloneState(
                 ), self.current_frame))  # ram, state, image (rgb)
                 action = self._get_action()
-                self.paddle.step(action.name)
+                # self.paddle.step(action.name)
                 action = self.env.get_action_meanings().index(action.name)
                 reward = self.env.step(action)[1]
-                print(self.paddle.position, self.env.get_ram()[72])
-                print(self.paddle.speed, previous_x - self.env.get_ram()[72])
+                # print(self.paddle.position, self.env.get_ram()[72])
+                # print(self.paddle.speed, previous_x - self.env.get_ram()[72])
                 previous_x = self.env.get_ram()[72]
                 # if reward != 0:
                 #     print(reward)
