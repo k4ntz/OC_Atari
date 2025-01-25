@@ -764,7 +764,7 @@ def mbo(prev_objects, objects_bb, start_idx, max_obj, ObjClass, img=None):
     assigned objects:   [0 1] [0 1]
     true assignments:   [0 0] [1 0]
     """
-    print("="*100)
+    # print("="*100)
 
     for o in prev_objects[start_idx:start_idx+max_obj]:
         if o and o.num_frames_invisible < o.max_frames_invisible:
