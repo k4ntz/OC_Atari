@@ -1,4 +1,4 @@
-from .utils import find_objects, match_objects, match_blinking_objects
+from .utils import find_objects, match_objects, match_blinking_objects, mbo
 from .game_objects import GameObject, NoObject
 
 objects_colors = {"kangaroo": [223, 183, 85], "bell": [210, 164, 74],
@@ -128,7 +128,10 @@ def _detect_objects(objects, obs, hud=False):
     for bb in enemy:
         if bb[2] <= 5:
             enemy.remove(bb)
-    match_blinking_objects(objects, enemy, 2, 4, Enemy)
+    # match_blinking_objects(objects, enemy, 2, 4, Enemy)
+    # print(enemy)
+    # match_objects(objects, enemy, 2, 4, Enemy)
+    mbo(objects, enemy, 2, 4, Enemy)
 
     p_enemy = find_objects(
         obs, objects_colors["projectile_enemy"], min_distance=1, size=(2, 3), tol_s=2)
