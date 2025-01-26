@@ -273,7 +273,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if ram_state[11] < player._prev11 and ram_state[37] > 3 and \
             not player._add_next_object: # new object from the top
         player._add_next_object = True
-        print("add next object")
     if ram_state[58] == 223: # player is dead
         player._add_next_object = False
     y_off = ram_state[11]
@@ -300,7 +299,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     elif next_available_slots:
                         break
             objects[ooff + next_available_slots%4] = obj
-            print(f"added {obj}")
             player._add_next_object = False
     for j, obj in enumerate(objects[2:23]):
         if obj:
