@@ -10,7 +10,7 @@ Furthermore there was no y-Position for the Objects found in the RAM. It could b
 the players y-Position not stored in the RAM.
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissile': 1, 'FuelDepot': 4, 'Tanker': 4, 'Helicopter': 4, 'House': 4}
+MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissile': 1, 'FuelDepot': 4, 'Tanker': 4, 'Helicopter': 4, 'House': 4, 'Jet': 4, 'Bridge': 1}
 MAX_NB_OBJECTS_HUD = dict(MAX_NB_OBJECTS, **{'PlayerScore': 1, 'Lives': 1}) 
 
 
@@ -31,9 +31,11 @@ class _DescendingObject(GameObject):
     def __init__(self, xfr=0, x_off=0):
         super().__init__()
         self._xy = 15 * xfr - x_off, -5 - self.wh[1]
+        self._ram_index = 5
 
     def _update_xy(self, xfr, x_off, yfr, y_off):  # xfr
         self._xy = 15 * xfr - x_off, yfr * 32 + y_off - self._offset
+    
 
 
 class Player(GameObject):
@@ -64,16 +66,16 @@ class PlayerMissile(GameObject):
 
 class House(_DescendingObject):
     """
-    The enemy houses.
+    The houses and Tree.
     """
 
-    _offset = 23
-    fh = 24
+    _offset = 20
+    fh = 20  # final height
 
     def __init__(self, xfr=0, x_off=0):
         super().__init__(xfr, x_off)
-        self.wh = 7, 24
-        self.rgb = 232, 232, 74
+        self.wh = 17, 20
+        self.rgb = 232, 232, 232
         self.hud = False
         self.xy = self.xy[0], self.xy[1] - self.wh[1]
         self._lowest = False  # highest in the slot
@@ -94,11 +96,6 @@ class Helicopter(_DescendingObject):
         self.hud = False
         self.xy = self.xy[0], self.xy[1] - self.wh[1]
 
-    # def _update_xy(self, xfr, x_off, y_off): # xfr
-    #     self._xy = 15 * xfr - x_off, self._xy[1] + y_off
-    # def _update_xy(self, xfr, offset): # xfr
-    #     self._xy = self._offset + 15 * xfr, self._xy[1] + 2 * offset
-
 
 class Tanker(_DescendingObject):
     """
@@ -106,11 +103,11 @@ class Tanker(_DescendingObject):
     """
 
     _offset = 13
-    fh = 8
+    fh = 9
 
     def __init__(self, xfr=0, x_off=0):
         super().__init__(xfr, x_off)
-        self.wh = 16, 8
+        self.wh = 17, 9
         self.rgb = 84, 160, 197
         self.hud = False
 
@@ -125,7 +122,7 @@ class Jet(_DescendingObject):
 
     def __init__(self, xfr=0, x_off=0):
         super().__init__(xfr, x_off)
-        self.wh = 8, 6
+        self.wh = 9, 6
         self.rgb = 117, 181, 239
         self.hud = False
 
@@ -191,10 +188,18 @@ class Lives(GameObject):
 
 #0 nothing, 1, 2, 3 is explosion
 # 9th would be houseandtree
-_ram_to_class = [None, None, None, None, Jet, Helicopter, Helicopter,
-                 Tanker, Bridge, House, FuelDepot]  
-global cntr, prev11, prev70, enemies
+_ram_to_class = [None, None, None, None, 
+                 Jet, Helicopter, Helicopter, Tanker, 
+                 Bridge, House, FuelDepot]  
+y_offsets = [None, None, None, None, 
+             15, 6, 6, 5, 
+             17, 1, 0]
+obj_list_offs = [None, None, None, None, 
+                 18, 10, 10, 6, 
+                 22, 14, 2]
 
+
+# MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissile': 1, 'FuelDepot': 4, 'Tanker': 4, 'Helicopter': 4, 'House': 4, 'Jet': 4}
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
@@ -217,13 +222,13 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
     global cntr, prev11, prev70
-    descending = [NoObject() for _ in range(16)]
+    descending = [NoObject() for _ in range(21)]
     objects = [NoObject() for _ in range(2)] + descending  # Player, missile and the other objects
-    cntr, prev11, prev70 = 0, 0, None
+    objects[0]._prev11 = 0
+    objects[0]._add_next_object = False
+
     if hud:
         objects.extend([PlayerScore(), NoObject()])
-
-    # objects.extend([Bridge(), Jet(), Helicopter(), Tanker(), FuelDepot()])
     return objects
 
 
@@ -238,11 +243,18 @@ def _get_lowest_idx(slot_list):
 
 def _detect_objects_ram(objects, ram_state, hud=False):
     player = objects[0]
+    _prev11 = player._prev11
+    _add_next_object = player._add_next_object
     if ram_state[58] == 0:
         if player:
-            objects[0] = NoObject()
+            player = NoObject()
+            player._prev11 = _prev11
+            player._add_next_object = _add_next_object
+            objects[0] = player
     elif not player:
         player = Player()
+        player._prev11 = _prev11
+        player._add_next_object = _add_next_object
         objects[0] = player
         player.xy = ram_state[51] + 1, 145
     else:
@@ -258,74 +270,64 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     elif missile:
         objects[1] = NoObject()
 
-    fuels_slots = objects[2:6]
-    tanks_slots = objects[6:10]
-    helis_slots = objects[10:14]
-    houses_slots = objects[14:18]
-    # jets = objects[18:22]
-    # bridge = objects[22]
-    # print(ram_state[32:38])
-    # if ram_state[11] == 0:  # every object drop
-    #     enemies = enemies[1:] + [NoObject()]
-    fuels_n, tanks_n, helis_n = _get_lowest_idx(fuels_slots), \
-        _get_lowest_idx(tanks_slots), _get_lowest_idx(helis_slots)
-    return objects
-    for i in range(6):
-        obj_type = ram_state[32 + i]
-        xanchor = ram_state[20+i]
-        x_off = twos_comp(ram_state[26 + i]//16) - 6
-        y_off = ram_state[11]
-        orientation = (ram_state[26 + i] % 16)//8
-        if (obj_type == 7 and orientation == 1) or obj_type in [4, 8]:
-            x_off -= 1
-        if obj_type == 10: # fuel depot
-            objects[2] = FuelDepot(xanchor, x_off)
-        elif obj_type == 7: # tanker 
-            pass
-        obj_class = _ram_to_class[obj_type]
-        # print(obj_class, end=' ')
-    # print()
-    return objects
-# MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissile': 1, 'FuelDepot': 4, 'Tanker': 4, 'Helicopter': 4, 'House': 4}
-    for i in range(6):
-        orientation = (ram_state[26 + i] % 16)//8
-        x_off = twos_comp(ram_state[26 + i]//16) - 6
-        # tanker or bridge
-        if (obj_type == 7 and orientation == 1) or obj_type in [4, 8]:
-            x_off -= 1
-        y_off = ram_state[11]
-        xanchor = ram_state[20+i]
-        if obj_class:
-            if not en:
-                en = obj_class(xanchor, x_off)
-                enemies[i] = en
-            en.orientation = orientation
-            en._update_xy(xanchor, x_off, 5-i, y_off)
-            if en.y <= 2:
-                computed_y = en.y - 2
-                en._xy = en._xy[0], 2
-                en.h = en.fh + computed_y
-                if en.h <= 0:
-                    enemies[i] = NoObject()
+    if ram_state[11] < player._prev11 and ram_state[37] > 3 and \
+            not player._add_next_object: # new object from the top
+        player._add_next_object = True
+        print("add next object")
+    if ram_state[58] == 223: # player is dead
+        player._add_next_object = False
+    y_off = ram_state[11]
+    if player._add_next_object:
+        obj_type = ram_state[37]
+        offset = y_offsets[obj_type]
+        if y_off - offset > 2: # add object
+            xanchor = ram_state[25]
+            x_off = twos_comp(ram_state[31]//16) - 6
+            orientation = (ram_state[31] % 16)//8
+            obj_type = ram_state[37]
+            obj_class = _ram_to_class[obj_type]
+            obj = obj_class(xanchor, x_off)
+            obj.y = y_off - offset
+            # insert object in the right slot
+            ooff = obj_list_offs[obj_type]
+            next_available_slots = 0
+            if obj_type == 8: # bridge
+                next_available_slots = 0
             else:
-                en.h = en.fh
-            if en.y + en.h >= 162:
-                en.h = 163 - en.y
-        elif en:
-            enemies[i] = NoObject()
-    return objects 
-    for i, en in enumerate(enemies):
-        if en:
-            if 0 <= en.y < 161:
-                objects[2+i] = en
+                for i in range(4):
+                    if objects[ooff + i]:
+                        next_available_slots = i + 1
+                    elif next_available_slots:
+                        break
+            objects[ooff + next_available_slots%4] = obj
+            print(f"added {obj}")
+            player._add_next_object = False
+    for j, obj in enumerate(objects[2:23]):
+        if obj:
+            # import ipdb; ipdb.set_trace()
+            if ram_state[11] < player._prev11:
+                obj._ram_index -= 1
+            i = obj._ram_index
+            if ram_state[32+i] < 4:
+                objects[2+j] = NoObject()
                 continue
-        objects[2+i] = NoObject()
+            xanchor = ram_state[20+i]
+            x_off = twos_comp(ram_state[26 + i]//16) - 6
+            obj.orientation = (ram_state[26 + i] % 16)//8
+            obj._update_xy(xanchor, x_off, 5-i, y_off)
+            if obj.y + obj.h >= 162:
+                obj.h = 163 - obj.y
+            if obj.h <= 0:
+                objects[2+j] = NoObject()
+            if obj.y <= 2:
+                obj.h = obj.fh + obj.y - 2
+                obj._xy = obj._xy[0], 2
     if hud:
-        score, lives = objects[8:10]
+        score, lives = objects[23:25]
         if ram_state[64] > 24:
-            objects[9] = NoObject()
+            objects[24] = NoObject()
         elif not lives:
-            objects[8] = Lives()
+            objects[24] = Lives()
         score_value = riverraid_score(ram_state)
         if score_value >= 100000:
             score.xy = 57, 165
@@ -344,10 +346,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             score.wh = 14, 8
         else:
             score.xy = 97, 165
-            score.wh = 6, 8
-    cntr = ram_state[2]
-    prev70 = ram_state[70]
-    prev11 = ram_state[11]
+            score.wh = 6, 8   
+    player._prev11 = ram_state[11]
+    return objects
+    
 
 
 def _detect_objects_riverraid_raw(info, ram_state):
