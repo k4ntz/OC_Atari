@@ -130,6 +130,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             else:
                 objects[1+i] = NoObject()
 
+        if type(objects[4]) is not NoObject:
+            for i in range(9):
+                objects[4+i] = NoObject()
+
         pulsar = objects[13]
         if ram_state[103]:
             if not pulsar:
@@ -237,7 +241,22 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
             y += 12
     else: # 32 or 48 for the dark mode
-        pass
+        if type(objects[6]) is NoObject:
+            for i in range(170):
+                objects[1+i] = NoObject()
+        
+        for i in range(6):
+            if type(objects[1+(2*i)]) is NoObject:
+                objects[1+(2*i)] = Alien()
+                objects[2+(2*i)] = Alien()
+            if ram_state[66+i]&128:
+                x = 20 + ((ram_state[66+i]&15)<<4) - (ram_state[66+i]>>4)
+            else:
+                x = 4 + ((ram_state[66+i]&15)<<4) - (ram_state[66+i]>>4)
+            x = x + ((88 - x)>>4)
+            objects[1+(2*i)].xy = x, 37+20*i
+            objects[2+(2*i)].xy = x+32, 37+20*i
+
     if hud:
         score = objects[171]
         score.xy = 63, 176
