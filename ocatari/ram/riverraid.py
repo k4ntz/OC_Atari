@@ -1,4 +1,4 @@
-from .game_objects import GameObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject
 import sys
 """
 RAM extraction for the game RIVER RAID. Supported modes: raw
@@ -158,7 +158,7 @@ class FuelDepot(_DescendingObject):
         self.xy = self.xy[0], self.xy[1] - self.wh[1]
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
@@ -174,7 +174,7 @@ class PlayerScore(GameObject):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
 
-class Lives(GameObject):
+class Lives(ValueObject):
     """
     The indicator for remaining jets (lives) (HUD).
     """
@@ -273,7 +273,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if ram_state[11] < player._prev11 and ram_state[37] > 3 and \
             not player._add_next_object: # new object from the top
         player._add_next_object = True
-        print("add next object")
     if ram_state[58] == 223: # player is dead
         player._add_next_object = False
     y_off = ram_state[11]
@@ -300,7 +299,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     elif next_available_slots:
                         break
             objects[ooff + next_available_slots%4] = obj
-            print(f"added {obj}")
             player._add_next_object = False
     for j, obj in enumerate(objects[2:23]):
         if obj:
@@ -326,9 +324,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         score, lives = objects[23:25]
         if ram_state[64] > 24:
             objects[24] = NoObject()
-        elif not lives:
-            objects[24] = Lives()
+        else:
+            if not lives:
+                lives = Lives()
+                objects[24] = lives
+            lives.value = ram_state[64] // 8
         score_value = riverraid_score(ram_state)
+        score.value = score_value
         if score_value >= 100000:
             score.xy = 57, 165
             score.wh = 46, 8
