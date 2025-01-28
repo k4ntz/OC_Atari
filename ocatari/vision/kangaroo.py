@@ -1,4 +1,4 @@
-from .utils import find_objects, match_objects, match_blinking_objects, mbo
+from .utils import find_objects, match_objects, match_blinking_objects
 from .game_objects import GameObject, NoObject
 
 objects_colors = {"kangaroo": [223, 183, 85], "bell": [210, 164, 74],
@@ -26,6 +26,7 @@ class Enemy(GameObject):
         self.rgb = 227, 151, 89
         self.num_frames_invisible = -1
         self.max_frames_invisible = 4
+        self.expected_dist = 12
 
 
 class Fruit(GameObject):
@@ -33,7 +34,8 @@ class Fruit(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 214, 92, 92
         self.num_frames_invisible = -1
-        self.max_frames_invisible = 4
+        self.max_frames_invisible = 2
+        self.expected_dist = 1
 
 
 class Ladder(GameObject):
@@ -128,10 +130,8 @@ def _detect_objects(objects, obs, hud=False):
     for bb in enemy:
         if bb[2] <= 5:
             enemy.remove(bb)
-    # match_blinking_objects(objects, enemy, 2, 4, Enemy)
-    # print(enemy)
     # match_objects(objects, enemy, 2, 4, Enemy)
-    mbo(objects, enemy, 2, 4, Enemy)
+    match_blinking_objects(objects, enemy, 2, 4, Enemy)
 
     p_enemy = find_objects(
         obs, objects_colors["projectile_enemy"], min_distance=1, size=(2, 3), tol_s=2)

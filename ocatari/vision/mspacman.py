@@ -22,6 +22,7 @@ class Ghost(GameObject):
         self.rgb = 180, 122, 48
         self.num_frames_invisible = -1
         self.max_frames_invisible = 4
+        self.expected_dist = 10
 
 
 class Fruit(GameObject):
@@ -34,7 +35,8 @@ class PowerPill(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 228, 111, 111
         self.num_frames_invisible = -1
-        self.max_frames_invisible = 8
+        self.max_frames_invisible = 10
+        self.expected_dist = 2
 
 class Pill(GameObject):
     def __init__(self, *args, **kwargs):
@@ -63,15 +65,16 @@ def _detect_objects(objects, obs, hud=True):
     for color in objects_colors["ghosts"]:
         ghosts = find_objects(
             obs, objects_colors["ghosts"][color], min_distance=1)
-        if ghosts:
-            if type(objects[1+i]) is NoObject:
-                objects[1+i] = Ghost(*ghosts[0])
-                objects[1+i].rgb = objects_colors["ghosts"][color]
-            else:
-                match_blinking_objects(objects, ghosts, 1+i, 1, Ghost)
-                # objects[1+i].xywh = ghosts[0]
-        else:
-            objects[1+i] = NoObject()
+        match_blinking_objects(objects, ghosts, 1+i, 1, Ghost)
+        # if ghosts:
+        #     if type(objects[1+i]) is NoObject:
+        #         objects[1+i] = Ghost(*ghosts[0])
+        #         objects[1+i].rgb = objects_colors["ghosts"][color]
+        #     else:
+        #         match_blinking_objects(objects, ghosts, 1+i, 1, Ghost)
+        #         # objects[1+i].xywh = ghosts[0]
+        # else:
+        #     objects[1+i] = NoObject()
         i += 1
     
     i = 0

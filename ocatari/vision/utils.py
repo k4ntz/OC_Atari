@@ -703,85 +703,14 @@ def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClas
     """
     Acts like match_objects, but keeps tracking objects when dissapear for a couple of frames.
     """
-    if len(objects_bb) > max_obj:
-        raise ValueError(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
-    if not objects_bb:
-        for i in range(max_obj):
-            curr_obj = prev_objects[start_idx+i]
-            if curr_obj:
-                curr_obj.num_frames_invisible += 1
-                if curr_obj.num_frames_invisible > curr_obj.max_frames_invisible:
-                    prev_objects[start_idx+i] = NoObject()
-        return
-    if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
-        for i in range(min(max_obj, len(objects_bb))):
-            prev_objects[start_idx+i] = ObjClass(*objects_bb[i])
-            prev_objects[start_idx+i].num_frames_invisible += 1
-    else:
-        # try:
-            visible_objects = [o for o in objects_bb]
-            for o in prev_objects[start_idx: start_idx+max_obj]:
-                if not o:
-                    continue
-                elif o.num_frames_invisible < o.max_frames_invisible:
-                    X = compute_cm([o], objects_bb)
-                    flag = False
-                    if np.shape(X) == (1, 0):
-                        flag = True
-                    else:
-                        flag = min(X[0] > o.max_frames_invisible)
-                    if flag:
-                        objects_bb += [o.xywh]
-                    o.num_frames_invisible += 1
-            cost_matrix = compute_cm(prev_objects[start_idx: start_idx+max_obj], objects_bb)
-            obj_idx, bbs_idx = linear_sum_assignment(cost_matrix)
-            for i in range(max_obj):
-                o = prev_objects[start_idx+i]
-                if i not in obj_idx and o and o.max_frames_invisible <= o.num_frames_invisible:
-                    prev_objects[start_idx+i] = NoObject()
-            for i, j in zip(obj_idx, bbs_idx):
-                if prev_objects[start_idx+i]:   
-                    prev_objects[start_idx+i].xywh = objects_bb[j][:4]
-                    if objects_bb[j] in visible_objects:
-                        prev_objects[start_idx+i].num_frames_invisible = 0
-                    if len(objects_bb[j]) > 4:
-                        prev_objects[start_idx+i].rgb = objects_bb[j][4]
-                else:
-                    prev_objects[start_idx+i] = ObjClass(*objects_bb[j])
-                    prev_objects[start_idx+i].num_frames_invisible += 1
-
-def mbo(prev_objects, objects_bb, start_idx, max_obj, ObjClass, img=None):
-    """
-    Acts like match_objects, but keeps tracking objects when dissapear for a couple of frames.
-    
-    This should have worked if lsa could assign correctly.
-    previous objects:   [Enemy at (106, 111), (8, 13), Enemy at (145, 111), (8, 13), NaO, NaO]
-    objects bb:         [(142, 109, 8, 15), (152, 5, 6, 15)]
-    cost matrix:        [[  38.  152.]
-                        [   5.  113.]
-                        [1000. 1000.]
-                        [1000. 1000.]]
-    assigned objects:   [0 1] [0 1]
-    true assignments:   [0 0] [1 0]
-    """
-    # print("="*100)
-
-    for o in prev_objects[start_idx:start_idx+max_obj]:
-        if o and o.num_frames_invisible < o.max_frames_invisible:
-            c = compute_cm([o], objects_bb)
-            object_is_invisible = False
-            # print(c, np.min(c))
-            if np.min(c) > 12:
-                objects_bb += [o.xywh]
+    possible_invisible_objects = []
+    if len(objects_bb) == 0:
+        for o in prev_objects[start_idx:start_idx+max_obj]:
+            if o:
                 o.num_frames_invisible += 1
-
-    cost_matrix = compute_cm(prev_objects[start_idx:start_idx+max_obj], objects_bb)
-    obj_idx, bbs_idx = linear_sum_assignment(cost_matrix)
-    
-    # print(prev_objects[start_idx:start_idx+max_obj])
-    # print(objects_bb)
-    # print(cost_matrix)
-    # print(obj_idx, bbs_idx)
+                if o.num_frames_invisible > o.max_frames_invisible:
+                    o = NoObject()
+        return
 
     if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
         for i in range(min(max_obj, len(objects_bb))):
@@ -790,25 +719,37 @@ def mbo(prev_objects, objects_bb, start_idx, max_obj, ObjClass, img=None):
                 prev_objects[start_idx+i].num_frames_invisible = 0
             except IndexError:
                 raise IndexError
-    else:
-        for i in range(max_obj):
-            if i in obj_idx:
-                j = bbs_idx[np.where(obj_idx == i)][0]
-                # print(i, j, cost_matrix[i][j])
-                if cost_matrix[i][j] <= 12 or cost_matrix[i][j] == 1000:
-                    # print(i, j, cost_matrix[i][j])
-                    if prev_objects[start_idx+i]:
-                        prev_objects[start_idx+i].num_frames_invisible = 0
-                        prev_objects[start_idx+i].xywh = objects_bb[j][:4]
-                        if len(objects_bb[j]) > 4:
-                            prev_objects[start_idx+i].rgb = objects_bb[j][4]
-                    else:
-                        prev_objects[start_idx+i] = ObjClass(*objects_bb[j])
-                else:
-                    for o in prev_objects[start_idx:start_idx+max_obj]:
-                        if not o:
-                            o = ObjClass(*objects_bb[j])
-                            o.num_frames_invisible = 0
+        return
 
-    # print(prev_objects[start_idx:start_idx+max_obj])
-    # print("="*100)
+    # Adding previous objects that could be invisible in this frame
+    for i in range(max_obj):
+        if prev_objects[start_idx+i]:
+            c = compute_cm([prev_objects[start_idx+i]], objects_bb)
+            if np.min(c) > prev_objects[start_idx+i].expected_dist:
+                prev_objects[start_idx+i].num_frames_invisible += 1
+                if prev_objects[start_idx+i].num_frames_invisible >= prev_objects[start_idx+i].max_frames_invisible:
+                    prev_objects[start_idx+i] = NoObject()
+                    continue
+                objects_bb += [prev_objects[start_idx+i].xywh]
+                possible_invisible_objects.append(i)
+
+    
+    cost_matrix = compute_cm(prev_objects[start_idx:start_idx+max_obj], objects_bb)
+    obj_idx, bbs_idx = linear_sum_assignment(cost_matrix)
+
+    for i in range(max_obj):
+        if i in obj_idx:
+            j = bbs_idx[np.where(obj_idx == i)][0]
+            if cost_matrix[i][j] == 1000:
+                prev_objects[start_idx+i] = ObjClass(*objects_bb[j])
+            elif prev_objects[start_idx+i] and cost_matrix[i][j] <= prev_objects[start_idx+i].expected_dist:
+                if not i in possible_invisible_objects:
+                    prev_objects[start_idx+i].num_frames_invisible = 0
+                prev_objects[start_idx+i].xywh = objects_bb[j][:4]
+                if len(objects_bb[j]) > 4:
+                    prev_objects[start_idx+i].rgb = objects_bb[j][4]
+            else:
+                for o in prev_objects[start_idx:start_idx+max_obj]:
+                    if not o:
+                        o = ObjClass(*objects_bb[j])
+                        o.num_frames_invisible = 0
