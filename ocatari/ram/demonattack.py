@@ -97,8 +97,8 @@ class Lives(ValueObject):
 
     def __init__(self):
         super(Lives, self).__init__()
-        self._xy = 0, 0
-        self.wh = 3, 5
+        self._xy = 17, 188
+        self.wh = 19, 5
         self.rgb = 240, 128, 128
         self.hud = True
 
@@ -163,23 +163,14 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player(), PlayerMissile()]
     objects += [NoObject() for _ in range(24)] # 8 enemies, 6 enemy parts, 10 projectiles
-    # if hud:
-    #     objects.append(Score())
-    #     base_x = 17
-    #     for i in range(3):
-    #         live = Lives()
-    #         live.xy = base_x, 188
-    #         objects.append(live)
-    #         base_x += 8
-
+    if hud:
+        objects.append(Score())
+        objects.append(Lives())
     return objects
 
 
 def _detect_objects_ram(objects, ram_state, hud=False):
     player, pmissile = objects[:2]
-    if hud:
-        score = objects[2]
-
     player.xy = calc_x(ram_state[16]), 174
 
     if 90 <= ram_state[21]:
@@ -188,7 +179,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         pmissile.xy = 2 + calc_x(ram_state[22]), 178 - ram_state[21]
     
     # enemies
-    print(".", end="")
     for i in range(3):
         enemy = objects[2+2*i]
         enemy2 = objects[3+2*i]
@@ -200,9 +190,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if not enemy:
                 enemy = Enemy()
                 objects[2+2*i] = enemy
-            if not enemy2:
-                enemy2 = Enemy()
-                objects[3+2*i] = enemy2
+            if ram_state[33+i] > 3: # right enemy is alive
+                if not enemy2:
+                    enemy2 = Enemy()
+                    objects[3+2*i] = enemy2
+            else:
+                objects[3+2*i] = NoObject()
             if lft_p:
                 objects[10+2*i] = NoObject()
                 objects[11+2*i] = NoObject()
@@ -287,27 +280,25 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             index += 1
         current_y -= offset_column
     # remove potential old projectiles
-    while proj_i < 8:
+    while proj_i < 10:
         objects[16 + proj_i] = NoObject()
         proj_i += 1
+    if hud:
+        score, live = objects[-2:]
+        nb_lives = ram_state[114]
+        x, w = _get_score_x_and_width(_get_score(ram_state))
+        score.xy = x, score.y
+        score.w = w
+        score.value = _get_score(ram_state)
+        if nb_lives:
+            if not live:
+                live = Lives()
+                objects[-1] = live
+            live.value = nb_lives
+            live.w = 3 + (nb_lives-1) * 8
+        elif live:
+            objects[-1] = NoObject()
     return objects
-    # objects.clear()  # giga ugly but i didnt find a better solution
-    # objects.extend([player, pmissile, score])
-    # objects.extend(calculate_small_projectiles_from_bitmap(
-    #     ram_state[37:47], 3 + calc_x(ram_state[20])))
-
-
-    # if hud:
-    #     base_x = 17
-    #     for i in range(ram_state[114]):
-    #         live = Lives()
-    #         live.xy = base_x, 188
-    #         objects.append(live)
-    #         base_x += 8
-
-    #     x, w = _get_score_x_and_width(_get_score(ram_state))
-    #     score.xy = x, score.y
-    #     score.w = w
 
 
 def _detect_objects_demon_attack_raw(info, ram_state):
