@@ -188,6 +188,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         pmissile.xy = 2 + calc_x(ram_state[22]), 178 - ram_state[21]
     
     # enemies
+    print(".", end="")
     for i in range(3):
         enemy = objects[2+2*i]
         enemy2 = objects[3+2*i]
@@ -195,7 +196,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         rgt_p = objects[11+2*i]
         x_left = calc_x(ram_state[13 + i])
         x_right = calc_x(ram_state[17 + i])
-        if ram_state[29+i] > 25: # 2 active enemies
+        if ram_state[29+i] > 24: # 2 active enemies
             if not enemy:
                 enemy = Enemy()
                 objects[2+2*i] = enemy
@@ -209,10 +210,14 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             enemy2.xy = x_right, 175 - ram_state[69 + i]
             enemy.w = 8
             enemy2.w = 8
-        elif ram_state[29+i] > 3 : # enemy is alive
+        elif ram_state[29+i] > 3 : # enemy is alive, and in one piece
+            # if i == 2:
+            #     import ipdb; ipdb.set_trace()
             if not enemy:
                 enemy = Enemy()
                 objects[2+2*i] = enemy
+            if enemy2:
+                objects[3+2*i] = NoObject()
             if lft_p:
                 objects[10+2*i] = NoObject()
                 objects[11+2*i] = NoObject()
@@ -221,22 +226,27 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         elif ram_state[29+i] > 0: # enemy spawning
             if enemy:
                 objects[2+2*i] = NoObject()
+            if enemy2:
+                objects[3+2*i] = NoObject()
             if not lft_p:
                 lft_p = EnemyPart()
                 objects[10+2*i] = lft_p
                 rgt_p = EnemyPart()
                 objects[11+2*i] = rgt_p
             lft_p.xy = x_left, 175 - ram_state[69 + i]
-            rgt_p.xy = x_right, 175 - ram_state[69 + i]            
-        elif ram_state[47+i] >> 5: # left enemy dead
+            rgt_p.xy = x_right, 175 - ram_state[69 + i]
+        elif ram_state[47+i] >> 6: # left enemy dead
             if enemy:
                 objects[2+2*i] = NoObject()
             if not enemy2:
                 enemy2 = Enemy()
                 objects[3+2*i] = enemy2
+            if lft_p:
+                objects[10+2*i] = NoObject()
+                objects[11+2*i] = NoObject()
             enemy2.xy = x_right, 175 - ram_state[69 + i]
             enemy2.w = 8
-        else: # borht enemy dead
+        else: # both enemy dead
             if enemy:
                 objects[2+2*i] = NoObject()
             if enemy2:
@@ -245,15 +255,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 objects[10+2*i] = NoObject()
                 objects[10+2*i+1] = NoObject()
     # falling enemy
-    # falling_en = objects[8]
-    # if ram_state[72]:
-    #     if not falling_en:
-    #         falling_en = Enemy()
-    #         objects[8] = falling_en
-    #     falling_en.xy = calc_x(ram_state[20]), 177 - ram_state[72]
-    #     falling_en.w = 8
-    # elif objects[8]:
-    #     objects[8] = NoObject()
+    falling_en = objects[8]
+    if ram_state[51] and ram_state[50] >> 6:
+        if not falling_en:
+            falling_en = Enemy()
+            objects[8] = falling_en
+        falling_en.xy = calc_x(ram_state[20]), 177 - ram_state[72]
+        falling_en.w = 8
+    elif objects[8]:
+        objects[8] = NoObject()
     # projectiles
     offset_column = 8
     basex = calc_x(ram_state[20]) + 3
@@ -313,3 +323,4 @@ def _detect_objects_demon_attack_raw(info, ram_state):
     info["player_projectile_y"] = ram_state[21]
     info["player_projectile_x"] = ram_state[22]
     info["score"] = _get_score(ram_state)
+    # ram [60] explosion and white screen
