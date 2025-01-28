@@ -95,6 +95,7 @@ class Renderer:
                 self._render()
                 self.next_frame = False
             self._render()
+
             # if i % 300 == 0:
             #     import ipdb; ipdb.set_trace()
             i += 1
