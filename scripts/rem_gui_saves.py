@@ -229,8 +229,7 @@ class Renderer:
                     try:
                         snapshot = pickle.load(
                             open("save_states/" + self.env_name + "_save_state1.pickle", "rb"))
-                        state, obj = snapshot
-                        self.env._env.env.env.ale.restoreState(state)
+                        self.env._env.env.env.ale.restoreState(snapshot)
                     except:
                         print("No Save_State set")
                         
@@ -414,7 +413,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer(env_name="Alien", mode="ram",
+    renderer = Renderer(env_name="Pitfall2", mode="vision",
                         bits=False, obs_mode="obj", hud=True)
 
     def exit_handler():
