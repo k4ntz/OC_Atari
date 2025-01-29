@@ -516,10 +516,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # Implementing Fire,snake and Treasures
     offset = 0
-    if ram_state[19] == 6:
+
+    if ram_state[19] == 6 and ram_state[20] == 5 and ram_state[109] != 2:
+        f = GoldenBar()
+        offset = 3
+    elif ram_state[19] == 6 and ram_state[20] != 5:
         f = Fire()
     elif ram_state[19] == 7:
         f = Snake()
+
 
     elif ram_state[19] >= 8:
         if ram_state[19] % 4 == 0:
