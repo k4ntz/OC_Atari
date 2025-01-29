@@ -640,10 +640,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             l1 = LifeCount()
             l1.xy = 21, 22
             objects[25] = l1
-            objects[26] = None
+            objects[26] = NoObject()
         else:
-            objects[25] = None
-            objects[26] = None
+            objects[25] = NoObject()
+            objects[26] = NoObject()
 
         # Timer
         t1 = Timer()
