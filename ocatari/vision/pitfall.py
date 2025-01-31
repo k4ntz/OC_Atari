@@ -230,12 +230,12 @@ def _detect_objects(objects, obs, hud=False):
 
     snake_bb = find_mc_objects(obs, snakecolors, size=(
         8, 14), tol_s=5, maxy=132, miny=114)
-    match_objects(objects, snake_bb, 11, 1, Snake)
+    match_objects(objects, snake_bb, 16, 1, Snake)
 
     
     tp_bb = find_objects(obs, objects_colors["smallpit"], size=(
         64, 10), tol_s=10, maxy=130, miny=114)  # same color as small pit
-    match_objects(objects, tp_bb, 12, 1, Tarpit)
+    match_objects(objects, tp_bb, 11, 1, Tarpit)
 
 
     
@@ -251,7 +251,7 @@ def _detect_objects(objects, obs, hud=False):
 
     gold_bb = find_mc_objects(obs, goldenbarcolors, size=(
         7, 13), tol_s=3, maxy=132, miny=114, closing_dist=4)
-    match_objects(objects, gold_bb, 20, 1, GoldenBar)
+    match_objects(objects, gold_bb, 19, 1, GoldenBar)
 
     sc_bb = find_objects(obs, objects_colors["crocodile"], size=(
         8, 8), tol_s=2, maxy=132, miny=114)
@@ -264,17 +264,17 @@ def _detect_objects(objects, obs, hud=False):
 
     mb_bb = find_mc_objects(obs, moneybagcolors, size=(
         7, 14), tol_s=3, maxy=132, miny=114, closing_dist=4)
-    match_objects(objects, mb_bb, 18, 1, MoneyBag)
+    match_objects(objects, mb_bb, 17, 1, MoneyBag)
 
 
-    gold_bb = find_mc_objects(obs, silverbarcolors, size=(
+    silver_bb = find_mc_objects(obs, silverbarcolors, size=(
         7, 13), tol_s=3, maxy=132, miny=114, closing_dist=4)
-    match_objects(objects, gold_bb, 19, 1, SilverBar)
+    match_objects(objects, silver_bb, 18, 1, SilverBar)
 
 
-    gold_bb = find_mc_objects(obs, diamondringcolors, size=(
+    diamond_bb = find_mc_objects(obs, diamondringcolors, size=(
         7, 13), tol_s=3, maxy=132, miny=114, closing_dist=4)
-    match_objects(objects, gold_bb, 20, 1, DiamondRing)
+    match_objects(objects, diamond_bb, 20, 1, DiamondRing)
 
 
     if hud:
