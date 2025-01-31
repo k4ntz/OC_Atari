@@ -186,26 +186,14 @@ def _detect_objects(objects, obs, hud=False):
     player = objects[0]
 
     player_bb = find_mc_objects(obs, playercolors, size=(7, 20), tol_s=4)
-    # player_rope_bb = find_mc_objects(obs, playercolors_on_rope, size=(7, 20), tol_s=4)
-    # print(player_rope_bb)
     if player_bb:
         player.xywh = player_bb[0]
-    # elif player_rope_bb:
-    #     player.xywh = player_rope_bb[0]
 
 
-    wall = objects[1]
     wall_bb = find_mc_objects(obs, wallcolors, size=(
         7, 35), tol_s=5, closing_dist=5)  # ,miny=140,maxy=190,
-    if wall_bb:
-        if not wall:
-            wall = Wall(*wall_bb[0])
-            objects[1] = wall
-        wall.xywh = wall_bb[0]
-    else:
-        objects[1] = NoObject()
-    # for w in wall_bb:
-    #     objects.append(Wall(*w))
+    match_objects(objects, wall_bb, 1, 1, Wall)
+
 
     logs_bb = find_objects(obs, objects_colors["logs"],
                            size=(6, 14), tol_s=2, maxy=132, miny=114)
