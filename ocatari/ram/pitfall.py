@@ -358,13 +358,13 @@ def _init_objects_ram(hud=False):
     prev_x = 78
     objects = [Player(), Wall(), Logs(), Logs(), Logs(), StairPit(), Stair(), Pit(), Pit(), Scorpion()]  # 10 (0-9)
     objects.extend([Rope(), Tarpit(), Waterhole(), Crocodile(), Crocodile(), Crocodile()])  # 6 (10-15)
-    objects.extend([Fire(), MoneyBag(), SilverBar(), GoldenBar(), DiamondRing()]) # 5 (16-20) Fire, Moneybag, Silver, Gold, Diamond
-    objects.extend([Platform(), Platform(), Platform(), Platform(), Platform()]) # 5 (21-25)
+    objects.extend([NoObject(), MoneyBag(), SilverBar(), GoldenBar(), DiamondRing()]) # 5 (16-20) Fire/Snake, Moneybag, Silver, Gold, Diamond
+    objects.extend([NoObject(), NoObject(), NoObject(), NoObject(), NoObject()]) # 5 (21-25)
     if hud:
-        objects.extend([LifeCount(), LifeCount(), LifeCount()])  # 3
-        objects.extend([PlayerScore()])
-        objects.extend([PlayerScore()])
-        objects.extend([Timer()])
+        objects.extend([NoObject(), NoObject(), NoObject()])  # 3 (26-28) Life Scores
+        objects.extend([NoObject()]) # (29) PlayerScore0
+        objects.extend([NoObject()]) # (30) PlayerScore1
+        objects.extend([NoObject()]) # 31 Timer
     return objects
 
 
@@ -615,7 +615,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[10] = r
 
     if hud:
-        objects.extend([NoObject()] * 10)
+        objects.extend([NoObject()] * 6)
         # PlayerScores related to ram_state 86 and 87
         p1 = PlayerScore()
         p1.value = _convert_number(ram_state[85])*1000 + _convert_number(ram_state[86]) * 100 + _convert_number(ram_state[87])
@@ -626,7 +626,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             size = 0
         p1.xy = 68 - size, 9
         p1.wh = size, p1.h
-        objects[24] = p1
+        objects[29] = p1
         # LifeCounts
         # number of lives remaining, stored as displayed pattern ($a0 = 2, $80 = 1, $00 = 0)
         if ram_state[0] == 160:
@@ -634,16 +634,16 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             l1.xy = 23, 22
             l2 = LifeCount()
             l2.xy = 21, 22
-            objects[25] = l1
-            objects[26] = l2
+            objects[26] = l1
+            objects[27] = l2
         elif ram_state[0] == 128:
             l1 = LifeCount()
             l1.xy = 21, 22
-            objects[25] = l1
-            objects[26] = None
+            objects[26] = l1
+            objects[27] = NoObject()
         else:
-            objects[25] = None
-            objects[26] = None
+            objects[26] = NoObject()
+            objects[27] = NoObject()
 
         # Timer
         t1 = Timer()
@@ -651,7 +651,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if ram_state[88] <= 9:
             t1.wh = 32, t1.h
             t1.xy = 37, t1.y
-        objects[27] = t1
+        objects[31] = t1
         # import ipdb ipdb.set_trace()
 
 
