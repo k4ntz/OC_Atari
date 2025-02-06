@@ -1,4 +1,5 @@
 from .game_objects import GameObject, NoObject
+from ._helper_methods import _convert_number
 import sys
 
 """
@@ -7,9 +8,9 @@ RAM extraction for the game Atlantis. Supported modes: ram.
 """
 
 MAX_NB_OBJECTS = {'Projectile': 2, 'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'DomedPalace': 1,
-                  'BridgedBazaar': 1, 'AquaPlane': 1, 'GorgonShip': 4, 'Deathray': 1, 'BanditBomber': 3}
+                  'BridgedBazaar': 1, 'AquaPlane': 1, 'GorgonShip': 4,  'BanditBomber': 4, 'Deathray': 1}
 MAX_NB_OBJECTS_HUD = {'Projectile': 2, 'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'DomedPalace': 1,
-                      'BridgedBazaar': 1, 'AquaPlane': 1, 'GorgonShip': 4, 'Deathray': 1, 'BanditBomber': 3, 'Score': 1}
+                      'BridgedBazaar': 1, 'AquaPlane': 1, 'GorgonShip': 4, 'BanditBomber': 4, 'Deathray': 1,  'Score': 1}
 
 
 class Sentry(GameObject):
@@ -166,7 +167,7 @@ def _init_objects_ram(hud=True):
     objects = [NoObject() for _ in range(2)] + [Sentry(), Sentry()] + \
         [AcropolisCommandPost()] + [gen_mc, gen_green, gen_pruple] + \
         [DomedPalace()] + [BridgedBazaar()] + [AquaPlane()] + \
-        [NoObject() for _ in range(8)]
+        [NoObject() for _ in range(9)]
     gen_mc.xy = 82, 124
     gen_mc.rgb = 111, 210, 111
     gen_pruple.xy = 142, 137
@@ -266,136 +267,92 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                 recovered.xy = 142, 137
                 recovered.rgb = 188, 144, 252
             objects[4+i] = recovered
-# MAX_NB_OBJECTS = {'Projectile': 2, 'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'DomedPalace': 1,
-#                   'BridgedBazaar': 1, 'AquaPlane': 1, 'GorgonShip': 4, 'Deathray': 1, 'BanditBomber': 3}
-    # # Enemy ships and the DeathRay
-    # global ray_available
-    # global buildings_amount
 
-    # for i in range(4):
-    #     if ram_state[36+i]:
-    #         ship = _get_ship_type(ram_state, 0+i, 128+i)
-    #         g_s = NoObject()
-    #         if not ship:
-    #             continue
+    for i in range(4):
+        enoff = 0
+        if ram_state[36+i]:
+            g_s = NoObject()
+            ship = -1
+            for j in range(4):
+                height = i
+                if ram_state[71+j] % 128 == i:
+                    ship = j
+                    break
+            if ship < 0:
+                continue
     
-    #         # calc speed and orientation offset
-    #         if not ram_state[75+ship] & 128:
-    #             offset = ram_state[75+ship]
-    #             if ram_state[79+ship] == 64:
-    #                 g_s = GorgonShip()
-    #                 g_s.xy = ram_state[36+i] - 7 - offset, 82 - 21*i
-    #             elif ram_state[79+ship] == 32 or ram_state[79+ship] == 48:
-    #                 g_s = GorgonShip()
-    #                 g_s.wh = 15, 7
-    #                 g_s.xy = ram_state[36+i] - 7 - offset, 83 - 21*i
-    #             elif ram_state[79+ship] == 80:
-    #                 g_s = BanditBomber()
-    #                 g_s.xy = ram_state[36+i] - 5 - offset, 83 - 21*i
-    #         else:
-    #             offset = 255 - ram_state[75+ship]
-    #             if ram_state[79+ship] == 64:
-    #                 g_s = GorgonShip()
-    #                 g_s.xy = ram_state[36+i] - 7 + offset, 82 - 21*i
-    #             elif ram_state[79+ship] == 32 or ram_state[79+ship] == 48:
-    #                 g_s = GorgonShip()
-    #                 g_s.wh = 15, 7
-    #                 g_s.xy = ram_state[36+i] - 7 + offset, 83 - 21*i
-    #             elif ram_state[79+ship] == 80:
-    #                 g_s = BanditBomber()
-    #                 g_s.xy = ram_state[36+i] - 3 + offset, 83 - 21*i
-    #         if g_s:
-    #             objects[2+i] = g_s
-    
-    #         # Deathray can only be shot by ships on lane 4
-    #         if not i and ram_state[30] < 152 and ray_available:
-    #             ray = Deathray()
-    #             if not ram_state[75+ship] & 128:
-    #                 ray.xy = ram_state[36] - 1, 92
-    #             else:
-    #                 ray.xy = ram_state[36] + 1, 92
-    #             objects[13] = ray
+            # calc speed and orientation offset
+            if not ram_state[75+ship] & 128:
+                offset = ram_state[75+ship]
+            else:
+                offset = ram_state[75+ship] - 255
+            if ram_state[79+ship] < 80:
+                g_s = objects[11+i] # GorgonShip
+                if not g_s:
+                    g_s = GorgonShip()
+                    objects[11+i] = g_s
+                if ram_state[79+ship] == 64:
+                    g_s.xy = ram_state[36+i] - 7 - offset, 82 - 21*i
+                elif ram_state[79+ship] == 32 or ram_state[79+ship] == 48:
+                    g_s.wh = 15, 7
+                    g_s.xy = ram_state[36+i] - 7 - offset, 83 - 21*i
+            elif ram_state[79+ship] == 80:
+                g_s = objects[15+i] # BanditBomber
+                if not g_s:
+                    g_s = BanditBomber()
+                    objects[15+i] = g_s
+                g_s.xy = ram_state[36+i] - 5 - offset, 83 - 21*i
 
-    # # Command-Post center building with gun
-    # if ram_state[84] == 0:
-    #     objects[6] = AcropolisCommandPost()
-    #     buildings_count += 1
+        elif objects[11+i]:
+            objects[11+i] = NoObject()
+        elif objects[15+i]: # BanditBomber
+            objects[15+i] = NoObject()
+        
+    # # Deathray can only be shot by ships on lane 4
+    if ram_state[62]:
+        ray = objects[19]
+        if not ray:
+            ray = Deathray()
+            objects[19] = ray
+        ray.xy = ram_state[62], 92
+    elif objects[19]:
+        objects[19] = NoObject()
 
-    # # Generator left
-    # if ram_state[22] < 152:
-    #     gen = Generator()
-    #     gen.xy = 82, 124
-    #     gen.rgb = 111, 210, 111
-    #     objects[7] = gen
-    #     buildings_count += 1
-
-    # # Generator Command-Post
-    # if ram_state[23] < 152:
-    #     objects[8] = Generator()
-    #     buildings_count += 1
-
-    # # Generator right
-    # if ram_state[24] < 152:
-    #     gen = Generator()
-    #     gen.xy = 142, 137
-    #     gen.rgb = 188, 144, 252
-    #     objects[9] = gen
-    #     buildings_count += 1
-
-    # # Domed-Palace building with dome
-    # if ram_state[25] < 152:
-    #     objects[10] = DomedPalace()
-    #     buildings_count += 1
-
-    # # Bridged-Bazaar rightmost building
-    # if ram_state[26] < 152:
-    #     objects[11] = BridgedBazaar()
-    #     buildings_count += 1
-
-    # # Aqua-Plane leftmost building
-    # if ram_state[27] < 152:
-    #     objects[12] = AquaPlane()
-    #     buildings_count += 1
-
-    # # Determines if the deathray is usable
-    # if ram_state[30] == 152:
-    #     ray_available = True
-    # elif buildings_count < buildings_amount:
-    #     ray_available = False
-
-    # buildings_amount = buildings_count
-
-    # if hud:
-    #     # Score
-    #     if ram_state[33] or ram_state[34] or ram_state[35]:
-    #         score = Score()
-    #         if ram_state[33] >= 16:
-    #             score.wh = 15, 10
-    #             score.xy = 88, 188
-    #         if ram_state[34] > 0:
-    #             score.wh = 23, 10
-    #             score.xy = 80, 188
-    #         if ram_state[34] >= 16:
-    #             score.wh = 31, 10
-    #             score.xy = 72, 188
-    #         if ram_state[35] > 0:
-    #             score.wh = 39, 10
-    #             score.xy = 64, 188
-    #         if ram_state[35] >= 16:
-    #             score.wh = 47, 10
-    #             score.xy = 56, 188
-    #         objects[16] = score
-
-    # return objects
+    if hud:
+        # Score
+        score = objects[20]
+        if ram_state[33] or ram_state[34] or ram_state[35]:
+            score = Score()
+            if ram_state[33] >= 16:
+                score.wh = 15, 10
+                score.xy = 88, 188
+            if ram_state[34] > 0:
+                score.wh = 23, 10
+                score.xy = 80, 188
+            if ram_state[34] >= 16:
+                score.wh = 31, 10
+                score.xy = 72, 188
+            if ram_state[35] > 0:
+                score.wh = 39, 10
+                score.xy = 64, 188
+            if ram_state[35] >= 16:
+                score.wh = 47, 10
+                score.xy = 56, 188
+            objects[20] = score
+            score.value = _convert_number(ram_state[35]) * 10000 + _convert_number(ram_state[34]) * 100 + \
+                                _convert_number(ram_state[33])
+        elif score:
+            objects[20] = NoObject()
+    return objects
 
 
 def _get_ship_type(ram_state, height1, height2):
     """
     Determines the type of ship by its sprite index
     """
-    for i in range(4):
-        if ram_state[71+i] == height1 or ram_state[71+i] == height2:
-            return i
+    for j in range(4):
+        if ram_state[71+j] == height1 or ram_state[71+j] == height2:
+            return j
     return None
 
 
