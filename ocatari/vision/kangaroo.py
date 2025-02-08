@@ -26,6 +26,7 @@ class Enemy(GameObject):
         self.rgb = 227, 151, 89
         self.num_frames_invisible = -1
         self.max_frames_invisible = 4
+        self.expected_dist = 12
 
 
 class Fruit(GameObject):
@@ -33,7 +34,8 @@ class Fruit(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 214, 92, 92
         self.num_frames_invisible = -1
-        self.max_frames_invisible = 4
+        self.max_frames_invisible = 2
+        self.expected_dist = 1
 
 
 class Ladder(GameObject):
@@ -128,6 +130,7 @@ def _detect_objects(objects, obs, hud=False):
     for bb in enemy:
         if bb[2] <= 5:
             enemy.remove(bb)
+    # match_objects(objects, enemy, 2, 4, Enemy)
     match_blinking_objects(objects, enemy, 2, 4, Enemy)
 
     p_enemy = find_objects(

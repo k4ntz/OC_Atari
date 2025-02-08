@@ -43,6 +43,7 @@ class Bullet(GameObject):
         self.rgb = 142, 142, 142
         self.num_frames_invisible = -1
         self.max_frames_invisible = 4
+        self.expected_dist = 3
 
 
 class P1Score(GameObject):

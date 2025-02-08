@@ -12,6 +12,7 @@ objects_colors = {
     "bird" : [[132, 144, 252], [252, 188, 116]]
 
 }
+player_colors = [objects_colors['blue']]+ [[[111,111,111]]]
 
 # lanes = [[120,125],[136,140],[150,155],[164,178]]
 # seed_per_lane = [1,1,1,1]
@@ -114,12 +115,13 @@ def _detect_objects(objects, obs, hud=False):
     
     #Player
     player = objects[0]
-    player_bb = find_mc_objects(obs, objects_colors["blue"], size=(8, 32),
-                                tol_s=(0,8), miny=70, closing_dist = 1)
-    if player_bb:
-        player.xywh = player_bb[0]
-    start_idx = 1
-    
+    for color in player_colors:
+        player_bb = find_mc_objects(obs, color, size=(8, 32),
+                                    tol_s=(0,8), miny=70, closing_dist = 1)
+        if player_bb:
+            player.xywh = player_bb[0]
+        start_idx = 1
+        
     #Enemy    
     
     enemy_bb = find_mc_objects(obs, objects_colors["red"],
@@ -133,7 +135,12 @@ def _detect_objects(objects, obs, hud=False):
     
     #Seed
     seed_bb = find_mc_objects(
-        obs, objects_colors["blue"], closing_dist = 3, size=(5, 3), tol_s=(0,1), all_colors=False)
+        obs, objects_colors["blue"], closing_dist = 3, size=(5, 3), tol_s=(1,1), all_colors=False)
+    stone_bb = []
+    for s in seed_bb:
+        if s[2:4]== (4, 4):
+            stone_bb.append(s)
+            seed_bb.remove(s)       
     match_objects(objects, seed_bb, start_idx, 4, Seed)
     start_idx+=4
 
@@ -156,9 +163,8 @@ def _detect_objects(objects, obs, hud=False):
     start_idx+=2
 
     #Stone
-    stone_bb = find_mc_objects(obs, objects_colors['blue'], size=(4,4), tol_s=0, closing_active= False, min_distance=1)
     match_objects(objects, stone_bb, start_idx, 1, Stone)
-    start_idx+=2
+    start_idx+=1
     
     '''for color in objects_colors["AcmeMine"]:
         am = find_objects(

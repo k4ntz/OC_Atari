@@ -4,7 +4,7 @@ import sys
 import numpy as np
 
 from ._helper_methods import _convert_number
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 
 """
 RAM extraction for the game Pitfall.
@@ -13,7 +13,11 @@ RAM extraction for the game Pitfall.
 
 MAX_NB_OBJECTS = {"Player": 1, "Wall": 1, "Logs": 5, "StairPit": 1, "Stair": 1, "Pit": 3, "Scorpion": 1, "Rope": 1, "Snake": 1,
                   "Tarpit": 1, "Waterhole": 1, "Crocodile": 3, "GoldenBar": 1, "Fire": 1, "Platform": 4}
-MAX_NB_OBJECTS_HUD = {"LifeCount": 3, "PlayerScore": 6, "Timer": 5}
+# MAX_NB_OBJECTS_HUD = {"LifeCount": 3, "PlayerScore": 6, "Timer": 5}
+
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Wall": 1, "Logs": 5, "StairPit": 1, "Stair": 1, "Pit": 3, "Scorpion": 1, "Rope": 1, "Snake": 1,
+                  "Tarpit": 1, "Waterhole": 1, "Crocodile": 3, "GoldenBar": 1, "Fire": 1, "Platform": 4,
+                  "LifeCount": 3, "PlayerScore": 6, "Timer": 5}
 
 
 class Player(GameObject):
@@ -241,7 +245,7 @@ class Platform(GameObject):
     """
     Permanent platforms.
     """
-
+    
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
         super(Platform, self).__init__(*args, **kwargs)
         self._xy = x, y
@@ -289,7 +293,7 @@ class Timer(GameObject):
         self.xy = 31, 22
         self.wh = (37, 8)
         self.rgb = 214, 214, 214
-        self.value = 0  # in seconds
+        self.value = 0 # in seconds
         self.hud = True
 
 
@@ -330,8 +334,6 @@ def get_pos_rope(ram_state):
     return int(x_fixation_rope + np.sin(theta_t) * sign * length_rope), y
 
 # parses MAX_NB* dicts, returns default init list of objects
-
-
 def _get_max_objects(hud=False):
     def fromdict(max_obj_dict):
         objects = []
@@ -354,18 +356,15 @@ def _init_objects_ram(hud=False):
     ram_18 = 10
     global prev_x
     prev_x = 78
-    objects = [Player(), Wall(), Logs(), Logs(), Logs(), StairPit(),
-               Stair(), Pit(), Pit(), Scorpion()]  # 10
-    objects.extend([Rope(), Snake(), Tarpit(), Waterhole(),
-                   Crocodile(), Crocodile(), Crocodile()])  # 7
-    objects.extend([GoldenBar()])
-    objects.extend(
-        [Platform(), Platform(), Platform(), Platform(), Platform()])
+    objects = [Player(), Wall(), Logs(), Logs(), Logs(), StairPit(), Stair(), Pit(), Pit(), Scorpion()]  # 10 (0-9)
+    objects.extend([Rope(), Tarpit(), Waterhole(), Crocodile(), Crocodile(), Crocodile()])  # 6 (10-15)
+    objects.extend([NoObject(), MoneyBag(), SilverBar(), GoldenBar(), DiamondRing()]) # 5 (16-20) Fire/Snake, Moneybag, Silver, Gold, Diamond
+    objects.extend([NoObject(), NoObject(), NoObject(), NoObject(), NoObject()]) # 5 (21-25)
     if hud:
-        objects.extend([LifeCount(), LifeCount(), LifeCount()])  # 3
-        objects.extend([PlayerScore()])
-        objects.extend([Timer()])
-        objects.extend([PlayerScore()])
+        objects.extend([NoObject(), NoObject(), NoObject()])  # 3 (26-28) Life Scores
+        objects.extend([NoObject()]) # (29) PlayerScore0
+        objects.extend([NoObject()]) # (30) PlayerScore1
+        objects.extend([NoObject()]) # 31 Timer
     return objects
 
 
@@ -374,18 +373,17 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
-    # There are 8 treasures Define all the classes and at the time of detection replace with GoldenBar index
+    # There are 8 treasures Define all the classes and at the time of detection replace with GoldenBar index 
     player, = objects[:1]
-    # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_4.pkl", "rb"))
-    objects[:] = [None] * 26
+    objects[:] = [NoObject()] * 26  # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_4.pkl", "rb"))
     # env._env.env.env.ale.restoreState(snapshot)
     player.xy = ram_state[97], ram_state[105] + 72
     objects[0] = player
 
-    objects[19] = Platform(x=8, y=180, w=152, h=1)
+    objects[21] = Platform(x=8, y=180, w=152, h=1)
 
     # Implementing Pits,waterholes etc
-    objects[5:17] = [None] * 12
+    objects[5:17] = [NoObject()] * 12
     if ram_state[20] == 0:
         s = StairPit()
         s.xy = 76, 122
@@ -393,8 +391,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         st.xy = 78, 136
         objects[5] = s
         objects[6] = st
-        objects[20] = Platform(x=8, y=125, w=68, h=8)
-        objects[21] = Platform(x=84, y=125, w=77, h=8)
+        objects[22] = Platform(x=8, y=125, w=68, h=8)
+        objects[23] = Platform(x=84, y=125, w=77, h=8)
 
     elif ram_state[20] == 1:
         s = StairPit()
@@ -409,46 +407,46 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[6] = st
         objects[7] = p1
         objects[8] = p2
-        objects[20] = Platform(x=8, y=125, w=40, h=8)
-        objects[21] = Platform(x=60, y=125, w=16, h=8)
-        objects[22] = Platform(x=84, y=125, w=16, h=8)
-        objects[23] = Platform(x=112, y=125, w=48, h=8)
+        objects[22] = Platform(x=8, y=125, w=40, h=8)
+        objects[23] = Platform(x=60, y=125, w=16, h=8)
+        objects[24] = Platform(x=84, y=125, w=16, h=8)
+        objects[25] = Platform(x=112, y=125, w=48, h=8)
 
     elif ram_state[20] == 2:
         t = Tarpit()
         t.xy = 48, 120
-        objects[12] = t
-        objects[20] = Platform(x=8, y=125, w=40, h=8)
-        objects[21] = Platform(x=112, y=125, w=48, h=8)
-
-    # Waterhole
+        objects[11] = t
+        objects[22] = Platform(x=8, y=125, w=40, h=8)
+        objects[23] = Platform(x=112, y=125, w=48, h=8)
+    
+    # Waterhole 
     elif ram_state[20] == 3:
         w = Waterhole()
         w.xy = 48, 120
-        objects[13] = w
-        objects[20] = Platform(x=8, y=125, w=40, h=8)
-        objects[21] = Platform(x=112, y=125, w=48, h=8)
+        objects[12] = w
+        objects[22] = Platform(x=8, y=125, w=40, h=8)
+        objects[23] = Platform(x=112, y=125, w=48, h=8)
 
     elif ram_state[20] == 4:
         w = Waterhole()
         w.xy = 48, 120
-        objects[13] = w
+        objects[12] = w
         y1 = 122 if ram_state[46] == 255 else 119
         wh1 = (8, 6) if ram_state[46] == 255 else (8, 9)
         c1 = Crocodile()
         c1.xy = 60, y1
         c1.wh = wh1
-        objects[15] = c1
+        objects[13] = c1
         c2 = Crocodile()
         c2.xy = 76, y1
         c2.wh = wh1
-        objects[16] = c2
+        objects[14] = c2
         c3 = Crocodile()
         c3.xy = 92, y1
         c3.wh = wh1
-        objects[17] = c3
-        objects[20] = Platform(x=8, y=125, w=40, h=8)
-        objects[21] = Platform(x=112, y=125, w=48, h=8)
+        objects[15] = c3
+        objects[22] = Platform(x=8, y=125, w=40, h=8)
+        objects[23] = Platform(x=112, y=125, w=48, h=8)
 
     # Disappearing Waterhole
     elif ram_state[20] == 7:
@@ -460,44 +458,44 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             w.xy = 48, 120
             w.wh = (64, 10)
         if ram_state[32] == 255 and ram_state[33] == 255 and ram_state[34] == 255 and ram_state[35] == 255:
-            objects[13] = None
+            objects[12] = NoObject()
         else:
-            objects[13] = w
+            objects[12] = w
     elif ram_state[20] == 5 or ram_state[20] == 6:
         t = Tarpit()
         if ram_state[20] == 5:
             g = GoldenBar()
             g.xy = 124, 118
-
+        
         # Disappearig Tarpit
-        if not ram_state[32] & 128:
+        if not ram_state[32]&128:
             x, y = 76, 125
             w, h = 8, 0
             width = [12, 8, 4, 4]
 
             for i in range(4):
-                if not ram_state[33+i] & 128:
-                    x -= width[i]
-                    w += width[i]*2
+                if not ram_state[33+i]&128:
+                    x-= width[i]
+                    w+= width[i]*2
 
             for b in range(8):
-                if not 2**(8-b) & ram_state[32]:
-                    y -= 0.5
-                    h += 1
+                if not 2**(8-b)&ram_state[32]:
+                    y-=0.5
+                    h+=1
                 else:
                     break
-            if not ram_state[36] & 128:
-                y -= 1
-                h += 2
+            if not ram_state[36]&128:
+                y-=1
+                h+=2
             pit = Tarpit()
             pit.xy = x, int(y)
             pit.wh = w, int(h)
-            objects[12] = pit
-            objects[20] = Platform(x=8, y=125, w=x-7, h=8)
-            objects[21] = Platform(x=x+w, y=125, w=160-(x+w), h=8)
+            objects[11] = pit
+            objects[22] = Platform(x=8, y=125, w=x-7, h=8)
+            objects[23] = Platform(x=x+w, y=125, w=160-(x+w), h=8)
         else:
-            objects[12] = None
-            objects[20] = Platform(x=8, y=125, w=152, h=8)
+            objects[11] = NoObject()
+            objects[22] = Platform(x=8, y=125, w=152, h=8)
 
     # Implementing Scorpion
     # Remove scorpion when there is no pit
@@ -506,43 +504,56 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         s.xy = ram_state[99], (170 if ram_state[65] == 160 else 169)
         s.wh = (7, 8) if ram_state[65] == 160 else (8, 9)
         objects[9] = s
-        objects[1] = None
+        objects[1] = NoObject()
     elif ram_state[29] in [1, 255]:
         w = Wall()
         w.xy = ram_state[99], 148
         objects[1] = w
-        objects[9] = None
+        objects[9] = NoObject()
     else:
-        objects[1] = None
-        objects[9] = None
+        objects[1] = NoObject()
+        objects[9] = NoObject()
 
     # Implementing Fire,snake and Treasures
-    if ram_state[19] == 6:
+    offset = 0
+
+    if ram_state[19] == 6 and ram_state[20] == 5 and ram_state[109] != 2:
+        f = GoldenBar()
+        offset = 3
+    elif ram_state[19] == 6 and ram_state[20] != 5:
         f = Fire()
     elif ram_state[19] == 7:
         f = Snake()
 
+
     elif ram_state[19] >= 8:
         if ram_state[19] % 4 == 0:
             f = MoneyBag()
+            offset = 1
         elif ram_state[19] % 4 == 1:
             f = SilverBar()
+            offset = 2
         elif ram_state[19] % 4 == 2:
             f = GoldenBar()
+            offset = 3
         elif ram_state[19] % 4 == 3:
             f = DiamondRing()
+            offset = 4
     else:
-        f = None
-    if f is not None:
+        f = NoObject()
+    if type(f) is not NoObject:
         f.xy = 124, 118
-    objects[11] = f
-    if objects[15] is None:
+    if type(f) is Snake:
+        objects[16+offset] = f
+    else:
+        objects[16+offset] = f
+    if type(objects[15]) is NoObject:
         if ram_state[19] == 0 and ram_state[20] != 4:  # bug in pit_10.pkl
             l1 = Logs()
             l1.xy = (ram_state[98] + 1) % 160, 118
             objects[2] = l1
-            objects[3] = None
-            objects[4] = None
+            objects[3] = NoObject()
+            objects[4] = NoObject()
         elif ram_state[19] == 1:
             l1 = Logs()
             l2 = Logs()
@@ -550,7 +561,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             l2.xy = (ram_state[98] + 16 + 1) % 160, 118
             objects[2] = l1
             objects[3] = l2
-            objects[4] = None
+            objects[4] = NoObject()
         elif ram_state[19] == 2:
             l1 = Logs()
             l2 = Logs()
@@ -558,7 +569,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             l2.xy = (ram_state[98] + 32 + 1) % 160, 118
             objects[2] = l1
             objects[3] = l2
-            objects[4] = None
+            objects[4] = NoObject()
         elif ram_state[19] == 3:
             l1 = Logs()
             l2 = Logs()
@@ -573,16 +584,16 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             l1 = Logs()
             l1.xy = (ram_state[98] + 1) % 160, 118
             objects[2] = l1
-            objects[3] = None
-            objects[4] = None
+            objects[3] = NoObject()
+            objects[4] = NoObject()
         # elif ram_state[19]==0 and ram_state[29]
         else:
-            objects[2] = None
-            objects[3] = None
-            objects[4] = None
+            objects[2] = NoObject()
+            objects[3] = NoObject()
+            objects[4] = NoObject()
 
     # Adding Rope
-    # When does Rope come in? Disable for all other scenarios
+    # When does Rope come in? Disable for all other scenarios 
     rope_visible = False
     # to know if the rope is visible, the assembly code based itself on whether the value in the register X is greater
     # than the value in the ram_state[18] --> but we don't have a
@@ -592,8 +603,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         rope_visible = True
     except:
         pass
-    if ram_state[19] in [2, 3] and ram_state[20] == 4:
+    if ram_state[19] in [2,3] and ram_state[20] == 4:
         rope_visible = True
+    # import ipdb ipdb.set_trace()
     if rope_visible:
         r = Rope()
         r.xy = get_pos_rope(ram_state)
@@ -603,20 +615,18 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[10] = r
 
     if hud:
-        objects.extend([None] * 10)
+        objects.extend([NoObject()] * 6)
         # PlayerScores related to ram_state 86 and 87
         p1 = PlayerScore()
-        p1.value = _convert_number(ram_state[85])*1000 + _convert_number(
-            ram_state[86]) * 100 + _convert_number(ram_state[87])
+        p1.value = _convert_number(ram_state[85])*1000 + _convert_number(ram_state[86]) * 100 + _convert_number(ram_state[87])
         size = 0
         if p1.value != 0:
-            size = math.ceil(np.log10(p1.value)) * 8 - \
-                int(0.5*math.ceil(np.log10(p1.value)))
+            size = math.ceil(np.log10(p1.value)) * 8 - int(0.5*math.ceil(np.log10(p1.value)))
         else:
             size = 0
         p1.xy = 68 - size, 9
         p1.wh = size, p1.h
-        objects[24] = p1
+        objects[29] = p1
         # LifeCounts
         # number of lives remaining, stored as displayed pattern ($a0 = 2, $80 = 1, $00 = 0)
         if ram_state[0] == 160:
@@ -624,25 +634,25 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             l1.xy = 23, 22
             l2 = LifeCount()
             l2.xy = 21, 22
-            objects[25] = l1
-            objects[26] = l2
+            objects[26] = l1
+            objects[27] = l2
         elif ram_state[0] == 128:
             l1 = LifeCount()
             l1.xy = 21, 22
-            objects[25] = l1
-            objects[26] = None
+            objects[26] = l1
+            objects[27] = NoObject()
         else:
-            objects[25] = None
-            objects[26] = None
+            objects[26] = NoObject()
+            objects[27] = NoObject()
 
         # Timer
         t1 = Timer()
-        t1.value = _convert_number(
-            ram_state[88])*60+_convert_number(ram_state[89]) + ram_state[90]/60
+        t1.value = _convert_number(ram_state[88])*60+_convert_number(ram_state[89]) + ram_state[90]/60
         if ram_state[88] <= 9:
             t1.wh = 32, t1.h
             t1.xy = 37, t1.y
-        objects[27] = t1
+        objects[31] = t1
+        # import ipdb ipdb.set_trace()
 
 
 def _detect_objects_pitfall_raw(info, ram_state):
