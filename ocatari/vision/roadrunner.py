@@ -1,22 +1,20 @@
-from .utils import find_objects, find_mc_objects
-from .game_objects import GameObject
+from .utils import find_objects, find_mc_objects,find_objects_in_color_range, match_objects
+from .game_objects import GameObject, NoObject
 import numpy as np
 
-objects_colors = {
-    "birdseeds": [84, 92, 214], "cactus": [187, 187, 53],
-    "PlayerScore": [0, 0, 0], "sign": [0, 0, 0],
-    "hud_objs": [20, 60, 0], "SteelShotSign": [214, 92, 92], "AcmeMineSign": [84, 92, 214], "AcmeMine": [84, 92, 214], "AcmeMine2": [66, 72, 200], "AcmeMine3": [101, 111, 228],
-    "turret": [66, 72, 200], "turretball1": [198, 108, 58], "turretball2": [181, 83, 40]
+objects_colors = { 
+    "blue" : [[101, 111, 228], [84, 92, 214], [66, 72, 200]],
+    "red" : [[198, 108, 58], [181, 83, 40], [213, 130, 74]],         
+    "truck": [[252, 224, 112], [198, 108, 58], [213, 130, 74], [181, 83, 40]],
+    "sign": [[0, 0, 0], [214, 92, 92], [84, 92, 214]],
+    "score": [252,252,84], 
+    "bonus":[0, 0, 0],
+    "bird" : [[132, 144, 252], [252, 188, 116]]
+
 }
 
-playercolors = [[101, 111, 228], [84, 92, 214], [66, 72, 200]]
-enemycolors = [[198, 108, 58], [181, 83, 40], [213, 130, 74]]
-truckcolors = [[252, 224, 112], [198, 108, 58], [213, 130, 74], [181, 83, 40]]
-birdcolors = [[132, 144, 252], [252, 188, 116]]
-roadcrackcolors = [[181, 83, 40], [198, 108, 58], [213, 130, 74]]
-turretcolors = [[84, 92, 214], [101, 111, 228]]
-stonecolors = [[181, 83, 40], [198, 108, 58], [198, 108, 58]]
-
+# lanes = [[120,125],[136,140],[150,155],[164,178]]
+# seed_per_lane = [1,1,1,1]
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
@@ -32,7 +30,7 @@ class Enemy(GameObject):
         self.hud = False
 
 
-class BirdSeeds(GameObject):
+class Seed(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 84, 92, 214
@@ -45,7 +43,7 @@ class Truck(GameObject):
         self.rgb = 198, 108, 58
         self.hud = False
 
-
+#LEVEL 2
 class RoadCrack(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -60,18 +58,18 @@ class AcmeMine(GameObject):
         self.hud = False
 
 
-class Turret(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 66, 72, 200
-        self.hud = False
+# class Turret(GameObject):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.rgb = 66, 72, 200
+#         self.hud = False
 
 
-class TurretBall(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 198, 108, 58
-        self.hud = False
+# class TurretBall(GameObject):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.rgb = 198, 108, 58
+#         self.hud = False
 
 
 class Stone(GameObject):
@@ -81,11 +79,6 @@ class Stone(GameObject):
         self.hud = False
 
 
-class Cactus(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 187, 187, 53
-        self.hud = True
 
 
 class Sign(GameObject):
@@ -95,28 +88,20 @@ class Sign(GameObject):
         self.hud = True
 
 
-class SteelShotSign(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 214, 92, 92
-        self.hud = True
-
-
-class AcmeMineSign(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rgb = 84, 92, 214
-        self.hud = True
-
-
-class Bird(GameObject):
+class Bird(GameObject): #Lives
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 252, 188, 116
         self.hud = True
 
 
-class PlayerScore(GameObject):
+class Score(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 0, 0, 0
+        self.hud = True
+
+class Bonus(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 0, 0, 0
@@ -125,51 +110,72 @@ class PlayerScore(GameObject):
 
 def _detect_objects(objects, obs, hud=False):
     # detection and filtering
-    objects.clear()
-    player = find_mc_objects(obs, playercolors, size=(
-        8, 28), tol_s=8, miny=37, min_distance=1)
-    if player:
-        objects.append(Player(*player[0]))
-    enemy = find_mc_objects(obs, enemycolors, size=(
-        8, 28), tol_s=8, miny=37, min_distance=1)
-    if enemy:
-        objects.append(Enemy(*enemy[0]))
-    birdseeds = find_objects(
-        obs, objects_colors["birdseeds"], closing_dist=4, size=(5, 3), tol_s=1)
-    for seed in birdseeds:
-        objects.append(BirdSeeds(*seed))
-    trucks = find_mc_objects(obs, truckcolors, size=(
-        16, 18), tol_s=2, min_distance=1)
-    for truck in trucks:
-        objects.append(Truck(*truck))
-    am = find_objects(
-        obs, objects_colors["AcmeMine"], closing_active=False, size=(4, 3), tol_s=1)
-    for s in am:
-        if player:
-            if abs(s[0]-player[0][0]) < 10:
-                pass
-            elif abs(s[1]-player[0][1]) < 28:
-                pass
-            else:
-                objects.append(AcmeMine(*s))
-        else:
-            objects.append(AcmeMine(*s))
-    am = find_objects(
-        obs, objects_colors["AcmeMine2"], closing_active=False, size=(4, 3), tol_s=1)
-    for s in am:
-        if player:
-            if abs(s[0]-player[0][0]) < 10:
-                pass
-            elif abs(s[1]-player[0][1]) < 28:
-                pass
-            else:
-                objects.append(AcmeMine(*s))
-        else:
-            objects.append(AcmeMine(*s))
-    roadcracks = find_mc_objects(obs, roadcrackcolors, size=(
-        14, 32), tol_s=5, miny=122, maxy=157)
-    for r in roadcracks:
-        objects.append(RoadCrack(*r))
+    #objects.clear()
+    
+    #Player
+    player = objects[0]
+    player_bb = find_mc_objects(obs, objects_colors["blue"], size=(8, 32),
+                                tol_s=(0,8), miny=70, closing_dist = 1)
+    if player_bb:
+        player.xywh = player_bb[0]
+    start_idx = 1
+    
+    #Enemy    
+    
+    enemy_bb = find_mc_objects(obs, objects_colors["red"],
+        size=(8, 29), tol_s = (2,2), miny=100, min_distance=0, closing_active=1) #Level 1
+    if not enemy_bb:
+        enemy_bb = find_mc_objects(obs, objects_colors["red"],
+        size=(8, 29), tol_s = (2,2), miny=100, maxy=157, min_distance=0, closing_active=1) #Level 2
+        
+    match_objects(objects, enemy_bb, start_idx, 1, Enemy)
+    start_idx +=1
+    
+    #Seed
+    seed_bb = find_mc_objects(
+        obs, objects_colors["blue"], closing_dist = 3, size=(5, 3), tol_s=(0,1), all_colors=False)
+    match_objects(objects, seed_bb, start_idx, 4, Seed)
+    start_idx+=4
+
+    #TODO
+    # for nbseed, (miny, maxy) in zip(seed_per_lane, lanes):
+    #     seed_bb = [list(bb) for bb in find_objects(
+    #     obs, objects_colors["seed"], closing_dist = 1, size=(5, 3), tol_s=0, miny=miny,maxy=maxy, min_distance=5)]
+    #     match_objects(objects, seed_bb, start_idx, 2, Seed)
+    #     start_idx += 2
+    
+    #Truck
+    trucks_bb = find_mc_objects(obs, objects_colors["truck"], size=(16, 18), tol_s=2, all_colors = False, miny =110)
+    match_objects(objects, trucks_bb, start_idx, 2, Truck)
+    start_idx+=2
+    
+    #Roadcrack
+    roadcracks_bb = find_mc_objects(obs, objects_colors['red'], size=(
+                    13, 32), tol_s=1, miny=122, maxy=157, closing_active= False, min_distance=0)
+    match_objects(objects, roadcracks_bb, start_idx, 2, RoadCrack)
+    start_idx+=2
+
+    #Stone
+    stone_bb = find_mc_objects(obs, objects_colors['blue'], size=(4,4), tol_s=0, closing_active= False, min_distance=1)
+    match_objects(objects, stone_bb, start_idx, 1, Stone)
+    start_idx+=2
+    
+    '''for color in objects_colors["AcmeMine"]:
+        am = find_objects(
+            obs, color, closing_active=False, size=(4, 3), tol_s=1)
+        if am:
+            for s in am:
+                if player:
+                    if abs(s[0]-player[0][0]) < 10 or abs(s[1]-player[0][1]) < 28:
+                        pass
+                    else:
+                        match_objects(objects, am, start_idx, 4, Seed)
+                        objects.append(AcmeMine(*s))
+                else:
+                    objects.append(AcmeMine(*s))
+    '''
+    
+    '''  
     if len(roadcracks) == 0:
         turrets = find_mc_objects(obs, turretcolors, size=(
             12, 8), tol_s=3, miny=110, maxy=157)
@@ -214,28 +220,30 @@ def _detect_objects(objects, obs, hud=False):
                 else:
                     objects.append(Stone(*s))
             else:
-                objects.append(Stone(*s))
+                objects.append(Stone(*s))'''
+                
     if hud:
-        cactus = find_objects(
-            obs, objects_colors["cactus"], closing_active=False, size=(8, 8), tol_s=4)
-        for cac in cactus:
-            objects.append(Cactus(*cac))
-        twss = find_objects(obs, objects_colors["sign"], closing_active=False, size=(
-            18, 15), tol_s=3, miny=25, maxy=107)
-        for tws in twss:
-            objects.append(Sign(*tws))
-        sss = find_objects(obs, objects_colors["SteelShotSign"], closing_active=False, size=(
-            16, 13), tol_s=3, miny=25, maxy=107)
-        for s in sss:
-            objects.append(SteelShotSign(*s))
-        ams = find_objects(obs, objects_colors["AcmeMineSign"], closing_active=False, size=(
-            16, 13), tol_s=3, miny=25, maxy=107)
-        for s in ams:
-            objects.append(AcmeMineSign(*s))
-        birds = find_mc_objects(obs, birdcolors, size=(6, 8), tol_s=2)
-        for b in birds:
-            objects.append(Bird(*b))
-        # Removing player score since they are ot really needed and they create problems in some levels
-        # pss= find_objects(obs, objects_colors["PlayerScore"],closing_active= False, size=(3, 5), tol_s=2, minx=8, maxx=150,miny=178, maxy=190)
-        # for p in pss:
-        #     objects.append(PlayerScore(*p))
+        sign_bb = []
+        for color in objects_colors['sign']:
+            sign_bb += find_objects(obs, color, closing_active=False, size=(
+                18, 15), tol_s=3, miny=25, maxy=107, minx= 9)
+        match_objects(objects, sign_bb, start_idx, 1, Sign)
+        start_idx+=1
+        
+        birds_bb = find_mc_objects(obs, objects_colors['bird'], size=(6, 8), tol_s=0, min_distance=0, closing_active= False, minx=40, maxx= 80)
+        match_objects(objects, birds_bb, start_idx, 2, Bird)
+        start_idx+=2
+        
+        score_bb = find_objects(obs, objects_colors['score'], maxy=16,closing_dist=10)
+        match_objects(objects, score_bb, start_idx, 1, Score)
+        start_idx+=1
+        
+        bonus_bb = find_objects(obs, objects_colors['bonus'], minx=20, miny= 182, maxy=188, maxx = 100, closing_dist=5)
+        match_objects(objects, bonus_bb, start_idx, 1, Bonus)
+        start_idx+=1
+        
+        # ams_bb = find_objects(obs, objects_colors["AcmeMineSign"], closing_active=False, size=(
+        #     16, 13), tol_s=3, miny=25, maxy=107)
+        # match_objects(objects, ams_bb, 1, start_idx, AcmeMineSign)
+        # start_idx+=1
+    #print(objects)

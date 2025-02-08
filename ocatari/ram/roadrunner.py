@@ -1,12 +1,13 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
+from .utils import match_objects
 import sys
 
 """
 RAM extraction for the game Road Runner.
 """
 
-MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "BirdSeeds": 1, "Truck": 6}
-MAX_NB_OBJECTS_HUD = {'Cactus': 6, 'Sign': 1}  # 'Score': 1}
+MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "Seed": 4, "Truck": 2, "RoadCrack": 2, "Stone": 2}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Enemy": 1, "Seed": 4, "Truck": 2,"RoadCrack": 2,  "Stone": 2, "Sign":1, "Bird": 2, "Score":1, "Bonus":1}
 
 
 class Player(GameObject):
@@ -35,7 +36,7 @@ class Enemy(GameObject):
         self.hud = False
 
 
-class BirdSeeds(GameObject):
+class Seed(GameObject):
     """
     The collectable piles of birdseed on the roadway.
     """
@@ -126,19 +127,6 @@ class Stone(GameObject):
         self.wh = (8, 11)
 
 
-class Cactus(GameObject):
-    """
-    Cactus in the background (HUD).
-    """
-
-    def __init__(self):
-        super().__init__()
-        self._xy = 0, 0
-        self.wh = (8, 8)
-        self.rgb = 187, 187, 53
-        self.hud = True
-
-
 class Sign(GameObject):
     """
     The occasional road signs and billboards (HUD).
@@ -150,7 +138,6 @@ class Sign(GameObject):
         self.wh = (16, 15)
         self.rgb = 0, 0, 0
         self.hud = True
-
 
 class Bird(GameObject):
     """
@@ -165,7 +152,7 @@ class Bird(GameObject):
         self.hud = True
 
 
-class PlayerScore(GameObject):
+class Score(GameObject):
     """
     The player's score display (HUD).
     """
@@ -177,6 +164,11 @@ class PlayerScore(GameObject):
         self.wh = (7, 5)
         self.hud = True
 
+class Bonus(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 0, 0, 0
+        self.hud = True
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
@@ -198,10 +190,20 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Enemy(), Truck(), BirdSeeds(), BirdSeeds(), BirdSeeds(
-    ), BirdSeeds(), RoadCrack(), AcmeMine(), TurretBall(), Turret(), None]
+    objects = [Player()]
+    objects.extend([NoObject()]) #Enemy
+    objects.extend([NoObject()]*4) #Seeds
+    objects.extend([NoObject()]*2) #Truck
+    objects.extend([NoObject()]*2) #RoadCrack
+    objects.extend([NoObject()]*2) #Stone
     if hud:
-        objects.extend([Sign(), Bird(), Bird(), Cactus(), Cactus()])
+        sign = [NoObject()]
+        birds = [NoObject()]*2
+        score = [NoObject()]
+        bonus = [NoObject()]
+        sign =[NoObject()]
+        
+        objects.extend(sign+birds+score+bonus+sign)
     return objects
 
 
