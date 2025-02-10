@@ -3,9 +3,17 @@ import sys
 
 MAX_NB_OBJECTS = {"Player": 1, "Alien": 12,
                   "Pulsar": 1, "Rocket": 1, "Egg": 156}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Alien": 3, "Pulsar": 1,
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Alien": 12, "Pulsar": 1,
                       "Rocket": 1, "Egg": 156, "Score": 1, "Life": 1}
 
+ALIEN_COLORS = [
+    (252, 252, 84), # yellow
+    (236, 140, 224), # pink
+    (132, 144, 252), # blue
+    (252, 144, 144), # orange
+    (252, 252, 84), # yellow
+    (132, 144, 252), # blue
+]
 
 class Player(GameObject):
     def __init__(self):
@@ -245,7 +253,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             for i in range(170):
                 objects[1+i] = NoObject()
         
-        for i in range(6):
+        for i, color in enumerate(ALIEN_COLORS):
             if type(objects[1+(2*i)]) is NoObject:
                 objects[1+(2*i)] = Alien()
                 objects[2+(2*i)] = Alien()
@@ -256,6 +264,17 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             x = x + ((88 - x)>>4)
             objects[1+(2*i)].xy = x, 37+20*i
             objects[2+(2*i)].xy = x+32, 37+20*i
+            objects[1+(2*i)].rgb = color
+            objects[2+(2*i)].rgb = color
+        rocket = objects[14]
+        if ram_state[73] == 131:
+            if not rocket:
+                rocket = Rocket()
+                objects[14] = rocket
+            rocket.xy = 77, 19
+            rocket.rgb = 132, 252, 112
+        elif rocket:
+            objects[14] = NoObject()
 
     if hud:
         score = objects[171]
@@ -263,13 +282,17 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         score.wh = 6, 7
         x = 23
         w = 46
-        for i in [3, 5, 7, 9, 11]:
-            if ram_state[i] != 128:
+        value = 0
+        for i in range(5):
+            if ram_state[11-2*i] != 128:
                 score.xy = x, 176
                 score.wh = w, 7
+                value += (ram_state[11-2*i] // 8) * 10**(i+1)
             else:
                 x += 8
                 w -= 8
+        value += ram_state[13] // 8
+        score.value = value
 
         lives_v = ram_state[64] - 1
         life = objects[172]
@@ -290,29 +313,3 @@ def _detect_objects_alien_raw(info, ram_state):
     """
     info["objects_list"] = ram_state[32:36]
 
-
-# def _detect_objects_alien_revised_old(info, ram_state, hud=False):
-#     """
-#     For all 3 objects:
-#     (x, y, w, h, r, g, b)
-#     """
-#     objects = {}
-#     objects["player"] = ram_state[32]+5, ram_state[34]+38, 14, 46, 214, 214, 214
-#     objects["enemy"] = ram_state[33]+4, ram_state[35]+38, 14, 46, 0, 0, 0
-#     if hud:
-#         objects["enemy_score"] = 111, 5, 6, 7, 0, 0, 0
-#         if ram_state[19] < 10:
-#             objects["enemy_score2"] = 0, 0, 0, 0, 0, 0, 0
-#         else:
-#             objects["enemy_score2"] = 103, 5, 6, 7, 0, 0, 0
-#         objects["player_score"] = 47, 5, 6, 7, 214, 214, 214
-#         if ram_state[18] < 10:
-#             objects["player_score2"] = 0, 0, 0, 0, 0, 0, 0
-#         else:
-#             objects["player_score2"] = 39, 5, 6, 7, 214, 214, 214
-#         objects["logo"] = 62, 189, 32, 7, 20, 60, 0
-#         objects["time1"] = 63, 17, 6, 7, 20, 60, 0
-#         objects["time2"] = 73, 18, 2, 5, 20, 60, 0
-#         objects["time3"] = 79, 17, 6, 7, 20, 60, 0
-#         objects["time4"] = 87, 17, 6, 7, 20, 60, 0
-#     info["objects"] = objects

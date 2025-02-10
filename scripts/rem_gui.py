@@ -8,6 +8,7 @@ import pickle as pkl
 import os
 import atexit
 from ale_py import Action
+import matplotlib.pyplot as plt
 
 """
 This script can be used to identify any RAM positions that
@@ -195,6 +196,11 @@ class Renderer:
                         with open(filename, "wb") as f:
                             pkl.dump((statepkl, self.env.objects), f)
                             print(f"State cloned in {filename}")
+                
+                if event.key == pygame.K_m:  # 'S': save
+                    plt.imshow(self.env._ale.getScreenRGB())
+                    plt.show()
+
 
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
                     self._unselect_active_cell()
