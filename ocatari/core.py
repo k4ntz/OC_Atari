@@ -119,8 +119,9 @@ class OCAtari:
             # Create a dictionary of game object classes for categorization
             self._class_dict = get_class_dict(self.game_name)
             # Initialize slots to store all possible game objects
-            self._slots = [self._class_dict[c](
-            ) for c, n in self.max_objects_per_cat.items() for _ in range(n)]
+            self._slots = [self._class_dict[c]() 
+                           for c, n in self.max_objects_per_cat.items() 
+                           for _ in range(n)]
             # Initialize the neurosymbolic state representation with zeros
             self._ns_state = np.zeros(
                 sum([len(o._nsrepr) for o in self._slots]))

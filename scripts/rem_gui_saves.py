@@ -1,6 +1,8 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from tqdm import tqdm
+from collections import deque
+from copy import deepcopy
 import pygame
 import sys
 sys.path.insert(0, '../')  # noqa
@@ -8,6 +10,7 @@ from ocatari.core import OCAtari, UPSCALE_FACTOR
 import atexit
 import pickle
 from ocatari.vision.utils import mark_bb, make_darker
+from ale_py import Action
 
 """
 This script can be used to identify any RAM positions that
@@ -48,6 +51,11 @@ class Renderer:
         self.candidate_cell_ids = []
         self.current_active_cell_input: str = ""
         self.no_render = no_render
+        self.red_render = []
+
+        self.saved_frames = deque(maxlen=200)  # tuples of ram, state, image
+        self.frame_by_frame = False
+        self.next_frame = False
 
     def _init_pygame(self, sample_image):
         pygame.init()
@@ -67,26 +75,26 @@ class Renderer:
         self.running = True
         while self.running:
             self._handle_user_input()
-            if not self.paused:
+            if not (self.frame_by_frame and not (self.next_frame)) and not self.paused:
+                self.saved_frames.append((deepcopy(self.env.get_ram()), self.env._ale.cloneState(
+                ), self.current_frame))  # ram, state, image (rgb)
                 action = self._get_action()
-                obs, reward, terminated, truncated, info = self.env.step(
-                    action)
-                self.obs = obs
-                # if reward != 0:
-                #     print(reward)
-                #     pass
+                # action = self.env.get_action_meanings().index(action.name)
+                reward = self.env.step(action)[1]
                 self.current_frame = self.env.render().copy()
+                self._render()
+                self.next_frame = False
             self._render()
         pygame.quit()
 
-    def _get_action(self):
+    def _get_action(self) -> Action:
         pressed_keys = list(self.current_keys_down)
         pressed_keys.sort()
         pressed_keys = tuple(pressed_keys)
         if pressed_keys in self.keys2actions.keys():
             return self.keys2actions[pressed_keys]
         else:
-            return 0  # NOOP
+            return Action.NOOP
 
     def _handle_user_input(self):
         self.current_mouse_pos = np.asarray(pygame.mouse.get_pos())
@@ -123,6 +131,33 @@ class Renderer:
             elif event.type == pygame.KEYDOWN:  # keyboard key pressed
                 if event.key == pygame.K_p:  # 'P': pause/resume
                     self.paused = not self.paused
+
+                elif event.key == pygame.K_f:  # Frame by frame
+                    self.frame_by_frame = not (self.frame_by_frame)
+                    self.next_frame = False
+
+                elif event.key == pygame.K_PERIOD:  # next
+                    print("next")
+                    self.next_frame = True
+
+                elif event.key == pygame.K_COMMA:  # 'B': Backwards
+                    if self.frame_by_frame:
+                        if len(self.saved_frames) > 0:
+                            previous = self.saved_frames.pop()
+                            for i, ram_v in enumerate(previous[0]):
+                                self.env.set_ram(i, ram_v)
+                            for i, value in enumerate(previous[0]):
+                                self._render_ram_cell(i, value)
+                            self.env._ale.restoreState(
+                                previous[1])  # restore state
+                            self.current_frame = previous[2].copy()
+                            self._render_atari()
+                            pygame.display.flip()
+                            pygame.event.pump()
+                        else:
+                            print(
+                                "There are no prior frames saved to go back to. Save more using the flag --previous_frames")
+
 
                 if event.key == pygame.K_r:  # 'R': reset
                     self.env.reset()
@@ -173,18 +208,23 @@ class Renderer:
                     _, ax = plt.subplots(1, 1, figsize=(6, 8))
                     ax.imshow(obs)
                     plt.show()
+
                 elif event.key == pygame.K_k:
                     _, ax = plt.subplots(1, 1, figsize=(6, 8))
-                    ax.imshow(self.obs)
+                    obs = self.env._env.render()
+                    ax.imshow(obs)
                     plt.savefig('MsPacman.png', dpi=500)
+
                 elif event.key == pygame.K_h:
                     with open("save_states/" + self.env.game_name + '_save_state1.pickle', 'wb') as handle:
                         pickle.dump(self.env._env.env.env.ale.cloneState(
                         ), handle, protocol=pickle.HIGHEST_PROTOCOL)
+
                 elif event.key == pygame.K_j:
                     with open("save_states/" + self.env.game_name + '_save_state2.pickle', 'wb') as handle:
                         pickle.dump(self.env._env.env.env.ale.cloneState(
                         ), handle, protocol=pickle.HIGHEST_PROTOCOL)
+
                 elif event.key == pygame.K_n:
                     try:
                         snapshot = pickle.load(
@@ -192,6 +232,7 @@ class Renderer:
                         self.env._env.env.env.ale.restoreState(snapshot)
                     except:
                         print("No Save_State set")
+                        
                 elif event.key == pygame.K_m:
                     try:
                         snapshot = pickle.load(
@@ -219,7 +260,7 @@ class Renderer:
         frame_surface = pygame.Surface(self.env_render_shape)
         pygame.pixelcopy.array_to_surface(frame_surface, frame)
         self.window.blit(frame_surface, (0, 0))
-        self.clock.tick(60)
+        self.clock.tick(240)
 
     def _render_ram(self):
         ale = self.env.unwrapped.ale
@@ -372,8 +413,8 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer(env_name="Alien", mode="ram",
-                        bits=False, obs_mode="obj", hud=False)
+    renderer = Renderer(env_name="Pitfall2", mode="vision",
+                        bits=False, obs_mode="obj", hud=True)
 
     def exit_handler():
         if renderer.no_render:
