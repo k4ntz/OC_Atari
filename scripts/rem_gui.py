@@ -29,7 +29,7 @@ class Renderer:
 
     def __init__(self, env_name, mode='ram', no_render=[]):
         self.env = OCAtari(env_name, mode=mode, hud=True, render_mode="rgb_array",
-                           render_oc_overlay=True, frameskip=1, obs_mode="obj")
+                           render_oc_overlay=True, frameskip=1, obs_mode="obj", repeat_action_probability=0)
 
         self.env.reset(seed=42)
         self.current_frame = self.env.render()
@@ -53,7 +53,6 @@ class Renderer:
         self.saved_frames = deque(maxlen=200)  # tuples of ram, state, image
         self.frame_by_frame = False
         self.next_frame = False
-
 
     def _init_pygame(self, sample_image):
         pygame.init()
@@ -196,11 +195,10 @@ class Renderer:
                         with open(filename, "wb") as f:
                             pkl.dump((statepkl, self.env.objects), f)
                             print(f"State cloned in {filename}")
-                
+
                 if event.key == pygame.K_m:  # 'S': save
                     plt.imshow(self.env._ale.getScreenRGB())
                     plt.show()
-
 
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
                     self._unselect_active_cell()
