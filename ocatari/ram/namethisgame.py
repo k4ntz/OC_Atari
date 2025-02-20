@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject
+from .game_objects import GameObject, ValueObject, NoObject
 from ._helper_methods import _convert_number
 import sys
 
@@ -175,11 +175,11 @@ def _init_objects_ram(hud=False):
     objects = [Player(), Oxygen_Boat(), Oxygen_Pipe(),
                Shark(), Octopus(), Treasure()]
 
-    objects.extend([None] * 361)
+    objects.extend([NoObject()] * 361)
 
     if hud:
         objects.extend([Score(), Timer(), Oxygen_Meter()])
-        # objects.extend([None] * 13)
+        # objects.extend([NoObject] * 13)
     return objects
 
 
@@ -198,11 +198,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # Oxygen pipe present if ram[117] != 0
     if ram_state[117]:
-        if objects[2] is None:
+        if type(objects[2]) is NoObject:
             objects[2] = Oxygen_Pipe()
         objects[2].xy = ram_state[100]+6, 23
     else:
-        objects[2] = None
+        objects[2] = NoObject()
 
     # Shark y always + 15 per state
     y = 7
@@ -219,7 +219,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[0].wh = 16, 13
 
     # ram[71] == remaining treasure
-    try:
+    if type(objects[5]) is NoObject:
+        objects[5] = Treasure()
+    else:
         if ram_state[71] % 4 == 3:
             objects[5].xy = 72, 163
             objects[5].wh = 16, 6
@@ -236,20 +238,18 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[5].value = 1
 
         else:
-            objects[5] = None
-    except:
-        objects[5] = Treasure()
+            objects[5] = NoObject()
 
     # ram[51], ram[50] == shot x, y
     # 80 == 122, 23 == 54
     if ram_state[50]:
-        if objects[6] is None:
+        if type(objects[6]) is NoObject:
             objects[6] = Shot()
         objects[6].xy = ram_state[51] - \
             2, ((ram_state[50]) + 30) + \
             (ram_state[50] >> 5) + (ram_state[50] >> 3)
     else:
-        objects[6] = None
+        objects[6] = NoObject()
 
     # ram[0-49] octopus-tentacles bitrepresentation. Colum wise ram[0] has highest y and ram[9] lowest y,ram[10-19] is the second colum
     # 128 most left, 1 most right in colum -> ram[0] == 128 -> xywh == 16, 126, 4, 6
@@ -274,7 +274,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                         objects[base_list + j*4 +
                                 b] = Tentacle(base_x+(4*b), y)
                     else:
-                        objects[base_list + j*4 + b] = None
+                        objects[base_list + j*4 + b] = NoObject()
             else:
                 for b in range(8):
                     if msb:
@@ -282,13 +282,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                             objects[base_list + j*8 +
                                     b] = Tentacle(base_x+(4*b), y)
                         else:
-                            objects[base_list + j*8 + b] = None
+                            objects[base_list + j*8 + b] = NoObject()
                     else:
                         if ram_state[base_state+j] & (2**(b)):
                             objects[base_list + j*8 +
                                     b] = Tentacle(base_x+(4*b), y)
                         else:
-                            objects[base_list + j*8 + b] = None
+                            objects[base_list + j*8 + b] = NoObject()
 
         if i == 2:
             base_list += 40
