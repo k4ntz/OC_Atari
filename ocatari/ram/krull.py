@@ -1,5 +1,6 @@
-from .game_objects import GameObject, ValueObject
+from .game_objects import GameObject, ValueObject, NoObject
 from ._helper_methods import number_to_bitfield
+from .utils import match_objects
 import sys
 
 MAX_NB_OBJECTS = {"Player": 1, 'Lyssa': 1, 'Slayers': 20, 'Slayer_Shot': 1, 'Weapon': 1, 'Beast': 1, 'Enemy_Weapon': 1,
@@ -27,9 +28,9 @@ class Lyssa(GameObject):
 
 
 class Slayers(GameObject):
-    def __init__(self):
+    def __init__(self, x=0, y=160, w=6, h=16):
         super(Slayers, self).__init__()
-        self._xy = 0, 160
+        self._xy = x, y
         self.wh = (6, 16)
         self.rgb = 45, 109, 152
         self.hud = False
@@ -170,22 +171,24 @@ class Score(ValueObject):
         self.hud = True
 
 
-class Life_HUD(GameObject):
+class Life_HUD(ValueObject):
     def __init__(self):
         super(Life_HUD, self).__init__()
         self._xy = 0, 0
         self.wh = (6, 7)
         self.rgb = 92, 186, 92
         self.hud = True
+        self.value = 0
 
 
-class Weapon_HUD(GameObject):
+class Weapon_HUD(ValueObject):
     def __init__(self):
         super(Weapon_HUD, self).__init__()
         self._xy = 0, 0
         self.wh = (8, 7)
         self.rgb = 92, 186, 92
         self.hud = True
+        self.value = 0
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -210,9 +213,9 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()]
 
-    objects.extend([None] * 500)
+    objects.extend([NoObject()] * 553)
     if hud:
-        objects.extend([None] * 4)
+        objects.extend([NoObject(), NoObject(), Score(), Life_HUD(), Weapon_HUD()])
     return objects
 
 
@@ -230,138 +233,142 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     room = ram_state[34]
     if room == 0:
         player.wh = 6, 16
+        enemies_pos = []
         if ram_state[114]:
             player.xy = ram_state[90] + 9, (ram_state[98]*2) + 16
             if ram_state[73] != 80:
-                lyssa = Lyssa()
-                objects[1] = lyssa
-                lyssa.xy = ram_state[89] + 9, (ram_state[97]*2) + 15
+                if type(objects[1]) is NoObject:
+                    objects[1] = Lyssa()
+                objects[1].xy = ram_state[89] + 9, (ram_state[97]*2) + 15
             else:
-                objects[1] = None
+                objects[1] = NoObject()
             enemies = 0
             for i in range(5):
-                objects[2+i] = None
                 if ram_state[99+i] and enemies < ram_state[82] and not (ram_state[73] == 80 and ram_state[91+i] >= 69):
                     enemies += 1
-                    slayer = Slayers()
-                    objects[2+i] = slayer
-                    slayer.xy = ram_state[83+i] + 9, (ram_state[91+i]*2) + 15
+                    enemies_pos.append((ram_state[83+i] + 9, (ram_state[91+i]*2) + 15, 6, 16))
+
                 for j in range(3):
-                    objects[7+i+j*5] = None
-                    if ram_state[99+i] & 2**j and objects[2+i] is not None:
-                        slayer2 = Slayers()
-                        objects[7+i+j*5] = slayer2
-                        slayer2.xy = ram_state[83+i] + 9 + (
-                            16 * (ram_state[99+i] & 2**j)), (ram_state[91+i]*2) + 15
+                    if ram_state[99+i] & 2**j and type(objects[2+(5*i)]) is not NoObject:
+                        enemies_pos.append((ram_state[83+i] + 9 + (
+                            16 * (ram_state[99+i] & 2**j)), (ram_state[91+i]*2) + 15, 6, 16))
         else:
             player.xy = ram_state[89] + 9, (ram_state[97]*2) + 16
-            lyssa = Lyssa()
-            objects[1] = lyssa
-            lyssa.xy = ram_state[83] + 9, (ram_state[91]*2) + 15
+            if type(objects[1]) is NoObject:
+                objects[1] = Lyssa()
+            objects[1].xy = ram_state[83] + 9, (ram_state[91]*2) + 15
             for i in range(5):
-                objects[2+i] = None
                 if ram_state[100+i] and ram_state[82] > i:
-                    slayer = Slayers()
-                    objects[2+i] = slayer
-                    slayer.xy = ram_state[84+i] + 9, (ram_state[92+i]*2) + 15
+                    enemies_pos.append((ram_state[84+i] + 9, (ram_state[92+i]*2) + 15, 6, 16))
+
                     for j in range(3):
-                        objects[7+i+j*5] = None
                         if ram_state[100+i] & 2**j:
-                            slayer2 = Slayers()
-                            objects[7+i+j*5] = slayer2
-                            slayer2.xy = ram_state[84+i] + 9 + (
-                                16 * (ram_state[100+i] & 2**j)), (ram_state[92+i]*2) + 15
+                            enemies_pos.append((ram_state[84+i] + 9 + (
+                                16 * (ram_state[100+i] & 2**j)), (ram_state[92+i]*2) + 15, 6, 16))
+                            
+        match_objects(objects, enemies_pos, 2, 15, Slayers)
+        
         if ram_state[77]:
-            shot = Slayer_Shot()
-            objects[22] = shot
+            if type(objects[17]) is NoObject:
+                objects[17] = Slayer_Shot()
             if ram_state[79] & 16:
-                shot.wh = 7, 7
+                objects[17].wh = 7, 7
                 if ram_state[79] & 128:
-                    shot.xy = (ram_state[78] + 7 + ram_state[76]
+                    objects[17].xy = (ram_state[78] + 7 + ram_state[76]
                                * 2) - 32, ram_state[77]*2 + 6
                 else:
-                    shot.xy = (ram_state[78] + 7 - ram_state[76]
+                    objects[17].xy = (ram_state[78] + 7 - ram_state[76]
                                * 2) + 25, ram_state[77]*2 + 6
             else:
-                shot.wh = 1, 7
-                shot.xy = ram_state[78] + 7, ram_state[77]*2 + 6
+                objects[17].wh = 1, 7
+                objects[17].xy = ram_state[78] + 7, ram_state[77]*2 + 6
+        else:
+            objects[17] = NoObject()
 
     elif room == 1:
-        for i in range(len(objects)-1):
-            objects[i+1] = None
+        for i in range(2,18):
+            objects[i+1] = NoObject()
+        for i in range(84, 500):
+            objects[i+1] = NoObject()
 
         player.xy = ram_state[83] + 9, (ram_state[91]*2) + 15
         player.wh = 7, 16
 
-        if ram_state[97] < 80:
-            weapon = Weapon()
-            objects[1] = weapon
-            weapon.rgb = 224, 236, 124
-            if ram_state[47] == 24:
-                weapon.xy = ram_state[89] + 11, (ram_state[97]*2) + 16
-                weapon.wh = 2, 2
-            elif ram_state[47] == 36:
-                weapon.xy = ram_state[89] + 9, (ram_state[97]*2) + 16
-                weapon.wh = 6, 6
-            else:
-                weapon.xy = ram_state[89] + 8, (ram_state[97]*2) + 16
-                weapon.wh = 8, 8
-        else:
-            objects[1] = None
+        if type(objects[1]) is Lyssa:
+            objects[1] = Lyssa()
 
-        lyssa = Lyssa()
-        objects[2] = lyssa
         if ram_state[109] == 42:
-            lyssa.xy = ram_state[85] + 9, (ram_state[93]*2) + 15
+            objects[1].xy = ram_state[85] + 9, (ram_state[93]*2) + 15
         else:
-            lyssa.xy = ram_state[85] + 8, (ram_state[93]*2) + 15
+            objects[1].xy = ram_state[85] + 8, (ram_state[93]*2) + 15
 
-        boss = Beast()
-        objects[3] = boss
-        if ram_state[100] == 157:
-            boss.xy = ram_state[84] + 13, (ram_state[92]*2) + 15
+        if ram_state[97] < 80:
+            if type(objects[18]) is NoObject:
+                objects[18] = Weapon()
+                objects[18].rgb = 224, 236, 124
+            if ram_state[47] == 24:
+                objects[18].xy = ram_state[89] + 11, (ram_state[97]*2) + 16
+                objects[18].wh = 2, 2
+            elif ram_state[47] == 36:
+                objects[18].xy = ram_state[89] + 9, (ram_state[97]*2) + 16
+                objects[18].wh = 6, 6
+            else:
+                objects[18].xy = ram_state[89] + 8, (ram_state[97]*2) + 16
+                objects[18].wh = 8, 8
         else:
-            boss.xy = ram_state[84] + 9, (ram_state[92]*2) + 15
+            objects[18] = NoObject()
+
+        if type(objects[19]) is NoObject:
+            objects[19] = Beast()
+        if ram_state[100] == 157:
+            objects[19].xy = ram_state[84] + 13, (ram_state[92]*2) + 15
+        else:
+            objects[19].xy = ram_state[84] + 9, (ram_state[92]*2) + 15
 
         if ram_state[77] < 83:
-            bossw = Enemy_Weapon()
-            objects[4] = bossw
-            bossw.xy = ram_state[79] + 7, (ram_state[77]*2) + 7
+            if type(objects[20]) is NoObject:
+                objects[20] = Enemy_Weapon()
+            objects[20].xy = ram_state[79] + 7, (ram_state[77]*2) + 7
         else:
-            objects[4] = None
+            objects[20] = NoObject()
 
         for j in range(4):
             for i in range(8):
                 if ram_state[115+j*2] & 2**i:
-                    wall = Wall()
-                    objects[5+16*j+i] = wall
-                    wall.xy = 48 + 4*i, 39 + 4*j
+                    if type(objects[21+16*j+i]) is NoObject:
+                        objects[21+16*j+i] = Wall()
+                    objects[21+16*j+i].xy = 48 + 4*i, 39 + 4*j
                 else:
-                    objects[5+16*j+i] = None
+                    objects[21+16*j+i] = NoObject()
                 if ram_state[116+j*2] & 2**i:
-                    wall = Wall()
-                    objects[13+16*j+i] = wall
-                    wall.xy = 108 - 4*i, 39 + 4*j
+                    if type(objects[29+16*j+i]) is NoObject:
+                        objects[29+16*j+i] = Wall()
+                    objects[29+16*j+i].xy = 108 - 4*i, 39 + 4*j
                 else:
-                    objects[13+16*j+i] = None
+                    objects[29+16*j+i] = NoObject()
 
     elif room == 2:
         for i in range(len(objects)-1):
-            objects[i+1] = None
+            objects[i+1] = NoObject()
 
         player.xy = ram_state[83] + 8, (ram_state[91]*2) + 20
         player.wh = 6, 16
         if ram_state[68] == 41:
-            star = Star()
-            objects[1] = star
-            star.xy = ram_state[89] + 10, (ram_state[97]*2) + 21
-        else:
-            spider = Spider()
-            objects[1] = spider
-            spider.xy = ram_state[89] + 8, (ram_state[97]*2) + 21
+            if type(objects[89]) is NoObject:
+                objects[89] = Star()
+            objects[89].xy = ram_state[89] + 10, (ram_state[97]*2) + 21
 
-        window = Window()
-        objects[2] = window
+            objects[90] = NoObject()
+        else:
+            if type(objects[90]) is NoObject:
+                objects[90] = Spider()
+            objects[90].xy = ram_state[89] + 8, (ram_state[97]*2) + 21
+
+            objects[89] = NoObject()
+
+
+        if type(objects[91]) is NoObject:
+            objects[91] = Window()
 
         # r115 == lines right; 44 == 75-115, 63 == 118-158
         # 24 pixels between lines
@@ -393,14 +400,17 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             line6.xy = i + ram_state[116] + 15, 97 + i*2
 
     elif room == 3:
-        for i in range(len(objects)-1):
-            objects[i+1] = None
+        for i in range(1, 85):
+            objects[i+1] = NoObject()
+        for i in range(89, 500):
+            objects[i+1] = NoObject()
 
         player.xy = ram_state[90] + 8, 145
         player.wh = 8, 9
-        mare = Fire_Mare()
-        objects[1] = mare
-        mare.xy = ram_state[89] + 8, 145
+        if type(objects[85]) is NoObject:
+            objects[85] = Fire_Mare()
+        objects[85].xy = ram_state[89] + 8, 145
+
         offset = 8
         if ram_state[76] & 128:
             for i in range(4):
@@ -410,21 +420,26 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             for i in range(4):
                 if ram_state[76] & 2**(i+3):
                     offset -= 1
+        # items in the ground
         if ram_state[70] == 226:
-            weapon = Weapon()
-            objects[2] = weapon
-            weapon.xy = ram_state[78] + offset, 157
-        elif ram_state[70] == 233:
-            life = Life()
-            objects[2] = life
-            life.xy = ram_state[78] + offset, 157
+            if type(objects[85]) is NoObject:
+                objects[86] = Weapon()
+            objects[86].xy = ram_state[78] + offset, 157
         else:
-            objects[2] = None
+            objects[86] = NoObject()
+
+        if ram_state[70] == 233:
+            if type(objects[87]) is NoObject:
+                objects[87] = Life()
+            objects[87].xy = ram_state[78] + offset, 157
+        else:
+            objects[87] = NoObject()
+
         if ram_state[80]:
-            castle = Castle()
-            objects[3] = castle
-            castle.xy = 48, 145 - ram_state[80]
-            castle.wh = 64, ram_state[80] + 3
+            if type(objects[88]) is NoObject:
+                objects[88] = Castle()
+            objects[88].xy = 48, 145 - ram_state[80]
+            objects[88].wh = 64, ram_state[80] + 3
     # r33 type?
     # r67 shot
     # r82 enemypos?
@@ -439,8 +454,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
         # Sun
         if 25 < ram_state[23] < 42:
-            sun = Sun()
-            objects[-9] = sun
+            if type(objects[-9]) is NoObject:
+                objects[-9] = Sun()
             top = 0
             bottom = 0
             xoff = 0
@@ -456,15 +471,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     xoff = 1
                 elif bottom == 6:
                     xoff = 2
-            sun.xy = ram_state[24] + 9 + xoff, ram_state[23] - 30 + top
-            sun.wh = 7 - (xoff*2), 7 - top - bottom
+            objects[-9].xy = ram_state[24] + 9 + xoff, ram_state[23] - 30 + top
+            objects[-9].wh = 7 - (xoff*2), 7 - top - bottom
         else:
-            objects[-9] = None
+            objects[-9] = NoObject()
 
         # Hour Glass
         if ram_state[26]:
-            time = Hour_Glass()
-            objects[-8] = time
+            if type(objects[-8]) is NoObject:
+                objects[-8] = Hour_Glass()
             yoff = 0
             h = 0
             for i in range(8):
@@ -475,10 +490,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                         h = 1
                     yoff = i+1
 
-            time.xy = 121, 11 - yoff
-            time.wh = 5, h
+            objects[-8].xy = 121, 11 - yoff
+            objects[-8].wh = 5, h
         else:
-            objects[-8] = None
+            objects[-8] = NoObject()
 
         # Score
         score = Score()
@@ -509,7 +524,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 objects[-6+i] = life
                 life.xy = 56+(i*8), 188
             else:
-                objects[-6+i] = None
+                objects[-6+i] = NoObject()
 
         # Weapons
         for i in range(3):
@@ -518,4 +533,4 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 objects[-3+i] = life
                 life.xy = 79+(i*8), 188
             else:
-                objects[-3+i] = None
+                objects[-3+i] = NoObject()
