@@ -6,8 +6,8 @@ import sys
 RAM extraction for the game Road Runner.
 """
 
-MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "Seed": 4, "Truck": 2, "RoadCrack": 2, "Stone": 2}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Enemy": 1, "Seed": 4, "Truck": 2,"RoadCrack": 2,  "Stone": 2, "Sign":1, "Bird": 2, "Score":1, "Bonus":1}
+MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "Seed": 4, "Truck": 2, "RoadCrack": 2, "AcmeMine": 4, "SteelShot":3, "Turret":1, "TurretBall": 2, "Rock": 2}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Enemy": 1, "Seed": 4, "Truck": 2,"RoadCrack": 2,  "AcmeMine": 4,"SteelShot":3, "Turret":1, "TurretBall": 2, "Rock": 2, "Sign":1, "Bird": 2, "Score":1, "Bonus":1}
 
 
 class Player(GameObject):
@@ -61,7 +61,7 @@ class Truck(GameObject):
         self.rgb = 198, 108, 58
         self.hud = False
 
-
+#Level 2
 class RoadCrack(GameObject):
     """
     Damaged road segments (cliffs??).
@@ -87,7 +87,14 @@ class AcmeMine(GameObject):
         self._xy = 0, 0
         self.wh = (4, 3)
 
+#Level 3
+class SteelShot(GameObject):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.rgb = 66, 72, 200
+            self.hud = False
 
+#Level 4
 class Turret(GameObject):
     """
     Wile E. Coyote's cannons along the road.
@@ -113,8 +120,8 @@ class TurretBall(GameObject):
         self._xy = 0, 0
         self.wh = (4, 4)
 
-
-class Stone(GameObject):
+#Level 6
+class Rock(GameObject):
     """
     The rocks tumbling down on the road.
     """
@@ -195,7 +202,11 @@ def _init_objects_ram(hud=False):
     objects.extend([NoObject()]*4) #Seeds
     objects.extend([NoObject()]*2) #Truck
     objects.extend([NoObject()]*2) #RoadCrack
-    objects.extend([NoObject()]*2) #Stone
+    objects.extend([NoObject()]*4) #AcmeMine
+    objects.extend([NoObject()]*3) #SteelShot
+    objects.extend([NoObject()]) #Turret
+    objects.extend([NoObject()]*2) #Turretball
+    objects.extend([NoObject()]*2) #Rock
     if hud:
         sign = [NoObject()]
         birds = [NoObject()]*2

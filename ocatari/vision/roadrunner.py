@@ -9,13 +9,12 @@ objects_colors = {
     "sign": [[0, 0, 0], [214, 92, 92], [84, 92, 214]],
     "score": [252,252,84], 
     "bonus":[0, 0, 0],
-    "bird" : [[132, 144, 252], [252, 188, 116]]
+    "bird" : [[132, 144, 252], [252, 188, 116]],
+    #"gray" :[[111,111,111],[142,142,142],[93,93,93]]
 
 }
-player_colors = [objects_colors['blue']]+ [[[111,111,111]]]
+player_colors = [objects_colors['blue']]# +[objects_colors['gray']]
 
-# lanes = [[120,125],[136,140],[150,155],[164,178]]
-# seed_per_lane = [1,1,1,1]
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
@@ -45,6 +44,13 @@ class Truck(GameObject):
         self.hud = False
 
 #LEVEL 2
+
+class AcmeMine(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 181, 83, 40
+        self.hud = False
+        
 class RoadCrack(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -52,34 +58,32 @@ class RoadCrack(GameObject):
         self.hud = False
 
 
-class AcmeMine(GameObject):
+#Level 4
+class Turret(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.rgb = 84, 92, 214
+        self.rgb = 66, 72, 200 #BLUE
         self.hud = False
 
 
-# class Turret(GameObject):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.rgb = 66, 72, 200
-#         self.hud = False
+class TurretBall(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 198, 108, 58 #ORANGE
+        self.hud = False
 
-
-# class TurretBall(GameObject):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.rgb = 198, 108, 58
-#         self.hud = False
-
-
-class Stone(GameObject):
+class Rock(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 181, 83, 40
         self.hud = False
 
 
+class SteelShot(GameObject):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.rgb = 66, 72, 200
+            self.hud = False
 
 
 class Sign(GameObject):
@@ -110,49 +114,47 @@ class Bonus(GameObject):
 
 
 def _detect_objects(objects, obs, hud=False):
-    # detection and filtering
-    #objects.clear()
-    
+
     #Player
     player = objects[0]
     for color in player_colors:
         player_bb = find_mc_objects(obs, color, size=(8, 32),
-                                    tol_s=(0,8), miny=70, closing_dist = 1)
+                                    tol_s=(0,8), miny=70, closing_dist = 1, all_colors=False) #ALL COLOR FALSE ADDED ON LEVEL 4 AND SHOULD BE CHECKED!!!
         if player_bb:
             player.xywh = player_bb[0]
         start_idx = 1
         
     #Enemy    
-    
     enemy_bb = find_mc_objects(obs, objects_colors["red"],
-        size=(8, 29), tol_s = (2,2), miny=100, min_distance=0, closing_active=1) #Level 1
+        size=(8, 29), tol_s = (2,2), miny=30, min_distance=0, closing_active=1)
     if not enemy_bb:
         enemy_bb = find_mc_objects(obs, objects_colors["red"],
-        size=(8, 29), tol_s = (2,2), miny=100, maxy=157, min_distance=0, closing_active=1) #Level 2
-        
+        size=(8, 29), tol_s = (2,2), miny=100, maxy =157, min_distance=0, closing_active=1) #Level 2
+    if not enemy_bb:
+        enemy_bb = find_mc_objects(obs, objects_colors["red"],
+        size=(7, 31), tol_s = (2,2), miny=100, maxy =157, min_distance=0, closing_active=1) #Level 4
+    if not enemy_bb:
+        enemy_bb = find_mc_objects(obs, objects_colors["red"],
+        size=(12, 22) ,tol_s = (4,4), miny=80, maxy =157, min_distance=0, closing_active=1) #Level 4 enemy on the rocket  
     match_objects(objects, enemy_bb, start_idx, 1, Enemy)
     start_idx +=1
     
     #Seed
     seed_bb = find_mc_objects(
         obs, objects_colors["blue"], closing_dist = 3, size=(5, 3), tol_s=(1,1), all_colors=False)
-    stone_bb = []
-    for s in seed_bb:
-        if s[2:4]== (4, 4):
-            stone_bb.append(s)
-            seed_bb.remove(s)       
+    acmeMine_bb = []
+    for s in seed_bb[:]:
+        if s[2:4] == (4, 3) or s[2:4] == (4, 4) :
+            acmeMine_bb.append(s)
+            seed_bb.remove(s)
     match_objects(objects, seed_bb, start_idx, 4, Seed)
     start_idx+=4
-
-    #TODO
-    # for nbseed, (miny, maxy) in zip(seed_per_lane, lanes):
-    #     seed_bb = [list(bb) for bb in find_objects(
-    #     obs, objects_colors["seed"], closing_dist = 1, size=(5, 3), tol_s=0, miny=miny,maxy=maxy, min_distance=5)]
-    #     match_objects(objects, seed_bb, start_idx, 2, Seed)
-    #     start_idx += 2
     
     #Truck
     trucks_bb = find_mc_objects(obs, objects_colors["truck"], size=(16, 18), tol_s=2, all_colors = False, miny =110)
+    for t in trucks_bb:
+        if (obs[t[1]][t[0]]!=[252, 224, 112]).all():
+            trucks_bb.remove(t)
     match_objects(objects, trucks_bb, start_idx, 2, Truck)
     start_idx+=2
     
@@ -162,71 +164,34 @@ def _detect_objects(objects, obs, hud=False):
     match_objects(objects, roadcracks_bb, start_idx, 2, RoadCrack)
     start_idx+=2
 
-    #Stone
-    match_objects(objects, stone_bb, start_idx, 1, Stone)
+    #AcmeMine
+    match_objects(objects, acmeMine_bb, start_idx, 4, AcmeMine)
+    start_idx+=4
+    
+    #SteelShot
+    shot_bb = find_mc_objects(
+        obs, objects_colors["blue"], closing_dist = 3, size=(10, 3), tol_s=0, all_colors=False)
+    match_objects(objects, shot_bb, start_idx, 3, SteelShot)
+    start_idx+=3
+    
+    #Turret
+    turret_bb = find_mc_objects(obs, objects_colors["blue"],
+        size=(12, 8), tol_s =0, miny=30, min_distance=0, closing_active=1, all_colors= False)
+    match_objects(objects, turret_bb, start_idx, 1, Turret)
     start_idx+=1
     
-    '''for color in objects_colors["AcmeMine"]:
-        am = find_objects(
-            obs, color, closing_active=False, size=(4, 3), tol_s=1)
-        if am:
-            for s in am:
-                if player:
-                    if abs(s[0]-player[0][0]) < 10 or abs(s[1]-player[0][1]) < 28:
-                        pass
-                    else:
-                        match_objects(objects, am, start_idx, 4, Seed)
-                        objects.append(AcmeMine(*s))
-                else:
-                    objects.append(AcmeMine(*s))
-    '''
+    #TurretBall
+    ball_bb = find_mc_objects(obs, objects_colors["red"],
+        size=(4, 4), tol_s =0, miny=30, min_distance=0, closing_active=1, all_colors= False)
+    match_objects(objects, ball_bb, start_idx, 2, TurretBall)
+    start_idx+=2
     
-    '''  
-    if len(roadcracks) == 0:
-        turrets = find_mc_objects(obs, turretcolors, size=(
-            12, 8), tol_s=3, miny=110, maxy=157)
-        for t in turrets:
-            objects.append(Turret(*t))
-        turrets = find_objects(
-            obs, objects_colors["turret"], closing_active=False, size=(12, 8), tol_s=2)
-        for t in turrets:
-            objects.append(Turret(*t))
-        turretballs = find_objects(obs, objects_colors["turretball1"], closing_active=False, size=(
-            4, 4), tol_s=2, miny=110, maxy=140)
-        for t in turretballs:
-            if enemy:
-                if abs(t[0]-enemy[0][0]) < 10:
-                    pass
-                elif abs(t[1]-enemy[0][1]) < 28:
-                    pass
-                else:
-                    objects.append(TurretBall(*t))
-            else:
-                objects.append(TurretBall(*t))
-        turretballs = find_objects(obs, objects_colors["turretball2"], closing_active=False, size=(
-            4, 4), tol_s=2, miny=110, maxy=140)
-        for t in turretballs:
-            if enemy:
-                if abs(t[0]-enemy[0][0]) < 10:
-                    pass
-                elif abs(t[1]-enemy[0][1]) < 28:
-                    pass
-                else:
-                    objects.append(TurretBall(*t))
-            else:
-                objects.append(TurretBall(*t))
-        stones = find_mc_objects(obs, stonecolors, size=(
-            8, 11), tol_s=2, closing_active=False, miny=137, maxy=180)
-        for s in stones:
-            if enemy:
-                if abs(s[0]-enemy[0][0]) < 10:
-                    pass
-                elif abs(s[1]-enemy[0][1]) < 28:
-                    pass
-                else:
-                    objects.append(Stone(*s))
-            else:
-                objects.append(Stone(*s))'''
+    #Rock
+    rock_bb = find_mc_objects(obs, objects_colors["red"],
+        size=(8, 11), tol_s =3, miny=30, min_distance=0, closing_active=1, all_colors= False)
+    match_objects(objects, rock_bb, start_idx, 2, Rock)
+    start_idx+=2
+    
                 
     if hud:
         sign_bb = []
@@ -248,8 +213,5 @@ def _detect_objects(objects, obs, hud=False):
         match_objects(objects, bonus_bb, start_idx, 1, Bonus)
         start_idx+=1
         
-        # ams_bb = find_objects(obs, objects_colors["AcmeMineSign"], closing_active=False, size=(
-        #     16, 13), tol_s=3, miny=25, maxy=107)
-        # match_objects(objects, ams_bb, 1, start_idx, AcmeMineSign)
-        # start_idx+=1
+       
     #print(objects)
