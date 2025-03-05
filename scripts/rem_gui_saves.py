@@ -413,7 +413,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer(env_name="Pitfall2", mode="vision",
+    renderer = Renderer(env_name="Krull", mode="ram",
                         bits=False, obs_mode="obj", hud=True)
 
     def exit_handler():

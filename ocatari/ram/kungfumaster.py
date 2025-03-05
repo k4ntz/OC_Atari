@@ -1,11 +1,11 @@
-from .game_objects import GameObject, ValueObject
+from .game_objects import GameObject, ValueObject, NoObject
 from ._helper_methods import _convert_number
 import sys
 
 MAX_NB_OBJECTS = {"Player": 1, "Knife_Throwers": 1, "Henchmen": 3, "Snake": 1, "Dragon": 1, "Dragon_Smoke": 1,
-                  "Dragon_Balls": 1, "Red_Ball": 1, "Airball": 1, "Small_Enemy": 1, "Enemy_Final_Fighter": 1, "Projectile": 1, "Dragon_Fire": 1}
+                  "Dragon_Balls": 1, "Red_Ball": 1, "Airball": 1, "Small_Enemy": 1, "Killer_Moth": 1,"Enemy_Final_Fighter": 1, "Knifes": 1, "Dragon_Fire": 1}
 MAX_NB_OBJECTS_HUD = {"Player": 1, "Knife_Throwers": 1, "Henchmen": 3, "Snake": 1, "Dragon": 1, "Dragon_Smoke": 1, "Dragon_Balls": 1, "Red_Ball": 1, "Airball": 1,
-                      "Small_Enemy": 1, "Enemy_Final_Fighter": 1, "Projectile": 1, "Dragon_Fire": 1, "Score": 1, "Time": 1, "Lives": 1, "Player_Health_Bar": 1, "Enemy_Health_Bar": 1}
+                      "Small_Enemy": 1, "Killer_Moth": 1,"Enemy_Final_Fighter": 1, "Knifes": 1, "Dragon_Fire": 1, "Score": 1, "Time": 1, "Lives": 1, "Player_Health_Bar": 1, "Enemy_Health_Bar": 1}
 
 
 class Player(GameObject):
@@ -218,7 +218,7 @@ class Time(ValueObject):
         self.value = 0
 
 
-class Lives(GameObject):
+class Lives(ValueObject):
     """
     Life value. Counts how many restarts are left before the game resets
     """
@@ -229,10 +229,10 @@ class Lives(GameObject):
         self.wh = (6, 7)
         self.rgb = 214, 214, 214
         self.hud = True
-        self.value
+        self.value = 0
 
 
-class Player_Health_Bar(GameObject):
+class Player_Health_Bar(ValueObject):
     """
     Indicates how many hits the player can still take.
     """
@@ -245,7 +245,7 @@ class Player_Health_Bar(GameObject):
         self.hud = True
 
 
-class Enemy_Health_Bar(GameObject):
+class Enemy_Health_Bar(ValueObject):
     """
     Indicates how many hits the enemy can still take.
     """
@@ -280,7 +280,7 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()]
 
-    objects.extend([None] * 5)
+    objects.extend([NoObject()] * 15)
     # objects.extend()
     if hud:
         # objects.extend()
@@ -333,20 +333,31 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # ram[72] == enemy x
     if ram_state[72] > 49:
         x, y = ram_state[72]-49, 126
+        idx = 0
         if ram_state[50] == 85:
-            objects[1] = Red_Ball()
+            idx = 9
+            if type(objects[9]) is NoObject:
+                objects[9] = Red_Ball()
             y = 164 - ram_state[35]
         elif ram_state[50] == 92:
-            objects[1] = Knife_Throwers()
+            idx = 1
+            if type(objects[1]) is NoObject:
+                objects[1] = Knife_Throwers()
         elif ram_state[50] == 97:
-            objects[1] = Airball()
+            idx = 10
+            if type(objects[10]) is NoObject:
+                objects[10] = Airball()
             x += 2
             y = 169 - ram_state[35]
         elif ram_state[50] == 134:
-            objects[1] = Snake()
+            idx = 5
+            if type(objects[5]) is NoObject:
+                objects[5] = Snake()
             y = 163 - ram_state[35]
         elif ram_state[50] == 160 or 70 <= ram_state[50] <= 83:
-            objects[1] = Small_Enemy()
+            idx = 11
+            if type(objects[11]) is NoObject:
+                objects[11] = Small_Enemy()
             y = 155 - ram_state[35]
             if 70 <= ram_state[50] <= 83:
                 x += 1
@@ -355,58 +366,79 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if ram_state[92] & 8:
                 x += 1
         elif ram_state[50] == 177:
-            objects[1] = Henchmen()
+            idx = 2
+            if type(objects[2]) is NoObject:
+                objects[2] = Henchmen()
         elif ram_state[50] == 154:
-            objects[1] = Dragon()
+            idx = 6
+            if type(objects[6]) is NoObject:
+                objects[6] = Dragon()
             y += 1
         elif ram_state[50] == 188:
-            objects[1] = Dragon_Smoke()
+            idx = 7
+            if type(objects[7]) is NoObject:
+                objects[7] = Dragon_Smoke()
             y -= 1
         elif ram_state[50] == 204:
-            objects[1] = Enemy_Final_Fighter()
+            idx = 13
+            if type(objects[13]) is NoObject:
+                objects[13] = Enemy_Final_Fighter()
         elif ram_state[50] == 227:
-            objects[1] = Dragon_Balls()
+            idx = 8
+            if type(objects[8]) is NoObject:
+                objects[8] = Dragon_Balls()
             y = 163 - ram_state[35]
         elif ram_state[50] == 247:
-            objects[1] = Killer_Moth()
+            idx = 12
+            if type(objects[12]) is NoObject:
+                objects[12] = Killer_Moth()
             y = 163 - ram_state[35]
         else:
-            objects[1] = Knife_Throwers()
-        objects[1].xy = x, y
+            idx = 1
+            if type(objects[1]) is NoObject:
+                objects[1] = Knife_Throwers()
+        objects[idx].xy = x, y
 
         # ram [63] if > 1 enemy bit representation of appendix, 16 pixels apart per enemy
         if ram_state[63] & 1 and ram_state[72]-49 > 0:
-            objects[2] = Henchmen()
-            objects[2].xy = ram_state[72]-33, 126
-        else:
-            objects[2] = None
-        if ram_state[63] & 2 and ram_state[72]-49 > 0:
             objects[3] = Henchmen()
-            objects[3].xy = ram_state[72]-17, 126
+            objects[3].xy = ram_state[72]-33, 126
         else:
-            objects[3] = None
+            objects[3] = NoObject()
+        if ram_state[63] & 2 and ram_state[72]-49 > 0:
+            objects[4] = Henchmen()
+            objects[4].xy = ram_state[72]-17, 126
+        else:
+            objects[4] = NoObject()
     else:
-        objects[1:4] = None, None, None
+        for i in range(1,14):
+            objects[i] = NoObject()
 
     # ram[73] == projectile x, ram[96] == projectile "y" (not really the hight)
 
     # projectile
     if ram_state[96] != 188:
         if ram_state[50] == 154:
-            objects[4] = Dragon_Fire()
+            objects[14] = NoObject()
+            if type(objects[15]) is NoObject:
+                objects[15] = Dragon_Fire()
             if ram_state[92] & 8:
-                objects[4].xy = ram_state[73]-52, 121+ram_state[96]
+                objects[15].xy = ram_state[73]-52, 121+ram_state[96]
             else:
-                objects[4].xy = ram_state[73]-60, 121+ram_state[96]
+                objects[15].xy = ram_state[73]-60, 121+ram_state[96]
         elif ram_state[50] == 204:
-            objects[4] = Knifes()
-            objects[4].xy = ram_state[73]-50, 121+ram_state[96]
-            objects[4].wh = 3, 4
+            objects[15] = NoObject()
+            if type(objects[14]) is NoObject:
+                objects[14] = Knifes()
+            objects[14].xy = ram_state[73]-50, 121+ram_state[96]
+            objects[14].wh = 3, 4
         else:
-            objects[4] = Knifes()
-            objects[4].xy = ram_state[73]-52, 123+ram_state[96]
+            objects[15] = NoObject()
+            if type(objects[14]) is NoObject:
+                objects[14] = Knifes()
+            objects[14].xy = ram_state[73]-52, 123+ram_state[96]
     else:
-        objects[4] = None
+        objects[14], objects[15] = NoObject(), NoObject()
 
     if hud:
         # ram[29] lives, ram[24-26] score
@@ -422,8 +454,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         elif ram_state[26] > 16:
             x, w = 55, 14
 
-        objects[6].xy = x, 20
-        objects[6].wh = w, 7
+        objects[16].xy = x, 20
+        objects[16].wh = w, 7
 
         x2, w2 = 55, 6
         if ram_state[27] > 16:
@@ -433,11 +465,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         elif ram_state[28] > 16:
             x2, w2 = 47, 14
 
-        objects[7].xy = x2, 10
-        objects[7].wh = w2, 7
+        objects[17].xy = x2, 10
+        objects[17].wh = w2, 7
 
-        objects[8].value = ram_state[29]
+        objects[18].value = ram_state[29]
 
         # ram[75,76] life
-        objects[9].wh = ram_state[75], 5
-        objects[10].wh = ram_state[76], 5
+        objects[19].wh = ram_state[75], 5
+        objects[20].wh = ram_state[76], 5
