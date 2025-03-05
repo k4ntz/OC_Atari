@@ -1,5 +1,5 @@
 from .game_objects import GameObject
-from .utils import find_objects, find_mc_objects, most_common_color
+from .utils import find_objects, find_mc_objects, most_common_color, match_objects
 import numpy as np
 
 objects_colors = {"green": [111, 210, 111], "red": [240, 128, 128], "blue": [0, 0, 148], "dark_blue": [0, 48, 100],
@@ -75,54 +75,63 @@ class Life(GameObject):
 
 
 def _detect_objects(objects, obs, hud=False):
-    objects.clear()
+    # objects.clear()
 
     player = find_mc_objects(
         obs, [objects_colors["green"], objects_colors["red"]], miny=40)
-    for bb in player:
-        objects.append(Player(*bb))
+    match_objects(objects, player, 0, 1, Player)
 
     # minx=40, miny=
     window = find_objects(obs, [0, 0, 0], minx=40,
                           miny=42, maxx=119, maxy=198, closing_dist=1)
+    window_bbs = []
+    # match_objects(objects, window, 1, 72, Window)
     for bb in window:
         if bb[2] <= 8 and bb[3] <= 8:
-            objects.append(Window(*bb))
+            window_bbs.append(bb)
+    
+    match_objects(objects,window_bbs, 1, 72, Window)
 
-    red = find_objects(obs, objects_colors["enemy_red"])
-    for bb in red:
-        objects.append(Enemy_Red(*bb))
+    red_enemy = find_objects(obs, objects_colors["enemy_red"])
+    if red_enemy:
+        match_objects(objects, red_enemy, 73, 1, Enemy_Red)
 
     bird = find_objects(obs, objects_colors["bird"])
-    for bb in bird:
-        objects.append(Enemy_Bird(*bb))
+    if bird:
+        match_objects(objects, bird, 73, 1, Enemy_Bird)
 
     yellow = find_objects(obs, objects_colors["yellow"])
+    yellow_ball_bb = []
+    yellow_projectile_bb = []
     for bb in yellow:
         if bb[2] < 8 and bb[3] > 8:
-            objects.append(Yellow_Projectile(*bb))
+            yellow_projectile_bb.append(bb)
         else:
-            objects.append(Yellow_Ball(*bb))
+            yellow_ball_bb.append(bb)
+
+    if yellow_projectile_bb:
+        match_objects(objects, yellow_projectile_bb, 75, 1, Yellow_Projectile)
+    else:
+        match_objects(objects, yellow_projectile_bb, 78, 1, Yellow_Ball)
 
     purple = find_objects(obs, objects_colors["purple"])
-    for bb in purple:
-        objects.append(Purple_Projectile(*bb))
+    match_objects(objects, purple, 77, 1, Purple_Projectile)
 
     blue = find_objects(obs, objects_colors["blue_proj"])
-    for bb in blue:
-        objects.append(Blue_Projectile(*bb))
+    match_objects(objects, blue, 76, 1, Blue_Projectile)
 
     heli = find_objects(obs, objects_colors["heli"])
-    for bb in heli:
-        objects.append(Helicopter(*bb))
+    match_objects(objects, heli, 79, 1, Helicopter)
 
     if hud:
         score = find_objects(
             obs, objects_colors["green"], maxy=40, closing_dist=4, min_distance=1)
-        for bb in score:
-            objects.append(Score(*bb))
+        match_objects(objects, score, 80, 1, Score)
+        # for bb in score:
+        #     objects.append(Score(*bb))
 
         lives = find_mc_objects(
             obs, [objects_colors["life_green"], objects_colors["red"]], maxy=40)
-        for bb in lives:
-            objects.append(Life(*bb))
+        match_objects(objects, lives, 81, 3, Life)
+        # for bb in lives:
+        #     objects.append(Life(*bb))
