@@ -7,12 +7,12 @@ RAM extraction for the game KANGUROO. Supported modes: ram.
 
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Player_Projectile': 1, 'Saucer': 5, 'Enemy_Projectile': 2}
+MAX_NB_OBJECTS = {'Player': 1, 'Player_Projectile': 1, 'Saucer': 5, 'Enemy_Projectile': 3}
                 #   'Torpedos': 1}  # Asteroid count can get really high
 # MAX_NB_OBJECTS_HUD = {'Player': 1, 'Player_Projectile': 1, 'Torpedos': 1, 'Life': 1, 'HUD': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Player_Projectile': 1, 'Saucer': 5, 'Enemy_Projectile': 2,
-                      'PlayerScore': 1, 'Lives':1}
-
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Player_Projectile': 1, 'Saucer': 5, 'Enemy_Projectile': 3,
+                      'PlayerScore': 1, 'Lives': 1, 'Torpedos': 1, 'Remaining_Enemies': 1}
+# MAX_NB_OBJECTS = MAX_NB_OBJECTS_HUD
 
 class Player(GameObject):
     """
@@ -164,7 +164,7 @@ class HUD(GameObject):
         self.rgb = 210, 164, 74
 
 
-class Enemy_Amount(GameObject):
+class Remaining_Enemies(GameObject):
     """
     The count display for the remaining Enemy Saucers in the current sector.
     """
@@ -220,10 +220,10 @@ def _init_objects_ram(hud=True):
     (Re)Initialize the objects
     """
 
-    objects = [Player()] + [Player_Projectile()] + [NoObject()]*5 + [Enemy_Projectile()]*2
+    objects = [Player()] + [Player_Projectile()] + [NoObject()]*5 + [Enemy_Projectile()]*3
 
     if hud:
-        objects += [PlayerScore()] + [Lives()] 
+        objects += [PlayerScore()] + [Lives()] + [Torpedos()] + [Remaining_Enemies()]
 
     return objects
 
@@ -232,7 +232,7 @@ def _init_objects_ram(hud=True):
 def _convert_x(rs):
     rss = [60, 94, 111, 128, 145, 162, 196] # ram_states for each lane
     xus = [40, 62, 73, 83, 93, 104, 126]    # x-pos for start of the lanes (up)
-    xds = [-20, 33, 58, 83, 107, 132, 185]  # x-pos for end of the lanes (down)
+    xds = [-20, 33, 58, 83, 109, 136, 191]  # x-pos for end of the lanes (down)
 
     for i in range(6):
         if rss[i + 1] >= rs:
@@ -257,12 +257,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         player_projectile.wh = 8, 6
     objects[1] = player_projectile
 
-    y_positions = ram_state[25:32]
+    y_positions = ram_state[25:31]
     state_positions = range(0, 5)
     y_positions = [y_pos for y_pos in y_positions if y_pos < 255]
     y_positions = list(zip(y_positions, state_positions))
     y_positions.sort(reverse=True)
-    
     # The x pos of the center line has the RAM value 128, that translates to 80 (gained from using the pure number value of the hex value, works like the score)
     # When enemies move forward, their position moves further outwards, while the RAM stays the same
     # Enemies always move down one of the lines, if they are not at the top
@@ -289,11 +288,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                 xu, xd = _convert_x(lane)
                 x = xu + (xd - xu) * perspective_ratio
             
-            enemy.xy = int(x), int(y)
-            enemy.wh = int(10 * perspective_ratio) + 1, int(7 * perspective_ratio) + 1
+            enemy.wh = round(10 * perspective_ratio) + 1, round(7 * perspective_ratio) + 1
+            enemy.xy = round(x - 5 * perspective_ratio), y
             objects[2+i] = enemy
     
-    for i in range(2):
+    for i in range(3):
         enemy_projectile = NoObject()
         if ram_state[30+i] < 255:
             enemy_projectile = Enemy_Projectile()
@@ -334,6 +333,32 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             lives.xy = 32, 183
             lives.wh = 5, 7
         objects[10] = lives
+
+        torpedos = NoObject()
+        if ram_state[83] == 3:
+            torpedos = Torpedos()
+            torpedos.xy = 128, 32
+            torpedos.wh = 20, 8
+        elif ram_state[83] == 2:
+            torpedos = Torpedos()
+            torpedos.xy = 136, 32
+            torpedos.wh = 12, 8
+        elif ram_state[83] == 1:
+            torpedos = Torpedos()
+            torpedos.xy = 144, 32
+            torpedos.wh = 4, 8
+        objects[11] = torpedos
+
+        remaining_enemies = NoObject()
+        if ram_state[84] >= 10 and ram_state[84] <= 15:
+            remaining_enemies = Remaining_Enemies()
+            remaining_enemies.xy = 20, 32
+            remaining_enemies.wh = 11, 8
+        elif ram_state[84] >= 0 and ram_state[84] <= 9:
+            remaining_enemies = Remaining_Enemies()
+            remaining_enemies.xy = 25, 32
+            remaining_enemies.wh = 6, 8
+        objects[12] = remaining_enemies
 
 
 def _detect_objects_beamrider_raw(info, ram_state):
