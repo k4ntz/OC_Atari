@@ -30,7 +30,6 @@ class Renderer:
     def __init__(self, env_name, mode='ram', no_render=[]):
         self.env = OCAtari(env_name, mode=mode, hud=True, render_mode="rgb_array",
                            render_oc_overlay=True, frameskip=1, obs_mode="obj", repeat_action_probability=0)
-
         self.env.reset(seed=42)
         self.current_frame = self.env.render()
         self._init_pygame(self.current_frame)
@@ -91,6 +90,7 @@ class Renderer:
                 # for i, j in zip(range(28, 34), js):
                 #     self.env.set_ram(i, 1+j)
                 # print(self.env.get_ram()[72])
+                print(".")
                 self.current_frame = self.env.render().copy()
                 self._render()
                 self.next_frame = False
@@ -372,7 +372,7 @@ class Renderer:
         ale = self.env.unwrapped.ale
 
         ram = ale.getRAM().copy()
-        self.env.step(0)
+        self.env.env.env.step(0)
         original_pixel = ale.getScreenRGB()[y, x]
         self._set_ram(ram)  # restore original RAM
         state = self.env._clone_state()
@@ -385,7 +385,7 @@ class Renderer:
                 self.current_active_cell_input = str(altered_value)
                 self.env._restore_state(state)
                 ale.setRAM(i, altered_value)
-                self.env.step(0)
+                self.env.env.env.step(0)
                 new_frame = ale.getScreenRGB()
                 self._render()
                 new_pixel = new_frame[y, x]
