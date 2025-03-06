@@ -279,7 +279,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if player._add_next_object:
         obj_type = ram_state[37]
         offset = y_offsets[obj_type]
-        if y_off - offset > 2: # add object
+        if obj_type > 3 and y_off - offset > 2: # add object
             xanchor = ram_state[25]
             x_off = twos_comp(ram_state[31]//16) - 6
             orientation = (ram_state[31] % 16)//8
