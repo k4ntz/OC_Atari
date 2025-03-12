@@ -8,7 +8,7 @@ RAM extraction for the game Demon Attack.
 """
 
 # TODO: populate
-MAX_NB_OBJECTS = {"Player": 1, 'PlayerMissile': 1, 'Enemy': 8, 'EnemyPart': 6, 'EnemyMissile': 10}
+MAX_NB_OBJECTS = {"Player": 1, 'PlayerMissile': 1, 'Enemy': 8, 'EnemyPart': 6, 'EnemyMissile': 14}
 MAX_NB_OBJECTS_HUD = dict(MAX_NB_OBJECTS, **{'Score': 1, 'Lives': 1}) 
 
 
@@ -162,7 +162,7 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player(), PlayerMissile()]
-    objects += [NoObject() for _ in range(24)] # 8 enemies, 6 enemy parts, 10 projectiles
+    objects += [NoObject() for _ in range(28)] # 8 enemies, 6 enemy parts, 12 projectiles
     if hud:
         objects.append(Score())
         objects.append(Lives())
@@ -204,8 +204,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             enemy.w = 8
             enemy2.w = 8
         elif ram_state[29+i] > 3 : # enemy is alive, and in one piece
-            # if i == 2:
-            #     import ipdb; ipdb.set_trace()
             if not enemy:
                 enemy = Enemy()
                 objects[2+2*i] = enemy
