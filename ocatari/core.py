@@ -40,8 +40,8 @@ AVAILABLE_GAMES = [
     "BeamRider", "Berzerk", "Bowling", "Boxing", "Breakout", "Carnival", "Centipede", "ChopperCommand", "CrazyClimber",
     "DemonAttack", "DonkeyKong", "DoubleDunk", "Enduro", "FishingDerby", "Freeway", "Frogger", "Frostbite", "Galaxian",
     "Gopher", "Hero", "IceHockey", "Jamesbond", "Kangaroo", "KeystoneKapers", "KingKong", "Krull", "KungFuMaster",
-    "MarioBros", "MontezumaRevenge", "MsPacman", "NameThisGame", "Pacman", "Phoenix", "Pitfall", "Pong", "Pooyan",
-    "PrivateEye", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "StarGunner",
+    "MarioBros", "MontezumaRevenge", "MsPacman", "NameThisGame", "Pacman", "Phoenix", "Pitfall", "Pitfall2", "Pong",
+    "Pooyan", "PrivateEye", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "StarGunner",
     "Tennis", "TimePilot", "UpNDown", "Venture", "VideoPinball", "YarsRevenge", "Zaxxon"
 ]
 
