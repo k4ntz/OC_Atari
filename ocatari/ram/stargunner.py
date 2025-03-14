@@ -203,3 +203,5 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         elif ram_state[7] == 1:
             w = 8
         objects[8].wh = w, 4
+        objects[8].value = ram_state[7]
+    return objects
