@@ -158,10 +158,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[2] = NoObject()
         
         for i in range(3):
-            if ram_state[74+i]:
+            if ram_state[74+i] and (ram_state[113] % 3) + 1 > i:
                 if type(objects[4+i]) is NoObject:
                     objects[4+i] = FlyingEnemy()
-                objects[4+i].xy = ram_state[74+i] - 10, ram_state[71+i] + 33
+                x, y = ram_state[74+i] - 10, ram_state[71+i] + 33
+                w, h = 8, 10
+                if not ((ram_state[113] + 1) % 4):
+                    w, h = 7, 8
+                    x+=1
+                objects[4+i].xywh = x, y, w, h
             else:
                 objects[4+i] = NoObject()
     else:
