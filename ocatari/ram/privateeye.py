@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject, ValueObject
+from .game_objects import GameObject, ValueObject, NoObject
 from ._helper_methods import _convert_number, get_iou
 import sys
 
@@ -7,8 +7,14 @@ RAM extraction for the game PrivateEye. Supported modes: ram.
 
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Car': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Car': 1, 'Score': 1, 'Clock': 1}
+MAX_NB_OBJECTS = {'Player': 1, 'Car': 1, 'Clue': 1, 'Badguy': 1, 'Mud': 2, 'Shatterd_Object': 4,
+                  'Knife': 2, 'Dove': 2, 'Lizard': 2, 'Pottet_Plant': 4, 'Brick': 4, 'Barrier': 2,
+                  'Passage': 1, 'Money_Bag': 1, 'Gun': 1, 'Button': 1, 'Comb': 1, 'Shoe_Sole': 1,
+                  'Vase': 1, 'Necklace': 1, 'Stamp': 1, 'Badguy_Head': 3}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Car': 1, 'Badguy': 1, 'Clue': 1, 'Mud': 2, 'Shatterd_Object': 4,
+                      'Knife': 2, 'Dove': 2, 'Lizard': 2, 'Pottet_Plant': 4, 'Brick': 4, 'Barrier': 2,
+                      'Passage': 1, 'Money_Bag': 1, 'Gun': 1, 'Button': 1, 'Comb': 1, 'Shoe_Sole': 1,
+                      'Vase': 1, 'Necklace': 1, 'Stamp': 1, 'Badguy_Head': 3, 'Score': 1, 'Clock': 1}
 obj_tracker = {}
 
 
@@ -40,15 +46,6 @@ class Car(GameObject):
         self.hud = False
 
 
-class Badguy(GameObject):
-    def __init__(self):
-        super(Badguy, self).__init__()
-        self._xy = 0, 0
-        self.wh = 20, 14
-        self.rgb = 0, 0, 0
-        self.hud = False
-
-
 class Clue(GameObject):
     """
     The questionable characters lurking from the windows.
@@ -59,6 +56,15 @@ class Clue(GameObject):
         self._xy = 0, 0
         self.wh = 8, 14
         self.rgb = 24, 26, 167
+        self.hud = False
+
+
+class Badguy(GameObject):
+    def __init__(self):
+        super(Badguy, self).__init__()
+        self._xy = 0, 0
+        self.wh = 20, 14
+        self.rgb = 0, 0, 148
         self.hud = False
 
 
@@ -166,13 +172,13 @@ class Barrier(GameObject):
         self.hud = False
 
 
-class Passge(GameObject):
+class Passage(GameObject):
     """
     The passages into alleys or park lanes.
     """
 
     def __init__(self):
-        super(Passge, self).__init__()
+        super(Passage, self).__init__()
         self._xy = 0, 0
         self.wh = 32, 22
 
@@ -212,7 +218,7 @@ class Bank_Sign(GameObject):
     """
 
     def __init__(self):
-        super(Police_Sign, self).__init__()
+        super(Bank_Sign, self).__init__()
         self._xy = 0, 0
         self.wh = 8, 4
         self.rgb = 82, 126, 45
@@ -343,8 +349,8 @@ class Score(ValueObject):
 
     def __init__(self, *args, **kwargs):
         super(Score, self).__init__()
-        self._xy = 97, 6
-        self.wh = 5, 8
+        self._xy = 99, 8
+        self.wh = 6, 8
         self.rgb = 236, 236, 236
         self.hud = True
 
@@ -356,8 +362,8 @@ class Clock(ValueObject):
 
     def __init__(self, *args, **kwargs):
         super(Clock, self).__init__()
-        self._xy = 88, 15
-        self.wh = 7, 5
+        self._xy = 67, 19
+        self.wh = 30, 8
         self.rgb = 236, 236, 236
         self.hud = True
 
@@ -385,9 +391,9 @@ def _init_objects_ram(hud=True):
 
     objects = [Player(), Car()]
 
-    objects.extend([None] * 6)
+    objects.extend([NoObject()] * 37)
     if hud:
-        objects.extend([None] * 2)
+        objects.extend([Score(), Clock()])
     return objects
 
 
@@ -410,14 +416,14 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         car.wh = 8, 14
         if not ram_state[88] & 128:
             if ram_state[58] == 1:
-                car.xy = car_x, 150 - (int(ram_state[88]/4)) + 13
-                player.xy = car_x, 150 - (int(ram_state[88]/4)) - 1
+                car.xy = car_x, 150 - (ram_state[88]>>2) + 13
+                player.xy = car_x, 150 - (ram_state[88]>>2) - 1
             else:
-                car.xy = car_x, 150 + (int(ram_state[88]/8)) - 14
-                player.xy = car_x, 150 + (int(ram_state[88]/8)) - 28
+                car.xy = car_x, 150 + (ram_state[88]>>3) - 14
+                player.xy = car_x, 150 + (ram_state[88]>>3) - 28
         else:
-            car.xy = car_x, 156 + (int((ram_state[88] - 128)/4)) - 24
-            player.xy = car_x, 156 + (int((ram_state[88] - 128)/4)) - 38
+            car.xy = car_x, 156 + ((ram_state[88] - 128)>>2) - 24
+            player.xy = car_x, 156 + ((ram_state[88] - 128)>>2) - 38
 
     else:
         if ram_state[58] == 49:
@@ -439,191 +445,237 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
 # 2 branch, 4 brick, 7 bricks, 8 curtain, 9 hydrant, 20 gun, 21 button, 22 comb, 23 shoe sole,24 money, 25 vase, 26 necklace, 27 stamp, 28 badguy body, 29,30 badguy head, 31 Questionmark, 32 knife
 
+    idx = []
+
     # interactable Objects1
     if ram_state[41] != 0:
-        objects[4] = None
         if ram_state[41] == 1:
-            obj = Barrier()
-            obj.xy = 15 + ram_state[47], 165 - ram_state[38]
+            if type(objects[25]) is NoObject:
+                objects[25] = Barrier()
+            objects[25].xy = 15 + ram_state[47], 165 - ram_state[38]
+            idx.append(25)
         elif ram_state[41] == 3:
-            obj = Pottet_Plant()
+            if type(objects[17]) is NoObject:
+                objects[17] = Pottet_Plant()
             x = 15 + ram_state[47]
-            obj.xy = x, 167 - ram_state[38]
+            objects[17].xy = x, 167 - ram_state[38]
+            idx.append(17)
             if ram_state[44]:
-                obj2 = Pottet_Plant()
-                obj2.xy = x + 16*ram_state[44], 167 - ram_state[38]
-                objects[4] = obj2
-            else:
-                objects[4] = None
+                if type(objects[18]) is NoObject:
+                    objects[18] = Pottet_Plant()
+                objects[18].xy = x + 16*ram_state[44], 167 - ram_state[38]
+                idx.append(18)
         elif ram_state[41] == 4:
-            obj = Brick()
+            if type(objects[21]) is NoObject:
+                objects[21] = Brick()
             x = 17 + ram_state[47]
-            obj.xy = x, 179 - ram_state[38]
+            objects[21].xy = x, 179 - ram_state[38]
+            idx.append(21)
             if ram_state[44]:
-                obj2 = Brick()
-                obj2.xy = x + 16*ram_state[44], 179 - ram_state[38]
-                objects[4] = obj2
-            else:
-                objects[4] = None
+                if type(objects[22]) is NoObject:
+                    objects[22] = Brick()
+                objects[22].xy = x + 16*ram_state[44], 179 - ram_state[38]
+                idx.append(22)
         elif ram_state[41] == 5 or ram_state[41] == 6:
-            obj = Passge()
-            obj.xy = 16 + ram_state[47], 161 - ram_state[38]
+            if type(objects[27]) is NoObject:
+                objects[27] = Passage()
+            objects[27].xy = 16 + ram_state[47], 161 - ram_state[38]
+            idx.append(27)
         elif ram_state[41] == 10:
-            obj = Mud()
-            obj.xy = 15 + ram_state[47], 179 - ram_state[38]
+            if type(objects[5]) is NoObject:
+                objects[5] = Mud()
+            objects[5].xy = 15 + ram_state[47], 179 - ram_state[38]
+            idx.append(5)
         elif ram_state[41] == 11 or ram_state[41] == 12 or ram_state[41] == 13:
-            obj = Shatterd_Object()
+            if type(objects[7]) is NoObject:
+                objects[7] = Shatterd_Object()
             x = 15 + ram_state[47]
-            obj.xy = x, 179 - ram_state[38]
+            objects[7].xy = x, 179 - ram_state[38]
+            idx.append(7)
             if ram_state[44]:
-                obj2 = Shatterd_Object()
-                obj2.xy = x + 16*ram_state[44], 179 - ram_state[38]
-                objects[4] = obj2
-            else:
-                objects[4] = None
+                if type(objects[8]) is NoObject:
+                    objects[8] = Shatterd_Object()
+                objects[8].xy = x + 16*ram_state[44], 179 - ram_state[38]
+                idx.append(8)
         elif ram_state[41] == 14 or ram_state[41] == 15:
-            obj = Dove()
-            obj.xy = 15 + ram_state[47], 177 - ram_state[38]
+            if type(objects[13]) is NoObject:
+                objects[13] = Dove()
+            objects[13].xy = 15 + ram_state[47], 177 - ram_state[38]
+            idx.append(13)
         elif ram_state[41] == 16 or ram_state[41] == 17:
-            obj = Lizard()
-            obj.xy = 15 + ram_state[47], 179 - ram_state[38]
+            if type(objects[15]) is NoObject:
+                objects[15] = Lizard()
+            objects[15].xy = 15 + ram_state[47], 179 - ram_state[38]
+            idx.append(15)
         elif ram_state[41] == 29:
-            obj = Badguy_Head()
-            obj.xy = 15 + ram_state[47], 177 - ram_state[38]
+            if type(objects[36]) is NoObject:
+                objects[36] = Badguy_Head()
+            objects[36].xy = 15 + ram_state[47], 177 - ram_state[38]
+            idx.append(36)
         elif ram_state[41] == 32:
-            obj = Knife()
-            obj.xy = 15 + ram_state[47], 179 - ram_state[38]
-        else:
-            obj = None
-        objects[2] = obj
-    else:
-        objects[2] = None
-        objects[4] = None
+            if type(objects[11]) is NoObject:
+                objects[11] = Knife()
+            objects[11].xy = 15 + ram_state[47], 179 - ram_state[38]
+            idx.append(11)
 
     # Interactable Objects2
     if ram_state[42] != 0:
-        objects[5] = None
         if ram_state[42] == 1:
-            obj = Barrier()
-            obj.xy = 15 + ram_state[48], 165 - ram_state[39]
+            if type(objects[26]) is NoObject:
+                objects[26] = Barrier()
+            objects[26].xy = 15 + ram_state[48], 165 - ram_state[39]
+            idx.append(26)
         elif ram_state[42] == 3:
-            obj = Pottet_Plant()
+            if type(objects[19]) is NoObject:
+                objects[19] = Pottet_Plant()
             x = 15 + ram_state[48]
-            obj.xy = x, 167 - ram_state[39]
+            objects[19].xy = x, 167 - ram_state[39]
+            idx.append(19)
             if ram_state[44]:
-                obj2 = Pottet_Plant()
-                obj2.xy = x + 16*ram_state[44], 167 - ram_state[39]
-                objects[5] = obj2
-            else:
-                objects[5] = None
+                if type(objects[20]) is NoObject:
+                    objects[20] = Pottet_Plant()
+                objects[20].xy = x + 16*ram_state[44], 167 - ram_state[39]
+                idx.append(20)
         elif ram_state[42] == 4:
-            obj = Brick()
+            if type(objects[23]) is NoObject:
+                objects[23] = Brick()
             x = 17 + ram_state[48]
-            obj.xy = x, 179 - ram_state[39]
+            objects[23].xy = x, 179 - ram_state[39]
+            idx.append(23)
             if ram_state[44]:
-                obj2 = Brick()
-                obj2.xy = x + 16*ram_state[44], 179 - ram_state[39]
-                objects[5] = obj2
-            else:
-                objects[5] = None
+                if type(objects[24]) is NoObject:
+                    objects[24] = Brick()
+                objects[24].xy = x + 16*ram_state[44], 179 - ram_state[39]
+                idx.append(24)
         elif ram_state[42] == 10:
-            obj = Mud()
-            obj.xy = 15 + ram_state[48], 179 - ram_state[39]
+            if type(objects[6]) is NoObject:
+                objects[6] = Mud()
+            objects[6].xy = 15 + ram_state[48], 179 - ram_state[39]
+            idx.append(6)
         elif ram_state[42] == 11 or ram_state[42] == 12 or ram_state[42] == 13:
-            obj = Shatterd_Object()
+            if type(objects[9]) is NoObject:
+                objects[9] = Shatterd_Object()
             x = 15 + ram_state[48]
-            obj.xy = x, 179 - ram_state[39]
+            objects[9].xy = x, 179 - ram_state[39]
+            idx.append(9)
             if ram_state[44]:
-                obj2 = Shatterd_Object()
-                obj2.xy = x + 16*ram_state[44], 179 - ram_state[38]
-                objects[5] = obj2
-            else:
-                objects[4] = None
+                if type(objects[10]) is NoObject:
+                    objects[10] = Shatterd_Object()
+                objects[10].xy = x + 16*ram_state[44], 179 - ram_state[38]
+                idx.append(10)
         elif ram_state[42] == 14 or ram_state[42] == 15:
-            obj = Dove()
-            obj.xy = 15 + ram_state[48], 177 - ram_state[39]
+            if type(objects[14]) is NoObject:
+                objects[14] = Dove()
+            objects[14].xy = 15 + ram_state[48], 177 - ram_state[39]
+            idx.append(14)
         elif ram_state[42] == 16 or ram_state[42] == 17:
-            obj = Lizard()
-            obj.xy = 15 + ram_state[48], 179 - ram_state[39]
+            if type(objects[16]) is NoObject:
+                objects[16] = Lizard()
+            objects[16].xy = 15 + ram_state[48], 179 - ram_state[39]
+            idx.append(16)
+        elif ram_state[42] == 28:
+            if type(objects[4]) is NoObject:
+                objects[4] = Badguy()
+            objects[4].xy = 15 + ram_state[48], 169 - ram_state[39] + ram_state[51]
+            objects[4].wh = 8, 14 - ram_state[51]
+            idx.append(4)
         elif ram_state[42] == 29:
-            obj = Badguy_Head()
-            obj.xy = 15 + ram_state[48], 177 - ram_state[39]
+            if type(objects[37]) is NoObject:
+                objects[37] = Badguy_Head()
+            objects[37].xy = 15 + ram_state[48], 177 - ram_state[39]
+            idx.append(37)
         elif ram_state[42] == 32:
-            obj = Knife()
-            obj.xy = 15 + ram_state[48], 179 - ram_state[39]
-        else:
-            obj = None
-        objects[3] = obj
-    else:
-        objects[3] = None
-        objects[5] = None
+            if type(objects[12]) is NoObject:
+                objects[12] = Knife()
+            objects[12].xy = 15 + ram_state[48], 179 - ram_state[39]
+            idx.append(12)
 
     # clues and additional env objects
     if ram_state[43] == 30 or ram_state[43] == 31:
-        obj = Clue()
-        obj.xy = 15 + ram_state[49], 169 - ram_state[40]
-        objects[6] = obj
+        if type(objects[3]) is NoObject:
+            objects[3] = Clue()
+        objects[3].xy = 15 + ram_state[49], 169 - ram_state[40]
     else:
-        objects[6] = None
+        objects[3] = NoObject()
 
     # 20 gun, 21 button, 22 comb, 23 shoe sole,24 money, 25 vase, 26 necklace, 27 stamp, 28 badguy body, 29,30 badguy head
     if ram_state[60]:
-        obj = None
         x = 140
+        obj = None
         if ram_state[60] == 20:
-            obj = Gun()
+            if type(objects[29]) is NoObject:
+                objects[29] = Gun()
+            obj = objects[29]
+            idx.append(29)
         elif ram_state[60] == 21:
-            obj = Button()
+            if type(objects[30]) is NoObject:
+                objects[30] = Button()
+            obj = objects[30]
+            idx.append(30)
             x = 141
         elif ram_state[60] == 22:
-            obj = Comb()
+            if type(objects[31]) is NoObject:
+                objects[31] = Comb()
+            obj = objects[31]
+            idx.append(31)
         elif ram_state[60] == 23:
-            obj = Shoe_Sole()
+            if type(objects[32]) is NoObject:
+                objects[32] = Shoe_Sole()
+            obj = objects[32]
+            idx.append(32)
         elif ram_state[60] == 24:
-            obj = Money_Bag()
+            if type(objects[28]) is NoObject:
+                objects[28] = Money_Bag()
+            obj = objects[28]
+            idx.append(28)
         elif ram_state[60] == 25:
-            obj = Vase()
-        elif ram_state[60] == 26:
-            obj = Necklace()
+            if type(objects[33]) is NoObject:
+                objects[33] = Vase()
+            obj = objects[33]
+            idx.append(29)
+        elif ram_state[33] == 26:
+            if type(objects[34]) is NoObject:
+                objects[34] = Necklace()
+            obj = objects[34]
+            idx.append(34)
         elif ram_state[60] == 27:
-            obj = Stamp()
+            if type(objects[35]) is NoObject:
+                objects[35] = Stamp()
+            obj = objects[35]
+            idx.append(35)
         elif ram_state[60] == 29 or ram_state[60] == 30:
-            obj = Badguy_Head()
-        objects[7] = obj
-        if obj is not None:
+            if type(objects[38]) is NoObject:
+                objects[38] = Badguy_Head()
+            obj = objects[38]
+            idx.append(38)
+        if obj:
             obj.xy = x, 45-obj.h
-    else:
-        objects[7] = None
+        
+    no_obj = [i for i in range(4, 39) if i not in idx]
+    for i in no_obj:
+        objects[i] = NoObject()
 
     if hud:
-        score = Score()
-        objects[8] = score
+        
+        # score
+        x, w = 99, 6
         if ram_state[72] > 15:
-            score.xy = 59, 8
-            score.wh = 46, 8
+            x, w = 59, 46
         elif ram_state[72] != 0:
-            score.xy = 67, 8
-            score.wh = 38, 8
+            x, w = 67, 38
         elif ram_state[73] > 15:
-            score.xy = 75, 8
-            score.wh = 30, 8
+            x, w = 75, 30
         elif ram_state[73] != 0:
-            score.xy = 83, 8
-            score.wh = 22, 8
+            x, w = 83, 22
         elif ram_state[74] > 15:
-            score.xy = 91, 8
-            score.wh = 14, 8
-        else:
-            score.xy = 99, 8
-            score.wh = 6, 8
-        score.value = _convert_number(
+            x, w = 91, 14
+
+        objects[39].xywh = x, 8, w, 8
+        objects[39].value = _convert_number(
             ram_state[72])*10000 + _convert_number(ram_state[73])*100 + _convert_number(ram_state[74])
 
-        clock = Clock()
-        objects[9] = clock
-        clock.xy = 67, 19
-        clock.wh = 30, 8
-        clock.value = _convert_number(
+        # time
+        objects[40].value = _convert_number(
             ram_state[67])*60 + _convert_number(ram_state[69])
 
     return objects
