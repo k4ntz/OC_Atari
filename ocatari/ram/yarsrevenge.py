@@ -1,12 +1,13 @@
-from .game_objects import GameObject, ValueObject
+from .game_objects import GameObject, ValueObject, NoObject
+from ._helper_methods import _convert_number
 import sys
 
 """
 RAM extraction for the game Yars' Revenge.
 """
 
-MAX_NB_OBJECTS = {"Player": 1}
-MAX_NB_OBJECTS_HUD = {}  # 'Score': 1}
+MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "Swirl": 1, "Enemy_Missile": 1, "Player_Bullet": 1, "Barrier": 1, "Shield_Block": 128}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Enemy": 1, "Swirl": 1, "Enemy_Missile": 1, "Player_Bullet": 1, "Barrier": 1, "Shield_Block": 128, "Score": 1, "Life": 1}
 
 
 class Player(GameObject):
@@ -31,7 +32,7 @@ class Enemy(GameObject):
         super().__init__()
         self._xy = 0, 0
         self.wh = (8, 18)
-        self.rgb = 240, 240, 240
+        self.rgb = 163, 57, 21
         self.hud = False
 
 
@@ -44,7 +45,7 @@ class Swirl(GameObject):
         super().__init__()
         self._xy = 0, 0
         self.wh = (8, 18)
-        self.rgb = 169, 128, 240
+        self.rgb = 163, 57, 21
         self.hud = False
 
 
@@ -107,15 +108,17 @@ class Score(ValueObject):
         self.wh = (7, 7)
         self.rgb = 78, 50, 181
         self.hud = False
+        self.value = 0
 
 
-class Life(GameObject):
+class Life(ValueObject):
     def __init__(self):
         super(Life, self).__init__()
-        self._xy = 0, 0
+        self._xy = 95, 74
         self.wh = (7, 7)
         self.rgb = 78, 50, 181
         self.hud = False
+        self.value = 0
 
 # parses MAX_NB* dicts, returns default init list of objects
 
@@ -141,9 +144,9 @@ def _init_objects_ram(hud=False):
     """
     objects = []
 
-    objects.extend([None] * 135)
+    objects.extend([NoObject()] * 134)
     if hud:
-        objects.extend([None] * 7)
+        objects.extend([NoObject()] * 2)
     return objects
 
 
@@ -153,88 +156,90 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     (x, y, w, h, r, g, b)
     """
     if ram_state[53] > 159:
-        player = Player()
-        objects[0] = player
-        player.xy = ram_state[32], ram_state[31]+3
+        if type(objects[0]) is NoObject:
+            objects[0] = Player()
+        objects[0].xy = ram_state[32], ram_state[31]+3
+
         if ram_state[43] >= 145:
-            enemy = Enemy()
-            enemy.xy = ram_state[43], ram_state[42]+3
-            objects[2] = None
-            objects[1] = enemy
+            if type(objects[1]) is NoObject:
+                objects[1] = Enemy()
+            objects[1].xy = ram_state[43], ram_state[42]+3
+            objects[2] = NoObject()
         else:
-            swirl = Swirl()
-            swirl.xy = ram_state[43]+4, ram_state[42]+3
-            objects[2] = swirl
-            objects[1] = None
+            if type(objects[2]) is NoObject:
+                objects[2] = Swirl()
+            objects[2].xy = ram_state[43]+4, ram_state[42]+3
+            objects[1] = NoObject()
+
         # Enemy Missile
-        e_m = Enemy_Missile()
-        e_m.xy = ram_state[47], ram_state[46]+2
-        objects[3] = e_m
+        if type(objects[3]) is NoObject:
+            objects[3] = Enemy_Missile()
+        objects[3].xy = ram_state[47], ram_state[46]+2
+
         # Player Missile
         if abs(ram_state[38]-3-ram_state[32]) > 5 and abs(ram_state[37]-ram_state[31]) > 5:
-            p_m = Player_Bullet()
-            p_m.xy = ram_state[38]-1, ram_state[37]+4
-            objects[5] = p_m
+            if type(objects[4]) is NoObject:
+                objects[4] = Player_Bullet()
+            objects[4].xy = ram_state[38]-1, ram_state[37]+4
         else:
-            objects[5] = None
+            objects[4] = NoObject()
+
         # Adding Barrier
         if ram_state[53] > 159:
-            b = Barrier()
-            b.xy = 52, 4
-            objects[4] = b
+            if type(objects[5]) is NoObject:
+                objects[5] = Barrier()
+            objects[5].xy = 52, 4
         else:
-            objects[4] = None
+            objects[5] = NoObject()
 
         # blocks ram 0 to 16 binary coding lsb left to msb right
 
         for j in range(16):
             for i in range(8):
                 if ram_state[j+1] & 2**i:
-                    block = Shield_Block()
-                    objects[5+(i+(j*8))] = block
+                    if type(objects[6]) is NoObject:
+                        objects[6+(i+(j*8))] = Shield_Block()
                     if j == 15:
-                        block.xy = 128 + (i*4), ram_state[26] + 122 - (j*8)
-                        block.wh = 4, 7
+                        objects[6+(i+(j*8))].xy = 128 + (i*4), ram_state[26] + 122 - (j*8)
+                        objects[6+(i+(j*8))].wh = 4, 7
                     else:
-                        block.xy = 128 + (i*4), ram_state[26] + 121 - (j*8)
+                        objects[6+(i+(j*8))].xy = 128 + (i*4), ram_state[26] + 121 - (j*8)
                 else:
-                    objects[5+(i+(j*8))] = None
+                    objects[6+(i+(j*8))] = NoObject()
     else:
-        objects[0:] = [None]*172
+        objects[:134] = [NoObject()]*134
 
-        if hud:
+    if hud:
+        if ram_state[53] < 159:
+            x, y, w, h = 95, 48, 7, 7
             # scores ram: 96-98 lives 99
             if ram_state[96] > 15:
-                score = Score()
-                objects[0] = score
-                score.xy = 55, 47
-                score.wh = 47, 7
+                x = 55
+                w = 47
             elif ram_state[96]:
-                score = Score()
-                objects[0] = score
-                score.xy = 63, 48
-                score.wh = 39, 7
+                x = 63
+                w = 39
             elif ram_state[97] > 15:
-                score = Score()
-                objects[0] = score
-                score.xy = 71, 48
-                score.wh = 31, 7
+                x = 71
+                w = 31
             elif ram_state[97]:
-                score = Score()
-                objects[0] = score
-                score.xy = 79, 48
-                score.wh = 23, 7
+                x = 79
+                w = 23
             elif ram_state[98] > 15:
-                score = Score()
-                objects[0] = score
-                score.xy = 87, 48
-                score.wh = 15, 7
+                x = 87
+                w = 15
             elif ram_state[98]:
-                score = Score()
-                objects[0] = score
-                score.xy = 95, 48
-                score.wh = 7, 7
+                x = 95
+                w = 7
+            
+            
+            if type(objects[-2]) is NoObject:
+                objects[-2] = Score()
+            objects[-2].xywh = x, y, w, h
+            objects[-2].value = _convert_number(ram_state[96])*10000 + _convert_number(ram_state[97])*100 + _convert_number(ram_state[98])
 
-            life = Life()
-            objects[1] = life
-            life.xy = 95, 74
+            if type(objects[-1]) is NoObject:
+                objects[-1] = Life()
+            objects[-1].value = ram_state[99]>>4
+        else:
+            objects[-2], objects[-1] = NoObject(), NoObject()

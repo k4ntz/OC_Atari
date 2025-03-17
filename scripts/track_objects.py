@@ -113,6 +113,7 @@ class Renderer:
                 self.current_frame = self.env.render().copy()
                 self._render()
                 self.next_frame = False
+                print(".")
         pygame.quit()
 
     def _get_action(self):

@@ -1,5 +1,5 @@
 from .game_objects import GameObject, ValueObject, NoObject
-from ._helper_methods import _convert_number, get_iou
+from ._helper_methods import _convert_number
 import sys
 
 """

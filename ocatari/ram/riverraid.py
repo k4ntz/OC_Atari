@@ -132,12 +132,12 @@ class Bridge(_DescendingObject):
     The bridge targets.
     """
 
-    _offset = 17
-    fh = 18
+    _offset = 21
+    fh = 23
 
     def __init__(self, xfr=0, x_off=0):
         super().__init__(xfr, x_off)
-        self.wh = 32, 18
+        self.wh = 33, 23
         self.rgb = 134, 134, 29
         self.hud = False
 
@@ -193,7 +193,7 @@ _ram_to_class = [None, None, None, None,
                  Bridge, House, FuelDepot]  
 y_offsets = [None, None, None, None, 
              15, 6, 6, 5, 
-             17, 1, 0]
+             0, 1, 0]
 obj_list_offs = [None, None, None, None, 
                  18, 10, 10, 6, 
                  22, 14, 2]
@@ -279,7 +279,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if player._add_next_object:
         obj_type = ram_state[37]
         offset = y_offsets[obj_type]
-        if y_off - offset > 2: # add object
+        if obj_type > 3 and y_off - offset > 2: # add object
             xanchor = ram_state[25]
             x_off = twos_comp(ram_state[31]//16) - 6
             orientation = (ram_state[31] % 16)//8
