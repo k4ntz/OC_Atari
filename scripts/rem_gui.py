@@ -260,18 +260,18 @@ class Renderer:
             self._render_ram_cell(i, value)
 
     def _get_ram_value_at(self, idx: int):
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
         ram = ale.getRAM()
         return ram[idx]
 
     def _set_ram_value_at(self, idx: int, value: int):
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
         ale.setRAM(idx, value)
         # self.current_frame = self.env.render()
         # self._render()
 
     def _set_ram(self, values):
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
         for k, value in enumerate(values):
             ale.setRAM(k, value)
 
@@ -369,7 +369,7 @@ class Renderer:
         in the current observation. Prints the RAM entry positions that are responsible
         for changes at pixel x, y.
         """
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
 
         ram = ale.getRAM().copy()
         self.env.env.env.step(0)
