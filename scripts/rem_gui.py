@@ -253,7 +253,7 @@ class Renderer:
         self.clock.tick(60)
 
     def _render_ram(self):
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
         ram = ale.getRAM()
 
         for i, value in enumerate(ram):
