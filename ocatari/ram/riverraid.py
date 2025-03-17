@@ -394,21 +394,21 @@ def riverraid_score(ram_state):
     score = 0
     # hundreds of thousands
     if ram_state[77] != 88:  # if the ram value is 88, the digit is not shown on the screen
-        score = score + 100000 * ram_state[77] / 8
+        score = score + 100000 * ram_state[77] // 8
     # ten thousands
     if ram_state[79] != 88:
-        score = score + 10000 * ram_state[79] / 8
+        score = score + 10000 * ram_state[79] // 8
     # thousands
     if ram_state[81] != 88:
-        score = score + 1000 * ram_state[81] / 8
+        score = score + 1000 * ram_state[81] // 8
     # hundreds
     if ram_state[83] != 88:
-        score = score + 100 * ram_state[83] / 8
+        score = score + 100 * ram_state[83] // 8
     # tens
     if ram_state[85] != 88:
-        score = score + 10 * ram_state[85] / 8
+        score = score + 10 * ram_state[85] // 8
     # ones
     if ram_state[87] != 88:
-        score = score + ram_state[87] / 8
+        score = score + ram_state[87] // 8
 
     return score
