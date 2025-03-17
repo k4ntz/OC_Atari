@@ -242,10 +242,10 @@ def load_agent(opt, env=None, device="cpu"):
         if "c51" in pth:
             agent = QNetwork(env.action_space.n)
             agent.load_state_dict(ckpt["model_weights"])
-        elif "ppo" in pth and env.obs_mode == "dqn":
+        elif "ppo" in pth and env.unwrapped.obs_mode == "dqn":
             agent = PPOAgent(env)
             agent.load_state_dict(ckpt["model_weights"])
-        elif "ppo" in pth and env.obs_mode == "obj":
+        elif "ppo" in pth and env.unwrapped.obs_mode == "obj":
             agent = PPO_Obj_small(env, len(env.ns_state),
                                   env.buffer_window_size, device)
             agent.load_state_dict(ckpt["model_weights"])
