@@ -40,8 +40,8 @@ AVAILABLE_GAMES = [
     "BeamRider", "Berzerk", "Bowling", "Boxing", "Breakout", "Carnival", "Centipede", "ChopperCommand", "CrazyClimber",
     "DemonAttack", "DonkeyKong", "DoubleDunk", "Enduro", "FishingDerby", "Freeway", "Frogger", "Frostbite", "Galaxian",
     "Gopher", "Hero", "IceHockey", "Jamesbond", "Kangaroo", "KeystoneKapers", "KingKong", "Krull", "KungFuMaster",
-    "MarioBros", "MontezumaRevenge", "MsPacman", "NameThisGame", "Pacman", "Phoenix", "Pitfall", "Pong", "Pooyan",
-    "PrivateEye", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "StarGunner",
+    "MarioBros", "MontezumaRevenge", "MsPacman", "NameThisGame", "Pacman", "Phoenix", "Pitfall", "Pitfall2", "Pong",
+    "Pooyan", "PrivateEye", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "StarGunner",
     "Tennis", "TimePilot", "UpNDown", "Venture", "VideoPinball", "YarsRevenge", "Zaxxon"
 ]
 
@@ -50,7 +50,7 @@ UPSCALE_FACTOR = 5
 
 
 # The OCAtari environment provides an interface to interact with Atari 2600 games through Gymnasium, enabling object tracking and analysis. This environment extends the functionality of traditional Atari environments by incorporating different object detection modes (RAM, vision, or both) and supports enhanced observation spaces for advanced tasks like reinforcement learning.
-class OCAtari:
+class OCAtari(gym.Env):
     """
     :param env_name: The name of the Atari gymnasium environment e.g. "Pong" or "PongNoFrameskip-v5"
     :type env_name: str
@@ -119,8 +119,8 @@ class OCAtari:
             # Create a dictionary of game object classes for categorization
             self._class_dict = get_class_dict(self.game_name)
             # Initialize slots to store all possible game objects
-            self._slots = [self._class_dict[c]() 
-                           for c, n in self.max_objects_per_cat.items() 
+            self._slots = [self._class_dict[c]()
+                           for c, n in self.max_objects_per_cat.items()
                            for _ in range(n)]
             # Initialize the neurosymbolic state representation with zeros
             self._ns_state = np.zeros(
@@ -481,3 +481,6 @@ class OCAtari:
             rendered += coef * state_i
         rendered = rendered.astype(int)
         return rendered
+
+    def get_keys_to_action(self):
+        return self._env.unwrapped.get_keys_to_action()

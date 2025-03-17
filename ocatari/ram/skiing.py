@@ -7,8 +7,8 @@ import numpy as np
 RAM extraction for the game Skiing.
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Tree': 4,
+MAX_NB_OBJECTS = {'Player': 1, 'Tree': 6, 'Mogul': 3, 'Flag': 4}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Tree': 6,
                       'Mogul': 3, 'Flag': 4, 'Score': 1, 'Clock': 1}
 
 
@@ -24,6 +24,12 @@ FLAG_COLOR = {
     4: (184, 50, 50)
 }
 
+for i in range(255):
+    if i not in TREE_COLOR:
+        TREE_COLOR[i] = (0, 0, 0)
+    if i not in FLAG_COLOR:
+        FLAG_COLOR[i] = (0, 0, 0)
+
 
 class Player(GameObject):
     """
@@ -37,6 +43,7 @@ class Player(GameObject):
         self.rgb = 214, 92, 92
         self.hud = False
         self.orientation = 8
+        self.ram_90 = 255
 
     @property
     def _nsrepr(self):
@@ -60,7 +67,7 @@ class Flag(GameObject):
 
     """
 
-    def __init__(self, x=0, y=0, subtype=0):
+    def __init__(self, x=0, y=0, subtype=0, ram_i = 8):
         super().__init__()
         self.rgb = FLAG_COLOR[subtype]
         self._subtype = subtype
@@ -68,9 +75,10 @@ class Flag(GameObject):
         if subtype == 0:
             self._xy = x+1, y+4
         else:
-            self._xy = x+4, y+4
+            self._xy = x+10, y+4
         self.wh = 5, min(177-self._xy[1], 14, self._xy[1]-22)
         self._highest = False  # highest in the slot
+        self._ram_i = ram_i
 
     @property
     def xy(self):
@@ -79,9 +87,7 @@ class Flag(GameObject):
     @xy.setter
     def xy(self, xy):
         x, y = xy
-        self._prev_xy = self._xy
-        self._xy = self._prev_xy[0], y+4
-        self.wh = 5, min(177-y, 14)
+        self._xy = x, y+4
 
     def __eq__(self, o):
         return isinstance(o, Flag) and abs(self._xy[1] - o._xy[1]) < 5
@@ -96,13 +102,14 @@ class Mogul(GameObject):
 
     """
 
-    def __init__(self, x=0, y=0, subtype=None):
+    def __init__(self, x=0, y=0, subtype=None, ram_i = 8):
         super().__init__()
         self.rgb = (214, 214, 214)
         self._ram_id = 5
         self._xy = x+2, y+3
         self.wh = 16, min(176-y, 7, y-23)
         self._highest = False  # highest in the slot
+        self._ram_i = ram_i
 
     @property
     def xy(self):
@@ -111,9 +118,7 @@ class Mogul(GameObject):
     @xy.setter
     def xy(self, xy):
         x, y = xy
-        self._prev_xy = self._xy
         self._xy = x+2, y+3
-        self.wh = 16, min(176-y, 7, y-23)
 
     def __eq__(self, o):
         return isinstance(o, Mogul) and abs(self._xy[1] - o._xy[1]) < 5
@@ -128,18 +133,20 @@ class Tree(GameObject):
 
     """
 
-    def __init__(self, x=0, y=0, subtype=2):
+    def __init__(self, x=0, y=0, subtype=2, ram_i = 8):
         super().__init__()
         self.rgb = TREE_COLOR[subtype]
         self._subtype = subtype
         self._ram_id = 85
-        if x > 158:
-            self._xy = 8, y+4
-            self.wh = min(164-x, 16), min(175-y, 30)
-        else:
-            self._xy = x-3, y+4
-            self.wh = min(155-x, 16), min(175-y, 30)
+        self._xy = x-3, y+4
+        self.wh = min(155-x, 16), min(175-y, 30)
         self._highest = False  # highest in the slot
+        self._ram_i = ram_i
+        if x > 154: # pacman like torus
+            self._x = 8
+            self.w = min(164-x, 16)
+        elif x > 145:
+            self.w = min(155-x, 30)
 
     def __eq__(self, o):
         return isinstance(o, Tree) and o._subtype == self._subtype \
@@ -152,15 +159,12 @@ class Tree(GameObject):
     @xy.setter
     def xy(self, xy):
         x, y = xy
-        if self._xy[0] == x + 2:    # bug correction
+        if self._xy[0] == x+2:    # bug correction
             x += 5
-        # self._prev_xy = self._xy
-        if x > 158:
-            self._xy = 8, y+4
-            self.wh = min(164-x, 16), min(175-y, 30)
-        else:
-            self._xy = x-3, y+4
-            self.wh = self.wh[0], min(175-y, 30)
+        self._x = x
+        if x > 158: # pacman like torus
+            self._x = 8
+        self.y = y+4
 
 
 class Clock(ValueObject):
@@ -199,7 +203,7 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player()] + [NoObject()] * 11
+    objects = [Player()] + [NoObject()] * 13
     if hud:
         objects.extend([Score(ten=True),
                         Clock(59, 16, 38, 7)])
@@ -209,6 +213,7 @@ def _init_objects_ram(hud=False):
 def _get_highest_idx(slot_list):
     if all(not obj for obj in slot_list):
         return -1
+    
     for i, obj in enumerate(slot_list):
         if obj and obj._highest:
             return i
@@ -227,95 +232,105 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = (ram_state[25], ram_state[26]-80)
     player.orientation = ram_state[15]
-    tree_slots = objects[1:5]
-    mogul_slots = objects[5:8]
-    flag_slots = objects[8:12]
-    tree_n, mogul_n, flag_n = _get_highest_idx(tree_slots), \
-        _get_highest_idx(mogul_slots), _get_highest_idx(flag_slots)
-    for i in range(8):
-        type = ram_state[70+i]
-        x, y = ram_state[62+i], 178-ram_state[86+i]
-        height = 75 - ram_state[90+i]
+    # tree_slots = objects[1:7]
+    # mogul_slots = objects[7:10]
+    # flag_slots = objects[10:14]
+    # tree_n, mogul_n, flag_n = _get_highest_idx(tree_slots), \
+    #     _get_highest_idx(mogul_slots), _get_highest_idx(flag_slots)
+
+    # list of indices with no object
+    i_obj = []
+    # list of ram_slots with no object in the list
+    i_ram = list(range(8))
+
+    # loop updating the positions of exsisting objects
+    # removes objects if no longer present
+    for io, o in enumerate(objects[1:14]):
+        if o:
+            # all objects move up one ram slot
+            if player.ram_90 > ram_state[90]:
+                o._ram_i-=1
+            i = o._ram_i
+
+            type_o = ram_state[70+i]
+            height = ram_state[54+i]
+            x, y = ram_state[62+i], 178-ram_state[86+i]
+
+            # remove object if not longer in game
+            if height == 0 or height == 255:
+                objects[io+1] = NoObject()
+                i_obj.append(io+1)
+                continue
+            
+            # update tree
+            if type_o == 85 and type(o) is Tree:
+                i_ram.remove(i)
+                o.xy = x, y
+                if x > 154: # pacman like torus
+                    o.w = min(164-x, 16)
+                    o.x = 8
+                elif x > 145:
+                    o.w = min(155-x, 30)
+                o.h = min(175-y, height)
+
+            # update mogul
+            elif type_o == 5 and type(o) is Mogul:
+                i_ram.remove(i)
+                o.xy = x, y    
+                o.h = min(176-y, height)
+
+            # update flags
+            elif type_o == 2 and type(o) is Flag:
+                offset = 3 * (ram_state[78+i] == 4)
+                o.h = min(177-y, height)
+                if io&1:
+                    x+=1+offset
+                else:
+                    i_ram.remove(i)
+                    x+=1+offset+32
+                o.xy = x, y
+            else:
+                objects[io+1] = NoObject()
+                i_obj.append(io+1)
+                continue
+            
+        else:
+            # if not object, append to free slot list
+            i_obj.append(io+1)
+
+    player.ram_90 = ram_state[90]
+
+    # loop checking the remaining ram_slots for new objects
+    for i in i_ram:
+        type_o = ram_state[70+i]
         subtype = ram_state[78+i]
-        if y > 177:
+        height = ram_state[54+i]
+        x, y = ram_state[62+i], 178-ram_state[86+i]
+        # check if object is present in the fram
+        if y > 177 or y < 0 or height == 255 or height == 0:
             continue
-        if type == 85:  # Tree
-            if y < 27:  # tree disappeared
-                if objects[1+tree_n] == Tree(x, y, subtype):
-                    objects[1+tree_n] = NoObject()
-                    next_tree = tree_slots[(tree_n+1) % 4]
-                    if next_tree:
-                        next_tree._highest = True
-            else:
-                if tree_n == -1:  # no tree in any slot
-                    objects[1] = Tree(x, y, subtype)
-                    objects[1]._highest = True
-                    tree_n = 0
-                elif not tree_slots[tree_n]:  # tree slot is empty
-                    objects[1+tree_n] = Tree(x, y, subtype)
-                    if tree_n == -1:
-                        objects[1]._highest = True
-                else:  # update tree slot
-                    tree = tree_slots[tree_n]
-                    tree.xy = x, y
-                    if y <= 29:
-                        tree.wh = tree.wh[0], height+2
-                        if height+2 < 0:
-                            objects[1+tree_n] = NoObject()  # tree disappeared
-                            next_tree = tree_slots[(tree_n+1) % 4]
-                            if next_tree:
-                                next_tree._highest = True
-                tree_n = (tree_n+1) % 4
-        elif type == 5:  # Mogul
-            if y < 27:  # mogul disappeared
-                if objects[5+mogul_n] == Mogul(x, y, subtype):
-                    objects[5+mogul_n] = NoObject()
-                    next_mogul = mogul_slots[(mogul_n+1) % 3]
-                    if next_mogul:
-                        next_mogul._highest = True
-            else:
-                if mogul_n == -1:  # no mogul in any slot
-                    objects[5] = Mogul(x, y)
-                    objects[5]._highest = True
-                    mogul_n = 0
-                elif not mogul_slots[mogul_n]:  # mogul slot is empty
-                    objects[5+mogul_n] = Mogul(x, y)
-                    if mogul_n == -1:
-                        objects[5]._highest = True
-                else:  # update mogul slot
-                    mogul = mogul_slots[mogul_n]
-                    mogul.xy = x, y
-                    if y <= 29:
-                        mogul.wh = mogul.wh[0], height-23
-                mogul_n = (mogul_n+1) % 3
-        elif type == 2:  # Flag
-            if y < 27:  # flag disappeared
-                if objects[8+flag_n] == Flag(x, y):
-                    objects[8+flag_n] = NoObject()
-                    objects[9+flag_n] = NoObject()
-                    next_flag = flag_slots[(flag_n+2) % 4]
-                    if next_flag:
-                        next_flag._highest = True
-            else:
-                if flag_n == -1:  # no flag in any slot
-                    objects[8] = Flag(x, y, subtype)
-                    objects[9] = Flag(x+32, y, subtype)
-                    objects[8]._highest = True
-                    flag_n = 0
-                elif not flag_slots[flag_n]:  # flag slot is empty
-                    objects[8+flag_n] = Flag(x, y, subtype)
-                    objects[9+flag_n] = Flag(x+32, y, subtype)
-                    if flag_n == -1:
-                        objects[8]._highest = True
-                else:  # update flag slot
-                    flag1 = flag_slots[flag_n]
-                    flag2 = flag_slots[flag_n+1]
-                    flag1.xy = x, y
-                    flag2.xy = x+32, y
-                    if y <= 29:
-                        flag1.wh = flag1.wh[0], height-15
-                        flag2.wh = flag2.wh[0], height-15
-                flag_n = (flag_n+2) % 4
+        else:
+            # initiate tree
+            if type_o == 85:
+                if i_obj[0] < 7:
+                    idx = i_obj.pop(0)
+                    objects[idx] = Tree(x, y, subtype, i)
+
+            # initiate mogul
+            elif type_o == 5:
+                for j, idx in enumerate(i_obj):
+                    if 6 < idx < 10:
+                        idx = i_obj.pop(j)
+                        objects[idx] = Mogul(x, y, None, i)
+                        break
+
+            # initiate flag
+            elif type_o == 2:
+                    if i_obj[-1] > 9:
+                        idx2 = i_obj.pop()
+                        idx1 = i_obj.pop()
+                        objects[idx1] = Flag(x, y, subtype, i)
+                        objects[idx2] = Flag(x+32, y, subtype, i)
 
 
 def _detect_objects_skiing_raw(info, ram_state):

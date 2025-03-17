@@ -18,20 +18,10 @@ def _convert_number(number):
     :return: The number in decimal
     :rtype: int
     """
-    number_str = str(hex(number))
-    number_list = [*number_str]
-    number_str = ""
-    count = 0
-    for x in number_list:
-        if count > 1:
-            number_str += x
-        count += 1
-    try:
-        number = int(number_str)
-    except ValueError as e:
-        number = 0
-    return number
+    n1 = number>>4 if number>>4 < 10 else 9
+    n2 = number&15 if number&15 < 10 else 9
 
+    return (n1 * 10) + n2
 
 def number_to_bitfield(n):
     """
