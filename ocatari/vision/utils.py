@@ -258,7 +258,6 @@ def find_objects(image, color, size=None, tol_s=10,
     mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color), np.array(color))
     contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, 1)
     contours = [cv2.boundingRect(cnt) for cnt in contours]
-    import ipdb; ipdb.set_trace()
     if closing_active and len(contours) > 1:
         contours = merge_close_contours(contours, closing_dist)
     detected = []
