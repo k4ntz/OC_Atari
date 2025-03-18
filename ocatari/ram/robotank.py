@@ -8,8 +8,8 @@ import numpy as np
 RAM extraction for the game Road Runner.
 """
 
-MAX_NB_OBJECTS = {"Player_Crosshair": 1, "EnemyTank": 1, "EnemyShot": 1}
-MAX_NB_OBJECTS_HUD = {"Player_Crosshair": 1, "EnemyTank": 1, "EnemyShot": 1, "Score": 1, "Lives": 1, "Clock": 1}
+MAX_NB_OBJECTS = {"Player_Crosshair": 1, "PlayerShot": 1, "EnemyTank": 1, "EnemyShot": 1}
+MAX_NB_OBJECTS_HUD = {"Player_Crosshair": 1, "PlayerShot": 1, "EnemyTank": 1, "EnemyShot": 1, "Score": 1, "Lives": 1, "Clock": 1}
 
 
 class Player_Crosshair(GameObject):
@@ -27,7 +27,7 @@ class Player_Crosshair(GameObject):
 
 class PlayerShot(GameObject):
     """
-    Opposing tanks shot.
+    Player shot.
     """
 
     def __init__(self):
