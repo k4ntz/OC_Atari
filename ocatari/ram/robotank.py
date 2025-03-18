@@ -8,8 +8,12 @@ import numpy as np
 RAM extraction for the game Road Runner.
 """
 
-MAX_NB_OBJECTS = {"Player_Crosshair": 1, "PlayerShot": 1, "EnemyTank": 1, "EnemyShot": 1}
-MAX_NB_OBJECTS_HUD = {"Player_Crosshair": 1, "PlayerShot": 1, "EnemyTank": 1, "EnemyShot": 1, "Score": 1, "Lives": 1, "Clock": 1}
+MAX_NB_OBJECTS = {"Player_Crosshair": 1, "PlayerShot": 1, "EnemyTank": 1, "EnemyShot": 1, 
+                  "VisionSensor": 1, "RadarSensor": 1, "CanonSensor": 1, "TreadSensor": 1,
+                  }
+MAX_NB_OBJECTS_HUD = {"Player_Crosshair": 1, "PlayerShot": 1, "EnemyTank": 1, "EnemyShot": 1, 
+                      "VisionSensor": 1, "RadarSensor": 1, "CanonSensor": 1, "TreadSensor": 1,
+                      "Score": 1, "Lives": 1, "Clock": 1}
 
 
 class Player_Crosshair(GameObject):
@@ -63,6 +67,60 @@ class EnemyShot(GameObject):
         self.rgb = 1, 1, 1
         self.hud = False
 
+class Sensor(GameObject):
+    """
+    The sensor of the different tank parts, report if damaged.
+    """
+    
+    def __init__(self):
+        super().__init__()
+        self._xy = 0, 0
+        self.wh = 8, 10
+        self.damaged = False
+        self.hud = False
+
+    @property
+    def rgb(self):
+        if self.damaged:
+            return 184, 50, 50
+        return 110, 156, 66
+
+class VisionSensor(Sensor):
+    """
+    The view of the battlefield, blacks out periodically.
+    """
+    def __init__(self):
+        super().__init__()
+        self.xy = 44, 142
+
+
+class RadarSensor(Sensor):
+    """
+    Radar scan inoperative.  You must depend on your video to fix enemy
+    position.
+    """
+    def __init__(self):
+        super().__init__()
+        self.xy = 108, 142
+
+
+class CanonSensor(Sensor):
+    """
+    Cannons will never go completely out, but when damaged, don't count on
+    them firing all the time.
+    """
+    def __init__(self):
+        super().__init__()
+        self.xy = 44, 158
+
+class TreadSensor(Sensor):
+    """
+    Treads damaged.  Mobility is brought to a crawl.  Movement is almost
+    entirely frozen in the snow.
+    """
+    def __init__(self):
+        super().__init__()
+        self.xy = 108, 158
 
 class Score(ValueObject):
     """
@@ -127,6 +185,7 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player_Crosshair()]
     objects.extend([NoObject()] * 3)
+    objects.extend([VisionSensor(), RadarSensor(), CanonSensor(), TreadSensor()])
     if hud:
         objects.extend([NoObject(), Lives(), Clock()])
     return objects
@@ -191,23 +250,29 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[3].wh = (size>>1)+1, size - 1
     else:
         objects[3] = NoObject()
-
+    
+    vision, radar, canon, tread = objects[4: 8]
+    for i, sensor in enumerate([tread, canon, radar, vision]):
+        if ram_state[118] >> i:
+            sensor.damaged = True
+        else:
+            sensor.damaged = False
     if hud:
         if ram_state[53]:
-            if type(objects[4]) is NoObject:
-                objects[4] = Score()
-            objects[4].wh = 6 + (8 * (ram_state[53] - 1)), 8
-            objects[4].value = ram_state[53]
+            if type(objects[8]) is NoObject:
+                objects[8] = Score()
+            objects[8].wh = 6 + (8 * (ram_state[53] - 1)), 8
+            objects[8].value = ram_state[53]
         else:
-            objects[4] = NoObject()
+            objects[8] = NoObject()
 
         if ram_state[40]:
-            if type(objects[5]) is NoObject:
-                objects[5] = Lives()
-            objects[5].wh = 6 + (8 * (ram_state[40] - 1)), 8
-            objects[5].value = ram_state[40]
+            if type(objects[9]) is NoObject:
+                objects[9] = Lives()
+            objects[9].wh = 6 + (8 * (ram_state[40] - 1)), 8
+            objects[9].value = ram_state[40]
         else:
-            objects[5] = NoObject()
+            objects[9] = NoObject()
         
-        objects[6].value = _convert_number(ram_state[49])
+        objects[10].value = _convert_number(ram_state[49])
         
