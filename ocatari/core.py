@@ -41,12 +41,12 @@ AVAILABLE_GAMES = [
     "DemonAttack", "DonkeyKong", "DoubleDunk", "Enduro", "FishingDerby", "Freeway", "Frogger", "Frostbite", "Galaxian",
     "Gopher", "Hero", "IceHockey", "Jamesbond", "Kangaroo", "KeystoneKapers", "KingKong", "Krull", "KungFuMaster",
     "MarioBros", "MontezumaRevenge", "MsPacman", "NameThisGame", "Pacman", "Phoenix", "Pitfall", "Pitfall2", "Pong",
-    "Pooyan", "PrivateEye", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "StarGunner",
+    "Pooyan", "PrivateEye", "Qbert", "Riverraid", "RoadRunner", "Robotank", "Seaquest", "Skiing", "SpaceInvaders", "StarGunner",
     "Tennis", "TimePilot", "UpNDown", "Venture", "VideoPinball", "YarsRevenge", "Zaxxon"
 ]
 
 # Constant to control the upscaling factor for rendering
-UPSCALE_FACTOR = 5
+UPSCALE_FACTOR = 4.5
 
 
 # The OCAtari environment provides an interface to interact with Atari 2600 games through Gymnasium, enabling object tracking and analysis. This environment extends the functionality of traditional Atari environments by incorporating different object detection modes (RAM, vision, or both) and supports enhanced observation spaces for advanced tasks like reinforcement learning.
