@@ -237,6 +237,8 @@ def find_objects(image, color, size=None, tol_s=10,
     :type position: int or (int, int)
     :param tol_p: tolerance on the presupposed position of the targeted object
     :type tol_p: int or (int, int)
+    :param min_distance: the minimum distance to an existing object to be considered a new object
+    :type min_distance: int
     :param closing_active: If true, gathers in one bounding box the instances that are less than \
     `closing_dist` away.
     :type closing_active: bool
