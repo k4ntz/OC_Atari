@@ -1,14 +1,16 @@
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, ValueObject
+from .game_objects import GameObject, ValueObject, NoObject
 import sys
 
 """
 RAM extraction for the game ASSAULT. Supported modes: ram.
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissileVertical': 1, 'PlayerMissileHorizontal': 1, 'MotherShip': 1,
-                  'Enemy': 9, 'EnemyMissile': 1}
-MAX_NB_OBJECTS_HUD = {'PlayerScore': 6, 'Lives': 3, 'Health': 1}
+MAX_NB_OBJECTS = {'Player': 1, 'MotherShip': 1, 'Enemy': 3, 'EnemyMissile': 1, 
+                  'PlayerMissileVertical': 1, 'PlayerMissileHorizontal': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerMissileVertical': 1, 'Enemy': 3, 'EnemyMissile': 1, 
+                      'PlayerMissileHorizontal': 1, 'MotherShip': 1,
+                      'PlayerScore': 6, 'Lives': 3, 'Health': 1}
 
 
 class Player(GameObject):
@@ -146,10 +148,10 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = []  # Player(), PlayerMissileVertical(), Enemy(), EnemyMissile(), MotherShip()
-    objects.extend([None] * 8)
-    if hud:
-        objects.extend([None] * 15)  # [PlayerScore(), Health(), Lives()]
+    objects = [Player()]  # Player(), PlayerMissileVertical(), Enemy(), EnemyMissile(), MotherShip()
+    objects.extend([NoObject()] * 13)
+    # if hud:
+    #     objects.extend([None] * 15)  # [PlayerScore(), Health(), Lives()]
     return objects
 
 
@@ -257,7 +259,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             missile.xy = x - 1, y
         objects[1] = missile
     else:
-        objects[1] = None
+        objects[1] = NoObject()
 
     global horizontal_pos
     global horizontal_pos_right
@@ -288,7 +290,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[2] = mis
 
     else:
-        objects[2] = None
+        objects[2] = NoObject()
         horizontal_pos = 0
 
     # mother ship

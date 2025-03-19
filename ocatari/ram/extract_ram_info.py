@@ -88,9 +88,9 @@ def detect_objects_raw(info, ram_state, game_name):
         mod._detect_objects_raw(info, ram_state)
     except KeyError as err:
         raise KeyError(f"Game module does not exist: {game_module}")
-    except AttributeError as err:
-        raise AttributeError(
-            f"detect_objects_raw not implemented for game: {game_name}")
+    # except AttributeError as err:
+    #     raise AttributeError(
+    #         f"detect_objects_raw not implemented for game: {game_name}")
 
 
 def detect_objects_ram(objects, ram_state, game_name, hud):
@@ -101,12 +101,12 @@ def detect_objects_ram(objects, ram_state, game_name, hud):
             obj._save_prev()
     try:
         mod = sys.modules[game_module]
-        mod._detect_objects_ram(objects, ram_state, hud)
     except KeyError as err:
         raise KeyError(f"Game module does not exist: {game_module}")
-    except AttributeError as err:
-        raise AttributeError(
-            f"_detect_objects_ram not implemented for game: {game_name}")
+    mod._detect_objects_ram(objects, ram_state, hud)
+    # except AttributeError as err:
+    #     raise AttributeError(
+    #         f"_detect_objects_ram not implemented for game: {game_name}")
 
 
 def get_object_state_size(game_name, hud):

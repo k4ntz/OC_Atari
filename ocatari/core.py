@@ -40,17 +40,17 @@ AVAILABLE_GAMES = [
     "BeamRider", "Berzerk", "Bowling", "Boxing", "Breakout", "Carnival", "Centipede", "ChopperCommand", "CrazyClimber",
     "DemonAttack", "DonkeyKong", "DoubleDunk", "Enduro", "FishingDerby", "Freeway", "Frogger", "Frostbite", "Galaxian",
     "Gopher", "Hero", "IceHockey", "Jamesbond", "Kangaroo", "KeystoneKapers", "KingKong", "Krull", "KungFuMaster",
-    "MarioBros", "MontezumaRevenge", "MsPacman", "NameThisGame", "Pacman", "Phoenix", "Pitfall", "Pong", "Pooyan",
-    "PrivateEye", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "StarGunner",
+    "MarioBros", "MontezumaRevenge", "MsPacman", "NameThisGame", "Pacman", "Phoenix", "Pitfall", "Pitfall2", "Pong",
+    "Pooyan", "PrivateEye", "Qbert", "Riverraid", "RoadRunner", "Robotank", "Seaquest", "Skiing", "SpaceInvaders", "StarGunner",
     "Tennis", "TimePilot", "UpNDown", "Venture", "VideoPinball", "YarsRevenge", "Zaxxon"
 ]
 
 # Constant to control the upscaling factor for rendering
-UPSCALE_FACTOR = 5
+UPSCALE_FACTOR = 6
 
 
 # The OCAtari environment provides an interface to interact with Atari 2600 games through Gymnasium, enabling object tracking and analysis. This environment extends the functionality of traditional Atari environments by incorporating different object detection modes (RAM, vision, or both) and supports enhanced observation spaces for advanced tasks like reinforcement learning.
-class OCAtari:
+class OCAtari(gym.Env):
     """
     :param env_name: The name of the Atari gymnasium environment e.g. "Pong" or "PongNoFrameskip-v5"
     :type env_name: str
@@ -73,8 +73,8 @@ class OCAtari:
         # Extract the game name and ensure it's within the supported games
         game_name = env_name.split("/")[1].split("-")[0].split("No")[0].split("Deterministic")[
             0] if "ALE/" in env_name else env_name.split("-")[0].split("No")[0].split("Deterministic")[0]
-        if game_name[:4] not in [gn[:4] for gn in AVAILABLE_GAMES]:
-            raise ValueError(f"Game '{env_name}' not covered yet by OCAtari")
+        # if game_name[:4] not in [gn[:4] for gn in AVAILABLE_GAMES]:
+        #     raise ValueError(f"Game '{env_name}' not covered yet by OCAtari")
 
         # Initialization of environment attributes
         # Store the name of the environment and game
@@ -119,8 +119,9 @@ class OCAtari:
             # Create a dictionary of game object classes for categorization
             self._class_dict = get_class_dict(self.game_name)
             # Initialize slots to store all possible game objects
-            self._slots = [self._class_dict[c](
-            ) for c, n in self.max_objects_per_cat.items() for _ in range(n)]
+            self._slots = [self._class_dict[c]()
+                           for c, n in self.max_objects_per_cat.items()
+                           for _ in range(n)]
             # Initialize the neurosymbolic state representation with zeros
             self._ns_state = np.zeros(
                 sum([len(o._nsrepr) for o in self._slots]))
@@ -302,13 +303,16 @@ class OCAtari:
             self.window = pygame.Surface(self.window_size)
         self.rendering_initialized = True
 
-    def render(self):
+    def render(self, image=None):
         """
         Compute the render frames (as specified by render_mode during the initialization of the environment).
         If activated, adds an overlay visualizing object properties like position, velocity vector, name, etc.
         """
         # Render the environment image
-        image = self._env.render()
+
+        if image is None:
+            image = self._env.render()
+
         if not self.render_oc_overlay:
             if self.rendering_initialized:
                 # Upscale and return the rendered image
@@ -477,3 +481,6 @@ class OCAtari:
             rendered += coef * state_i
         rendered = rendered.astype(int)
         return rendered
+
+    def get_keys_to_action(self):
+        return self._env.unwrapped.get_keys_to_action()

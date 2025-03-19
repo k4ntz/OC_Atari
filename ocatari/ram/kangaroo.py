@@ -239,7 +239,7 @@ def _init_objects_ram(hud=True):
     #            FallingCoconut(), ThrownCoconut(), ThrownCoconut(), ThrownCoconut(), Fruit(), Fruit(), Fruit(), Bell(),
     #            Platform(16, 172, w=128), Platform(16, 28, w=128)]
     objects = [Player(), Child()] + [NoObject()] * 11 + \
-        [Bell(), Platform(16, 172, w=128), Platform(16, 28, w=128)]
+        [Bell()] #, Platform(16, 172, w=128), Platform(16, 28, w=128)]
     objects.extend([NoObject()] * 26)
     if hud:
         objects.extend([Score(), Time(), Lives()])
@@ -392,7 +392,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         # time
         time_value = ram_state[59]
         if time_value <= 32:
-            time_remaining = _convert_number(time_value)
+            time_remaining = _convert_number(time_value) * 100
         else:
             time_remaining = time_value - 160
         objects[-2].value = time_remaining

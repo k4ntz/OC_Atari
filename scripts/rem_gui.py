@@ -8,7 +8,7 @@ import pickle as pkl
 import os
 import atexit
 from ale_py import Action
-
+import matplotlib.pyplot as plt
 
 """
 This script can be used to identify any RAM positions that
@@ -29,8 +29,7 @@ class Renderer:
 
     def __init__(self, env_name, mode='ram', no_render=[]):
         self.env = OCAtari(env_name, mode=mode, hud=True, render_mode="rgb_array",
-                           render_oc_overlay=True, frameskip=1, obs_mode="obj")
-
+                           render_oc_overlay=True, frameskip=1, obs_mode="obj", repeat_action_probability=0)
         self.env.reset(seed=42)
         self.current_frame = self.env.render()
         self._init_pygame(self.current_frame)
@@ -70,25 +69,33 @@ class Renderer:
     def run(self):
         self.running = True
         i = 0
+        previous_x = 146
         while self.running:
             self._handle_user_input()
             if not (self.frame_by_frame and not (self.next_frame)) and not self.paused:
                 self.saved_frames.append((deepcopy(self.env.get_ram()), self.env._ale.cloneState(
                 ), self.current_frame))  # ram, state, image (rgb)
                 action = self._get_action()
+                # self.paddle.step(action.name)
                 action = self.env.get_action_meanings().index(action.name)
                 reward = self.env.step(action)[1]
-                # if reward != 0:
-                #     print(reward)
+                # print(self.paddle.position, self.env.get_ram()[72])
+                # print(self.paddle.speed, previous_x - self.env.get_ram()[72])
+                previous_x = self.env.get_ram()[72]
+                if reward != 0:
+                    print(reward)
                 #     pass
                 # self.env.set_ram(59, 105)
                 # js = [2, 6, 12, 36, 66, 128, 172]
                 # for i, j in zip(range(28, 34), js):
                 #     self.env.set_ram(i, 1+j)
+                # print(self.env.get_ram()[72])
+                # print(".")
                 self.current_frame = self.env.render().copy()
                 self._render()
                 self.next_frame = False
             self._render()
+
             # if i % 300 == 0:
             #     import ipdb; ipdb.set_trace()
             i += 1
@@ -153,7 +160,7 @@ class Renderer:
                     print(self.env.objects)
 
                 elif event.key == pygame.K_n:  # next
-                    print("next")
+                    print("next \n\n")
                     self.next_frame = True
 
                 elif event.key == pygame.K_b:  # 'B': Backwards
@@ -188,6 +195,10 @@ class Renderer:
                         with open(filename, "wb") as f:
                             pkl.dump((statepkl, self.env.objects), f)
                             print(f"State cloned in {filename}")
+
+                if event.key == pygame.K_m:  # 'S': save
+                    plt.imshow(self.env._ale.getScreenRGB())
+                    plt.show()
 
                 elif event.key == pygame.K_ESCAPE and self.active_cell_idx is not None:
                     self._unselect_active_cell()
@@ -242,25 +253,25 @@ class Renderer:
         self.clock.tick(60)
 
     def _render_ram(self):
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
         ram = ale.getRAM()
 
         for i, value in enumerate(ram):
             self._render_ram_cell(i, value)
 
     def _get_ram_value_at(self, idx: int):
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
         ram = ale.getRAM()
         return ram[idx]
 
     def _set_ram_value_at(self, idx: int, value: int):
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
         ale.setRAM(idx, value)
         # self.current_frame = self.env.render()
         # self._render()
 
     def _set_ram(self, values):
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
         for k, value in enumerate(values):
             ale.setRAM(k, value)
 
@@ -358,10 +369,10 @@ class Renderer:
         in the current observation. Prints the RAM entry positions that are responsible
         for changes at pixel x, y.
         """
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
 
         ram = ale.getRAM().copy()
-        self.env.step(0)
+        self.env.env.env.step(0)
         original_pixel = ale.getScreenRGB()[y, x]
         self._set_ram(ram)  # restore original RAM
         state = self.env._clone_state()
@@ -374,7 +385,7 @@ class Renderer:
                 self.current_active_cell_input = str(altered_value)
                 self.env._restore_state(state)
                 ale.setRAM(i, altered_value)
-                self.env.step(0)
+                self.env.env.env.step(0)
                 new_frame = ale.getScreenRGB()
                 self._render()
                 new_pixel = new_frame[y, x]
@@ -393,7 +404,7 @@ if __name__ == "__main__":
 
     parser = ArgumentParser(description='OCAtari remgui.py Argument Setter')
 
-    parser.add_argument('-g', '--game', type=str, default="Seaquest",
+    parser.add_argument('-g', '--game', type=str, default="Pong",
                         help='Game to be run')
     parser.add_argument('-hu', '--human', action='store_true',
                         help='Let user play the game.')

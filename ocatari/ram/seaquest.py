@@ -170,6 +170,14 @@ class OxygenBar(ValueObject):
         self.hud = True
         self.value = 0
 
+    @property
+    def _nsrepr(self):
+        return [self.w]
+    
+    @property
+    def _ns_meaning(self):
+        return ["WIDTH"]
+
 
 class OxygenBarDepleted(ValueObject):
     """
@@ -345,14 +353,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if ram_state[102] != 0:
         if type(objects[35]) != OxygenBar:
             objects[35] = OxygenBar()
-        if ram_state[102] == 64:
-            new_wh = 63, 5
-        else:
-            new_wh = ram_state[102], 5
-        objects[35].wh = new_wh
-        objects[35].value = new_wh[0]
+        objects[35].wh = min(ram_state[102], 63), 5
+        objects[35].value = ram_state[102]
     else:
-        objects[35] = NoObject()
+        objects[35] = NoObject(nslen=1)
 
     # If you have six collected divers they blink. Blinking is ignored here
     for i in range(6):
