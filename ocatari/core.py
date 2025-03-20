@@ -157,6 +157,7 @@ class OCAtari(gym.Env):
         self.action_space = self._env.action_space
         # Store the ALE interface of the environment
         self._ale = self._env.unwrapped.ale
+        self.ale = self._ale
 
         # Inherit every attribute and method of the base environment
         # Dynamically set attributes of the base Gymnasium environment to this class
@@ -281,7 +282,6 @@ class OCAtari(gym.Env):
             self._state_buffer_rgb.append(self.getScreenRGB())
         if self.create_ns_stack:
             self._state_buffer_ns.append(self.ns_state)
-
     window: pygame.Surface = None
     clock: pygame.time.Clock = None
 
