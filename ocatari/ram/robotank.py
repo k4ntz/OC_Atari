@@ -172,10 +172,11 @@ class Clock(ValueObject):
     def __init__(self):
         super().__init__()
         self.rgb = 236, 236, 236
-        self._xy = 83, 10
-        self.wh = (14, 8)
+        self._xy = 67, 10
+        self.wh = (30, 8)
         self.hud = True
         self.value = 0
+        self.day = 0
 
 def degree_to_xy(degree, radius=10):
     
@@ -238,9 +239,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         else:
             objects[1] = NoObject()
 
-
         # ram 37 == wh
-        if 63 < ram_state[37] and ram_state[35] and not ram_state[77]:
+        if 63 < ram_state[37] and ram_state[35] and not ram_state[77] and \
+            (6 < ram_state[49] < 25 and not (ram_state[94] == 3 and ram_state[37] < 160) or 19 < ram_state[67]):
+
             if type(objects[2]) is NoObject:
                 objects[2] = EnemyTank()
             size = (ram_state[37]>>4) - 3
@@ -263,7 +265,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         else:
             objects[2] = NoObject()
 
-        if ram_state[67]:
+        if ram_state[67] and not ((not (6 < ram_state[49] < 25) or ram_state[94] == 3) and  11 < ram_state[67] < 19):
             if type(objects[3]) is NoObject:
                 objects[3] = EnemyShot()
             size = 32 - ram_state[67]
@@ -320,5 +322,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         else:
             objects[10] = NoObject()
         
+        # ram 49 == time of day
+        # ram 55 == days
+        x, w = 67, 30
+        if ram_state[55] > 15:
+            x-=8
+            w+=8
+
+        objects[11].xywh = x, 10, w, 8
         objects[11].value = _convert_number(ram_state[49])
-        
+        objects[11].day = _convert_number(ram_state[55])
