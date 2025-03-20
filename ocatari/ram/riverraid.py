@@ -10,8 +10,9 @@ Furthermore there was no y-Position for the Objects found in the RAM. It could b
 the players y-Position not stored in the RAM.
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissile': 1, 'FuelDepot': 4, 'Tanker': 4, 'Helicopter': 4, 'House': 4, 'Jet': 4, 'Bridge': 1}
-MAX_NB_OBJECTS_HUD = dict(MAX_NB_OBJECTS, **{'PlayerScore': 1, 'Lives': 1}) 
+MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissile': 1, 'FuelDepot': 4,
+                  'Tanker': 4, 'Helicopter': 4, 'House': 4, 'Jet': 4, 'Bridge': 1}
+MAX_NB_OBJECTS_HUD = dict(MAX_NB_OBJECTS, **{'PlayerScore': 1, 'Lives': 1})
 
 
 def twos_comp(val):
@@ -35,7 +36,6 @@ class _DescendingObject(GameObject):
 
     def _update_xy(self, xfr, x_off, yfr, y_off):  # xfr
         self._xy = 15 * xfr - x_off, yfr * 32 + y_off - self._offset
-    
 
 
 class Player(GameObject):
@@ -186,16 +186,17 @@ class Lives(ValueObject):
         self.wh = 6, 8
         self.hud = True
 
-#0 nothing, 1, 2, 3 is explosion
+
+# 0 nothing, 1, 2, 3 is explosion
 # 9th would be houseandtree
-_ram_to_class = [None, None, None, None, 
-                 Jet, Helicopter, Helicopter, Tanker, 
-                 Bridge, House, FuelDepot]  
-y_offsets = [None, None, None, None, 
-             15, 6, 6, 5, 
+_ram_to_class = [None, None, None, None,
+                 Jet, Helicopter, Helicopter, Tanker,
+                 Bridge, House, FuelDepot]
+y_offsets = [None, None, None, None,
+             15, 6, 6, 5,
              0, 1, 0]
-obj_list_offs = [None, None, None, None, 
-                 18, 10, 10, 6, 
+obj_list_offs = [None, None, None, None,
+                 18, 10, 10, 6,
                  22, 14, 2]
 
 
@@ -223,7 +224,8 @@ def _init_objects_ram(hud=False):
     """
     global cntr, prev11, prev70
     descending = [NoObject() for _ in range(21)]
-    objects = [NoObject() for _ in range(2)] + descending  # Player, missile and the other objects
+    # Player, missile and the other objects
+    objects = [NoObject() for _ in range(2)] + descending
     objects[0]._prev11 = 0
     objects[0]._add_next_object = False
 
@@ -271,15 +273,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[1] = NoObject()
 
     if ram_state[11] < player._prev11 and ram_state[37] > 3 and \
-            not player._add_next_object: # new object from the top
+            not player._add_next_object:  # new object from the top
         player._add_next_object = True
-    if ram_state[58] == 223: # player is dead
+    if ram_state[58] == 223:  # player is dead
         player._add_next_object = False
     y_off = ram_state[11]
     if player._add_next_object:
         obj_type = ram_state[37]
         offset = y_offsets[obj_type]
-        if obj_type > 3 and y_off - offset > 2: # add object
+        if obj_type > 3 and y_off - offset > 2:  # add object
             xanchor = ram_state[25]
             x_off = twos_comp(ram_state[31]//16) - 6
             orientation = (ram_state[31] % 16)//8
@@ -291,7 +293,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             # insert object in the right slot
             ooff = obj_list_offs[obj_type]
             next_available_slots = 0
-            if obj_type == 8: # bridge
+            if obj_type == 8:  # bridge
                 next_available_slots = 0
             else:
                 for i in range(4):
@@ -299,7 +301,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                         next_available_slots = i + 1
                     elif next_available_slots:
                         break
-            objects[ooff + next_available_slots%4] = obj
+            objects[ooff + next_available_slots % 4] = obj
             player._add_next_object = False
     for j, obj in enumerate(objects[2:23]):
         if obj:
@@ -349,10 +351,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             score.wh = 14, 8
         else:
             score.xy = 97, 165
-            score.wh = 6, 8   
+            score.wh = 6, 8
     player._prev11 = ram_state[11]
     return objects
-    
 
 
 def _detect_objects_riverraid_raw(info, ram_state):
@@ -372,7 +373,7 @@ def _detect_objects_riverraid_raw(info, ram_state):
     info["player_x"] = ram_state[51]  # start at x = 76, player_y is constant
     info["missile_x"] = ram_state[117]
     info["missile_y"] = ram_state[50]
-    info["game_active"] = ram_state[53] # == 254
+    info["game_active"] = ram_state[53]  # == 254
     info["fuel_meter_high"] = ram_state[55]
     info["fuel_meter_low"] = ram_state[56]
     info["lives_"] = (ram_state[64] / 8) + 1
@@ -395,24 +396,6 @@ def riverraid_score(ram_state):
     score = 0
     # hundreds of thousands
     if ram_state[77] != 88:  # if the ram value is 88, the digit is not shown on the screen
-<<<<<<< HEAD
-        score += 100000 * ram_state[77] // 8
-    # ten thousands
-    if ram_state[79] != 88:
-        score += 10000 * ram_state[79] // 8
-    # thousands
-    if ram_state[81] != 88:
-        score += 1000 * ram_state[81] // 8
-    # hundreds
-    if ram_state[83] != 88:
-        score += 100 * ram_state[83] // 8
-    # tens
-    if ram_state[85] != 88:
-        score += 10 * ram_state[85] // 8
-    # ones
-    if ram_state[87] != 88:
-        score += ram_state[87] // 8
-=======
         score = score + 100000 * ram_state[77] // 8
     # ten thousands
     if ram_state[79] != 88:
@@ -430,5 +413,4 @@ def riverraid_score(ram_state):
     if ram_state[87] != 88:
         score = score + ram_state[87] // 8
 
->>>>>>> master
     return score
