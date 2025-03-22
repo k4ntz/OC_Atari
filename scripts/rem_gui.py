@@ -90,7 +90,6 @@ class Renderer:
                 # for i, j in zip(range(28, 34), js):
                 #     self.env.set_ram(i, 1+j)
                 # print(self.env.get_ram()[72])
-                print(".")
                 self.current_frame = self.env.render().copy()
                 self._render()
                 self.next_frame = False

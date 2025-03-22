@@ -240,6 +240,26 @@ def _convert_x(rs):
             xd = xds[i] + (xds[i + 1] - xds[i]) * (rs - rss[i]) / (rss[i + 1] - rss[i])
             return xu, xd
 
+"""
+X positions in BeamRider are indicated using a lane index. For calculating the exact
+x position for an object, we need to extract xy positions for the two ends of
+the lane (which are constant constant) and also the objects' y position, and then
+use some mathematics (more detailed explanations in ram/BeamRider.pdf).
+
+On the other hand, there are not a single cell is associated with the y position
+of an object. As you see in the previous implementations for extracting y positions
+for Saucers (that works fine for a short time of playing), it seems like the y
+position should be extracted from ram_state[90:95], considering the order of numbers
+in ram_state[25:31] (e.g. the y position of the enemy with the highest related value in
+ram_state[25:31] should be extracted from ram_state[95]). This approach works well
+until the player kills ca. 10 enemies. After that, the extracted order for cells in
+ram_state[90:95] is not the correct order anymore. (e.g. in BeamRider_Y.png, the y
+position for the enemy in the middle of screen has been assigned to another enemy which
+has not entered the lane yet, and the y position for enemy projectile has bin considered
+for the enemy which is recently entered to the field at the top of screen, between
+3rd and 4th lanes)
+"""
+
 def _detect_objects_ram(objects, ram_state, hud=True):
 
     player = Player()
