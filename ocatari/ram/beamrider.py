@@ -281,7 +281,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     state_positions = range(0, 5)
     y_positions = [y_pos for y_pos in y_positions if y_pos < 255]
     y_positions = list(zip(y_positions, state_positions))
-    y_positions.sort(reverse=True)
+    y_positions.sort()
     # The x pos of the center line has the RAM value 128, that translates to 80 (gained from using the pure number value of the hex value, works like the score)
     # When enemies move forward, their position moves further outwards, while the RAM stays the same
     # Enemies always move down one of the lines, if they are not at the top
@@ -296,7 +296,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             
             y_pos = [x for x, y in enumerate(y_positions) if y[1] == i]
             if len(y_pos):
-                y = 165 - ram_state[95-y_pos[0]]
+                y = 165 - ram_state[93+y_pos[0]]
             else:
                 y = 43
             
