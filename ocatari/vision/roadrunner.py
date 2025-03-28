@@ -3,14 +3,14 @@ from .game_objects import GameObject, NoObject
 import numpy as np
 
 objects_colors = { 
-    "blue" : [[101, 111, 228], [84, 92, 214], [66, 72, 200]],
-    "red" : [[198, 108, 58], [181, 83, 40], [213, 130, 74]],         
-    "truck": [[252, 224, 112], [198, 108, 58], [213, 130, 74], [181, 83, 40]],
+    "blue" : [[101, 111, 228], [84, 92, 214], [66, 72, 200]], #Player, Seed,Turret, Steelshot
+    "red" : [[198, 108, 58], [181, 83, 40], [213, 130, 74]],  #Enemy, Roadcrack, AcmeMine, Turretball, Rock
+    "truck": [[252, 224, 112], [198, 108, 58], [213, 130, 74], [181, 83, 40]], 
     "sign": [[0, 0, 0], [214, 92, 92], [84, 92, 214]],
     "score": [252,252,84], 
     "bonus":[0, 0, 0],
     "bird" : [[132, 144, 252], [252, 188, 116]],
-    #"gray" :[[111,111,111],[142,142,142],[93,93,93]]
+    "cactus": [187, 187, 53],
 
 }
 player_colors = [objects_colors['blue']]# +[objects_colors['gray']]
@@ -42,6 +42,20 @@ class Truck(GameObject):
         super().__init__(*args, **kwargs)
         self.rgb = 198, 108, 58
         self.hud = False
+
+
+class Cactus(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 187, 187, 53
+        self.hud = True
+        
+class Tree(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 187, 187, 53
+        self.hud = True
+
 
 #LEVEL 2
 
@@ -135,7 +149,7 @@ def _detect_objects(objects, obs, hud=False):
         size=(7, 31), tol_s = (2,2), miny=100, maxy =157, min_distance=0, closing_active=1) #Level 4
     if not enemy_bb:
         enemy_bb = find_mc_objects(obs, objects_colors["red"],
-        size=(12, 22) ,tol_s = (4,4), miny=80, maxy =157, min_distance=0, closing_active=1) #Level 4 enemy on the rocket  
+        size=(12, 22) ,tol_s = (4,4), miny=60, maxy =157, min_distance=0, closing_active=1) #Level 4 enemy on the rocket  
     match_objects(objects, enemy_bb, start_idx, 1, Enemy)
     start_idx +=1
     
@@ -203,6 +217,15 @@ def _detect_objects(objects, obs, hud=False):
         
         birds_bb = find_mc_objects(obs, objects_colors['bird'], size=(6, 8), tol_s=0, min_distance=0, closing_active= False, minx=40, maxx= 80)
         match_objects(objects, birds_bb, start_idx, 2, Bird)
+        start_idx+=2
+        
+        #Cactus
+        cactus_bb = find_objects(obs, objects_colors['cactus'], size=(8,8), tol_s=0, closing_active= False)
+        match_objects(objects, cactus_bb, start_idx, 2, Cactus)
+        start_idx+=2
+        
+        tree_bb = find_objects(obs, objects_colors['cactus'], size=(5,8), tol_s=0, closing_active= False)
+        match_objects(objects, tree_bb, start_idx, 2, Tree)
         start_idx+=2
         
         score_bb = find_objects(obs, objects_colors['score'], maxy=16,closing_dist=10)
