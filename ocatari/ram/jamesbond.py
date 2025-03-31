@@ -95,7 +95,7 @@ class Score(ValueObject):
         self._xy = 95, 15
         self.wh = (6, 7)
         self.rgb = 252, 252, 84
-        self.hud = False
+        self.hud = True
         self.value = 0
 
 
@@ -104,8 +104,8 @@ class Life(GameObject):
         super(Life, self).__init__()
         self._xy = 9, 184
         self.wh = (8, 4)
-        self.rgb = 252, 252, 84
-        self.hud = False
+        self.rgb = 180, 122, 48
+        self.hud = True
         self.value = 0
 
 
@@ -144,7 +144,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     """
 
     # player x,y == r27 - 1, 50 + r25
-    objects[0].xy = ram_state[27] - 1, 50 + ram_state[25]
+    x, y = ram_state[27] - 1, 50 + ram_state[25]
+    if x < 14:
+        x-=5
+    objects[0].xy = x, y
 
     # pshot xy = r38, r31
     if ram_state[31] != 128:
@@ -156,14 +159,19 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # row1 x,y == r61, 57
     if ram_state[49] != 255:
+        x, y = ram_state[61] - 1, 57
+        if x < 14:
+            x-=5
         if ram_state[49] == 6:
+            objects[3] = NoObject()
             if type(objects[2]) is NoObject:
                 objects[2] = Helicopter()
-            objects[2].xy = ram_state[61] - 1, 57
+            objects[2].xy = x, y
         else:
+            objects[2] = NoObject()
             if type(objects[3]) is NoObject:
                 objects[3] = Ice()
-            objects[3].xy = ram_state[61] - 1, 57
+            objects[3].xy = x, y
     else:
         objects[2] = NoObject()
         objects[3] = NoObject()
@@ -172,7 +180,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if ram_state[50] != 255:
         if type(objects[4]) is NoObject:
             objects[4] = Hornet()
-        objects[4].xy = ram_state[59] - 2, 75
+        x, y = ram_state[59] - 2, 75
+        if x < 14:
+            x-=5
+        objects[4].xy = x, y
     else:
         objects[4] = NoObject()
 
@@ -187,23 +198,34 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # fire hole x == 43
     # erupt == r51; x == r60; size == r109, 86 == small, 102 == big
     if ram_state[51] == 54 and ram_state[108] == 251:
+        objects[7] = NoObject()
+        objects[8] = NoObject()
         if type(objects[6]) is NoObject:
             objects[6] = Eruption()
+        x = ram_state[60]
+        if x < 14:
+            x-=5
         if ram_state[109] == 86:
-            objects[6].xy = ram_state[60] + 4, 125
+            objects[6].xy = x + 4, 125
             objects[6].wh = 20, 7
         else:
-            objects[6].xy = ram_state[60], 125
+            objects[6].xy = x, 125
             objects[6].wh = 32, 15
     elif ram_state[51] == 48:
+        objects[6] = NoObject()
+        objects[8] = NoObject()
         if type(objects[7]) is NoObject:
             objects[7] = Diver()
         objects[7].xy = ram_state[60] - 1, 131
     elif ram_state[108] == 250:
+        objects[6] = NoObject()
+        objects[7] = NoObject()
         if type(objects[8]) is NoObject:
             objects[8] = Fire_Hole()
         objects[8].xy = ram_state[43], 122
     else:
+        objects[6] = NoObject()
+        objects[7] = NoObject()
         objects[8] = NoObject()
 
     if hud:
@@ -221,7 +243,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             x, w = 87, 14
         
         objects[9].xywh = x, 15, w, 7
-        objects[9].value = _convert_number(ram_state[28])*10000 + _convert_number(ram_state[29])*100 + _convert_number(ram_state[30])
+        objects[9].value = _convert_number(ram_state[94])*10000 + _convert_number(ram_state[93])*100 + _convert_number(ram_state[92])
 
 
         # Lives 86

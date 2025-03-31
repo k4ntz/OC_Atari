@@ -192,7 +192,7 @@ class Score(ValueObject):
         self.wh = 5, 8
         self.rgb = 236, 236, 236
         self.hud = True
-        self.value
+        self.value = 0
 
 
 class Life(ValueObject):
