@@ -7,10 +7,9 @@ RAM extraction for the game KANGUROO. Supported modes: ram.
 
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Player_Projectile': 1, 'Saucer': 5, 'Enemy_Projectile': 3}
-                #   'Torpedos': 1}  # Asteroid count can get really high
-# MAX_NB_OBJECTS_HUD = {'Player': 1, 'Player_Projectile': 1, 'Torpedos': 1, 'Life': 1, 'HUD': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Player_Projectile': 1, 'Saucer': 5, 'Enemy_Projectile': 3,
+MAX_NB_OBJECTS = {'Player': 1, 'Saucer': 3, 'Enemy_Projectile': 4, 'Player_Projectile': 1}
+
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Saucer': 3, 'Enemy_Projectile': 4, 'Player_Projectile': 1,
                       'PlayerScore': 1, 'Lives': 1, 'Torpedos': 1, 'Remaining_Enemies': 1}
 # MAX_NB_OBJECTS = MAX_NB_OBJECTS_HUD
 
@@ -220,7 +219,7 @@ def _init_objects_ram(hud=True):
     (Re)Initialize the objects
     """
 
-    objects = [Player()] + [Player_Projectile()] + [NoObject()]*5 + [Enemy_Projectile()]*3
+    objects = [Player()] + [Saucer()] * 3 + [Enemy_Projectile()] * 4 + [Player_Projectile()] * 1
 
     if hud:
         objects += [PlayerScore()] + [Lives()] + [Torpedos()] + [Remaining_Enemies()]
@@ -240,25 +239,13 @@ def _convert_x(rs):
             xd = xds[i] + (xds[i + 1] - xds[i]) * (rs - rss[i]) / (rss[i + 1] - rss[i])
             return xu, xd
 
-"""
-X positions in BeamRider are indicated using a lane index. For calculating the exact
-x position for an object, we need to extract xy positions for the two ends of
-the lane (which are constant constant) and also the objects' y position, and then
-use some mathematics (more detailed explanations in ram/BeamRider.pdf).
-
-On the other hand, there are not a single cell is associated with the y position
-of an object. As you see in the previous implementations for extracting y positions
-for Saucers (that works fine for a short time of playing), it seems like the y
-position should be extracted from ram_state[90:95], considering the order of numbers
-in ram_state[25:31] (e.g. the y position of the enemy with the highest related value in
-ram_state[25:31] should be extracted from ram_state[95]). This approach works well
-until the player kills ca. 10 enemies. After that, the extracted order for cells in
-ram_state[90:95] is not the correct order anymore. (e.g. in BeamRider_Y.png, the y
-position for the enemy in the middle of screen has been assigned to another enemy which
-has not entered the lane yet, and the y position for enemy projectile has bin considered
-for the enemy which is recently entered to the field at the top of screen, between
-3rd and 4th lanes)
-"""
+def _define_object(i):
+    if i < 3:
+        return Saucer()
+    elif i >= 3 and i < 7:
+        return Enemy_Projectile()
+    elif i == 7:
+        return Player_Projectile()
 
 def _detect_objects_ram(objects, ram_state, hud=True):
 
@@ -266,33 +253,23 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     player.xy = int(ram_state[41]*1.5)-115, 164
     objects[0] = player
     
-    player_projectile = NoObject()
-    if ram_state[49] == 35:
-        player_projectile = Player_Projectile()
-        y = ram_state[78] + 28
-        xu, xd = _convert_x(ram_state[40])
-        perspective_ratio = (y - 43) / 122
-        x = xu + (xd - xu) * perspective_ratio
-        player_projectile.xy = int(x - 3), int(y)
-        player_projectile.wh = 8, 6
-    objects[1] = player_projectile
-
-    y_positions = ram_state[25:31]
-    state_positions = range(0, 5)
-    y_positions = [y_pos for y_pos in y_positions if y_pos < 255]
+    x_inds = [33, 34, 35, 36, 37, 38, 39, 40]
+    y_inds = [25, 26, 27, 28, 29, 30, 31, 32]
+    y_positions = []
+    state_positions = []
+    for i in range(8):
+        if ram_state[25 + i] < 255:
+            y_positions.append(ram_state[25 + i])
+            state_positions.append(i)
     y_positions = list(zip(y_positions, state_positions))
     y_positions.sort()
-    # The x pos of the center line has the RAM value 128, that translates to 80 (gained from using the pure number value of the hex value, works like the score)
-    # When enemies move forward, their position moves further outwards, while the RAM stays the same
-    # Enemies always move down one of the lines, if they are not at the top
-    # lanes from left to right
-    #  1    2    3    4    5   6   7
-    #  60   94  111  128  145 162 196
-    for i in range(5):
-        if ram_state[33+i] != 0:
-            enemy = Saucer()
 
-            lane = ram_state[33+i]
+    for i in range(8):
+        current_object = NoObject()
+        if ram_state[33 + i] != 0 and ram_state[25 + i] < 255:
+            current_object = _define_object(i)
+
+            lane = ram_state[33 + i]
             
             y_pos = [x for x, y in enumerate(y_positions) if y[1] == i]
             if len(y_pos):
@@ -308,31 +285,10 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                 xu, xd = _convert_x(lane)
                 x = xu + (xd - xu) * perspective_ratio
             
-            enemy.wh = round(10 * perspective_ratio) + 1, round(7 * perspective_ratio) + 1
-            enemy.xy = round(x - 5 * perspective_ratio), y
-            objects[2+i] = enemy
-    
-    for i in range(3):
-        enemy_projectile = NoObject()
-        if ram_state[30+i] < 255:
-            enemy_projectile = Enemy_Projectile()
-
-            lane = ram_state[38+i]
-            # x = 0
+            current_object.wh = round(10 * perspective_ratio) + 1, round(7 * perspective_ratio) + 1
+            current_object.xy = round(x - 5 * perspective_ratio), y
             
-            y = ram_state[30+i] - 61
-            
-            perspective_ratio = (y - 43) / 122
-            
-            if lane > 196:
-                x = _convert_number(lane)
-            else:
-                xu, xd = _convert_x(lane)
-                x = xu + (xd - xu) * perspective_ratio
-            
-            enemy_projectile.xy = int(x), int(y)
-            enemy_projectile.wh = 2, 5
-        objects[7+i] = enemy_projectile
+        objects[1+i] = current_object
     
     if hud:
         player_score = PlayerScore()
@@ -379,7 +335,6 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             remaining_enemies.xy = 25, 32
             remaining_enemies.wh = 6, 8
         objects[12] = remaining_enemies
-
 
 def _detect_objects_beamrider_raw(info, ram_state):
     player_x = ram_state[41]
