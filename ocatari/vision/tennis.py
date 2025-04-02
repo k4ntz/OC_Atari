@@ -1,9 +1,15 @@
-from .utils import find_objects
-from .game_objects import GameObject
+from .utils import find_objects, find_mc_objects, match_objects
+from .game_objects import GameObject, NoObject
 
 objects_colors = {
-    "enemy": [117, 128, 240], "player": [240, 128, 128], "ball": [236, 236, 236], "ball_shadow": [74, 74, 74],
-    "logo": [240, 128, 128], "enemy_score": [117, 128, 240], "player_score": [240, 128, 128]}
+    "player": [240, 128, 128],
+    "enemy": [117, 128, 240],
+    "ball": [236, 236, 236],
+    "ball_shadow": [74, 74, 74],
+    "enemy_score": [117, 128, 240],
+    "player_score": [240, 128, 128],
+    "logo": [240, 128, 128]
+    }
 
 fixed_objects_pos = {
     "player_score": [39, 4, 16, 8],
@@ -49,38 +55,39 @@ class PlayerScore(GameObject):
 
 
 def _detect_objects(objects, obs, hud):
-    objects.clear()
+    
+    #Player
+    player = objects[0]
+    player_bb = find_objects(
+        obs, objects_colors["player"], size = (13,23), min_distance=1, closing_dist=1)
+    if player_bb:
+        player.xywh = player_bb[0]
+    start_idx = 1
 
-    player = find_objects(
-        obs, objects_colors["player"], min_distance=1, closing_dist=1)
-    for p in player:
-        if 5 < p[1] < 189 and p[2] > 10 and p[3] < 28:
-            objects.append(Player(*p))
+    enemy_bb = find_objects(
+        obs, objects_colors["enemy"], min_distance=1, closing_dist=1, size = (13,23))
+    match_objects(objects, enemy_bb, start_idx, 1, Enemy)
+    start_idx+=1
 
-    enemy = find_objects(
-        obs, objects_colors["enemy"], min_distance=1, closing_dist=1)
-    for en in enemy:
-        if 5 < en[1] < 189 and en[2] > 10 and en[3] < 28:
-            objects.append(Enemy(*en))
+    ball_bb = find_objects(obs, objects_colors["ball"], min_distance=1, closing_dist=1, size=(2,2))
+    match_objects(objects, ball_bb, start_idx, 1, Ball)
+    start_idx+=1
 
-    ball = find_objects(obs, objects_colors["ball"], min_distance=1)
-    for b in ball:
-        objects.append(Ball(*b))
+    shadow_bb = find_objects(
+        obs, objects_colors["ball_shadow"], min_distance=1, size =(2,2))
+    match_objects(objects, shadow_bb, start_idx, 1, BallShadow)
+    start_idx+=1
 
-    ball_shadow = find_objects(
-        obs, objects_colors["ball_shadow"], min_distance=1)
-    for b in ball_shadow:
-        objects.append(BallShadow(*b))
 
     if hud:
-        enemy_score = find_objects(
-            obs, objects_colors["enemy_score"], min_distance=1, closing_dist=5)
-        for enscr in enemy_score:
-            if enscr[1] < 14:
-                objects.append(EnemyScore(*enscr))
-
         player_score = find_objects(
-            obs, objects_colors["player_score"], min_distance=1, closing_dist=5)
-        for plrscr in player_score:
-            if plrscr[1] < 14:
-                objects.append(PlayerScore(*plrscr))
+            obs, objects_colors["player_score"], min_distance=1, closing_dist=5, size=(6,7))
+        match_objects(objects, player_score, start_idx, 1, PlayerScore)
+        
+        start_idx+=1
+        
+        enemy_score = find_objects(
+            obs, objects_colors["enemy_score"], min_distance=1, closing_dist=5, size=(6,7))
+        match_objects(objects, enemy_score, start_idx, 1, EnemyScore)
+        start_idx+=1
+            
