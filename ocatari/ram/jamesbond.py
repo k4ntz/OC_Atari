@@ -3,9 +3,12 @@ from ._helper_methods import _convert_number
 import sys
 
 MAX_NB_OBJECTS = {"Player": 1, "Player_Shot": 1, "Helicopter": 1, "Ice": 1, "Hornet": 1,
-                  "Enemy_Shot": 1, "Eruption": 1, "Diver": 1, "Fire_Hole": 1}
+                  "Enemy_Shot": 1, "Eruption": 1, "Diver": 1, "Fire_Hole": 1, "Base": 1,
+                  "Pink_Disc": 1, "Riser": 1, "Riser_Bomb": 1, "Submarine": 1, "Submarine_Bomb": 1}
 MAX_NB_OBJECTS_HUD = {"Player": 1, "Player_Shot": 1, "Helicopter": 1, "Ice": 1, "Hornet": 1,
-                      "Enemy_Shot": 1, "Eruption": 1, "Diver": 1, "Fire_Hole": 1, "Score": 1, "Life": 1} 
+                      "Enemy_Shot": 1, "Eruption": 1, "Diver": 1, "Fire_Hole": 1, "Base": 1,
+                      "Pink_Disc": 1, "Riser": 1, "Riser_Bomb": 1, "Submarine": 1, "Submarine_Bomb": 1,
+                      "Score": 1, "Life": 1} 
 
 
 class Player(GameObject):
@@ -59,6 +62,60 @@ class Ice(GameObject):
         self._xy = 0, 160
         self.wh = (8, 12)
         self.rgb = 45, 87, 176
+        self.hud = False
+
+
+class Pink_Disc(GameObject):
+    def __init__(self):
+        super(Pink_Disc, self).__init__()
+        self._xy = 0, 160
+        self.wh = (8, 12)
+        self.rgb = 184, 70, 162
+        self.hud = False
+
+
+class Riser(GameObject):
+    def __init__(self):
+        super(Riser, self).__init__()
+        self._xy = 0, 160
+        self.wh = (8, 11)
+        self.rgb = 142, 142, 142
+        self.hud = False
+
+
+class Riser_Bomb(GameObject):
+    def __init__(self):
+        super(Riser_Bomb, self).__init__()
+        self._xy = 0, 160
+        self.wh = (4, 5)
+        self.rgb = 142, 142, 142
+        self.hud = False
+
+
+class Submarine(GameObject):
+    def __init__(self):
+        super(Submarine, self).__init__()
+        self._xy = 0, 160
+        self.wh = (16, 11)
+        self.rgb = 184, 50, 50
+        self.hud = False
+
+
+class Submarine_Bomb(GameObject):
+    def __init__(self):
+        super(Submarine_Bomb, self).__init__()
+        self._xy = 0, 160
+        self.wh = (4, 5)
+        self.rgb = 187, 187, 53
+        self.hud = False
+
+
+class Base(GameObject):
+    def __init__(self):
+        super(Base, self).__init__()
+        self._xy = 0, 160
+        self.wh = (16, 48)
+        self.rgb = 72, 44, 0
         self.hud = False
 
 
@@ -131,7 +188,7 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()]
 
-    objects.extend([NoObject()] * 8)
+    objects.extend([NoObject()] * 14)
     if hud:
         objects.extend([Score(), Life()])
     return objects
@@ -167,7 +224,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if type(objects[2]) is NoObject:
                 objects[2] = Helicopter()
             objects[2].xy = x, y
-        else:
+        elif ram_state[49] == 11:
+            objects[2] = NoObject()
+            if type(objects[10]) is NoObject:
+                objects[10] = Pink_Disc()
+            objects[10].xy = x-2, y
+        elif ram_state[49] == 13:
             objects[2] = NoObject()
             if type(objects[3]) is NoObject:
                 objects[3] = Ice()
@@ -175,17 +237,63 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     else:
         objects[2] = NoObject()
         objects[3] = NoObject()
+        objects[10] = NoObject()
 
     # row2 x,y == r59, 57
-    if ram_state[50] != 255:
-        if type(objects[4]) is NoObject:
-            objects[4] = Hornet()
-        x, y = ram_state[59] - 2, 75
+    if ram_state[44] != 255:
+        x, y = ram_state[59] - 2, 179 - ram_state[50]
         if x < 14:
             x-=5
-        objects[4].xy = x, y
+        if ram_state[44] == 2:
+            if type(objects[11]) is NoObject:
+                objects[4] = NoObject()
+                objects[11] = Riser()
+                objects[12] = NoObject()
+            objects[11].xy = x+1, y+1
+        elif ram_state[44] == 6:
+            if type(objects[12]) is NoObject:
+                objects[4] = NoObject()
+                objects[11] = NoObject()
+                objects[12] = Riser_Bomb()
+            objects[12].xy = x+3, y
+        elif ram_state[44] == 11:
+            if type(objects[4]) is NoObject:
+                objects[4] = Hornet()
+                objects[11] = NoObject()
+                objects[12] = NoObject()
+            objects[4].xy = x, y
     else:
         objects[4] = NoObject()
+        objects[11] = NoObject()
+        objects[12] = NoObject()
+
+    # row2 x,y == r59, 57
+    if ram_state[45] != 255:
+        x, y = ram_state[60] - 2, 179 - ram_state[51]
+        if x < 14:
+            x-=5
+        if ram_state[45] == 2:
+            if type(objects[11]) is NoObject:
+                objects[11] = Riser()
+                objects[13] = NoObject()
+                objects[14] = NoObject()
+            objects[11].xy = x+1, y+1
+        elif ram_state[45] == 5:
+            if type(objects[13]) is NoObject:
+                objects[11] = NoObject()
+                objects[13] = Submarine()
+                objects[14] = NoObject()
+            objects[13].xy = x+1, y
+        elif ram_state[45] == 7:
+            if type(objects[14]) is NoObject:
+                objects[11] = NoObject()
+                objects[13] = NoObject()
+                objects[14] = Submarine_Bomb()
+            objects[14].xy = x+5, y
+    else:
+        objects[11] = NoObject()
+        objects[13] = NoObject()
+        objects[14] = NoObject()
 
     # eshot xy = r39, r30
     if ram_state[30] != 128:
@@ -197,11 +305,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # fire hole x == 43
     # erupt == r51; x == r60; size == r109, 86 == small, 102 == big
-    if ram_state[51] == 54 and ram_state[108] == 251:
-        objects[7] = NoObject()
-        objects[8] = NoObject()
+    if ram_state[51] == 54 and ram_state[108] == 251 and type(objects[11]) is NoObject:
         if type(objects[6]) is NoObject:
             objects[6] = Eruption()
+            objects[7] = NoObject()
+            objects[8] = NoObject()
         x = ram_state[60]
         if x < 14:
             x-=5
@@ -212,15 +320,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[6].xy = x, 125
             objects[6].wh = 32, 15
     elif ram_state[51] == 48:
-        objects[6] = NoObject()
-        objects[8] = NoObject()
         if type(objects[7]) is NoObject:
+            objects[6] = NoObject()
             objects[7] = Diver()
+            objects[8] = NoObject()
         objects[7].xy = ram_state[60] - 1, 131
-    elif ram_state[108] == 250:
-        objects[6] = NoObject()
-        objects[7] = NoObject()
+    elif ram_state[108] == 250 and type(objects[14]) is NoObject:
         if type(objects[8]) is NoObject:
+            objects[6] = NoObject()
+            objects[7] = NoObject()
             objects[8] = Fire_Hole()
         objects[8].xy = ram_state[43], 122
     else:
@@ -242,18 +350,18 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         elif ram_state[92] > 15:
             x, w = 87, 14
         
-        objects[9].xywh = x, 15, w, 7
-        objects[9].value = _convert_number(ram_state[94])*10000 + _convert_number(ram_state[93])*100 + _convert_number(ram_state[92])
+        objects[-2].xywh = x, 15, w, 7
+        objects[-2].value = _convert_number(ram_state[94])*10000 + _convert_number(ram_state[93])*100 + _convert_number(ram_state[92])
 
 
         # Lives 86
         if ram_state[111]:
-            if type(objects[10]) is NoObject:
-                objects[10] = Life()
+            if type(objects[-1]) is NoObject:
+                objects[-1] = Life()
             if ram_state[111] < 3:
-                objects[10].wh = 8 + (16*(ram_state[111]-1)), 4
+                objects[-1].wh = 8 + (16*(ram_state[111]-1)), 4
             else:
-                objects[10].wh = 40, 4
-            objects[10].value = ram_state[111]
+                objects[-1].wh = 40, 4
+            objects[-1].value = ram_state[111]
         else:
-            objects[10] = NoObject()
+            objects[-1] = NoObject()
