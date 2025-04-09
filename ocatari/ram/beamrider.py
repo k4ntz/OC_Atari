@@ -7,10 +7,13 @@ RAM extraction for the game KANGUROO. Supported modes: ram.
 
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Saucer': 3, 'Enemy_Projectile': 4, 'Player_Projectile': 1}
+MAX_NB_OBJECTS = {'Player': 1, 'Saucer': 3, 'Enemy_Projectile': 4,
+                  'Player_Projectile': 1, 'MotherEnemy': 1}
 
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Saucer': 3, 'Enemy_Projectile': 4, 'Player_Projectile': 1,
-                      'PlayerScore': 1, 'Lives': 1, 'Torpedos': 1, 'Remaining_Enemies': 1}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Saucer': 3, 'Enemy_Projectile': 4,
+                      'Player_Projectile': 1, 'MotherEnemy': 1,
+                      'PlayerScore': 1, 'Lives': 1, 'Torpedos': 1, 'Remaining_Enemies': 1,
+                      'Sector': 1}
 # MAX_NB_OBJECTS = MAX_NB_OBJECTS_HUD
 
 class Player(GameObject):
@@ -57,6 +60,21 @@ class Saucer(GameObject):
         self.visible = True
         self._xy = 0, 0
         self.wh = 8, 5
+        self.rgb = 236, 236, 236
+        self.hud = False
+
+
+
+class MotherEnemy(GameObject):
+    """
+    The big enemy which appears the time between two sectors.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.visible = True
+        self._xy = 0, 0
+        self.wh = 17, 7
         self.rgb = 236, 236, 236
         self.hud = False
 
@@ -157,12 +175,6 @@ class Enemy_Projectile(GameObject):
         self.rgb = 164, 89, 208
 
 
-class HUD(GameObject):
-    def __init__(self):
-        super().__init__()
-        self.rgb = 210, 164, 74
-
-
 class Remaining_Enemies(GameObject):
     """
     The count display for the remaining Enemy Saucers in the current sector.
@@ -171,6 +183,7 @@ class Remaining_Enemies(GameObject):
     def __init__(self):
         super().__init__()
         self.rgb = 82, 126, 45
+
 
 class PlayerScore(GameObject):
     """
@@ -188,9 +201,21 @@ class PlayerScore(GameObject):
     def __eq__(self, o):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
+
 class Lives(GameObject):
     """
     The lives-indicator of the player.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.hud = True
+        self.rgb = 210, 210, 64
+
+
+class Sector(GameObject):
+    """
+    The sector number.
     """
 
     def __init__(self):
@@ -219,25 +244,30 @@ def _init_objects_ram(hud=True):
     (Re)Initialize the objects
     """
 
-    objects = [Player()] + [Saucer()] * 3 + [Enemy_Projectile()] * 4 + [Player_Projectile()] * 1
+    objects = [Player()] + [Saucer()] * 3 + [Enemy_Projectile()] * 4 \
+        + [Player_Projectile()] + [MotherEnemy()]
 
     if hud:
-        objects += [PlayerScore()] + [Lives()] + [Torpedos()] + [Remaining_Enemies()]
+        objects += [PlayerScore()] + [Lives()] + [Torpedos()] \
+             + [Remaining_Enemies()] + [Sector()]
 
     return objects
 
 # levels: ram_state[36], total of 3 levels: 0,1 and 2
 
 def _convert_x(rs):
-    rss = [60, 94, 111, 128, 145, 162, 196] # ram_states for each lane
-    xus = [40, 62, 73, 83, 93, 104, 126]    # x-pos for start of the lanes (up)
-    xds = [-20, 33, 58, 83, 109, 136, 191]  # x-pos for end of the lanes (down)
+    rss = [0, 60, 94, 111, 128, 145, 162, 196, 255] # ram_states for each lane
+    xus = [2, 40, 62, 73, 83, 93, 104, 126, 158]    # x-pos for start of the lanes (up)
+    xds = [-70, -20, 33, 58, 83, 109, 136, 191, 260]  # x-pos for end of the lanes (down)
 
-    for i in range(6):
+    # if rs > 196:
+
+    for i in range(8):
         if rss[i + 1] >= rs:
             xu = xus[i] + (xus[i + 1] - xus[i]) * (rs - rss[i]) / (rss[i + 1] - rss[i])
             xd = xds[i] + (xds[i + 1] - xds[i]) * (rs - rss[i]) / (rss[i + 1] - rss[i])
             return xu, xd
+
 
 def _define_object(i):
     if i < 3:
@@ -279,17 +309,26 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             
             perspective_ratio = (y - 43) / 122
             
-            if lane > 196:
-                x = _convert_number(lane)
-            else:
-                xu, xd = _convert_x(lane)
-                x = xu + (xd - xu) * perspective_ratio
+            # if lane > 196:
+            #     x = _convert_number(lane)
+            # else:
+            xu, xd = _convert_x(lane)
+            x = xu + (xd - xu) * perspective_ratio
             
             current_object.wh = round(10 * perspective_ratio) + 1, round(7 * perspective_ratio) + 1
             current_object.xy = round(x - 5 * perspective_ratio), y
             
         objects[1+i] = current_object
     
+    mother_enemy = NoObject()
+    if ram_state[84] == 255:
+        mother_enemy = MotherEnemy()
+        # if ram_state[52] > 196:
+        #     mother_enemy.xy = _convert_number(ram_state[52]), 37
+        # else:
+        mother_enemy.xy = _convert_x(ram_state[52])[0] + 2, 37
+    objects[9] = mother_enemy
+
     if hud:
         player_score = PlayerScore()
         player_score.score = _convert_number(ram_state[9]) \
@@ -297,7 +336,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             + 10000 * _convert_number(ram_state[11])
         player_score.xy = 61, 10
         player_score.wh = 46, 8
-        objects[9] = player_score
+        objects[10] = player_score
 
         lives = NoObject()
         if ram_state[5] == 2:
@@ -308,7 +347,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             lives = Lives()
             lives.xy = 32, 183
             lives.wh = 5, 7
-        objects[10] = lives
+        objects[11] = lives
 
         torpedos = NoObject()
         if ram_state[83] == 3:
@@ -323,7 +362,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             torpedos = Torpedos()
             torpedos.xy = 144, 32
             torpedos.wh = 4, 8
-        objects[11] = torpedos
+        objects[12] = torpedos
 
         remaining_enemies = NoObject()
         if ram_state[84] >= 10 and ram_state[84] <= 15:
@@ -334,7 +373,13 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             remaining_enemies = Remaining_Enemies()
             remaining_enemies.xy = 25, 32
             remaining_enemies.wh = 6, 8
-        objects[12] = remaining_enemies
+        objects[13] = remaining_enemies
+
+        sector = Sector()
+        sector.xy = 93, 21
+        sector.wh = 14, 8
+        objects[14] = sector
+        
 
 def _detect_objects_beamrider_raw(info, ram_state):
     player_x = ram_state[41]
