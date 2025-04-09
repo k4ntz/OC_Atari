@@ -1,5 +1,5 @@
-from .game_objects import GameObject
-from .utils import find_objects, find_mc_objects, most_common_color
+from .game_objects import GameObject, NoObject
+from .utils import find_objects, find_mc_objects, most_common_color, match_objects
 import numpy as np
 
 objects_colors = {"player_blue": [84, 92, 214], "player_green": [50, 132, 50], "player_red": [167, 26, 26], "player_black": [0, 0, 0],
@@ -93,7 +93,6 @@ class Life(GameObject):
 
 
 def _detect_objects(objects, obs, hud=False):
-    objects.clear()
 
     mcc = most_common_color(obs, exclude_black=False)
     # (51, 26, 163)
@@ -105,113 +104,233 @@ def _detect_objects(objects, obs, hud=False):
     if mcc == (51, 26, 163):
         player = find_objects(
             obs, objects_colors["player_blue"], miny=32, maxy=177)
+        
+        p = False
+        ps = False
+
         for bb in player:
             if bb[2] > 2:
-                p = Player(*bb)
-                p.rgb = objects_colors["player_blue"]
-                objects.append(p)
+                if type(objects[0]) is NoObject:
+                    objects[0] = Player(*bb)
+                else:
+                    objects[0].xywh = bb
+                objects[0].rgb = objects_colors["player_blue"]
+                p = True
             else:
-                s = Player_Shot(*bb)
-                s.rgb = objects_colors["player_blue"]
-                objects.append(s)
+                if type(objects[1]) is NoObject:
+                    objects[1] = Player_Shot(*bb)
+                else:
+                    objects[1].xywh = bb
+                objects[1].rgb = objects_colors["player_blue"]
+                ps = True
+        
+        if not p:
+            objects[0] = NoObject()
+        
+        if not ps:
+            objects[1] = NoObject()
+
         enemy = find_objects(
             obs, objects_colors["enemy_green"], miny=32, maxy=177)
+        e = []
+        s = []
         for bb in enemy:
             if bb[2] > 2:
-                objects.append(Enemy_Green(*bb))
+                e.append(bb)
             else:
-                objects.append(Enemy_Green_Shot(*bb))
+                s.append(bb)
+
+        match_objects(objects, e, 2, 8, Enemy_Green)
+        match_objects(objects, s, 10, 2, Enemy_Green_Shot)
 
     elif mcc == (84, 160, 197):
         player = find_objects(
             obs, objects_colors["player_green"], miny=32, maxy=177)
+        
+        p = False
+        ps = False
+
+        
         for bb in player:
             if bb[2] > 2:
-                p = Player(*bb)
-                p.rgb = objects_colors["player_green"]
-                objects.append(p)
+                if type(objects[0]) is NoObject:
+                    objects[0] = Player(*bb)
+                else:
+                    objects[0].xywh = bb
+                objects[0].rgb = objects_colors["player_green"]
+                p = True
             else:
-                s = Player_Shot(*bb)
-                s.rgb = objects_colors["player_green"]
-                objects.append(s)
+                if type(objects[1]) is NoObject:
+                    objects[1] = Player_Shot(*bb)
+                else:
+                    objects[1].xywh = bb
+                objects[1].rgb = objects_colors["player_green"]
+                ps = True
+        
+        if not p:
+            objects[0] = NoObject()
+        
+        if not ps:
+            objects[1] = NoObject()
+                
         enemy = find_objects(
             obs, objects_colors["enemy_black"], miny=32, maxy=177)
+        e = []
+        s = []
         for bb in enemy:
             if bb[3] > 2:
-                objects.append(Enemy_Black(*bb))
+                e.append(bb)
             elif bb[3] > 1:
-                objects.append(Enemy_Black_Shot(*bb))
+                s.append(bb)
+
+        match_objects(objects, e, 12, 8, Enemy_Black)
+        match_objects(objects, s, 20, 2, Enemy_Black_Shot)
 
     elif mcc == (142, 142, 142):
         player = find_objects(
             obs, objects_colors["player_red"], miny=32, maxy=177)
+        
+        p = False
+        ps = False
+
+        
         for bb in player:
             if bb[2] > 2:
-                p = Player(*bb)
-                p.rgb = objects_colors["player_red"]
-                objects.append(p)
+                if type(objects[0]) is NoObject:
+                    objects[0] = Player(*bb)
+                else:
+                    objects[0].xywh = bb
+                objects[0].rgb = objects_colors["player_red"]
+                p = True
             else:
-                s = Player_Shot(*bb)
-                s.rgb = objects_colors["player_red"]
-                objects.append(s)
+                if type(objects[1]) is NoObject:
+                    objects[1] = Player_Shot(*bb)
+                else:
+                    objects[1].xywh = bb
+                objects[1].rgb = objects_colors["player_red"]
+                ps = True
+        
+        if not p:
+            objects[0] = NoObject()
+        
+        if not ps:
+            objects[1] = NoObject()
+                
         enemy = find_objects(
             obs, objects_colors["enemy_yellow"], miny=32, maxy=177)
+        e = []
+        s = []
         for bb in enemy:
             if bb[2] > 2:
-                objects.append(Enemy_Yellow(*bb))
+                e.append(bb)
             else:
-                objects.append(Enemy_Yellow_Shot(*bb))
+                s.append(bb)
+
+        match_objects(objects, e, 22, 8, Enemy_Yellow)
+        match_objects(objects, s, 30, 2, Enemy_Yellow_Shot)
 
     elif mcc == (168, 48, 143):
         player = find_objects(
             obs, objects_colors["player_black"], miny=32, maxy=177)
+        
+        p = False
+        ps = False
+
+        
         for bb in player:
             if bb[3] > 2:
-                p = Player(*bb)
-                p.rgb = objects_colors["player_black"]
-                objects.append(p)
+                if type(objects[0]) is NoObject:
+                    objects[0] = Player(*bb)
+                else:
+                    objects[0].xywh = bb
+                objects[0].rgb = objects_colors["player_black"]
+                p = True
             elif bb[3] > 1:
-                s = Player_Shot(*bb)
-                s.rgb = objects_colors["player_black"]
-                objects.append(s)
+                if type(objects[1]) is NoObject:
+                    objects[1] = Player_Shot(*bb)
+                else:
+                    objects[1].xywh = bb
+                objects[1].rgb = objects_colors["player_black"]
+                ps = True
+        
+        if not p:
+            objects[0] = NoObject()
+        
+        if not ps:
+            objects[1] = NoObject()
+
         enemy = find_objects(
             obs, objects_colors["enemy_blue"], miny=32, maxy=177)
+        e = []
+        s = []
         for bb in enemy:
             if bb[2] > 2:
-                objects.append(Enemy_Blue(*bb))
+                e.append(bb)
             else:
-                objects.append(Enemy_Blue_Shot(*bb))
+                s.append(bb)
+
+        match_objects(objects, e, 32, 8, Enemy_Blue)
+        match_objects(objects, s, 40, 2, Enemy_Blue_Shot)
 
     elif mcc == (0, 0, 0):
         player = find_objects(
             obs, objects_colors["player_blue"], miny=32, maxy=177)
+        
+        p = False
+        ps = False
+
+        
         for bb in player:
             if bb[2] > 2:
-                p = Player(*bb)
-                p.rgb = objects_colors["player_blue"]
-                objects.append(p)
+                if type(objects[0]) is NoObject:
+                    objects[0] = Player(*bb)
+                else:
+                    objects[0].xywh = bb
+                objects[0].rgb = objects_colors["player_blue"]
+                p = True
             else:
-                s = Player_Shot(*bb)
-                s.rgb = objects_colors["player_blue"]
-                objects.append(s)
+                if type(objects[1]) is NoObject:
+                    objects[1] = Player_Shot(*bb)
+                else:
+                    objects[1].xywh = bb
+                objects[1].rgb = objects_colors["player_blue"]
+                ps = True
+        
+        if not p:
+            objects[0] = NoObject()
+        
+        if not ps:
+            objects[1] = NoObject()
+                
         enemy = find_objects(
             obs, objects_colors["enemy_orange"], miny=32, maxy=177)
+        e = []
+        s = []
         for bb in enemy:
             if bb[2] > 2:
-                objects.append(Enemy_Orange(*bb))
+                e.append(bb)
             else:
-                objects.append(Enemy_Orange_Shot(*bb))
+                s.append(bb)
+
+        match_objects(objects, e, 32, 8, Enemy_Orange)
+        match_objects(objects, s, 40, 2, Enemy_Orange_Shot)
 
     if hud:
         score = find_objects(obs, objects_colors["score_yellow"], maxy=33)
-        for bb in score:
-            objects.append(Score(*bb))
+        if score:
+            if type(objects[-2]) is NoObject:
+                objects[-2] = Score(*score[0])
+            else:
+                objects[-2].xywh = score[0]
+        else:
+            objects[-2] = NoObject()
 
         life = find_objects(
-            obs, objects_colors["life_blue"], maxy=33, closing_active=False)
-        for bb in life:
-            w = bb[2]
-            for i in range(4):
-                if w >= 8:
-                    objects.append(Life(bb[0]+i*8, bb[1], 8, bb[3]))
-                    w -= 8
+            obs, objects_colors["life_blue"], maxy=33)
+        if life:
+            if type(objects[-1]) is NoObject:
+                objects[-1] = Life(*life[0])
+            else:
+                objects[-1].xywh = life[0]
+        else:
+            objects[-1] = NoObject()
