@@ -1,5 +1,5 @@
-from .game_objects import GameObject
-from .utils import find_objects, find_mc_objects, most_common_color
+from .game_objects import GameObject, NoObject
+from .utils import find_objects, find_mc_objects, most_common_color, match_objects
 import numpy as np
 
 objects_colors = {'black': [0, 0, 0], 'skin_1': [228, 111, 111], 'skin_2': [200, 72, 72], 'white': [236, 236, 236],
@@ -165,51 +165,54 @@ static_bricks = None
 
 
 def _detect_objects(objects, obs, hud=False):
-    objects.clear()
-
+    
     car = find_objects(obs, objects_colors['black'], minx=8, miny=130, maxx=159, maxy=182, size=(
         20, 14), tol_s=5, min_distance=2, closing_dist=2)
-    for bb in car:
-        objects.append(Car(*bb))
+    if car:
+        objects[1].xywh = car[0]
 
     players = find_mc_objects(obs, colors=objects_colors['playercolors'], minx=8, miny=50, maxx=159, maxy=162, size=(
         8, 10), tol_s=3, closing_dist=5)
     for bb in players:
-        ply = Player(*bb)
+        ply = objects[0]
+        ply.xywh = players[0]
         if bb[1] < 140:
             ply.wh = 8, 25
-        objects.append(ply)
 
     clue = find_mc_objects(obs, colors=[objects_colors['black'], objects_colors['blue_1'], objects_colors['white']],
                            minx=8, miny=30, maxx=159, maxy=162, size=(8, 13), tol_s=5, all_colors=True)
-    for bb in clue:
-        cl = Clue(*bb)
-        cl.xy = bb[0] - int(np.ceil((8-bb[2])/2)), bb[1]
-        cl.wh = 8, bb[3]
-        objects.append(cl)
+    if clue:
+        if type(objects[3]) is NoObject:
+            objects[3] = Clue(*clue[0])
+        objects[3].xy = clue[0][0] - int(np.ceil((8-bb[2])/2)), clue[0][1]
+        objects[3].wh = 8, clue[0][3]
+    else:
+        objects[3] = NoObject()
 
     mud = find_objects(obs, objects_colors['black'], minx=8, miny=160, maxx=159, maxy=182, size=(
         8, 4), tol_s=1, min_distance=2, closing_dist=1)
-    for bb in mud:
-        objects.append(Mud(*bb))
+    
+    match_objects(objects, mud, 5, 2, Mud)
 
     plant = find_mc_objects(obs, colors=[objects_colors['yellow_2'], objects_colors['green_1'],
                             objects_colors['brown']], minx=8, miny=30, maxx=159, maxy=162, closing_dist=3, all_colors=True)
-    for bb in plant:
-        objects.append(Pottet_Plant(*bb))
+    
+    match_objects(objects, plant, 17, 4, Pottet_Plant)
 
     global static_bricks
     brick = find_objects(obs, objects_colors['red'], minx=8, miny=30,
                          maxx=159, maxy=182, closing_dist=1, size=(4, 4), tol_s=2)
+    b = []
     for bb in brick:
         if bb not in static_bricks:
-            objects.append(Brick(*bb))
+            b.append(bb)
     static_bricks = brick
+
+    match_objects(objects, b[:4], 21, 4, Brick)
 
     barrier = find_mc_objects(obs, colors=[
                               objects_colors['black'], objects_colors['yellow_4']], miny=50, maxy=182, size=(8, 17), tol_s=4, all_colors=True)
-    for bb in barrier:
-        objects.append(Barrier(*bb))
+    match_objects(objects, barrier, 25, 2, Barrier)
 
     # gun_sign = find_mc_objects(obs, [objects_colors['blue_3'], objects_colors['blue_4']], minx=62, miny=28, maxx=96, maxy=51)
     # for bb in gun_sign:
@@ -225,13 +228,11 @@ def _detect_objects(objects, obs, hud=False):
 
     dove = find_objects(
         obs, objects_colors['white'], minx=8, miny=30, maxx=159, maxy=182, size=(8, 6), tol_s=2)
-    for bb in dove:
-        objects.append(Dove(*bb))
+    match_objects(objects, dove, 13, 2, Dove)
 
     lizard = find_objects(
         obs, objects_colors['yellow_2'], minx=8, miny=30, maxx=159, maxy=182, size=(8, 6), tol_s=2)
-    for bb in lizard:
-        objects.append(Lizard(*bb))
+    match_objects(objects, lizard, 15, 2, Lizard)
 
     # mccolor = most_common_color(obs[0:182, :, :])
 
@@ -243,57 +244,98 @@ def _detect_objects(objects, obs, hud=False):
 
     money = find_objects(
         obs, objects_colors['white'], minx=138, miny=27, maxx=159, maxy=46, size=(8, 11), tol_s=1)
-    for bb in money:
-        objects.append(Money_Bag(*bb))
+    
+    if money:
+        if type(objects[28]) is NoObject:
+            objects[28] = Money_Bag(*money[0])
+        objects[28].xywh = money[0]
+    else:
+        objects[28] = NoObject()
 
     gun = find_objects(
         obs, objects_colors['black'], minx=138, miny=27, maxx=159, maxy=46, size=(8, 8), tol_s=1)
-    for bb in gun:
-        objects.append(Gun(*bb))
+    
+    if gun:
+        if type(objects[29]) is NoObject:
+            objects[29] = Gun(*gun[0])
+        objects[29].xywh = gun[0]
+    else:
+        objects[29] = NoObject()
 
     button = find_objects(
         obs, objects_colors['yellow_4'], minx=138, miny=27, maxx=159, maxy=46, size=(7, 9), tol_s=1)
-    for bb in button:
-        objects.append(Button(*bb))
+    
+    if button:
+        if type(objects[30]) is NoObject:
+            objects[30] = Button(*button[0])
+        objects[30].xywh = button[0]
+    else:
+        objects[30] = NoObject()
 
     comb = find_objects(
         obs, objects_colors['black'], minx=138, miny=27, maxx=159, maxy=46, size=(8, 15), tol_s=1)
-    for bb in comb:
-        objects.append(Comb(*bb))
+    
+    if comb:
+        if type(objects[31]) is NoObject:
+            objects[31] = Comb(*comb[0])
+        objects[31].xywh = comb[0]
+    else:
+        objects[31] = NoObject()
 
     sole = find_objects(
         obs, objects_colors['black'], minx=138, miny=27, maxx=159, maxy=46, size=(8, 11), tol_s=1)
-    for bb in sole:
-        objects.append(Shoe_Sole(*bb))
+    
+    if sole:
+        if type(objects[32]) is NoObject:
+            objects[32] = Shoe_Sole(*sole[0])
+        objects[32].xywh = sole[0]
+    else:
+        objects[32] = NoObject()
 
     vase = find_mc_objects(obs, colors=objects_colors['vase_colors'], minx=138, miny=27, maxx=159, maxy=46, size=(
         8, 14), tol_s=1, all_colors=True)
-    for bb in vase:
-        objects.append(Vase(*bb))
+    
+    if vase:
+        if type(objects[33]) is NoObject:
+            objects[33] = Vase(*vase[0])
+        objects[33].xywh = vase[0]
+    else:
+        objects[33] = NoObject()
 
     necklace = find_mc_objects(obs, colors=objects_colors['necklace_colors'], minx=138, miny=27, maxx=159, maxy=46, size=(
         8, 11), tol_s=1, all_colors=True)
-    for bb in necklace:
-        objects.append(Necklace(*bb))
+    
+    if necklace:
+        if type(objects[34]) is NoObject:
+            objects[34] = Necklace(*necklace[0])
+        objects[34].xywh = necklace[0]
+    else:
+        objects[34] = NoObject()
 
     stamp = find_mc_objects(obs, colors=objects_colors['stamp_colors'], minx=138, miny=27, maxx=159, maxy=46, size=(
         8, 14), tol_s=1, all_colors=True)
-    for bb in stamp:
-        objects.append(Stamp(*bb))
+    
+    if stamp:
+        if type(objects[35]) is NoObject:
+            objects[35] = Stamp(*stamp[0])
+        objects[35].xywh = stamp[0]
+    else:
+        objects[35] = NoObject()
 
     badguy_head = find_mc_objects(obs, colors=[objects_colors['blue_1'], objects_colors['black'],
                                   objects_colors['yellow_4']], minx=138, miny=27, maxx=159, maxy=46, size=(8, 7), tol_s=1, all_colors=True)
-    for bb in badguy_head:
-        objects.append(Badguy_Head(*bb))
+    match_objects(objects, badguy_head, 36, 3, Badguy_Head)
 
     if hud:
 
         scores = find_objects(
             obs, objects_colors['white'], maxy=16, closing_dist=8)
-        for bb in scores:
-            objects.append(Score(*bb))
+        
+        if scores:
+            objects[39].xywh = scores[0]
 
         time = find_objects(
             obs, objects_colors['white'], miny=19, maxy=27, closing_dist=8)
-        for bb in time:
-            objects.append(Clock(*bb))
+        
+        if time:
+            objects[40].xywh = time[0]

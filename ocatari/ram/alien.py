@@ -169,6 +169,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     ##############################################
     # ============================================
     ##############################################
+
         y = 19
         for i in range(13):
             if ram_state[65+i] & 4:
@@ -284,14 +285,14 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         w = 46
         value = 0
         for i in range(5):
-            if ram_state[11-2*i] != 128:
-                score.xy = x, 176
-                score.wh = w, 7
-                value += (ram_state[11-2*i] // 8) * 10**(i+1)
+            if ram_state[11-(2*i)] != 128:
+                value += (ram_state[11-2*i] >> 3) * 10**(i+1)
             else:
                 x += 8
                 w -= 8
-        value += ram_state[13] // 8
+        value += ram_state[13] >> 3
+        score.xy = x, 176
+        score.wh = w, 7
         score.value = value
 
         lives_v = ram_state[64] - 1

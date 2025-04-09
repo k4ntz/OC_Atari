@@ -91,7 +91,8 @@ if torch_imported:
         def __init__(self, env):
             super().__init__()
             self.network = nn.Sequential(
-                layer_init(nn.Conv2d(4, 32, 8, stride=4)),
+                layer_init(
+                    nn.Conv2d(env.observation_space.shape[0], 32, 8, stride=4)),
                 nn.ReLU(),
                 layer_init(nn.Conv2d(32, 64, 4, stride=2)),
                 nn.ReLU(),
@@ -113,11 +114,52 @@ if torch_imported:
             logits = self.actor(hidden)
             probs = Categorical(logits=logits)
             if action is None:
-                action = probs.sample()
+                action = logits.argmax(dim=-1)
             return action, probs.log_prob(action), probs.entropy(), self.critic(hidden)
 
         def draw_action(self, state):
             return self.get_action_and_value(state)[0]
+
+    class PPObj(nn.Module):
+        def __init__(self, envs, device, encoder_dims=(256, 512, 1024, 1024, 512, 256), decoder_dims=(256,)):
+            super().__init__()
+            self.device = device
+
+            dims = envs.observation_space.shape
+            layers = nn.ModuleList()
+
+            in_dim = dims[-1]
+
+            for l in encoder_dims:
+                layers.append(layer_init(nn.Linear(in_dim, l)))
+                layers.append(nn.ReLU())
+                in_dim = l
+            layers.append(nn.Flatten())
+            in_dim *= np.prod(dims[:-1], dtype=int)
+            l = in_dim
+            for l in decoder_dims:
+                layers.append(layer_init(nn.Linear(in_dim, l)))
+                layers.append(nn.ReLU())
+                in_dim = l
+
+            self.network = nn.Sequential(*layers)
+            self.actor = layer_init(
+                nn.Linear(l, envs.action_space.n), std=0.01)
+            self.critic = layer_init(nn.Linear(l, 1), std=1)
+
+        def get_value(self, x):
+            return self.critic(self.network(x))
+
+        def get_action_and_value(self, x, action=None):
+            hidden = self.network(x)
+            logits = self.actor(hidden)
+            probs = Categorical(logits=logits)
+            if action is None:
+                action = logits.argmax(dim=-1)
+            return action, probs.log_prob(action), probs.entropy(), self.critic(hidden)
+
+        def draw_action(self, x, states=None, **_):
+            return self.get_action_and_value(x)[0]
 
     class PPO_Obj_small(nn.Module):
         def __init__(self, envs, input_size, window_size, device):
@@ -146,7 +188,8 @@ if torch_imported:
             logits = self.actor(hidden)
             probs = Categorical(logits=logits)
             if action is None:
-                action = probs.sample()
+                # action = probs.sample()
+                action = logits.argmax(dim=-1)
             return action, probs.log_prob(action), probs.entropy(), self.critic(hidden)
 
         def draw_action(self, x, states=None, **_):
@@ -218,7 +261,7 @@ def _load_checkpoint(fpath, device="cpu"):
             return torch.load(inflated, map_location=device)
 
 
-def _epsilon_greedy(obs, model, eps=0.001):
+def _epsilon_greedy(obs, model, eps=0):
     if torch.rand((1,)).item() < eps:
         return torch.randint(model.action_no, (1,)).item(), None
     obs = obs.byte()
@@ -242,12 +285,11 @@ def load_agent(opt, env=None, device="cpu"):
         if "c51" in pth:
             agent = QNetwork(env.action_space.n)
             agent.load_state_dict(ckpt["model_weights"])
-        elif "ppo" in pth and env.obs_mode == "dqn":
+        elif "ppo" in pth and env.unwrapped.obs_mode == "dqn":
             agent = PPOAgent(env)
             agent.load_state_dict(ckpt["model_weights"])
-        elif "ppo" in pth and env.obs_mode == "obj":
-            agent = PPO_Obj_small(env, len(env.ns_state),
-                                  env.buffer_window_size, device)
+        elif "ppo" in pth and env.unwrapped.obs_mode == "obj":
+            agent = PPObj(env, device)
             agent.load_state_dict(ckpt["model_weights"])
         else:
             return None

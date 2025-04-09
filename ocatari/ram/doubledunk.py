@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject
+from .game_objects import GameObject, ValueObject, NoObject
 from ._helper_methods import _convert_number
 import sys
 
@@ -153,7 +153,6 @@ def _init_objects_ram(hud=False):
     # objects.extend()
     if hud:
         objects.extend([Player_Score(), Opponent_Score()])
-        # objects.extend([None] * 13)
     return objects
 
 

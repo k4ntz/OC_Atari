@@ -1,5 +1,5 @@
 from .game_objects import GameObject, ValueObject, NoObject
-from ._helper_methods import _convert_number, get_iou
+from ._helper_methods import _convert_number
 import sys
 
 """
@@ -192,7 +192,7 @@ class Score(ValueObject):
         self.wh = 5, 8
         self.rgb = 236, 236, 236
         self.hud = True
-        self.value
+        self.value = 0
 
 
 class Life(ValueObject):

@@ -38,6 +38,7 @@ class FlyingEnemy(GameObject):
         self.rgb = 10, 10, 10
         self.num_frames_invisible = -1
         self.max_frames_invisible = 5
+        self.expected_dist = 10
 
 
 class PlayerScore(GameObject):

@@ -7,7 +7,7 @@ RAM extraction for the game Road Runner.
 """
 
 MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "Seed": 4, "Truck": 2, "RoadCrack": 2, "AcmeMine": 4, "SteelShot":3, "Turret":1, "TurretBall": 2, "Rock": 2}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Enemy": 1, "Seed": 4, "Truck": 2,"RoadCrack": 2,  "AcmeMine": 4,"SteelShot":3, "Turret":1, "TurretBall": 2, "Rock": 2, "Sign":1, "Bird": 2, "Score":1, "Bonus":1}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Enemy": 1, "Seed": 4, "Truck": 2,"RoadCrack": 2,  "AcmeMine": 4,"SteelShot":3, "Turret":1, "TurretBall": 2, "Rock": 2, "Sign":1, "Bird": 2, "Score":1, "Bonus":1, 'Cactus': 2, 'Tree':2}
 
 
 class Player(GameObject):
@@ -60,6 +60,29 @@ class Truck(GameObject):
         self.wh = (16, 18)
         self.rgb = 198, 108, 58
         self.hud = False
+class Cactus(GameObject):
+    """
+    Cactus in the background (HUD).
+    """
+
+    def __init__(self):
+        super().__init__()
+        self._xy = 0, 0
+        self.wh = (8, 8)
+        self.rgb = 187, 187, 53
+        self.hud = True
+
+class Tree(GameObject):
+    """
+    Tree in the background (HUD).
+    """
+
+    def __init__(self):
+        super().__init__()
+        self._xy = 0, 0
+        self.wh = (5, 8)
+        self.rgb = 187, 187, 53
+        self.hud = True
 
 #Level 2
 class RoadCrack(GameObject):
@@ -210,11 +233,12 @@ def _init_objects_ram(hud=False):
     if hud:
         sign = [NoObject()]
         birds = [NoObject()]*2
+        cacs = [NoObject()]*4 #Tree+cactus
         score = [NoObject()]
         bonus = [NoObject()]
         sign =[NoObject()]
         
-        objects.extend(sign+birds+score+bonus+sign)
+        objects.extend(sign+birds+ cacs +score+bonus+sign)
     return objects
 
 

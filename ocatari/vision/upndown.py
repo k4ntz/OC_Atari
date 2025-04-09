@@ -1,5 +1,5 @@
-from .game_objects import GameObject
-from .utils import find_objects, find_mc_objects, most_common_color
+from .game_objects import GameObject, NoObject
+from .utils import find_objects, find_mc_objects, most_common_color, match_objects, match_blinking_objects
 import numpy as np
 
 objects_colors = {"player_white": [192, 192, 192], "t_orange": [213, 130, 74], "t_red": [214, 92, 92], "t_green": [92, 186, 92], "t_blue1": [84, 160, 197],
@@ -20,18 +20,27 @@ class Truck(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = [214, 92, 92]
+        self.num_frames_invisible = -1
+        self.max_frames_invisible = 3
+        self.expected_dist = 2
 
 
 class Flag(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = [200, 72, 72]
+        self.num_frames_invisible = -1
+        self.max_frames_invisible = 3
+        self.expected_dist = 2
 
 
 class Collectable(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = [200, 72, 72]
+        self.num_frames_invisible = -1
+        self.max_frames_invisible = 3
+        self.expected_dist = 2
 
 
 #  ---- HUD -----
@@ -54,21 +63,23 @@ class Life(GameObject):
 
 
 def _detect_objects(objects, obs, hud=False):
-    objects.clear()
 
     player = find_mc_objects(obs, [objects_colors["player_white"], [
                              0, 0, 0]], minx=8, miny=26, maxy=193)
-    for bb in player:
-        objects.append(Player(*bb))
+    if player:
+        if type(objects[0]) is NoObject:
+            objects[0] = Player(*player[0])
+        objects[0].xywh = player[0]
+    else:
+        objects[0] = NoObject()
 
     colors = list(objects_colors.values())
+    truck = []
     for i in range(8):
-        truck = find_mc_objects(
-            obs, [colors[i+1], [0, 0, 0]], minx=8, miny=26, maxy=193)
-        for bb in truck:
-            t = Truck(*bb)
-            t.rgb = colors[i+1]
-            objects.append(t)
+        truck.extend(find_mc_objects(
+            obs, [colors[i+1], [0, 0, 0]], minx=8, miny=26, maxy=193))
+    
+    match_blinking_objects(objects, truck[0:3], 1, 3, Truck)
 
     hflag = []
     for i in range(8):
@@ -78,30 +89,34 @@ def _detect_objects(objects, obs, hud=False):
         else:
             hflag.append(None)
 
+    col = []
+    fla = []
+
     for i in range(8):
         flag = find_mc_objects(
             obs, [colors[i+9], [0, 0, 0]], size=(7, 16), tol_s=5, minx=8, miny=26, maxy=193)
-        for bb in flag:
+        if flag:
             if hflag[i] is None:
-                f = Collectable(*bb)
-                f.rgb = colors[i+9]
-                objects.append(f)
+                col.append(flag[0])
             else:
-                f = Flag(*bb)
-                f.rgb = colors[i+9]
-                objects.append(f)
+                fla.append(flag[0])
+    
+    match_blinking_objects(objects, fla[0:3], 4, 3, Flag)
+    match_blinking_objects(objects, col[0:3], 7, 3, Collectable)
 
     if hud:
         for i in range(8):
             if hflag[i] is not None:
-                hf = HUD_Flag(*hflag[i])
-                hf.rgb = colors[i+17]
-                objects.append(hf)
+                if type(objects[10+i]) is NoObject:
+                    objects[10+i] = HUD_Flag(*hflag[i])
+                objects[10+i].xywh = hflag[i]
+                objects[10+i].rgb = colors[i+17]
+                
         score = find_objects(
             obs, objects_colors["score"], maxx=85, maxy=25, closing_dist=8)
-        for bb in score:
-            objects.append(Score(*bb))
+        if score:
+            objects[18].xywh = score[0]
 
         life = find_objects(obs, objects_colors["life"], maxx=46, miny=194)
-        for bb in life:
-            objects.append(Life(*bb))
+        if life:
+            objects[19].xywh = life[0]

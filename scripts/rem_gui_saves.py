@@ -213,7 +213,16 @@ class Renderer:
                     _, ax = plt.subplots(1, 1, figsize=(6, 8))
                     obs = self.env._env.render()
                     ax.imshow(obs)
-                    plt.savefig('MsPacman.png', dpi=500)
+                    plt.savefig(self.env.game_name + '1.png', dpi=500)
+                    for obj in self.env.objects:
+                        x, y = obj.xy
+                        if x < 160 and y < 210:
+                            opos = obj.xywh
+                            ocol = obj.rgb
+                            # sur_col = make_darker(ocol)
+                            mark_bb(obs, opos, color=ocol)
+                    ax.imshow(obs)
+                    plt.savefig(self.env.game_name + '2.png', dpi=500)
 
                 elif event.key == pygame.K_h:
                     with open("save_states/" + self.env.game_name + '_save_state1.pickle', 'wb') as handle:
@@ -263,25 +272,25 @@ class Renderer:
         self.clock.tick(240)
 
     def _render_ram(self):
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
         ram = ale.getRAM()
 
         for i, value in enumerate(ram):
             self._render_ram_cell(i, value)
 
     def _get_ram_value_at(self, idx: int):
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
         ram = ale.getRAM()
         return ram[idx]
 
     def _set_ram_value_at(self, idx: int, value: int):
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
         ale.setRAM(idx, value)
         # self.current_frame = self.env.render()
         # self._render()
 
     def _set_ram(self, values):
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
         for k, value in enumerate(values):
             ale.setRAM(k, value)
 
@@ -381,7 +390,7 @@ class Renderer:
         in the current observation. Prints the RAM entry positions that are responsible
         for changes at pixel x, y.
         """
-        ale = self.env.unwrapped.ale
+        ale = self.env._ale
 
         state = self.env._env.env.env.ale.cloneState()
         ram = ale.getRAM().copy()
@@ -413,7 +422,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer(env_name="Krull", mode="ram",
+    renderer = Renderer(env_name="Robotank", mode="ram",
                         bits=False, obs_mode="obj", hud=True)
 
     def exit_handler():
