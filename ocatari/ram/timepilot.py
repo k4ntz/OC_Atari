@@ -1,5 +1,5 @@
 from .game_objects import GameObject, ValueObject, NoObject
-from ._helper_methods import number_to_bitfield
+from ._helper_methods import _convert_number
 import sys
 
 MAX_NB_OBJECTS = {"Player": 1, "Player_Shot": 1, "Enemy_Green": 8, "Enemy_Green_Shot": 2, "Enemy_Black": 8, "Enemy_Black_Shot": 2,
@@ -49,7 +49,7 @@ class Enemy_Black(GameObject):
         super(Enemy_Black, self).__init__()
         self._xy = 0, 160
         self.wh = (8, 7)
-        self.rgb = 0, 0, 0
+        self.rgb = 1, 1, 1
         self.hud = False
 
 
@@ -58,7 +58,7 @@ class Enemy_Black_Shot(GameObject):
         super(Enemy_Black_Shot, self).__init__()
         self._xy = 0, 160
         self.wh = (1, 2)
-        self.rgb = 0, 0, 0
+        self.rgb = 1, 1, 1
         self.hud = False
 
 
@@ -85,7 +85,7 @@ class Enemy_Blue(GameObject):
         super(Enemy_Blue, self).__init__()
         self._xy = 0, 160
         self.wh = (8, 7)
-        self.rgb = 0, 0, 0
+        self.rgb = 84, 138, 210
         self.hud = False
 
 
@@ -94,7 +94,7 @@ class Enemy_Blue_Shot(GameObject):
         super(Enemy_Blue_Shot, self).__init__()
         self._xy = 0, 160
         self.wh = (1, 2)
-        self.rgb = 0, 0, 0
+        self.rgb = 84, 138, 210
         self.hud = False
 
 
@@ -103,7 +103,7 @@ class Enemy_Orange(GameObject):
         super(Enemy_Orange, self).__init__()
         self._xy = 0, 160
         self.wh = (8, 7)
-        self.rgb = 187, 187, 53
+        self.rgb = 180, 122, 48
         self.hud = False
 
 
@@ -112,7 +112,7 @@ class Enemy_Orange_Shot(GameObject):
         super(Enemy_Orange_Shot, self).__init__()
         self._xy = 0, 160
         self.wh = (1, 2)
-        self.rgb = 187, 187, 53
+        self.rgb = 180, 122, 48
         self.hud = False
 
 
@@ -123,15 +123,17 @@ class Score(ValueObject):
         self.wh = (46, 10)
         self.rgb = 210, 164, 74
         self.hud = True
+        self.value = 0
 
 
-class Life(GameObject):
+class Life(ValueObject):
     def __init__(self):
         super(Life, self).__init__()
         self._xy = 0, 0
         self.wh = (8, 10)
         self.rgb = 101, 111, 228
         self.hud = True
+        self.value = 0
 
 
 # parses MAX_NB* dicts, returns default init list of objects
@@ -168,10 +170,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
-    # r11 == levels(4msb) lives(4lsb)
+    # r11 == player_color(4msb) lives(4lsb)
     # level 0 == 4, level 1 == 20, level 2 == 36, level 3 == 52, level 4 == 68
+    # r21 for setting levels
 
-    level = ram_state[11] >> 4
+    level = ram_state[21]
     if ram_state[36] != 140:
         if type(objects[0]) is NoObject:
             objects[0] = Player()
@@ -544,11 +547,19 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             else:
                 objects[50+i] = NoObject()
 
+    idx = list(range(2+10*level, 12+10*level))
+    no_obj = [i for i in range(2, 52) if i not in idx]
+
+    for i in no_obj:
+        objects[i] = NoObject()
+
     if hud:
         if ram_state[0] > 1:
             # Score
             if type(objects[-2]) is NoObject:
                 objects[-2] = Score()
+
+            objects[-2].value = _convert_number(ram_state[13]) * 100 + _convert_number(ram_state[15]) * 10000
 
             # Lives
             if ram_state[11] & 15 == 1:
@@ -556,11 +567,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     objects[-1] = Life()
                 objects[-1].xy = 80, 18
                 objects[-1].wh = 8, 10
+                objects[-1].value = 1
             elif ram_state[11] & 15:
                 if type(objects[-1]) is NoObject:
                     objects[-1] = Life()
                 objects[-1].xy = 96-((ram_state[11]&15) * 8), 18
                 objects[-1].wh = (ram_state[11]&15) * 8, 10
+                objects[-1].value = ram_state[11] & 15
             else:
                 objects[-1] = NoObject()
         else:
