@@ -26,15 +26,15 @@ class Score(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 228, 111, 111
-        super().hud = True
+        self.hud = True
 
 
 def _detect_objects(objects, obs, hud=False):
     chicken1, chicken2 = objects[:2]
     chicken1_bb = find_objects(
-        obs, objects_colors["chicken"], size=(7, 8), tol_s=3, maxx=80)
+        obs, objects_colors["chicken"], size=(7, 8), tol_s=3, maxx=80, closing_active= False)
     chicken2_bb = find_objects(
-        obs, objects_colors["chicken"], size=(7, 8), tol_s=3, minx=80)
+        obs, objects_colors["chicken"], size=(7, 8), tol_s=3, minx=80, closing_active= False)
     if chicken1_bb:
         chicken1.xywh = chicken1_bb[0]
     if chicken2_bb:
