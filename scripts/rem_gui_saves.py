@@ -422,7 +422,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    renderer = Renderer(env_name="Robotank", mode="ram",
+    renderer = Renderer(env_name="RoadRunner", mode="ram",
                         bits=False, obs_mode="obj", hud=True)
 
     def exit_handler():
