@@ -8,7 +8,7 @@ RAM extraction for the game BOWLING. Supported modes: ram
 
 MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Pin': 10}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Pin': 10,
-                      'PlayerScore': 1, 'PlayerRound': 1, 'Player2Round': 1}
+                      'PlayerScore': 1, 'Player1Round': 1, 'Player2Round': 1}
 
 _initial_pin_positions = [(121, 137), (125, 131), (125, 143), (129, 125), (
     129, 137), (129, 149), (133, 119), (133, 131), (133, 143), (133, 155)]
@@ -23,7 +23,7 @@ class Player(GameObject):
         super().__init__()
         self._xy = 0, 0
         self.wh = 8, 32
-        self.rgb = 84, 92, 214
+        self.rgb = 198, 89, 179
         self.hud = False
 
 
@@ -69,7 +69,7 @@ class PlayerScore(GameObject):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
 
-class PlayerRound(GameObject):
+class Player1Round(GameObject):
     """
     The round display for the first player (HUD).
     """
@@ -122,7 +122,7 @@ def _init_objects_ram(hud=False):
         pin.xy = _initial_pin_positions[i]
         objects.append(pin)
     if hud:
-        objects.extend([PlayerScore(), PlayerRound(), Player2Round()])
+        objects.extend([PlayerScore(), Player1Round(), Player2Round()])
     return objects
 
 
