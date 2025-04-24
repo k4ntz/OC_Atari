@@ -250,6 +250,7 @@ def _init_objects_ram(hud=False):
         objects.extend(sign+birds+ cacs +score+bonus+sign)
     return objects
 
+rock_offsets  = [(21, 29), (-9, -15), (15, 20), (-1, -4), (-7, -13), (-5, -10), (7, 8), (5, 5), (16, 19)]
 
 def _detect_objects_ram(objects, ram_state, hud=False):
     """
@@ -265,7 +266,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         y_offset = 85
     elif level == 5:
         y_offset = 125
-
+    elif level == 7:
+        y_offset = 84
 
     # player
     if ram_state[80] < 150:
@@ -306,7 +308,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     dist1 = [-30, -67, -49, 18, -59, -22, 18, -67]
     dist2 = [-30, 95, -47, 20, -56, -20, 20, 94]
     loc = ram_state[90]-1
-    if level != 1:
+    if not level&1:
         for i in range(4):
             if ram_state[36+i] == 31:  # bottom seed or AcmeMine
                 if type(objects[3+i]) is NoObject:
@@ -385,7 +387,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[17] = NoObject()
     
     # TurretBall
-    if level == 3 and 8 < ram_state[42] < 151:
+    if level in [3, 7] and 8 < ram_state[42] < 151:
         if type(objects[2]) is NoObject:
             if type(objects[18]) is NoObject:
                 objects[18] = TurretBall()
@@ -399,8 +401,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if type(objects[19]) is NoObject:
             objects[19] = Rock()
             objects[20] = Rock()
-        objects[19].xy = ram_state[82] + ram_state[91] - 2, ram_state[48] + 94
-        objects[20].xy = ram_state[82] + ram_state[91] - (ram_state[56]>>1) + 6, ram_state[48] + 108
+        offsets = rock_offsets[(ram_state[56]>>1)]
+        objects[19].xy = ram_state[82] + ram_state[91] + offsets[0] - 2, ram_state[48] + 94
+        objects[20].xy = ram_state[82] + ram_state[91] + offsets[1] - 2, ram_state[48] + 108
     else:
         objects[19] = NoObject()
         objects[20] = NoObject()
