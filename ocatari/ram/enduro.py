@@ -11,7 +11,7 @@ RAM extraction for the game Enduro.
 
 MAX_NB_OBJECTS = {"Player": 1, "Car": 7}
 MAX_NB_OBJECTS_HUD = {"Player": 1, "Car": 7,
-                      "NumberOfCars": 4, "PlayerScore": 6, "Level": 1}
+                      "NumberOfCars": 1, "CoveredDistance": 1, "Level": 1}
 
 
 class Player(GameObject):
@@ -33,12 +33,13 @@ class Car(GameObject):
         self.hud = False
 
 
-class PlayerScore(GameObject):
+class CoveredDistance(GameObject):
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
         self.wh = (16, 10)
-        self.rgb = 132, 144, 252
+        self.rgb = 255, 255, 255
+        self.distance = 0
         self.hud = True
 
 
@@ -47,7 +48,8 @@ class NumberOfCars(GameObject):
         super().__init__()
         self._xy = 0, 0
         self.wh = (16, 10)
-        self.rgb = 0, 0, 0
+        self.rgb = 255, 255, 255
+        self.num = 200
         self.hud = True
 
 
@@ -56,7 +58,8 @@ class Level(GameObject):
         super().__init__()
         self._xy = 0, 0
         self.wh = (16, 10)
-        self.rgb = 0, 0, 0
+        self.rgb = 255, 255, 255
+        self.level = 1
         self.hud = True
 
 
@@ -82,7 +85,9 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()] + [NoObject()]*7
     if hud:
-        objects.extend([NoObject()]*12)
+        objects.extend(
+            [NumberOfCars()] + [CoveredDistance()] + [Level()]
+        )
     return objects
 
 def get_road_edges(lc, lr, rc, rr, y, td):
@@ -183,9 +188,57 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             x = lx + (rx - lx) * 0.5
         car = Car()
         car.xy = round(x - w / 2), ys[i]
-        car.wh = w, h
+        car.wh = round(w), round(h)
         objects[i + 1] = car
 
     if hud:
-        # ram_state[45] indicates the level
-        pass
+        num_of_cars = NumberOfCars()
+        num_of_cars.num = _convert_number(ram_state[44]) * 100 + \
+            _convert_number(ram_state[43])
+        if num_of_cars.num == 200:
+            num_of_cars.xy = 81, 180
+            num_of_cars.wh = 22, 7
+        elif num_of_cars.num >= 100:
+            num_of_cars.xy = 82, 180
+            num_of_cars.wh = 21, 7
+        elif num_of_cars.num >= 20:
+            num_of_cars.xy = 89, 180
+            num_of_cars.wh = 14, 7
+        elif num_of_cars.num >= 10:
+            num_of_cars.xy = 90, 180
+            num_of_cars.wh = 13, 7
+        elif num_of_cars.num >= 2:
+            num_of_cars.xy = 97, 180
+            num_of_cars.wh = 6, 7
+        elif num_of_cars.num == 1:
+            num_of_cars.xy = 98, 180
+            num_of_cars.wh = 4, 7
+        elif num_of_cars.num == 0:
+            num_of_cars.xy = 73, 180
+            num_of_cars.wh = 31, 8
+        objects[8] = num_of_cars
+
+        cd = CoveredDistance()
+        cd.distance = _convert_number(ram_state[42]) * 10000
+        cd.distance += _convert_number(ram_state[41]) * 100
+        cd.distance += _convert_number(ram_state[40])
+        if cd.distance >= 200000:
+            cd.xy = 57, 165
+            cd.wh = 46, 7
+        elif cd.distance >= 100000:
+            cd.xy = 58, 165
+            cd.wh = 45, 7
+        else:
+            cd.xy = 65, 165
+            cd.wh = 38, 7
+        objects[9] = cd
+        
+        level = Level()
+        level.level = ram_state[45]
+        if level.level == 1:
+            level.xy = 58, 180
+            level.wh = 4, 7
+        else:
+            level.xy = 57, 180
+            level.wh = 6, 7
+        objects[10] = level
