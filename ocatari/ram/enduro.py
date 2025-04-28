@@ -176,6 +176,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     
     ys = sorted(ys, reverse=True)
     _xs = [20, 80, 130]
+    cars_bb = []
     for i in range(len(xs)):
         lx, rx = get_road_edges(lc, lr, rc, rr, ys[i], td)
         w = 16 * (ys[i] - 50) / 103 + 1
@@ -186,10 +187,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             x = lx + (rx - lx) * 0.75
         else:
             x = lx + (rx - lx) * 0.5
-        car = Car()
-        car.xy = round(x - w / 2), ys[i]
-        car.wh = round(w), round(h)
-        objects[i + 1] = car
+        cars_bb.append((round(x - w / 2), ys[i], round(w), round(h)))    
+        # car = Car()
+        # car.xy = round(x - w / 2), ys[i]
+        # car.wh = round(w), round(h)
+        # objects[i + 1] = car
+    
+    match_objects(objects, cars_bb, 115, 7, Car)
 
     if hud:
         num_of_cars = NumberOfCars()
