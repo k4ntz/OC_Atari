@@ -168,7 +168,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     xs = []
     ys = []
     for i in range(7):
-        objects[i + 1] = NoObject()
         if ram_state[27+i]:
             y = 150 - int(1.2*((18-i)*i) + ((ram_state[59] >> 3)*(0.9**i)))
             ys.append(y)
@@ -187,13 +186,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             x = lx + (rx - lx) * 0.75
         else:
             x = lx + (rx - lx) * 0.5
-        cars_bb.append((round(x - w / 2), ys[i], round(w), round(h)))    
-        # car = Car()
-        # car.xy = round(x - w / 2), ys[i]
-        # car.wh = round(w), round(h)
-        # objects[i + 1] = car
+        cars_bb.append((round(x - w / 2), ys[i], round(w), round(h)))
     
-    match_objects(objects, cars_bb, 115, 7, Car)
+    match_objects(objects, cars_bb, 1, 7, Car)
 
     if hud:
         num_of_cars = NumberOfCars()
