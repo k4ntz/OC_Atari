@@ -1,6 +1,6 @@
 
 from .utils import find_objects, match_objects, match_blinking_objects
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 
 
 objects_colors = {"frog": [[110, 156, 66], [162, 162, 42]], "log": [105, 105, 15], "turtle": [[144, 72, 17], [66, 114, 194]],
@@ -31,6 +31,8 @@ class Frog(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rgb = 110, 156, 66
+        self.expected_dist = 2
+        
 
 
 class Log(GameObject):
@@ -39,6 +41,7 @@ class Log(GameObject):
         self.rgb = 105, 105, 15
         self.num_frames_invisible = -1
         self.max_frames_invisible = 4
+        self.expected_dist = 2
 
 
 class Alligator(GameObject):
@@ -47,6 +50,8 @@ class Alligator(GameObject):
         self.rgb = 105, 105, 15
         self.num_frames_invisible = -1
         self.max_frames_invisible = 4
+        self.expected_dist = 2
+        
 
 
 class Turtle(GameObject):
@@ -55,6 +60,7 @@ class Turtle(GameObject):
         self.rgb = rgb
         self.num_frames_invisible = -1
         self.max_frames_invisible = 4
+        self.expected_dist = 2
 
     @property
     def diving(self):
@@ -67,6 +73,8 @@ class LadyFrog(GameObject):
         self.rgb = 236, 236, 236
         self.num_frames_invisible = -1
         self.max_frames_invisible = 6
+        self.expected_dist = 2
+        
 
 
 class Snake(GameObject):
@@ -75,6 +83,8 @@ class Snake(GameObject):
         self.rgb = 82, 126, 45
         self.num_frames_invisible = -1
         self.max_frames_invisible = 4
+        self.expected_dist = 2
+        
 
 
 class HappyFrog(GameObject):
@@ -83,6 +93,8 @@ class HappyFrog(GameObject):
         self.rgb = 82, 126, 45
         self.num_frames_invisible = -1
         self.max_frames_invisible = 4
+        self.expected_dist = 2
+        
 
 
 class AlligatorHead(GameObject):
@@ -91,6 +103,8 @@ class AlligatorHead(GameObject):
         self.rgb = 110, 156, 66
         self.num_frames_invisible = -1
         self.max_frames_invisible = 4
+        self.expected_dist = 2
+        
 
 
 class Fly(GameObject):
@@ -99,6 +113,8 @@ class Fly(GameObject):
         self.rgb = 110, 156, 66
         self.num_frames_invisible = -1
         self.max_frames_invisible = 4
+        self.expected_dist = 2
+        
 
 
 class Car(GameObject):
@@ -107,6 +123,7 @@ class Car(GameObject):
         self.rgb = rgb
         self.num_frames_invisible = -1
         self.max_frames_invisible = 4
+        self.expected_dist = 2
 
 
 class Score(GameObject):
@@ -161,6 +178,8 @@ def _detect_objects(objects, obs, hud=False):
     # Detect Alligator
     if aligators_bb:
         match_objects(objects, aligators_bb, start_idx, 2, Alligator)
+    else:
+        objects[start_idx]= NoObject()
     start_idx += 2
     # Detect Turtle
     for nbturtles, (miny, maxy) in zip(turtles_per_line, turtles_lane_limits):
@@ -175,7 +194,10 @@ def _detect_objects(objects, obs, hud=False):
     # Detect lady frog
     lady_bb = find_objects(
         obs, objects_colors["lady frog"], maxy=100, size=(8, 11))
-    match_blinking_objects(objects, lady_bb, start_idx, 1, LadyFrog)
+    if lady_bb:
+        match_blinking_objects(objects, lady_bb, start_idx, 1, LadyFrog)
+    else: 
+        objects[start_idx]= NoObject()
     start_idx += 1
 
     flys_bb = []
@@ -187,18 +209,27 @@ def _detect_objects(objects, obs, hud=False):
         if not (obs[bb[1]+8][bb[0]] == [110, 156, 66]).all():  # check if it is a fly
             flys_bb.append(bb)
             heads_bb.remove(bb)
-    match_blinking_objects(objects, heads_bb, start_idx, 1, AlligatorHead)
+    if heads_bb:
+        match_blinking_objects(objects, heads_bb, start_idx, 1, AlligatorHead)
+    else:
+        objects[start_idx]= NoObject()
     start_idx += 1
 
     # Detect fly
-    match_blinking_objects(objects, flys_bb, start_idx, 1, Fly)
+    if flys_bb:
+        match_blinking_objects(objects, flys_bb, start_idx, 1, Fly)
+    else: 
+        objects[start_idx]= NoObject()
     start_idx += 1
 
     # Detect Happy Frogs
     for i, (minx, maxx) in zip(max_frog_per_col, frog_limit_x):
         frog_bb = [bb for bb in find_objects(
             obs, objects_colors["happy frog"], maxy=26, miny=14, minx=minx, maxx=maxx, size=(8, 10), tol_s=2)]
-        match_blinking_objects(objects, frog_bb, start_idx, i, HappyFrog)
+        if frog_bb:
+            match_blinking_objects(objects, frog_bb, start_idx, i, HappyFrog)
+        else:
+            objects[start_idx]= NoObject()
         start_idx += i
 
     # frogs_bb = []
@@ -211,7 +242,10 @@ def _detect_objects(objects, obs, hud=False):
     for i, (miny, maxy) in zip(max_snake_per_line, snakes_limit_y):
         snake_bb = [bb for bb in find_objects(
             obs, objects_colors["snake"], minx=8, maxx=152, miny=miny, maxy=maxy, size=(16, 5), tol_s=2)]
-        match_blinking_objects(objects, snake_bb, start_idx, i, Snake)
+        if snake_bb:
+            match_blinking_objects(objects, snake_bb, start_idx, i, Snake)
+        else:
+            objects[start_idx]= NoObject()
         start_idx += i
 
     # HUD elements: Score, Lives and Time
