@@ -94,25 +94,35 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     # player (x=36, y=33) but 39 does also something to it (flips to 10 and 19)
     # 60+i is type of bomb
 
-    player = objects[0]
-    if ram_state[36]&128:
-        player_x = 20 + ((ram_state[36]&15)<<4) - (ram_state[36]>>4)
+    enemy = objects[1]
+    if ram_state[39] != 94:
+        player_x_cell = ram_state[36]
+        player_y_cell = ram_state[33]
+        enemy._xy = 31, 49
     else:
-        player_x = 4 + ((ram_state[36]&15)<<4) - (ram_state[36]>>4)
+        player_x_cell = ram_state[35]
+        player_y_cell = ram_state[32]
+        enemy._xy = 31, 193
+
+    player = objects[0]
+    player_x_cell = ram_state[36] if ram_state[39] != 94 else ram_state[35]
+    if player_x_cell&128:
+        player_x = 20 + ((player_x_cell&15)<<4) - (player_x_cell>>4)
+    else:
+        player_x = 4 + ((player_x_cell&15)<<4) - (player_x_cell>>4)
     player_x = player_x + ((88 - player_x)>>4) - 20
 
-    player_y = ((ram_state[33]&15)<<4) - (ram_state[33]>>4)
-    player_y = player_y + ((88 - player_y)>>4)
+    player_y = 2*player_y_cell + 24
+    
 
     player._xy = player_x, player_y # ((ram_state[33]&15)<<4) - (ram_state[33]>>4)
 
     # girlfriend x=76
     platform_y = [43, 63, 87, 111, 135, 159, 183, 207]
 
-    # y_s =  [10, 22, 34, 46, 58, 70, 82, 94]
     for i in range(8):
 
-        if ram_state[51+i] != 1:
+        if ram_state[42+i] != 255:
             if type(objects[3+i]) is NoObject:
                 objects[3+i] = Bomb()
             if ram_state[51+i]&128:
@@ -121,8 +131,12 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                 x = 4 + ((ram_state[51+i]&15)<<4) - (ram_state[51+i]>>4)
 
             x = x + ((88 - x)>>4) - 20
+
             
 
-            objects[3+i]._xy = x, 43+i*20
+            objects[3+i]._xy = x, 43
         else:
             objects[3+i] = NoObject()
+        
+    if hud:
+        pass
