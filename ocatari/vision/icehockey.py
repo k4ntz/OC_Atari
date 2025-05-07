@@ -1,5 +1,5 @@
-from .utils import find_objects, find_mc_objects
-from .game_objects import GameObject
+from .utils import find_objects, find_mc_objects, match_objects
+from .game_objects import GameObject, NoObject
 
 objects_colors = {"ball": [0, 0, 0], "enemyscore": [
     236, 200, 96], "playerscore": [84, 92, 214], "timer": [84, 92, 214]}
@@ -52,34 +52,33 @@ class Timer(GameObject):
 
 def _detect_objects(objects, obs, hud=False):
     # detection and filtering
-    objects.clear()
-    player = find_mc_objects(obs, player_colors, size=(
+    #objects.clear()
+    players_bb = find_mc_objects(obs, player_colors, size=(16, 20),
+                                 tol_s=10, closing_dist=3)
+    match_objects(objects, players_bb, 0, 2, Player)
+    start_idx=2
+    
+    enemies_bb = find_mc_objects(obs, enemy_colors, size=(
         16, 20), tol_s=10, closing_dist=3)
-    for p in player:
-        objects.append(Player(*p))
-
-    enemy = find_mc_objects(obs, enemy_colors, size=(
-        16, 20), tol_s=10, closing_dist=3)
-    for e in enemy:
-        objects.append(Enemy(*e))
-
-    ball = find_objects(obs, objects_colors["ball"], size=(
+    match_objects(objects, enemies_bb, start_idx, 2, Enemy)
+    start_idx+=2
+    
+    ball_bb = find_objects(obs, objects_colors["ball"], size=(
         2, 2), minx=32, maxx=127, miny=46, maxy=182, tol_s=1, min_distance=1)
-    for b in ball:
-        objects.append(Ball(*b))
+    match_objects(objects, ball_bb, start_idx, 1, Ball)
+    start_idx+=1
 
     if hud:
-        playerscore = find_objects(obs, objects_colors["playerscore"], size=(
-            8, 7), minx=30, maxx=60, miny=11, maxy=22, tol_s=2)
-        for p in playerscore:
-            objects.append(PlayerScore(*p))
+        playerscore_bb = find_objects(obs, objects_colors["playerscore"], size=(
+            8, 7), minx=30, maxx=60, miny=13, maxy=22, closing_dist=10)
+        match_objects(objects, playerscore_bb, start_idx, 1, PlayerScore)
+        start_idx+=1
 
-        enemyscore = find_objects(obs, objects_colors["enemyscore"], size=(
-            8, 7), minx=100, maxx=120, miny=11, maxy=22, tol_s=2)
-        for e in enemyscore:
-            objects.append(EnemyScore(*e))
+        enemyscore_bb = find_objects(obs, objects_colors["enemyscore"], size=(
+            8, 7), minx=100, maxx=120, miny=13, maxy=22, closing_dist=10)
+        match_objects(objects, enemyscore_bb, start_idx, 1, EnemyScore)
+        start_idx+=1
 
-        timer = find_objects(obs, objects_colors["timer"], size=(
-            8, 7), maxy=12, tol_s=4, closing_dist=1)
-        for t in timer:
-            objects.append(Timer(*t))
+        timer_bb = find_objects(obs, objects_colors["timer"], maxy=12, closing_dist=10, min_distance=0)
+        match_objects(objects, timer_bb, start_idx, 1, Timer)
+

@@ -7,7 +7,7 @@ RAM extraction for the game Ice Hockey.
 
 MAX_NB_OBJECTS = {"Player": 2, "Enemy": 2, "Ball": 1}
 MAX_NB_OBJECTS_HUD = {"Player": 2, "Enemy": 2, "Ball": 1,
-                      'PlayerScore': 2, 'EnemyScore': 2, 'Timer': 3}  # 'Score': 1}
+                      'PlayerScore': 1, 'EnemyScore': 1, 'Timer': 1}  # 'Score': 1}
 
 
 class Player(GameObject):
@@ -18,7 +18,7 @@ class Player(GameObject):
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
-        self.wh = (16, 20)
+        self.wh = 16, 20
         self.rgb = 101, 111, 228
         self.hud = False
 
@@ -32,7 +32,7 @@ class Enemy(GameObject):
         super().__init__()
         self.rgb = 82, 126, 45
         self._xy = 0, 0
-        self.wh = (16, 20)
+        self.wh = 16, 20
         self.hud = False
 
 
@@ -45,7 +45,7 @@ class Ball(GameObject):
         super().__init__()
         self.rgb = 0, 0, 0
         self._xy = 0, 0
-        self.wh = (2, 2)
+        self.wh = 2, 2
         self.hud = False
 
 
@@ -57,8 +57,8 @@ class PlayerScore(GameObject):
     def __init__(self):
         super().__init__()
         self.rgb = 84, 92, 214
-        self._xy = 0, 0
-        self.wh = (8, 7)
+        self._xy = 46, 14
+        self.wh = 8, 7
         self.hud = True
 
 
@@ -70,8 +70,8 @@ class EnemyScore(GameObject):
     def __init__(self):
         super().__init__()
         self.rgb = 236, 200, 96
-        self._xy = 0, 0
-        self.wh = (7, 7)
+        self._xy = 110, 14
+        self.wh = 6, 7
         self.hud = True
 
 
@@ -83,8 +83,8 @@ class Timer(GameObject):
     def __init__(self):
         super().__init__()
         self.rgb = 84, 92, 214
-        self._xy = 0, 0
-        self.wh = (7, 7)
+        self._xy = 65, 5
+        self.wh = 30, 7 
         self.hud = True
 
 
@@ -110,7 +110,7 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()]+[Player()] + [Enemy()]+[Enemy()] + [Ball()]
     if hud:
-        objects.extend([NoObject()]*7)
+        objects.extend([NoObject()]*3)
     return objects
 
 
@@ -138,37 +138,49 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if hud:
         # scores
         # ram_state[11] for enemy score
-        if ram_state[11] <= 9:
-            es1 = EnemyScore()
-            es1.xy = 110, 14
-            objects[7] = es1
-            objects[8] = NoObject()
-        else:
-            es1 = EnemyScore()
-            es2 = EnemyScore()
-            es1.xy = 110, 14
-            es2.xy = 102, 14
-            objects[7] = es1
-            objects[8] = es2
-        # ram_state[10] for player score
-        if ram_state[10] <= 9:
-            es1 = PlayerScore()
-            es1.xy = 46, 14
-            objects[5] = es1
-            objects[6] = NoObject()
-        else:
-            es1 = PlayerScore()
-            es2 = PlayerScore()
-            es1.xy = 46, 14
-            es2.xy = 38, 14
-            objects[5] = es1
-            objects[6] = es2
+        es = EnemyScore()
+        es.xy = 110, 14
+        es.wh = 6, 7
+        if ram_state[11] < 10:
+            if ram_state[11]==1:
+                es.x = 111
+                es.w = 4
+        elif ram_state[11]<32:
+            es.x = 102
+            es.w = 14
+            if ram_state[11]==17:
+                es.w = 13
+        # elif ram_state[11]<30:
+        objects[6]=es
+            
+                
+            
+        # else:
+            
+        # # ram_state[10] for player score
+        # if ram_state[10] <= 9:
+        #     es1 = PlayerScore()
+        #     es1.xy = 46, 14
+        #     objects[5] = es1
+        #     objects[6] = NoObject()
+        # else:
+        #     es1 = PlayerScore()
+        #     es2 = PlayerScore()
+        #     es1.xy = 46, 14
+        #     es2.xy = 38, 14
+        #     objects[5] = es1
+        #     objects[6] = es2
         # Timer
+        t = Timer()
+        t.xy = 65, 5
+        t.wh = 30, 7
+        objects[7]=t
         # ram_state[6] responsible for seconds place
         # ram_state[7] responsible for minutes's place
-        t1 = objects[9]
-        t2 = objects[10]
-        t3 = objects[11]
-        t1.xy = 89, 5
-        t2.xy = 81, 5
-        t3.xy = 65, 5  # Minute place
+        # t1 = objects[9]
+        # t2 = objects[10]
+        # t3 = objects[11]
+        # t1.xy = 89, 5
+        # t2.xy = 81, 5
+        # t3.xy = 65, 5  # Minute place
+        
