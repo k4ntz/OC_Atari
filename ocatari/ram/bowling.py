@@ -8,7 +8,8 @@ RAM extraction for the game BOWLING. Supported modes: ram
 
 MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Pin': 10}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Pin': 10,
-                      'PlayerScore': 1, 'Player1Round': 1, 'Player2Round': 1}
+                      'Score': 1,'Round': 1,
+                      'Board': 1}
 
 _initial_pin_positions = [(121, 137), (125, 131), (125, 143), (129, 125), (
     129, 137), (129, 149), (133, 119), (133, 131), (133, 143), (133, 155)]
@@ -26,7 +27,6 @@ class Player(GameObject):
         self.rgb = 198, 89, 179
         self.hud = False
 
-
 class Ball(GameObject):
     """
     The bowling ball.
@@ -38,7 +38,6 @@ class Ball(GameObject):
         self.wh = 4, 10
         self.rgb = 45, 50, 184
         self.hud = False
-
 
 class Pin(GameObject):
     """
@@ -52,8 +51,7 @@ class Pin(GameObject):
         self.rgb = 45, 50, 184
         self.hud = False
 
-
-class PlayerScore(GameObject):
+class Score(GameObject):
     """
     The player's score display (HUD).
     """
@@ -64,12 +62,19 @@ class PlayerScore(GameObject):
         self.rgb = 84, 92, 214
         self.wh = 28, 15
         self.hud = True
-
+        
     def __eq__(self, o):
-        return isinstance(o, PlayerScore) and self.xy == o.xy
+        return isinstance(o, Score) and self.xy == o.xy
 
+class Board(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = 84, 92, 214
+        # self._xy = 32, 19
+        # self.wh = 28, 15
+        self.hud = True
 
-class Player1Round(GameObject):
+class Round(GameObject):
     """
     The round display for the first player (HUD).
     """
@@ -80,20 +85,6 @@ class Player1Round(GameObject):
         self.rgb = 45, 50, 184
         self.wh = 4, 10
         self.hud = True
-
-
-class Player2Round(GameObject):
-    """
-    The round display for the second player (HUD).
-    """
-
-    def __init__(self):
-        super().__init__()
-        self._xy = 120, 7
-        self.rgb = 45, 50, 184
-        self.wh = 4, 10
-        self.hud = True
-
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
@@ -122,7 +113,7 @@ def _init_objects_ram(hud=False):
         pin.xy = _initial_pin_positions[i]
         objects.append(pin)
     if hud:
-        objects.extend([PlayerScore(), Player1Round(), Player2Round()])
+        objects.extend([Score(), Round(), Board()])
     return objects
 
 
@@ -150,38 +141,83 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 objects[2 + i] = NoObject()
 
     if hud:
-        p1s, p1r, p2r = objects[12:]
+        ps, pr, pb = objects[12:]
         # score
         sc = _convert_number(ram_state[33])
         # ones digit is a one
         if ram_state[38] != 0:  # hundreds
             if ram_state[38] == 1:
-                p1s.xy = 24, 19
-                p1s.wh = 36, 15
+                ps.xy = 24, 19
+                ps.wh = 36, 15
             else:
-                p1s.xy = 16, 19
-                p1s.wh = 44, 15
+                ps.xy = 16, 19
+                ps.wh = 44, 15
         else:
-            if sc == 1:
-                p1s.xy = 56, 19
-                p1s.wh = 4, 15
-            elif sc < 10:
-                p1s.xy = 48, 19
-                p1s.wh = 12, 15
-            elif sc < 20:
-                p1s.xy = 40, 19
-                p1s.wh = 20, 15
+            # if sc == 1:
+            #     ps.xy = 56, 19
+            #     ps.wh = 4, 15
+            # elif sc < 10:
+            #     ps.xy = 48, 19
+            #     ps.wh = 12, 15
+            if sc < 20 and sc > 10:
+                ps.xy = 40, 19
+                ps.wh = 20, 15
             else:
-                p1s.xy = 32, 19
-                p1s.wh = 28, 15
+                ps.xy = 32, 19
+                ps.wh = 28, 15
         # round
         if _convert_number(ram_state[36]) == 10:
-            p1r.xy = 24, 7
-            p1r.wh = 20, 10
+            pr.xy = 24, 7
+            pr.wh = 20, 10
         elif _convert_number(ram_state[36]) != 1:
-            p1r.xy = 32, 7
-            p1r.wh = 12, 10
-
+            pr.xy = 32, 7
+            pr.wh = 12, 10
+        
+        #board
+        #first row
+        pb.xy = 16, 37
+        if ram_state[19]!=0:
+            pb.wh = 12,6
+            if ram_state[19]>4 and ram_state[19]< 21:
+                pb.w = 28
+            elif ram_state[19]>20:
+                pb.w = 48
+            if ram_state[19] in [1,5,21]:
+                    pb.y = 39
+                    pb.h = 2
+        #second row
+        if ram_state[21]!=0:
+            pb.wh = 48, 15
+            if ram_state[19]==21:
+                pb.y = 39
+                if ram_state[21] in [1,5,21]:
+                    pb.h = 13
+            else:
+                pb.h = 17
+                if ram_state[21] in [1,5,21]:
+                    pb.h = 15       
+        #third row 
+        if ram_state[23]!=0:
+            pb.wh = 48, 26
+            if ram_state[19]==21:
+                pb.y = 39
+                if ram_state[23] in [1,5,21]:
+                    pb.h = 24
+            else:
+                pb.h = 28
+                if ram_state[23] in [1,5,21]:
+                    pb.h = 26  
+        #Forth row
+        if ram_state[25]!=0:
+            pb.wh = 48, 37
+            if ram_state[19]==21:
+                pb.y = 39
+                if ram_state[25] in [1,5,21]:
+                    pb.h = 35
+            else:
+                pb.h = 39
+                if ram_state[25] in [1,5,21]:
+                    pb.h = 37 
 
 def _detect_objects_bowling_raw(info, ram_state):
     # player_x, player_y  y: from 1 (down) to 28 (up)
