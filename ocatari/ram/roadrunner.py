@@ -280,18 +280,26 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             player.xy = ram_state[80], ram_state[10] + y_offset
         player.wh = (8, 24) if ram_state[41] == 6 else (8, 32)
     else:
-        objects[0] = NoObject()
+        objects[0] = None
 
     # enemy
-    if ram_state[81] < 144:
+    if 8 < ram_state[81] < 144:
         if type(objects[1]) is NoObject:
             objects[1] = Enemy()
+
         enemy = objects[1]
+
         if level&1:
             y_offset-=2
         else:
             y_offset+=3
-        enemy.xy = ram_state[81], (ram_state[5]&127) + y_offset
+        
+        if not ram_state[43] and (109 < ram_state[1] < 121 or 179 < ram_state[1] < 191): # sitting on rocket racer 
+            enemy.xy = ram_state[81] + 3, (ram_state[5]&127) + y_offset + 8
+            enemy.wh = 12, 24
+        else:
+            enemy.xy = ram_state[81] + 1, (ram_state[5]&127) + y_offset
+            enemy.wh = 7, 29
     else:
         objects[1] = NoObject()
     
@@ -302,13 +310,16 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[2].xy = ram_state[42] - 2, 157 if (ram_state[43] == 1) else 127
     else:
         objects[2] = NoObject()
-
-    # Seeds and Mines
-    pos_init = ram_state[89]
-    dist1 = [-30, -67, -49, 18, -59, -22, 18, -67]
-    dist2 = [-30, 95, -47, 20, -56, -20, 20, 94]
-    loc = ram_state[90]-1
+    
+    # Seed or AcmeMine
     if not level&1:
+
+        # position lookups
+        pos_init = ram_state[89]
+        dist1 = [-30, -67, -49, 18, -59, -22, 18, -67]
+        dist2 = [-30, 95, -47, 20, -56, -20, 20, 94]
+        loc = ram_state[90]-1
+
         for i in range(4):
             if ram_state[36+i] == 31:  # bottom seed or AcmeMine
                 if type(objects[3+i]) is NoObject:
@@ -332,6 +343,48 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 objects[3+i] = NoObject()
                 objects[7+i] = NoObject()
                 objects[11+i] = NoObject()
+    elif level > 1:
+        
+        # position lookups
+        pos_init = ram_state[89]
+        dist1 = [-25, -53, -39, 10, -46, -17, 11, -17]
+        dist2 = [-11, -39, -25, 24, -32, -3, 25, -3]
+        loc = ram_state[90]-1
+
+        for i in range(4):
+            dist = -2
+            if i == 1:
+                objects[4] = NoObject()
+                objects[8] = NoObject()
+                objects[12] = NoObject()
+                continue
+            elif i == 2:
+                dist = dist1[loc]
+            elif i == 0:
+                dist = dist2[loc]
+
+            if ram_state[36+i] == 31:  # bottom seed or AcmeMine
+                if type(objects[3+i]) is NoObject:
+                    objects[3+i] = Seed()
+                    objects[7+i] = NoObject()
+                    objects[11+i] = NoObject()
+                objects[3+i].xy = (pos_init + dist - 2)%160, 138 - (i*11)
+            elif ram_state[36+i] == 47:
+                if type(objects[7+i]) is NoObject:
+                    objects[3+i] = NoObject()
+                    objects[7+i] = AcmeMine()
+                    objects[11+i] = NoObject()
+                objects[7+i].xy = (pos_init + dist + 1)%160, 138 - (i*11)
+            elif ram_state[36+i] == 63:
+                if type(objects[11+i]) is NoObject:
+                    objects[3+i] = NoObject()
+                    objects[7+i] = NoObject()
+                    objects[11+i] = SteelShot()
+                objects[11+i].xy = (pos_init + dist)%160, 139 - (i*11)
+            else:
+                objects[3+i] = NoObject()
+                objects[7+i] = NoObject()
+                objects[11+i] = NoObject()
     else:
         # On second level remove all the birdseeds
         objs = list(range(4, 7))
@@ -339,8 +392,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         for i in objs:
             objects[i] = NoObject()
 
-    # Seed or AcmeMine
-    if level == 1:
         if 8 < ram_state[89] < 151:
             if ram_state[39] == 31:  # bottom seed or AcmeMine
                 if type(objects[3]) is NoObject:
@@ -352,6 +403,23 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     objects[3] = NoObject()
                     objects[7] = AcmeMine()
                 objects[7].xy = ram_state[89] - 4, 146 - (16*ram_state[55])
+            else:
+                objects[3] = NoObject()
+                objects[7] = NoObject()
+        else:
+            objects[3] = NoObject()
+            objects[7] = NoObject()
+
+
+    # RoadCrack
+    if ram_state[82] > 150 or ram_state[82] <= 8 or ram_state[22] != 1:
+        objects[7] = None
+    else:
+        if ram_state[79] == 1:
+            if ram_state[69] <= 18 and ram_state[69] >= 6:
+                rc = RoadCrack()
+                rc.xy = ram_state[82]-5, 125
+                objects[7] = rc
             else:
                 objects[3] = NoObject()
                 objects[7] = NoObject()
@@ -392,6 +460,24 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if type(objects[18]) is NoObject:
                 objects[18] = TurretBall()
             objects[18].xy = ram_state[42], 128
+        else:
+            objects[9] = None
+
+    # Turret
+    if level in [3, 7] and ram_state[48] and 8 < ram_state[55] < 145:
+        if type(objects[17]) is NoObject:
+            objects[17] = Turret()
+        x = ram_state[55]-6 if ram_state[91] == 33 else ram_state[55]-1
+        objects[17].xy = x, 128
+    else:
+        objects[17] = NoObject()
+    
+    # TurretBall
+    if level in [3, 7] and 8 < ram_state[42] < 151:
+        if type(objects[2]) is NoObject:
+            if type(objects[18]) is NoObject:
+                objects[18] = TurretBall()
+            objects[18].xy = ram_state[42]- 1, 128
         else:
             objects[18] = NoObject()
     else:
