@@ -159,4 +159,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Contact
 [Quentin Delfosse](mailto:quentin.delfosse@tu-darmstadt.de), [Jannis Blüml](mailto:jannis.blueml@tu-darmstadt.de)
-

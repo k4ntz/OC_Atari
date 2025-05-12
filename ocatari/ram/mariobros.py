@@ -142,7 +142,7 @@ def _init_objects_ram(hud=True):
     (Re)Initialize the objects
     """
 
-    objects = [Player(), PowBlock(), Fireball()] + [NoObject()] * 4 + [NoObject()] + [NoObject()] * 8 + \
+    objects = [Player(), PowBlock(), Fireball()] + [NoObject()] * 16 + [NoObject()] + [NoObject()] * 8 + \
         [Platform(x=0, y=57, w=64), Platform(x=96, y=57, w=68),
          Platform(x=31, y=95, w=97), Platform(
              x=0, y=95, w=16), Platform(x=144, y=95, w=18),
@@ -246,6 +246,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
         pests = [NoObject()] * 4
         for i, pest in enumerate(pests):
+            offset = 0
             if ram_state[107+i] != 0:
 
                 pest = Pest(x=ram_state[95+i]-7, y=ram_state[89+i]+27)
@@ -254,63 +255,76 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+27
                     pest.wh = 9, 10
                     pest.rgb = 136, 146, 62
+                    offset = 0
                 # turtle knocked out (standing)
                 elif 70 <= ram_state[107+i] <= 73:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+24
                     pest.wh = 9, 13
                     pest.rgb = 136, 146, 62
+                    offset = 0
 
                 # handle crab
                 elif 144 <= ram_state[107+i] <= 154:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+21
                     pest.wh = 10, 17
                     pest.rgb = 198, 108, 58
+                    offset = 4
 
                 # crab knocked out
                 elif ram_state[107+i] == 92:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+22
                     pest.wh = 10, 15
                     pest.rgb = 198, 108, 58
+                    offset = 4
 
                 # crab knocked out (large)
                 elif ram_state[107+i] == 94:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+20
                     pest.wh = 10, 17
                     pest.rgb = 198, 108, 58
+                    offset = 4
 
                 # handle bunny
                 elif 160 <= ram_state[107+i] <= 161:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+24
                     pest.wh = 9, 14
                     pest.rgb = 146, 70, 192
+                    offset = 8
                 elif 162 <= ram_state[107+i] <= 163:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+25
                     pest.wh = 9, 11
                     pest.rgb = 146, 70, 192
+                    offset = 8
                 elif 164 <= ram_state[107+i] <= 165:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+18
                     pest.wh = 9, 14
                     pest.rgb = 146, 70, 192
+                    offset = 8
                 elif 166 <= ram_state[107+i] <= 167:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+20
                     pest.wh = 9, 11
                     pest.rgb = 146, 70, 192
+                    offset = 8
                 elif 168 <= ram_state[107+i] <= 169:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+19
                     pest.wh = 9, 12
                     pest.rgb = 146, 70, 192
+                    offset = 8
                 elif 170 <= ram_state[107+i] <= 171:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+25
                     pest.wh = 9, 11
                     pest.rgb = 146, 70, 192
+                    offset = 8
                 elif ram_state[107+i] == 110:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+27
                     pest.wh = 9, 11
                     pest.rgb = 146, 70, 192
+                    offset = 8
                 elif ram_state[107+i] == 108:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+24
                     pest.wh = 9, 15
                     pest.rgb = 146, 70, 192
+                    offset = 8
 
                 # handle ice dude
                 elif 176 <= ram_state[107+i] <= 177:
@@ -318,26 +332,30 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                     # Ice dude
                     pest.wh = 10, 17
                     pest.rgb = 101, 183, 217
+                    offset = 12
                 # (114-118)
                 elif 114 <= ram_state[107+i] <= 118:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+24
                     # Ice dude
                     pest.wh = 10, 13
                     pest.rgb = 101, 183, 217
+                    offset = 12
                 # (120, 122)
                 elif 120 <= ram_state[107+i] <= 122:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+31
                     # Ice dude
                     pest.wh = 10, 6
                     pest.rgb = 101, 183, 217
+                    offset = 12
                 # (124)
                 elif ram_state[107+i] == 124:
                     pest.xy = ram_state[95+i]-7, ram_state[89+i]+34
                     # Ice dude
                     pest.wh = 10, 3
                     pest.rgb = 101, 183, 217
+                    offset = 12
 
-            objects[3+i] = pest
+            objects[3+i+offset] = pest
 
     # Handle HUD
     if hud:

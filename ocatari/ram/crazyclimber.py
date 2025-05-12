@@ -1,9 +1,12 @@
-from .game_objects import GameObject, ValueObject
+from .game_objects import GameObject, ValueObject, NoObject
 import sys
 
-MAX_NB_OBJECTS = {"Player": 1, "Window": 72, "Enemy_Red": 1,
-                  "Enemy_Bird": 1, "Projectile": 1, "Helicopter": 1}
-MAX_NB_OBJECTS_HUD = {}  # 'Score': 1}
+MAX_NB_OBJECTS = {"Player": 1, "Window": 72, "Enemy_Red": 1, "Enemy_Bird": 1,
+                    "Yellow_Projectile": 1, "Blue_Projectile": 1, "Purple_Projectile": 1, "Yellow_Ball": 1,
+                    "Helicopter": 1}
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Window": 72, "Enemy_Red": 1, "Enemy_Bird": 1,
+                      "Yellow_Projectile": 1, "Blue_Projectile": 1, "Purple_Projectile": 1, "Yellow_Ball": 1,
+                      "Helicopter": 1, 'Score': 1, 'Life': 3}  # 'Score': 1} 
 
 
 class Player(GameObject):
@@ -130,10 +133,10 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()]
 
-    objects.extend([None] * 150)
+    objects.extend([NoObject()] * 150) # 150 79
     if hud:
-        objects.extend([None] * 4)
-        objects[76] = Score()
+        objects.extend([NoObject()] * 4)
+        objects[80] = Score()
     return objects
 
 
@@ -236,7 +239,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     win.wh = 8, 8-closing
 
             else:
-                objects[1+(6*i)+j] = None
+                objects[1+(6*i)+j] = NoObject()
 
     # enemy xy == 14,15; closing/offset == 16
     # Enemy type == 84; bird == 252; red == 253
@@ -275,10 +278,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 enemy.xy = ram_state[34]-19, 49
             enemy.wh = 16, 8
         else:
-            enemy = None
+            enemy = NoObject()
         objects[73] = enemy
     else:
-        objects[73] = None
+        objects[73] = NoObject()
 
     # projectile xy == 14,81; closing/offset == 16
     # projectile color == 83; purple == 219; blue == 229; yellow == 239
@@ -287,36 +290,46 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     if ram_state[81]:
         x = ram_state[85]-10
+        offset = 0
         if ram_state[83] == 239:
             projectile = Yellow_Projectile()
+            offset = 0
         elif ram_state[83] == 229:
             projectile = Blue_Projectile()
+            offset = 1
             x += 1
         elif ram_state[83] == 219:
             projectile = Purple_Projectile()
+            offset = 2
             x += 2
         elif ram_state[83] == 145:
             projectile = Yellow_Ball()
+            offset = 3
         else:
-            projectile = None
-        objects[74] = projectile
+            projectile = NoObject()
+        if type(projectile) is NoObject:
+            for i in range(3):
+                objects[75+i] = projectile
+        else:
+            objects[75+offset] = projectile
         if ram_state[83] == 145:
             # (49 + int(ram_state[81]*1.1))
             projectile.xy = x, 42 + int(ram_state[81]*1.2)
-        elif projectile is not None:
+        elif type(projectile) is not NoObject:
             # int((ram_state[82] - ram_state[81])/5)
             projectile.xy = x, 35 + int(ram_state[81]*1.2)
     else:
-        objects[74] = None
+        for i in range(3):
+            objects[75+i] = NoObject()
 
     # heli xy == 34, 9
 
     if ram_state[9] > 50:
-        if objects[75] is None:
+        if type(objects[75]) is NoObject:
             heli = Helicopter()
-            objects[75] = heli
+            objects[79] = heli
         else:
-            heli = objects[75]
+            heli = objects[79]
         if ram_state[34] <= 30:
             heli.orientation = 1
         elif ram_state[34] >= 120:
@@ -327,12 +340,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             heli.xy = ram_state[34]-23, ram_state[9]+11
 
     else:
-        objects[75] = None
+        objects[79] = NoObject()
 
     if hud:
         for i in range(3):
-            objects[77+i] = None
+            objects[81+i] = NoObject()
             if ram_state[42] > i:
                 life = Life()
-                objects[77+i] = life
+                objects[81+i] = life
                 life.xy = 58 + (i*16), 13  # 74

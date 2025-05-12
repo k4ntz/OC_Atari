@@ -37,8 +37,12 @@ class Enemy(GameObject):
 
 
 class Bomb(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, x=0, y=0):
+        super(Bomb, self).__init__()
+        self._xy = x, y
+        self.wh = 6, 17
+        self.rgb = 50, 50, 176
+        self.hud = False
 
 
 class Ladder(GameObject):
@@ -86,4 +90,53 @@ def _init_objects_ram(hud=False):
 
 
 def _detect_objects_ram(objects, ram_state, hud=True):
-    pass
+    # bombs 51 - 60 and 41 - 48 (but no so important I guess)
+    # player (x=36, y=33) but 39 does also something to it (flips to 10 and 19)
+    # 60+i is type of bomb
+
+    enemy = objects[1]
+    if ram_state[39] != 94:
+        player_x_cell = ram_state[36]
+        player_y_cell = ram_state[33]
+        enemy._xy = 31, 49
+    else:
+        player_x_cell = ram_state[35]
+        player_y_cell = ram_state[32]
+        enemy._xy = 31, 193
+
+    player = objects[0]
+    player_x_cell = ram_state[36] if ram_state[39] != 94 else ram_state[35]
+    if player_x_cell&128:
+        player_x = 20 + ((player_x_cell&15)<<4) - (player_x_cell>>4)
+    else:
+        player_x = 4 + ((player_x_cell&15)<<4) - (player_x_cell>>4)
+    player_x = player_x + ((88 - player_x)>>4) - 20
+
+    player_y = 2*player_y_cell + 24
+    
+
+    player._xy = player_x, player_y # ((ram_state[33]&15)<<4) - (ram_state[33]>>4)
+
+    # girlfriend x=76
+    platform_y = [43, 63, 87, 111, 135, 159, 183, 207]
+
+    for i in range(8):
+
+        if ram_state[42+i] != 255:
+            if type(objects[3+i]) is NoObject:
+                objects[3+i] = Bomb()
+            if ram_state[51+i]&128:
+                x = 20 + ((ram_state[51+i]&15)<<4) - (ram_state[51+i]>>4)
+            else:
+                x = 4 + ((ram_state[51+i]&15)<<4) - (ram_state[51+i]>>4)
+
+            x = x + ((88 - x)>>4) - 20
+
+            
+
+            objects[3+i]._xy = x, 43
+        else:
+            objects[3+i] = NoObject()
+        
+    if hud:
+        pass
