@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 from ._helper_methods import _convert_number
 import math
 import sys
@@ -10,7 +10,7 @@ RAM extraction for the game Ms. Pac-Man.
 # not sure about this one TODO: validate
 MAX_NB_OBJECTS = {'Player': 1, 'Ghost': 4, 'PowerPill': 4}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ghost': 4,
-                      'PowerPill': 4, 'Score': 3, 'Life': 2}
+                      'PowerPill': 4, 'Score': 1, 'Life': 1}
 
 gcolor = [(111, 111, 215), (144, 144, 252)]
 ghost_vulnerable = False
@@ -146,6 +146,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             player = Player()
             objects[0] = player
         player.xy = ram_state[49], 2*ram_state[89]+1
+    
     # ghosts
     ghst_bs = get_bin(ram_state[26])
     global ghost_vulnerable
@@ -161,18 +162,19 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             gi.rgb = 252, 144, 200
         ghost_vulnerable = False
     # pps_o = objects[5:9]
+
     for i in range(4):
         if ghst_bs[2+i] == "0":
-            objects[5+i] = None
-        elif objects[5+i] == None:
+            objects[5+i] = NoObject()
+        elif objects[5+i] == NoObject():
             objects[5+i] = PowerPill(*pps[i])
     if hud:
         life = objects[9]
         nblives = ram_state[24]
         if nblives == 0:
-            objects[9] = None
+            objects[9] = NoObject()
         else:
-            if life is None:
+            if not life:
                 life = Life()
                 objects[9] = life
             life.value = nblives
