@@ -246,11 +246,9 @@ def _init_objects_ram(hud=False):
         score = [NoObject()]
         bonus = [NoObject()]
         sign =[NoObject()]
-        
+
         objects.extend(sign+birds+ cacs +score+bonus+sign)
     return objects
-
-rock_offsets  = [(21, 29), (-9, -15), (15, 20), (-1, -4), (-7, -13), (-5, -10), (7, 8), (5, 5), (16, 19)]
 
 def _detect_objects_ram(objects, ram_state, hud=False):
     """
@@ -410,23 +408,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[3] = NoObject()
             objects[7] = NoObject()
 
-
-    # RoadCrack
-    if ram_state[82] > 150 or ram_state[82] <= 8 or ram_state[22] != 1:
-        objects[7] = None
-    else:
-        if ram_state[79] == 1:
-            if ram_state[69] <= 18 and ram_state[69] >= 6:
-                rc = RoadCrack()
-                rc.xy = ram_state[82]-5, 125
-                objects[7] = rc
-            else:
-                objects[3] = NoObject()
-                objects[7] = NoObject()
-        else:
-            objects[3] = NoObject()
-            objects[7] = NoObject()
-
     # RoadCrack
     if level == 1:
         if 8 < ram_state[82] < 151:
@@ -445,23 +426,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     else:
         objects[15] = NoObject()
         objects[16] = NoObject()
-
-    # Turret
-    if level == 3 and 8 < ram_state[55] < 151:
-        if type(objects[17]) is NoObject:
-            objects[17] = Turret()
-        objects[17].xy = ram_state[55], 128
-    else:
-        objects[17] = NoObject()
-    
-    # TurretBall
-    if level in [3, 7] and 8 < ram_state[42] < 151:
-        if type(objects[2]) is NoObject:
-            if type(objects[18]) is NoObject:
-                objects[18] = TurretBall()
-            objects[18].xy = ram_state[42], 128
-        else:
-            objects[9] = None
 
     # Turret
     if level in [3, 7] and ram_state[48] and 8 < ram_state[55] < 145:
@@ -484,6 +448,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[18] = NoObject()
 
     if level == 5 and 0 < ram_state[48] < 100:
+        rock_offsets  = [(21, 29), (-9, -15), (15, 20), (-1, -4), (-7, -13), (-5, -10), (7, 8), (5, 5), (16, 19)]
         if type(objects[19]) is NoObject:
             objects[19] = Rock()
             objects[20] = Rock()
