@@ -25,6 +25,7 @@ class Egg(GameObject):
         self.hud = False
         self.num_frames_invisible = -1
         self.max_frames_invisible = 2
+        self.expected_dist = 2
 
 
 class Alien(GameObject):
@@ -34,6 +35,7 @@ class Alien(GameObject):
         self.hud = False
         self.num_frames_invisible = -1
         self.max_frames_invisible = 2
+        self.expected_dist = 6
 
 
 class Pulsar(GameObject):
@@ -43,6 +45,7 @@ class Pulsar(GameObject):
         self.hud = False
         self.num_frames_invisible = -1
         self.max_frames_invisible = 2
+        self.expected_dist = 2
 
 
 class Rocket(GameObject):
@@ -156,9 +159,12 @@ def _detect_objects(objects, obs, hud=False):
 
     if hud:
         score = find_objects(obs, hud_color, miny=174, maxy=183)
-        for s in score:
-            objects.append(Score(*s))
-        count_pulsars = find_objects(
-            obs, hud_color, closing_active=False, miny=183, maxy=192)
-        for c in count_pulsars:
-            objects.append(Life(*c))
+        if score:
+            objects[-2].xywh = score[0]
+        life = find_objects(
+            obs, hud_color, miny=183, maxy=192, closing_dist=8)
+        if life:
+            if type(objects[-1]) is NoObject:
+                objects[-1] = Life(*life[0])
+            else:
+                objects[-1].xywh = life[0]
