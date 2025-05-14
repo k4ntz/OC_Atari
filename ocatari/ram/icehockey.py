@@ -18,7 +18,7 @@ class Player(GameObject):
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
-        self.wh = 16, 20
+        self.wh = 10, 20
         self.rgb = 101, 111, 228
         self.hud = False
 
@@ -32,7 +32,7 @@ class Enemy(GameObject):
         super().__init__()
         self.rgb = 82, 126, 45
         self._xy = 0, 0
-        self.wh = 16, 20
+        self.wh = 10, 20
         self.hud = False
 
 
@@ -119,18 +119,24 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     For all 3 objects:
     (x, y, w, h, r, g, b)
     """
+        
     # Player at downside
     player = objects[0]
-    player.xy = ram_state[59]-13, 168-ram_state[55]
+    player.xy = ram_state[59]-10, 168-ram_state[55]
     # Player at upside
     player2 = objects[1]
-    player2.xy = ram_state[57]-13, 168-ram_state[53]
+    player2.xy = ram_state[57]-10, 168-ram_state[53]        
     # Enemy at downside
     enemy_1 = objects[2]
-    enemy_1.xy = ram_state[60]-13, 168-ram_state[56]
+    enemy_1.xy = ram_state[60]-10, 168-ram_state[56]
     # Enenmy at upper side
     enemy_2 = objects[3]
-    enemy_2.xy = ram_state[58]-13, 168-ram_state[54]
+    enemy_2.xy = ram_state[58]-10, 168-ram_state[54]
+    # if ram_state[63] direction player downside 0,255
+    # if ram_state[61] direction player upside 0,255
+    # if ram_state[62] direction enemy upside 0,255
+    # if ram_state[64] direction enemy downside 0,255
+    
     # Ball
     ball = objects[4]
     ball.xy = ram_state[52]-10, 188-ram_state[91]
@@ -141,35 +147,42 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         es = EnemyScore()
         es.xy = 110, 14
         es.wh = 6, 7
+        objects[5]=es
         if ram_state[11] < 10:
             if ram_state[11]==1:
                 es.x = 111
                 es.w = 4
-        elif ram_state[11]<32:
+        elif ram_state[11]<26:
             es.x = 102
             es.w = 14
             if ram_state[11]==17:
                 es.w = 13
-        # elif ram_state[11]<30:
-        objects[6]=es
+        else:
+            es.x = 101
+            es.w = 16
+            if ram_state[10]% 16 == 1:
+                es.w = 14
             
-                
             
-        # else:
-            
-        # # ram_state[10] for player score
-        # if ram_state[10] <= 9:
-        #     es1 = PlayerScore()
-        #     es1.xy = 46, 14
-        #     objects[5] = es1
-        #     objects[6] = NoObject()
-        # else:
-        #     es1 = PlayerScore()
-        #     es2 = PlayerScore()
-        #     es1.xy = 46, 14
-        #     es2.xy = 38, 14
-        #     objects[5] = es1
-        #     objects[6] = es2
+        # ram_state[10] for player score
+        ps = PlayerScore()
+        ps.xy = 46, 14
+        ps.wh = 6, 7
+        objects[6] = ps
+        if ram_state[10] < 10:
+            if ram_state[10]==1:
+                ps.x = 47
+                ps.w = 4
+        elif ram_state[10]<32:
+            ps.x = 38
+            ps.w = 14
+            if ram_state[10]==17:
+                ps.w = 13
+        else:
+            ps.x = 37
+            ps.w = 16
+            if ram_state[10]% 16 == 1:
+                ps.w = 14
         # Timer
         t = Timer()
         t.xy = 65, 5
