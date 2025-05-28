@@ -1,9 +1,9 @@
 from .game_objects import GameObject, ValueObject, NoObject
 import sys
 
-MAX_NB_OBJECTS = {"Player": 1, "Alien": 12,
+MAX_NB_OBJECTS = {"Player": 1, "Flamethrower": 1, "Alien": 12,
                   "Pulsar": 1, "Rocket": 1, "Egg": 156}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Alien": 12, "Pulsar": 1,
+MAX_NB_OBJECTS_HUD = {"Player": 1, "Flamethrower": 1, "Alien": 12, "Pulsar": 1,
                       "Rocket": 1, "Egg": 156, "Score": 1, "Life": 1}
 
 ALIEN_COLORS = [
@@ -22,6 +22,17 @@ class Player(GameObject):
         self.wh = (6, 13)
         self.rgb = 132, 144, 252
         self.hud = False
+        self.orientation = 0
+
+
+class Flamethrower(GameObject):
+    def __init__(self):
+        super(Flamethrower, self).__init__()
+        self._xy = 0, 0
+        self.wh = (8, 5)
+        self.rgb = 252, 144, 144
+        self.hud = False
+        self.fuel = 255
 
 
 class Alien(GameObject):
@@ -102,7 +113,7 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()]
 
-    objects.extend([NoObject()] * 170)
+    objects.extend([NoObject()] * 171)
     if hud:
         objects.extend([Score(), NoObject()])
     return objects
@@ -115,13 +126,26 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     """
     player = objects[0]
     player.xy = ram_state[52] + 18, 196 - ram_state[45]*2 + 1
+    if ram_state[6] == 0:
+        player.orientation = 0
+    elif ram_state[6] == 2:
+        player.orientation = 1
+
+    if ram_state[25] == 5:
+        if type(objects[1]) is NoObject:
+            objects[1] = Flamethrower()
+        objects[1].xy = ram_state[53] + 17, 196 - ram_state[46]*2 + 1
+        objects[1].fuel = ram_state[116]
+    else:
+        objects[1] = NoObject()
+
     if ram_state[0] == 0:
         # y 110 = 43 152 = 22
         for i in range(3):
             if ram_state[42+i] and ram_state[49+i]:
-                if type(objects[1+i]) is NoObject:
-                    objects[1+i] = Alien()
-                alien = objects[1+i]
+                if type(objects[2+i]) is NoObject:
+                    objects[2+i] = Alien()
+                alien = objects[2+i]
                 alien.xy = ram_state[49+i] + 17, 196 - ram_state[42+i]*2
                 if ram_state[117] == 139:
                     alien.rgb = 101, 111, 228
@@ -136,17 +160,17 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     alien.rgb = 236, 140, 224
                     alien.vulnerable = False
             else:
-                objects[1+i] = NoObject()
+                objects[2+i] = NoObject()
 
-        if type(objects[4]) is not NoObject:
+        if type(objects[5]) is not NoObject:
             for i in range(9):
-                objects[4+i] = NoObject()
+                objects[5+i] = NoObject()
 
-        pulsar = objects[13]
+        pulsar = objects[14]
         if ram_state[103]:
             if not pulsar:
                 pulsar = Pulsar()
-                objects[13] = pulsar
+                objects[14] = pulsar
 
             if ram_state[103] == 1:
                 pulsar.xy = 123, 137
@@ -155,16 +179,16 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             elif ram_state[103] == 3:
                 pulsar.xy = 77, 17
         elif pulsar:
-            objects[13] = NoObject()
+            objects[14] = NoObject()
 
-        rocket = objects[14]
+        rocket = objects[15]
         if ram_state[47]:
             if not rocket:
                 rocket = Rocket()
-                objects[14] = rocket
+                objects[15] = rocket
             rocket.xy = 17+15*(ram_state[60] & 7), 197-(2*ram_state[47])
         elif rocket:
-            objects[14] = NoObject()
+            objects[15] = NoObject()
 
     ##############################################
     # ============================================
@@ -173,112 +197,112 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         y = 19
         for i in range(13):
             if ram_state[65+i] & 4:
-                if type(objects[15+i*6]) is NoObject:
-                    objects[15+i*6] = Egg(x=26, y=y)
-            else:
-                objects[15+i*6] = NoObject()
-
-            if ram_state[65+i] & 8:
                 if type(objects[16+i*6]) is NoObject:
-                    objects[16+i*6] = Egg(x=56, y=y)
+                    objects[16+i*6] = Egg(x=26, y=y)
             else:
                 objects[16+i*6] = NoObject()
 
-            if ram_state[65+i] & 16:
+            if ram_state[65+i] & 8:
                 if type(objects[17+i*6]) is NoObject:
-                    objects[17+i*6] = Egg(x=34, y=y+2)
+                    objects[17+i*6] = Egg(x=56, y=y)
             else:
                 objects[17+i*6] = NoObject()
 
-            if ram_state[65+i] & 32:
+            if ram_state[65+i] & 16:
                 if type(objects[18+i*6]) is NoObject:
-                    objects[18+i*6] = Egg(x=64, y=y+2)
+                    objects[18+i*6] = Egg(x=34, y=y+2)
             else:
                 objects[18+i*6] = NoObject()
 
-            if ram_state[65+i] & 64:
+            if ram_state[65+i] & 32:
                 if type(objects[19+i*6]) is NoObject:
-                    objects[19+i*6] = Egg(x=42, y=y+4)
+                    objects[19+i*6] = Egg(x=64, y=y+2)
             else:
                 objects[19+i*6] = NoObject()
 
-            if ram_state[65+i] & 128:
+            if ram_state[65+i] & 64:
                 if type(objects[20+i*6]) is NoObject:
-                    objects[20+i*6] = Egg(x=72, y=y+4)
+                    objects[20+i*6] = Egg(x=42, y=y+4)
             else:
                 objects[20+i*6] = NoObject()
+
+            if ram_state[65+i] & 128:
+                if type(objects[21+i*6]) is NoObject:
+                    objects[21+i*6] = Egg(x=72, y=y+4)
+            else:
+                objects[21+i*6] = NoObject()
 
             y += 12
 
         y = 19
         for i in range(13):
             if ram_state[78+i] & 4:
-                if type(objects[93+i*6]) is NoObject:
-                    objects[93+i*6] = Egg(x=89, y=y)
-            else:
-                objects[93+i*6] = NoObject()
-
-            if ram_state[78+i] & 8:
                 if type(objects[94+i*6]) is NoObject:
-                    objects[94+i*6] = Egg(x=118, y=y)
+                    objects[94+i*6] = Egg(x=89, y=y)
             else:
                 objects[94+i*6] = NoObject()
 
-            if ram_state[78+i] & 16:
+            if ram_state[78+i] & 8:
                 if type(objects[95+i*6]) is NoObject:
-                    objects[95+i*6] = Egg(x=97, y=y+2)
+                    objects[95+i*6] = Egg(x=118, y=y)
             else:
                 objects[95+i*6] = NoObject()
 
-            if ram_state[78+i] & 32:
+            if ram_state[78+i] & 16:
                 if type(objects[96+i*6]) is NoObject:
-                    objects[96+i*6] = Egg(x=126, y=y+2)
+                    objects[96+i*6] = Egg(x=97, y=y+2)
             else:
                 objects[96+i*6] = NoObject()
 
-            if ram_state[78+i] & 64:
+            if ram_state[78+i] & 32:
                 if type(objects[97+i*6]) is NoObject:
-                    objects[97+i*6] = Egg(x=105, y=y+4)
+                    objects[97+i*6] = Egg(x=126, y=y+2)
             else:
                 objects[97+i*6] = NoObject()
 
-            if ram_state[78+i] & 128:
+            if ram_state[78+i] & 64:
                 if type(objects[98+i*6]) is NoObject:
-                    objects[98+i*6] = Egg(x=134, y=y+4)
+                    objects[98+i*6] = Egg(x=105, y=y+4)
             else:
                 objects[98+i*6] = NoObject()
+
+            if ram_state[78+i] & 128:
+                if type(objects[99+i*6]) is NoObject:
+                    objects[99+i*6] = Egg(x=134, y=y+4)
+            else:
+                objects[99+i*6] = NoObject()
 
             y += 12
     else: # 32 or 48 for the dark mode
         if type(objects[6]) is NoObject:
             for i in range(170):
-                objects[1+i] = NoObject()
+                objects[2+i] = NoObject()
         
         for i, color in enumerate(ALIEN_COLORS):
-            if type(objects[1+(2*i)]) is NoObject:
-                objects[1+(2*i)] = Alien()
+            if type(objects[2+(2*i)]) is NoObject:
                 objects[2+(2*i)] = Alien()
+                objects[3+(2*i)] = Alien()
             if ram_state[66+i]&128:
                 x = 20 + ((ram_state[66+i]&15)<<4) - (ram_state[66+i]>>4)
             else:
                 x = 4 + ((ram_state[66+i]&15)<<4) - (ram_state[66+i]>>4)
             x = x + ((88 - x)>>4)
-            objects[1+(2*i)].xy = x, 37+20*i
-            objects[2+(2*i)].xy = x+32, 37+20*i
-            objects[1+(2*i)].rgb = color
+            objects[2+(2*i)].xy = x, 37+20*i
+            objects[3+(2*i)].xy = x+32, 37+20*i
             objects[2+(2*i)].rgb = color
-        rocket = objects[14]
+            objects[3+(2*i)].rgb = color
+        rocket = objects[15]
         if ram_state[73] == 131:
             if not rocket:
                 rocket = Rocket()
-                objects[14] = rocket
+                objects[15] = rocket
             rocket.xy = 77, 19
             rocket.rgb = 132, 252, 112
         elif rocket:
-            objects[14] = NoObject()
+            objects[15] = NoObject()
 
     if hud:
-        score = objects[171]
+        score = objects[-2]
         score.xy = 63, 176
         score.wh = 6, 7
         x = 23
@@ -296,15 +320,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         score.value = value
 
         lives_v = ram_state[64] - 1
-        life = objects[172]
+        life = objects[-1]
         if lives_v:
             if not life:
                 life = Life()
-                objects[172] = life
+                objects[-1] = life
             life.wh = 5 + 8*(lives_v-1), 5
             life.value = lives_v
         else:
-            objects[172] = NoObject()
+            objects[-1] = NoObject()
 
 
 def _detect_objects_alien_raw(info, ram_state):
