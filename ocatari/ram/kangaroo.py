@@ -289,7 +289,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             child.xy = ram_state[83] + 15, 12
 
     for i in range(MAX_ESSENTIAL_OBJECTS["Monkey"]):
-        if ram_state[11 - i] != 255 and ram_state[11 - i] != 127:
+        if ram_state[3 - i] and ram_state[3 - i] != 212:
             x = ram_state[15 - i] + 16
             y = ram_state[11 - i] * 8 + 5
             if type(objects[2+i]) is NoObject:
