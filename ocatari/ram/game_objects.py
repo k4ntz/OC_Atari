@@ -304,6 +304,22 @@ class GameObject:
     def __bool__(self):
         return self._visible
 
+class OrientedObject(GameObject):
+
+    @property
+    def _nsrepr(self):
+        if not self._visible:
+            return [0, 0, 0]
+        return [self.x, self.y, self.orientation]
+    
+    @property
+    def _ns_meaning(self):
+        return ["x", "y", "o"]
+
+    @property
+    def _ns_types(self):
+        return [Tuple[int, int, int]]    
+
 
 class NoObject(GameObject):
     """
@@ -330,7 +346,7 @@ class NoObject(GameObject):
 
     @property
     def _ns_meaning(self):
-        return ["POSITION"]
+        return ["x", "y"]
 
     @property
     def _ns_types(self):
