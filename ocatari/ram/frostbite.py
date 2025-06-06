@@ -1,4 +1,4 @@
-from .game_objects import GameObject, NoObject
+from .game_objects import GameObject, NoObject, OrientedObject, OrientedNoObject
 from .utils import match_objects
 import sys
 
@@ -12,7 +12,7 @@ MAX_NB_OBJECTS_HUD = {"Player": 1, "Bear": 1, "House": 1, "Door": 1, "Bird": 8, 
                       "Lives": 1, "Temperature": 1, "Score": 1}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure: Frostbite Bailey.
     """
@@ -23,6 +23,7 @@ class Player(GameObject):
         self.wh = (8, 18)
         self.rgb = 198, 108, 58
         self.hud = False
+        self.orientation = 0
 
 
 class Bear(GameObject):
@@ -207,18 +208,24 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player = objects[0]
     if ram_state[106] == 26:
         if player:
-            objects[0] = NoObject()
+            objects[0] = OrientedNoObject()
     else:
         if not player:
             player = Player()
             objects[0] = player
-    player.xy = ram_state[102], ram_state[100]+29
-    if 0 < ram_state[107] < 18:
-        sink = ram_state[107]
-        player.y += sink
-        player.h = 18 - sink
-    elif 18 <= ram_state[107]:  # sunk
-        objects[0] = NoObject()
+
+        player.xy = ram_state[102], ram_state[100]+29
+        if 0 < ram_state[107] < 18:
+            sink = ram_state[107]
+            player.y += sink
+            player.h = 18 - sink
+        elif 18 <= ram_state[107]:  # sunk
+            objects[0] = NoObject()
+        
+        if ram_state[4]&4 and not ram_state[4]&8:
+            player.orientation = 0
+        elif ram_state[4]&8 and not ram_state[4]&4:
+            player.orientation = 1
 
     # Bear
     if ram_state[104] == 140:

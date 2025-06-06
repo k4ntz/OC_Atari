@@ -1,6 +1,6 @@
 from typing import Tuple
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, NoObject
+from .game_objects import GameObject, NoObject, OrientedObject
 from .utils import match_objects
 import sys
 """
@@ -17,7 +17,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Asteroid': 30,
                       'PlayerMissile': 2, 'Lives': 1, 'PlayerScore': 1}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure i.e., the space ship on patrol.
     """

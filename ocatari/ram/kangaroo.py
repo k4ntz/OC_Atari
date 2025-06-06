@@ -1,6 +1,6 @@
 from typing import Type, Sequence, Dict
 
-from .game_objects import GameObject, NoObject, ValueObject, Orientation
+from .game_objects import GameObject, NoObject, ValueObject, OrientedObject, OrientedNoObject
 from ._helper_methods import _convert_number
 import sys
 
@@ -43,7 +43,7 @@ MAX_NB_OBJECTS = MAX_ESSENTIAL_OBJECTS
 MAX_NB_OBJECTS_HUD = MAX_ALL_OBJECTS
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure: Mother Kangaroo.
     """
@@ -56,6 +56,7 @@ class Player(GameObject):
         self.hud = False
         self.crashed = False
         self.climbing = False
+        self.orientation = 0
 
 
 class Child(GameObject):
@@ -71,7 +72,7 @@ class Child(GameObject):
         self.hud = False
 
 
-class Monkey(GameObject):
+class Monkey(OrientedObject):
     """
     The Monkey monkeys.
     """
@@ -83,6 +84,7 @@ class Monkey(GameObject):
         self.wh = 6, 15
         self.rgb = 227, 159, 89
         self.hud = False
+        self.orientation = 0
 
 
 class Fruit(GameObject):
@@ -238,7 +240,7 @@ def _init_objects_ram(hud=True):
     # objects = [Player(), Child(), Monkey(), Monkey(), Monkey(), Monkey(),
     #            FallingCoconut(), ThrownCoconut(), ThrownCoconut(), ThrownCoconut(), Fruit(), Fruit(), Fruit(), Bell(),
     #            Platform(16, 172, w=128), Platform(16, 28, w=128)]
-    objects = [Player(), Child()] + [NoObject()] * 11 + \
+    objects = [Player(), Child()] + [OrientedNoObject()] * 4 + [NoObject()] * 7 + \
         [Bell()] #, Platform(16, 172, w=128), Platform(16, 28, w=128)]
     objects.extend([NoObject()] * 26)
     if hud:
@@ -253,8 +255,8 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     x = ram_state[17] + 15
     y = ram_state[16] * 8 + 4
 
-    orientation = Orientation.E if ram_state[18] in [
-        8, 9, 28, 73, 74] else Orientation.W
+    orientation = 1 if ram_state[18] in [
+        8, 9, 28, 73, 74] else 2
     climbing = ram_state[18] in [39, 47]
     crashed = ram_state[54] in [1, 128]
 
@@ -289,14 +291,23 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             child.xy = ram_state[83] + 15, 12
 
     for i in range(MAX_ESSENTIAL_OBJECTS["Monkey"]):
-        if ram_state[11 - i] != 255 and ram_state[11 - i] != 127:
+        if ram_state[3 - i] and ram_state[3 - i] != 212:
             x = ram_state[15 - i] + 16
             y = ram_state[11 - i] * 8 + 5
-            if type(objects[2+i]) is NoObject:
+            
+            if ram_state[3 - i] in [67, 100, 132, 147]:
+                orientation = 2
+            elif ram_state[3 - i] in [83, 116]:
+                orientation = 1
+            else:
+                orientation = 0
+
+            if type(objects[2+i]) is OrientedNoObject:
                 objects[2+i] = Monkey()
             objects[2+i].xy = x, y
+            objects[2+i].orientation = orientation
         else:
-            objects[2+i] = NoObject()
+            objects[2+i] = OrientedNoObject()
 
     # Fallling coconut
     if ram_state[33] != 255:

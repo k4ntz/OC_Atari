@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, OrientedObject
 from ._helper_methods import _convert_number
 import sys
 
@@ -8,7 +8,7 @@ MAX_NB_OBJECTS_HUD = {"Player": 1, "Knife_Throwers": 1, "Henchmen": 3, "Snake": 
                       "Small_Enemy": 1, "Killer_Moth": 1,"Enemy_Final_Fighter": 1, "Knifes": 1, "Dragon_Fire": 1, "Score": 1, "Time": 1, "Lives": 1, "Player_Health_Bar": 1, "Enemy_Health_Bar": 1}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     Fighter fighting through the level
     """
@@ -19,6 +19,7 @@ class Player(GameObject):
         self.wh = (8, 34)
         self.rgb = 214, 214, 214
         self.hud = False
+        self.orientation = 0
 
 
 class Knife_Throwers(GameObject):
@@ -330,6 +331,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     objects[0].xy = x, y
     objects[0].wh = w, h
+    objects[0].orientation = 1 if ram_state[90] else 0
+    
     # ram[72] == enemy x
     if ram_state[72] > 49:
         x, y = ram_state[72]-49, 126

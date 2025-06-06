@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, OrientedObject
 from ._helper_methods import _convert_number
 import math
 import sys

@@ -1,7 +1,7 @@
 import sys
 from typing import Tuple
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, ValueObject, NoObject, OrientationObject
+from .game_objects import GameObject, ValueObject, NoObject, OrientedObject
 import numpy as np
 """
 RAM extraction for the game Skiing.
@@ -31,7 +31,7 @@ for i in range(255):
         FLAG_COLOR[i] = (0, 0, 0)
 
 
-class Player(OrientationObject):
+class Player(OrientedObject):
     """
     The player figure i.e., the skier.
     """

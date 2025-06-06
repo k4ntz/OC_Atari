@@ -1,5 +1,5 @@
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, NoObject, ValueObject
+from .game_objects import GameObject, NoObject, ValueObject, OrientedObject, OrientedNoObject
 import numpy as np
 from .utils import match_objects
 import sys
@@ -15,7 +15,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile
                       'PlayerScore': 1, 'BonusPoints': 1, 'Lives': 1}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure i.e., the earth man stuck on planet Mazeon.
     """
@@ -26,6 +26,7 @@ class Player(GameObject):
         self.wh = 8, 20
         self.rgb = 240, 170, 103
         self.hud = False
+        self.orientation = 0
 
 
 class PlayerMissile(GameObject):
@@ -47,7 +48,7 @@ class Enemy(GameObject):
     """
 
     def __init__(self, x=0, y=0, w=8, h=16):
-        super(Enemy, self).__init__()
+        super().__init__()
         self._xy = x, y
         self.wh = w, h
         self.rgb = 210, 210, 64
@@ -148,15 +149,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     (x, y, w, h, r, g, b)
     """
     if ram_state[80] >= 44:
-        objects[0:10] = [NoObject() for _ in range(10)]
+        objects[0] = OrientedNoObject()
+        objects[1:10] = [NoObject() for _ in range(9)]
     elif not objects[0]:
         objects[0] = Player()
     player = objects[0]
-
     # player
     if ram_state[19] != 0:
         player.xy = ram_state[19] + 4, ram_state[11] + 5
-
+        player.orientation = np.uint8(np.log2(ram_state[14]))
     # player missile
     if ram_state[15] == 0:
         if objects[9]:

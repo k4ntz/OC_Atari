@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from ._helper_methods import number_to_bitfield, _convert_number
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, OrientedObject
 from ..vision.game_objects import NoObject as v_No
 from .utils import match_objects
 import sys
@@ -17,7 +17,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shot': 1, 'Truck': 3, 'EnemyPlane': 3, 'Enem
                       'MiniPlayer': 1, 'MiniTruck': 9, 'MiniEnemy': 12, 'Score': 4, 'Life': 2}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure i.e., the helicopter gunship.
     """
