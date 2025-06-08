@@ -1,6 +1,6 @@
 from typing import Type, Sequence, Dict
 
-from .game_objects import GameObject, NoObject, ValueObject, OrientedObject, OrientedNoObject
+from .game_objects import GameObject, NoObject, ValueObject, Orientation, OrientedObject, OrientedNoObject
 from ._helper_methods import _convert_number
 import sys
 
@@ -56,7 +56,7 @@ class Player(OrientedObject):
         self.hud = False
         self.crashed = False
         self.climbing = False
-        self.orientation = 0
+        self.orientation = Orientation.E
 
 
 class Child(GameObject):
@@ -84,7 +84,7 @@ class Monkey(OrientedObject):
         self.wh = 6, 15
         self.rgb = 227, 159, 89
         self.hud = False
-        self.orientation = 0
+        self.orientation = Orientation.W
 
 
 class Fruit(GameObject):
@@ -255,8 +255,8 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     x = ram_state[17] + 15
     y = ram_state[16] * 8 + 4
 
-    orientation = 1 if ram_state[18] in [
-        8, 9, 28, 73, 74] else 2
+    orientation = Orientation.E if ram_state[18] in [
+        8, 9, 28, 73, 74] else Orientation.W
     climbing = ram_state[18] in [39, 47]
     crashed = ram_state[54] in [1, 128]
 
@@ -296,11 +296,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             y = ram_state[11 - i] * 8 + 5
             
             if ram_state[3 - i] in [67, 100, 132, 147]:
-                orientation = 2
+                orientation = Orientation.W
             elif ram_state[3 - i] in [83, 116]:
-                orientation = 1
+                orientation = Orientation.E
             else:
-                orientation = 0
+                orientation = Orientation.N
 
             if type(objects[2+i]) is OrientedNoObject:
                 objects[2+i] = Monkey()

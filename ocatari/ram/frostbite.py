@@ -1,4 +1,4 @@
-from .game_objects import GameObject, NoObject, OrientedObject, OrientedNoObject
+from .game_objects import GameObject, NoObject, Orientation, OrientedObject, OrientedNoObject
 from .utils import match_objects
 import sys
 
@@ -23,7 +23,7 @@ class Player(OrientedObject):
         self.wh = (8, 18)
         self.rgb = 198, 108, 58
         self.hud = False
-        self.orientation = 0
+        self.orientation = Orientation.E
 
 
 class Bear(GameObject):
@@ -223,10 +223,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[0] = NoObject()
         
         if ram_state[4]&4 and not ram_state[4]&8:
-            player.orientation = 0
+            player.orientation = Orientation.E
         elif ram_state[4]&8 and not ram_state[4]&4:
-            player.orientation = 1
-
+            player.orientation = Orientation.W
+            
     # Bear
     if ram_state[104] == 140:
         if objects[1]:

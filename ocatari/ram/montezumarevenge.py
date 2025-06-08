@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject, NoObject, OrientedObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject
 from ._helper_methods import _convert_number
 import sys
 
@@ -25,7 +25,7 @@ class Player(OrientedObject):
         self.wh = 8, 20
         self.rgb = 228, 111, 111
         self.hud = False
-        self.orientation = 0
+        self.orientation = Orientation.W
         self.ladder = False
 
 
@@ -392,7 +392,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     player = Player()
     player = objects[0]
     player.xy = ram_state[42] - 1, 255 - ram_state[43] + 53
-    player.orientation = 1 if ram_state[103]&64 else 0
+    player.orientation = Orientation.W if ram_state[103]&64 else Orientation.E
     player.ladder = ram_state[94] == 1
 
     # for i in range(45):

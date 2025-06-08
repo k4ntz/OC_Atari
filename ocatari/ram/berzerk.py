@@ -1,5 +1,5 @@
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, NoObject, ValueObject, OrientedObject, OrientedNoObject
+from .game_objects import GameObject, NoObject, ValueObject, Orientation, OrientedObject, OrientedNoObject
 import numpy as np
 from .utils import match_objects
 import sys
@@ -26,7 +26,7 @@ class Player(OrientedObject):
         self.wh = 8, 20
         self.rgb = 240, 170, 103
         self.hud = False
-        self.orientation = 0
+        self.orientation = Orientation.E
 
 
 class PlayerMissile(GameObject):
@@ -157,7 +157,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # player
     if ram_state[19] != 0:
         player.xy = ram_state[19] + 4, ram_state[11] + 5
-        player.orientation = np.uint8(np.log2(ram_state[14]))
+        player.orientation = [Orientation.N, Orientation.S, Orientation.W, Orientation.E][np.uint8(np.log2(ram_state[14]))]
+    print(player.orientation)
     # player missile
     if ram_state[15] == 0:
         if objects[9]:

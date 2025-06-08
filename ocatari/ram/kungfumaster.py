@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject, NoObject, OrientedObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject
 from ._helper_methods import _convert_number
 import sys
 
@@ -19,7 +19,7 @@ class Player(OrientedObject):
         self.wh = (8, 34)
         self.rgb = 214, 214, 214
         self.hud = False
-        self.orientation = 0
+        self.orientation = Orientation.E
 
 
 class Knife_Throwers(GameObject):
@@ -331,7 +331,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     objects[0].xy = x, y
     objects[0].wh = w, h
-    objects[0].orientation = 1 if ram_state[90] else 0
+    objects[0].orientation = Orientation.E if ram_state[90] else Orientation.W
     
     # ram[72] == enemy x
     if ram_state[72] > 49:

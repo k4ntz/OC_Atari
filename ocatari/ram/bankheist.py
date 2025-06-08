@@ -1,5 +1,5 @@
 from ._helper_methods import number_to_bitfield
-from .game_objects import GameObject, ValueObject, NoObject, OrientedObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject
 import sys
 import numpy as np
 
@@ -15,7 +15,7 @@ class Player(OrientedObject):
         self.wh = (8, 7)
         self.rgb = 162, 98, 33
         self.hud = False
-        self.orientation = 0
+        self.orientation = Orientation.E
 
 
 class Bank(GameObject):
@@ -112,7 +112,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = ram_state[28], ram_state[8]+37
     # ram 41
-    player.orientation = 0 if ram_state[41] == 255 else 5 - np.uint8(np.log2(((~ram_state[41])>>3)))
+    player.orientation = Orientation.E if ram_state[41] == 255 else [Orientation.E, Orientation.W, Orientation.S, Orientation.N][4 - np.uint8(np.log2(((~ram_state[41])>>3)))]
+    print(player.orientation)
 
     for i in range(3):
         if ram_state[9+i]:

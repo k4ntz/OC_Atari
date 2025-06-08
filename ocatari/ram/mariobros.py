@@ -1,6 +1,6 @@
 from typing import Type, Dict, Sequence
 
-from .game_objects import GameObject, ValueObject, OrientedObject
+from .game_objects import GameObject, ValueObject, Orientation, OrientedObject
 from ._helper_methods import _convert_number
 import sys
 from .game_objects import NoObject
@@ -20,7 +20,7 @@ class Player(GameObject):
         self.wh = 9, 21
         self.rgb = 181, 83, 40
         self.hud = False
-        self.orientation = 0
+        self.orientation = Orientation.E
 
 
 class Fireball(GameObject):
@@ -162,7 +162,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     else:
         player.xy = ram_state[44]-6, ram_state[42]+13
         player.wh = 9, 24
-    player.orientation = 1 if ram_state[27]&32 else 0
+    player.orientation = Orientation.W if ram_state[27]&32 else Orientation.E
     objects[0] = player
 
     # Handle Power Block

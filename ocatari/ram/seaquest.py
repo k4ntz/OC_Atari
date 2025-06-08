@@ -2,7 +2,7 @@ import sys
 from typing import Type, Sequence, Dict
 
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, ValueObject, Orientation, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject, OrientedNoObject
 from itertools import chain
 
 """
@@ -40,7 +40,7 @@ MAX_NB_OBJECTS_HUD = {
 # MAX_ALL_OBJECTS = dict(chain(MAX_ESSENTIAL_OBJECTS.items(),MAX_OPTIONAL_OBJECTS.items()))
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure, i.e., the submarine.
     """
@@ -81,7 +81,7 @@ class Shark(GameObject):
         self.hud = False
 
 
-class Submarine(GameObject):
+class Submarine(OrientedObject):
     """
     The enemy submarines.
     """
@@ -92,6 +92,7 @@ class Submarine(GameObject):
         self.wh = 8, 11
         self.rgb = 170, 170, 170
         self.hud = False
+        self.orientation = Orientation.E
 
 
 class SurfaceSubmarine(Submarine):
@@ -248,7 +249,9 @@ def _init_objects_ram(hud=False):
     """(Re)Initialize the objects."""
     objects = [Player()]
 
-    objects.extend([NoObject()]*34)
+    objects.extend([NoObject()]*12)
+    objects.extend([OrientedNoObject()]*12)
+    objects.extend([NoObject()]*10)
     objects.extend([OxygenBar()])
     objects.extend([CollectedDiver()]*6)
 
@@ -264,7 +267,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player.orientation = Orientation.E if ram_state[86] == 0 else Orientation.W
     if 0 < ram_state[105] < 15:
         if player:
-            objects[0] = NoObject()
+            objects[0] = OrientedNoObject()
     else:
         if not player:
             objects[0] = Player()
@@ -298,18 +301,22 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                         y += ram_state[93] - 4
                         enemy.xy = x, y
                         objects[idx] = enemy
+                        objects[idx+12] = OrientedNoObject()
                     else:
                         enemy = objects[idx+12]
                         if type(enemy) is not Submarine:
                             enemy = Submarine()
                         enemy.xy = x, y
+                        enemy.orientation = Orientation.W if ram_state[89+i]&8 else Orientation.E
+                        print(enemy.orientation)
                         objects[idx+12] = enemy
+                        objects[idx] = NoObject()
                 else:
                     objects[idx] = NoObject()
-                    objects[idx+12] = NoObject()
+                    objects[idx+12] = OrientedNoObject()
             else:
                 objects[idx] = NoObject()
-                objects[idx+12] = NoObject()
+                objects[idx+12] = OrientedNoObject()
             # _remove_object(hidden_enemy_type, idx)  # always remove the invisible enemy
 
     # divers and enemy_missiles share a ram position
@@ -405,7 +412,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         num_lives = ram_state[59]
         if num_lives > 0:  # Up to 6 lives possible
             new_wh = 7 + 8 * (num_lives - 1), 8
-            if type(objects[-1]) != Lives:
+            if type(objects[-2]) != Lives:
                 objects[-2] = Lives()
             objects[-2].wh = new_wh
             objects[-2].value = num_lives

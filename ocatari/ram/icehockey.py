@@ -1,4 +1,4 @@
-from .game_objects import GameObject, NoObject, OrientedObject
+from .game_objects import GameObject, NoObject, Orientation, OrientedObject
 import sys
 
 """
@@ -21,6 +21,7 @@ class Player(OrientedObject):
         self.wh = (16, 20)
         self.rgb = 101, 111, 228
         self.hud = False
+        self.orientation = Orientation.E
 
 
 class Enemy(OrientedObject):
@@ -34,6 +35,7 @@ class Enemy(OrientedObject):
         self._xy = 0, 0
         self.wh = (16, 20)
         self.hud = False
+        self.orientation = Orientation.E
 
 
 class Ball(GameObject):
@@ -122,19 +124,19 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # Player at downside
     player = objects[0]
     player.xy = ram_state[59]-13, 168-ram_state[55]
-    player.orientation = 1 if ram_state[63] else 0
+    player.orientation = Orientation.W if ram_state[63] else Orientation.E
     # Player at upside
     player2 = objects[1]
     player2.xy = ram_state[57]-13, 168-ram_state[53]
-    player2.orientation = 1 if ram_state[61] else 0
+    player2.orientation = Orientation.W if ram_state[61] else Orientation.E
     # Enemy at downside
     enemy_1 = objects[2]
     enemy_1.xy = ram_state[60]-13, 168-ram_state[56]
-    enemy_1.orientation = 1 if ram_state[64] else 0
+    enemy_1.orientation = Orientation.W if ram_state[64] else Orientation.E
     # Enenmy at upper side
     enemy_2 = objects[3]
     enemy_2.xy = ram_state[58]-13, 168-ram_state[54]
-    enemy_2.orientation = 1 if ram_state[62] else 0
+    enemy_2.orientation = Orientation.W if ram_state[62] else Orientation.E
     # Ball
     ball = objects[4]
     ball.xy = ram_state[52]-10, 188-ram_state[91]

@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject, NoObject, OrientedObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject
 from ._helper_methods import _convert_number
 import math
 import sys
@@ -14,7 +14,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ghost': 4, 'Fruit': 1,
                       'PowerPill': 4, 'Pill': 252, 'Score': 3, 'Life': 2}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure: Ms. Pac-Man.
     """
@@ -25,6 +25,7 @@ class Player(GameObject):
         self.wh = 9, 10
         self.rgb = 210, 164, 74
         self.hud = False
+        self.orientation = Orientation.W
 
 
 class Ghost(GameObject):
@@ -180,6 +181,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
     # ram[56] == orientation (up 0, right 1, down 2, left 3)
     player._xy = ram_state[10] - 13, ram_state[16] + 1
+    player.orientation = [Orientation.N, Orientation.E, Orientation.S, Orientation.W][ram_state[56]&3]
 
     if ram_state[47] > 0:
         if type(g1) is NoObject:
