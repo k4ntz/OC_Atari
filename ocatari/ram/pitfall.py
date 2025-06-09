@@ -4,7 +4,7 @@ import sys
 import numpy as np
 
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, NoObject
+from .game_objects import GameObject, NoObject, Orientation, OrientedObject
 
 """
 RAM extraction for the game Pitfall.
@@ -20,7 +20,7 @@ MAX_NB_OBJECTS_HUD = {"Player": 1, "Wall": 1, "Logs": 5, "StairPit": 1, "Stair":
                   "LifeCount": 3, "PlayerScore": 6, "Timer": 5}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure: Pitfall Harry.
     """
@@ -31,6 +31,7 @@ class Player(GameObject):
         self.wh = (8, 21)
         self.rgb = 53, 95, 24
         self.hud = False
+        self.orientation = Orientation.E
 
 
 class Wall(GameObject):
@@ -378,6 +379,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     objects[:] = [NoObject()] * 26  # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_4.pkl", "rb"))
     # env._env.env.env.ale.restoreState(snapshot)
     player.xy = ram_state[97], ram_state[105] + 72
+    player.orientation = Orientation.W if ram_state[101]&8 else Orientation.E
     objects[0] = player
 
     objects[21] = Platform(x=8, y=180, w=152, h=1)

@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject
 from ._helper_methods import _convert_number, get_iou
 import sys
 
@@ -18,7 +18,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Car': 1, 'Badguy': 1, 'Clue': 1, 'Mud': 2, '
 obj_tracker = {}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure: Pierre Touche.
     """
@@ -27,7 +27,7 @@ class Player(GameObject):
         super(Player, self).__init__()
         self._xy = 0, 0
         self.wh = 8, 12
-        self.orientation = 1
+        self.orientation = Orientation.E
         self.rgb = 210, 210, 64
         self.hud = False
 
@@ -411,8 +411,8 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     car = objects[1]
     if ram_state[58] == 1 or ram_state[58] == 5:
         car_x = ram_state[63]
-        player.orientation = 2
-        car.orientation = 2
+        player.orientation = Orientation.N
+        car.orientation = Orientation.N
         car.wh = 8, 14
         if not ram_state[88] & 128:
             if ram_state[58] == 1:
@@ -429,13 +429,13 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         if ram_state[58] == 49:
             car_x = ram_state[63] - 3
             car.wh = 20, 14
-            player.orientation = 1
-            car.orientation = 1
+            player.orientation = Orientation.E
+            car.orientation = Orientation.E
         else:   # ram_state[58] == 121:
             car_x = ram_state[63] - 9
             car.wh = 20, 14
-            player.orientation = 0
-            car.orientation = 0
+            player.orientation = Orientation.W
+            car.orientation = Orientation.W
 
         if not ram_state[84] & 128:
             car.xy = car_x, 150 - (int(ram_state[84]/4)) + 13

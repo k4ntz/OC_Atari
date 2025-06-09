@@ -1,4 +1,4 @@
-from .game_objects import GameObject, NoObject
+from .game_objects import GameObject, NoObject, Orientation, OrientedObject
 import sys
 
 """
@@ -10,7 +10,7 @@ MAX_NB_OBJECTS_HUD = {"Player": 2, "Enemy": 2, "Ball": 1,
                       'PlayerScore': 2, 'EnemyScore': 2, 'Timer': 3}  # 'Score': 1}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure i.e., the current hockey player (goalie or forward).
     """
@@ -21,9 +21,10 @@ class Player(GameObject):
         self.wh = (16, 20)
         self.rgb = 101, 111, 228
         self.hud = False
+        self.orientation = Orientation.E
 
 
-class Enemy(GameObject):
+class Enemy(OrientedObject):
     """
     The enemy player(s).
     """
@@ -34,6 +35,7 @@ class Enemy(GameObject):
         self._xy = 0, 0
         self.wh = (16, 20)
         self.hud = False
+        self.orientation = Orientation.E
 
 
 class Ball(GameObject):
@@ -122,15 +124,19 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # Player at downside
     player = objects[0]
     player.xy = ram_state[59]-13, 168-ram_state[55]
+    player.orientation = Orientation.W if ram_state[63] else Orientation.E
     # Player at upside
     player2 = objects[1]
     player2.xy = ram_state[57]-13, 168-ram_state[53]
+    player2.orientation = Orientation.W if ram_state[61] else Orientation.E
     # Enemy at downside
     enemy_1 = objects[2]
     enemy_1.xy = ram_state[60]-13, 168-ram_state[56]
+    enemy_1.orientation = Orientation.W if ram_state[64] else Orientation.E
     # Enenmy at upper side
     enemy_2 = objects[3]
     enemy_2.xy = ram_state[58]-13, 168-ram_state[54]
+    enemy_2.orientation = Orientation.W if ram_state[62] else Orientation.E
     # Ball
     ball = objects[4]
     ball.xy = ram_state[52]-10, 188-ram_state[91]

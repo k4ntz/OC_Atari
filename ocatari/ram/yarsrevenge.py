@@ -1,5 +1,6 @@
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject, OrientedNoObject
 from ._helper_methods import _convert_number
+import numpy as np
 import sys
 
 """
@@ -10,7 +11,7 @@ MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "Swirl": 1, "Enemy_Missile": 1, "Play
 MAX_NB_OBJECTS_HUD = {"Player": 1, "Enemy": 1, "Swirl": 1, "Enemy_Missile": 1, "Player_Bullet": 1, "Barrier": 1, "Shield_Block": 128, "Score": 1, "Life": 1}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure i.e., the Yar.
     """
@@ -21,6 +22,7 @@ class Player(GameObject):
         self.wh = (8, 16)
         self.rgb = 169, 128, 240
         self.hud = False
+        self.orientation = Orientation.S
 
 
 class Enemy(GameObject):
@@ -142,9 +144,9 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = []
+    objects = [OrientedNoObject()]
 
-    objects.extend([NoObject()] * 134)
+    objects.extend([NoObject()] * 133)
     if hud:
         objects.extend([NoObject()] * 2)
     return objects
@@ -156,9 +158,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     (x, y, w, h, r, g, b)
     """
     if ram_state[53] > 159:
-        if type(objects[0]) is NoObject:
+        if type(objects[0]) is OrientedNoObject:
             objects[0] = Player()
         objects[0].xy = ram_state[32], ram_state[31]+3
+        objects[0].orientation = [Orientation.S, Orientation.E, Orientation.N, Orientation.W][(ram_state[30]&15)>>2]
 
         if ram_state[43] >= 145:
             if type(objects[1]) is NoObject:
@@ -207,7 +210,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 else:
                     objects[6+(i+(j*8))] = NoObject()
     else:
-        objects[:134] = [NoObject()]*134
+        objects[0] = OrientedNoObject()
+        objects[1:134] = [NoObject()]*133
 
     if hud:
         if ram_state[53] < 159:
