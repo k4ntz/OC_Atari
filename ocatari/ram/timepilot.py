@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject, OrientedNoObject
 from ._helper_methods import _convert_number
 import sys
 
@@ -8,13 +8,14 @@ MAX_NB_OBJECTS_HUD = {"Player": 1, "Player_Shot": 1, "Enemy_Green": 8, "Enemy_Gr
                   "Enemy_Yellow": 8, "Enemy_Yellow_Shot": 2, "Enemy_Blue": 8, "Enemy_Blue_Shot": 2, "Enemy_Orange": 8, "Enemy_Orange_Shot": 2, "Score": 1, "Life": 4}  # 'Score': 1}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 76, 100
         self.wh = (8, 9)
         self.rgb = 84, 92, 214
         self.hud = False
+        self.orientation = Orientation.W
 
 
 class Player_Shot(GameObject):
@@ -26,7 +27,7 @@ class Player_Shot(GameObject):
         self.hud = False
 
 
-class Enemy_Green(GameObject):
+class Enemy_Green(OrientedObject):
     def __init__(self):
         super(Enemy_Green, self).__init__()
         self._xy = 0, 160
@@ -44,7 +45,7 @@ class Enemy_Green_Shot(GameObject):
         self.hud = False
 
 
-class Enemy_Black(GameObject):
+class Enemy_Black(OrientedObject):
     def __init__(self):
         super(Enemy_Black, self).__init__()
         self._xy = 0, 160
@@ -62,7 +63,7 @@ class Enemy_Black_Shot(GameObject):
         self.hud = False
 
 
-class Enemy_Yellow(GameObject):
+class Enemy_Yellow(OrientedObject):
     def __init__(self):
         super(Enemy_Yellow, self).__init__()
         self._xy = 0, 160
@@ -80,7 +81,7 @@ class Enemy_Yellow_Shot(GameObject):
         self.hud = False
 
 
-class Enemy_Blue(GameObject):
+class Enemy_Blue(OrientedObject):
     def __init__(self):
         super(Enemy_Blue, self).__init__()
         self._xy = 0, 160
@@ -98,7 +99,7 @@ class Enemy_Blue_Shot(GameObject):
         self.hud = False
 
 
-class Enemy_Orange(GameObject):
+class Enemy_Orange(OrientedObject):
     def __init__(self):
         super(Enemy_Orange, self).__init__()
         self._xy = 0, 160
@@ -156,14 +157,25 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = []
+    objects = [OrientedNoObject()]
 
-    objects.extend([NoObject()] * 52)
+    objects.extend([NoObject()]) # player shot
+    objects.extend([OrientedNoObject()] * 8) # enemies level 1
+    objects.extend([NoObject()]*2)           # enemie shots level 1
+    objects.extend([OrientedNoObject()] * 8)
+    objects.extend([NoObject()]*2)
+    objects.extend([OrientedNoObject()] * 8)
+    objects.extend([NoObject()]*2)
+    objects.extend([OrientedNoObject()] * 8)
+    objects.extend([NoObject()]*2)
+    objects.extend([OrientedNoObject()] * 8)
+    objects.extend([NoObject()]*2)
     if hud:
         objects.extend([NoObject()] * 5)
     return objects
 
 player_rgb = [(84, 92, 214), (50, 132, 50), (167, 26, 26), (0, 0, 0), (84, 92, 214)]
+orientations = [Orientation.N, Orientation.NE, Orientation.E, Orientation.SE, Orientation.S, Orientation.SW, Orientation.W, Orientation.NW]
 
 def _detect_objects_ram(objects, ram_state, hud=False):
     """
@@ -176,10 +188,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     level = ram_state[21]
     if ram_state[36] != 140:
-        if type(objects[0]) is NoObject:
+        if type(objects[0]) is OrientedNoObject:
             objects[0] = Player()
             objects[0].rgb = player_rgb[level]
         player = objects[0]
+        player.orientation = orientations[ram_state[35]&7]
         # orientation 44, 60, 76, 92, 108
         if ram_state[36] & 16:
             player.xy = 76, 100
@@ -191,7 +204,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             player.xy = 76, 100
             player.wh = 8, 9
     else:
-        objects[0] = NoObject()
+        objects[0] = OrientedNoObject()
 
     # player shot
     # there are 2 x and 2 y states, the shot flickers, I do not know when which one is displayed
@@ -213,7 +226,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         # Enemy position
         for i in range(4):
             if ram_state[37+i]:
-                if type(objects[2+i]) is NoObject:
+                if type(objects[2+i]) is OrientedNoObject:
                     objects[2+i] = Enemy_Green()
                 enemy = objects[2+i]
 
@@ -237,6 +250,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
                 enemy.xy = x, y
                 enemy.wh = w, h
+                enemy.orientation = orientations[ram_state[45+i]&7]
+                print(enemy.orientation)
 
                 # if enemy out of bounds, will appear at the opposing border
                 if 0 < y < 33 or x < 0:
@@ -259,13 +274,14 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
                     enemy2.xy = x2, y2
                     enemy2.wh = w2, h2
+                    enemy2.orientation = enemy.orientation
 
                 else:
-                    objects[6+i] = NoObject()
+                    objects[6+i] = OrientedNoObject()
                 
             else:
-                objects[2+i] = NoObject()
-                objects[6+i] = NoObject()
+                objects[2+i] = OrientedNoObject()
+                objects[6+i] = OrientedNoObject()
 
         # Enemy shots
         for i in range(2):
@@ -283,7 +299,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         # Enemy position
         for i in range(4):
             if ram_state[37+i]:
-                if type(objects[12+i]) is NoObject:
+                if type(objects[12+i]) is OrientedNoObject:
                     objects[12+i] = Enemy_Black()
                 enemy = objects[12+i]
 
@@ -309,10 +325,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
                 enemy.xy = x, y
                 enemy.wh = w, h
+                enemy.orientation = orientations[ram_state[45+i]&7]
+                print(enemy.orientation)
 
                 # if enemy out of bounds, will appear at the opposing border
                 if 0 < y < 33 or x < 0:
-                    if type(objects[16+i]) is NoObject:
+                    if type(objects[16+i]) is OrientedNoObject:
                         objects[16+i] = Enemy_Black()
                     enemy2 = objects[16+i]
 
@@ -332,12 +350,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
                     enemy2.xy = x2, y2
                     enemy2.wh = w2, h2
+                    enemy2.orientation = enemy.orientation
                 else:
-                    objects[16+i] = NoObject()
+                    objects[16+i] = OrientedNoObject()
 
             else:
-                objects[12+i] = NoObject()
-                objects[16+i] = NoObject()
+                objects[12+i] = OrientedNoObject()
+                objects[16+i] = OrientedNoObject()
 
         # Enemy shots
         for i in range(2):
@@ -355,7 +374,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         # Enemy position
         for i in range(4):
             if ram_state[37+i]:
-                if type(objects[22+i]) is NoObject:
+                if type(objects[22+i]) is OrientedNoObject:
                     objects[22+i] = Enemy_Yellow()
                 enemy = objects[22+i]
 
@@ -374,10 +393,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
                 enemy.xy = x, y
                 enemy.wh = w, h
+                enemy.orientation = orientations[ram_state[45+i]&7]
 
                 # if enemy out of bounds, will appear at the opposing border
                 if 0 < y < 33 or x < 0:
-                    if type(objects[26+i]) is NoObject:
+                    if type(objects[26+i]) is OrientedNoObject:
                         objects[26+i] = Enemy_Yellow()
                     enemy2 = objects[26+i]
 
@@ -396,11 +416,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                         y = 33
                     enemy2.xy = x2, y2
                     enemy2.wh = w2, h2
+                    enemy2.orientation = enemy.orientation
                 else:
-                    objects[26+i] = NoObject()
+                    objects[26+i] = OrientedNoObject()
             else:
-                objects[22+i] = NoObject()
-                objects[26+i] = NoObject()
+                objects[22+i] = OrientedNoObject()
+                objects[26+i] = OrientedNoObject()
 
         # Enemy shots
         for i in range(2):
@@ -419,7 +440,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         # Enemy position
         for i in range(4):
             if ram_state[37+i]:
-                if type(objects[32+i]) is NoObject:
+                if type(objects[32+i]) is OrientedNoObject:
                     objects[32+i] = Enemy_Blue()
                 enemy = objects[32+i]
 
@@ -450,10 +471,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
                 enemy.xy = x, y
                 enemy.wh = w, h
+                enemy.orientation = orientations[ram_state[45+i]&7]
 
                 # if enemy out of bounds, will appear at the opposing border
                 if 0 < y < 33 or x < 0:
-                    if type(objects[36+i]) is NoObject:
+                    if type(objects[36+i]) is OrientedNoObject:
                         objects[36+i] = Enemy_Blue()
                     enemy2 = objects[36+i]
 
@@ -473,12 +495,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
                     enemy2.xy = x2, y2
                     enemy2.wh = w2, h2
+                    enemy2.orientation = enemy.orientation
                 else:
-                    objects[36+i] = NoObject()
+                    objects[36+i] = OrientedNoObject()
 
             else:
-                objects[32+i] = NoObject()
-                objects[36+i] = NoObject()
+                objects[32+i] = OrientedNoObject()
+                objects[36+i] = OrientedNoObject()
 
         # Enemy shots
         for i in range(2):
@@ -496,7 +519,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         # Enemy position
         for i in range(4):
             if ram_state[37+i]:
-                if type(objects[42+i]) is NoObject:
+                if type(objects[42+i]) is OrientedNoObject:
                     objects[42+i] = Enemy_Orange()
                 enemy = objects[42+i]
 
@@ -508,10 +531,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
                 enemy.xy = x, y
                 enemy.wh = w, h
+                enemy.orientation = orientations[ram_state[45+i]&7]
 
                 # if enemy out of bounds, will appear at the opposing border
                 if 0 < y < 33 or x < 0:
-                    if type(objects[46+i]) is NoObject:
+                    if type(objects[46+i]) is OrientedNoObject:
                         objects[46+i] = Enemy_Orange()
                     enemy2 = objects[46+i]
 
@@ -531,12 +555,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
                     enemy2.xy = x2, y2
                     enemy2.wh = w2, h2
+                    enemy2.orientation = enemy.orientation
                 else:
-                    objects[46+i] = NoObject()
+                    objects[46+i] = OrientedNoObject()
 
             else:
-                objects[42+i] = NoObject()
-                objects[46+i] = NoObject()
+                objects[42+i] = OrientedNoObject()
+                objects[46+i] = OrientedNoObject()
 
         # Enemy shots
         for i in range(2):
@@ -551,7 +576,10 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     no_obj = [i for i in range(2, 52) if i not in idx]
 
     for i in no_obj:
-        objects[i] = NoObject()
+        if i%10 < 8:
+            objects[i] = OrientedNoObject()
+        else:
+            objects[i] = NoObject()
 
     if hud:
         if ram_state[0] > 1:

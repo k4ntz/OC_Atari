@@ -230,24 +230,9 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player()]
-    objects.extend([NoObject()]) #Enemy
-    objects.extend([NoObject()]) #Truck
-    objects.extend([NoObject()]*4) #Seeds
-    objects.extend([NoObject()]*4) #AcmeMine
-    objects.extend([NoObject()]*4) #SteelShot
-    objects.extend([NoObject()]*2) #RoadCrack
-    objects.extend([NoObject()]) #Turret
-    objects.extend([NoObject()]*2) #Turretball
-    objects.extend([NoObject()]*2) #Rock
+    objects.extend([NoObject()]*21)
     if hud:
-        sign = [NoObject()]
-        birds = [NoObject()]*2
-        cacs = [NoObject()]*4 #Tree+cactus
-        score = [NoObject()]
-        bonus = [NoObject()]
-        sign =[NoObject()]
-
-        objects.extend(sign+birds+ cacs +score+bonus+sign)
+        objects.extend([NoObject()]*10)
     return objects
 
 def _detect_objects_ram(objects, ram_state, hud=False):
@@ -278,7 +263,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             player.xy = ram_state[80], ram_state[10] + y_offset
         player.wh = (8, 24) if ram_state[41] == 6 else (8, 32)
     else:
-        objects[0] = None
+        objects[0] = NoObject()
 
     # enemy
     if 8 < ram_state[81] < 144:
