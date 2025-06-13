@@ -304,6 +304,22 @@ class GameObject:
     def __bool__(self):
         return self._visible
 
+class OrientedObject(GameObject):
+
+    @property
+    def _nsrepr(self):
+        if not self._visible:
+            return [0, 0, 0]
+        return [self.x, self.y, self.orientation]
+    
+    @property
+    def _ns_meaning(self):
+        return ["x", "y", "o"]
+
+    @property
+    def _ns_types(self):
+        return [Tuple[int, int, int]]    
+
 
 class NoObject(GameObject):
     """
@@ -330,7 +346,7 @@ class NoObject(GameObject):
 
     @property
     def _ns_meaning(self):
-        return ["POSITION"]
+        return ["x", "y"]
 
     @property
     def _ns_types(self):
@@ -341,6 +357,42 @@ class NoObject(GameObject):
         # return "\033[31m" + "NaO" + "\033[39m" # red color
         return "\033[34m" + "NaO" + "\033[39m"  # blue color
 
+
+class OrientedNoObject(OrientedObject):
+    """
+    This class represents a non-existent object. It is used to fill in the gaps when no object is detected.
+    """
+
+    def __init__(self, nslen=3):
+        super().__init__()
+        self.nslen = nslen
+        self.rgb = (0, 0, 0)
+
+    def _save_prev(self):
+        pass
+
+    def __bool__(self):
+        return False
+
+    def __eq__(self, other):
+        return isinstance(other, OrientedObject)
+
+    @property
+    def _nsrepr(self):
+        return [0 for _ in range(self.nslen)]
+
+    @property
+    def _ns_meaning(self):
+        return ["x", "y", "o"]
+
+    @property
+    def _ns_types(self):
+        return [Tuple[int, int, int]]
+
+    def __repr__(self):
+        # return "NaO"
+        # return "\033[31m" + "NaO" + "\033[39m" # red color
+        return "\033[34m" + "NaO" + "\033[39m"  # blue color
 
 class ValueObject(GameObject):
     """

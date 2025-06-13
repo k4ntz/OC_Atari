@@ -669,7 +669,29 @@ def compute_cm(prev_objects, objects_bb):
 
 def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
     """
-    Runs hungarian matching algorithm to match objects of previous and current frames.
+    Runs the Hungarian matching algorithm to match objects from the previous frame 
+    with bounding boxes detected in the current frame.
+
+    Parameters:
+    - prev_objects: A list of objects from the previous frame. These objects 
+      are instances of `GameObject` or `NoObject`.
+    - objects_bb: A list of bounding boxes for objects detected in the current frame. 
+      Each bounding box is represented as a tuple (x, y, w, h, [r, g, b]), 
+      where (x, y) is the top-left corner, (w, h) is the width and height, 
+      and [r, g, b] is the optional RGB color of the object.
+    - start_idx: The starting index in the `prev_objects` list where matching should begin.
+    - max_obj: The maximum number of objects of the given type that can exist.
+    - ObjClass: The class of the object to be matched. 
+      This class should inherit from `GameObject`.
+
+    Raises:
+    - ValueError: If the number of detected objects exceeds the maximum allowed objects.
+    - IndexError: If there is an issue with indexing during object assignment.
+    - Exception: For any other unexpected errors during the matching process.
+
+    Returns:
+    - None. The `prev_objects` list is updated in place with matched objects or `NoObject` 
+      instances for unmatched slots.
     """
     # start_idx = 0
     # for obj_type_str, max_obj in max_objects.items():

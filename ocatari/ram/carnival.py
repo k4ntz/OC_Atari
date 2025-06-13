@@ -1,15 +1,16 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, NoObject
 from ._helper_methods import _convert_number
+from .utils import match_objects
 import sys
 
 """
 RAM extraction for the game CARNIVAL. Supported modes: ram.
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissile': 1, 'Rabbit': 6,
-                  'Duck': 5, 'ExtraBullets': 4, 'Owl': 3, 'Wheel': 1, 'FlyingDuck': 6}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerMissile': 1, 'Rabbit': 6, 'Duck': 5, 'ExtraBullets': 4,
-                      'Owl': 3, 'Wheel': 1, 'FlyingDuck': 6, 'AmmoBar': 1, 'BonusSign': 1, 'BonusValue': 1, 'PlayerScore': 1}
+MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissile': 1, 'Wheel': 1, 'Rabbit': 6,
+                  'Duck': 6, 'ExtraBullets': 6, 'Owl': 6, 'FlyingDuck': 6}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerMissile': 1, 'Wheel': 1, 'Rabbit': 6, 'Duck': 6, 'ExtraBullets': 6,
+                      'Owl': 6, 'FlyingDuck': 6, 'AmmoBar': 1, 'BonusSign': 1, 'BonusValue': 1, 'PlayerScore': 1}
 
 
 class Player(GameObject):
@@ -30,10 +31,10 @@ class PlayerMissile(GameObject):
     Projectiles fired from the player's gun.
     """
 
-    def __init__(self):
+    def __init__(self, x=0, y=0, w=6, h=8):
         super().__init__()
-        self._xy = 0, 0
-        self.wh = 6, 8
+        self._xy = x, y
+        self.wh = w, h
         self.rgb = 183, 194, 95
         self.hud = False
 
@@ -43,10 +44,10 @@ class Owl(GameObject):
     The owl targets.
     """
 
-    def __init__(self):
+    def __init__(self, x=0, y=0, w=8, h=15):
         super().__init__()
-        self._xy = 0, 0
-        self.wh = 8, 15
+        self._xy = x, y
+        self.wh = w, h
         self.rgb = 214, 92, 92
         self.hud = False
 
@@ -56,10 +57,10 @@ class Duck(GameObject):
     The duck targets.
     """
 
-    def __init__(self):
+    def __init__(self, x=0, y=0, w=8, h=15):
         super().__init__()
-        self._xy = 0, 0
-        self.wh = 8, 15
+        self._xy = x, y
+        self.wh = w, h
         self.rgb = 187, 187, 53
         self.hud = False
 
@@ -69,10 +70,10 @@ class FlyingDuck(GameObject):
     The ducks that fly down the screen to eat some of the bullets.
     """
 
-    def __init__(self):
+    def __init__(self, x=0, y=0, w=16, h=15):
         super().__init__()
-        self._xy = 0, 0
-        self.wh = 16, 15
+        self._xy = x, y
+        self.wh = w, h
         self.rgb = 187, 187, 53
         self.hud = False
 
@@ -82,10 +83,10 @@ class Rabbit(GameObject):
     The rabbit targets.
     """
 
-    def __init__(self):
+    def __init__(self, x=0, y=0, w=8, h=15):
         super().__init__()
-        self._xy = 0, 0
-        self.wh = 8, 15
+        self._xy = x, y
+        self.wh = w, h
         self.rgb = 192, 192, 192
         self.hud = False
 
@@ -95,7 +96,7 @@ class ExtraBullets(GameObject):
     The extra-bullet boxes.
     """
 
-    def __init__(self):
+    def __init__(self, x=0, y=0, w=8, h=9):
         super().__init__()
         self._xy = 0, 0
         self.wh = 8, 9
@@ -208,17 +209,19 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player()]
+    objects = [Player(), PlayerMissile(), Wheel()]
+    # for the Rabbit, Duck, ExtraBullets, Owls and FlyingDucks
+    objects.extend([NoObject() for _ in range(30)])
 
     if hud:
-        objects.extend([PlayerScore()])
+        objects.extend([NoObject(), NoObject(), NoObject(), PlayerScore()])
 
     return objects
 
 
 def _detect_objects_ram(objects, ram_state, hud=False):
     """
-       For all objects:
+       For all objects
        (x, y, w, h, r, g, b)
     """
     player = objects[0]
@@ -229,84 +232,108 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     else:
         player.xy = ram_state[2] - 4, 186
 
-    if hud:
-        del objects[2:]
-    else:
-        del objects[1:]
+    # if hud:
+    #     del objects[2:]
+    # else:
+    #     del objects[1:]
 
     global x_missile
     global y_prev_missile
 
     # player missile: not perfect, because the RAM does not save the x position of the missile. Thus its based on the
     # player position, but it does not always match.
+    missile = objects[1]
     if ram_state[55] != 0 and ram_state[55] > 14:
         if x_missile == 0 or y_prev_missile < ram_state[55]:
             if ram_state[2] - 4 < 0:
                 x_missile = ram_state[2]
             else:
                 x_missile = ram_state[2] - 6
-        missile = PlayerMissile()
+        missile = missile if type(missile) is PlayerMissile else PlayerMissile()
         if ram_state[55] > 99:
             missile.xy = x_missile, ram_state[55] + 6
             y_prev_missile = ram_state[55] + 6
         else:
             missile.xy = x_missile, ram_state[55]
             y_prev_missile = ram_state[55]
-        objects.append(missile)
     else:
+        missile = NoObject() if missile is not NoObject else missile
         x_missile = 0
+    objects[1] = missile
 
     # targets
-    targets = []
+    ducks = []
+    rabbits = []
+    owls = []
+    extra_bullets = []
+    flying_ducks = []
     for i in range(6):
         x = ram_state[18 + i] - 4
         sprite = ram_state[24 + i * 2]
         if sprite == 0:
-            targets.extend(_calculate_targets(ram_state, 0, x, i))
+            ducks.extend(_calculate_targets(ram_state, 0, x, i))
         elif sprite == 16:
-            targets.extend(_calculate_targets(ram_state, 1, x, i))
+            rabbits.extend(_calculate_targets(ram_state, 1, x, i))
         elif sprite == 32:
-            targets.extend(_calculate_targets(ram_state, 2, x, i))
+            owls.extend(_calculate_targets(ram_state, 2, x, i))
         elif sprite == 48:
-            targets.extend(_calculate_targets(ram_state, 3, x, i))
+            extra_bullets.extend(_calculate_targets(ram_state, 3, x, i))
         elif sprite == 92:  # duck flying down
             if ram_state[1] == 79 or ram_state[1] == 0:
                 continue
             else:
+                # if len(flying_ducks) >= 0: 
+                #     import ipdb; ipdb.set_trace()
                 duck = FlyingDuck()
                 duck.xy = ram_state[111] - 4, 111 + ram_state[1] - 3
-                objects.append(duck)
-                targets = []
+                flying_ducks.append(duck)
         else:
             pass
-    objects.extend(targets)
+
+    match_objects(objects, [(rabbit.xy[0], rabbit.xy[1], rabbit.wh[0], rabbit.wh[1]) for rabbit in rabbits], 3, MAX_NB_OBJECTS['Rabbit'], Rabbit)
+    match_objects(objects, [(duck.xy[0], duck.xy[1], duck.wh[0], duck.wh[1]) for duck in ducks], 9, MAX_NB_OBJECTS['Duck'], Duck)
+    match_objects(objects, [(extra_bullet.xy[0], extra_bullet.xy[1], extra_bullet.wh[0], extra_bullet.wh[1]) for extra_bullet in extra_bullets], 15, MAX_NB_OBJECTS['ExtraBullets'], ExtraBullets)
+    match_objects(objects, [(owl.xy[0], owl.xy[1], owl.wh[0], owl.wh[1]) for owl in owls], 21, MAX_NB_OBJECTS['Owl'], Owl)
+    match_objects(objects, [(flying_duck.xy[0], flying_duck.xy[1], flying_duck.wh[0], flying_duck.wh[1]) for flying_duck in flying_ducks], 27, MAX_NB_OBJECTS['FlyingDuck'], FlyingDuck)
 
     # wheel
     if ram_state[121] != 84 and ram_state[123] != 84:
-        wheel = Wheel()
+        wheel = objects[2] if type(objects[2]) is Wheel else Wheel()
         wheel.rgb = wheel_colors.get(ram_state[125])
-        objects.append(wheel)
+        objects[2] = wheel
+    else:
+        objects[2] = NoObject()
 
     if hud:
         # ammo bar, starts blinking if ten or less but that is not implemented
         if ram_state[3] != 0:
-            ammo = AmmoBar()
+            ammo = objects[-4] if type(objects[-4]) is AmmoBar else AmmoBar()
             ammo.wh = ram_state[3] * 4, 5
+            #ammo.xy = ammo.xy[0], 203 
             if ram_state[42] < 32:
                 ammo.rgb = ammo_bar_colors.get(ram_state[42])
             else:
                 ammo.rgb = [24, 59, 157]
-            objects.append(ammo)
+            objects[-4] = ammo
+        else: 
+            if objects[-4] is not NoObject:
+                objects[-4] = NoObject()
 
         # bonus
         if ram_state[9] != 79:
-            sign = BonusSign()
-            value = BonusValue()
+            sign = objects[-3] if type(objects[-3]) is BonusSign else BonusSign()
+            value = objects[-2] if type(objects[-2]) is BonusValue else BonusValue()
             if ram_state[9] == 43:
                 value.xy = 20, 29
 
-            objects.append(sign)
-            objects.append(value)
+            objects[-3] = sign
+            objects[-2] = value
+        else:
+            if objects[-3] is not NoObject:
+                objects[-3] = NoObject()
+            if objects[-2] is not NoObject:
+                objects[-2] = NoObject()
+
 
 
 def _calculate_targets(ram_state, target_num, x, i):

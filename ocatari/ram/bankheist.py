@@ -1,19 +1,21 @@
 from ._helper_methods import number_to_bitfield
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject
 import sys
+import numpy as np
 
 MAX_NB_OBJECTS = {"Player": 1, "Bank": 3, "Police": 3, "Dynamite": 1}
 MAX_NB_OBJECTS_HUD = {"Player": 1, "Bank": 3, "Police": 3,
                       "Dynamite": 1, "Score": 1, "Life": 6, "Gas_Tank": 1}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 0, 160
         self.wh = (8, 7)
         self.rgb = 162, 98, 33
         self.hud = False
+        self.orientation = Orientation.E
 
 
 class Bank(GameObject):
@@ -109,6 +111,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     player = objects[0]
     player.xy = ram_state[28], ram_state[8]+37
+    # ram 41
+    player.orientation = Orientation.E if ram_state[41] == 255 else [Orientation.E, Orientation.W, Orientation.S, Orientation.N][4 - np.uint8(np.log2(((~ram_state[41])>>3)))]
+    print(player.orientation)
 
     for i in range(3):
         if ram_state[9+i]:
