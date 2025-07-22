@@ -49,7 +49,7 @@ We are currently supporting versions > 3.9
 
 #### Install Gymnasium with Atari support
 ```sh
-pip install "gymnasium[atari, accept-rom-license]"
+pip install "gymnasium[atari]"
 ```
 
 ### Installation
