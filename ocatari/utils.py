@@ -22,14 +22,14 @@ except ModuleNotFoundError:
     torch_imported = False
 
 
-test_parser = ArgumentParser()
-test_parser.add_argument("-p", "--path", type=str, default=None,
+parser = ArgumentParser()
+parser.add_argument("-p", "--path", type=str, default=None,
                          help="path to the model")
-test_parser.add_argument("-g", "--game", type=str, required=True,
+parser.add_argument("-g", "--game", type=str, required=True,
                          help="game to evaluate (e.g. 'Pong')")
-test_parser.add_argument("-i", "--iou", type=float, default=0.8,
+parser.add_argument("-i", "--iou", type=float, default=0.8,
                          help="Minimum iou for image saving (e.g. 0.7)")
-test_parser.add_argument("-s", "--seed", type=float, default=None,
+parser.add_argument("-s", "--seed", type=float, default=None,
                          help="If provided, set the seed")
 
 

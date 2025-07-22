@@ -14,7 +14,7 @@ from ocatari.vision.tennis import objects_colors
 from ocatari.vision.pong import objects_colors
 from ocatari.vision.bowling import objects_colors
 from ocatari.vision.breakout import objects_colors
-from ocatari.utils import load_agent, test_parser, make_deterministic, RandomAgent
+from ocatari.utils import load_agent, parser, make_deterministic, RandomAgent
 from copy import deepcopy
 import numpy as np
 import os
@@ -35,7 +35,7 @@ import inspect
 figlet = Figlet()
 report_bad = {}
 all_stats = []
-opts = test_parser.parse_args()
+opts = parser.parse_args()
 if opts.seed:
     make_deterministic(opts.seed)
 game_name = opts.game
