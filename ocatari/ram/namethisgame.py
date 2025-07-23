@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject
 from ._helper_methods import _convert_number
 import sys
 
@@ -8,7 +8,7 @@ MAX_NB_OBJECTS_HUD = {"Player": 1, "Oxygen_Boat": 1, "Oxygen_Pipe": 1, "Shark": 
                       "Treasure": 1, "Octopus": 1, "Tentacle": 360, "Score": 1, "Timer": 1, "Oxygen_Meter": 1}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     Scubadiver protecting the treasure, by hitting the shark and the octopus tentacles
     """
@@ -19,6 +19,7 @@ class Player(GameObject):
         self.wh = (16, 13)
         self.rgb = 92, 186, 92
         self.hud = False
+        self.orientation = Orientation.W
 
 
 class Shot(GameObject):
@@ -193,6 +194,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # player moving x + 1
     objects[0].xy = ram_state[99]-1, 139
+    objects[0].orientation = Orientation.E if ram_state[61]&128 else Orientation.W
     # Boat
     objects[1].xy = ram_state[100]-1, 9
 

@@ -1,7 +1,7 @@
 import sys
 from typing import Tuple
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, OrientedObject
 import numpy as np
 """
 RAM extraction for the game Skiing.
@@ -31,7 +31,7 @@ for i in range(255):
         FLAG_COLOR[i] = (0, 0, 0)
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure i.e., the skier.
     """
@@ -45,17 +45,17 @@ class Player(GameObject):
         self.orientation = 8
         self.ram_90 = 255
 
-    @property
-    def _nsrepr(self):
-        return [self.x, self.y, self.orientation]
+    # @property
+    # def _nsrepr(self):
+    #     return [self.x, self.y, self.orientation]
 
-    @property
-    def _ns_meaning(self):
-        return ["POSITION", "ORIENTATION"]
+    # @property
+    # def _ns_meaning(self):
+    #     return ["POSITION", "ORIENTATION"]
 
-    @property
-    def _ns_types(self):
-        return [Tuple[int, int], Tuple[int]]
+    # @property
+    # def _ns_types(self):
+    #     return [Tuple[int, int], Tuple[int]]
 
 
 class Flag(GameObject):

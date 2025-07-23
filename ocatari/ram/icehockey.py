@@ -1,4 +1,4 @@
-from .game_objects import GameObject, NoObject
+from .game_objects import GameObject, NoObject, Orientation, OrientedObject
 import sys
 from math import dist
 
@@ -11,7 +11,7 @@ MAX_NB_OBJECTS_HUD = {"Player": 2, "Enemy": 2, "Ball": 1,
                       'PlayerScore': 1, 'EnemyScore': 1, 'Timer': 1}  # 'Score': 1}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure i.e., the current hockey player (goalie or forward).
     """
@@ -23,9 +23,10 @@ class Player(GameObject):
         self.rgb = 101, 111, 228
         self.stick = False
         self.hud = False
+        self.orientation = Orientation.E
 
 
-class Enemy(GameObject):
+class Enemy(OrientedObject):
     """
     The enemy player(s).
     """
@@ -36,6 +37,7 @@ class Enemy(GameObject):
         self._xy = 0, 0
         self.wh = 10, 20
         self.hud = False
+        self.orientation = Orientation.E
 
 
 class Ball(GameObject):
@@ -133,6 +135,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     else:
         player1.wh = (10, 20)
         player1.xy = ram_state[59]-10, 168-ram_state[55]
+    player1.orientation = Orientation.W if ram_state[63] else Orientation.E
         
     # Player at upside #82
     player2 = objects[1] 
@@ -145,6 +148,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     else:
         player2.wh = (10, 20)
         player2.xy = ram_state[57]-10, 168-ram_state[53]
+    player2.orientation = Orientation.W if ram_state[61] else Orientation.E
          
     # Enemy at downside
     enemy1 = objects[2]
@@ -157,6 +161,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     else:
         enemy1.wh = (10, 20)
         enemy1.xy = ram_state[60]-10, 168-ram_state[56]
+    enemy1.orientation = Orientation.W if ram_state[64] else Orientation.E
     
     # Enenmy at upper side
     enemy2 = objects[3]
@@ -169,10 +174,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     else:
         enemy2.wh = (10, 20)
         enemy2.xy = ram_state[58]-10, 168-ram_state[54]
-    
-    
-    
-    
+    enemy2.orientation = Orientation.W if ram_state[62] else Orientation.E
+
     # Ball
     ball = objects[4]
     ball.xy = ram_state[52]-10, 188-ram_state[91]

@@ -1,4 +1,4 @@
-from .game_objects import GameObject, NoObject
+from .game_objects import GameObject, NoObject, Orientation
 from ._helper_methods import _convert_number
 import math
 import sys
@@ -27,6 +27,7 @@ class Player(GameObject):
         self.wh = 8, 16
         self.rgb = 210, 164, 74
         self.hud = False
+        self.orientation = Orientation.W
 
 
 class Ghost(GameObject):

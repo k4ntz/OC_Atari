@@ -1,6 +1,6 @@
 
 import sys
-from .game_objects import GameObject, NoObject
+from .game_objects import GameObject, NoObject, Orientation, OrientedObject
 
 """
 RAM extraction for the game TENNIS. Supported modes: ram.
@@ -12,7 +12,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 1, 'Ball': 1,
                       'BallShadow': 1, 'PlayerScore': 1, 'EnemyScore': 1}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure i.e., the tennis player.
     """
@@ -24,9 +24,10 @@ class Player(GameObject):
         self.rgb = 240, 128, 128
         self.hud = False
         self.visible = True
+        self.orientation = Orientation.E
 
 
-class Enemy(GameObject):
+class Enemy(OrientedObject):
     """
     The enemy tennis player.
     """
@@ -38,6 +39,7 @@ class Enemy(GameObject):
         self.rgb = 117, 128, 240
         self.hud = False
         self.visible = True
+        self.orientation = Orientation.W
 
 
 class Ball(GameObject):
@@ -122,10 +124,14 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     field_orientation = ram_state[80]
     if field_orientation == 0:  # player up
         player.xy = ram_state[26] - 1, 166 - ram_state[24]
+        player.orientation = Orientation.W if ram_state[56]else Orientation.E
         enemy.xy = ram_state[27] - 1, 166 - ram_state[25]
+        enemy.orientation = Orientation.W if ram_state[57]else Orientation.E
     elif field_orientation == 1:  # player down
         player.xy = ram_state[27] - 1, 166 - ram_state[25]
+        player.orientation = Orientation.W if ram_state[57]else Orientation.E
         enemy.xy = ram_state[26] - 1, 166 - ram_state[24]
+        enemy.orientation = Orientation.W if ram_state[56]else Orientation.E
 
     if ram_state[16] > 2:   # else ball and shadow are out
         ballx, ball_y = ram_state[16] - 2, 189 - ram_state[54]

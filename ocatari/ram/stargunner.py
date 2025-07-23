@@ -1,5 +1,5 @@
 import sys
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject, OrientedNoObject
 import numpy as np
 
 """
@@ -13,7 +13,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerMissile': 1, 'BombThrower': 1, 'Bomb':
                       'FlyingEnemy': 3, 'PlayerScore': 1, 'Lives': 1}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player spaceship.
     """
@@ -24,6 +24,7 @@ class Player(GameObject):
         self.wh = 8, 4
         self.rgb = 214, 92, 92
         self.hud = False
+        self.orientation = Orientation.E
 
 
 class PlayerMissile(GameObject):
@@ -133,7 +134,7 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
 
-    objects = [NoObject()] * 7
+    objects = [OrientedNoObject()] + [NoObject()] * 6
     if hud:
         objects.extend([PlayerScore(), Lives()])
     return objects
@@ -149,6 +150,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if type(objects[0]) is NoObject:
             objects[0] = Player()
         objects[0].xy = ram_state[21] - 10, ram_state[14] + 33
+        objects[0].orientation = Orientation.W if ram_state[19] == 246 else Orientation.E
         
         if ram_state[31]:
             if type(objects[2]) is NoObject:
@@ -170,7 +172,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             else:
                 objects[4+i] = NoObject()
     else:
-        objects[0] = NoObject()
+        objects[0] = OrientedNoObject()
         objects[2] = NoObject()
         objects[4] = NoObject()
         objects[5] = NoObject()
