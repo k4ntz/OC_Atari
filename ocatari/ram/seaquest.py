@@ -173,7 +173,7 @@ class OxygenBar(ValueObject):
     @property
     def _nsrepr(self):
         return [self.w]
-    
+
     @property
     def _ns_meaning(self):
         return ["WIDTH"]
