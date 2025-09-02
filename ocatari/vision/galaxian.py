@@ -1,11 +1,6 @@
 from .utils import find_objects, find_mc_objects
 from .game_objects import GameObject
 
-MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissile': 1,
-                  'EnemyMissile': 2, 'EnemyShip': 42}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'PlayerMissile': 1,
-                      'EnemyMissile': 2, 'EnemyShip': 42, 'Score': 1, 'Round': 1, 'Lives': 1}
-
 
 objects_colors = {
     "Player": [236, 236, 236],

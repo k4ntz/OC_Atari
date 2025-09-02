@@ -121,7 +121,7 @@ if torch_imported:
             return self.get_action_and_value(state)[0]
 
     class PPObj(nn.Module):
-        def __init__(self, envs, device, encoder_dims=(256, 512, 1024, 1024, 512, 256), decoder_dims=(256,)):
+        def __init__(self, envs, device, encoder_dims=(256, 512, 1024, 512), decoder_dims=(512,)):
             super().__init__()
             self.device = device
 
@@ -333,6 +333,7 @@ def get_polar_coordinates(x: float, y: float):
     radius = np.sqrt(x**2 + y**2)
     angle = np.arctan2(y, x)  # angle in radians
     return radius, angle
+
 
 def get_egocentric_polar_vector(objects, center):
     """Returns a list of objects in egocentric coordinates."""

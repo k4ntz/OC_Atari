@@ -43,6 +43,7 @@ class Player(OrientedObject):
         self.rgb = 214, 92, 92
         self.hud = False
         self.orientation = 8
+        self.speed = 0
         self.ram_90 = 255
 
     # @property
@@ -232,6 +233,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = (ram_state[25], ram_state[26]-80)
     player.orientation = ram_state[15]
+    player.speed = ram_state[14]
     # tree_slots = objects[1:7]
     # mogul_slots = objects[7:10]
     # flag_slots = objects[10:14]
