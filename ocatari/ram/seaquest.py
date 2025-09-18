@@ -251,7 +251,14 @@ def _init_objects_ram(hud=False):
 
     objects.extend([NoObject()]*12)
     objects.extend([OrientedNoObject()]*12)
-    objects.extend([NoObject()]*10)
+    # Indices layout expected by _detect_objects_ram:
+    # 25..28 Divers (NoObject, 2 dims each)
+    # 29..32 EnemyMissiles (NoObject, 2 dims each)
+    # 33 SurfaceSubmarine (OrientedNoObject, 3 dims)
+    # 34 PlayerMissile (NoObject, 2 dims)
+    objects.extend([NoObject()]*8)
+    objects.extend([OrientedNoObject()])
+    objects.extend([NoObject()])
     objects.extend([OxygenBar()])
     objects.extend([CollectedDiver()]*6)
 
@@ -344,11 +351,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # only spawns in late game
     if ram_state[60] >= 2 and ram_state[118] < 160:
-        if type(objects[33]) is NoObject:
+        if type(objects[33]) is OrientedNoObject or type(objects[33]) is NoObject:
             objects[33] = SurfaceSubmarine()
         objects[33].xy = ram_state[118], 45
     else:
-        objects[33] = NoObject()
+        # Keep oriented placeholder to preserve ns_state length
+        objects[33] = OrientedNoObject()
 
     if 0 < ram_state[103] < 160:
         if type(objects[34]) is NoObject:
