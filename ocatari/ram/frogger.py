@@ -1,5 +1,5 @@
-from .game_objects import GameObject, NoObject
-
+from .game_objects import GameObject, NoObject, Orientation, OrientedObject
+import numpy as np
 """
 RAM extraction for the game Frogger.
 
@@ -14,7 +14,7 @@ car_colors = [[195, 144, 61], [164, 89, 208], [
     82, 126, 45], [198, 89, 179], [236, 236, 236]]
 
 
-class Frog(GameObject):
+class Frog(OrientedObject):
     """
     The player figure i.e., the frog.
     """
@@ -25,6 +25,7 @@ class Frog(GameObject):
         self.wh = 7, 7
         self.rgb = 110, 156, 66
         self.hud = False
+        self.orientation = Orientation.N
 
 
 class Car(GameObject):
@@ -145,6 +146,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         frog.y = 95
     else:
         frog.y = - 13 * ram_state[44] + 161
+
+    if ram_state[75]:
+        frog.orientation = [Orientation.N, Orientation.S, Orientation.W, Orientation.E][np.uint8(np.log2(ram_state[75]>>4))]
 
     # first line first car
     car = objects[1]

@@ -121,7 +121,7 @@ if torch_imported:
             return self.get_action_and_value(state)[0]
 
     class PPObj(nn.Module):
-        def __init__(self, envs, device, encoder_dims=(256, 512, 1024, 1024, 512, 256), decoder_dims=(256,)):
+        def __init__(self, envs, device, encoder_dims=(256, 512, 1024, 512), decoder_dims=(512,)):
             super().__init__()
             self.device = device
 
@@ -155,40 +155,6 @@ if torch_imported:
             logits = self.actor(hidden)
             probs = Categorical(logits=logits)
             if action is None:
-                action = logits.argmax(dim=-1)
-            return action, probs.log_prob(action), probs.entropy(), self.critic(hidden)
-
-        def draw_action(self, x, states=None, **_):
-            return self.get_action_and_value(x)[0]
-
-    class PPO_Obj_small(nn.Module):
-        def __init__(self, envs, input_size, window_size, device):
-            super().__init__()
-            self.device = device
-
-            self.network = nn.Sequential(
-                layer_init(nn.Linear(input_size, 128)),
-                nn.ReLU(),
-                layer_init(nn.Linear(128, 64)),
-                nn.ReLU(),
-                nn.Flatten(),
-                layer_init(nn.Linear(64*window_size, 32)),
-                nn.ReLU(),
-
-            )
-            self.actor = layer_init(
-                nn.Linear(32, envs.action_space.n), std=0.01)
-            self.critic = layer_init(nn.Linear(32, 1), std=1)
-
-        def get_value(self, x):
-            return self.critic(self.network(x / 255.0))
-
-        def get_action_and_value(self, x, action=None):
-            hidden = self.network(x / 255.0)
-            logits = self.actor(hidden)
-            probs = Categorical(logits=logits)
-            if action is None:
-                # action = probs.sample()
                 action = logits.argmax(dim=-1)
             return action, probs.log_prob(action), probs.entropy(), self.critic(hidden)
 
@@ -271,7 +237,7 @@ def _epsilon_greedy(obs, model, eps=0):
 
 def load_agent(opt, env=None, device="cpu"):
     pth = opt if isinstance(opt, str) else opt.path
-    if "dqn" in pth or "c51" in pth:
+    if "ppo" not in pth and "cleanrl" not in pth:
         agent = AtariNet(env.action_space.n, distributional="c51" in pth)
         ckpt = _load_checkpoint(pth)
         agent.load_state_dict(ckpt['estimator_state'])
@@ -360,3 +326,36 @@ def draw_orientation_indicator(surface: pygame.Surface, orientation_value: int,
 
 def get_rotation_matrix(rad: float):
     return np.array([[np.cos(rad), -np.sin(rad)], [np.sin(rad), np.cos(rad)]])
+
+
+def get_polar_coordinates(x: float, y: float):
+    """Returns the polar coordinates of a point."""
+    radius = np.sqrt(x**2 + y**2)
+    angle = np.arctan2(y, x)  # angle in radians
+    return radius, angle
+
+
+def get_egocentric_polar_vector(objects, center):
+    """Returns a list of objects in egocentric coordinates."""
+    egocentric_vector = []
+    for obj in objects:
+        if obj is None:
+            egocentric_vector.append(None)
+            continue
+        x, y = obj.x - center[0], obj.y - center[1]
+        obj.xy([x, y])
+        egocentric_vector.append(obj)
+    return egocentric_vector
+
+
+def get_egocentric_cartesian_vector(objects, center):
+    """Returns a list of objects in egocentric coordinates."""
+    egocentric_vector = []
+    for obj in objects:
+        if obj is None:
+            continue
+        x, y = obj.x - center[0], obj.y - center[1]
+        radius, angle = get_polar_coordinates(x, y)
+        obj.xy([radius, angle])
+        egocentric_vector.append(obj)
+    return egocentric_vector

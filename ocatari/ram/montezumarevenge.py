@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject
 from ._helper_methods import _convert_number
 import sys
 
@@ -14,7 +14,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Skull': 2, 'Spider': 1, 'Snake': 2, 'Key': 1
 obj_tracker = {}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure: Panama Joe.
     """
@@ -25,6 +25,8 @@ class Player(GameObject):
         self.wh = 8, 20
         self.rgb = 228, 111, 111
         self.hud = False
+        self.orientation = Orientation.W
+        self.ladder = False
 
 
 class Skull(GameObject):
@@ -390,6 +392,8 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     player = Player()
     player = objects[0]
     player.xy = ram_state[42] - 1, 255 - ram_state[43] + 53
+    player.orientation = Orientation.W if ram_state[103]&64 else Orientation.E
+    player.ladder = ram_state[94] == 1
 
     # for i in range(45):
     #     objects[i+1] = NoObject()

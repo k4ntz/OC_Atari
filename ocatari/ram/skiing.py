@@ -1,7 +1,7 @@
 import sys
 from typing import Tuple
 from ._helper_methods import _convert_number
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, OrientedObject
 import numpy as np
 """
 RAM extraction for the game Skiing.
@@ -31,7 +31,7 @@ for i in range(255):
         FLAG_COLOR[i] = (0, 0, 0)
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure i.e., the skier.
     """
@@ -43,19 +43,20 @@ class Player(GameObject):
         self.rgb = 214, 92, 92
         self.hud = False
         self.orientation = 8
+        self.speed = 0
         self.ram_90 = 255
 
-    @property
-    def _nsrepr(self):
-        return [self.x, self.y, self.orientation]
+    # @property
+    # def _nsrepr(self):
+    #     return [self.x, self.y, self.orientation]
 
-    @property
-    def _ns_meaning(self):
-        return ["POSITION", "ORIENTATION"]
+    # @property
+    # def _ns_meaning(self):
+    #     return ["POSITION", "ORIENTATION"]
 
-    @property
-    def _ns_types(self):
-        return [Tuple[int, int], Tuple[int]]
+    # @property
+    # def _ns_types(self):
+    #     return [Tuple[int, int], Tuple[int]]
 
 
 class Flag(GameObject):
@@ -67,7 +68,7 @@ class Flag(GameObject):
 
     """
 
-    def __init__(self, x=0, y=0, subtype=0, ram_i = 8):
+    def __init__(self, x=0, y=0, subtype=0, ram_i=8):
         super().__init__()
         self.rgb = FLAG_COLOR[subtype]
         self._subtype = subtype
@@ -102,7 +103,7 @@ class Mogul(GameObject):
 
     """
 
-    def __init__(self, x=0, y=0, subtype=None, ram_i = 8):
+    def __init__(self, x=0, y=0, subtype=None, ram_i=8):
         super().__init__()
         self.rgb = (214, 214, 214)
         self._ram_id = 5
@@ -133,7 +134,7 @@ class Tree(GameObject):
 
     """
 
-    def __init__(self, x=0, y=0, subtype=2, ram_i = 8):
+    def __init__(self, x=0, y=0, subtype=2, ram_i=8):
         super().__init__()
         self.rgb = TREE_COLOR[subtype]
         self._subtype = subtype
@@ -142,7 +143,7 @@ class Tree(GameObject):
         self.wh = min(155-x, 16), min(175-y, 30)
         self._highest = False  # highest in the slot
         self._ram_i = ram_i
-        if x > 154: # pacman like torus
+        if x > 154:  # pacman like torus
             self._x = 8
             self.w = min(164-x, 16)
         elif x > 145:
@@ -162,7 +163,7 @@ class Tree(GameObject):
         if self._xy[0] == x+2:    # bug correction
             x += 5
         self._x = x
-        if x > 158: # pacman like torus
+        if x > 158:  # pacman like torus
             self._x = 8
         self.y = y+4
 
@@ -213,7 +214,7 @@ def _init_objects_ram(hud=False):
 def _get_highest_idx(slot_list):
     if all(not obj for obj in slot_list):
         return -1
-    
+
     for i, obj in enumerate(slot_list):
         if obj and obj._highest:
             return i
@@ -232,6 +233,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = (ram_state[25], ram_state[26]-80)
     player.orientation = ram_state[15]
+    player.speed = ram_state[14]
     # tree_slots = objects[1:7]
     # mogul_slots = objects[7:10]
     # flag_slots = objects[10:14]
@@ -249,7 +251,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if o:
             # all objects move up one ram slot
             if player.ram_90 > ram_state[90]:
-                o._ram_i-=1
+                o._ram_i -= 1
             i = o._ram_i
 
             type_o = ram_state[70+i]
@@ -261,12 +263,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 objects[io+1] = NoObject()
                 i_obj.append(io+1)
                 continue
-            
+
             # update tree
             if type_o == 85 and type(o) is Tree:
                 i_ram.remove(i)
                 o.xy = x, y
-                if x > 154: # pacman like torus
+                if x > 154:  # pacman like torus
                     o.w = min(164-x, 16)
                     o.x = 8
                 elif x > 145:
@@ -276,24 +278,24 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             # update mogul
             elif type_o == 5 and type(o) is Mogul:
                 i_ram.remove(i)
-                o.xy = x, y    
+                o.xy = x, y
                 o.h = min(176-y, height)
 
             # update flags
             elif type_o == 2 and type(o) is Flag:
                 offset = 3 * (ram_state[78+i] == 4)
                 o.h = min(177-y, height)
-                if io&1:
-                    x+=1+offset
+                if io & 1:
+                    x += 1+offset
                 else:
                     i_ram.remove(i)
-                    x+=1+offset+32
+                    x += 1+offset+32
                 o.xy = x, y
             else:
                 objects[io+1] = NoObject()
                 i_obj.append(io+1)
                 continue
-            
+
         else:
             # if not object, append to free slot list
             i_obj.append(io+1)
@@ -326,11 +328,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
             # initiate flag
             elif type_o == 2:
-                    if i_obj[-1] > 9:
-                        idx2 = i_obj.pop()
-                        idx1 = i_obj.pop()
-                        objects[idx1] = Flag(x, y, subtype, i)
-                        objects[idx2] = Flag(x+32, y, subtype, i)
+                if i_obj[-1] > 9:
+                    idx2 = i_obj.pop()
+                    idx1 = i_obj.pop()
+                    objects[idx1] = Flag(x, y, subtype, i)
+                    objects[idx2] = Flag(x+32, y, subtype, i)
 
 
 def _detect_objects_skiing_raw(info, ram_state):

@@ -187,7 +187,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if row[j] == 1:
                 enemy_ship = EnemyShip()
                 enemy_ship.y = row_y[i]
-                enemy_ship.x = 72 + 2 * ram_state[36] + j * 17
+                enemy_ship.x = 19 + 0.5 * ram_state[36] + j * 16.5
                 if i == 1 or i == 3:
                     enemy_ship.h = 8
                 objects[4+k] = enemy_ship

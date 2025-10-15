@@ -254,7 +254,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if ram_state[43 + (i + 1) * 9 - (j + 1)] != 0:
                 lower_y = j * 2
                 break
-        objects[1+i].xy = 42 + i * 32, 157 + upper_y
+        objects[1+i].xy = ram_state[27] - 1 + i * 32, 157 + upper_y
         objects[1+i].wh = 8, 18 - upper_y - lower_y
     # determining if bullets are visible
     bullets_visible = [False, False, False]

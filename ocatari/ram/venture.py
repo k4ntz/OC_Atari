@@ -1,5 +1,6 @@
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject
 from ._helper_methods import _convert_number, get_iou
+import numpy as np
 import sys
 
 """
@@ -15,13 +16,14 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shot': 1, 'Hallmonsters': 6, 'Goblin': 3, 'S
                       'Grey_Collectable': 1, 'Purple_Collectable': 1, 'Green_Collectable': 1, 'Score': 1, 'Life': 1}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 0, 0
         self.wh = 1, 2
         self.rgb = 168, 48, 143
         self.hud = False
+        self.orientation = Orientation.N
 
 
 class Shot(GameObject):
@@ -206,6 +208,7 @@ def _init_objects_ram(hud=True):
         objects.extend([Score(), Life()])
     return objects
 
+orientations = [Orientation.N, Orientation.S, None, Orientation.W, Orientation.NW, Orientation.SW, None, Orientation.E, Orientation.NE, Orientation.SE]
 
 # levels: ram_state[36], total of 3 levels: 0,1 and 2
 def _detect_objects_ram(objects, ram_state, hud=True):
@@ -213,6 +216,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     # 73 = 128 => invis playern
     objects[0].xy = ram_state[85] - 1, ram_state[26] * 2 + 25
     objects[0].wh = 1, 2
+
 
     room = ram_state[90]
 
@@ -234,8 +238,15 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     elif room != 8:
         if type(objects[1]) is NoObject:
             objects[1] = Shot()
+            
+        # ram 28 == orientation E, W, S, N inverted bits
+        # np.uint8(np.log2(((~ram_state[41])>>4)))
+        orientation = (~ram_state[28])>>4
         objects[0].xy = x0, y0
         objects[0].wh = 8, 12
+        if orientation:
+            objects[0].orientation = orientations[orientation-1]
+        print(objects[0].orientation)
         objects[1].xy = ram_state[85] - 1, ram_state[26] * 2 + 25
         objects[2] = NoObject()
 

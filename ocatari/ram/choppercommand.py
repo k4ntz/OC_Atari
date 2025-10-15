@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from ._helper_methods import number_to_bitfield, _convert_number
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject
 from ..vision.game_objects import NoObject as v_No
 from .utils import match_objects
 import sys
@@ -17,7 +17,7 @@ MAX_NB_OBJECTS_HUD = {'Player': 1, 'Shot': 1, 'Truck': 3, 'EnemyPlane': 3, 'Enem
                       'MiniPlayer': 1, 'MiniTruck': 9, 'MiniEnemy': 12, 'Score': 4, 'Life': 2}
 
 
-class Player(GameObject):
+class Player(OrientedObject):
     """
     The player figure i.e., the helicopter gunship.
     """
@@ -26,7 +26,7 @@ class Player(GameObject):
         super(Player, self).__init__()
         self._xy = 133, 103  # initially
         self.wh = 16, 9
-        self.orientation = 1
+        self.orientation = Orientation.E
         self.rgb = 223, 183, 85
         self.hud = False
 
@@ -199,7 +199,8 @@ def _detect_objects_ram(objects, ram_state, hud):
         player.xy = (ram_state[71] + 2, 159-ram_state[72])
     else:
         player.xy = (ram_state[71], 159-ram_state[72])
-    player.orientation = ram_state[66]
+    player.orientation = Orientation.E if ram_state[66] else Orientation.W
+    print(player.orientation)
 
     # mini_player
     objects[13].xy = 74+(ram_state[71]>>5), 184-((ram_state[72]>>4)&7)

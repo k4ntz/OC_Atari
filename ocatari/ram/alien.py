@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject, NoObject
+from .game_objects import GameObject, ValueObject, NoObject, Orientation, OrientedObject
 import sys
 
 MAX_NB_OBJECTS = {"Player": 1, "Flamethrower": 1, "Alien": 12,
@@ -15,7 +15,7 @@ ALIEN_COLORS = [
     (132, 144, 252), # blue
 ]
 
-class Player(GameObject):
+class Player(OrientedObject):
     def __init__(self):
         super(Player, self).__init__()
         self._xy = 0, 0
@@ -33,6 +33,7 @@ class Flamethrower(GameObject):
         self.rgb = 252, 144, 144
         self.hud = False
         self.fuel = 255
+        self.orientation = Orientation.E
 
 
 class Alien(GameObject):
@@ -127,9 +128,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player = objects[0]
     player.xy = ram_state[52] + 18, 196 - ram_state[45]*2 + 1
     if ram_state[6] == 0:
-        player.orientation = 0
+        player.orientation = Orientation.E
     elif ram_state[6] == 2:
-        player.orientation = 1
+        player.orientation = Orientation.W
 
     if ram_state[25] == 5:
         if type(objects[1]) is NoObject:
@@ -138,7 +139,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[1].fuel = ram_state[116]
     else:
         objects[1] = NoObject()
-
+    
     if ram_state[0] == 0:
         # y 110 = 43 152 = 22
         for i in range(3):
