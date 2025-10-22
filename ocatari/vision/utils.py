@@ -729,11 +729,11 @@ def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClas
     """
     possible_invisible_objects = []
     if len(objects_bb) == 0:
-        for o in prev_objects[start_idx:start_idx+max_obj]:
+        for i, o in enumerate(prev_objects[start_idx:start_idx+max_obj]):
             if o:
                 o.num_frames_invisible += 1
                 if o.num_frames_invisible > o.max_frames_invisible:
-                    o = NoObject()
+                    prev_objects[start_idx+i] = NoObject()
         return
 
     if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
