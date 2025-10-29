@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import math
 
-MAX_NB_OBJECTS = {"Player": 1, "Player_Shot": 1, "Enemy_Shot": 1, "Bomber": 1, "Baiter": 1, "Pod": 2, "Swarm": 2, "Lander": 5, "Humanoide_Lander": 5, "Human": 5, "Radar_Player": 1, "Radar_Enemy": 8, "Radar_Human": 5}
+MAX_NB_OBJECTS = {"Player": 1, "Player_Shot": 1, "Enemy_Shot": 1, "Bomber": 2, "Baiter": 2, "Pod": 2, "Swarm": 2, "Lander": 5, "Humanoide_Lander": 5, "Human": 5, "Radar_Player": 1, "Radar_Enemy": 8, "Radar_Human": 5}
 MAX_NB_OBJECTS_HUD = {"Player": 1, "Player_Shot": 1, "Enemy_Shot": 1, "Bomber": 1, "Baiter": 1, "Pod": 2, "Swarm": 2, "Lander": 5, "Humanoide_Lander": 5, "Human": 5, "Radar_Player": 1, "Radar_Enemy": 8, "Radar_Human": 5, "Score": 1, "Lives": 1, "Smart_Bomb_Count": 1}
 
 
@@ -39,9 +39,10 @@ class Enemy_Shot(GameObject):
 
 
 class Bomber(GameObject):
-    def __init__(self):
+    def __init__(self, p_x=0, p_y=0):
         super(Bomber, self).__init__()
         self._xy = 0, 0
+        self.pre_xy = p_x, p_y
         self.wh = (5, 4)
         self.rgb = 84, 92, 214
         self.hud = False
@@ -49,9 +50,10 @@ class Bomber(GameObject):
 
 
 class Baiter(GameObject):
-    def __init__(self):
+    def __init__(self, p_x=0, p_y=0):
         super(Baiter, self).__init__()
         self._xy = 0, 0
+        self.pre_xy = p_x, p_y
         self.wh = (8, 3)
         self.rgb = 132, 144, 252
         self.hud = False
@@ -59,9 +61,10 @@ class Baiter(GameObject):
 
 
 class Pod(GameObject):
-    def __init__(self):
+    def __init__(self, p_x=0, p_y=0):
         super(Pod, self).__init__()
         self._xy = 0, 0
+        self.pre_xy = p_x, p_y
         self.wh = (7, 7)
         self.rgb = 252, 224, 112
         self.hud = False
@@ -69,18 +72,20 @@ class Pod(GameObject):
 
 
 class Swarm(GameObject):
-    def __init__(self):
+    def __init__(self, p_x=0, p_y=0):
         super(Swarm, self).__init__()
         self._xy = 0, 0
+        self.pre_xy = p_x, p_y
         self.wh = (8, 7)
         self.rgb = 232, 232, 74
         self.hud = False
         self.frame_count = 0
 
 class Lander(GameObject):
-    def __init__(self):
+    def __init__(self, p_x=0, p_y=0):
         super(Lander, self).__init__()
         self._xy = 0, 0
+        self.pre_xy = p_x, p_y
         self.wh = (8, 7)
         self.rgb = 210, 210, 64
         self.hud = False
@@ -88,9 +93,10 @@ class Lander(GameObject):
 
 
 class Humanoide_Lander(GameObject):
-    def __init__(self):
+    def __init__(self, p_x=0, p_y=0):
         super(Humanoide_Lander, self).__init__()
         self._xy = 0, 0
+        self.pre_xy = p_x, p_y
         self.wh = (8, 7)
         self.rgb = 198, 108, 58
         self.hud = False
@@ -166,6 +172,15 @@ class Radar_Human(GameObject):
         self.hud = False
 
 
+class City_Scape(GameObject):
+    def __init__(self):
+        super().__init__()
+        self._xy = 0, 156
+        self.wh = (160, 17)
+        self.rgb = 84, 92, 214
+        self.hud = False
+
+
 class Score(ValueObject):
     def __init__(self):
         super(Score, self).__init__()
@@ -217,13 +232,14 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player(), OrientedNoObject()]
 
-    objects.extend([NoObject()] * 36)
+    objects.extend([NoObject()] * 38)
+    objects.extend([City_Scape()])
     if hud:
         objects.extend([Score(), Lives(), Smart_Bomb_Count()])
     return objects
 
 typings = [Bomber, Baiter, Pod, Swarm, Lander, Humanoide_Lander]
-offsets = [0, 1, 1, 3, 3, 8]
+offsets = [0, 2, 3, 5, 5, 10]
 
 def _detect_objects_ram(objects, ram_state, hud=False):
     """
@@ -263,29 +279,34 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 objects[2] = NoObject()
 
 
-    # enemies ram[50]: bomber == 8, baiter == 16 pod == 24, swamers == 32, lander == 40, humanoid_lander == 48, level number == 49
+    # enemies ram[50]: bomber == 8, baiter == 16, pod == 24, swamers == 32, lander == 40, humanoid_lander == 48, level number == 49
     if ram_state[55] != 255 and 0 < ram_state[50] < 49:
         enemy_type = (ram_state[50]>>3) - 1
         index = offsets[enemy_type] + ram_state[55]
         
-        if type(objects[3+index]) is NoObject:
-            objects[3+index] = typings[enemy_type]()
+        if type(objects[3+index]) is not typings[enemy_type]:
+            objects[3+index] = typings[enemy_type](p_x=ram_state[38], p_y=172 - ram_state[48] if ram_state[48] < 129 else 44)
 
-        objects[3+index].xy = ram_state[38], 172 - ram_state[48] if ram_state[48] < 129 else 44
+        if ram_state[20]:
+            objects[3+index].xy = ram_state[38], 172 - ram_state[48] if ram_state[48] < 129 else 44
+        else:
+            objects[3+index].xy = objects[3+index].pre_xy
+            objects[3+index].pre_xy = ram_state[38], 172 - ram_state[48] if ram_state[48] < 129 else 44
+
         objects[3+index].frame_count = 0
 
-        for i in range(3, 19):
+        for i in range(3, 21):
             if type(objects[i]) is not NoObject:
                 objects[i].frame_count += 1
                 if objects[i].frame_count > 8:
                     objects[i] = NoObject()
                     objects[i].frame_count = 0
     else:
-        for i in range(3, 19):
+        for i in range(3, 21):
             objects[i] = NoObject()
                 
     # updates human position based on scroll to have constant positioning despite flickering
-    for i in range(19, 24):
+    for i in range(21, 26):
         if type(objects[i]) is not NoObject:
             if objects[i].frame_count > 6:
                 objects[i] = NoObject()
@@ -303,7 +324,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # ram 78 == which human appears in the next frame
 
     if ram_state[36] and ram_state[78] < 5:
-        idx = 19+ram_state[78]
+        idx = 21 + ram_state[78]
         if type(objects[idx]) is NoObject:
             objects[idx] = Human(x=ram_state[36], y=169, total_x=ram_state[36] - np.int8(ram_state[73])*2, ram_73=np.int8(ram_state[73]))
         objects[idx].xy = objects[idx].pre_xy
@@ -316,35 +337,35 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # radar index == ram 59
 
     if ram_state[16]:
-        if type(objects[25+ram_state[59]]) is NoObject:
+        if type(objects[27+ram_state[59]]) is NoObject:
             if ram_state[16] == 26:
-                objects[25+ram_state[59]] = Radar_Lander()
+                objects[27+ram_state[59]] = Radar_Lander()
             elif ram_state[16] == 29:
-                objects[25+ram_state[59]] = Radar_Swarm()
+                objects[27+ram_state[59]] = Radar_Swarm()
             elif ram_state[16] == 55:
-                objects[25+ram_state[59]] = Radar_Humanoide_Lander()
+                objects[27+ram_state[59]] = Radar_Humanoide_Lander()
             elif ram_state[16] == 136:
-                objects[25+ram_state[59]] = Radar_Bomber()
+                objects[27+ram_state[59]] = Radar_Bomber()
             elif ram_state[16] == 143:
-                objects[25+ram_state[59]] = Radar_Baiter()
+                objects[27+ram_state[59]] = Radar_Baiter()
             elif ram_state[16] == 255:
-                objects[25+ram_state[59]] = Radar_Pod()
+                objects[27+ram_state[59]] = Radar_Pod()
 
-        objects[25+ram_state[59]].xy = ram_state[40], 36 - 2 * ram_state[44]
+        objects[27+ram_state[59]].xy = ram_state[40], 36 - 2 * ram_state[44]
     else:
-        objects[25+ram_state[59]] = NoObject()
-    
+        objects[27+ram_state[59]] = NoObject()
+
     if ram_state[78] < 5:
         if ram_state[41]:
-            if type(objects[33+ram_state[78]]) is NoObject:
-                objects[33+ram_state[78]] = Radar_Human()
-            objects[33+ram_state[78]].xy = ram_state[41], 35 - 2 * ram_state[42]
+            if type(objects[35+ram_state[78]]) is NoObject:
+                objects[35+ram_state[78]] = Radar_Human()
+            objects[35+ram_state[78]].xy = ram_state[41], 35 - 2 * ram_state[42]
         else:
-            objects[33+ram_state[78]] = NoObject()
+            objects[35+ram_state[78]] = NoObject()
     elif ram_state[78] == 255:
-        if type(objects[24]) is NoObject:
-            objects[24] = Radar_Player()
-        objects[24].xy = ram_state[41], 35 - 2 * ram_state[42]
+        if type(objects[26]) is NoObject:
+            objects[26] = Radar_Player()
+        objects[26].xy = ram_state[41], 35 - 2 * ram_state[42]
 
     if hud:
         x, w = 88, 14

@@ -127,6 +127,12 @@ class Radar_Human(GameObject):
         self.expected_dist = 2
 
 
+class City_Scape(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rgb = [84, 92, 214]
+
+
 #  ---- HUD -----
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
