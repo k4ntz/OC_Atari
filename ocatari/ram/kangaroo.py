@@ -48,10 +48,12 @@ class Player(OrientedObject):
     The player figure: Mother Kangaroo.
     """
 
-    def __init__(self):
+    def __init__(self, p_x=0, p_y=0, p_w=8, p_h=24):
         super(Player, self).__init__()
         self._xy = 78, 103
+        self._pre_xy = p_x, p_x
         self.wh = 8, 24
+        self._pre_wh = p_w, p_h
         self.rgb = 223, 183, 85
         self.hud = False
         self.crashed = False
@@ -64,9 +66,10 @@ class Child(GameObject):
     Baby Kangaroo.
     """
 
-    def __init__(self):
+    def __init__(self, p_x=0, p_y=0):
         super(Child, self).__init__()
         self._xy = 78, 12
+        self._pre_xy = p_x, p_x
         self.wh = 8, 15
         self.rgb = 223, 183, 85
         self.hud = False
@@ -77,10 +80,11 @@ class Monkey(OrientedObject):
     The Monkey monkeys.
     """
 
-    def __init__(self):
+    def __init__(self, p_x=0, p_y=0):
         super(Monkey, self).__init__()
         super().__init__()
         self._xy = 79, 57
+        self._pre_xy = p_x, p_x
         self.wh = 6, 15
         self.rgb = 227, 159, 89
         self.hud = False
@@ -270,8 +274,10 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     else:
         h = 24  # default
 
-    player.xy = x, y
-    player.wh = 8, h
+    player.xy = player._pre_xy
+    player._pre_xy = x, y
+    player.wh = player._pre_wh
+    player._pre_wh = 8, h
     player.orientation = orientation
     player.climbing = climbing
     player.crashed = crashed
@@ -279,7 +285,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     child = objects[1]
     # if ram_state[16] > 3 or (ram_state[83] != ram_state[17]):
     if ram_state[16] > 3:
-        child.xy = ram_state[83] + 15, 12
+        if ram_state[114] < 7:
+            child.xy = ram_state[83] + 15, 12
+        else:
+            child.xy = child._pre_xy
+        child._pre_xy = ram_state[83] + 15, 12
     else:
         fruits = 0
         for i in range(3):
@@ -287,8 +297,12 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                 fruits += 1
         if fruits == 0:
             fruits = 1
-        if ram_state[68] == fruits:
-            child.xy = ram_state[83] + 15, 12
+        if ram_state[68] == fruits and not ram_state[65]:
+            if ram_state[114] < 7:
+                child.xy = ram_state[83] + 15, 12
+            else:
+                child.xy = child._pre_xy
+            child._pre_xy = ram_state[83] + 15, 12
 
     for i in range(MAX_ESSENTIAL_OBJECTS["Monkey"]):
         if ram_state[3 - i] and ram_state[3 - i] != 212:
@@ -303,8 +317,9 @@ def _detect_objects_ram(objects, ram_state, hud=True):
                 orientation = Orientation.N
 
             if type(objects[2+i]) is OrientedNoObject:
-                objects[2+i] = Monkey()
-            objects[2+i].xy = x, y
+                objects[2+i] = Monkey(x, y)
+            objects[2+i].xy = objects[2+i]._pre_xy
+            objects[2+i]._pre_xy = x, y
             objects[2+i].orientation = orientation
         else:
             objects[2+i] = OrientedNoObject()
