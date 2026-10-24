@@ -33,10 +33,10 @@ class PositionHistoryEnv(gym.Env):
         return self.ocatari_env.action_space
 
     def step(self, *args, **kwargs):
-        _, reward, truncated, terminated, info = self.ocatari_env.step(
+        _, reward, terminated, truncated, info = self.ocatari_env.step(
             *args, **kwargs)
         self._obj2vec()
-        return self.current_vector, reward, truncated, terminated, info
+        return self.current_vector, reward, terminated, truncated, info
 
     def reset(self, *args, **kwargs):
         _, info = self.ocatari_env.reset(*args, **kwargs)

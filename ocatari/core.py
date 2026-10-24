@@ -196,8 +196,8 @@ class OCAtari(gym.Env):
         :return: A tuple containing:
                  - obs: The observation of the environment after the action, format depends on `obs_mode`.
                  - reward: The reward achieved by the previous action.
+                 - terminated: Whether the episode reached a terminal state.
                  - truncated: Whether the episode was truncated.
-                 - terminated: Whether the episode has ended.
                  - info: Additional information from the environment.
         :rtype: tuple
         """
@@ -213,7 +213,7 @@ class OCAtari(gym.Env):
             obs = np.array(self._state_buffer_dqn)
         elif self.obs_mode == "obj":
             obs = np.array(self._state_buffer_ns)
-        return obs, reward, truncated, terminated, info
+        return obs, reward, terminated, truncated, info
 
     def _detect_objects_ram(self):
         # Detect objects using RAM-based extraction
